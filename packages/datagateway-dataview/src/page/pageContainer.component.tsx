@@ -1,9 +1,7 @@
 import {
-  FormControlLabel,
   Grid,
   LinearProgress,
   Paper,
-  Switch,
   Typography,
   Theme,
   withStyles,
@@ -11,6 +9,7 @@ import {
   IconButton,
   Badge,
   makeStyles,
+  Button,
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
@@ -36,6 +35,8 @@ import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
 
 const usePaperStyles = makeStyles(
@@ -169,7 +170,7 @@ export const NavBar = (props: {
           item
           sm={2}
           xs={3}
-          aria-label="container-table-count"
+          aria-label="container-view-count"
         >
           <Route
             exact
@@ -211,7 +212,7 @@ export const NavBar = (props: {
           <IconButton
             className="tour-dataview-search-icon"
             onClick={props.navigateToSearch}
-            aria-label="container-table-search"
+            aria-label="container-view-search"
             style={{ margin: 'auto' }}
           >
             <SearchIcon />
@@ -229,7 +230,7 @@ export const NavBar = (props: {
           <IconButton
             className="tour-dataview-cart-icon"
             onClick={props.navigateToDownload}
-            aria-label="container-table-cart"
+            aria-label="container-view-cart"
             style={{ margin: 'auto' }}
           >
             <Badge
@@ -237,7 +238,7 @@ export const NavBar = (props: {
                 props.cartItems.length > 0 ? props.cartItems.length : null
               }
               color="primary"
-              aria-label="container-table-cart-badge"
+              aria-label="container-view-cart-badge"
             >
               <ShoppingCartIcon />
             </Badge>
@@ -248,27 +249,36 @@ export const NavBar = (props: {
   );
 };
 
-const CardSwitch = (props: {
-  toggleCard: boolean;
-  handleToggleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+const viewButtonStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      root: {
+        padding: theme.spacing(1),
+      },
+    })
+);
+
+const ViewButton = (props: {
+  viewCards: boolean;
+  handleButtonChange: () => void;
 }): React.ReactElement => {
   const [t] = useTranslation();
+  const classes = viewButtonStyles();
 
   return (
-    <FormControlLabel
-      className="tour-dataview-toggle-card"
-      value="start"
-      control={
-        <Switch
-          checked={props.toggleCard}
-          onChange={props.handleToggleChange}
-          name="toggleCard"
-          inputProps={{ 'aria-label': 'secondary checkbox' }}
-        />
-      }
-      label={t('app.toggle_cards')}
-      labelPlacement="start"
-    />
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-view-button"
+        aria-label="container-view-button"
+        variant="contained"
+        color="primary"
+        size="small"
+        startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
+        onClick={() => props.handleButtonChange()}
+      >
+        {props.viewCards ? t('app.view_table') : t('app.view_cards')}
+      </Button>
+    </div>
   );
 };
 
@@ -378,7 +388,7 @@ type PageContainerCombinedProps = PageContainerStateProps &
 
 interface PageContainerState {
   paths: string[];
-  toggleCard: boolean;
+  viewCards: boolean;
   modifiedLocation: LocationType;
 }
 
@@ -398,7 +408,7 @@ class PageContainer extends React.Component<
       paths: Object.values(paths.toggle).concat(
         Object.values(paths.studyHierarchy.toggle)
       ),
-      toggleCard: this.getToggle(),
+      viewCards: this.getToggle(),
       modifiedLocation: props.location,
     };
   }
@@ -437,7 +447,7 @@ class PageContainer extends React.Component<
     if (prevProps.query.view !== this.props.query.view) {
       this.setState({
         ...this.state,
-        toggleCard: this.getToggle(),
+        viewCards: this.getToggle(),
       });
     }
   }
@@ -483,13 +493,11 @@ class PageContainer extends React.Component<
     return 'table';
   };
 
-  public handleToggleChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const nextView = event.target.checked ? 'card' : 'table';
+  public handleButtonChange = (): void => {
+    const nextView = !this.state.viewCards ? 'card' : 'table';
 
     // Save the current view information to state and restore the previous view information.
-    this.props.saveView(this.state.toggleCard ? 'card' : 'table');
+    this.props.saveView(nextView);
 
     // Set the view in local storage.
     this.storeDataView(nextView);
@@ -500,7 +508,7 @@ class PageContainer extends React.Component<
     // Set the state with the toggled card option and the saved query.
     this.setState({
       ...this.state,
-      toggleCard: event.target.checked,
+      viewCards: !this.state.viewCards,
     });
   };
 
@@ -527,9 +535,9 @@ class PageContainer extends React.Component<
                     exact
                     path={this.state.paths}
                     render={() => (
-                      <CardSwitch
-                        toggleCard={this.state.toggleCard}
-                        handleToggleChange={this.handleToggleChange}
+                      <ViewButton
+                        viewCards={this.state.viewCards}
+                        handleButtonChange={this.handleButtonChange}
                       />
                     )}
                   />
@@ -542,8 +550,8 @@ class PageContainer extends React.Component<
                   </Grid>
                 )}
 
-                {/* Hold the table for remainder of the page */}
-                <Grid item xs={12} aria-label="container-table">
+                {/* Hold the view for remainder of the page */}
+                <Grid item xs={12} aria-label="container-view">
                   {document.getElementById('datagateway-dataview') && (
                     <ViewRouting
                       view={this.props.query.view}

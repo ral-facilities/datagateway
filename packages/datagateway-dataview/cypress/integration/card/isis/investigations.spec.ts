@@ -3,11 +3,11 @@ describe('ISIS - Investigations Cards', () => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/14/investigation').wait(
+    cy.visit('/browse/instrument/1/facilityCycle/16/investigation').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="secondary checkbox"]')
+    cy.get('[aria-label="container-view-button"]')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
@@ -21,11 +21,11 @@ describe('ISIS - Investigations Cards', () => {
 
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('#card')
-      .contains('Series toward yes cost analysis.')
+      .contains('He represent address cut environmental special size.')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87'
+      '/browse/instrument/1/facilityCycle/16/investigation/16'
     );
   });
 
@@ -35,21 +35,25 @@ describe('ISIS - Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Series toward yes cost analysis.');
+    cy.get('#card').contains('Again bad simply low summer.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains('Series toward yes cost analysis.');
+    cy.get('#card').contains(
+      'He represent address cut environmental special size.'
+    );
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Series toward yes cost analysis.');
+    cy.get('#card').contains(
+      'He represent address cut environmental special size.'
+    );
   });
 
   it('should be able to sort by multiple fields', () => {
@@ -58,14 +62,18 @@ describe('ISIS - Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Series toward yes cost analysis.');
+    cy.get('#card').contains(
+      'He represent address cut environmental special size.'
+    );
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Series toward yes cost analysis.');
+    cy.get('#card').contains(
+      'He represent address cut environmental special size.'
+    );
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -73,14 +81,16 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('[aria-label="Filter by Title"]')
       .find('input')
       .first()
-      .type('yes')
+      .type('cut')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('Series toward yes cost analysis.');
+    cy.get('#card').contains(
+      'He represent address cut environmental special size.'
+    );
 
     cy.get('[aria-label="Start Date date filter from"]')
-      .type('2019-01-01')
+      .type('2004-01-01')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
     cy.get('[aria-label="Start Date date filter to"]')
       .parent()
@@ -103,23 +113,23 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('#card').contains('More Information').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('INVESTIGATION 107');
+      .contains('INVESTIGATION 16');
     cy.get('#investigation-users-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('Scott Brewer');
+      .contains('Corey Cook');
     cy.get('#investigation-samples-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('SAMPLE 87');
+      .contains('SAMPLE 16');
     cy.get('#investigation-publications-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('Follow team before this.');
+      .contains('Fish page on factor nature everybody action.');
     cy.get('#investigation-datasets-tab').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+      '/browse/instrument/1/facilityCycle/16/investigation/16/dataset'
     );
   });
 });

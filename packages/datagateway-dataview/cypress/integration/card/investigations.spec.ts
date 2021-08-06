@@ -9,12 +9,12 @@ describe('Investigations Cards', () => {
         '@getInvestigationsOrder',
         '@getInvestigationsOrder',
       ],
-      { timeout: 10000 }
+      { timeout: 15000 }
     );
-    cy.get('[aria-label="secondary checkbox"]')
+    cy.get('[aria-label="container-view-button"]')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
+        timeout: 15000,
       });
   });
 
@@ -36,14 +36,16 @@ describe('Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('A nothing almost arrive I.');
+    cy.get('#card').contains('Her know fine according');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains('Whom anything affect consider left.');
+    cy.get('#card').contains(
+      'Bed son everybody despite international central project'
+    );
 
     cy.contains('[role="button"]', 'Title')
       .click()
@@ -61,14 +63,14 @@ describe('Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Too ball particularly since true news like.');
+    cy.get('#card').contains('Decide visit list professional.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Color knowledge economy return determine tell.');
+    cy.get('#card').contains('Decide visit list professional.');
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -78,10 +80,10 @@ describe('Investigations Cards', () => {
       .contains('[role="button"]', '1')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
+        timeout: 30000,
       });
     cy.contains('[role="button"]', 'Type ID - 1').should('exist');
-    cy.get('#card').contains('Dog want single resource major.');
+    cy.get('#card').contains('Day purpose item create.');
 
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
@@ -91,10 +93,10 @@ describe('Investigations Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('Before can whom director ago education.');
+    cy.get('#card').contains('Have price already kid scene artist allow.');
 
     cy.get('[aria-label="Start Date date filter from"]')
-      .type('2019-01-01')
+      .type('2017-01-01')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
@@ -114,8 +116,6 @@ describe('Investigations Cards', () => {
       'have.value',
       date.toISOString().slice(0, 10)
     );
-    cy.get('#card').contains(
-      'Themselves management within least body possible.'
-    );
+    cy.get('#card').contains('That factor class price success none.');
   });
 });

@@ -7,7 +7,7 @@ describe('ISIS - Studies Cards', () => {
       ['@getStudiesCount', '@getStudiesOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="secondary checkbox"]')
+    cy.get('[aria-label="container-view-button"]')
       .click()
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
@@ -20,14 +20,14 @@ describe('ISIS - Studies Cards', () => {
   });
 
   it('should be able to click a study to see its landing page', () => {
-    cy.get('#card').contains('STUDY 375').click({ force: true });
+    cy.get('#card').contains('STUDY 4').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/405'
+      '/browseStudyHierarchy/instrument/1/study/4'
     );
   });
 
-  // Sorting currently fails
+  // TODO: Data mismatch issue (#782)
   it.skip('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -36,7 +36,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2004 cycle 1');
+    cy.get('#card').contains('STUDY 4');
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -45,7 +45,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains('2019 cycle ');
+    cy.get('#card').contains('STUDY 494');
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -54,9 +54,10 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2006 cycle 3');
+    cy.get('#card').contains('STUDY 4');
   });
 
+  // TODO: Data mismatch issue (#782)
   it.skip('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -65,7 +66,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2004 cycle 1');
+    cy.get('#card').contains('STUDY 4');
 
     cy.contains('[role="button"]', 'End Date')
       .click()
@@ -74,32 +75,28 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2004 cycle 1');
+    cy.get('#card').contains('STUDY 4');
   });
 
-  // Cannot filter on two joined fields at the same time
-  it.skip('should be able to filter by multiple fields', () => {
-    cy.get('[aria-label="advanced-filters-link"]')
-      .click()
-      .wait('@getStudiesOrder', {
-        timeout: 10000,
-      });
-    cy.get('[aria-label="Filter by RB Number"]')
-      .find('input')
-      .first()
-      .type('4')
-      .wait(['@getStudiesCount', '@getStudiesOrder'], {
-        timeout: 10000,
-      });
-    cy.get('#card').contains('STUDY 43');
+  it('should be able to filter by multiple fields', () => {
+    cy.get('[aria-label="advanced-filters-link"]').click();
 
-    cy.get('[aria-label="Filter by Description"]')
+    cy.get('[aria-label="Filter by Name"]')
       .find('input')
       .first()
-      .type('energy')
+      .type('1')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('STUDY 406');
+    cy.get('#card').contains('STUDY 21');
+
+    cy.get('[aria-label="Filter by Title"]')
+      .find('input')
+      .first()
+      .type('peace')
+      .wait(['@getStudiesCount', '@getStudiesOrder'], {
+        timeout: 10000,
+      });
+    cy.get('#card').contains('STUDY 341');
   });
 });

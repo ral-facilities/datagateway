@@ -19,13 +19,18 @@ import {
   sortTable,
   filterTable,
   clearTable,
+  tableLink,
+  handleICATError,
+  readSciGatewayToken,
+  FacilityCycle,
 } from 'datagateway-common';
-import { IndexRange } from 'react-virtualized';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 interface DatafileSearchTableStoreProps {
   sort: {
@@ -42,6 +47,7 @@ interface DatafileSearchTableStoreProps {
   allIds: number[];
   luceneData: number[];
   requestReceived: boolean;
+  apiUrl: string;
 }
 
 interface DatafileSearchTableDispatchProps {
@@ -57,7 +63,7 @@ interface DatafileSearchTableDispatchProps {
 }
 
 type DatafileSearchTableCombinedProps = DatafileSearchTableStoreProps &
-  DatafileSearchTableDispatchProps;
+  DatafileSearchTableDispatchProps & { hierarchy: string };
 
 const DatafileSearchTable = (
   props: DatafileSearchTableCombinedProps
@@ -80,9 +86,114 @@ const DatafileSearchTable = (
     luceneData,
     fetchAllIds,
     loading,
+    hierarchy,
+    apiUrl,
   } = props;
 
+  const [facilityCycles, setFacilityCycles] = React.useState([]);
+
   const [t] = useTranslation();
+
+  const dlsLink = (
+    datafileData: Datafile,
+    linkType = 'datafile'
+  ): React.ReactElement | string => {
+    if (datafileData.dataset?.investigation) {
+      return linkType === 'dataset'
+        ? tableLink(
+            `/browse/proposal/${datafileData.dataset.investigation.name}/investigation/${datafileData.dataset.investigation?.id}/dataset/${datafileData.dataset.id}/datafile`,
+            datafileData.dataset.name
+          )
+        : tableLink(
+            `/browse/proposal/${datafileData.dataset.name}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
+            datafileData.name
+          );
+    }
+    if (linkType === 'dataset')
+      return datafileData.dataset ? datafileData.dataset.name : '';
+    return datafileData.name;
+  };
+
+  const isisLink = React.useCallback(
+    (datafileData: Datafile, linkType = 'datafile') => {
+      let instrumentId;
+      let facilityCycleId;
+      if (
+        datafileData.dataset?.investigation?.investigationInstruments?.length
+      ) {
+        instrumentId =
+          datafileData.dataset?.investigation?.investigationInstruments[0]
+            .instrument?.id;
+      } else {
+        if (linkType === 'dataset')
+          return datafileData.dataset ? datafileData.dataset.name : '';
+        return datafileData.name;
+      }
+
+      if (
+        facilityCycles.length &&
+        datafileData.dataset?.investigation?.startDate
+      ) {
+        const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
+          (facilityCycle: FacilityCycle) =>
+            datafileData.dataset?.investigation?.startDate &&
+            facilityCycle.startDate &&
+            facilityCycle.endDate &&
+            datafileData.dataset.investigation.startDate >=
+              facilityCycle.startDate &&
+            datafileData.dataset.investigation.startDate <=
+              facilityCycle.endDate
+        );
+        if (filteredFacilityCycles.length) {
+          facilityCycleId = filteredFacilityCycles[0].id;
+        }
+      }
+
+      if (facilityCycleId) {
+        return linkType === 'dataset'
+          ? tableLink(
+              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}`,
+              datafileData.dataset.name
+            )
+          : tableLink(
+              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
+              datafileData.name
+            );
+      }
+      return linkType === 'dataset' ? '' : datafileData.name;
+    },
+    [facilityCycles]
+  );
+
+  const genericLink = (
+    datafileData: Datafile,
+    linkType = 'datafile'
+  ): React.ReactElement | string => {
+    if (datafileData.dataset?.investigation) {
+      return linkType === 'dataset'
+        ? tableLink(
+            `/browse/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
+            datafileData.dataset.name
+          )
+        : tableLink(
+            `/browse/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
+            datafileData.name
+          );
+    }
+    if (linkType === 'dataset')
+      return datafileData.dataset ? datafileData.dataset.name : '';
+    return datafileData.name;
+  };
+
+  const hierarchyLink = React.useMemo(() => {
+    if (hierarchy === 'dls') {
+      return dlsLink;
+    } else if (hierarchy === 'isis') {
+      return isisLink;
+    } else {
+      return genericLink;
+    }
+  }, [hierarchy, isisLink]);
 
   const selectedRows = React.useMemo(
     () =>
@@ -95,19 +206,6 @@ const DatafileSearchTable = (
         .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
-
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable, luceneData]);
-
-  React.useEffect(() => {
-    fetchCount(luceneData);
-    fetchAllIds(luceneData);
-  }, [fetchCount, fetchData, fetchAllIds, filters, luceneData]);
-
-  React.useEffect(() => {
-    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -127,6 +225,38 @@ const DatafileSearchTable = (
     />
   );
 
+  const fetchFacilityCycles = React.useCallback(() => {
+    axios
+      .get(`${apiUrl}/facilitycycles`, {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then((response) => {
+        setFacilityCycles(response.data);
+      })
+      .catch((error) => {
+        handleICATError(error);
+      });
+  }, [apiUrl]);
+
+  React.useEffect(() => {
+    if (hierarchy === 'isis') fetchFacilityCycles();
+  }, [fetchFacilityCycles, hierarchy]);
+
+  React.useEffect(() => {
+    clearTable();
+  }, [clearTable, luceneData]);
+
+  React.useEffect(() => {
+    fetchCount(luceneData);
+    fetchAllIds(luceneData);
+  }, [fetchCount, fetchData, fetchAllIds, filters, luceneData]);
+
+  React.useEffect(() => {
+    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
+
   return (
     <Table
       loading={loading}
@@ -144,13 +274,13 @@ const DatafileSearchTable = (
         return (
           <div>
             <Typography>
-              <b>{t('datafiles.name')}:</b> {datafileData.NAME}
+              <b>{t('datafiles.name')}:</b> {datafileData.name}
             </Typography>
             <Typography>
-              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.FILESIZE)}
+              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.fileSize)}
             </Typography>
             <Typography>
-              <b>{t('datafiles.location')}:</b> {datafileData.LOCATION}
+              <b>{t('datafiles.location')}:</b> {datafileData.location}
             </Typography>
           </div>
         );
@@ -158,26 +288,38 @@ const DatafileSearchTable = (
       columns={[
         {
           label: t('datafiles.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const datafileData = cellProps.rowData as Datafile;
+            return hierarchyLink(datafileData);
+          },
           filterComponent: textFilter,
         },
         {
           label: t('datafiles.location'),
-          dataKey: 'LOCATION',
+          dataKey: 'location',
           filterComponent: textFilter,
         },
         {
           label: t('datafiles.size'),
-          dataKey: 'FILESIZE',
+          dataKey: 'fileSize',
           cellContentRenderer: (cellProps) => {
             return formatBytes(cellProps.cellData);
           },
         },
         {
+          label: t('datafiles.dataset'),
+          dataKey: 'dataset.name',
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const datafileData = cellProps.rowData as Datafile;
+            return hierarchyLink(datafileData, 'dataset');
+          },
+          filterComponent: textFilter,
+        },
+        {
           label: t('datafiles.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />
@@ -199,7 +341,15 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              ID: { in: luceneData },
+              id: { in: luceneData },
+            }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify({
+              dataset: {
+                investigation: { investigationInstruments: 'instrument' },
+              },
             }),
           },
         ],
@@ -211,7 +361,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])
@@ -228,7 +378,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])
@@ -248,6 +398,7 @@ const mapStateToProps = (state: StateType): DatafileSearchTableStoreProps => {
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
     requestReceived: state.dgsearch.requestReceived,
+    apiUrl: state.dgcommon.urls.apiUrl,
   };
 };
 

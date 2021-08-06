@@ -38,28 +38,24 @@ describe('DLS Visits table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        TITLE: 'Test 1',
-        NAME: 'Test 1',
-        SUMMARY: 'foo bar',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        SIZE: 1,
-        INVESTIGATIONINSTRUMENT: [
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        summary: 'foo bar',
+        visitId: '1',
+        doi: 'doi 1',
+        size: 1,
+        investigationInstruments: [
           {
-            ID: 1,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 3,
-            INSTRUMENT: {
-              ID: 3,
-              NAME: 'LARMOR',
-              FACILITY_ID: 8,
+            id: 1,
+            instrument: {
+              id: 3,
+              name: 'LARMOR',
             },
           },
         ],
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
+        startDate: '2019-06-10',
+        endDate: '2019-06-11',
       },
     ];
 
@@ -129,13 +125,13 @@ describe('DLS Visits table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[2]).toEqual(
-      filterTable('VISIT_ID', { value: 'test', type: 'include' })
+      filterTable('visitId', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[4]).toEqual(filterTable('VISIT_ID', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('visitId', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -155,13 +151,13 @@ describe('DLS Visits table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[2]).toEqual(
-      filterTable('ENDDATE', { endDate: '2019-08-06' })
+      filterTable('endDate', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[4]).toEqual(filterTable('ENDDATE', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('endDate', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -179,7 +175,7 @@ describe('DLS Visits table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[2]).toEqual(sortTable('VISIT_ID', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('visitId', 'asc'));
   });
 
   it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
@@ -211,7 +207,7 @@ describe('DLS Visits table component', () => {
   });
 
   it('sends off an FetchInvestigationSize action when Calculate button is clicked', () => {
-    const { SIZE, ...rowDataWithoutSize } = state.dgcommon.data[0];
+    const { size, ...rowDataWithoutSize } = state.dgcommon.data[0];
     const newState = state;
     newState.dgcommon.data[0] = rowDataWithoutSize;
     const testStore = mockStore(newState);
@@ -245,18 +241,31 @@ describe('DLS Visits table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('gracefully handles missing Instrument from InvestigationInstrument object', () => {
+  it('gracefully handles empty InvestigationInstrument and missing Instrument from InvestigationInstrument object', () => {
     state.dgcommon.data[0] = {
       ...state.dgcommon.data[0],
-      INVESTIGATIONINSTRUMENT: [
+      investigationInstruments: [],
+    };
+
+    let wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <DLSVisitsTable proposalName="Test 1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(() => wrapper).not.toThrowError();
+
+    state.dgcommon.data[0] = {
+      ...state.dgcommon.data[0],
+      investigationInstruments: [
         {
-          ID: 1,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 3,
+          id: 1,
         },
       ],
     };
-    const wrapper = mount(
+    wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
           <DLSVisitsTable proposalName="Test 1" />

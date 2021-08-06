@@ -1,7 +1,8 @@
 {
   "app": {
     "results": "Results",
-    "toggle_cards": "Toggle Cards",
+    "view_table": "Display as table",
+    "view_cards": "Display as cards",
     "max_results": "Max Results"
   },
   "breadcrumbs": {
@@ -25,7 +26,7 @@
       "name": "Name",
       "description": "Description",
       "type": "Type",
-      "url": "URL",
+      "url": "Information Page",
       "instrument_scientists": {
         "label": "Instrument Scientists",
         "name": "Name"
@@ -39,7 +40,7 @@
     "start_date": "Start Date"
   },
   "studies": {
-    "name": "RB Number",
+    "name": "Name",
     "description": "Description",
     "pid": "DOI",
     "end_date": "End Date",
@@ -62,12 +63,9 @@
     "size": "Size",
     "instrument": "Instrument",
     "visit_id": "Visit ID",
-    "rb_number": "RB Number",
     "doi": "DOI",
     "parent_doi": "Parent DOI",
     "dataset_count": "Dataset Count",
-    "type_id": "Type ID",
-    "facility_id": "Facility ID",
     "release_date": "Public Release",
     "details": {
       "tabs_label": "Investigation Details Tabs",
@@ -76,8 +74,7 @@
       "name": "Name",
       "end_date": "End Date",
       "start_date": "Start Date",
-      "visit_id": "Visit ID",
-      "rb_number": "RB Number",
+      "visit_id": "Experiment Part",
       "pid": "Part DOI",
       "summary": "Summary",
       "doi": "DOI",
@@ -96,10 +93,20 @@
       "publications": {
         "label": "Publications",
         "reference": "Reference"
+      },
+      "type": {
+        "id": "Type ID"
       }
+    },
+    "facility": {
+      "id": "Facility ID"
+    },
+    "type": {
+      "id": "Type ID"
     }
   },
   "datasets": {
+    "dataset": "Dataset",
     "name": "Name",
     "create_time": "Create Time",
     "modified_time": "Modified Time",
@@ -110,6 +117,9 @@
     "complete": "Complete",
     "incomplete": "Incomplete",
     "location": "Location",
+    "type": {
+      "id": "Type ID"
+    },
     "details": {
       "tabs_label": "Dataset Details Tabs",
       "label": "Dataset Details",
@@ -124,7 +134,7 @@
         "label": "Dataset Types",
         "name": "Name",
         "description": "Description",
-        "type_id": "Type ID"
+        "id": "Type ID"
       }
     },
     "download": "Download"
@@ -168,7 +178,7 @@
     "hide": "Hide Advanced Filters",
     "icons": {
       "title": ["Title", "Name", "Type"],
-      "fingerprint": ["Visit ID", "RB Number"],
+      "fingerprint": ["Visit ID", "Name"],
       "public": ["DOI"],
       "confirmation_number": ["Dataset Count"," Datafile Count"],
       "assessment": ["Instrument", "Beamline"],

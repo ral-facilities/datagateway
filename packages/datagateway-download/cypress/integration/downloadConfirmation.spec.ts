@@ -20,7 +20,7 @@ describe('Download Confirmation', () => {
     cy.addCartItem('investigation 1').then(() => {
       cy.visit('/download');
       cy.wait('@fetchIsTwoLevel');
-      cy.wait('@fetchCart');
+      cy.wait('@fetchCart', { timeout: 10000 });
     });
 
     // Open the confirmation dialog and confirm it is present.
@@ -35,20 +35,20 @@ describe('Download Confirmation', () => {
 
   it('should load correctly and display the confirmation dialog for the cart items', () => {
     // Show the correct download size of the cart items.
-    cy.contains('Download Size: 10.8 GB').should('exist');
+    cy.contains('Download Size: 10.25 GB').should('exist');
 
     // Shows HTTPS as the default access method.
     cy.contains('#confirm-access-method', 'HTTPS').should('exist');
 
     // Shows the estimated download times in the table.
     cy.get('#download-table').should('exist');
-    cy.contains('#download-table-one', '1 day, 33 minutes, 54 seconds').should(
+    cy.contains('#download-table-one', '23 hours, 19 minutes, 46 seconds').should(
       'exist'
     );
-    cy.contains('#download-table-thirty', '49 minutes, 7 seconds').should(
+    cy.contains('#download-table-thirty', '46 minutes, 39 seconds').should(
       'exist'
     );
-    cy.contains('#download-table-hundred', '14 minutes, 44 seconds').should(
+    cy.contains('#download-table-hundred', '13 minutes, 59 seconds').should(
       'exist'
     );
   });

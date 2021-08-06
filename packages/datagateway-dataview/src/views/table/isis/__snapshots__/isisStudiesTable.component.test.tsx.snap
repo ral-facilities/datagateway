@@ -6,50 +6,48 @@ exports[`ISIS Studies table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "STUDY.NAME",
+        "dataKey": "study.name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "studies.name",
       },
       Object {
-        "dataKey": "STUDY.DESCRIPTION",
+        "dataKey": "investigation.title",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "studies.description",
+        "label": "investigations.title",
       },
       Object {
-        "dataKey": "STUDY.PID",
+        "dataKey": "study.pid",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "studies.pid",
       },
       Object {
-        "dataKey": "STUDY.STARTDATE",
+        "dataKey": "investigation.startDate",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "studies.start_date",
+        "label": "investigations.start_date",
       },
       Object {
-        "dataKey": "STUDY.ENDDATE",
+        "dataKey": "investigation.endDate",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "studies.end_date",
+        "label": "investigations.end_date",
       },
     ]
   }
   data={
     Array [
       Object {
-        "ID": 1,
-        "INVESTIGATION_ID": 1,
-        "STUDY": Object {
-          "CREATE_TIME": "2000-01-01",
-          "ID": 1,
-          "MOD_TIME": "2000-01-01",
-          "NAME": "Test 1",
-          "PID": "doi",
+        "id": 1,
+        "study": Object {
+          "createTime": "2000-01-01",
+          "id": 1,
+          "modTime": "2000-01-01",
+          "name": "Test 1",
+          "pid": "doi",
         },
-        "STUDY_ID": 1,
       },
     ]
   }

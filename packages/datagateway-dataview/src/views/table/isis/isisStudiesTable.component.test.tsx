@@ -36,15 +36,13 @@ describe('ISIS Studies table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        STUDY_ID: 1,
-        INVESTIGATION_ID: 1,
-        STUDY: {
-          ID: 1,
-          PID: 'doi',
-          NAME: 'Test 1',
-          MOD_TIME: '2000-01-01',
-          CREATE_TIME: '2000-01-01',
+        id: 1,
+        study: {
+          id: 1,
+          pid: 'doi',
+          name: 'Test 1',
+          modTime: '2000-01-01',
+          createTime: '2000-01-01',
         },
       },
     ];
@@ -125,13 +123,13 @@ describe('ISIS Studies table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[1]).toEqual(
-      filterTable('STUDY.NAME', { value: 'test', type: 'include' })
+      filterTable('study.name', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(filterTable('STUDY.NAME', null));
+    expect(testStore.getActions()[3]).toEqual(filterTable('study.name', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -145,20 +143,20 @@ describe('ISIS Studies table component', () => {
     );
 
     const filterInput = wrapper.find(
-      '[aria-label="studies.end_date date filter to"]'
+      '[aria-label="investigations.end_date date filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
     expect(testStore.getActions()[1]).toEqual(
-      filterTable('STUDY.ENDDATE', { endDate: '2019-08-06' })
+      filterTable('investigation.endDate', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
     expect(testStore.getActions()[3]).toEqual(
-      filterTable('STUDY.ENDDATE', null)
+      filterTable('investigation.endDate', null)
     );
   });
 
@@ -177,7 +175,7 @@ describe('ISIS Studies table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('STUDY.NAME', 'asc'));
+    expect(testStore.getActions()[1]).toEqual(sortTable('study.name', 'asc'));
   });
 
   it('renders studies name as a link', () => {

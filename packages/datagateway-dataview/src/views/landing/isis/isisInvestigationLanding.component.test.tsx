@@ -22,107 +22,113 @@ describe('ISIS Investigation Landing page', () => {
 
   const initialData = [
     {
-      ID: 1,
-      TITLE: 'Test 1',
-      NAME: 'Test 1',
-      SUMMARY: 'foo bar',
-      VISIT_ID: '1',
-      RB_NUMBER: '1',
-      DOI: 'doi 1',
-      SIZE: 1,
-      INVESTIGATIONINSTRUMENT: [
+      id: 1,
+      title: 'Test 1',
+      name: 'Test 1',
+      summary: 'foo bar',
+      visitId: '1',
+      doi: 'doi 1',
+      size: 1,
+      investigationInstruments: [
         {
-          ID: 1,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 3,
-          INSTRUMENT: {
-            ID: 3,
-            NAME: 'LARMOR',
-            FACILITY_ID: 1,
+          id: 1,
+          instrument: {
+            id: 3,
+            name: 'LARMOR',
+          },
+          investigation: {
+            id: 1,
           },
         },
       ],
-      STUDYINVESTIGATION: [
+      studyInvestigations: [
         {
-          ID: 6,
-          STUDY_ID: 7,
-          INVESTIGATION_ID: 1,
-          STUDY: {
-            ID: 7,
-            PID: 'study pid',
-            STARTDATE: '2019-06-10',
-            ENDDATE: '2019-06-11',
+          id: 6,
+          investigation: {
+            id: 1,
+          },
+          study: {
+            id: 7,
+            pid: 'study pid',
+            startDate: '2019-06-10',
+            endDate: '2019-06-11',
           },
         },
       ],
-      STARTDATE: '2019-06-10',
-      ENDDATE: '2019-06-11',
-      DATASET: [
+      startDate: '2019-06-10',
+      endDate: '2019-06-11',
+      datasets: [
         {
-          ID: 1,
-          NAME: 'dataset 1',
-          DOI: 'dataset doi',
+          id: 1,
+          name: 'dataset 1',
+          doi: 'dataset doi',
         },
       ],
     },
   ];
   const investigationUser = [
     {
-      ID: 1,
-      USER_ID: 1,
-      INVESTIGATION_ID: 1,
-      ROLE: 'principal_experimenter',
-      USER_: {
-        ID: 1,
-        NAME: 'JS',
-        FULLNAME: 'John Smith',
+      id: 1,
+      investigation: {
+        id: 1,
+      },
+      role: 'principal_experimenter',
+      user: {
+        id: 1,
+        name: 'JS',
+        fullName: 'John Smith',
       },
     },
     {
-      ID: 2,
-      USER_ID: 2,
-      INVESTIGATION_ID: 1,
-      ROLE: 'local_contact',
-      USER_: {
-        ID: 2,
-        NAME: 'JS',
-        FULLNAME: 'Jane Smith',
+      id: 2,
+      investigation: {
+        id: 1,
+      },
+      role: 'local_contact',
+      user: {
+        id: 2,
+        name: 'JS',
+        fullName: 'Jane Smith',
       },
     },
     {
-      ID: 3,
-      USER_ID: 3,
-      INVESTIGATION_ID: 1,
-      ROLE: 'experimenter',
-      USER_: {
-        ID: 3,
-        NAME: 'JS',
-        FULLNAME: 'Jesse Smith',
+      id: 3,
+      investigation: {
+        id: 1,
+      },
+      role: 'experimenter',
+      user: {
+        id: 3,
+        name: 'JS',
+        fullName: 'Jesse Smith',
       },
     },
     {
-      ID: 4,
-      USER_ID: 4,
-      INVESTIGATION_ID: 4,
-      ROLE: 'experimenter',
-      USER_: {
-        ID: 4,
-        NAME: 'JS',
-        FULLNAME: '',
+      id: 4,
+      investigation: {
+        id: 1,
+      },
+      role: 'experimenter',
+      user: {
+        id: 4,
+        name: 'JS',
+        fullName: '',
       },
     },
   ];
   const sample = [
     {
-      ID: 1,
-      NAME: 'Sample',
-      INVESTIGATION_ID: 1,
+      id: 1,
+      investigation: {
+        id: 1,
+      },
+      name: 'Sample',
     },
   ];
   const publication = [
     {
-      ID: 1,
-      FULLREFERENCE: 'Journal, Author, Date, DOI',
+      id: 1,
+      fullReference: 'Journal, Author, Date, DOI',
     },
   ];
 
@@ -259,7 +265,7 @@ describe('ISIS Investigation Landing page', () => {
     ).toHaveLength(0);
 
     state.dgcommon.data = [
-      { ...initialData[0], INVESTIGATIONUSER: investigationUser },
+      { ...initialData[0], investigationUsers: investigationUser },
     ];
     wrapper.setProps({ store: mockStore(state) });
 
@@ -302,7 +308,7 @@ describe('ISIS Investigation Landing page', () => {
       wrapper.find('[aria-label="landing-investigation-publication-0"]')
     ).toHaveLength(0);
 
-    state.dgcommon.data = [{ ...initialData[0], PUBLICATION: publication }];
+    state.dgcommon.data = [{ ...initialData[0], publications: publication }];
     wrapper.setProps({ store: mockStore(state) });
 
     expect(
@@ -338,7 +344,7 @@ describe('ISIS Investigation Landing page', () => {
       wrapper.find('[aria-label="landing-investigation-sample-0"]')
     ).toHaveLength(0);
 
-    state.dgcommon.data = [{ ...initialData[0], SAMPLE: sample }];
+    state.dgcommon.data = [{ ...initialData[0], samples: sample }];
     wrapper.setProps({ store: mockStore(state) });
 
     expect(
@@ -357,7 +363,7 @@ describe('ISIS Investigation Landing page', () => {
       ...state,
       dgcommon: {
         ...state.dgcommon,
-        data: [{ ...state.dgcommon.data[0], STUDYINVESTIGATION: undefined }],
+        data: [{ ...state.dgcommon.data[0], studyInvestigations: undefined }],
       },
     });
     const wrapper = mount(
@@ -388,7 +394,7 @@ describe('ISIS Investigation Landing page', () => {
         data: [
           {
             ...state.dgcommon.data[0],
-            INVESTIGATIONUSER: [investigationUser[0]],
+            investigationUsers: [investigationUser[0]],
           },
         ],
       },
@@ -421,7 +427,7 @@ describe('ISIS Investigation Landing page', () => {
       dgcommon: {
         ...state.dgcommon,
         data: [
-          { ...state.dgcommon.data[0], INVESTIGATIONUSER: investigationUser },
+          { ...state.dgcommon.data[0], investigationUsers: investigationUser },
         ],
       },
     });
@@ -445,5 +451,62 @@ describe('ISIS Investigation Landing page', () => {
     ).toEqual(
       'John Smith et al; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
     );
+  });
+
+  it('copies data citation to clipboard', () => {
+    // Mock the clipboard object
+    const testWriteText = jest.fn();
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: testWriteText,
+      },
+    });
+
+    const testStore = mockStore({
+      ...state,
+      dgcommon: {
+        ...state.dgcommon,
+        data: [
+          {
+            ...state.dgcommon.data[0],
+            investigationUsers: [investigationUser[0]],
+          },
+        ],
+      },
+    });
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationLanding
+            instrumentId="4"
+            instrumentChildId="5"
+            investigationId="1"
+            studyHierarchy={false}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper
+        .find('[aria-label="landing-investigation-citation"]')
+        .first()
+        .text()
+    ).toEqual(
+      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+    );
+
+    wrapper
+      .find('#landing-investigation-copy-citation')
+      .first()
+      .simulate('click');
+
+    expect(testWriteText).toHaveBeenCalledWith(
+      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+    );
+
+    expect(
+      wrapper.find('#landing-investigation-copied-citation').first().text()
+    ).toEqual('Copied citation');
   });
 });

@@ -50,52 +50,45 @@ describe('ISIS Investigations table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        TITLE: 'Test 1 title',
-        NAME: 'Test 1 name',
-        SUMMARY: 'foo bar',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        SIZE: 1,
-        INVESTIGATIONINSTRUMENT: [
+        id: 1,
+        title: 'Test 1 title',
+        name: 'Test 1 name',
+        summary: 'foo bar',
+        visitId: '1',
+        doi: 'doi 1',
+        size: 1,
+        investigationInstruments: [
           {
-            ID: 1,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 3,
-            INSTRUMENT: {
-              ID: 3,
-              NAME: 'LARMOR',
-              FACILITY_ID: 8,
+            id: 1,
+            instrument: {
+              id: 3,
+              name: 'LARMOR',
             },
           },
         ],
-        STUDYINVESTIGATION: [
+        studyInvestigations: [
           {
-            ID: 6,
-            STUDY_ID: 7,
-            INVESTIGATION_ID: 1,
-            STUDY: {
-              ID: 7,
-              PID: 'study pid',
+            id: 6,
+            study: {
+              id: 7,
+              pid: 'study pid',
             },
           },
         ],
-        FACILITY: {
-          ID: 8,
-          NAME: 'LILS',
-          FACILITYCYCLE: [
+        facility: {
+          id: 8,
+          name: 'LILS',
+          facilityCycles: [
             {
-              ID: 8,
-              NAME: 'Cycle name',
-              FACILITY_ID: 8,
-              STARTDATE: '2019-06-01',
-              ENDDATE: '2019-07-01',
+              id: 8,
+              name: 'Cycle name',
+              startDate: '2019-06-01',
+              endDate: '2019-07-01',
             },
           ],
         },
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
+        startDate: '2019-06-10',
+        endDate: '2019-06-11',
       },
     ];
     state.dgcommon.allIds = [1];
@@ -132,7 +125,7 @@ describe('ISIS Investigations table component', () => {
     );
 
     expect(testStore.getActions().length).toEqual(5);
-    expect(testStore.getActions()[0]).toEqual(sortTable('STARTDATE', 'desc'));
+    expect(testStore.getActions()[0]).toEqual(sortTable('startDate', 'desc'));
   });
 
   it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
@@ -185,13 +178,13 @@ describe('ISIS Investigations table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[5]).toEqual(
-      filterTable('TITLE', { value: 'test', type: 'include' })
+      filterTable('title', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[7]).toEqual(filterTable('TITLE', null));
+    expect(testStore.getActions()[7]).toEqual(filterTable('title', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -211,13 +204,13 @@ describe('ISIS Investigations table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[5]).toEqual(
-      filterTable('ENDDATE', { endDate: '2019-08-06' })
+      filterTable('endDate', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[7]).toEqual(filterTable('ENDDATE', null));
+    expect(testStore.getActions()[7]).toEqual(filterTable('endDate', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -235,7 +228,7 @@ describe('ISIS Investigations table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[5]).toEqual(sortTable('TITLE', 'asc'));
+    expect(testStore.getActions()[5]).toEqual(sortTable('title', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -349,7 +342,7 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('renders details panel without datasets link if Facility not set', () => {
-    state.dgcommon.data[0].FACILITY = {};
+    state.dgcommon.data[0].facility = {};
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -370,7 +363,7 @@ describe('ISIS Investigations table component', () => {
     ).toEqual(0);
   });
 
-  it('renders title and RB number as links', () => {
+  it('renders title and name as links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
@@ -388,23 +381,44 @@ describe('ISIS Investigations table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('gracefully handles missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object and missing facility cycles', () => {
+  it('gracefully handles empty arrays, missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object and missing facility cycles', () => {
+    // check it doesn't error if arrays are empty
+    state.dgcommon.data[0] = {
+      ...state.dgcommon.data[0],
+      facility: {
+        id: 8,
+        name: 'LILS',
+        facilityCycles: [],
+      },
+      investigationInstruments: [],
+      studyInvestigations: [],
+    };
+    let wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISMyDataTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(() => wrapper).not.toThrowError();
+
     // check it renders plain text if valid facility cycle can't be found
     state.dgcommon.data[0] = {
       ...state.dgcommon.data[0],
-      FACILITY: {
-        ID: 8,
-        NAME: 'LILS',
-        FACILITYCYCLE: [
+      facility: {
+        id: 8,
+        name: 'LILS',
+        facilityCycles: [
           {
-            ID: 9,
-            STARTDATE: '2018-01-01',
-            ENDDATE: '2019-01-01',
+            id: 9,
+            startDate: '2018-01-01',
+            endDate: '2019-01-01',
           },
         ],
       },
     };
-    let wrapper = mount(
+    wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
           <ISISMyDataTable />
@@ -423,23 +437,19 @@ describe('ISIS Investigations table component', () => {
     // now check that blank is returned if objects are missing
     state.dgcommon.data[0] = {
       ...state.dgcommon.data[0],
-      INVESTIGATIONINSTRUMENT: [
+      investigationInstruments: [
         {
-          ID: 1,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 3,
+          id: 1,
         },
       ],
-      STUDYINVESTIGATION: [
+      studyInvestigations: [
         {
-          ID: 6,
-          STUDY_ID: 7,
-          INVESTIGATION_ID: 1,
+          id: 6,
         },
       ],
-      FACILITY: {
-        ID: 8,
-        NAME: 'LILS',
+      facility: {
+        id: 8,
+        name: 'LILS',
       },
     };
     wrapper = mount(

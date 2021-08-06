@@ -1,5 +1,89 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Datafile details panel component Shows "No <field> provided" incase of a null field 1`] = `
+<div
+  id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
+>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="datafiles.details.tabs_label"
+    onChange={[Function]}
+    scrollButtons="auto"
+    value="details"
+    variant="scrollable"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="datafile-details-panel"
+      id="datafile-details-tab"
+      label="datafiles.details.label"
+      value="details"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="datafile-details-tab"
+    hidden={false}
+    id="datafile-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-1"
+      container={true}
+      direction="column"
+    >
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-2"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datafiles.details.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            datafiles.details.description not provided
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datafiles.details.location
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            datafiles.details.location not provided
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+</div>
+`;
+
 exports[`Datafile details panel component renders correctly 1`] = `
 <div
   id="details-panel"
@@ -59,7 +143,9 @@ exports[`Datafile details panel component renders correctly 1`] = `
           datafiles.details.description
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            Test description
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -147,7 +233,9 @@ exports[`Datafile details panel component renders parameters tab when present in
           datafiles.details.description
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            Test description
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

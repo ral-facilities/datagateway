@@ -182,7 +182,7 @@ export const fetchDatasets = (
           if (optionalParams.getDatafileCount) {
             batch(() => {
               response.data.forEach((dataset: Dataset) => {
-                dispatch(fetchDatasetDatafilesCount(dataset.ID));
+                dispatch(fetchDatasetDatafilesCount(dataset.id));
               });
             });
           }
@@ -192,7 +192,7 @@ export const fetchDatasets = (
           if (optionalParams.getSize) {
             batch(() => {
               response.data.forEach((dataset: Dataset) => {
-                dispatch(fetchDatasetSize(dataset.ID));
+                dispatch(fetchDatasetSize(dataset.id));
               });
             });
           }
@@ -363,11 +363,13 @@ export const fetchInvestigationDatasetsCount = (
     const timestamp = Date.now();
     dispatch(fetchInvestigationDatasetsCountRequest(timestamp));
 
-    const params = {
-      where: {
-        INVESTIGATION_ID: { eq: investigationId },
-      },
-    };
+    const params = new URLSearchParams();
+    params.append(
+      'where',
+      JSON.stringify({ 'investigation.id': { eq: investigationId } })
+    );
+    params.append('include', JSON.stringify('investigation'));
+
     const { apiUrl } = getState().dgcommon.urls;
 
     const currentCache = getState().dgcommon.investigationCache[
@@ -440,8 +442,8 @@ export const fetchDatasetDetails = (
 
     const params = new URLSearchParams();
 
-    params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
-    params.append('include', JSON.stringify('DATASETTYPE'));
+    params.append('where', JSON.stringify({ id: { eq: datasetId } }));
+    params.append('include', JSON.stringify('type'));
 
     const { apiUrl } = getState().dgcommon.urls;
 

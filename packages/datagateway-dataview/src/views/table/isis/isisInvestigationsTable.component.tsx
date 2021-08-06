@@ -206,26 +206,12 @@ const ISISInvestigationsTable = (
         {
           icon: <TitleIcon />,
           label: t('investigations.title'),
-          dataKey: 'TITLE',
+          dataKey: 'title',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}`,
-              investigationData.TITLE,
-              view
-            );
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: <FingerprintIcon />,
-          label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            return tableLink(
-              `${urlPrefix}/${investigationData.ID}`,
-              investigationData.VISIT_ID,
+              `${urlPrefix}/${investigationData.id}`,
+              investigationData.title,
               view
             );
           },
@@ -234,12 +220,12 @@ const ISISInvestigationsTable = (
         {
           icon: <FingerprintIcon />,
           label: t('investigations.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}`,
-              investigationData.NAME,
+              `${urlPrefix}/${investigationData.id}`,
+              investigationData.name,
               view
             );
           },
@@ -248,16 +234,13 @@ const ISISInvestigationsTable = (
         {
           icon: <PublicIcon />,
           label: t('investigations.doi'),
-          dataKey: 'STUDYINVESTIGATION.STUDY.PID',
+          dataKey: 'studyInvestigations.study.pid',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.STUDYINVESTIGATION &&
-              investigationData.STUDYINVESTIGATION[0].STUDY
-            ) {
+            if (investigationData?.studyInvestigations?.[0]?.study) {
               return tableLink(
-                `${urlPrefix}/${investigationData.ID}`,
-                investigationData.STUDYINVESTIGATION[0].STUDY.PID,
+                `${urlPrefix}/${investigationData.id}`,
+                investigationData.studyInvestigations[0].study.pid,
                 view
               );
             } else {
@@ -269,7 +252,7 @@ const ISISInvestigationsTable = (
         {
           icon: <SaveIcon />,
           label: t('investigations.size'),
-          dataKey: 'SIZE',
+          dataKey: 'size',
           cellContentRenderer: (cellProps) => {
             return formatBytes(cellProps.cellData);
           },
@@ -278,15 +261,12 @@ const ISISInvestigationsTable = (
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
+          dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.INVESTIGATIONINSTRUMENT &&
-              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-            ) {
-              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-                .FULLNAME;
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
+              return investigationData.investigationInstruments[0].instrument
+                .fullName;
             } else {
               return '';
             }
@@ -296,17 +276,15 @@ const ISISInvestigationsTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
 
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />
@@ -348,13 +326,13 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+              'investigationInstruments.instrument.id': { eq: instrumentId },
             }),
           },
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+              'studyInvestigations.study.id': { eq: studyId },
             }),
           },
         ],
@@ -368,13 +346,13 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+            'investigationInstruments.instrument.id': { eq: instrumentId },
           }),
         },
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+            'studyInvestigations.study.id': { eq: studyId },
           }),
         },
       ])
@@ -403,7 +381,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': {
+            'investigationInstruments.instrument.id': {
               eq: ownProps.instrumentId,
             },
           }),
@@ -411,7 +389,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'STUDYINVESTIGATION.STUDY.ID': { eq: ownProps.instrumentChildId },
+            'studyInvestigations.study.id': { eq: ownProps.instrumentChildId },
           }),
         },
       ])

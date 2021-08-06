@@ -172,16 +172,16 @@ const InvestigationTable = (
           >
             <Grid item xs>
               <Typography variant="h6">
-                <b>{investigationData.TITLE}</b>
+                <b>{investigationData.title}</b>
               </Typography>
               <Divider className={classes.divider} />
             </Grid>
             <Grid item xs>
               <Typography variant="overline">
-                {t('investigations.details.rb_number')}
+                {t('investigations.details.name')}
               </Typography>
               <Typography>
-                <b>{investigationData.RB_NUMBER}</b>
+                <b>{investigationData.name}</b>
               </Typography>
             </Grid>
             <Grid item xs>
@@ -189,7 +189,7 @@ const InvestigationTable = (
                 {t('investigations.details.start_date')}
               </Typography>
               <Typography>
-                <b>{investigationData.STARTDATE}</b>
+                <b>{investigationData.startDate}</b>
               </Typography>
             </Grid>
             <Grid item xs>
@@ -197,7 +197,7 @@ const InvestigationTable = (
                 {t('investigations.details.end_date')}
               </Typography>
               <Typography>
-                <b>{investigationData.ENDDATE}</b>
+                <b>{investigationData.endDate}</b>
               </Typography>
             </Grid>
           </Grid>
@@ -207,12 +207,12 @@ const InvestigationTable = (
         {
           icon: <TitleIcon />,
           label: t('investigations.title'),
-          dataKey: 'TITLE',
+          dataKey: 'title',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             return investigationLink(
-              investigationData.ID,
-              investigationData.TITLE,
+              investigationData.id,
+              investigationData.title,
               view
             );
           },
@@ -221,58 +221,65 @@ const InvestigationTable = (
         {
           icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          dataKey: 'visitId',
           filterComponent: textFilter,
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.rb_number'),
-          dataKey: 'RB_NUMBER',
+          label: t('investigations.name'),
+          dataKey: 'name',
           filterComponent: textFilter,
           disableSort: true,
         },
         {
           icon: <PublicIcon />,
           label: t('investigations.doi'),
-          dataKey: 'DOI',
+          dataKey: 'doi',
           filterComponent: textFilter,
         },
         {
           icon: <ConfirmationNumberIcon />,
           label: t('investigations.dataset_count'),
-          dataKey: 'DATASET_COUNT',
+          dataKey: 'datasetCount',
           disableSort: true,
         },
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'INSTRUMENT.NAME',
+          dataKey: 'investigationInstruments.instrument.name',
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
+              return investigationData.investigationInstruments[0].instrument
+                .name;
+            } else {
+              return '';
+            }
+          },
           filterComponent: textFilter,
         },
         {
           icon: <CalendarTodayIcon />,
 
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
           cellContentRenderer: (cellProps: TableCellProps) => {
             if (cellProps.cellData) {
               return cellProps.cellData.toString().split(' ')[0];
             }
           },
-          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
           cellContentRenderer: (cellProps: TableCellProps) => {
             if (cellProps.cellData) {
               return cellProps.cellData.toString().split(' ')[0];
             }
           },
-          disableHeaderWrap: true,
         },
       ]}
     />
@@ -283,7 +290,19 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): InvestigationTableDispatchProps => ({
   fetchData: (offsetParams: IndexRange) =>
-    dispatch(fetchInvestigations({ offsetParams })),
+    dispatch(
+      fetchInvestigations({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify({
+              investigationInstruments: 'instrument',
+            }),
+          },
+        ],
+      })
+    ),
   fetchCount: () => dispatch(fetchInvestigationCount()),
 
   addToCart: (entityIds: number[]) =>

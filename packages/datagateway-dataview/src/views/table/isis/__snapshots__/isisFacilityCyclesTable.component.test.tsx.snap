@@ -6,27 +6,19 @@ exports[`ISIS FacilityCycles table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "NAME",
+        "dataKey": "name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "facilitycycles.name",
       },
       Object {
-        "dataKey": "DESCRIPTION",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "facilitycycles.description",
-      },
-      Object {
-        "dataKey": "STARTDATE",
-        "disableHeaderWrap": true,
+        "dataKey": "startDate",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "facilitycycles.start_date",
       },
       Object {
-        "dataKey": "ENDDATE",
-        "disableHeaderWrap": true,
+        "dataKey": "endDate",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "facilitycycles.end_date",
@@ -36,12 +28,11 @@ exports[`ISIS FacilityCycles table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DESCRIPTION": "Test 1",
-        "ENDDATE": "2019-07-04",
-        "FACILITY_ID": 1,
-        "ID": 1,
-        "NAME": "Test 1",
-        "STARTDATE": "2019-07-03",
+        "description": "Test 1",
+        "endDate": "2019-07-04",
+        "id": 1,
+        "name": "Test 1",
+        "startDate": "2019-07-03",
       },
     ]
   }

@@ -6,7 +6,7 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "FULLNAME",
+        "dataKey": "fullName",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "instruments.name",
@@ -16,19 +16,17 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DESCRIPTION": "foo bar",
-        "FACILITY_ID": 8,
-        "FULLNAME": "Test instrument 1",
-        "ID": 1,
-        "NAME": "Test 1",
-        "URL": "test url",
+        "description": "foo bar",
+        "fullName": "Test instrument 1",
+        "id": 1,
+        "name": "Test 1",
+        "url": "test url",
       },
       Object {
-        "DESCRIPTION": "foo bar",
-        "FACILITY_ID": 8,
-        "ID": 2,
-        "NAME": "Test 2",
-        "URL": "test url",
+        "description": "foo bar",
+        "id": 2,
+        "name": "Test 2",
+        "url": "test url",
       },
     ]
   }
@@ -116,7 +114,9 @@ exports[`ISIS Instruments table component renders details panel correctly and it
           instruments.details.type
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            instruments.details.type not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

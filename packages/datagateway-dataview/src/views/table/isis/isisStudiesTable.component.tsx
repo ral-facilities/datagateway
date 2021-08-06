@@ -27,7 +27,7 @@ import { StateType } from '../../../state/app.types';
 
 import PublicIcon from '@material-ui/icons/Public';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import DescriptionIcon from '@material-ui/icons/Description';
+import TitleIcon from '@material-ui/icons/Title';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISStudiesTableProps {
@@ -132,37 +132,37 @@ const ISISStudiesTable = (
         {
           icon: <FingerprintIcon />,
           label: t('studies.name'),
-          dataKey: 'STUDY.NAME',
+          dataKey: 'study.name',
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.STUDY?.ID}`,
-              cellProps.rowData.STUDY?.NAME,
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.study?.id}`,
+              cellProps.rowData.study?.name,
               view
             ),
           filterComponent: textFilter,
         },
         {
-          icon: <DescriptionIcon />,
-          label: t('studies.description'),
-          dataKey: 'STUDY.DESCRIPTION',
+          icon: <TitleIcon />,
+          label: t('investigations.title'),
+          dataKey: 'investigation.title',
           filterComponent: textFilter,
         },
         {
           icon: <PublicIcon />,
           label: t('studies.pid'),
-          dataKey: 'STUDY.PID',
+          dataKey: 'study.pid',
           filterComponent: textFilter,
         },
         {
           icon: <CalendarTodayIcon />,
-          label: t('studies.start_date'),
-          dataKey: 'STUDY.STARTDATE',
+          label: t('investigations.start_date'),
+          dataKey: 'investigation.startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarTodayIcon />,
-          label: t('studies.end_date'),
-          dataKey: 'STUDY.ENDDATE',
+          label: t('investigations.end_date'),
+          dataKey: 'investigation.endDate',
           filterComponent: dateFilter,
         },
       ]}
@@ -179,7 +179,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+            'investigationInstruments.instrument.id': { eq: instrumentId },
           }),
         },
       ])
@@ -192,12 +192,16 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              INVESTIGATION_ID: { in: allIds },
+              'investigation.id': { in: allIds },
             }),
           },
           {
             filterType: 'include',
-            filterValue: JSON.stringify('STUDY'),
+            filterValue: JSON.stringify('investigation'),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('study'),
           },
         ],
       })
@@ -208,8 +212,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { in: allIds },
+            'investigation.id': { in: allIds },
           }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ])
     ),

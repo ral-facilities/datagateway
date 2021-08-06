@@ -6,14 +6,14 @@ exports[`DLS Proposals table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "TITLE",
+        "dataKey": "title",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.title",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "NAME",
+        "dataKey": "name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.name",
@@ -23,28 +23,24 @@ exports[`DLS Proposals table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DOI": "doi 1",
-        "ENDDATE": "2019-06-11",
-        "ID": 1,
-        "INVESTIGATIONINSTRUMENT": Array [
+        "doi": "doi 1",
+        "endDate": "2019-06-11",
+        "id": 1,
+        "investigationInstruments": Array [
           Object {
-            "ID": 1,
-            "INSTRUMENT": Object {
-              "FACILITY_ID": 8,
-              "ID": 3,
-              "NAME": "LARMOR",
+            "id": 1,
+            "instrument": Object {
+              "id": 3,
+              "name": "LARMOR",
             },
-            "INSTRUMENT_ID": 3,
-            "INVESTIGATION_ID": 1,
           },
         ],
-        "NAME": "Test 1",
-        "RB_NUMBER": "1",
-        "SIZE": 1,
-        "STARTDATE": "2019-06-10",
-        "SUMMARY": "foo bar",
-        "TITLE": "Test 1",
-        "VISIT_ID": "1",
+        "name": "Test 1",
+        "size": 1,
+        "startDate": "2019-06-10",
+        "summary": "foo bar",
+        "title": "Test 1",
+        "visitId": "1",
       },
     ]
   }

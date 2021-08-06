@@ -13,7 +13,7 @@ describe('ISIS - Studies Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/405'
+      '/browseStudyHierarchy/instrument/1/study/4'
     );
   });
 
@@ -83,21 +83,20 @@ describe('ISIS - Studies Table', () => {
     });
   });
 
-  // Sorting currently broken
   describe('should be able to sort by', () => {
-    it.skip('ascending order', () => {
-      cy.contains('[role="button"]', 'RB Number').click();
+    it('ascending order', () => {
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'Tell others stay doctor. Who some management admit ahead when. Child everybody lawyer head how. Church test travel data. Skill special within. Capital he involve friend individual.'
       );
     });
 
-    it.skip('descending order', () => {
-      cy.contains('[role="button"]', 'RB Number').click();
-      cy.contains('[role="button"]', 'RB Number').click();
+    it('descending order', () => {
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -106,71 +105,64 @@ describe('ISIS - Studies Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'Again bad simply low summer. Left hand around position wonder sometimes. Body always prove husband. So understand edge outside prevent. Try little figure. Film name majority he modern value.'
       );
     });
 
-    it.skip('no order', () => {
-      cy.contains('[role="button"]', 'RB Number').click();
-      cy.contains('[role="button"]', 'RB Number').click();
-      cy.contains('[role="button"]', '').click();
+    it('no order', () => {
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
       );
     });
 
-    it.skip('multiple columns', () => {
+    it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
-      cy.contains('[role="button"]', 'RB Number').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
+        'Help music rate image common worry reason. Rich green either require. Garden leader answer sort generation. Question decision window send food loss society.'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by RB Number"]')
-        .find('input')
-        .first()
-        .type('3');
+      cy.get('[aria-label="Filter by Name"]').find('input').first().type('3');
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
-        'Network find should century magazine happen natural.'
+        'Peace attack I history attack. Together company interview often successful few. A fall yard let which house.'
       );
     });
 
     it('date between', () => {
       cy.get('[aria-label="Start Date date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-rowcount="8"]').should('exist');
-      cy.get('[aria-rowindex="8"] [aria-colindex="2"]').contains(
-        'Energy job smile learn.'
+      cy.get('[aria-rowcount="11"]').should('exist');
+      cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
+        'Old ok order wall bank. Floor science physical ask activity alone. Language sort test bill to century. Four direction reason. Its arm water box. Also idea quite own. None special now million.'
       );
     });
 
-    // Cannot filter on two joined fields at the same time
-    it.skip('multiple columns', () => {
-      cy.get('[aria-label="Filter by RB Number"]')
-        .find('input')
-        .first()
-        .type('4');
+    it('multiple columns', () => {
+      cy.get('[aria-label="Filter by Name"]').find('input').first().type('1');
 
-      cy.get('[aria-label="Filter by Description"]')
+      cy.get('[aria-label="Filter by Title"]')
         .find('input')
         .first()
-        .type('energy');
+        .type('peace');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

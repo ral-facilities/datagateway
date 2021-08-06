@@ -14,12 +14,12 @@ describe('Datafile details panel component', () => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     rowData = {
-      ID: 1,
-      NAME: 'Test 1',
-      LOCATION: '/test/location',
-      MOD_TIME: '2019-06-10',
-      CREATE_TIME: '2019-06-11',
-      DATASET_ID: 1,
+      id: 1,
+      name: 'Test 1',
+      location: '/test/location',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
+      description: 'Test description',
     };
   });
 
@@ -41,60 +41,50 @@ describe('Datafile details panel component', () => {
   });
 
   it('renders parameters tab when present in the data', () => {
-    rowData.DATAFILEPARAMETER = [
+    rowData.parameters = [
       {
-        ID: 2,
-        STRING_VALUE: 'String test',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 3,
-        PARAMETERTYPE: {
-          ID: 3,
-          NAME: 'String parameter',
-          UNITS: 'foo/s',
-          VALUETYPE: 'STRING',
+        id: 2,
+        stringValue: 'String test',
+        type: {
+          id: 3,
+          name: 'String parameter',
+          units: 'foo/s',
+          valueType: 'STRING',
         },
       },
       {
-        ID: 4,
-        NUMERIC_VALUE: 1337,
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 5,
-        PARAMETERTYPE: {
-          ID: 5,
-          NAME: 'Numeric parameter',
-          UNITS: 'bar/s',
-          VALUETYPE: 'NUMERIC',
+        id: 4,
+        numericValue: 1337,
+        type: {
+          id: 5,
+          name: 'Numeric parameter',
+          units: 'bar/s',
+          valueType: 'NUMERIC',
         },
       },
       {
-        ID: 6,
-        DATETIME_VALUE: '2019-09-10 11:48:00',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 7,
-        PARAMETERTYPE: {
-          ID: 7,
-          NAME: 'Datetime parameter',
-          UNITS: 'baz/s',
-          VALUETYPE: 'DATE_AND_TIME',
+        id: 6,
+        dateTimeValue: '2019-09-10 11:48:00',
+        type: {
+          id: 7,
+          name: 'Datetime parameter',
+          units: 'baz/s',
+          valueType: 'DATE_AND_TIME',
         },
       },
       {
-        ID: 8,
-        DATETIME_VALUE: '2019-09-10 11:48:00',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 9,
-        PARAMETERTYPE: {
-          ID: 9,
-          NAME: 'Invalid parameter',
-          UNITS: 'n/a',
-          VALUETYPE: '',
+        id: 8,
+        dateTimeValue: '2019-09-10 11:48:00',
+        type: {
+          id: 9,
+          name: 'Invalid parameter',
+          units: 'n/a',
+          valueType: '',
         },
       },
       {
-        ID: 10,
-        STRING_VALUE: 'Missing PARAMETERTYPE',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 11,
+        id: 10,
+        stringValue: 'Missing PARAMETERTYPE',
       },
     ];
 
@@ -109,17 +99,15 @@ describe('Datafile details panel component', () => {
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
-    rowData.DATAFILEPARAMETER = [
+    rowData.parameters = [
       {
-        ID: 2,
-        STRING_VALUE: 'String test',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 3,
-        PARAMETERTYPE: {
-          ID: 3,
-          NAME: 'String parameter',
-          UNITS: 'foo/s',
-          VALUETYPE: 'STRING',
+        id: 2,
+        stringValue: 'String test',
+        type: {
+          id: 3,
+          name: 'String parameter',
+          units: 'foo/s',
+          valueType: 'STRING',
         },
       },
     ];
@@ -150,5 +138,23 @@ describe('Datafile details panel component', () => {
 
     expect(fetchDetails).toHaveBeenCalled();
     expect(fetchDetails).toHaveBeenCalledWith(1);
+  });
+
+  it('Shows "No <field> provided" incase of a null field', () => {
+    rowData = {
+      id: 1,
+      name: 'Test 1',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
+    };
+
+    const wrapper = shallow(
+      <DatafilesDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
   });
 });

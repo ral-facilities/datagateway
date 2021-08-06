@@ -1,20 +1,37 @@
 describe('Dataset search tab', () => {
+  let facilityName: string;
+
+  before(() => {
+    cy.readFile('server/e2e-settings.json').then((settings) => {
+      if (settings.facilityName) facilityName = settings.facilityName;
+    });
+  });
+
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
-    cy.intercept('/investigations/count?where=%7B%22ID').as(
+    cy.intercept('/investigations/count?where=%7B%22id').as(
       'investigationsCount'
     );
     cy.intercept('/investigations?').as('investigations');
-    cy.intercept('/datasets/count?where=%7B%22ID').as('datasetsCount');
+    cy.intercept('/datasets/count?where=%7B%22id').as('datasetsCount');
     cy.intercept('/datasets?').as('datasets');
-    cy.intercept('/datafiles/count?where=%7B%22ID').as('datafilesCount');
+    cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
     cy.intercept('/datafiles?').as('datafiles');
-    cy.intercept('/topcat/user/cart/LILS/cartItems').as('topcat');
+    cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway Search');
+
+    cy.get('[aria-label="Investigation checkbox"]').click();
+    cy.get('[aria-label="Datafile checkbox"]').click();
+
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@datasets', '@datasets', '@datasetsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('#container-search-filters').should('exist');
 
@@ -30,24 +47,24 @@ describe('Dataset search tab', () => {
     cy.get('[aria-label="Submit search button"]')
       .click()
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
+        timeout: 15000,
       });
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Dataset')
-      .contains('12')
+      .contains('10')
       .click()
       .wait(['@datasets', '@datasets', '@datasetsCount'], {
-        timeout: 10000,
+        timeout: 15000,
       });
 
-    cy.get('[aria-rowcount="12"]').should('exist');
+    cy.get('[aria-rowcount="10"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 7');
 
     // Check that "select all" and individual selection are equivalent
     let i = 1;
-    while (i < 13) {
+    while (i < 11) {
       cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`)
         .click()
         .wait('@topcat', { timeout: 10000 });
@@ -69,10 +86,10 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Dataset')
-      .contains('1')
+      .contains('4')
       .click();
 
-    cy.get('[aria-rowcount="1"]').should('exist');
+    cy.get('[aria-rowcount="4"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 12');
   });
@@ -80,12 +97,50 @@ describe('Dataset search tab', () => {
   it('should be hidden if dataset checkbox is unchecked', () => {
     cy.get('[aria-label="Dataset checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Dataset')
       .should('not.exist');
+  });
+
+  it('should link to a dataset', () => {
+    cy.get('[aria-label="Search text input"]')
+      .find('#filled-search')
+      .type('12');
+    cy.get('[aria-label="Start date input"]').type('2003-01-01');
+    cy.get('[aria-label="End date input"]').type('2004-01-01');
+
+    cy.get('[aria-label="Submit search button"]').click();
+
+    cy.get('[aria-label="Search table tabs"]')
+      .contains('Dataset')
+      .contains('1')
+      .click();
+
+    cy.get('[href="/browse/investigation/12/dataset/12/datafile"]');
+  });
+
+  it('should link to a parent investigation', () => {
+    cy.get('[aria-label="Search text input"]')
+      .find('#filled-search')
+      .type('12');
+    cy.get('[aria-label="Start date input"]').type('2003-01-01');
+    cy.get('[aria-label="End date input"]').type('2004-01-01');
+
+    cy.get('[aria-label="Submit search button"]').click();
+
+    cy.get('[aria-label="Search table tabs"]')
+      .contains('Dataset')
+      .contains('1')
+      .click();
+
+    cy.get('[href="/browse/investigation/12/dataset"]');
   });
 });

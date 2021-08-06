@@ -16,15 +16,22 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowTooltip from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import hexToRbga from 'hex-to-rgba';
 
 const useCardStyles = makeStyles((theme: Theme) => {
+  // TODO: Remove use of "vw" here
   // NOTE: This is width of the main content
   //       (this also matches the description shadow width).
   //       Change this width in accordance with the maxWidth in root class.
   const mainWidth = '45vw';
   // Expected width of info labels to prevent misalignment due to newlines
   const labelWidth = '15ch';
+  // TODO: Remove use of "vw" here
   const infoDataMaxWidth = '10vw';
+
+  // Transparent and opaque values for the background theme (used in the 'show more' shadow gradient)
+  const paperZero = hexToRbga(theme.palette.background.paper, 0);
+  const paperOne = hexToRbga(theme.palette.background.paper, 1);
 
   const styles = createStyles({
     root: {
@@ -52,6 +59,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
       flexGrow: 1,
       flexShrink: 1,
       flexBasis: mainWidth,
+      // TODO: Remove use of "vw" here
       minWidth: '30vw',
       paddingRight: '10px',
     },
@@ -76,9 +84,8 @@ const useCardStyles = makeStyles((theme: Theme) => {
     shadowVisible: {
       position: 'absolute',
       height: 30,
-      minWidth: '30vw',
       top: 130,
-      background: 'linear-gradient(rgba(255, 255, 255, 0), #fff)',
+      background: `linear-gradient(${paperZero}, ${paperOne})`,
 
       // Transition showing the shadow.
       visibility: 'visible',
@@ -176,6 +183,8 @@ interface EntityCardProps {
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const classes = useCardStyles();
+  const [shadowWidth, setShadowWidth] = React.useState<number>(0);
+
   const {
     title,
     description,
@@ -192,6 +201,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     false
   );
   const descriptionRef = React.useRef<HTMLParagraphElement>(null);
+  const mainContentRef = React.useRef<HTMLParagraphElement>(null);
   const [collapsibleInteraction, setCollapsibleInteraction] = React.useState(
     false
   );
@@ -205,6 +215,19 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
         setCollapsibleInteraction(true);
     }
   }, [setCollapsibleInteraction]);
+
+  React.useEffect(() => {
+    // Receive the resize event and set the shadow width
+    // based on the width of the "main-content" div.
+    function handleResize(): void {
+      if (mainContentRef.current?.clientWidth) {
+        setShadowWidth(mainContentRef.current.clientWidth);
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const [t] = useTranslation();
 
@@ -236,7 +259,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             {/* column:
                 - title/description 
             */}
-            <div>
+            <div aria-label="main-content" ref={mainContentRef}>
               {/* TODO: Delay not consistent between cards? */}
               <ArrowTooltip
                 title={title.label}
@@ -273,7 +296,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                     variant="body1"
                     paragraph
                   >
-                    {description
+                    {description && description !== 'null'
                       ? description
                       : t('entity_card.no_description')}
                   </Typography>
@@ -288,6 +311,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                           ? classes.shadowInvisible
                           : classes.shadowVisible
                       }
+                      style={{
+                        width: `${shadowWidth}px`,
+                      }}
                     />
                     <Link
                       onClick={() => setDescriptionCollapsed((prev) => !prev)}

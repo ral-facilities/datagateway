@@ -41,39 +41,33 @@ describe('ISIS Investigations table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        TITLE: 'Test 1',
-        NAME: 'Test 1',
-        SUMMARY: 'foo bar',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        SIZE: 1,
-        INVESTIGATIONINSTRUMENT: [
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        summary: 'foo bar',
+        visitId: '1',
+        doi: 'doi 1',
+        size: 1,
+        investigationInstruments: [
           {
-            ID: 1,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 3,
-            INSTRUMENT: {
-              ID: 3,
-              NAME: 'LARMOR',
-              FACILITY_ID: 8,
+            id: 1,
+            instrument: {
+              id: 3,
+              name: 'LARMOR',
             },
           },
         ],
-        STUDYINVESTIGATION: [
+        studyInvestigations: [
           {
-            ID: 6,
-            STUDY_ID: 7,
-            INVESTIGATION_ID: 1,
-            STUDY: {
-              ID: 7,
-              PID: 'study pid',
+            id: 6,
+            study: {
+              id: 7,
+              pid: 'study pid',
             },
           },
         ],
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
+        startDate: '2019-06-10',
+        endDate: '2019-06-11',
       },
     ];
     state.dgcommon.allIds = [1];
@@ -171,13 +165,13 @@ describe('ISIS Investigations table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[3]).toEqual(
-      filterTable('TITLE', { value: 'test', type: 'include' })
+      filterTable('title', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('TITLE', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('title', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -201,13 +195,13 @@ describe('ISIS Investigations table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[3]).toEqual(
-      filterTable('ENDDATE', { endDate: '2019-08-06' })
+      filterTable('endDate', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('ENDDATE', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('endDate', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -229,7 +223,7 @@ describe('ISIS Investigations table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[3]).toEqual(sortTable('TITLE', 'asc'));
+    expect(testStore.getActions()[3]).toEqual(sortTable('title', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -358,7 +352,7 @@ describe('ISIS Investigations table component', () => {
     );
   });
 
-  it('renders title, visit ID, RB number and DOI as links', () => {
+  it('renders title, name and DOI as links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
@@ -382,13 +376,9 @@ describe('ISIS Investigations table component', () => {
     expect(
       wrapper.find('[aria-colindex=5]').find('p').children()
     ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
-    ).toMatchSnapshot();
   });
 
-  it('renders title, visit ID, RB number and DOI as links in StudyHierarchy', () => {
+  it('renders title, name and DOI as links in StudyHierarchy', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
@@ -412,31 +402,16 @@ describe('ISIS Investigations table component', () => {
     expect(
       wrapper.find('[aria-colindex=5]').find('p').children()
     ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
-    ).toMatchSnapshot();
   });
 
-  it('gracefully handles missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', () => {
+  it('gracefully handles empty Study Investigation and InvestigationInstrument, missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', () => {
     state.dgcommon.data[0] = {
       ...state.dgcommon.data[0],
-      INVESTIGATIONINSTRUMENT: [
-        {
-          ID: 1,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 3,
-        },
-      ],
-      STUDYINVESTIGATION: [
-        {
-          ID: 6,
-          STUDY_ID: 7,
-          INVESTIGATION_ID: 1,
-        },
-      ],
+      investigationInstruments: [],
+      studyInvestigations: [],
     };
-    const wrapper = mount(
+
+    let wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
           <ISISInvestigationsTable
@@ -448,8 +423,35 @@ describe('ISIS Investigations table component', () => {
       </Provider>
     );
 
-    expect(wrapper.find('[aria-colindex=6]').find('p').text()).toEqual('');
+    expect(() => wrapper).not.toThrowError();
 
-    expect(wrapper.find('[aria-colindex=8]').find('p').text()).toEqual('');
+    state.dgcommon.data[0] = {
+      ...state.dgcommon.data[0],
+      investigationInstruments: [
+        {
+          id: 1,
+        },
+      ],
+      studyInvestigations: [
+        {
+          id: 6,
+        },
+      ],
+    };
+    wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
+
+    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
   });
 });

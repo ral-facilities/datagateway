@@ -31,27 +31,23 @@ describe('Study actions', () => {
   it('dispatches fetchStudiesRequest and fetchStudiesSuccess actions upon successful fetchStudies action', async () => {
     const mockData: StudyInvestigation[] = [
       {
-        ID: 1,
-        STUDY_ID: 1,
-        INVESTIGATION_ID: 1,
-        STUDY: {
-          ID: 1,
-          PID: 'doi 1',
-          NAME: 'Test 1',
-          MOD_TIME: '2000-01-01',
-          CREATE_TIME: '2000-01-01',
+        id: 1,
+        study: {
+          id: 1,
+          pid: 'doi 1',
+          name: 'Test 1',
+          modTime: '2000-01-01',
+          createTime: '2000-01-01',
         },
       },
       {
-        ID: 2,
-        STUDY_ID: 2,
-        INVESTIGATION_ID: 2,
-        STUDY: {
-          ID: 2,
-          PID: 'doi 2',
-          NAME: 'Test 2',
-          MOD_TIME: '2000-01-02',
-          CREATE_TIME: '2000-01-02',
+        id: 2,
+        study: {
+          id: 2,
+          pid: 'doi 2',
+          name: 'Test 2',
+          modTime: '2000-01-02',
+          createTime: '2000-01-02',
         },
       },
     ];
@@ -67,12 +63,12 @@ describe('Study actions', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { in: [1] },
+            'investigation.id': { in: [1] },
           }),
         },
         {
           filterType: 'include',
-          filterValue: JSON.stringify(['STUDY', 'INVESTIGATION']),
+          filterValue: JSON.stringify(['study', 'investigation']),
         },
       ],
     });
@@ -111,7 +107,7 @@ describe('Study actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
@@ -151,8 +147,12 @@ describe('Study actions', () => {
       {
         filterType: 'where',
         filterValue: JSON.stringify({
-          INVESTIGATION_ID: { in: [1] },
+          'investigation.id': { in: [1] },
         }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify('investigation'),
       },
     ]);
     await asyncAction(dispatch, getState, null);
@@ -208,8 +208,12 @@ describe('Study actions', () => {
       {
         filterType: 'where',
         filterValue: JSON.stringify({
-          INVESTIGATION_ID: { in: [1] },
+          'investigation.id': { in: [1] },
         }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify('investigation'),
       },
     ]);
     await asyncAction(dispatch, getState, null);
@@ -245,7 +249,7 @@ describe('Study actions', () => {
     await asyncAction(dispatch, getState, null);
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('skip', JSON.stringify(0));
     params.append('limit', JSON.stringify(50));
 

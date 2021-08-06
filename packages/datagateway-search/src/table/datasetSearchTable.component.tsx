@@ -17,14 +17,18 @@ import {
   sortTable,
   filterTable,
   clearTable,
+  tableLink,
+  handleICATError,
+  readSciGatewayToken,
+  FacilityCycle,
 } from 'datagateway-common';
-import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { connect } from 'react-redux';
-import { IndexRange } from 'react-virtualized';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 interface DatasetTableStoreProps {
   sort: {
@@ -40,6 +44,7 @@ interface DatasetTableStoreProps {
   cartItems: DownloadCartItem[];
   allIds: number[];
   luceneData: number[];
+  apiUrl: string;
 }
 
 interface DatasetTableDispatchProps {
@@ -54,7 +59,7 @@ interface DatasetTableDispatchProps {
 }
 
 type DatasetTableCombinedProps = DatasetTableStoreProps &
-  DatasetTableDispatchProps;
+  DatasetTableDispatchProps & { hierarchy: string };
 
 const DatasetSearchTable = (
   props: DatasetTableCombinedProps
@@ -76,9 +81,100 @@ const DatasetSearchTable = (
     fetchAllIds,
     loading,
     luceneData,
+    hierarchy,
+    apiUrl,
   } = props;
 
+  const [facilityCycles, setFacilityCycles] = React.useState([]);
+
   const [t] = useTranslation();
+
+  const dlsLink = (
+    datasetData: Dataset,
+    linkType = 'dataset'
+  ): React.ReactElement | string => {
+    if (datasetData.investigation) {
+      return linkType === 'investigation'
+        ? tableLink(
+            `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset`,
+            datasetData.investigation.title
+          )
+        : tableLink(
+            `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`,
+            datasetData.name
+          );
+    }
+    return linkType === 'investigation' ? '' : datasetData.name;
+  };
+
+  const isisLink = React.useCallback(
+    (datasetData: Dataset, linkType = 'dataset') => {
+      let instrumentId;
+      let facilityCycleId;
+      if (datasetData.investigation?.investigationInstruments?.length) {
+        instrumentId =
+          datasetData.investigation?.investigationInstruments[0].instrument?.id;
+      } else {
+        return linkType === 'investigation' ? '' : datasetData.name;
+      }
+
+      if (facilityCycles.length && datasetData.investigation?.startDate) {
+        const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
+          (facilityCycle: FacilityCycle) =>
+            datasetData.investigation?.startDate &&
+            facilityCycle.startDate &&
+            facilityCycle.endDate &&
+            datasetData.investigation.startDate >= facilityCycle.startDate &&
+            datasetData.investigation.startDate <= facilityCycle.endDate
+        );
+        if (filteredFacilityCycles.length) {
+          facilityCycleId = filteredFacilityCycles[0].id;
+        }
+      }
+
+      if (facilityCycleId) {
+        return linkType === 'investigation'
+          ? tableLink(
+              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}`,
+              datasetData.investigation.title
+            )
+          : tableLink(
+              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}`,
+              datasetData.name
+            );
+      }
+      return linkType === 'investigation' ? '' : datasetData.name;
+    },
+    [facilityCycles]
+  );
+
+  const genericLink = (
+    datasetData: Dataset,
+    linkType = 'dataset'
+  ): React.ReactElement | string => {
+    if (datasetData.investigation) {
+      return linkType === 'investigation'
+        ? tableLink(
+            `/browse/investigation/${datasetData.investigation.id}/dataset`,
+            datasetData.investigation.title
+          )
+        : tableLink(
+            `/browse/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`,
+            datasetData.name
+          );
+    }
+    return linkType === 'investigation' ? '' : datasetData.name;
+  };
+
+  const hierarchyLink = React.useMemo(() => {
+    if (hierarchy === 'dls') {
+      return dlsLink;
+    } else if (hierarchy === 'isis') {
+      return isisLink;
+    } else {
+      return genericLink;
+    }
+  }, [hierarchy, isisLink]);
 
   const selectedRows = React.useMemo(
     () =>
@@ -91,19 +187,6 @@ const DatasetSearchTable = (
         .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
-
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable, luceneData]);
-
-  React.useEffect(() => {
-    fetchCount(luceneData);
-    fetchAllIds(luceneData);
-  }, [fetchCount, fetchData, fetchAllIds, filters, luceneData]);
-
-  React.useEffect(() => {
-    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -123,6 +206,38 @@ const DatasetSearchTable = (
     />
   );
 
+  const fetchFacilityCycles = React.useCallback(() => {
+    axios
+      .get(`${apiUrl}/facilitycycles`, {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then((response) => {
+        setFacilityCycles(response.data);
+      })
+      .catch((error) => {
+        handleICATError(error);
+      });
+  }, [apiUrl]);
+
+  React.useEffect(() => {
+    if (hierarchy === 'isis') fetchFacilityCycles();
+  }, [fetchFacilityCycles, hierarchy]);
+
+  React.useEffect(() => {
+    clearTable();
+  }, [clearTable, luceneData]);
+
+  React.useEffect(() => {
+    fetchCount(luceneData);
+    fetchAllIds(luceneData);
+  }, [fetchCount, fetchData, fetchAllIds, filters, luceneData]);
+
+  React.useEffect(() => {
+    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
+
   return (
     <Table
       loading={loading}
@@ -140,10 +255,10 @@ const DatasetSearchTable = (
         return (
           <div>
             <Typography>
-              <b>{t('datasets.name')}:</b> {datasetData.NAME}
+              <b>{t('datasets.name')}:</b> {datasetData.name}
             </Typography>
             <Typography>
-              <b>{t('datasets.description')}:</b> {datasetData.NAME}
+              <b>{t('datasets.description')}:</b> {datasetData.name}
             </Typography>
           </div>
         );
@@ -151,25 +266,36 @@ const DatasetSearchTable = (
       columns={[
         {
           label: t('datasets.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const datasetData = cellProps.rowData as Dataset;
+            return hierarchyLink(datasetData);
+          },
           filterComponent: textFilter,
         },
         {
           label: t('datasets.datafile_count'),
-          dataKey: 'DATAFILE_COUNT',
+          dataKey: 'datafileCount',
           disableSort: true,
         },
         {
+          label: t('datasets.investigation'),
+          dataKey: 'investigation.title',
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const datasetData = cellProps.rowData as Dataset;
+            return hierarchyLink(datasetData, 'investigation');
+          },
+          filterComponent: textFilter,
+        },
+        {
           label: t('datasets.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
         {
           label: t('datasets.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />
@@ -192,7 +318,13 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              ID: { in: luceneData },
+              id: { in: luceneData },
+            }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify({
+              investigation: { investigationInstruments: 'instrument' },
             }),
           },
         ],
@@ -204,7 +336,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])
@@ -219,7 +351,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])
@@ -237,6 +369,7 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
     luceneData: state.dgsearch.searchData.dataset,
+    apiUrl: state.dgcommon.urls.apiUrl,
   };
 };
 

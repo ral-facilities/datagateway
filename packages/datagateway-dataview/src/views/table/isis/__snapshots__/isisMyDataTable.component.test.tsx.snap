@@ -11,55 +11,53 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "TITLE",
+        "dataKey": "title",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.title",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "STUDYINVESTIGATION.STUDY.PID",
+        "dataKey": "studyInvestigations.study.pid",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.doi",
       },
       Object {
-        "dataKey": "VISIT_ID",
+        "dataKey": "visitId",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.visit_id",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "NAME",
+        "dataKey": "name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.name",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME",
+        "dataKey": "investigationInstruments.instrument.fullName",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.instrument",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "SIZE",
+        "dataKey": "size",
         "disableSort": true,
         "icon": <Memo />,
         "label": "investigations.size",
       },
       Object {
-        "dataKey": "STARTDATE",
-        "disableHeaderWrap": true,
+        "dataKey": "startDate",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.start_date",
       },
       Object {
-        "dataKey": "ENDDATE",
-        "disableHeaderWrap": true,
+        "dataKey": "endDate",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.end_date",
@@ -69,52 +67,45 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DOI": "doi 1",
-        "ENDDATE": "2019-06-11",
-        "FACILITY": Object {
-          "FACILITYCYCLE": Array [
+        "doi": "doi 1",
+        "endDate": "2019-06-11",
+        "facility": Object {
+          "facilityCycles": Array [
             Object {
-              "ENDDATE": "2019-07-01",
-              "FACILITY_ID": 8,
-              "ID": 8,
-              "NAME": "Cycle name",
-              "STARTDATE": "2019-06-01",
+              "endDate": "2019-07-01",
+              "id": 8,
+              "name": "Cycle name",
+              "startDate": "2019-06-01",
             },
           ],
-          "ID": 8,
-          "NAME": "LILS",
+          "id": 8,
+          "name": "LILS",
         },
-        "ID": 1,
-        "INVESTIGATIONINSTRUMENT": Array [
+        "id": 1,
+        "investigationInstruments": Array [
           Object {
-            "ID": 1,
-            "INSTRUMENT": Object {
-              "FACILITY_ID": 8,
-              "ID": 3,
-              "NAME": "LARMOR",
+            "id": 1,
+            "instrument": Object {
+              "id": 3,
+              "name": "LARMOR",
             },
-            "INSTRUMENT_ID": 3,
-            "INVESTIGATION_ID": 1,
           },
         ],
-        "NAME": "Test 1 name",
-        "RB_NUMBER": "1",
-        "SIZE": 1,
-        "STARTDATE": "2019-06-10",
-        "STUDYINVESTIGATION": Array [
+        "name": "Test 1 name",
+        "size": 1,
+        "startDate": "2019-06-10",
+        "studyInvestigations": Array [
           Object {
-            "ID": 6,
-            "INVESTIGATION_ID": 1,
-            "STUDY": Object {
-              "ID": 7,
-              "PID": "study pid",
+            "id": 6,
+            "study": Object {
+              "id": 7,
+              "pid": "study pid",
             },
-            "STUDY_ID": 7,
           },
         ],
-        "SUMMARY": "foo bar",
-        "TITLE": "Test 1 title",
-        "VISIT_ID": "1",
+        "summary": "foo bar",
+        "title": "Test 1 title",
+        "visitId": "1",
       },
     ]
   }
@@ -298,7 +289,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
 </div>
 `;
 
-exports[`ISIS Investigations table component renders title and RB number as links 1`] = `
+exports[`ISIS Investigations table component renders title and name as links 1`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -451,7 +442,7 @@ exports[`ISIS Investigations table component renders title and RB number as link
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title and RB number as links 2`] = `
+exports[`ISIS Investigations table component renders title and name as links 2`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {

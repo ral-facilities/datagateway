@@ -319,7 +319,7 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   }
 
   // sort by ID first to guarantee order
-  searchParams.append('order', JSON.stringify(`ID asc`));
+  searchParams.append('order', JSON.stringify(`id asc`));
 
   for (const [column, filter] of Object.entries(filters)) {
     if (typeof filter === 'object') {

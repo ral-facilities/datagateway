@@ -5,172 +5,158 @@ export const MicroFrontendToken = `${MicroFrontendId}:token`;
 // TODO: type entities properly; DownloadCartItem does not
 //       include string indexing due to DownloadCartTableItem
 export interface Investigation {
-  ID: number;
-  TITLE: string;
-  NAME: string;
-  VISIT_ID: string;
-  RB_NUMBER?: string;
-  DOI?: string;
-  STARTDATE?: string;
-  ENDDATE?: string;
-  SUMMARY?: string;
-  INVESTIGATIONINSTRUMENT?: InvestigationInstrument[];
-  SIZE?: number;
-  DATASET_COUNT?: number;
-  INVESTIGATIONUSER?: InvestigationUser[];
-  SAMPLE?: Sample[];
-  PUBLICATION?: Publication[];
-  STUDYINVESTIGATION?: StudyInvestigation[];
-  FACILITY?: Facility;
-  RELEASEDATE?: string;
-  DATASET?: Dataset[];
+  id: number;
+  title: string;
+  name: string;
+  visitId: string;
+  doi?: string;
+  startDate?: string;
+  endDate?: string;
+  releaseDate?: string;
+  summary?: string;
+  investigationInstruments?: InvestigationInstrument[];
+  size?: number;
+  datasetCount?: number;
+  investigationUsers?: InvestigationUser[];
+  samples?: Sample[];
+  publications?: Publication[];
+  studyInvestigations?: StudyInvestigation[];
+  facility?: Facility;
+  datasets?: Dataset[];
 }
 
 export interface Dataset {
-  ID: number;
-  NAME: string;
-  MOD_TIME: string;
-  CREATE_TIME: string;
-  INVESTIGATION_ID: number;
-  DESCRIPTION?: string;
-  STARTDATE?: string;
-  ENDDATE?: string;
-  SIZE?: number;
-  DATAFILE_COUNT?: number;
-  DATASETTYPE?: DatasetType;
-  DOI?: string;
-  COMPLETE?: boolean;
+  id: number;
+  name: string;
+  modTime: string;
+  createTime: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+  doi?: string;
+  complete?: boolean;
+  size?: number;
+  datafileCount?: number;
+  investigation?: Investigation;
+  type?: DatasetType;
 }
 
 export interface Datafile {
-  ID: number;
-  NAME: string;
-  MOD_TIME: string;
-  CREATE_TIME: string;
-  DATASET_ID: number;
-  FILESIZE?: number;
-  LOCATION?: string;
-  DESCRIPTION?: string;
-  DATAFILEPARAMETER?: DatafileParameter[];
+  id: number;
+  name: string;
+  modTime: string;
+  createTime: string;
+  fileSize?: number;
+  location?: string;
+  description?: string;
+  parameters?: DatafileParameter[];
+  dataset?: Dataset;
 }
 
 export interface InvestigationInstrument {
-  ID: number;
-  INSTRUMENT_ID: number;
-  INVESTIGATION_ID: number;
-  INSTRUMENT?: Instrument;
-  INVESTIGATION?: Investigation;
+  id: number;
+  instrument?: Instrument;
+  investigation?: Investigation;
 }
 
 export interface Instrument {
-  ID: number;
-  NAME: string;
-  FULLNAME?: string;
-  DESCRIPTION?: string;
-  TYPE?: string;
-  URL?: string;
-  INSTRUMENTSCIENTIST?: InstrumentScientist[];
-  FACILITY_ID: number;
-  FACILITY?: Facility;
+  id: number;
+  name: string;
+  fullName?: string;
+  description?: string;
+  type?: string;
+  url?: string;
+  instrumentScientists?: InstrumentScientist[];
+  facility?: Facility;
 }
 
 export interface InvestigationUser {
-  ID: number;
-  USER_ID: number;
-  INVESTIGATION_ID: number;
-  ROLE: string;
-  USER_?: User;
-  INVESTIGATION?: Investigation;
+  id: number;
+  role: string;
+  user?: User;
+  investigation?: Investigation;
 }
 
 export interface User {
-  ID: number;
-  NAME: string;
-  FULLNAME?: string;
+  id: number;
+  name: string;
+  fullName?: string;
 }
 
 export interface Sample {
-  ID: number;
-  NAME: string;
-  INVESTIGATION_ID: number;
+  id: number;
+  name: string;
 }
 
 export interface Publication {
-  ID: number;
-  FULLREFERENCE: string;
+  id: number;
+  fullReference: string;
 }
 
 export interface FacilityCycle {
-  ID: number;
-  NAME: string;
-  DESCRIPTION?: string;
-  STARTDATE?: string;
-  ENDDATE?: string;
-  FACILITY_ID: number;
-  FACILITY?: Facility;
+  id: number;
+  name: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+  facility?: Facility;
 }
 
 export interface DatasetType {
-  ID: number;
-  NAME: string;
-  DESCRIPTION?: string;
+  id: number;
+  name: string;
+  description?: string;
 }
 
 export interface StudyInvestigation {
-  ID: number;
-  STUDY_ID: number;
-  INVESTIGATION_ID: number;
-  STUDY: Study;
-  INVESTIGATION?: Investigation;
+  id: number;
+  study: Study;
+  investigation: Investigation;
 }
 
 interface Study {
-  ID: number;
-  PID: string;
-  NAME: string;
-  MOD_TIME: string;
-  CREATE_TIME: string;
-  DESCRIPTION?: string;
-  STARTDATE?: string;
-  ENDDATE?: string;
+  id: number;
+  pid: string;
+  name: string;
+  modTime: string;
+  createTime: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface InstrumentScientist {
-  ID: number;
-  INSTRUMENT_ID: number;
-  USER_ID: number;
-  INSTRUMENT?: Instrument;
-  USER_?: User;
+  id: number;
+  instrument?: Instrument;
+  user?: User;
 }
 
 interface DatafileParameter {
-  ID: number;
-  STRING_VALUE?: string;
-  NUMERIC_VALUE?: number;
-  DATETIME_VALUE?: string;
-  RANGEBOTTOM?: number;
-  RANGETOP?: number;
-  DATAFILE_ID: number;
-  PARAMETER_TYPE_ID: number;
-  DATAFILE?: Datafile;
-  PARAMETERTYPE: ParameterType;
+  id: number;
+  stringValue?: string;
+  numericValue?: number;
+  dateTimeValue?: string;
+  rangeBottom?: number;
+  rangeTop?: number;
+  datafile?: Datafile;
+  type: ParameterType;
 }
 
 interface ParameterType {
-  ID: number;
-  NAME: string;
-  UNITS: string;
-  VALUETYPE: string;
+  id: number;
+  name: string;
+  units: string;
+  valueType: string;
 }
 
 interface Facility {
-  ID: number;
-  NAME: string;
-  FULLNAME?: string;
-  URL?: string;
-  DESCRIPTION?: string;
-  DAYSUNTILRELEASE?: number;
-  FACILITYCYCLE?: FacilityCycle[];
+  id: number;
+  name: string;
+  fullName?: string;
+  url?: string;
+  description?: string;
+  daysUntilRelease?: number;
+  facilityCycles?: FacilityCycle[];
 }
 
 export interface DownloadCartItem {

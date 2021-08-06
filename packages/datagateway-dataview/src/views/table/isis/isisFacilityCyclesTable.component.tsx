@@ -25,7 +25,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 
 import TitleIcon from '@material-ui/icons/Title';
-import DescriptionIcon from '@material-ui/icons/Description';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISFacilityCyclesTableProps {
@@ -115,34 +114,26 @@ const ISISFacilityCyclesTable = (
         {
           icon: <TitleIcon />,
           label: t('facilitycycles.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${cellProps.rowData.ID}/investigation`,
-              cellProps.rowData.NAME,
+              `/browse/instrument/${instrumentId}/facilityCycle/${cellProps.rowData.id}/investigation`,
+              cellProps.rowData.name,
               view
             ),
           filterComponent: textFilter,
         },
         {
-          icon: <DescriptionIcon />,
-          label: t('facilitycycles.description'),
-          dataKey: 'DESCRIPTION',
-          filterComponent: textFilter,
-        },
-        {
           icon: <CalendarTodayIcon />,
           label: t('facilitycycles.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('facilitycycles.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />

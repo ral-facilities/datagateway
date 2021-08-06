@@ -220,11 +220,10 @@ export const fetchDatasetDatafilesCount = (
     const timestamp = Date.now();
     dispatch(fetchDatasetDatafilesCountRequest(timestamp));
 
-    const params = {
-      where: {
-        DATASET_ID: { eq: datasetId },
-      },
-    };
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ 'dataset.id': { eq: datasetId } }));
+    params.append('include', JSON.stringify('dataset'));
+
     const { apiUrl } = getState().dgcommon.urls;
 
     const currentCache = getState().dgcommon.datasetCache[datasetId];
@@ -295,11 +294,8 @@ export const fetchDatafileDetails = (
 
     const params = new URLSearchParams();
 
-    params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
-    params.append(
-      'include',
-      JSON.stringify({ DATAFILEPARAMETER: 'PARAMETERTYPE' })
-    );
+    params.append('where', JSON.stringify({ id: { eq: datasetId } }));
+    params.append('include', JSON.stringify({ parameters: 'type' }));
     const { apiUrl } = getState().dgcommon.urls;
 
     await axios

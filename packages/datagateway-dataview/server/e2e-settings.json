@@ -6,16 +6,16 @@
     "datasetGetSize": false,
     "datasetGetCount": true
   },
-  "idsUrl": "https://scigateway-preprod.esc.rl.ac.uk:8181/ids",
-  "apiUrl": "http://scigateway-preprod.esc.rl.ac.uk:5000",
-  "downloadApiUrl": "https://scigateway-preprod.esc.rl.ac.uk:8181/topcat",
+  "idsUrl": "https://localhost:8181/ids",
+  "apiUrl": "http://localhost:5000",
+  "downloadApiUrl": "https://localhost:8181/topcat",
   "breadcrumbs": {
     "proposal": {
       "replaceEntity": "investigation",
-      "replaceEntityField": "TITLE"
+      "replaceEntityField": "title"
     },
     "investigation": {
-      "replaceEntityField": "VISIT_ID",
+      "replaceEntityField": "visitId",
       "parentEntity": "proposal"
     }
   },
@@ -55,8 +55,8 @@
         "Displays the current number of items in the download cart, and navigates to Datagateway Download"
     },
     {
-      "target": ".tour-dataview-toggle-card",
-      "content": "Toggle between list and card view"
+      "target": ".tour-dataview-view-button",
+      "content": "Switch between table and card views"
     }
   ],
   "routes": [

@@ -4,7 +4,7 @@ describe('ISIS - Datasets Table', () => {
     cy.intercept('/datasets?order=').as('datasetsOrder');
     cy.login();
     cy.visit(
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
     ).wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
       timeout: 10000,
     });
@@ -27,7 +27,7 @@ describe('ISIS - Datasets Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118'
+      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/97'
     );
   });
 
@@ -45,6 +45,7 @@ describe('ISIS - Datasets Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
+        // Account for select, details and actions column widths
         columnWidth = (windowWidth - 40 - 40 - 70) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
@@ -106,7 +107,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 327');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 337');
     });
 
     it('descending order', () => {
@@ -123,7 +124,7 @@ describe('ISIS - Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
     });
 
     it('no order', () => {
@@ -145,7 +146,7 @@ describe('ISIS - Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
     });
 
     it('multiple columns', () => {
@@ -162,7 +163,7 @@ describe('ISIS - Datasets Table', () => {
         .click()
         .wait('@datasetsOrder', { timeout: 10000 });
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
     });
   });
 
@@ -171,11 +172,11 @@ describe('ISIS - Datasets Table', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .first()
-        .type('DATASET 327');
+        .type('DATASET 337');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
-        '2005-06-12 08:15:28'
+        '2001-09-30 04:00:59'
       );
     });
 
@@ -199,15 +200,15 @@ describe('ISIS - Datasets Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .first()
-        .type('87')
+        .type('337')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-label="Create Time date filter to"]')
@@ -215,19 +216,20 @@ describe('ISIS - Datasets Table', () => {
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 337');
     });
   });
 
-  describe('should be able to view details', () => {
+  // TODO: Data mismatch issue (#782)
+  describe.skip('should be able to view details', () => {
     beforeEach(() => {
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '5.23 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '4.79 GB').should(
         'exist'
       );
 
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '5.84 GB').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '6.07 GB').should(
         'exist'
       );
     });
@@ -244,8 +246,8 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').contains('DATASET 87').should('be.visible');
-      cy.get('#details-panel').contains('DATASET 327').should('not.exist');
+      cy.get('#details-panel').contains('DATASET 97').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 337').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -256,7 +258,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Onto wind media return. Cultural area while friend who rich detail. Word allow education. Across share be. Along month decide eye. Media foot war available organization could performance.'
+          'Professor issue much especially seem together skin. Data or bill American figure condition call.'
         )
         .should('be.visible');
 
@@ -276,7 +278,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+        '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/97/datafile'
       );
     });
 

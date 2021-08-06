@@ -51,10 +51,10 @@ describe('DLS Visits - Card View', () => {
         totalDataCount: 1,
         data: [
           {
-            ID: 1,
-            TITLE: 'Test 1',
-            NAME: 'Test 1',
-            VISIT_ID: '1',
+            id: 1,
+            title: 'Test 1',
+            name: 'Test 1',
+            visitId: '1',
           },
         ],
         allIds: [1],
@@ -101,7 +101,7 @@ describe('DLS Visits - Card View', () => {
       .simulate('change', { target: { value: '2019-08-06' } });
     expect(store.getActions().length).toEqual(5);
     expect(store.getActions()[3]).toEqual(
-      filterTable('ENDDATE', { endDate: '2019-08-06', startDate: undefined })
+      filterTable('endDate', { endDate: '2019-08-06', startDate: undefined })
     );
     expect(store.getActions()[4]).toEqual(push('?'));
 
@@ -110,7 +110,7 @@ describe('DLS Visits - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[5]).toEqual(filterTable('ENDDATE', null));
+    expect(store.getActions()[5]).toEqual(filterTable('endDate', null));
     expect(store.getActions()[6]).toEqual(push('?'));
   });
 
@@ -124,7 +124,7 @@ describe('DLS Visits - Card View', () => {
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(5);
     expect(store.getActions()[3]).toEqual(
-      filterTable('VISIT_ID', { value: 'test', type: 'include' })
+      filterTable('visitId', { value: 'test', type: 'include' })
     );
     expect(store.getActions()[4]).toEqual(push('?'));
 
@@ -133,7 +133,7 @@ describe('DLS Visits - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[5]).toEqual(filterTable('VISIT_ID', null));
+    expect(store.getActions()[5]).toEqual(filterTable('visitId', null));
     expect(store.getActions()[6]).toEqual(push('?'));
   });
 
@@ -148,7 +148,7 @@ describe('DLS Visits - Card View', () => {
     expect(store.getActions()[3]).toEqual(
       updateQueryParams({
         ...dGCommonInitialState.query,
-        sort: { VISIT_ID: 'asc' },
+        sort: { visitId: 'asc' },
         page: 1,
       })
     );

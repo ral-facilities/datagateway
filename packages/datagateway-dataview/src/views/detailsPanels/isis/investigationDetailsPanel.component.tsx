@@ -48,17 +48,17 @@ const InvestigationDetailsPanel = (
 
   React.useEffect(() => {
     if (
-      !investigationData.INVESTIGATIONUSER ||
-      !investigationData.SAMPLE ||
-      !investigationData.PUBLICATION
+      !investigationData.investigationUsers ||
+      !investigationData.samples ||
+      !investigationData.publications
     ) {
-      fetchDetails(investigationData.ID);
+      fetchDetails(investigationData.id);
     }
   }, [
-    investigationData.INVESTIGATIONUSER,
-    investigationData.SAMPLE,
-    investigationData.PUBLICATION,
-    investigationData.ID,
+    investigationData.investigationUsers,
+    investigationData.samples,
+    investigationData.publications,
+    investigationData.id,
     fetchDetails,
   ]);
 
@@ -81,7 +81,7 @@ const InvestigationDetailsPanel = (
           label={t('investigations.details.label')}
           value="details"
         />
-        {investigationData.INVESTIGATIONUSER && (
+        {investigationData.investigationUsers && (
           <Tab
             id="investigation-users-tab"
             aria-controls="investigation-users-panel"
@@ -89,7 +89,7 @@ const InvestigationDetailsPanel = (
             value="users"
           />
         )}
-        {investigationData.SAMPLE && (
+        {investigationData.samples && (
           <Tab
             id="investigation-samples-tab"
             aria-controls="investigation-samples-panel"
@@ -97,7 +97,7 @@ const InvestigationDetailsPanel = (
             value="samples"
           />
         )}
-        {investigationData.PUBLICATION && (
+        {investigationData.publications && (
           <Tab
             id="investigation-publications-tab"
             aria-controls="investigation-publications-panel"
@@ -109,7 +109,7 @@ const InvestigationDetailsPanel = (
           <Tab
             id="investigation-datasets-tab"
             label={t('investigations.details.datasets')}
-            onClick={() => viewDatasets(investigationData.ID)}
+            onClick={() => viewDatasets(investigationData.id)}
           />
         )}
       </Tabs>
@@ -122,7 +122,7 @@ const InvestigationDetailsPanel = (
         <Grid container className={classes.root} direction="column">
           <Grid item xs>
             <Typography variant="h6">
-              <b>{investigationData.NAME}</b>
+              <b>{investigationData.name}</b>
             </Typography>
             <Divider className={classes.divider} />
           </Grid>
@@ -131,7 +131,7 @@ const InvestigationDetailsPanel = (
               {t('investigations.details.title')}
             </Typography>
             <Typography>
-              <b>{investigationData.TITLE}</b>
+              <b>{investigationData.title}</b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -139,7 +139,7 @@ const InvestigationDetailsPanel = (
               {t('investigations.details.visit_id')}
             </Typography>
             <Typography>
-              <b>{investigationData.VISIT_ID}</b>
+              <b>{investigationData.visitId}</b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -147,22 +147,27 @@ const InvestigationDetailsPanel = (
               {t('investigations.details.summary')}
             </Typography>
             <Typography>
-              <b>{investigationData.SUMMARY}</b>
+              <b>
+                {investigationData.summary &&
+                investigationData.summary !== 'null'
+                  ? investigationData.summary
+                  : `${t('investigations.details.summary')} not provided`}
+              </b>
             </Typography>
           </Grid>
-          {investigationData.STUDYINVESTIGATION &&
-            investigationData.STUDYINVESTIGATION.map((studyInvestigation) => {
-              if (studyInvestigation.STUDY) {
+          {investigationData.studyInvestigations &&
+            investigationData.studyInvestigations.map((studyInvestigation) => {
+              if (studyInvestigation.study) {
                 return (
-                  <Grid key={studyInvestigation.ID} item xs>
+                  <Grid key={studyInvestigation.id} item xs>
                     <Typography variant="overline">
                       {t('investigations.details.pid')}
                     </Typography>
                     <Typography>
                       <Link
-                        href={`https://doi.org/${studyInvestigation.STUDY.PID}`}
+                        href={`https://doi.org/${studyInvestigation.study.pid}`}
                       >
-                        {studyInvestigation.STUDY.PID}
+                        {studyInvestigation.study.pid}
                       </Link>
                     </Typography>
                   </Grid>
@@ -176,7 +181,11 @@ const InvestigationDetailsPanel = (
               {t('investigations.details.doi')}
             </Typography>
             <Typography>
-              <b>{investigationData.DOI}</b>
+              <b>
+                {investigationData.doi && investigationData.doi !== 'null'
+                  ? investigationData.doi
+                  : `${t('investigations.details.doi')} not provided`}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -184,7 +193,12 @@ const InvestigationDetailsPanel = (
               {t('investigations.details.start_date')}
             </Typography>
             <Typography>
-              <b>{investigationData.STARTDATE}</b>
+              <b>
+                {investigationData.startDate &&
+                investigationData.startDate !== 'null'
+                  ? investigationData.startDate
+                  : `${t('investigations.details.start_date')} not provided`}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -192,12 +206,17 @@ const InvestigationDetailsPanel = (
               {t('investigations.details.end_date')}
             </Typography>
             <Typography>
-              <b>{investigationData.ENDDATE}</b>
+              <b>
+                {investigationData.endDate &&
+                investigationData.endDate !== 'null'
+                  ? investigationData.endDate
+                  : `${t('investigations.details.end_date')} not provided`}
+              </b>
             </Typography>
           </Grid>
         </Grid>
       </div>
-      {investigationData.INVESTIGATIONUSER && (
+      {investigationData.investigationUsers && (
         <div
           id="investigation-users-panel"
           aria-labelledby="investigation-users-tab"
@@ -205,17 +224,17 @@ const InvestigationDetailsPanel = (
           hidden={value !== 'users'}
         >
           <Grid container className={classes.root} direction="column">
-            {investigationData.INVESTIGATIONUSER.map((investigationUser) => {
-              if (investigationUser.USER_) {
+            {investigationData.investigationUsers.map((investigationUser) => {
+              if (investigationUser.user) {
                 return (
-                  <Grid key={investigationUser.USER_ID} item xs>
+                  <Grid key={investigationUser.user.id} item xs>
                     <Typography variant="overline">
                       {t('investigations.details.users.name')}
                     </Typography>
                     <Typography>
                       <b>
-                        {investigationUser.USER_.FULLNAME ||
-                          investigationUser.USER_.NAME}
+                        {investigationUser.user.fullName ||
+                          investigationUser.user.name}
                       </b>
                     </Typography>
                   </Grid>
@@ -227,7 +246,7 @@ const InvestigationDetailsPanel = (
           </Grid>
         </div>
       )}
-      {investigationData.SAMPLE && (
+      {investigationData.samples && (
         <div
           id="investigation-samples-panel"
           aria-labelledby="investigation-samples-tab"
@@ -235,14 +254,14 @@ const InvestigationDetailsPanel = (
           hidden={value !== 'samples'}
         >
           <Grid container className={classes.root} direction="column">
-            {investigationData.SAMPLE.map((sample) => {
+            {investigationData.samples.map((sample) => {
               return (
-                <Grid key={sample.ID} item xs>
+                <Grid key={sample.id} item xs>
                   <Typography variant="overline">
                     {t('investigations.details.samples.name')}
                   </Typography>
                   <Typography>
-                    <b>{sample.NAME}</b>
+                    <b>{sample.name}</b>
                   </Typography>
                 </Grid>
               );
@@ -250,7 +269,7 @@ const InvestigationDetailsPanel = (
           </Grid>
         </div>
       )}
-      {investigationData.PUBLICATION && (
+      {investigationData.publications && (
         <div
           id="investigation-publications-panel"
           aria-labelledby="investigation-publications-tab"
@@ -258,14 +277,14 @@ const InvestigationDetailsPanel = (
           hidden={value !== 'publications'}
         >
           <Grid container className={classes.root} direction="column">
-            {investigationData.PUBLICATION.map((publication) => {
+            {investigationData.publications.map((publication) => {
               return (
-                <Grid key={publication.ID} item xs>
+                <Grid key={publication.id} item xs>
                   <Typography variant="overline">
                     {t('investigations.details.publications.reference')}
                   </Typography>
                   <Typography>
-                    <b>{publication.FULLREFERENCE}</b>
+                    <b>{publication.fullReference}</b>
                   </Typography>
                 </Grid>
               );

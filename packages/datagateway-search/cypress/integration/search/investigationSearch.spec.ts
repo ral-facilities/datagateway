@@ -1,20 +1,37 @@
 describe('Investigation search tab', () => {
+  let facilityName: string;
+
+  before(() => {
+    cy.readFile('server/e2e-settings.json').then((settings) => {
+      if (settings.facilityName) facilityName = settings.facilityName;
+    });
+  });
+
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
-    cy.intercept('/investigations/count?where=%7B%22ID').as(
+    cy.intercept('/investigations/count?where=%7B%22id').as(
       'investigationsCount'
     );
     cy.intercept('/investigations?').as('investigations');
-    cy.intercept('/datasets/count?where=%7B%22ID').as('datasetsCount');
+    cy.intercept('/datasets/count?where=%7B%22id').as('datasetsCount');
     cy.intercept('/datasets?').as('datasets');
-    cy.intercept('/datafiles/count?where=%7B%22ID').as('datafilesCount');
+    cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
     cy.intercept('/datafiles?').as('datafiles');
-    cy.intercept('/topcat/user/cart/LILS/cartItems').as('topcat');
+    cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway Search');
+
+    cy.get('[aria-label="Dataset checkbox"]').click();
+    cy.get('[aria-label="Datafile checkbox"]').click();
+
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('#container-search-filters').should('exist');
 
@@ -33,18 +50,21 @@ describe('Investigation search tab', () => {
         timeout: 10000,
       });
 
-    cy.get('[aria-rowcount="4"]').should('exist');
+    cy.get('[aria-rowcount="15"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-942080-93-9');
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('1-235-68516-0');
 
+    // Small wait to ensure rows are selected correctly
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
     // Check that "select all" and individual selection are equivalent
     let i = 1;
-    while (i < 5) {
-      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`)
-        .click()
-        .wait('@topcat', { timeout: 10000 });
+    while (i < 16) {
+      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
+      cy.wait('@topcat', { timeout: 10000 });
       i++;
     }
+
     cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
       'be.checked'
     );
@@ -58,16 +78,20 @@ describe('Investigation search tab', () => {
       .find('#filled-search')
       .type('knowledge media');
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
-      .contains('32')
+      .contains('19')
       .click();
 
-    cy.get('[aria-rowcount="32"]').should('exist');
+    cy.get('[aria-rowcount="19"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-682-97787-X');
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-221-94355-2');
   });
 
   it('should be able to search by date range', () => {
@@ -83,18 +107,35 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-rowcount="12"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-7285-7613-9');
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-9634101-9-9');
   });
 
   it('should be hidden if investigation checkbox is unchecked', () => {
     cy.get('[aria-label="Investigation checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@datasets', '@datasets', '@datasetsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
       .should('not.exist');
+  });
+
+  it('should link to an investigation', () => {
+    cy.get('[aria-label="Search text input"]')
+      .find('#filled-search')
+      .type('dog');
+
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
+    cy.get('[href="/browse/investigation/6/dataset"]');
   });
 });

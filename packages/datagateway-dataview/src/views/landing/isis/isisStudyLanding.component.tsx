@@ -26,6 +26,7 @@ import {
   StudyInvestigation,
   tableLink,
   ViewsType,
+  Mark,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +36,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import AddToCartButton from '../../addToCartButton.component';
 import Branding from './isisBranding.component';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -88,8 +90,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface FormattedUser {
-  ROLE: string;
-  FULLNAME: string;
+  role: string;
+  fullName: string;
 }
 
 interface LandingPageDispatchProps {
@@ -107,13 +109,85 @@ interface LandingPageProps {
   studyId: string;
 }
 
+interface LinkedInvestigationProps {
+  studyInvestigation: StudyInvestigation;
+  urlPrefix: string;
+  view: ViewsType;
+}
+
 type LandingPageCombinedProps = LandingPageDispatchProps &
   LandingPageStateProps &
   LandingPageProps;
 
+const LinkedInvestigation = (
+  props: LinkedInvestigationProps
+): React.ReactElement => {
+  const [t] = useTranslation();
+  const classes = useStyles();
+
+  const investigation = props.studyInvestigation.investigation as Investigation;
+
+  const shortInvestigationInfo = [
+    {
+      content: (entity: Investigation) => entity.doi,
+      label: t('investigations.doi'),
+      icon: <Public className={classes.shortInfoIcon} />,
+    },
+    {
+      content: (entity: Investigation) =>
+        entity.investigationInstruments?.[0]?.instrument?.name,
+      label: t('investigations.instrument'),
+      icon: <Assessment className={classes.shortInfoIcon} />,
+    },
+    {
+      content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
+      label: t('investigations.release_date'),
+      icon: <CalendarToday className={classes.shortInfoIcon} />,
+    },
+  ];
+
+  return (
+    <div>
+      <Typography
+        className={classes.subHeading}
+        component="h6"
+        variant="h6"
+        align="center"
+        aria-label="landing-study-part-label"
+      >
+        {tableLink(
+          `${props.urlPrefix}/investigation/${investigation.id}`,
+          `${t('investigations.visit_id')}: ${investigation.visitId}`,
+          props.view
+        )}
+      </Typography>
+      {shortInvestigationInfo.map((field, i) => (
+        <div className={classes.shortInfoRow} key={i}>
+          <Typography className={classes.shortInfoLabel}>
+            {field.icon}
+            {field.label}:
+          </Typography>
+          <Typography className={classes.shortInfoValue}>
+            {field.content(investigation)}
+          </Typography>
+        </div>
+      ))}
+      <div className={classes.actionButtons}>
+        <AddToCartButton
+          entityType="investigation"
+          allIds={[investigation.id]}
+          entityId={investigation.id}
+        />
+      </div>
+    </div>
+  );
+};
+
 const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const [t] = useTranslation();
   const [value, setValue] = React.useState<'details'>('details');
+  const citationRef = React.useRef<HTMLElement>(null);
+  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const {
     fetchStudyData,
     viewAllInvestigations,
@@ -128,41 +202,49 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyId}`;
   const classes = useStyles();
 
-  const pid = React.useMemo(() => data[0]?.STUDY?.PID, [data]);
-  const title = React.useMemo(() => data[0]?.INVESTIGATION?.TITLE, [data]);
-  const summary = React.useMemo(() => data[0]?.INVESTIGATION?.SUMMARY, [data]);
+  const pid = React.useMemo(() => data[0]?.study?.pid, [data]);
+  const title = React.useMemo(() => data[0]?.investigation?.title, [data]);
+  const summary = React.useMemo(
+    () =>
+      data[0]?.investigation?.summary &&
+      data[0]?.investigation?.summary !== 'null'
+        ? data[0].investigation.summary
+        : 'Description not provided',
+    [data]
+  );
 
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
-    if (data[0]?.INVESTIGATION?.INVESTIGATIONUSER) {
-      const investigationUsers = data[0].INVESTIGATION
-        .INVESTIGATIONUSER as InvestigationUser[];
+
+    if (data[0]?.investigation?.investigationUsers) {
+      const investigationUsers = data[0].investigation
+        .investigationUsers as InvestigationUser[];
       investigationUsers.forEach((user) => {
-        // Only keep users where we have their FULLNAME
-        const fullname = user.USER_?.FULLNAME;
+        // Only keep users where we have their fullName
+        const fullname = user.user?.fullName;
         if (fullname) {
-          switch (user.ROLE) {
+          switch (user.role) {
             case 'principal_experimenter':
               principals.push({
-                FULLNAME: fullname,
-                ROLE: 'Principal Investigator',
+                fullName: fullname,
+                role: 'Principal Investigator',
               });
               break;
             case 'local_contact':
-              contacts.push({ FULLNAME: fullname, ROLE: 'Local Contact' });
+              contacts.push({ fullName: fullname, role: 'Local Contact' });
               break;
             default:
-              experimenters.push({ FULLNAME: fullname, ROLE: 'Experimenter' });
+              experimenters.push({ fullName: fullname, role: 'Experimenter' });
           }
         }
       });
     }
     // Ensure PIs are listed first, and sort within roles for consistency
-    principals.sort((a, b) => a.FULLNAME.localeCompare(b.FULLNAME));
-    contacts.sort((a, b) => a.FULLNAME.localeCompare(b.FULLNAME));
-    experimenters.sort((a, b) => a.FULLNAME.localeCompare(b.FULLNAME));
+    principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
   }, [data]);
 
@@ -204,7 +286,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
         },
       },
       creator: formattedUsers.map((user) => {
-        return { '@type': 'Person', name: user.FULLNAME };
+        return { '@type': 'Person', name: user.fullName };
       }),
       includedInDataCatalog: {
         '@type': 'DataCatalog',
@@ -230,12 +312,12 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
 
   const shortInfo = [
     {
-      content: (entity: StudyInvestigation) => entity.STUDY?.PID,
+      content: (entity: StudyInvestigation) => entity.study?.pid,
       label: t('studies.pid'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: StudyInvestigation) => entity.STUDY?.NAME,
+      content: (entity: StudyInvestigation) => entity.study?.name,
       label: t('studies.name'),
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
@@ -252,33 +334,14 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     },
     {
       content: (entity: StudyInvestigation) =>
-        entity.STUDY?.STARTDATE?.slice(0, 10),
+        entity.study?.startDate?.slice(0, 10),
       label: t('studies.start_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
     {
       content: (entity: StudyInvestigation) =>
-        entity.STUDY?.ENDDATE?.slice(0, 10),
+        entity.study?.endDate?.slice(0, 10),
       label: t('studies.end_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
-    },
-  ];
-
-  const shortInvestigationInfo = [
-    {
-      content: (entity: Investigation) => entity.DOI,
-      label: t('investigations.doi'),
-      icon: <Public className={classes.shortInfoIcon} />,
-    },
-    {
-      content: (entity: Investigation) =>
-        entity.INVESTIGATIONINSTRUMENT?.[0]?.INSTRUMENT?.NAME,
-      label: t('investigations.instrument'),
-      icon: <Assessment className={classes.shortInfoIcon} />,
-    },
-    {
-      content: (entity: Investigation) => entity.RELEASEDATE?.slice(0, 10),
-      label: t('investigations.release_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
   ];
@@ -337,7 +400,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 </Typography>
                 {formattedUsers.map((user, i) => (
                   <Typography aria-label={`landing-study-user-${i}`} key={i}>
-                    <b>{user.ROLE}:</b> {user.FULLNAME}
+                    <b>{user.role}:</b> {user.fullName}
                   </Typography>
                 ))}
               </div>
@@ -367,18 +430,53 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               {t('studies.details.citation_format')}
             </Typography>
             <Typography aria-label="landing-study-citation">
-              <i>
+              <i ref={citationRef}>
                 {formattedUsers.length > 1 &&
-                  `${formattedUsers[0].FULLNAME} et al; `}
+                  `${formattedUsers[0].fullName} et al; `}
                 {formattedUsers.length === 1 &&
-                  `${formattedUsers[0].FULLNAME}; `}
-                {data[0]?.STUDY?.STARTDATE &&
-                  `${data[0].STUDY.STARTDATE.slice(0, 4)}: `}
+                  `${formattedUsers[0].fullName}; `}
+                {data[0]?.study?.startDate &&
+                  `${data[0].study.startDate.slice(0, 4)}: `}
                 {title && `${title}, `}
                 {t('doi_constants.publisher.name')}
-                {pid && `, https://doi.org/${pid}`}
+                {pid && ', '}
+                {pid && (
+                  <a
+                    href={`https://doi.org/${pid}`}
+                  >{`https://doi.org/${pid}`}</a>
+                )}
               </i>
             </Typography>
+            {!copiedCitation ? (
+              <Button
+                id="landing-study-copy-citation"
+                aria-label="landing-study-copy-citation"
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                  if (citationRef?.current?.textContent) {
+                    navigator.clipboard.writeText(
+                      citationRef.current.textContent
+                    );
+                    setCopiedCitation(true);
+                    setTimeout(() => setCopiedCitation(false), 1750);
+                  }
+                }}
+              >
+                Copy citation
+              </Button>
+            ) : (
+              <Button
+                id="landing-study-copied-citation"
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<Mark size={20} visible={true} />}
+              >
+                Copied citation
+              </Button>
+            )}
           </Grid>
 
           <Divider orientation="vertical" />
@@ -403,45 +501,15 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             {data.map((studyInvestigation, i) => (
               <div key={i} className={classes.shortInfoPart}>
                 <Divider />
-                <Typography
-                  className={classes.subHeading}
-                  component="h6"
-                  variant="h6"
-                  align="center"
-                  aria-label="landing-study-part-label"
-                >
-                  {tableLink(
-                    `${urlPrefix}/investigation/${studyInvestigation.INVESTIGATION_ID}`,
-                    `${t('investigations.visit_id')}: ${
-                      studyInvestigation.INVESTIGATION?.VISIT_ID
-                    }`,
-                    view
-                  )}
-                </Typography>
-                {shortInvestigationInfo.map(
-                  (field, i) =>
-                    data[0]?.INVESTIGATION &&
-                    field.content(data[0].INVESTIGATION as Investigation) && (
-                      <div className={classes.shortInfoRow} key={i}>
-                        <Typography className={classes.shortInfoLabel}>
-                          {field.icon}
-                          {field.label}:
-                        </Typography>
-                        <Typography className={classes.shortInfoValue}>
-                          {field.content(
-                            studyInvestigation.INVESTIGATION as Investigation
-                          )}
-                        </Typography>
-                      </div>
-                    )
-                )}
-                <div className={classes.actionButtons}>
-                  <AddToCartButton
-                    entityType="investigation"
-                    allIds={[parseInt(studyInvestigation.INVESTIGATION_ID)]}
-                    entityId={parseInt(studyInvestigation.INVESTIGATION_ID)}
+                {studyInvestigation.investigation && (
+                  <LinkedInvestigation
+                    studyInvestigation={
+                      studyInvestigation as StudyInvestigation
+                    }
+                    urlPrefix={urlPrefix}
+                    view={view}
                   />
-                </div>
+                )}
               </div>
             ))}
           </Grid>
@@ -461,17 +529,17 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'STUDY.ID': { eq: studyId },
+              'study.id': { eq: studyId },
             }),
           },
           {
             filterType: 'include',
             filterValue: JSON.stringify([
-              'STUDY',
+              'study',
               {
-                INVESTIGATION: [
-                  { INVESTIGATIONUSER: 'USER_' },
-                  { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
+                investigation: [
+                  { investigationUsers: 'user' },
+                  { investigationInstruments: 'instrument' },
                 ],
               },
             ]),

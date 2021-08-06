@@ -15,7 +15,7 @@ describe('Table component', () => {
   const tableProps = {
     data: [
       {
-        ID: 1,
+        id: 1,
         TEST1: 'test1',
         TEST2: 2,
       },
