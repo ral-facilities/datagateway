@@ -1,7 +1,8 @@
 {
   "app": {
     "results": "Results",
-    "toggle_cards": "Toggle Cards",
+    "view_table": "Display as table",
+    "view_cards": "Display as cards",
     "max_results": "Max Results"
   },
   "breadcrumbs": {
@@ -25,7 +26,7 @@
       "name": "Name",
       "description": "Description",
       "type": "Type",
-      "url": "URL",
+      "url": "Information Page",
       "instrument_scientists": {
         "label": "Instrument Scientists",
         "name": "Name"
@@ -73,7 +74,7 @@
       "name": "Name",
       "end_date": "End Date",
       "start_date": "Start Date",
-      "visit_id": "Visit ID",
+      "visit_id": "Experiment Part",
       "pid": "Part DOI",
       "summary": "Summary",
       "doi": "DOI",

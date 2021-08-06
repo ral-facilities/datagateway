@@ -8,7 +8,7 @@ describe('ISIS - Datasets Cards', () => {
     ).wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {
       timeout: 10000,
     });
-    cy.get('[aria-label="secondary checkbox"]')
+    cy.get('[aria-label="container-view-button"]')
       .click()
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], {
         timeout: 10000,

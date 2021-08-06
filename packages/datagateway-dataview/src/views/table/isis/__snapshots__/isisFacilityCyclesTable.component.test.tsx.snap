@@ -12,12 +12,6 @@ exports[`ISIS FacilityCycles table component renders correctly 1`] = `
         "label": "facilitycycles.name",
       },
       Object {
-        "dataKey": "description",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "facilitycycles.description",
-      },
-      Object {
         "dataKey": "startDate",
         "filterComponent": [Function],
         "icon": <Memo />,
