@@ -477,6 +477,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             />
           </Grid>
         )}
+
         {totalDataCount > 0 && loadedData && (
           <Grid
             container
@@ -493,10 +494,12 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                 <Box px={1} width={120} />
               </Grid>
             )}
+
             {/*  Pagination container  */}
             {(paginationPos === 'top' || paginationPos === 'both') && (
               <Grid item>{CVPagination(page, maxPage, onPageChange)}</Grid>
             )}
+
             {/* Maximum results selection 
                 Do not show if the number of data is smaller than the 
                 smallest amount of results to display (10) or the smallest amount available. */}
@@ -558,6 +561,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               xs={12}
               style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
             >
+              {/* Sorting options */}
               {hasSort && totalDataCount > 0 && (
                 <Grid item xs>
                   <Paper>
@@ -568,7 +572,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     {/* Show all the available sort options: 
                         title, description and the further information (if provided) */}
                     <Box>
-                      <List component="nav">
+                      <List component="nav" aria-label="sorting-by-list">
                         {cardSort &&
                           cardSort.map((s, i) => (
                             <ListItem
@@ -586,12 +590,15 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                   query
                                 );
                               }}
+                              aria-label={`Sort by ${s.dataKey}`}
                             >
                               <ListItemText primary={s.label} />
                               <ListItemIcon>
                                 <TableSortLabel
                                   active={s.dataKey in sort}
                                   direction={sort[s.dataKey]}
+                                  // Set tabindex to -1 to prevent button focus
+                                  tabIndex={-1}
                                 >
                                   {s.dataKey in sort && sort[s.dataKey]}
                                 </TableSortLabel>
@@ -639,6 +646,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                             onClick={() => {
                                               changeFilter(filterKey, item);
                                             }}
+                                            aria-label={`Filter by ${filter.label} ${item}`}
                                           >
                                             <Chip
                                               label={
