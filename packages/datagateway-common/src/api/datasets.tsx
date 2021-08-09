@@ -453,7 +453,7 @@ export const useDatasetDetails = (
   );
 };
 
-export const downloadDatasetQuery = (
+export const downloadDataset = (
   idsUrl: string,
   datasetId: number,
   datasetName: string

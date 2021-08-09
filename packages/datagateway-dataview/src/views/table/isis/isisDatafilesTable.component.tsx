@@ -21,7 +21,7 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  downloadDatafileQuery,
+  downloadDatafile,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -184,7 +184,7 @@ const ISISDatafilesTable = (
                 aria-label={t('datafiles.download')}
                 key="download"
                 onClick={() => {
-                  downloadDatafileQuery(idsUrl, id, location);
+                  downloadDatafile(idsUrl, id, location);
                 }}
               >
                 <GetApp />

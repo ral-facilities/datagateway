@@ -7,9 +7,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { useSelector } from 'react-redux';
 
 interface DownloadButtonProps {
   entityType: 'dataset' | 'datafile';
@@ -18,20 +16,22 @@ interface DownloadButtonProps {
   variant?: 'text' | 'outlined' | 'contained';
 }
 
-interface DownloadButtonDispatchProps {
-  downloadData: (
+const DownloadButton = (props: DownloadButtonProps): JSX.Element => {
+  const { entityType, entityId, entityName, variant } = props;
+  const [t] = useTranslation();
+  const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
+
+  const downloadData = (
     entityType: 'dataset' | 'datafile',
     entityId: number,
     entityName: string
-  ) => Promise<void> | undefined;
-}
-
-type DownloadButtonCombinedProps = DownloadButtonProps &
-  DownloadButtonDispatchProps;
-
-const DownloadButton = (props: DownloadButtonCombinedProps): JSX.Element => {
-  const { entityType, entityId, entityName, variant, downloadData } = props;
-  const [t] = useTranslation();
+  ): void => {
+    if (entityType === 'dataset') {
+      downloadDataset(idsUrl, entityId, entityName);
+    } else if (entityType === 'datafile') {
+      downloadDatafile(idsUrl, entityId, entityName);
+    }
+  };
 
   return (
     <Button
@@ -48,20 +48,4 @@ const DownloadButton = (props: DownloadButtonCombinedProps): JSX.Element => {
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DownloadButtonDispatchProps => ({
-  downloadData: (
-    entityType: 'dataset' | 'datafile',
-    entityId: number,
-    entityName: string
-  ) => {
-    if (entityType === 'dataset') {
-      return dispatch(downloadDataset(entityId, entityName));
-    } else if (entityType === 'datafile') {
-      return dispatch(downloadDatafile(entityId, entityName));
-    }
-  },
-});
-
-export default connect(null, mapDispatchToProps)(DownloadButton);
+export default DownloadButton;

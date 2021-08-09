@@ -29,7 +29,7 @@ import {
   useAddToCart,
   useRemoveFromCart,
   DetailsPanelProps,
-  downloadDatafileQuery,
+  downloadDatafile,
 } from 'datagateway-common';
 import { GetApp } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
@@ -240,7 +240,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
                 aria-label={t('datafiles.download')}
                 key="download"
                 onClick={() => {
-                  downloadDatafileQuery(idsUrl, id, location);
+                  downloadDatafile(idsUrl, id, location);
                 }}
               >
                 <GetApp />

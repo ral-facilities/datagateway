@@ -361,7 +361,7 @@ export const useDatafileDetails = (
   );
 };
 
-export const downloadDatafileQuery = (
+export const downloadDatafile = (
   idsUrl: string,
   datafileId: number,
   filename: string

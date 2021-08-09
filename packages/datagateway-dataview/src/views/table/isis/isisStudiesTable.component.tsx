@@ -1,7 +1,7 @@
 import {
   Table,
   tableLink,
-  readURLQuery,
+  parseSearchToQuery,
   useStudiesInfinite,
   useStudyCount,
   ColumnType,
@@ -30,9 +30,10 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
   const location = useLocation();
   const [t] = useTranslation();
 
-  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
-    location,
-  ]);
+  const { filters, view, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
 
   const { data: totalDataCount } = useStudyCount([
     {

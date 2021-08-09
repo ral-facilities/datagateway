@@ -91,9 +91,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
     (state: StateType) => state.dgdataview.selectAllSetting
   );
 
-  const view = useSelector((state: StateType) => state.dgcommon.query.view);
-
-  const { filters, sort } = React.useMemo(
+  const { filters, sort, view } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );

@@ -20,7 +20,7 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  downloadDatasetQuery,
+  downloadDataset,
   useDatasetSizes,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
@@ -64,9 +64,7 @@ const ISISDatasetsTable = (
 
   const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
 
-  const view = useSelector((state: StateType) => state.dgcommon.query.view);
-
-  const { filters, sort } = React.useMemo(
+  const { filters, sort, view } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
@@ -222,7 +220,7 @@ const ISISDatasetsTable = (
                 key="download"
                 size="small"
                 onClick={() => {
-                  downloadDatasetQuery(idsUrl, id, name);
+                  downloadDataset(idsUrl, id, name);
                 }}
               >
                 <GetApp />
