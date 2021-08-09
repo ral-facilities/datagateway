@@ -572,7 +572,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     {/* Show all the available sort options: 
                         title, description and the further information (if provided) */}
                     <Box>
-                      <List component="nav" aria-label="sorting-by-list">
+                      <List component="nav" aria-label="sort-by-list">
                         {cardSort &&
                           cardSort.map((s, i) => (
                             <ListItem
@@ -590,7 +590,15 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                   query
                                 );
                               }}
-                              aria-label={`Sort by ${s.dataKey}`}
+                              aria-label={`Sort by ${s.dataKey}${
+                                sort[s.dataKey]
+                                  ? `, ${
+                                      sort[s.dataKey] === 'asc'
+                                        ? 'ascending'
+                                        : 'descending'
+                                    }`
+                                  : ''
+                              }`}
                             >
                               <ListItemText primary={s.label} />
                               <ListItemIcon>
@@ -636,7 +644,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                   <div className={classes.expandDetails}>
-                                    <List component="nav">
+                                    <List
+                                      component="nav"
+                                      aria-label="filter-by-list"
+                                    >
                                       {Object.entries(filter.items).map(
                                         ([item, selected], valueIndex) => (
                                           <ListItem
