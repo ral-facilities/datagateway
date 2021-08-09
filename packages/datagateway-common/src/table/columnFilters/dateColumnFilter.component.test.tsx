@@ -3,7 +3,12 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DateColumnFilter, {
   datesEqual,
   updateFilter,
+  useDateFilter,
 } from './dateColumnFilter.component';
+import { renderHook } from '@testing-library/react-hooks';
+import { act } from 'react-test-renderer';
+import { usePushFilters } from '../../api';
+jest.mock('../../api');
 
 describe('Date filter component', () => {
   let shallow;
@@ -335,5 +340,39 @@ describe('Date filter component', () => {
     expect(wrapper.find('p.Mui-error').first().text()).toEqual(
       'Invalid date range'
     );
+  });
+
+  it('useTextFilter hook returns a function which can generate a working text filter', () => {
+    const pushFilters = jest.fn();
+    (usePushFilters as jest.Mock).mockImplementation(() => pushFilters);
+
+    const { result } = renderHook(() => useDateFilter({}));
+    let dateFilter;
+
+    act(() => {
+      dateFilter = result.current('Start Date', 'startDate');
+    });
+
+    const shallowWrapper = shallow(dateFilter);
+    expect(shallowWrapper).toMatchSnapshot();
+
+    const mountWrapper = mount(dateFilter);
+    const startDateFilterInput = mountWrapper.find('input').first();
+    startDateFilterInput.instance().value = '2021-08-09';
+    startDateFilterInput.simulate('change');
+
+    expect(pushFilters).toHaveBeenLastCalledWith('startDate', {
+      startDate: '2021-08-09',
+    });
+
+    mountWrapper.setProps({
+      ...mountWrapper.props(),
+      value: { startDate: '2021-08-09' },
+    });
+    startDateFilterInput.instance().value = '';
+    startDateFilterInput.simulate('change');
+
+    expect(pushFilters).toHaveBeenCalledTimes(2);
+    expect(pushFilters).toHaveBeenLastCalledWith('startDate', null);
   });
 });
