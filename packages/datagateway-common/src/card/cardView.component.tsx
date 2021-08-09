@@ -592,7 +592,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                               }}
                               aria-label={`Sort by ${s.dataKey}${
                                 sort[s.dataKey]
-                                  ? `, ${
+                                  ? `, current direction ${
                                       sort[s.dataKey] === 'asc'
                                         ? 'ascending'
                                         : 'descending'
