@@ -3,14 +3,11 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
   AdvancedFilter,
-  addToCartRequest,
   dGCommonInitialState,
-  fetchDatasetDetailsRequest,
-  fetchDatasetSizeRequest,
-  filterTable,
-  removeFromCartRequest,
-  updatePage,
-  updateQueryParams,
+  useDatasetsPaginated,
+  parseSearchToQuery,
+  useDatasetCount,
+  useFilter,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -20,22 +17,35 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import { initialState } from '../../../state/reducers/dgdataview.reducer';
-import axios from 'axios';
+// import axios from 'axios';
 import DLSDatasetsCardView from './dlsDatasetsCardView.component';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+jest.mock('datagateway-common');
 
 describe('DLS Datasets - Card View', () => {
   let mount;
   let shallow;
   let mockStore;
-  let store;
   let state: StateType;
+  let queryClient: QueryClient;
 
   const createWrapper = (): ReactWrapper => {
-    store = mockStore(state);
+    return shallow(
+      <QueryClientProvider client={queryClient}>
+        <DLSDatasetsCardView investigationId="1" proposalName="test" />
+      </QueryClientProvider>
+    );
+  };
+
+  const createMountedWrapper = (testStore?): ReactWrapper => {
+    const store = testStore ?? mockStore(state);
     return mount(
       <Provider store={store}>
-        <MemoryRouter>
-          <DLSDatasetsCardView investigationId="1" proposalName="test" />
+        <MemoryRouter initialEntries={['/']}>
+          <QueryClientProvider client={queryClient}>
+            <DLSDatasetsCardView investigationId="1" proposalName="test" />
+          </QueryClientProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -44,6 +54,8 @@ describe('DLS Datasets - Card View', () => {
   beforeEach(() => {
     mount = createMount();
     shallow = createShallow();
+    queryClient = new QueryClient();
+
     mockStore = configureStore([thunk]);
     state = {
       dgcommon: {
@@ -74,15 +86,36 @@ describe('DLS Datasets - Card View', () => {
       },
     };
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    (useDatasetCount as jest.Mock).mockImplementation(() => 1);
+
+    // no need to mock?
+    (parseSearchToQuery as jest.Mock).mockImplementation(() => {
+      return {
+        view: 'card',
+        filters: {},
+        sort: {},
+        page: 1,
+        results: 1,
+      };
+    });
+    (useDatasetsPaginated as jest.Mock).mockImplementation(
+      () => state.dgcommon.data[0]
     );
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    (axios.delete as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
+    (useFilter as jest.Mock).mockImplementation(() => {
+      return {
+        data: [],
+      };
+    });
+
+    // (axios.get as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: [] })
+    // );
+    // (axios.post as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // (axios.delete as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
     global.Date.now = jest.fn(() => 1);
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -90,21 +123,19 @@ describe('DLS Datasets - Card View', () => {
 
   afterEach(() => {
     mount.cleanUp();
+    (useDatasetCount as jest.Mock).mockRestore();
+    (useDatasetsPaginated as jest.Mock).mockRestore();
+    (parseSearchToQuery as jest.Mock).mockRestore();
+    (useFilter as jest.Mock).mockRestore();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <DLSDatasetsCardView
-        store={mockStore(state)}
-        investigationId="1"
-        proposalName="test"
-      />
-    );
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 
   it('addToCart dispatched on button click', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper.find(Card).find('button').first().simulate('click');
 
     expect(store.getActions().length).toEqual(4);
@@ -121,7 +152,7 @@ describe('DLS Datasets - Card View', () => {
         parentEntities: [],
       },
     ];
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper.find(Card).find('button').first().simulate('click');
 
     expect(store.getActions().length).toEqual(4);
@@ -129,7 +160,7 @@ describe('DLS Datasets - Card View', () => {
   });
 
   it('pushFilters dispatched by date filter', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
@@ -152,7 +183,7 @@ describe('DLS Datasets - Card View', () => {
   });
 
   it('pushFilters dispatched by text filter', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
@@ -175,7 +206,7 @@ describe('DLS Datasets - Card View', () => {
   });
 
   it('pushSort dispatched when sort button clicked', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('datasets.name');
     button.simulate('click');
@@ -193,7 +224,7 @@ describe('DLS Datasets - Card View', () => {
   });
 
   it('pushPage dispatched when page number is no longer valid', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     store = mockStore({
       ...state,
       dgcommon: {
@@ -222,7 +253,7 @@ describe('DLS Datasets - Card View', () => {
   it.todo('pushResults dispatched onChange');
 
   it('fetchDetails dispatched when details panel expanded', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
@@ -233,7 +264,7 @@ describe('DLS Datasets - Card View', () => {
   });
 
   it('fetchSize dispatched when button clicked', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()

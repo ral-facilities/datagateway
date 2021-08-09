@@ -1,14 +1,16 @@
 import { createMount, createShallow } from '@material-ui/core/test-utils';
-import axios from 'axios';
+// import axios from 'axios';
 import {
-  addToCartRequest,
   dGCommonInitialState,
-  fetchAllIdsRequest,
-  fetchDatafileCountRequest,
-  fetchDatafilesRequest,
-  filterTable,
-  removeFromCartRequest,
-  sortTable,
+  useDatafileCount,
+  parseSearchToQuery,
+  useIds,
+  useCart,
+  useAddToCart,
+  useRemoveFromCart,
+  useDatafilesInfinite,
+  useTextFilter,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -18,16 +20,43 @@ import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDatafilesTable from './dlsDatafilesTable.component';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+
+jest.mock('datagateway-common');
 
 describe('DLS datafiles table component', () => {
   let shallow;
   let mount;
   let mockStore;
   let state: StateType;
+  let queryClient: QueryClient;
+
+  const createWrapper = (): ReactWrapper => {
+    return shallow(
+      <QueryClientProvider client={queryClient}>
+        <DLSDatafilesTable datasetId="1" investigationId="2" />
+      </QueryClientProvider>
+    );
+  };
+
+  const createMountedWrapper = (testStore?): ReactWrapper => {
+    const store = testStore ?? mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']}>
+          <QueryClientProvider client={queryClient}>
+            <DLSDatafilesTable datasetId="1" investigationId="2" />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'DLSDatafilesTable' });
     mount = createMount();
+    queryClient = new QueryClient();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -48,47 +77,70 @@ describe('DLS datafiles table component', () => {
     ];
     state.dgcommon.allIds = [1];
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    (useDatafileCount as jest.Mock).mockImplementation(() => 1);
+
+    // no need to mock?
+    (parseSearchToQuery as jest.Mock).mockImplementation(() => {
+      return {
+        view: 'table',
+        filters: {},
+        sort: {},
+      };
+    });
+    (useIds as jest.Mock).mockImplementation(() => [1]);
+    (useCart as jest.Mock).mockImplementation(() => []);
+    (useAddToCart as jest.Mock).mockImplementation(() => true);
+    (useRemoveFromCart as jest.Mock).mockImplementation(() => true);
+    (formatBytes as jest.Mock).mockImplementation(() => '1 B');
+    (useDatafilesInfinite as jest.Mock).mockImplementation(
+      () => state.dgcommon.data[0]
     );
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    (axios.delete as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
+    // could just spy on this
+    (useTextFilter as jest.Mock).mockImplementation(() => true);
+
+    // (axios.get as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: [] })
+    // );
+    // (axios.post as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // (axios.delete as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
     global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
     mount.cleanUp();
+    (useDatafileCount as jest.Mock).mockRestore();
+    (parseSearchToQuery as jest.Mock).mockRestore();
+    (useIds as jest.Mock).mockRestore();
+    (useCart as jest.Mock).mockRestore();
+    (useAddToCart as jest.Mock).mockRestore();
+    (useRemoveFromCart as jest.Mock).mockRestore();
+    (formatBytes as jest.Mock).mockRestore();
+    (useDatafilesInfinite as jest.Mock).mockRestore();
+    (useTextFilter as jest.Mock).mockRestore();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DLSDatafilesTable store={mockStore(state)} />);
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchDatafileCount and fetchDatafiles actions when watched store values change', () => {
-    let testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls useDatafileCount, useDatafilesInfinite and useIds on page load and when store values change', () => {
+    const wrapper = createMountedWrapper();
 
     // simulate clearTable action
-    testStore = mockStore({
+    const testStore = mockStore({
       ...state,
       dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatafileCountRequest(1));
-    expect(testStore.getActions()[1]).toEqual(fetchAllIdsRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
+    expect(useDatafileCount).toHaveBeenCalledTimes(2);
+    expect(useDatafilesInfinite).toHaveBeenCalledTimes(2);
+    expect(useIds).toHaveBeenCalledTimes(2);
   });
 
   it('sends fetchDatafiles action when loadMoreRows is called', () => {
@@ -104,13 +156,7 @@ describe('DLS datafiles table component', () => {
 
   it('sends filterTable action on text filter', () => {
     const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createMountedWrapper();
 
     const filterInput = wrapper
       .find('[aria-label="Filter by datafiles.name"] input')
@@ -130,13 +176,7 @@ describe('DLS datafiles table component', () => {
 
   it('sends filterTable action on date filter', () => {
     const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createMountedWrapper();
 
     const filterInput = wrapper.find(
       '[aria-label="datafiles.create_time date filter to"]'
@@ -156,13 +196,7 @@ describe('DLS datafiles table component', () => {
 
   it('sends sortTable action on sort', () => {
     const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createMountedWrapper();
 
     wrapper
       .find('[role="columnheader"] span[role="button"]')
@@ -174,13 +208,7 @@ describe('DLS datafiles table component', () => {
 
   it('sends addToCart action on unchecked checkbox click', () => {
     const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createMountedWrapper();
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
@@ -199,13 +227,7 @@ describe('DLS datafiles table component', () => {
     ];
 
     const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createMountedWrapper();
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
@@ -230,14 +252,7 @@ describe('DLS datafiles table component', () => {
       },
     ];
 
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createMountedWrapper();
 
     const selectAllCheckbox = wrapper
       .find('[aria-label="select all rows"]')
@@ -247,12 +262,8 @@ describe('DLS datafiles table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <MemoryRouter>
-        <DLSDatafilesTable store={mockStore(state)} datasetId="1" />
-      </MemoryRouter>
-    );
+  it.skip('renders details panel correctly', () => {
+    const wrapper = createWrapper();
     const detailsPanelWrapper = shallow(
       wrapper.prop('detailsPanel')({
         rowData: state.dgcommon.data[0],

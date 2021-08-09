@@ -10,13 +10,11 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
   AdvancedFilter,
-  addToCartRequest,
   dGCommonInitialState,
-  fetchFilterRequest,
-  filterTable,
-  removeFromCartRequest,
-  updatePage,
-  updateQueryParams,
+  useInvestigationsPaginated,
+  parseSearchToQuery,
+  useInvestigationCount,
+  useFilter,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -26,22 +24,35 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
-import axios from 'axios';
+// import axios from 'axios';
 import InvestigationCardView from './investigationCardView.component';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+jest.mock('datagateway-common');
 
 describe('Investigation - Card View', () => {
   let mount;
   let shallow;
   let mockStore;
-  let store;
   let state: StateType;
+  let queryClient: QueryClient;
 
   const createWrapper = (): ReactWrapper => {
-    store = mockStore(state);
+    return shallow(
+      <QueryClientProvider client={queryClient}>
+        <InvestigationCardView />
+      </QueryClientProvider>
+    );
+  };
+
+  const createMountedWrapper = (testStore?): ReactWrapper => {
+    const store = testStore ?? mockStore(state);
     return mount(
       <Provider store={store}>
-        <MemoryRouter>
-          <InvestigationCardView />
+        <MemoryRouter initialEntries={['/']}>
+          <QueryClientProvider client={queryClient}>
+            <InvestigationCardView />
+          </QueryClientProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -50,6 +61,8 @@ describe('Investigation - Card View', () => {
   beforeEach(() => {
     mount = createMount();
     shallow = createShallow();
+    queryClient = new QueryClient();
+
     mockStore = configureStore([thunk]);
     state = {
       dgcommon: {
@@ -80,15 +93,36 @@ describe('Investigation - Card View', () => {
       },
     };
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    (useInvestigationCount as jest.Mock).mockImplementation(() => 1);
+
+    // no need to mock?
+    (parseSearchToQuery as jest.Mock).mockImplementation(() => {
+      return {
+        view: 'card',
+        filters: {},
+        sort: {},
+        page: 1,
+        results: 1,
+      };
+    });
+    (useInvestigationsPaginated as jest.Mock).mockImplementation(
+      () => state.dgcommon.data[0]
     );
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    (axios.delete as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
+    (useFilter as jest.Mock).mockImplementation(() => {
+      return {
+        data: [],
+      };
+    });
+
+    // (axios.get as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: [] })
+    // );
+    // (axios.post as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // (axios.delete as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
     global.Date.now = jest.fn(() => 1);
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -96,15 +130,19 @@ describe('Investigation - Card View', () => {
 
   afterEach(() => {
     mount.cleanUp();
+    (useInvestigationCount as jest.Mock).mockRestore();
+    (useDatasetsPaginated as jest.Mock).mockRestore();
+    (useInvestigationsPaginated as jest.Mock).mockRestore();
+    (useFilter as jest.Mock).mockRestore();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<InvestigationCardView store={mockStore(state)} />);
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 
   it('addToCart dispatched on button click', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper.find(Card).find('button').simulate('click');
 
     expect(store.getActions().length).toEqual(5);
@@ -121,7 +159,7 @@ describe('Investigation - Card View', () => {
         parentEntities: [],
       },
     ];
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper.find(Card).find('button').simulate('click');
 
     expect(store.getActions().length).toEqual(5);
@@ -129,7 +167,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('pushFilters dispatched by date filter', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
@@ -152,7 +190,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('pushFilters dispatched by text filter', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
@@ -175,7 +213,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('pushSort dispatched when sort button clicked', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('investigations.title');
     button.simulate('click');
@@ -193,7 +231,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('pushPage dispatched when page number is no longer valid', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     store = mockStore({
       ...state,
       dgcommon: {
@@ -226,7 +264,7 @@ describe('Investigation - Card View', () => {
       'type.id': ['1', '2'],
       'facility.id': ['1', '2'],
     };
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
 
     const typePanel = wrapper.find(Accordion).first();
     typePanel.simulate('click');
@@ -248,7 +286,7 @@ describe('Investigation - Card View', () => {
       'facility.id': ['1', '2'],
     };
     state.dgcommon.query.filters = { 'type.id': ['1'] };
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper.find(Chip).at(4).find(SvgIcon).simulate('click');
 
     // The push has outdated query?
