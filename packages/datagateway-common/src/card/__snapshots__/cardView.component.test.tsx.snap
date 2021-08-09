@@ -86,7 +86,7 @@ exports[`Card View renders correctly 1`] = `
             </Styled(MuiBox)>
             <Styled(MuiBox)>
               <WithStyles(ForwardRef(List))
-                aria-label="sorting-by-list"
+                aria-label="sort-by-list"
                 component="nav"
               />
             </Styled(MuiBox)>
