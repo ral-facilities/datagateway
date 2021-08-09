@@ -20,13 +20,14 @@ import {
   FetchDatafileCountFailureType,
   RequestPayload,
   FetchDetailsSuccessPayload,
+  NotificationType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { source } from '../middleware/dgcommon.middleware';
-import { Datafile } from '../../app.types';
+import { Datafile, MicroFrontendId } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
 import { readSciGatewayToken } from '../../parseTokens';
 import handleICATError from '../../handleICATError';
@@ -315,6 +316,15 @@ export const fetchDatafileDetails = (
   };
 };
 
+export const downloadDatafileRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
+  type: DownloadDatafileRequestType,
+  payload: {
+    timestamp,
+  },
+});
+
 export const downloadDatafileSuccess = (): Action => ({
   type: DownloadDatafileSuccessType,
 });
@@ -328,15 +338,6 @@ export const downloadDatafileFailure = (
   },
 });
 
-export const downloadDatafileRequest = (
-  timestamp: number
-): ActionType<RequestPayload> => ({
-  type: DownloadDatafileRequestType,
-  payload: {
-    timestamp,
-  },
-});
-
 export const downloadDatafile = (
   datafileId: number,
   filename: string
@@ -347,22 +348,70 @@ export const downloadDatafile = (
 
     const { idsUrl } = getState().dgcommon.urls;
 
-    const params = {
-      sessionId: readSciGatewayToken().sessionId,
-      datafileIds: datafileId,
-      compress: false,
-      outname: filename,
-    };
+    const statusParams = new URLSearchParams();
+    statusParams.append('datafileIds', datafileId.toString());
 
-    const link = document.createElement('a');
-    link.href = `${idsUrl}/getData?${Object.entries(params)
-      .map(([key, value]) => `${key}=${value}`)
-      .join('&')}`;
+    // Check the status of the datafile.
+    await axios
+      .get(`${idsUrl}/getStatus`, {
+        params: {
+          sessionId: readSciGatewayToken().sessionId,
+          datafileIds: datafileId.toString(),
+        },
+      })
+      .then((response) => {
+        console.log(response);
 
-    link.style.display = 'none';
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+        if (response.data === 'ONLINE') {
+          const params = {
+            sessionId: readSciGatewayToken().sessionId,
+            datafileIds: datafileId,
+            compress: false,
+            outname: filename,
+          };
+
+          const link = document.createElement('a');
+          link.href = `${idsUrl}/getData?${Object.entries(params)
+            .map(([key, value]) => `${key}=${value}`)
+            .join('&')}`;
+
+          link.style.display = 'none';
+          link.target = '_blank';
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        } else if (response.data === 'RESTORING') {
+          document.dispatchEvent(
+            new CustomEvent(MicroFrontendId, {
+              detail: {
+                type: NotificationType,
+                payload: {
+                  severity: 'warning',
+                  message: 'Restoring file',
+                },
+              },
+            })
+          );
+        } else {
+          document.dispatchEvent(
+            new CustomEvent(MicroFrontendId, {
+              detail: {
+                type: NotificationType,
+                payload: {
+                  severity: 'error',
+                  message: 'File has been archived',
+                },
+              },
+            })
+          );
+        }
+
+        // Set to download success to reset downloading status
+        dispatch(downloadDatafileSuccess());
+      })
+      .catch((error) => {
+        handleICATError(error, true);
+        dispatch(downloadDatafileFailure(error));
+      });
   };
 };
