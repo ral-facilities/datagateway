@@ -371,8 +371,8 @@ const ViewRouting = React.memo(
 );
 ViewRouting.displayName = 'ViewRouting';
 
-const storeDataView = (view: ViewsType): void => {
-  if (view) localStorage.setItem('dataView', view);
+const storeDataView = (view: NonNullable<ViewsType>): void => {
+  localStorage.setItem('dataView', view);
 };
 
 const getView = (): string => {

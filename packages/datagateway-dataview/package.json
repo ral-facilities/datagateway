@@ -81,7 +81,8 @@
       "!src/setupTests.ts",
       "!src/**/*.d.ts",
       "!src/state/app.types.tsx"
-    ]
+    ],
+    "resetMocks": false
   },
   "lint-staged": {
     "src/**/*.{tsx,ts,js,jsx,json}": [
