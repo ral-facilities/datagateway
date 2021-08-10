@@ -245,6 +245,8 @@ describe('ISIS Investigations - Card View', () => {
     expect(usePushFilters).toHaveBeenCalledTimes(4);
   });
 
+  it.todo('constructs more information details panel #185-188');
+
   // TODO - TypeError: onSort is not a function
   it.skip('usePushSort dispatched when sort button clicked', () => {
     const wrapper = createMountedWrapper();
