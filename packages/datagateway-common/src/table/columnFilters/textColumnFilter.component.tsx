@@ -8,10 +8,10 @@ import { usePushFilters } from '../../api';
 const TextColumnFilter = (props: {
   label: string;
   onChange: (value: { value?: string | number; type: string } | null) => void;
-  value?: { value?: string | number; type: string };
+  value: { value?: string | number; type: string } | undefined;
 }): React.ReactElement => {
   const { onChange, label } = props;
-  const { value: propValue, type: propType } = props?.value ?? {};
+  const { value: propValue, type: propType } = props.value ?? {};
 
   const [inputValue, setInputValue] = React.useState(
     propValue ? propValue : ''

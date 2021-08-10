@@ -61,7 +61,7 @@ export function updateFilter({
 const DateColumnFilter = (props: {
   label: string;
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
-  value?: { startDate?: string; endDate?: string };
+  value: { startDate?: string; endDate?: string } | undefined;
 }): React.ReactElement => {
   const startDate = props.value?.startDate
     ? new Date(props.value.startDate)

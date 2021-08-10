@@ -32,7 +32,13 @@ describe('Table component', () => {
           label: string,
           dataKey: string
         ): React.ReactElement {
-          return <TextColumnFilter label={label} onChange={jest.fn()} />;
+          return (
+            <TextColumnFilter
+              label={label}
+              onChange={jest.fn()}
+              value={undefined}
+            />
+          );
         },
       },
       {

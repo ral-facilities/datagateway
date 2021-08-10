@@ -24,7 +24,7 @@ describe('Data column header component', () => {
     label: string,
     dataKey: string
   ): React.ReactElement => (
-    <TextColumnFilter label={label} onChange={jest.fn()} />
+    <TextColumnFilter label={label} onChange={jest.fn()} value={undefined} />
   );
 
   beforeEach(() => {

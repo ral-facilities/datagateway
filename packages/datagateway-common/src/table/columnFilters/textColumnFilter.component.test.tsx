@@ -180,7 +180,7 @@ describe('Text filter component', () => {
   });
 
   it('updates the input value when the value prop changes', () => {
-    const baseProps = { label: 'test', onChange: jest.fn() };
+    const baseProps = { label: 'test', onChange: jest.fn(), value: undefined };
 
     const wrapper = mount(<TextColumnFilter {...baseProps} />);
 
