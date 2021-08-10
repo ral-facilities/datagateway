@@ -5,8 +5,6 @@ import {
   Datafile,
   dGCommonInitialState,
   downloadDatafileRequest,
-  // fetchAllIdsRequest,
-  // fetchDatafileCountRequest,
   fetchDatafilesRequest,
   filterTable,
   removeFromCartRequest,

@@ -3,15 +3,10 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
   AdvancedFilter,
-  addToCartRequest,
   dGCommonInitialState,
-  fetchInvestigationCountRequest,
-  fetchInvestigationDetailsRequest,
-  fetchInvestigationsRequest,
-  filterTable,
-  removeFromCartRequest,
-  updatePage,
-  updateQueryParams,
+  useISISInvestigationsPaginated,
+  parseSearchToQuery,
+  useISISInvestigationCount,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -21,26 +16,43 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import { initialState } from '../../../state/reducers/dgdataview.reducer';
-import axios from 'axios';
+// import axios from 'axios';
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+jest.mock('datagateway-common');
 
 describe('ISIS Investigations - Card View', () => {
   let mount;
   let shallow;
   let mockStore;
-  let store;
   let state: StateType;
+  let queryClient: QueryClient;
 
   const createWrapper = (): ReactWrapper => {
-    store = mockStore(state);
+    return shallow(
+      <QueryClientProvider client={queryClient}>
+        <ISISInvestigationsCardView
+          instrumentId="1"
+          instrumentChildId="1"
+          studyHierarchy={false}
+        />
+      </QueryClientProvider>
+    );
+  };
+
+  const createMountedWrapper = (testStore?): ReactWrapper => {
+    const store = testStore ?? mockStore(state);
     return mount(
       <Provider store={store}>
-        <MemoryRouter>
-          <ISISInvestigationsCardView
-            instrumentId="1"
-            instrumentChildId="1"
-            studyHierarchy={false}
-          />
+        <MemoryRouter initialEntries={['/']}>
+          <QueryClientProvider client={queryClient}>
+            <ISISInvestigationsCardView
+              instrumentId="1"
+              instrumentChildId="1"
+              studyHierarchy={false}
+            />
+          </QueryClientProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -49,6 +61,8 @@ describe('ISIS Investigations - Card View', () => {
   beforeEach(() => {
     mount = createMount();
     shallow = createShallow();
+    queryClient = new QueryClient();
+
     mockStore = configureStore([thunk]);
     state = {
       dgcommon: {
@@ -79,15 +93,31 @@ describe('ISIS Investigations - Card View', () => {
       },
     };
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    (useISISInvestigationCount as jest.Mock).mockImplementation(() => 1);
+
+    // no need to mock?
+    (parseSearchToQuery as jest.Mock).mockImplementation(() => {
+      return {
+        view: 'card',
+        filters: {},
+        sort: {},
+        page: 1,
+        results: 1,
+      };
+    });
+    (useISISInvestigationsPaginated as jest.Mock).mockImplementation(
+      () => state.dgcommon.data[0]
     );
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    (axios.delete as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
+
+    // (axios.get as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: [] })
+    // );
+    // (axios.post as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // (axios.delete as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
     global.Date.now = jest.fn(() => 1);
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -95,21 +125,18 @@ describe('ISIS Investigations - Card View', () => {
 
   afterEach(() => {
     mount.cleanUp();
+    (useISISInvestigationCount as jest.Mock).mockRestore();
+    (parseSearchToQuery as jest.Mock).mockRestore();
+    (useISISInvestigationsPaginated as jest.Mock).mockRestore();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <ISISInvestigationsCardView
-        store={mockStore(state)}
-        instrumentId="1"
-        facilityCycleId="1"
-      />
-    );
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 
   it('fetchCount and Data dispatched on load', () => {
-    createWrapper();
+    createMountedWrapper();
     expect(store.getActions().length).toEqual(2);
     expect(store.getActions()[0]).toEqual(fetchInvestigationCountRequest(1));
     expect(store.getActions()[1]).toEqual(fetchInvestigationsRequest(1));
@@ -134,7 +161,7 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('addToCart dispatched on button click', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper.find(Card).find('button').simulate('click');
 
     expect(store.getActions().length).toEqual(3);
@@ -151,7 +178,7 @@ describe('ISIS Investigations - Card View', () => {
         parentEntities: [],
       },
     ];
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper.find(Card).find('button').simulate('click');
 
     expect(store.getActions().length).toEqual(3);
@@ -159,7 +186,7 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('pushFilters dispatched by date filter', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
@@ -182,7 +209,7 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('pushFilters dispatched by text filter', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
@@ -205,7 +232,7 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('pushSort dispatched when sort button clicked', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('investigations.title');
     button.simulate('click');
@@ -223,7 +250,7 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('pushPage dispatched when page number is no longer valid', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     store = mockStore({
       ...state,
       dgcommon: {
@@ -252,7 +279,7 @@ describe('ISIS Investigations - Card View', () => {
   it.todo('pushResults dispatched onChange');
 
   it('fetchDetails dispatched when details panel expanded', () => {
-    const wrapper = createWrapper();
+    const wrapper = createMountedWrapper();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()

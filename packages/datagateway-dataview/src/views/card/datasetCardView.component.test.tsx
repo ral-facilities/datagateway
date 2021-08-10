@@ -3,12 +3,7 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
   AdvancedFilter,
-  addToCartRequest,
   dGCommonInitialState,
-  filterTable,
-  removeFromCartRequest,
-  updatePage,
-  updateQueryParams,
   useDatasetsPaginated,
   parseSearchToQuery,
   useDatasetCount,
