@@ -224,8 +224,10 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
 
   it('Includes view in url for generic datafiles route', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(genericRoutes['datafiles']);
-    state.dgcommon.query.view = 'card';
+    state.router.location = createLocation({
+      pathname: genericRoutes['datafiles'],
+      search: '?view=card',
+    });
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
