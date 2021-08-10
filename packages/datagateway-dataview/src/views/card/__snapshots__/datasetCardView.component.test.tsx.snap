@@ -2,52 +2,32 @@
 
 exports[`Dataset - Card View renders correctly 1`] = `
 <ContextProvider
-  value={null}
+  value={false}
 >
-  <DatasetCardView
-    addToCart={[Function]}
-    cartItems={Array []}
-    data={
-      Array [
-        Object {
-          "createTime": "2019-07-23",
-          "id": 1,
-          "modTime": "2019-07-23",
-          "name": "Test 1",
-          "size": 1,
+  <ContextProvider
+    value={
+      QueryClient {
+        "defaultOptions": Object {},
+        "mutationCache": MutationCache {
+          "config": Object {},
+          "listeners": Array [],
+          "mutationId": 0,
+          "mutations": Array [],
         },
-      ]
-    }
-    fetchCount={[Function]}
-    fetchData={[Function]}
-    investigationId="1"
-    loadedCount={true}
-    loadedData={true}
-    pushFilters={[Function]}
-    pushPage={[Function]}
-    pushQuery={[Function]}
-    query={
-      Object {
-        "filters": Object {},
-        "page": null,
-        "results": null,
-        "search": null,
-        "sort": Object {},
-        "view": null,
+        "mutationDefaults": Array [],
+        "queryCache": QueryCache {
+          "config": Object {},
+          "listeners": Array [],
+          "queries": Array [],
+          "queriesMap": Object {},
+        },
+        "queryDefaults": Array [],
       }
     }
-    removeFromCart={[Function]}
-    store={
-      Object {
-        "clearActions": [Function],
-        "dispatch": [Function],
-        "getActions": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-      }
-    }
-    totalDataCount={1}
-  />
+  >
+    <DatasetCardView
+      investigationId="1"
+    />
+  </ContextProvider>
 </ContextProvider>
 `;
