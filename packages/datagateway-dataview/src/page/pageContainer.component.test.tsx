@@ -79,9 +79,13 @@ describe('PageContainer - Tests', () => {
   };
 
   beforeEach(() => {
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (url.includes('count')) {
+        return Promise.resolve({ data: 0 });
+      } else {
+        return Promise.resolve({ data: [] });
+      }
+    });
     queryClient = new QueryClient();
     history = createMemoryHistory({
       initialEntries: ['/'],
