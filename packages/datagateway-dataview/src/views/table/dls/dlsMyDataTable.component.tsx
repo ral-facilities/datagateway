@@ -196,7 +196,7 @@ const DLSMyDataTable = (): React.ReactElement => {
     <Table
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
-      totalRowCount={totalDataCount}
+      totalRowCount={totalDataCount ?? 0}
       sort={sort}
       onSort={pushSort}
       detailsPanel={VisitDetailsPanel}

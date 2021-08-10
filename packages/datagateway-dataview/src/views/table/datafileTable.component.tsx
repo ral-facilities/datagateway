@@ -221,7 +221,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
       loading={addToCartLoading || removeFromCartLoading}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
-      totalRowCount={totalDataCount}
+      totalRowCount={totalDataCount ?? 0}
       sort={sort}
       onSort={pushSort}
       selectedRows={selectedRows}
