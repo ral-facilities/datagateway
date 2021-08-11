@@ -124,7 +124,7 @@ const ISISDatasetsTable = (
   const sizeQueries = useDatasetSizes(data);
 
   const aggregatedData: Dataset[] = React.useMemo(
-    () => data?.pages.flat() ?? [],
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
     [data]
   );
 

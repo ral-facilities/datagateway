@@ -167,7 +167,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   );
 
   const aggregatedData: Datafile[] = React.useMemo(
-    () => data?.pages.flat() ?? [],
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
     [data]
   );
 
@@ -231,7 +231,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
       disableSelectAll={!selectAllSetting}
       detailsPanel={DatafileDetailsPanel}
       actions={[
-        //extract this later
+        // TODO - extract this later
         function downloadButton({ rowData }: TableActionProps) {
           const { id, location } = rowData as Datafile;
           if (location) {

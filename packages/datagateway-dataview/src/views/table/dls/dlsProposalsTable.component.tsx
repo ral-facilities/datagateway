@@ -38,7 +38,7 @@ const DLSProposalsTable = (): React.ReactElement => {
   ]);
 
   const aggregatedData: Investigation[] = React.useMemo(
-    () => data?.pages.flat() ?? [],
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
     [data]
   );
 

@@ -168,7 +168,7 @@ const InvestigationSearchTable = (
   } = useRemoveFromCart('investigation');
 
   const aggregatedData: Investigation[] = React.useMemo(
-    () => data?.pages.flat() ?? [],
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
     [data]
   );
 

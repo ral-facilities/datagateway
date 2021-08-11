@@ -63,7 +63,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
   ]);
 
   const aggregatedData: Study[] = React.useMemo(
-    () => data?.pages.flat() ?? [],
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
     [data]
   );
 

@@ -154,7 +154,7 @@ const DatafileSearchTable = (
   } = useRemoveFromCart('datafile');
 
   const aggregatedData: Dataset[] = React.useMemo(
-    () => data?.pages.flat() ?? [],
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
     [data]
   );
 
