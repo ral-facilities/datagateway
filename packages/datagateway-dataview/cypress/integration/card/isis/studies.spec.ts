@@ -7,7 +7,7 @@ describe('ISIS - Studies Cards', () => {
       ['@getStudiesCount', '@getStudiesOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="container-view-button"]')
+    cy.get('[aria-label="page-view-button"]')
       .click()
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,

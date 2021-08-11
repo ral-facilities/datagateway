@@ -7,7 +7,7 @@ describe('DLS - Proposals Cards', () => {
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="container-view-button"]')
+    cy.get('[aria-label="page-view-button"]')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,

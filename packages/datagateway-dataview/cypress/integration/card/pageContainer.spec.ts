@@ -11,7 +11,7 @@ describe('PageContainer Component', () => {
       ],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="container-view-button"]')
+    cy.get('[aria-label="page-view-button"]')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
@@ -22,40 +22,40 @@ describe('PageContainer Component', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
 
-    cy.get('[aria-label="container-breadcrumbs"]').should('exist');
+    cy.get('[aria-label="page-breadcrumbs"]').should('exist');
 
-    cy.get('[aria-label="container-view-count"]').should('exist');
+    cy.get('[aria-label="view-count"]').should('exist');
 
-    cy.get('[aria-label="container-view-search"]').should('exist');
+    cy.get('[aria-label="view-search"]').should('exist');
 
-    cy.get('[aria-label="container-view-cart"]').should('exist');
+    cy.get('[aria-label="view-cart"]').should('exist');
 
-    cy.get('[aria-label="container-view"]').should('exist');
+    cy.get('[aria-label="page-view"]').should('exist');
   });
 
   it('should display correct entity count', () => {
     // Check that the entity count has displayed correctly.
-    cy.get('[aria-label="container-view-count"]')
+    cy.get('[aria-label="view-count"]')
       .should('be.visible')
       .contains('Results: 239');
   });
 
   it('should display number of items in cart correctly', () => {
     // Check that the download cart has displayed correctly.
-    cy.get('[aria-label="container-view-cart-badge"]', { timeout: 10000 })
+    cy.get('[aria-label="view-cart-badge"]', { timeout: 10000 })
       .children()
       .should('be.hidden');
 
     cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(0).click();
 
-    cy.get('[aria-label="container-view-cart-badge"]', { timeout: 10000 })
+    cy.get('[aria-label="view-cart-badge"]', { timeout: 10000 })
       .children()
       .should('not.be.hidden')
       .contains('1');
 
     cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(1).click();
 
-    cy.get('[aria-label="container-view-cart-badge"]', { timeout: 10000 })
+    cy.get('[aria-label="view-cart-badge"]', { timeout: 10000 })
       .children()
       .should('not.be.hidden')
       .contains('2');

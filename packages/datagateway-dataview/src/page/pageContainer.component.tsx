@@ -153,7 +153,7 @@ export const NavBar = (props: {
           className="tour-dataview-breadcrumbs"
           item
           xs
-          aria-label="container-breadcrumbs"
+          aria-label="page-breadcrumbs"
         >
           {/* don't show breadcrumbs on /my-data - only on browse */}
           <Route
@@ -170,7 +170,7 @@ export const NavBar = (props: {
           item
           sm={2}
           xs={3}
-          aria-label="container-view-count"
+          aria-label="view-count"
         >
           <Route
             exact
@@ -212,7 +212,7 @@ export const NavBar = (props: {
           <IconButton
             className="tour-dataview-search-icon"
             onClick={props.navigateToSearch}
-            aria-label="container-view-search"
+            aria-label="view-search"
             style={{ margin: 'auto' }}
           >
             <SearchIcon />
@@ -230,7 +230,7 @@ export const NavBar = (props: {
           <IconButton
             className="tour-dataview-cart-icon"
             onClick={props.navigateToDownload}
-            aria-label="container-view-cart"
+            aria-label="view-cart"
             style={{ margin: 'auto' }}
           >
             <Badge
@@ -238,7 +238,7 @@ export const NavBar = (props: {
                 props.cartItems.length > 0 ? props.cartItems.length : null
               }
               color="primary"
-              aria-label="container-view-cart-badge"
+              aria-label="view-cart-badge"
             >
               <ShoppingCartIcon />
             </Badge>
@@ -269,7 +269,7 @@ const ViewButton = (props: {
     <div className={classes.root}>
       <Button
         className="tour-dataview-view-button"
-        aria-label="container-view-button"
+        aria-label="page-view-button"
         variant="contained"
         color="primary"
         size="small"
@@ -551,7 +551,7 @@ class PageContainer extends React.Component<
                 )}
 
                 {/* Hold the view for remainder of the page */}
-                <Grid item xs={12} aria-label="container-view">
+                <Grid item xs={12} aria-label="page-view">
                   {document.getElementById('datagateway-dataview') && (
                     <ViewRouting
                       view={this.props.query.view}

@@ -120,10 +120,7 @@ describe('PageContainer - Tests', () => {
       </MemoryRouter>
     );
 
-    wrapper
-      .find('[aria-label="container-view-search"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="view-search"]').first().simulate('click');
 
     expect(testStore.getActions().length).toEqual(3);
     expect(testStore.getActions()[2]).toEqual(push('/search/data'));
@@ -138,10 +135,7 @@ describe('PageContainer - Tests', () => {
       </MemoryRouter>
     );
 
-    wrapper
-      .find('[aria-label="container-view-cart"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="view-cart"]').first().simulate('click');
 
     expect(testStore.getActions().length).toEqual(3);
     expect(testStore.getActions()[2]).toEqual(push('/download'));
@@ -274,21 +268,18 @@ describe('PageContainer - Tests', () => {
       </Provider>
     );
 
-    expect(wrapper.find('[aria-label="container-view"]').exists()).toBeTruthy();
+    expect(wrapper.find('[aria-label="page-view"]').exists()).toBeTruthy();
     expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
+      wrapper.find('[aria-label="page-view-button"]').first().text()
     ).toEqual('app.view_cards');
 
     // Click view button
-    wrapper
-      .find('[aria-label="container-view-button"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="page-view-button"]').first().simulate('click');
     wrapper.update();
 
     // Check that the text on the button has changed
     expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
+      wrapper.find('[aria-label="page-view-button"]').first().text()
     ).toEqual('app.view_table');
   });
 
