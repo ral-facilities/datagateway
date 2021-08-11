@@ -220,16 +220,15 @@ describe('ISIS - Datasets Table', () => {
     });
   });
 
-  // TODO: Data mismatch issue (#782)
-  describe.skip('should be able to view details', () => {
+  describe('should be able to view details', () => {
     beforeEach(() => {
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '4.79 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '5.78 GB').should(
         'exist'
       );
 
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '6.07 GB').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '5.15 GB').should(
         'exist'
       );
     });

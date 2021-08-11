@@ -90,15 +90,14 @@ describe('ISIS - FacilityCycles Table', () => {
     });
   });
 
-  // TODO: Data mismatch issue (#782)
-  describe.skip('should be able to sort by', () => {
+  describe('should be able to sort by', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2000-04-02 00:00:00+01:00'
+        '2000-04-02 00:00:00+00:00'
       );
     });
 
@@ -113,7 +112,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2019-08-04 00:00:00+01:00'
+        '2019-08-04 00:00:00+00:00'
       );
     });
 
@@ -131,7 +130,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2000-04-02 00:00:00+01:00'
+        '2000-04-02 00:00:00+00:00'
       );
     });
 
@@ -140,7 +139,7 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2000-04-02 00:00:00+01:00'
+        '2000-04-02 00:00:00+00:00'
       );
     });
   });
@@ -154,7 +153,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        '2010-08-04 00:00:00+01:00'
+        '2010-08-04 00:00:00+00:00'
       );
     });
 
@@ -180,7 +179,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-rowcount="19"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2010-06-03 00:00:00+01:00'
+        '2010-06-03 00:00:00+00:00'
       );
     });
 
