@@ -1,6 +1,6 @@
-import { createMount } from '@material-ui/core/test-utils';
-// import axios from 'axios';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
 import {
+  Datafile,
   dGCommonInitialState,
   useDatafileCount,
   useIds,
@@ -8,9 +8,6 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useDatafilesInfinite,
-  useTextFilter,
-  useDateFilter,
-  usePushSort,
   downloadDatafile,
 } from 'datagateway-common';
 import React from 'react';
@@ -30,51 +27,29 @@ jest.mock('datagateway-common', () => {
   return {
     __esModule: true,
     ...originalModule,
-    useDatafileCount: jest.fn().mockReturnValue({
-      data: 1,
-      isLoading: 0,
-    }),
-    useDatafilesInfinite: jest.fn().mockReturnValue({
-      data: [
-        {
-          id: 1,
-          name: 'Test 1',
-          location: '/test1',
-          fileSize: 1,
-          modTime: '2019-07-23',
-          createTime: '2019-07-23',
-        },
-      ],
-    }),
-    useIds: jest.fn().mockReturnValue([1]),
-    useCart: jest.fn().mockReturnValue({ data: [] }),
-    useAddToCart: jest.fn().mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: 0,
-    }),
-    useRemoveFromCart: jest.fn().mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: 0,
-    }),
-    usePushSort: jest.fn(),
-    useTextFilter: jest.fn(),
-    useDateFilter: jest.fn(),
+    useDatafileCount: jest.fn(),
+    useDatafilesInfinite: jest.fn(),
+    useIds: jest.fn(),
+    useCart: jest.fn(),
+    useAddToCart: jest.fn(),
+    useRemoveFromCart: jest.fn(),
     downloadDatafile: jest.fn(),
   };
 });
 
 describe('Datafile table component', () => {
+  let shallow;
   let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
-  let queryClient: QueryClient;
+  let rowData: Datafile[];
 
-  const createWrapper = (testStore?): ReactWrapper => {
-    const store = testStore ?? mockStore(state);
+  const createWrapper = (): ReactWrapper => {
+    const store = mockStore(state);
     return mount(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={new QueryClient()}>
             <DatafileTable datasetId="1" investigationId="2" />
           </QueryClientProvider>
         </MemoryRouter>
@@ -83,17 +58,9 @@ describe('Datafile table component', () => {
   };
 
   beforeEach(() => {
+    shallow = createShallow();
     mount = createMount();
-    queryClient = new QueryClient();
-
-    mockStore = configureStore([thunk]);
-    state = JSON.parse(
-      JSON.stringify({
-        dgcommon: dGCommonInitialState,
-        dgdataview: dgDataViewInitialState,
-      })
-    );
-    state.dgcommon.data = [
+    rowData = [
       {
         id: 1,
         name: 'Test 1',
@@ -103,18 +70,35 @@ describe('Datafile table component', () => {
         createTime: '2019-07-23',
       },
     ];
-    state.dgcommon.allIds = [1];
 
-    // (axios.get as jest.Mock).mockImplementation(() =>
-    //   Promise.resolve({ data: [] })
-    // );
-    // (axios.post as jest.Mock).mockImplementation(() =>
-    //   Promise.resolve({ data: {} })
-    // );
-    // (axios.delete as jest.Mock).mockImplementation(() =>
-    //   Promise.resolve({ data: {} })
-    // );
-    // global.Date.now = jest.fn(() => 1);
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: dGCommonInitialState,
+        dgdataview: dgDataViewInitialState,
+      })
+    );
+
+    (useCart as jest.Mock).mockReturnValue({
+      data: [],
+    });
+    (useDatafileCount as jest.Mock).mockReturnValue({
+      data: 0,
+    });
+    (useDatafilesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+    (useIds as jest.Mock).mockReturnValue({
+      data: [1],
+    });
+    (useAddToCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
   });
 
   afterEach(() => {
@@ -135,7 +119,6 @@ describe('Datafile table component', () => {
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalled();
     expect(useRemoveFromCart).toHaveBeenCalled();
-    expect(usePushSort).toHaveBeenCalled();
   });
 
   it('calls useDatafileCount, useDatafilesInfinite and useIds when store values change', () => {
@@ -160,79 +143,22 @@ describe('Datafile table component', () => {
     expect(useIds).toHaveBeenCalledTimes(2);
   });
 
-  // TODO - needs to be adapted
-  it.skip('calls useDatafilesInfinite when loadMoreRows is called', () => {
+  it('calls useDatafilesInfinite when loadMoreRows is called', () => {
+    const fetchNextPage = jest.fn();
+    (useDatafilesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage,
+    });
     const wrapper = createWrapper();
-    expect(useDatafilesInfinite).toHaveBeenCalledTimes(1);
-    wrapper.find(DatafileTable).simulate('scroll', { deltaY: 500 });
-    // wrapper.instance.loadMoreRows({ startIndex: 50, stopIndex: 74 });
-    expect(useDatafilesInfinite).toHaveBeenCalledTimes(2);
-  });
 
-  // TODO - Lots of these base functionality are tested in table.component so may not be needed
-  it.skip('useTextFilter dispatched on text filter', () => {
-    const wrapper = createWrapper();
-    expect(useTextFilter).toBeCalledTimes(1);
-    const filterInput = wrapper
-      .find('[aria-label="Filter by datafiles.name"] input')
-      .first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(useTextFilter).toBeCalledTimes(2);
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(useTextFilter).toBeCalledTimes(3);
-  });
-
-  it.skip('useDateFilter dispatched on date filter', () => {
-    const wrapper = createWrapper();
-    expect(useDateFilter).toBeCalledTimes(1);
-
-    const filterInput = wrapper.find(
-      '[aria-label="datafiles.modified_time date filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
-
-    expect(useDateFilter).toBeCalledTimes(2);
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(useDateFilter).toBeCalledTimes(3);
-  });
-
-  it.skip('useAddToCart dispatched on unchecked checkbox click', () => {
-    const wrapper = createWrapper();
-    expect(useAddToCart).toBeCalledTimes(1);
-
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
-
-    expect(useAddToCart).toBeCalledTimes(2);
-  });
-
-  it.skip('useRemoveFromCart dispatched on checked checkbox click', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'datafile',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
+    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
+      startIndex: 50,
+      stopIndex: 74,
     });
 
-    const wrapper = createWrapper();
-    expect(useRemoveFromCart).toBeCalledTimes(1);
-
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
-
-    expect(useRemoveFromCart).toBeCalledTimes(2);
+    expect(fetchNextPage).toHaveBeenCalledWith({
+      pageParam: { startIndex: 50, stopIndex: 74 },
+    });
   });
 
   it('selected rows only considers relevant cart items', () => {
@@ -270,7 +196,7 @@ describe('Datafile table component', () => {
 
     wrapper.find('button[aria-label="datafiles.download"]').simulate('click');
 
-    expect(downloadDatafile).toBeCalledTimes(1);
+    expect(downloadDatafile).toHaveBeenCalled();
   });
 
   it("doesn't display download button for datafiles with no location", () => {
@@ -291,27 +217,13 @@ describe('Datafile table component', () => {
     ).toHaveLength(0);
   });
 
-  // TODO - should this be a snapshot test?
   it('renders details panel correctly', () => {
-    const wrapper = mount(
+    const wrapper = shallow(
       <DatafileDetailsPanel
-        rowData={state.dgcommon.data[0]}
+        rowData={rowData[0]}
         detailsPanelResize={jest.fn()}
       />
     );
-    expect(wrapper.exists(DatafileDetailsPanel)).toBeTruthy();
+    expect(wrapper).toMatchSnapshot();
   });
-
-  // Not necessary as this should be a test of the formatBytes function
-  // it('renders file size as bytes', () => {
-  //   const wrapper = mount(
-  //     <Provider store={mockStore(state)}>
-  //       <MemoryRouter>
-  //         <DatafileTable datasetId="1" />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
-
-  //   expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('1 B');
-  // });
 });
