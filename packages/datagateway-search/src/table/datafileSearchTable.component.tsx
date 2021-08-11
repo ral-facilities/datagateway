@@ -46,7 +46,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const DatafileDetailsPanel = (props: DetailsPanelProps): React.ReactElement => {
+export const DatafileDetailsPanel = (
+  props: DetailsPanelProps
+): React.ReactElement => {
   const classes = useStyles();
   const [t] = useTranslation();
   const datafileData = props.rowData as Datafile;

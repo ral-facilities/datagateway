@@ -76,7 +76,8 @@
       "!src/index.tsx",
       "!src/serviceWorker.ts",
       "!src/setupTests.js"
-    ]
+    ],
+    "resetMocks": false
   },
   "lint-staged": {
     "src/**/*.{tsx,ts,js,jsx,json}": [

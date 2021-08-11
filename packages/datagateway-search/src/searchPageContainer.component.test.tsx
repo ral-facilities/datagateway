@@ -1,8 +1,5 @@
 import React from 'react';
 import { ReactWrapper } from 'enzyme';
-// history package is part of react-router, which we depend on
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createLocation } from 'history';
 
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
@@ -10,7 +7,7 @@ import { StateType } from './state/app.types';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import { MemoryRouter } from 'react-router';
 import SearchPageContainer from './searchPageContainer.component';
 import { LinearProgress } from '@material-ui/core';
@@ -23,41 +20,32 @@ import {
   setDatasetTab,
   setDatafileTab,
 } from './state/actions/actions';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 jest.mock('loglevel');
 
 describe('SearchPageContainer - Tests', () => {
-  let shallow;
   let state: StateType;
   let mount;
 
-  const createWrapper = (path: string): ReactWrapper => {
-    const mockStore = configureStore([thunk]);
-    return shallow(
-      <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
-        <SearchPageContainer store={mockStore(state)} />
-      </MemoryRouter>
-    );
-  };
-
-  const createMountedWrapper = (path = '/search/data'): ReactWrapper => {
+  const createWrapper = (path = '/search/data'): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     return mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
-          <SearchPageContainer />
+          <QueryClientProvider client={new QueryClient()}>
+            <SearchPageContainer />
+          </QueryClientProvider>
         </MemoryRouter>
       </Provider>
     );
   };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'Grid' });
     mount = createMount();
 
     const dGSearchInitialState = {
       searchText: '',
-      text: '',
       selectDate: {
         startDate: null,
         endDate: null,
@@ -71,16 +59,10 @@ describe('SearchPageContainer - Tests', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
-        currentTab: 'none',
+        currentTab: 'investigation',
       },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
-      settingsLoaded: true,
       sideLayout: false,
+      settingsLoaded: true,
     };
 
     state = {
@@ -104,9 +86,13 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
+    (axios.get as jest.Mock).mockImplementation((url) => {
+      if (url.includes('count')) {
+        return Promise.resolve({ data: 0 });
+      } else {
+        return Promise.resolve({ data: [] });
+      }
+    });
   });
 
   it('renders searchPageContainer correctly', () => {
@@ -116,9 +102,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('renders correctly at /search/data route', () => {
-    const wrapper = createWrapper('/search/data');
+    const wrapper = createWrapper();
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.exists('SearchBoxContainer')).toBeTruthy();
   });
 
   it('renders side layout correctly', () => {
@@ -132,34 +118,45 @@ describe('SearchPageContainer - Tests', () => {
       })
     );
 
-    const wrapper = createWrapper('/search/data');
+    const wrapper = createWrapper();
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.exists('SearchBoxContainerSide')).toBeTruthy();
   });
 
-  it('do not display loading bar loading false', () => {
-    const wrapper = createWrapper('/search/data');
+  it('display search table container when search request sent', async () => {
+    const wrapper = createWrapper();
 
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('#container-search-table')).toBeTruthy();
     expect(wrapper.exists(LinearProgress)).toBeFalsy();
   });
 
-  it('display loading bar when loading true', () => {
-    state = JSON.parse(
-      JSON.stringify({
-        dgcommon: { ...dGCommonInitialState, loading: true },
-        dgsearch: {
-          ...dgSearchInitialState,
-          requestReceived: true,
-        },
-
-        router: {
-          action: 'POP',
-          location: createLocation('/'),
-        },
-      })
+  it('display loading bar when loading true', async () => {
+    (axios.get as jest.Mock).mockImplementation(
+      () =>
+        new Promise((resolve, reject) => {
+          // do nothing, simulating pending promise
+          // to test loading state
+        })
     );
 
-    const wrapper = createWrapper('/search/data');
+    const wrapper = createWrapper();
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     expect(wrapper.exists(LinearProgress)).toBeTruthy();
   });
@@ -174,7 +171,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -212,7 +209,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -250,7 +247,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -281,7 +278,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -317,7 +314,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -353,7 +350,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -383,7 +380,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -419,7 +416,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -455,7 +452,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -477,7 +474,7 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if date and search text properties are not in use', () => {
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -509,7 +506,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -541,7 +538,7 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createMountedWrapper();
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -580,7 +577,9 @@ describe('SearchPageContainer - Tests', () => {
         <MemoryRouter
           initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
         >
-          <SearchPageContainer />
+          <QueryClientProvider client={new QueryClient()}>
+            <SearchPageContainer />
+          </QueryClientProvider>
         </MemoryRouter>
       </Provider>
     );

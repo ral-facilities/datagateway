@@ -116,6 +116,7 @@
       "!src/index.tsx",
       "!src/serviceWorker.ts",
       "!src/setupTests.tsx"
-    ]
+    ],
+    "resetMocks": false
   }
 }
