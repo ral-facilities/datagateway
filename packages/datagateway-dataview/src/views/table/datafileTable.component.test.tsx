@@ -12,7 +12,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
@@ -20,6 +20,7 @@ import { initialState as dgDataViewInitialState } from '../../state/reducers/dgd
 import DatafileTable, { DatafileDetailsPanel } from './datafileTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
+import { createMemoryHistory, History } from 'history';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -43,16 +44,17 @@ describe('Datafile table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Datafile[];
+  let history: History;
 
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
     return mount(
       <Provider store={store}>
-        <MemoryRouter>
+        <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <DatafileTable datasetId="1" investigationId="2" />
           </QueryClientProvider>
-        </MemoryRouter>
+        </Router>
       </Provider>
     );
   };
@@ -70,6 +72,7 @@ describe('Datafile table component', () => {
         createTime: '2019-07-23',
       },
     ];
+    history = createMemoryHistory();
 
     state = JSON.parse(
       JSON.stringify({
@@ -108,39 +111,52 @@ describe('Datafile table component', () => {
 
   it('renders correctly', () => {
     const wrapper = createWrapper();
-    expect(wrapper.exists(DatafileTable)).toBeTruthy();
+    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
   });
 
-  it('calls required query, filter and sort functions on page load', () => {
+  it('calls the correct data fetching hooks on load', () => {
+    const datasetId = '1';
+    const investigationId = '2';
     createWrapper();
-    expect(useDatafileCount).toHaveBeenCalled();
-    expect(useDatafilesInfinite).toHaveBeenCalled();
-    expect(useIds).toHaveBeenCalled();
-    expect(useCart).toHaveBeenCalled();
-    expect(useAddToCart).toHaveBeenCalled();
-    expect(useRemoveFromCart).toHaveBeenCalled();
-  });
-
-  it('calls useDatafileCount, useDatafilesInfinite and useIds when store values change', () => {
-    const wrapper = createWrapper();
-    expect(useDatafileCount).toHaveBeenCalledTimes(1);
-    expect(useDatafilesInfinite).toHaveBeenCalledTimes(1);
-    expect(useIds).toHaveBeenCalledTimes(1);
-
-    // simulate clearTable action
-    const testStore = mockStore({
-      ...state,
-      dgdataview: {
-        ...state.dgdataview,
-        sort: {},
-        filters: {},
+    expect(useDatafileCount).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
       },
-    });
-    wrapper.setProps({ store: testStore });
-
-    expect(useDatafileCount).toHaveBeenCalledTimes(2);
-    expect(useDatafilesInfinite).toHaveBeenCalledTimes(2);
-    expect(useIds).toHaveBeenCalledTimes(2);
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'dataset.investigation.id': { eq: investigationId },
+        }),
+      },
+    ]);
+    expect(useDatafilesInfinite).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'dataset.investigation.id': { eq: investigationId },
+        }),
+      },
+    ]);
+    expect(useIds).toHaveBeenCalledWith('datafile', [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'dataset.investigation.id': { eq: investigationId },
+        }),
+      },
+    ]);
+    expect(useCart).toHaveBeenCalled();
+    expect(useAddToCart).toHaveBeenCalledWith('datafile');
+    expect(useRemoveFromCart).toHaveBeenCalledWith('datafile');
   });
 
   it('calls useDatafilesInfinite when loadMoreRows is called', () => {
@@ -159,6 +175,103 @@ describe('Datafile table component', () => {
     expect(fetchNextPage).toHaveBeenCalledWith({
       pageParam: { startIndex: 50, stopIndex: 74 },
     });
+  });
+
+  it('sends filterTable action on text filter', () => {
+    const wrapper = createWrapper();
+
+    const filterInput = wrapper
+      .find('[aria-label="Filter by datafiles.name"] input')
+      .first();
+    filterInput.instance().value = 'test';
+    filterInput.simulate('change');
+
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"name":{"value":"test","type":"include"}}'
+      )}`
+    );
+
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
+
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
+  });
+
+  it('sends filterTable action on date filter', () => {
+    const wrapper = createWrapper();
+
+    const filterInput = wrapper.find(
+      '[aria-label="datafiles.modified_time date filter to"]'
+    );
+    filterInput.instance().value = '2019-08-06';
+    filterInput.simulate('change');
+
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+    );
+
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
+
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
+  });
+
+  it('sends sortTable action on sort', () => {
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .first()
+      .simulate('click');
+
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+    );
+  });
+
+  it('sends addToCart action on unchecked checkbox click', () => {
+    const addToCart = jest.fn();
+    (useAddToCart as jest.Mock).mockReturnValue({
+      mutate: addToCart,
+      loading: false,
+    });
+    const wrapper = createWrapper();
+
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+
+    expect(addToCart).toHaveBeenCalledWith([1]);
+  });
+
+  it('sends removeFromCart action on checked checkbox click', () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'datafile',
+          id: 1,
+          name: 'test',
+          parentEntities: [],
+        },
+      ],
+    });
+
+    const removeFromCart = jest.fn();
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
+      mutate: removeFromCart,
+      loading: false,
+    });
+
+    const wrapper = createWrapper();
+
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+
+    expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
 
   it('selected rows only considers relevant cart items', () => {
