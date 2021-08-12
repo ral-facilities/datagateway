@@ -196,7 +196,7 @@ describe('Datafile search table component', () => {
     createWrapper();
 
     expect(useCart).toHaveBeenCalled();
-    expect(useLuceneSearch).toHaveBeenCalledWith('Investigation', {
+    expect(useLuceneSearch).toHaveBeenCalledWith('Datafile', {
       searchText: state.dgsearch.searchText,
       startDate: state.dgsearch.selectDate.startDate,
       endDate: state.dgsearch.selectDate.endDate,
