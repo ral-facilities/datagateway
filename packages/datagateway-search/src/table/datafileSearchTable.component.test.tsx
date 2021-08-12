@@ -8,7 +8,6 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
   Datafile,
-  handleICATError,
   useAddToCart,
   useCart,
   useDatafileCount,
@@ -172,15 +171,7 @@ describe('Datafile search table component', () => {
 
   afterEach(() => {
     mount.cleanUp();
-    (handleICATError as jest.Mock).mockClear();
-    (useCart as jest.Mock).mockClear();
-    (useLuceneSearch as jest.Mock).mockClear();
-    (useDatafileCount as jest.Mock).mockClear();
-    (useDatafilesInfinite as jest.Mock).mockClear();
-    (useIds as jest.Mock).mockClear();
-    (useAddToCart as jest.Mock).mockClear();
-    (useRemoveFromCart as jest.Mock).mockClear();
-    (useAllFacilityCycles as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
