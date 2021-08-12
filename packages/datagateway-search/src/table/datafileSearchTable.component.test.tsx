@@ -187,7 +187,7 @@ describe('Datafile search table component', () => {
     createWrapper();
 
     expect(useCart).toHaveBeenCalled();
-    expect(useLuceneSearch).toHaveBeenCalledWith('Investigation', {
+    expect(useLuceneSearch).toHaveBeenCalledWith('Datafile', {
       searchText: state.dgsearch.searchText,
       startDate: state.dgsearch.selectDate.startDate,
       endDate: state.dgsearch.selectDate.endDate,
@@ -248,7 +248,7 @@ describe('Datafile search table component', () => {
     });
   });
 
-  it('sends filterTable action on text filter', () => {
+  it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper
@@ -271,7 +271,7 @@ describe('Datafile search table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('sends filterTable action on date filter', () => {
+  it('updates filter query params on date filter', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -292,7 +292,7 @@ describe('Datafile search table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('sends sortTable action on sort', () => {
+  it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
     wrapper
@@ -306,7 +306,7 @@ describe('Datafile search table component', () => {
     );
   });
 
-  it('sends addToCart action on unchecked checkbox click', () => {
+  it('calls addToCart mutate function on unchecked checkbox click', () => {
     const addToCart = jest.fn();
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: addToCart,
@@ -319,7 +319,7 @@ describe('Datafile search table component', () => {
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
 
-  it('sends removeFromCart action on checked checkbox click', () => {
+  it('calls removeFromCart mutate function on checked checkbox click', () => {
     (useCart as jest.Mock).mockReturnValue({
       data: [
         {

@@ -101,7 +101,7 @@ const DatafileSearchTable = (
   const endDate = useSelector(
     (state: StateType) => state.dgsearch.selectDate.endDate
   );
-  const { data: luceneData } = useLuceneSearch('Investigation', {
+  const { data: luceneData } = useLuceneSearch('Datafile', {
     searchText,
     startDate,
     endDate,

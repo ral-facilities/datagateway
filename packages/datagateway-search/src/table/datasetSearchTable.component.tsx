@@ -47,7 +47,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const DatasetDetailsPanel = (props: DetailsPanelProps): React.ReactElement => {
+export const DatasetDetailsPanel = (
+  props: DetailsPanelProps
+): React.ReactElement => {
   const classes = useStyles();
   const [t] = useTranslation();
   const datasetData = props.rowData as Dataset;
