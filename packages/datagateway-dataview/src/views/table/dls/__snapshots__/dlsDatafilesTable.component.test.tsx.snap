@@ -1,115 +1,93 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DLS datafiles table component renders correctly 1`] = `
-<WithStyles(VirtualizedTable)
-  allIds={
-    Array [
-      1,
-    ]
-  }
-  columns={
-    Array [
-      Object {
-        "dataKey": "name",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datafiles.name",
+Object {
+  "allIds": Array [
+    1,
+  ],
+  "classes": Object {
+    "flexContainer": "VirtualizedTable-flexContainer-2",
+    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
+    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "table": "VirtualizedTable-table-1",
+    "tableCell": "VirtualizedTable-tableCell-6",
+    "tableRow": "VirtualizedTable-tableRow-4",
+    "tableRowHover": "VirtualizedTable-tableRowHover-5",
+  },
+  "columns": Array [
+    Object {
+      "dataKey": "name",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "dataKey": "location",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datafiles.location",
+      "label": "datafiles.name",
+    },
+    Object {
+      "dataKey": "location",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "fileSize",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datafiles.size",
+      "label": "datafiles.location",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "fileSize",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "dataKey": "createTime",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datafiles.create_time",
+      "label": "datafiles.size",
+    },
+    Object {
+      "dataKey": "createTime",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-    ]
-  }
-  data={
-    Array [
-      Object {
-        "createTime": "2019-07-23",
-        "fileSize": 1,
-        "id": 1,
-        "location": "/test1",
-        "modTime": "2019-07-23",
-        "name": "Test 1",
-      },
-    ]
-  }
-  detailsPanel={[Function]}
-  disableSelectAll={false}
-  loadMoreRows={[Function]}
-  loading={false}
-  onCheck={[Function]}
-  onSort={[Function]}
-  onUncheck={[Function]}
-  selectedRows={Array []}
-  sort={Object {}}
-  totalRowCount={0}
-/>
-`;
-
-exports[`DLS datafiles table component renders details panel correctly 1`] = `
-<div
-  className="MuiGrid-root makeStyles-root-1 MuiGrid-container MuiGrid-direction-xs-column"
-  id="details-panel"
->
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-    xs={true}
-  >
-    <WithStyles(ForwardRef(Typography))
-      variant="h6"
-    >
-      <b>
-        Test 1
-      </b>
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Divider))
-      className="makeStyles-divider-2"
-    />
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-    xs={true}
-  >
-    <WithStyles(ForwardRef(Typography))
-      variant="overline"
-    >
-      datafiles.details.size
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))>
-      <b>
-        1 B
-      </b>
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-    xs={true}
-  >
-    <WithStyles(ForwardRef(Typography))
-      variant="overline"
-    >
-      datafiles.details.location
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))>
-      <b>
-        /test1
-      </b>
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-</div>
+      "label": "datafiles.create_time",
+    },
+  ],
+  "data": Array [
+    Object {
+      "createTime": "2019-07-23",
+      "fileSize": 1,
+      "id": 1,
+      "location": "/test1",
+      "modTime": "2019-07-23",
+      "name": "Test 1",
+    },
+  ],
+  "detailsPanel": [Function],
+  "disableSelectAll": false,
+  "loadMoreRows": [Function],
+  "loading": false,
+  "onCheck": [MockFunction],
+  "onSort": [Function],
+  "onUncheck": [MockFunction],
+  "selectedRows": Array [],
+  "sort": Object {},
+  "totalRowCount": 0,
+}
 `;
