@@ -62,15 +62,15 @@ export const useInstrumentsPaginated = (): UseQueryResult<
         sort: SortType;
         filters: FiltersType;
         page: number;
-        results: number | null;
+        results: number;
       }
     ]
   >(
-    ['instrument', { sort, filters, page: page || 1, results: results || 10 }],
+    ['instrument', { sort, filters, page: page ?? 1, results: results ?? 10 }],
     (params) => {
       const { sort, filters, page, results } = params.queryKey[1];
-      const startIndex = (page - 1) * (results ?? 10);
-      const stopIndex = startIndex + (results ?? 10) - 1;
+      const startIndex = (page - 1) * results;
+      const stopIndex = startIndex + results - 1;
       return fetchInstruments(
         apiUrl,
         { sort, filters },

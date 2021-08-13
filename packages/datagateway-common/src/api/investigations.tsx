@@ -109,20 +109,20 @@ export const useInvestigationsPaginated = (
         sort: SortType;
         filters: FiltersType;
         page: number;
-        results: number | null;
+        results: number;
       },
       AdditionalFilters?
     ]
   >(
     [
       'investigation',
-      { sort, filters, page: page || 1, results: results || 10 },
+      { sort, filters, page: page ?? 1, results: results ?? 10 },
       additionalFilters,
     ],
     (params) => {
       const { sort, filters, page, results } = params.queryKey[1];
-      const startIndex = (page - 1) * (results ?? 10);
-      const stopIndex = startIndex + (results ?? 10) - 1;
+      const startIndex = (page - 1) * results;
+      const stopIndex = startIndex + results - 1;
       return fetchInvestigations(apiUrl, { sort, filters }, additionalFilters, {
         startIndex,
         stopIndex,
@@ -536,7 +536,7 @@ export const useISISInvestigationsPaginated = (
         sort: SortType;
         filters: FiltersType;
         page: number;
-        results: number | null;
+        results: number;
       },
       AdditionalFilters?
     ]
@@ -545,12 +545,12 @@ export const useISISInvestigationsPaginated = (
       queryKey,
       instrumentId,
       instrumentChildId,
-      { sort, filters, page: page || 1, results: results || 10 },
+      { sort, filters, page: page ?? 1, results: results ?? 10 },
     ],
     (params) => {
       const { sort, filters, page, results } = params.queryKey[3];
-      const startIndex = (page - 1) * (results ?? 10);
-      const stopIndex = startIndex + (results ?? 10) - 1;
+      const startIndex = (page - 1) * results;
+      const stopIndex = startIndex + results - 1;
       if (studyHierarchy) {
         return fetchInvestigations(
           apiUrl,
