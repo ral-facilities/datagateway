@@ -270,5 +270,5 @@ describe('Investigation - Card View', () => {
     // expect(usePushResults).toHaveBeenCalledTimes(3);
   });
 
-  it.todo('renders investigation title as a link #60');
+  it.todo('displays dataset count');
 });
