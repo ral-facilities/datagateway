@@ -28,8 +28,7 @@ interface DLSDatasetsCVProps {
 }
 
 const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
-  const { proposalName } = props;
-  const investigationId = parseInt(props.investigationId);
+  const { proposalName, investigationId } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -147,7 +146,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       {
         icon: CalendarToday,
         label: t('datasets.details.end_date'),
-        dataKey: 'END_DATE',
+        dataKey: 'endDate',
         filterComponent: dateFilter,
       },
     ],

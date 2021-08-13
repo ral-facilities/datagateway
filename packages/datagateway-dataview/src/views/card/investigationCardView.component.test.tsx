@@ -14,7 +14,6 @@ import {
   Investigation,
   useCart,
   useInvestigationsDatasetCount,
-  useFilter,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -39,7 +38,6 @@ jest.mock('datagateway-common', () => {
     useInvestigationsPaginated: jest.fn(),
     useInvestigationsDatasetCount: jest.fn(),
     useCart: jest.fn(),
-    useFilter: jest.fn(),
   };
 });
 
@@ -94,10 +92,6 @@ describe('Investigation - Card View', () => {
     (useInvestigationsDatasetCount as jest.Mock).mockReturnValue(0);
     (useCart as jest.Mock).mockReturnValue({
       data: [],
-    });
-    (useFilter as jest.Mock).mockReturnValue({
-      typeIds: ['1', '2'],
-      facilityIds: ['1', '2'],
     });
 
     // Prevent error logging
