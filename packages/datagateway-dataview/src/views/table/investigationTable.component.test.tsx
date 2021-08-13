@@ -168,7 +168,7 @@ describe('Investigation table component', () => {
     });
   });
 
-  it('sends filterTable action on text filter', () => {
+  it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper
@@ -191,7 +191,7 @@ describe('Investigation table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('sends filterTable action on date filter', () => {
+  it('updates filter query params on date filter', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -214,7 +214,7 @@ describe('Investigation table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('sends sortTable action on sort', () => {
+  it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
     wrapper
@@ -228,7 +228,7 @@ describe('Investigation table component', () => {
     );
   });
 
-  it('sends addToCart action on unchecked checkbox click', () => {
+  it('calls addToCart mutate function on unchecked checkbox click', () => {
     const addToCart = jest.fn();
     (useAddToCart as jest.Mock).mockReturnValueOnce({
       mutate: addToCart,
@@ -241,7 +241,7 @@ describe('Investigation table component', () => {
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
 
-  it('sends removeFromCart action on checked checkbox click', () => {
+  it('calls removeFromCart mutate function on checked checkbox click', () => {
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
         {
