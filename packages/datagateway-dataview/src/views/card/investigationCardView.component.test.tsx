@@ -265,4 +265,12 @@ describe('Investigation - Card View', () => {
   });
 
   it.todo('displays dataset count');
+
+  it('renders fine with incomplete data', () => {
+    (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
+    (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([0]);
+
+    expect(() => createWrapper()).not.toThrowError();
+  });
 });

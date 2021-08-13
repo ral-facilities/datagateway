@@ -232,7 +232,7 @@ describe('DLS Datasets - Card View', () => {
 
   it.todo('displays datafile count or unknown if not available #118');
 
-  it.todo('constructs buttons correctly');
+  it.todo('constructs buttons correctly #161');
 
   // TODO - unsure what this even tests
   it('usePushPage dispatched when page number is no longer valid', () => {
@@ -256,5 +256,12 @@ describe('DLS Datasets - Card View', () => {
     });
     wrapper.setProps({ store: store });
     // expect(usePushPage).toHaveBeenCalledTimes(3);
+  });
+
+  it('renders fine with incomplete data', () => {
+    (useDatasetCount as jest.Mock).mockReturnValueOnce({});
+    (useDatasetsPaginated as jest.Mock).mockReturnValueOnce({});
+
+    expect(() => createWrapper()).not.toThrowError();
   });
 });

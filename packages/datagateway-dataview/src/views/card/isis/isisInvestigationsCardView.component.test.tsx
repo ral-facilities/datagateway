@@ -253,4 +253,12 @@ describe('ISIS Investigations - Card View', () => {
   it.todo('displays investigation size');
 
   it.todo('constructs more information section correctly');
+
+  it('renders fine with incomplete data', () => {
+    (useISISInvestigationCount as jest.Mock).mockReturnValueOnce({});
+    (useISISInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
+    (useInvestigationSizes as jest.Mock).mockReturnValueOnce([0]);
+
+    expect(() => createWrapper()).not.toThrowError();
+  });
 });
