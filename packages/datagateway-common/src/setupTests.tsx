@@ -8,9 +8,10 @@ import { setLogger } from 'react-query';
 import { WrapperComponent } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
+import { createMemoryHistory, History } from 'history';
 
 // React 16 Enzyme adapter
 Enzyme.configure({ adapter: new Adapter() });
@@ -54,11 +55,14 @@ export const createTestQueryClient = (): QueryClient =>
     },
   });
 
-export const createReactQueryWrapper = (): WrapperComponent<unknown> => {
+export const createReactQueryWrapper = (
+  history: History = createMemoryHistory()
+): WrapperComponent<unknown> => {
   const testQueryClient = createTestQueryClient();
   const state = {
     dgcommon: {
       ...initialState,
+      facilityName: 'TEST',
       urls: {
         apiUrl: 'https://example.com/api',
         icatUrl: 'https://example.com/icat',
@@ -72,11 +76,11 @@ export const createReactQueryWrapper = (): WrapperComponent<unknown> => {
 
   const wrapper: WrapperComponent<unknown> = ({ children }) => (
     <Provider store={mockStore(state)}>
-      <MemoryRouter>
+      <Router history={history}>
         <QueryClientProvider client={testQueryClient}>
           {children}
         </QueryClientProvider>
-      </MemoryRouter>
+      </Router>
     </Provider>
   );
   return wrapper;

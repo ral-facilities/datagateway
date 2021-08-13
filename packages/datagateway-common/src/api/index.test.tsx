@@ -331,6 +331,7 @@ describe('generic api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       const params = new URLSearchParams();
+      params.append('order', JSON.stringify('id asc'));
       params.append('distinct', JSON.stringify(['name', 'id']));
 
       expect(axios.get).toHaveBeenCalledWith(
@@ -338,6 +339,9 @@ describe('generic api functions', () => {
         expect.objectContaining({
           params,
         })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
       );
       expect(result.current.data).toEqual([1, 2, 3]);
     });
@@ -375,13 +379,17 @@ describe('generic api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       const params = new URLSearchParams();
-      params.append('distinct', JSON.stringify(['name', 'title']));
+      params.append('order', JSON.stringify('id asc'));
+      params.append('distinct', JSON.stringify(['name', 'id']));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/investigations',
         expect.objectContaining({
           params,
         })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
       );
       expect(result.current.data).toEqual(['1', '2', '3']);
     });
