@@ -463,15 +463,10 @@ const fetchISISInvestigations = (
     sort: SortType;
     filters: FiltersType;
   },
-  offsetParams?: IndexRange,
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  offsetParams?: IndexRange
 ): Promise<Investigation[]> => {
   const params = getApiParams(sortAndFilters);
-
-  let includeParams = [
-    { investigationInstruments: 'instrument' },
-    { studyInvestigations: 'study' },
-  ];
 
   if (offsetParams) {
     params.append('skip', JSON.stringify(offsetParams.startIndex));
@@ -481,21 +476,9 @@ const fetchISISInvestigations = (
     );
   }
 
-  if (additionalFilters) {
-    additionalFilters.forEach((filter) => {
-      if (filter.filterType === 'include') {
-        const additionalIncludeParams = JSON.parse(filter.filterValue);
-        if (Array.isArray(additionalIncludeParams)) {
-          includeParams = includeParams.concat(additionalIncludeParams);
-        } else {
-          includeParams.push(additionalIncludeParams);
-        }
-      } else {
-        params.append(filter.filterType, filter.filterValue);
-      }
-    });
-  }
-  params.append('include', JSON.stringify(includeParams));
+  additionalFilters?.forEach((filter) => {
+    params.append(filter.filterType, filter.filterValue);
+  });
 
   return axios
     .get(
@@ -523,6 +506,18 @@ export const useISISInvestigationsPaginated = (
   const queryKey = studyHierarchy
     ? 'ISISStudyInvestigation'
     : 'ISISFacilityCycleinvestigation';
+
+  const includeFilter = {
+    filterType: 'include',
+    filterValue: JSON.stringify([
+      {
+        investigationInstruments: 'instrument',
+      },
+      {
+        studyInvestigations: 'study',
+      },
+    ]),
+  };
 
   return useQuery<
     Investigation[],
@@ -568,17 +563,7 @@ export const useISISInvestigationsPaginated = (
                 'studyInvestigations.study.id': { eq: instrumentChildId },
               }),
             },
-            {
-              filterType: 'include',
-              filterValue: JSON.stringify([
-                {
-                  investigationInstruments: 'instrument',
-                },
-                {
-                  studyInvestigations: 'study',
-                },
-              ]),
-            },
+            includeFilter,
           ],
           {
             startIndex,
@@ -591,6 +576,7 @@ export const useISISInvestigationsPaginated = (
           instrumentId,
           instrumentChildId,
           { sort, filters },
+          [includeFilter],
           {
             startIndex,
             stopIndex,
@@ -617,6 +603,18 @@ export const useISISInvestigationsInfinite = (
   const queryKey = studyHierarchy
     ? 'ISISStudyInvestigation'
     : 'ISISFacilityCycleinvestigation';
+
+  const includeFilter = {
+    filterType: 'include',
+    filterValue: JSON.stringify([
+      {
+        investigationInstruments: 'instrument',
+      },
+      {
+        studyInvestigations: 'study',
+      },
+    ]),
+  };
 
   return useInfiniteQuery<
     Investigation[],
@@ -645,17 +643,7 @@ export const useISISInvestigationsInfinite = (
                 'studyInvestigations.study.id': { eq: instrumentChildId },
               }),
             },
-            {
-              filterType: 'include',
-              filterValue: JSON.stringify([
-                {
-                  investigationInstruments: 'instrument',
-                },
-                {
-                  studyInvestigations: 'study',
-                },
-              ]),
-            },
+            includeFilter,
           ],
           offsetParams
         );
@@ -665,6 +653,7 @@ export const useISISInvestigationsInfinite = (
           instrumentId,
           instrumentChildId,
           { sort, filters },
+          [includeFilter],
           offsetParams
         );
       }
