@@ -128,13 +128,6 @@ export const useDatafilesInfinite = (
       );
     },
     {
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length >= 25) {
-          return true;
-        } else {
-          return undefined;
-        }
-      },
       onError: (error) => {
         handleICATError(error);
       },

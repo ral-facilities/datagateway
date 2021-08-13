@@ -1052,7 +1052,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "behavior": Object {
                           "onFetch": [Function],
                         },
-                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -1099,7 +1098,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "behavior": Object {
                           "onFetch": [Function],
                         },
-                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -1136,7 +1134,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "behavior": Object {
                       "onFetch": [Function],
                     },
-                    "getNextPageParam": [Function],
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
@@ -2073,7 +2070,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "behavior": Object {
                           "onFetch": [Function],
                         },
-                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -2120,7 +2116,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "behavior": Object {
                           "onFetch": [Function],
                         },
-                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -2157,7 +2152,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "behavior": Object {
                       "onFetch": [Function],
                     },
-                    "getNextPageParam": [Function],
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
