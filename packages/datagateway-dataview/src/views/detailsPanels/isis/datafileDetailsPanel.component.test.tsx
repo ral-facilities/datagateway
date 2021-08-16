@@ -145,11 +145,15 @@ describe('Datafile details panel component', () => {
   });
 
   it('does not call detailsPanelResize if not provided', () => {
-    mount(
+    const wrapper = mount(
       <QueryClientProvider client={new QueryClient()}>
         <DatafilesDetailsPanel rowData={rowData} />
       </QueryClientProvider>
     );
+
+    expect(detailsPanelResize).not.toHaveBeenCalled();
+
+    wrapper.find('#datafile-parameters-tab').hostNodes().simulate('click');
 
     expect(detailsPanelResize).not.toHaveBeenCalled();
   });
