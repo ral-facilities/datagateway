@@ -65,7 +65,7 @@ Object {
   "loadMoreRows": [Function],
   "onSort": [Function],
   "sort": Object {},
-  "totalRowCount": 0,
+  "totalRowCount": 1,
 }
 `;
 

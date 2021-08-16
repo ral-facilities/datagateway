@@ -69,7 +69,10 @@ describe('ISIS FacilityCycles table component', () => {
       })
     );
 
-    (useFacilityCycleCount as jest.Mock).mockReturnValue(0);
+    (useFacilityCycleCount as jest.Mock).mockReturnValue({
+      data: 1,
+      isLoading: false,
+    });
     (useFacilityCyclesInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
@@ -177,5 +180,12 @@ describe('ISIS FacilityCycles table component', () => {
     expect(
       wrapper.find('[aria-colindex=1]').find('p').children()
     ).toMatchSnapshot();
+  });
+
+  it('renders fine with incomplete data', () => {
+    (useFacilityCycleCount as jest.Mock).mockReturnValueOnce({});
+    (useFacilityCyclesInfinite as jest.Mock).mockReturnValueOnce({});
+
+    expect(() => createWrapper()).not.toThrowError();
   });
 });
