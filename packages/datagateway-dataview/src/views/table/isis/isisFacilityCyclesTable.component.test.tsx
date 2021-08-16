@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import ISISFacilityCyclesTable from './isisFacilityCyclesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import { StateType } from '../../../state/app.types';
@@ -50,7 +50,6 @@ describe('ISIS FacilityCycles table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'ISISFacilityCyclesTable' });
     mount = createMount();
     rowData = [
       {
@@ -101,6 +100,7 @@ describe('ISIS FacilityCycles table component', () => {
     // const wrapper = shallow(
     //   <ISISFacilityCyclesTable store={mockStore(state)} instrumentId="1" />
     // );
+
     const wrapper = createWrapper();
     expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
   });
