@@ -264,4 +264,11 @@ describe('Dataset - Card View', () => {
   });
 
   it.todo('renders buttons correctly');
+
+  it('renders fine with incomplete data', () => {
+    (useDatasetCount as jest.Mock).mockReturnValueOnce({});
+    (useDatasetsPaginated as jest.Mock).mockReturnValueOnce({});
+
+    expect(() => createWrapper()).not.toThrowError();
+  });
 });
