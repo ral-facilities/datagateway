@@ -16,7 +16,6 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router';
 import { createMemoryHistory, History } from 'history';
-// import axios from 'axios';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -69,20 +68,6 @@ describe('ISIS FacilityCycles table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    // state.dgcommon.data = [
-    //   {
-    //     id: 1,
-    //     name: 'Test 1',
-    //     description: 'Test 1',
-    //     startDate: '2019-07-03',
-    //     endDate: '2019-07-04',
-    //   },
-    // ];
-
-    // (axios.get as jest.Mock).mockImplementation(() =>
-    //   Promise.resolve({ data: [] })
-    // );
-    // global.Date.now = jest.fn(() => 1);
 
     (useFacilityCycleCount as jest.Mock).mockReturnValue(0);
     (useFacilityCyclesInfinite as jest.Mock).mockReturnValue({
@@ -97,51 +82,20 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('renders correctly', () => {
-    // const wrapper = shallow(
-    //   <ISISFacilityCyclesTable store={mockStore(state)} instrumentId="1" />
-    // );
-
     const wrapper = createWrapper();
     expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
   });
 
-  // it('sends fetchFacilityCycleCount and fetchFacilityCycles actions when watched store values change', () => {
-  //   let testStore = mockStore(state);
-  //   const wrapper = mount(
-  //     <Provider store={testStore}>
-  //       <MemoryRouter>
-  //         <ISISFacilityCyclesTable instrumentId="1" />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
-
-  //   // simulate clearTable action
-  //   testStore = mockStore({
-  //     ...state,
-  //     dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
-  //   });
-  //   wrapper.setProps({ store: testStore });
-
-  //   expect(testStore.getActions()[0]).toEqual(
-  //     fetchFacilityCycleCountRequest(1)
-  //   );
-  //   expect(testStore.getActions()[1]).toEqual(fetchFacilityCyclesRequest(1));
-  // });
-
   it('calls the correct data fetching hooks on load', () => {
+    const instrumentId = '1';
     createWrapper();
-    expect(useFacilityCycleCount).toHaveBeenCalled();
-    expect(useFacilityCyclesInfinite).toHaveBeenCalled();
+    expect(useFacilityCycleCount).toHaveBeenCalledWith(parseInt(instrumentId));
+    expect(useFacilityCyclesInfinite).toHaveBeenCalledWith(
+      parseInt(instrumentId)
+    );
   });
 
   it('calls useFacilityCyclesInfinite when loadMoreRows is called', () => {
-    // const testStore = mockStore(state);
-    // const wrapper = shallow(
-    //   <ISISFacilityCyclesTable instrumentId="1" store={testStore} />
-    // );
-    // wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
-    // expect(testStore.getActions()[0]).toEqual(fetchFacilityCyclesRequest(1));
-
     const fetchNextPage = jest.fn();
     (useFacilityCyclesInfinite as jest.Mock).mockReturnValueOnce({
       data: { pages: [rowData] },
@@ -160,30 +114,6 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('sends filterTable action on text filter', () => {
-    // const testStore = mockStore(state);
-    // const wrapper = mount(
-    //   <Provider store={testStore}>
-    //     <MemoryRouter>
-    //       <ISISFacilityCyclesTable instrumentId="1" />
-    //     </MemoryRouter>
-    //   </Provider>
-    // );
-
-    // const filterInput = wrapper
-    //   .find('[aria-label="Filter by facilitycycles.name"] input')
-    //   .first();
-    // filterInput.instance().value = 'test';
-    // filterInput.simulate('change');
-
-    // expect(testStore.getActions()[2]).toEqual(
-    //   filterTable('name', { value: 'test', type: 'include' })
-    // );
-
-    // filterInput.instance().value = '';
-    // filterInput.simulate('change');
-
-    // expect(testStore.getActions()[4]).toEqual(filterTable('name', null));
-
     const wrapper = createWrapper();
 
     const filterInput = wrapper
@@ -207,30 +137,6 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
-    // const testStore = mockStore(state);
-    // const wrapper = mount(
-    //   <Provider store={testStore}>
-    //     <MemoryRouter>
-    //       <ISISFacilityCyclesTable instrumentId="1" />
-    //     </MemoryRouter>
-    //   </Provider>
-    // );
-
-    // const filterInput = wrapper.find(
-    //   '[aria-label="facilitycycles.end_date date filter to"]'
-    // );
-    // filterInput.instance().value = '2019-08-06';
-    // filterInput.simulate('change');
-
-    // expect(testStore.getActions()[2]).toEqual(
-    //   filterTable('endDate', { endDate: '2019-08-06' })
-    // );
-
-    // filterInput.instance().value = '';
-    // filterInput.simulate('change');
-
-    // expect(testStore.getActions()[4]).toEqual(filterTable('endDate', null));
-
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -252,22 +158,6 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('updates sort query params on sort', () => {
-    // const testStore = mockStore(state);
-    // const wrapper = mount(
-    //   <Provider store={testStore}>
-    //     <MemoryRouter>
-    //       <ISISFacilityCyclesTable instrumentId="1" />
-    //     </MemoryRouter>
-    //   </Provider>
-    // );
-
-    // wrapper
-    //   .find('[role="columnheader"] span[role="button"]')
-    //   .first()
-    //   .simulate('click');
-
-    // expect(testStore.getActions()[2]).toEqual(sortTable('name', 'asc'));
-
     const wrapper = createWrapper();
 
     wrapper
@@ -282,18 +172,6 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('renders facilitycycle name as a link', () => {
-    // const wrapper = mount(
-    //   <Provider store={mockStore(state)}>
-    //     <MemoryRouter>
-    //       <ISISFacilityCyclesTable instrumentId="1" />
-    //     </MemoryRouter>
-    //   </Provider>
-    // );
-
-    // expect(
-    //   wrapper.find('[aria-colindex=1]').find('p').children()
-    // ).toMatchSnapshot();
-
     const wrapper = createWrapper();
 
     expect(

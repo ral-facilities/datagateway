@@ -250,9 +250,9 @@ describe('ISIS Investigations - Card View', () => {
     // expect(usePushPage).toHaveBeenCalledTimes(3);
   });
 
-  it.todo('displays investigation size');
+  it.todo('displays investigation size #126');
 
-  it.todo('constructs more information section correctly');
+  it.todo('constructs more information section correctly #185-188');
 
   it('renders fine with incomplete data', () => {
     (useISISInvestigationCount as jest.Mock).mockReturnValueOnce({});

@@ -300,4 +300,11 @@ describe('ISIS Datasets - Card View', () => {
     wrapper.setProps({ store: store });
     // expect(usePushPage).toHaveBeenCalledTimes(3);
   });
+
+  it('renders fine with incomplete data', () => {
+    (useDatasetCount as jest.Mock).mockReturnValueOnce({});
+    (useDatasetsPaginated as jest.Mock).mockReturnValueOnce({});
+
+    expect(() => createWrapper()).not.toThrowError();
+  });
 });

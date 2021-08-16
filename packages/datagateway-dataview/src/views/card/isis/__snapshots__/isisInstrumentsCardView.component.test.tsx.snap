@@ -1,47 +1,64 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ISIS Instruments - Card View renders correctly 1`] = `
-<ContextProvider
-  value={null}
->
-  <ISISInstrumentsCardView
-    data={
-      Array [
-        Object {
-          "id": 1,
-          "name": "Test 1",
+Object {
+  "data": Array [
+    Object {
+      "id": 1,
+      "name": "Test 1",
+    },
+  ],
+  "description": Object {
+    "dataKey": "description",
+    "filterComponent": [Function],
+    "label": "instruments.description",
+  },
+  "filters": Object {},
+  "information": Array [
+    Object {
+      "dataKey": "type",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
         },
-      ]
-    }
-    fetchCount={[Function]}
-    fetchData={[Function]}
-    fetchDetails={[Function]}
-    loadedCount={true}
-    loadedData={true}
-    pushFilters={[Function]}
-    pushPage={[Function]}
-    pushQuery={[Function]}
-    query={
-      Object {
-        "filters": Object {},
-        "page": null,
-        "results": null,
-        "search": null,
-        "sort": Object {},
-        "view": null,
-      }
-    }
-    store={
-      Object {
-        "clearActions": [Function],
-        "dispatch": [Function],
-        "getActions": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-      }
-    }
-    totalDataCount={1}
-  />
-</ContextProvider>
+      },
+      "label": "instruments.type",
+    },
+    Object {
+      "content": [Function],
+      "dataKey": "url",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "instruments.url",
+    },
+  ],
+  "loadedCount": true,
+  "loadedData": true,
+  "moreInformation": [Function],
+  "onFilter": [Function],
+  "onPageChange": [Function],
+  "onResultsChange": [Function],
+  "onSort": [Function],
+  "page": null,
+  "results": null,
+  "sort": Object {},
+  "title": Object {
+    "content": [Function],
+    "dataKey": "fullName",
+    "filterComponent": [Function],
+    "label": "instruments.name",
+  },
+  "totalDataCount": 1,
+}
 `;
