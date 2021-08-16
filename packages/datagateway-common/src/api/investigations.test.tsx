@@ -21,7 +21,7 @@ import {
 
 jest.mock('../handleICATError');
 
-describe('generic api functions', () => {
+describe('investigation api functions', () => {
   let mockData: Investigation[] = [];
   let history: History;
   let params: URLSearchParams;

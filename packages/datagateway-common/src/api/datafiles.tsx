@@ -1,4 +1,3 @@
-import React from 'react';
 import axios, { AxiosError } from 'axios';
 import { getApiParams, parseSearchToQuery } from '.';
 import { readSciGatewayToken } from '../parseTokens';
@@ -18,11 +17,7 @@ import {
   UseQueryResult,
   useInfiniteQuery,
   UseInfiniteQueryResult,
-  InfiniteData,
-  useQueries,
-  UseQueryOptions,
 } from 'react-query';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 
 const fetchDatafiles = (
   apiUrl: string,
@@ -133,127 +128,6 @@ export const useDatafilesInfinite = (
       },
     }
   );
-};
-
-const fetchDatafileSize = (
-  config: {
-    facilityName: string;
-    downloadApiUrl: string;
-  },
-  datafileId: number
-): Promise<number> => {
-  // Make use of the facility name and download API url for the request.
-  const { facilityName, downloadApiUrl } = config;
-  return axios
-    .get(`${downloadApiUrl}/user/getSize`, {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-        facilityName: facilityName,
-        entityType: 'datafile',
-        entityId: datafileId,
-      },
-    })
-    .then((response) => {
-      return response.data;
-    });
-};
-
-/**
- * For use with DLS button fetch size functionality
- * via using the refetch function returned by useQuery
- * Hence why the query is disabled by default
- */
-export const useDatafileSize = (
-  datafileId: number
-): UseQueryResult<number, AxiosError> => {
-  const downloadApiUrl = useSelector(
-    (state: StateType) => state.dgcommon.urls.downloadApiUrl
-  );
-  const facilityName = useSelector(
-    (state: StateType) => state.dgcommon.facilityName
-  );
-
-  return useQuery<number, AxiosError, number, [string, number]>(
-    ['datafileSize', datafileId],
-    (params) =>
-      fetchDatafileSize({ facilityName, downloadApiUrl }, params.queryKey[1]),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      enabled: false,
-    }
-  );
-};
-
-export const useDatafileSizes = (
-  data: Datafile[] | InfiniteData<Datafile[]> | undefined
-): UseQueryResult<number, AxiosError>[] => {
-  const downloadApiUrl = useSelector(
-    (state: StateType) => state.dgcommon.urls.downloadApiUrl
-  );
-  const facilityName = useSelector(
-    (state: StateType) => state.dgcommon.facilityName
-  );
-
-  const queryConfigs: UseQueryOptions<
-    number,
-    AxiosError,
-    number,
-    ['datafileSize', number]
-  >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
-    const aggregatedData = data
-      ? 'pages' in data
-        ? data.pages.flat()
-        : data
-      : [];
-
-    return aggregatedData.map((datafile) => {
-      return {
-        queryKey: ['datafileSize', datafile.id],
-        queryFn: () =>
-          fetchDatafileSize({ facilityName, downloadApiUrl }, datafile.id),
-        onError: (error) => {
-          handleICATError(error, false);
-        },
-        staleTime: Infinity,
-      };
-    });
-  }, [data, facilityName, downloadApiUrl]);
-
-  // useQueries doesn't allow us to specify type info, so ignore this line
-  // since we strongly type the queries object anyway
-  // we also need to prettier-ignore to make sure we don't wrap onto next line
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // prettier-ignore
-  const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
-
-  const [sizes, setSizes] = React.useState<
-    UseQueryResult<number, AxiosError>[]
-  >([]);
-
-  const countAppliedRef = React.useRef(0);
-  // need to use useDeepCompareEffect here because the array returned by useQueries
-  // is different every time this hook runs
-  useDeepCompareEffect(() => {
-    const currCountReturned = queries.reduce(
-      (acc, curr) => acc + (curr.isFetched ? 1 : 0),
-      0
-    );
-    const batchMax =
-      sizes.length - currCountReturned < 5
-        ? sizes.length - currCountReturned
-        : 5;
-    // this in effect batches our updates to only happen in batches >= 5
-    if (currCountReturned - countAppliedRef.current >= batchMax) {
-      setSizes(queries);
-      countAppliedRef.current = currCountReturned;
-    }
-  }, [queries]);
-
-  return sizes;
 };
 
 export const fetchDatafileCountQuery = (
