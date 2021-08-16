@@ -163,7 +163,7 @@ describe('ISIS Dataset table component', () => {
     expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
   });
 
-  it('sends fetchDatasets action when loadMoreRows is called', () => {
+  it('calls useDatasetsInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
     (useDatasetsInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },

@@ -1,36 +1,83 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ISIS Datasets - Card View renders correctly 1`] = `
-<ContextProvider
-  value={false}
->
-  <ContextProvider
-    value={
-      QueryClient {
-        "defaultOptions": Object {},
-        "mutationCache": MutationCache {
-          "config": Object {},
-          "listeners": Array [],
-          "mutationId": 0,
-          "mutations": Array [],
+Object {
+  "buttons": Array [
+    [Function],
+  ],
+  "data": Array [
+    Object {
+      "createTime": "2019-07-23",
+      "id": 1,
+      "modTime": "2019-07-23",
+      "name": "Test 1",
+      "size": 1,
+    },
+  ],
+  "description": Object {
+    "dataKey": "description",
+    "filterComponent": [Function],
+    "label": "datasets.details.description",
+  },
+  "filters": Object {},
+  "information": Array [
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "size",
+      "disableSort": true,
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
         },
-        "mutationDefaults": Array [],
-        "queryCache": QueryCache {
-          "config": Object {},
-          "listeners": Array [],
-          "queries": Array [],
-          "queriesMap": Object {},
+      },
+      "label": "datasets.size",
+    },
+    Object {
+      "dataKey": "createTime",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
         },
-        "queryDefaults": Array [],
-      }
-    }
-  >
-    <ISISDatasetsCardView
-      instrumentChildId="1"
-      instrumentId="1"
-      investigationId="1"
-      studyHierarchy={false}
-    />
-  </ContextProvider>
-</ContextProvider>
+      },
+      "label": "datasets.create_time",
+    },
+    Object {
+      "dataKey": "modTime",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "datasets.modified_time",
+    },
+  ],
+  "loadedCount": true,
+  "loadedData": true,
+  "moreInformation": [Function],
+  "onFilter": [Function],
+  "onPageChange": [Function],
+  "onResultsChange": [Function],
+  "onSort": [Function],
+  "page": null,
+  "results": null,
+  "sort": Object {},
+  "title": Object {
+    "content": [Function],
+    "dataKey": "name",
+    "filterComponent": [Function],
+    "label": "datasets.name",
+  },
+  "totalDataCount": 1,
+}
 `;

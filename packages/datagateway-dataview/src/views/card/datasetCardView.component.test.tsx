@@ -85,7 +85,8 @@ describe('Dataset - Card View', () => {
     );
 
     (useDatasetCount as jest.Mock).mockReturnValue({
-      data: 0,
+      data: 1,
+      isLoading: false,
     });
     (useDatasetsPaginated as jest.Mock).mockReturnValue({
       data: cardData,
@@ -187,8 +188,7 @@ describe('Dataset - Card View', () => {
     expect(history.location.search).toBe('?');
   });
 
-  // TODO - can't find ListItemText
-  it.skip('updates sort query params on sort', () => {
+  it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
     const button = wrapper.find(ListItemText).first();
@@ -201,14 +201,13 @@ describe('Dataset - Card View', () => {
     );
   });
 
-  // TODO - can't find AddToCartButton
-  it.skip('addToCart button displays', () => {
+  it('addToCart button displays', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
     expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
   });
 
-  // TODO - can't find AddToCartButton
+  // TODO - add_to_cart displays instead. Investigate why
   it.skip('removeFromCart button displays', () => {
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
@@ -262,5 +261,14 @@ describe('Dataset - Card View', () => {
     createWrapper();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe('?page=2');
+  });
+
+  it.todo('renders buttons correctly');
+
+  it('renders fine with incomplete data', () => {
+    (useDatasetCount as jest.Mock).mockReturnValueOnce({});
+    (useDatasetsPaginated as jest.Mock).mockReturnValueOnce({});
+
+    expect(() => createWrapper()).not.toThrowError();
   });
 });

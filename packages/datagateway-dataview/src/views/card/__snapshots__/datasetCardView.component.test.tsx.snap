@@ -76,6 +76,6 @@ Object {
     "filterComponent": [Function],
     "label": "datasets.name",
   },
-  "totalDataCount": 0,
+  "totalDataCount": 1,
 }
 `;
