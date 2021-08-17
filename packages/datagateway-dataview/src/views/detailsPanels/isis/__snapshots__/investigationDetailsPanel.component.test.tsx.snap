@@ -1,623 +1,169 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Investigation details panel component gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users 1`] = `
-<div
-  id="details-panel"
-  style={
-    Object {
-      "minWidth": 0,
-    }
-  }
->
-  <WithStyles(ForwardRef(Tabs))
-    aria-label="investigations.details.tabs_label"
-    onChange={[Function]}
-    scrollButtons="auto"
-    value="details"
-    variant="scrollable"
-  >
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="investigation-details-panel"
-      id="investigation-details-tab"
-      label="investigations.details.label"
-      value="details"
-    />
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="investigation-users-panel"
-      id="investigation-users-tab"
-      label="investigations.details.users.label"
-      value="users"
-    />
-    <WithStyles(ForwardRef(Tab))
-      id="investigation-datasets-tab"
-      label="investigations.details.datasets"
-      onClick={[Function]}
-    />
-  </WithStyles(ForwardRef(Tabs))>
-  <div
-    aria-labelledby="investigation-details-tab"
-    hidden={false}
-    id="investigation-details-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="h6"
-        >
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-2"
-        />
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.title
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.visit_id
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.summary
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            foo bar
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.doi
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            doi 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.start_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            2019-06-10
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.end_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            2019-06-11
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-  <div
-    aria-labelledby="investigation-users-tab"
-    hidden={true}
-    id="investigation-users-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    />
-  </div>
-</div>
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "doi": "doi 1",
+    "endDate": "2019-06-11",
+    "id": 1,
+    "investigationInstruments": Array [
+      Object {
+        "id": 1,
+        "instrument": Object {
+          "id": 3,
+          "name": "LARMOR",
+        },
+      },
+    ],
+    "investigationUsers": Array [
+      Object {
+        "id": 4,
+        "role": "Investigator",
+      },
+    ],
+    "name": "Test 1",
+    "size": 1,
+    "startDate": "2019-06-10",
+    "studyInvestigations": Array [
+      Object {
+        "id": 11,
+      },
+    ],
+    "summary": "foo bar",
+    "title": "Test 1",
+    "visitId": "1",
+  },
+}
 `;
 
 exports[`Investigation details panel component renders correctly 1`] = `
-<div
-  id="details-panel"
-  style={
-    Object {
-      "minWidth": 0,
-    }
-  }
->
-  <WithStyles(ForwardRef(Tabs))
-    aria-label="investigations.details.tabs_label"
-    onChange={[Function]}
-    scrollButtons="auto"
-    value="details"
-    variant="scrollable"
-  >
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="investigation-details-panel"
-      id="investigation-details-tab"
-      label="investigations.details.label"
-      value="details"
-    />
-    <WithStyles(ForwardRef(Tab))
-      id="investigation-datasets-tab"
-      label="investigations.details.datasets"
-      onClick={[Function]}
-    />
-  </WithStyles(ForwardRef(Tabs))>
-  <div
-    aria-labelledby="investigation-details-tab"
-    hidden={false}
-    id="investigation-details-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="h6"
-        >
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-2"
-        />
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.title
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.visit_id
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.summary
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            foo bar
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="11"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.pid
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <WithStyles(ForwardRef(Link))
-            href="https://doi.org/study pid"
-          >
-            study pid
-          </WithStyles(ForwardRef(Link))>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.doi
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            doi 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.start_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            2019-06-10
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.end_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            2019-06-11
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-</div>
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "doi": "doi 1",
+    "endDate": "2019-06-11",
+    "id": 1,
+    "investigationInstruments": Array [
+      Object {
+        "id": 1,
+        "instrument": Object {
+          "id": 3,
+          "name": "LARMOR",
+        },
+      },
+    ],
+    "name": "Test 1",
+    "size": 1,
+    "startDate": "2019-06-10",
+    "studyInvestigations": Array [
+      Object {
+        "id": 11,
+        "study": Object {
+          "id": 12,
+          "pid": "study pid",
+        },
+      },
+    ],
+    "summary": "foo bar",
+    "title": "Test 1",
+    "visitId": "1",
+  },
+}
 `;
 
 exports[`Investigation details panel component renders user, sample and publication tabs when present in the data 1`] = `
-<div
-  id="details-panel"
-  style={
-    Object {
-      "minWidth": 0,
-    }
-  }
->
-  <WithStyles(ForwardRef(Tabs))
-    aria-label="investigations.details.tabs_label"
-    onChange={[Function]}
-    scrollButtons="auto"
-    value="details"
-    variant="scrollable"
-  >
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="investigation-details-panel"
-      id="investigation-details-tab"
-      label="investigations.details.label"
-      value="details"
-    />
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="investigation-users-panel"
-      id="investigation-users-tab"
-      label="investigations.details.users.label"
-      value="users"
-    />
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="investigation-samples-panel"
-      id="investigation-samples-tab"
-      label="investigations.details.samples.label"
-      value="samples"
-    />
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="investigation-publications-panel"
-      id="investigation-publications-tab"
-      label="investigations.details.publications.label"
-      value="publications"
-    />
-    <WithStyles(ForwardRef(Tab))
-      id="investigation-datasets-tab"
-      label="investigations.details.datasets"
-      onClick={[Function]}
-    />
-  </WithStyles(ForwardRef(Tabs))>
-  <div
-    aria-labelledby="investigation-details-tab"
-    hidden={false}
-    id="investigation-details-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="h6"
-        >
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-2"
-        />
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.title
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.visit_id
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.summary
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            foo bar
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="11"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.pid
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <WithStyles(ForwardRef(Link))
-            href="https://doi.org/study pid"
-          >
-            study pid
-          </WithStyles(ForwardRef(Link))>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.doi
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            doi 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.start_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            2019-06-10
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.end_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            2019-06-11
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-  <div
-    aria-labelledby="investigation-users-tab"
-    hidden={true}
-    id="investigation-users-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="5"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.users.name
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Louise Davies
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="10"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.users.name
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Louise
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-  <div
-    aria-labelledby="investigation-samples-tab"
-    hidden={true}
-    id="investigation-samples-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="7"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.samples.name
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Test sample
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-  <div
-    aria-labelledby="investigation-publications-tab"
-    hidden={true}
-    id="investigation-publications-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="8"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.publications.reference
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Test publication
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-</div>
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "doi": "doi 1",
+    "endDate": "2019-06-11",
+    "id": 1,
+    "investigationInstruments": Array [
+      Object {
+        "id": 1,
+        "instrument": Object {
+          "id": 3,
+          "name": "LARMOR",
+        },
+      },
+    ],
+    "investigationUsers": Array [
+      Object {
+        "id": 4,
+        "role": "Investigator",
+        "user": Object {
+          "fullName": "Louise Davies",
+          "id": 5,
+          "name": "Louise",
+        },
+      },
+      Object {
+        "id": 9,
+        "role": "Investigator",
+        "user": Object {
+          "id": 10,
+          "name": "Louise",
+        },
+      },
+    ],
+    "name": "Test 1",
+    "publications": Array [
+      Object {
+        "fullReference": "Test publication",
+        "id": 8,
+      },
+    ],
+    "samples": Array [
+      Object {
+        "id": 7,
+        "name": "Test sample",
+      },
+    ],
+    "size": 1,
+    "startDate": "2019-06-10",
+    "studyInvestigations": Array [
+      Object {
+        "id": 11,
+        "study": Object {
+          "id": 12,
+          "pid": "study pid",
+        },
+      },
+    ],
+    "summary": "foo bar",
+    "title": "Test 1",
+    "visitId": "1",
+  },
+}
 `;
