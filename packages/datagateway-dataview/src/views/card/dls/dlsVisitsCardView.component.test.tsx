@@ -81,7 +81,7 @@ describe('DLS Visits - Card View', () => {
       data: cardData,
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([1]);
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
 
     // Prevent error logging
     window.scrollTo = jest.fn();

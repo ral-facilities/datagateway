@@ -177,9 +177,11 @@ describe('ISIS Investigation Landing page', () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: initialData,
     });
-    (useInvestigationSizes as jest.Mock).mockReturnValue({
-      data: 1,
-    });
+    (useInvestigationSizes as jest.Mock).mockReturnValue([
+      {
+        data: 1,
+      },
+    ]);
   });
 
   afterEach(() => {

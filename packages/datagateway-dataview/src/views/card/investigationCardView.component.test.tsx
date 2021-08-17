@@ -89,7 +89,7 @@ describe('Investigation - Card View', () => {
       data: cardData,
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue(0);
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
     (useCart as jest.Mock).mockReturnValue({
       data: [],
     });
@@ -269,7 +269,9 @@ describe('Investigation - Card View', () => {
   it('renders fine with incomplete data', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([0]);
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([
+      { data: 0 },
+    ]);
 
     expect(() => createWrapper()).not.toThrowError();
   });
