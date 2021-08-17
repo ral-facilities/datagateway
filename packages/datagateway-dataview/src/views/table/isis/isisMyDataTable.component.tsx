@@ -175,9 +175,10 @@ const ISISMyDataTable = (): React.ReactElement => {
       <InvestigationDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
-        viewDatasets={(id: number) =>
+        viewDatasets={
           urlPrefix(rowData as Investigation)
-            ? push(`${urlPrefix(rowData as Investigation)}/${id}/dataset`)
+            ? (id: number) =>
+                push(`${urlPrefix(rowData as Investigation)}/${id}/dataset`)
             : undefined
         }
       />
