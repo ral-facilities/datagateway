@@ -1,18 +1,38 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatasetsDetailsPanel from './datasetDetailsPanel.component';
-import { Dataset, DatasetType } from 'datagateway-common';
+import { createMount } from '@material-ui/core/test-utils';
+import DatasetDetailsPanel from './datasetDetailsPanel.component';
+import { Dataset, DatasetType, useDatasetDetails } from 'datagateway-common';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useDatasetDetails: jest.fn(),
+  };
+});
 
 describe('Dataset details panel component', () => {
-  let shallow;
   let mount;
   let rowData: Dataset;
   let rowDatasetType: DatasetType;
   const detailsPanelResize = jest.fn();
-  const fetchDetails = jest.fn();
+
+  const createWrapper = (): ReactWrapper => {
+    return mount(
+      <QueryClientProvider client={new QueryClient()}>
+        <DatasetDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+        />
+      </QueryClientProvider>
+    );
+  };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     rowDatasetType = {
       id: 2,
@@ -26,23 +46,20 @@ describe('Dataset details panel component', () => {
       description: 'Test description',
       type: rowDatasetType,
     };
+
+    (useDatasetDetails as jest.Mock).mockReturnValue({
+      data: rowData,
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
-    detailsPanelResize.mockClear();
-    fetchDetails.mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <DatasetsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('DatasetDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('renders type tab when present in the data', () => {
@@ -52,14 +69,13 @@ describe('Dataset details panel component', () => {
       description: 'Test type description',
     };
 
-    const wrapper = shallow(
-      <DatasetsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('DatasetDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('calls useDatasetDetails hook on load', () => {
+    createWrapper();
+    expect(useDatasetDetails).toHaveBeenCalledWith(rowData.id);
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
@@ -69,13 +85,7 @@ describe('Dataset details panel component', () => {
       description: 'Test type description',
     };
 
-    const wrapper = mount(
-      <DatasetsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
-    );
+    const wrapper = createWrapper();
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
@@ -92,35 +102,16 @@ describe('Dataset details panel component', () => {
     };
 
     const wrapper = mount(
-      <DatasetsDetailsPanel rowData={rowData} fetchDetails={fetchDetails} />
+      <QueryClientProvider client={new QueryClient()}>
+        <DatasetDetailsPanel rowData={rowData} />
+      </QueryClientProvider>
     );
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+    expect(detailsPanelResize).not.toHaveBeenCalled();
 
     wrapper.find('#dataset-type-tab').hostNodes().simulate('click');
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
-  });
-
-  it('calls fetchDetails on load', () => {
-    rowData = {
-      id: 1,
-      name: 'Test 1',
-      modTime: '2019-06-10',
-      createTime: '2019-06-11',
-      description: 'Test description',
-    };
-
-    mount(
-      <DatasetsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
-    );
-
-    expect(fetchDetails).toHaveBeenCalled();
-    expect(fetchDetails).toHaveBeenCalledWith(1);
+    expect(detailsPanelResize).not.toHaveBeenCalled();
   });
 
   it('Shows "No <field> provided" incase of a null field', () => {
@@ -131,13 +122,30 @@ describe('Dataset details panel component', () => {
       createTime: '2019-06-11',
     };
 
-    const wrapper = shallow(
-      <DatasetsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
+    (useDatasetDetails as jest.Mock).mockReturnValueOnce({
+      data: rowData,
+    });
+
+    const wrapper = createWrapper();
+    expect(wrapper.html()).toContain(
+      '<b>datasets.details.description not provided</b>'
     );
-    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('calls datafile view if view datafiles tab clicked', () => {
+    const viewDatafiles = jest.fn();
+    const wrapper = mount(
+      <QueryClientProvider client={new QueryClient()}>
+        <DatasetDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatafiles={viewDatafiles}
+        />
+      </QueryClientProvider>
+    );
+
+    expect(viewDatafiles).not.toHaveBeenCalled();
+    wrapper.find('#dataset-datafiles-tab').hostNodes().simulate('click');
+    expect(viewDatafiles).toHaveBeenCalled();
   });
 });
