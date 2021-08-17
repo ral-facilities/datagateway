@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
 import ISISInvestigationsTable from './isisInvestigationsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -14,6 +14,7 @@ import {
   useRemoveFromCart,
   useISISInvestigationsInfinite,
   useInvestigationSizes,
+  useInvestigationDetails,
   Table,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
@@ -36,10 +37,12 @@ jest.mock('datagateway-common', () => {
     useCart: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
+    useInvestigationDetails: jest.fn(),
   };
 });
 
 describe('ISIS Investigations table component', () => {
+  let shallow;
   let mount;
   let mockStore;
   let state: StateType;
@@ -64,6 +67,7 @@ describe('ISIS Investigations table component', () => {
   };
 
   beforeEach(() => {
+    shallow = createShallow();
     mount = createMount();
     rowData = [
       {
@@ -78,7 +82,7 @@ describe('ISIS Investigations table component', () => {
           {
             id: 1,
             instrument: {
-              id: 3,
+              id: 4,
               name: 'LARMOR',
             },
           },
@@ -127,6 +131,9 @@ describe('ISIS Investigations table component', () => {
     (useRemoveFromCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
       isLoading: false,
+    });
+    (useInvestigationDetails as jest.Mock).mockReturnValue({
+      data: [],
     });
   });
 
@@ -315,43 +322,28 @@ describe('ISIS Investigations table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  // TODO - come back to this
-  it.skip('renders details panel correctly and it sends actions', () => {
-    const testStore = mockStore(state);
-    // const wrapper = mount(
-    //   <Provider store={testStore}>
-    //     <MemoryRouter>
-    //       <ISISInvestigationsTable
-    //         studyHierarchy={false}
-    //         instrumentId="4"
-    //         instrumentChildId="5"
-    //       />
-    //     </MemoryRouter>
-    //   </Provider>
-    // );
+  it('renders details panel correctly and it fetches data and can navigate', () => {
+    const wrapper = createWrapper();
 
     const detailsPanelWrapper = shallow(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
+        rowData: rowData[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
 
     mount(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
+        rowData: rowData[0],
         detailsPanelResize: jest.fn(),
       })
     );
 
-    expect(testStore.getActions()[3]).toEqual(
-      fetchInvestigationDetailsRequest()
-    );
+    expect(useInvestigationDetails).toHaveBeenCalledWith(1);
 
     detailsPanelWrapper.find('#investigation-datasets-tab').simulate('click');
-    expect(testStore.getActions()).toHaveLength(5);
-    expect(testStore.getActions()[4]).toEqual(
-      push('/browse/instrument/4/facilityCycle/5/investigation/1/dataset')
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
     );
   });
 
