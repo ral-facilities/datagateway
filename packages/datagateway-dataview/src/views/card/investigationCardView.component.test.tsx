@@ -89,7 +89,7 @@ describe('Investigation - Card View', () => {
       data: cardData,
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue(0);
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
     (useCart as jest.Mock).mockReturnValue({
       data: [],
     });
@@ -233,8 +233,6 @@ describe('Investigation - Card View', () => {
 
   it.todo('sets up buttons correctly #132-134');
 
-  it.todo('displays dataset count #102-108');
-
   // TODO - find a way to mock the filter values for the below tests
   it.skip('pushFilters dispatched by filter panel', () => {
     // state.dgcommon.filterData = {
@@ -264,12 +262,12 @@ describe('Investigation - Card View', () => {
     // expect(usePushResults).toHaveBeenCalledTimes(3);
   });
 
-  it.todo('displays dataset count');
-
   it('renders fine with incomplete data', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([0]);
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([
+      { data: 0 },
+    ]);
 
     expect(() => createWrapper()).not.toThrowError();
   });

@@ -22,7 +22,7 @@ import {
 } from '@material-ui/icons';
 import {
   Dataset,
-  formatBytes,
+  formatCountOrSize,
   Investigation,
   InvestigationUser,
   parseSearchToQuery,
@@ -237,12 +237,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
     {
       content: (entity: Investigation) => {
-        const sizeQuery = sizeQueries[0];
-        if (sizeQuery?.isFetching) {
-          return 'Calculating...';
-        } else {
-          return formatBytes(sizeQuery?.data) ?? 'Unknown';
-        }
+        return formatCountOrSize(sizeQueries[0], true);
       },
       label: t('investigations.size'),
       icon: <Save className={classes.shortInfoIcon} />,

@@ -8,7 +8,7 @@ import {
 } from '@material-ui/icons';
 import {
   CardView,
-  formatBytes,
+  formatCountOrSize,
   Investigation,
   nestedValue,
   tableLink,
@@ -121,12 +121,7 @@ const ISISInvestigationsCardView = (
         content: (investigation: Investigation): number | string => {
           const index = data?.findIndex((item) => item.id === investigation.id);
           if (typeof index === 'undefined') return 'Unknown';
-          const sizeQuery = sizeQueries[index];
-          if (sizeQuery?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return formatBytes(sizeQuery?.data) ?? 'Unknown';
-          }
+          return formatCountOrSize(sizeQueries[index], true);
         },
         disableSort: true,
       },

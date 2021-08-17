@@ -136,7 +136,11 @@ describe('ISIS Investigations table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationSizes as jest.Mock).mockReturnValue(0);
+    (useInvestigationSizes as jest.Mock).mockReturnValue([
+      {
+        data: 1,
+      },
+    ]);
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
     });

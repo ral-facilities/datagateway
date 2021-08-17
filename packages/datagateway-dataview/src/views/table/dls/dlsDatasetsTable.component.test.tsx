@@ -101,7 +101,7 @@ describe('DLS Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useDatasetsDatafileCount as jest.Mock).mockReturnValue([1]);
+    (useDatasetsDatafileCount as jest.Mock).mockReturnValue([{ data: 1 }]);
   });
 
   afterEach(() => {

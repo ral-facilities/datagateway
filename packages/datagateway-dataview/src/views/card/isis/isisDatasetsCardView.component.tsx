@@ -3,7 +3,7 @@ import {
   CardView,
   Dataset,
   tableLink,
-  formatBytes,
+  formatCountOrSize,
   useDatasetSizes,
   parseSearchToQuery,
   useDateFilter,
@@ -17,7 +17,6 @@ import {
 } from 'datagateway-common';
 import { Save, CalendarToday } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
-import { TableCellProps } from 'react-virtualized';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import AddToCartButton from '../../addToCartButton.component';
@@ -128,13 +127,10 @@ const ISISDatasetsCardView = (
         icon: Save,
         label: t('datasets.size'),
         dataKey: 'size',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const countQuery = sizeQueries[cellProps.rowIndex];
-          if (countQuery?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return formatBytes(countQuery?.data) ?? 'Unknown';
-          }
+        content: (dataset: Dataset): string => {
+          const index = data?.findIndex((item) => item.id === dataset.id);
+          if (typeof index === 'undefined') return 'Unknown';
+          return formatCountOrSize(sizeQueries[index], true);
         },
         disableSort: true,
       },
@@ -151,7 +147,7 @@ const ISISDatasetsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [dateFilter, sizeQueries, t]
+    [data, dateFilter, sizeQueries, t]
   );
 
   const classes = useStyles();

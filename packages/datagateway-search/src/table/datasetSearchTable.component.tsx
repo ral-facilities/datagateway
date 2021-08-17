@@ -14,7 +14,7 @@ import {
   FacilityCycle,
   ColumnType,
   DetailsPanelProps,
-  formatBytes,
+  formatCountOrSize,
   parseSearchToQuery,
   useAddToCart,
   useAllFacilityCycles,
@@ -289,13 +289,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
             hierarchy === 'isis'
               ? sizeQueries[cellProps.rowIndex]
               : datasetCountQueries[cellProps.rowIndex];
-          if (query?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return hierarchy === 'isis'
-              ? formatBytes(query?.data)
-              : query?.data ?? 'Unknown';
-          }
+          return formatCountOrSize(query, hierarchy === 'isis');
         },
         disableSort: true,
       },

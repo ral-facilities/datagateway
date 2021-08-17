@@ -91,7 +91,7 @@ describe('Dataset table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useDatasetsDatafileCount as jest.Mock).mockReturnValue(0);
+    (useDatasetsDatafileCount as jest.Mock).mockReturnValue([{ data: 1 }]);
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
     });

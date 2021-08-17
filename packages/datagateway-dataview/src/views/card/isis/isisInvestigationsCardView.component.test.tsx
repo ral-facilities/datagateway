@@ -88,7 +88,7 @@ describe('ISIS Investigations - Card View', () => {
       data: cardData,
       isLoading: false,
     });
-    (useInvestigationSizes as jest.Mock).mockReturnValue([1]);
+    (useInvestigationSizes as jest.Mock).mockReturnValue([{ data: 1 }]);
     (useCart as jest.Mock).mockReturnValue({
       data: [],
     });
@@ -250,14 +250,12 @@ describe('ISIS Investigations - Card View', () => {
     // expect(usePushPage).toHaveBeenCalledTimes(3);
   });
 
-  it.todo('displays investigation size #126');
-
   it.todo('constructs more information section correctly #185-188');
 
   it('renders fine with incomplete data', () => {
     (useISISInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useISISInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationSizes as jest.Mock).mockReturnValueOnce([0]);
+    (useInvestigationSizes as jest.Mock).mockReturnValueOnce([{ data: 0 }]);
 
     expect(() => createWrapper()).not.toThrowError();
   });

@@ -107,7 +107,7 @@ describe('ISIS Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useDatasetSizes as jest.Mock).mockReturnValue(1);
+    (useDatasetSizes as jest.Mock).mockReturnValue({ data: 1 });
   });
 
   afterEach(() => {

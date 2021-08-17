@@ -6,6 +6,7 @@ import {
 } from '@material-ui/icons';
 import {
   CardView,
+  formatCountOrSize,
   Investigation,
   investigationLink,
   parseSearchToQuery,
@@ -98,15 +99,10 @@ const InvestigationCardView = (): React.ReactElement => {
         icon: ConfirmationNumber,
         label: t('investigations.dataset_count'),
         dataKey: 'datasetCount',
-        content: (investigation: Investigation): number | string => {
+        content: (investigation: Investigation): string => {
           const index = data?.findIndex((item) => item.id === investigation.id);
           if (typeof index === 'undefined') return 'Unknown';
-          const countQuery = countQueries[index];
-          if (countQuery?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return countQuery?.data ?? 'Unknown';
-          }
+          return formatCountOrSize(countQueries[index]);
         },
         disableSort: true,
       },

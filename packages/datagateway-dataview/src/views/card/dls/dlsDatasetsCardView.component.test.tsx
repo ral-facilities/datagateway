@@ -230,8 +230,6 @@ describe('DLS Datasets - Card View', () => {
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
   });
 
-  it.todo('displays datafile count or unknown if not available #118');
-
   it.todo('constructs buttons correctly #161');
 
   // TODO - unsure what this even tests
