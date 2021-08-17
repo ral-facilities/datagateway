@@ -1,28 +1,58 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import ISISDatasetLanding from './isisDatasetLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
 import {
   Dataset,
-  DatasetType,
   dGCommonInitialState,
-  fetchDatasetDetailsRequest,
-  fetchDatasetsRequest,
+  useDatasetDetails,
+  useDatasetSizes,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
-import axios from 'axios';
-import { push } from 'connected-react-router';
 import { Typography } from '@material-ui/core';
+import { ReactWrapper } from 'enzyme';
+import { createMemoryHistory, History } from 'history';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { Router } from 'react-router-dom';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useDatasetDetails: jest.fn(),
+    useDatasetSizes: jest.fn(),
+  };
+});
 
 describe('ISIS Dataset Landing page', () => {
-  let shallow;
   let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
+  let history: History;
+
+  const createWrapper = (studyHierarchy = false): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISDatasetLanding
+              instrumentId="4"
+              instrumentChildId="5"
+              investigationId="1"
+              datasetId="87"
+              studyHierarchy={studyHierarchy}
+            />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
 
   const initialData: Dataset[] = [
     {
@@ -32,149 +62,85 @@ describe('ISIS Dataset Landing page', () => {
       modTime: '2019-06-10',
       createTime: '2019-06-10',
       doi: 'doi 1',
-      size: 1,
       startDate: '2019-06-10',
       endDate: '2019-06-11',
       complete: true,
+      type: {
+        id: 1,
+        name: 'Type 1',
+        description: 'The first type',
+      },
     },
   ];
-  const datasetType: DatasetType = {
-    id: 1,
-    name: 'Type 1',
-    description: 'The first type',
-  };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
         dgcommon: dGCommonInitialState,
       })
     );
-    state.dgcommon.data = initialData;
-    state.dgcommon.allIds = [87];
+    history = createMemoryHistory();
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
-    global.Date.now = jest.fn(() => 1);
+    (useDatasetDetails as jest.Mock).mockReturnValue({
+      data: initialData,
+    });
+    (useDatasetSizes as jest.Mock).mockReturnValue({
+      data: 1,
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = shallow(
-      <ISISDatasetLanding
-        store={mockStore(state)}
-        instrumentId="4"
-        instrumentChildId="5"
-        investigationId="1"
-        datasetId="87"
-        studyHierarchy={false}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+  it('calls the correct data fetching hooks', () => {
+    createWrapper();
+
+    expect(useDatasetDetails).toHaveBeenCalledWith(1);
+    expect(useDatasetSizes).toHaveBeenCalledWith([initialData]);
   });
 
-  it('actions dispatched correctly', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISDatasetLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            datasetId="87"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
+  it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
+    const facilityCycleWrapper = createWrapper();
+
+    facilityCycleWrapper
+      .find('#dataset-datafiles-tab')
+      .first()
+      .simulate('click');
+
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/87/datafile'
     );
 
-    expect(testStore.getActions()).toHaveLength(2);
-    expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
-    expect(testStore.getActions()[1]).toEqual(fetchDatasetDetailsRequest());
+    history.replace('/?view=card');
+    const studyWrapper = createWrapper(true);
 
-    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    studyWrapper.find('#dataset-datafiles-tab').first().simulate('click');
 
-    expect(testStore.getActions()).toHaveLength(3);
-    expect(testStore.getActions()[2]).toEqual(
-      push(
-        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/87/datafile'
-      )
+    expect(history.location.pathname).toBe(
+      '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/87/datafile'
     );
+    expect(history.location.search).toBe('?view=card');
   });
 
-  it('fetchDetails not dispatched if no data in state', () => {
-    state.dgcommon.data = [];
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISDatasetLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            datasetId="87"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
-  });
-
-  it('fetchDetails not dispatched if details already present', () => {
-    state.dgcommon.data = [
-      {
-        ...initialData[0],
-        type: datasetType,
-      },
-    ];
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISDatasetLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            datasetId="87"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
+  it('useDatasetSizes queries not sent if no data returned from useDatasetDetails', () => {
+    (useDatasetDetails as jest.Mock).mockReturnValue({
+      data: undefined,
+    });
+    createWrapper();
+    expect(useDatasetSizes).toHaveBeenCalledWith([]);
   });
 
   it('incomplete datasets render correctly', () => {
-    state.dgcommon.data[0].complete = false;
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISDatasetLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            datasetId="87"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+    initialData[0].complete = false;
+    (useDatasetDetails as jest.Mock).mockReturnValue({
+      data: initialData,
+    });
+    const wrapper = createWrapper();
 
     expect(wrapper.find(Typography).last().text()).toEqual(
       'datasets.incomplete'
