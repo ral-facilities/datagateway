@@ -1,18 +1,42 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import VisitDetailsPanel from './visitDetailsPanel.component';
-import { Investigation } from 'datagateway-common';
+import {
+  Investigation,
+  useInvestigationDetails,
+  useInvestigationSize,
+} from 'datagateway-common';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useInvestigationDetails: jest.fn(),
+    useInvestigationSize: jest.fn(),
+  };
+});
 
 describe('Visit details panel component', () => {
-  let shallow;
   let mount;
   let rowData: Investigation;
   const detailsPanelResize = jest.fn();
-  const fetchDetails = jest.fn();
-  const fetchSize = jest.fn();
+
+  const createWrapper = (): ReactWrapper => {
+    return mount(
+      <QueryClientProvider client={new QueryClient()}>
+        <VisitDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+        />
+      </QueryClientProvider>
+    );
+  };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     rowData = {
       id: 1,
@@ -34,24 +58,24 @@ describe('Visit details panel component', () => {
       startDate: '2019-06-10',
       endDate: '2019-06-11',
     };
+
+    (useInvestigationDetails as jest.Mock).mockReturnValue({
+      data: rowData,
+    });
+    (useInvestigationSize as jest.Mock).mockReturnValue({
+      data: 1,
+      refetch: jest.fn(),
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
-    detailsPanelResize.mockClear();
-    fetchDetails.mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <VisitDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('renders user, sample and publication tabs when present in the data', () => {
@@ -89,47 +113,31 @@ describe('Visit details panel component', () => {
       },
     ];
 
-    const wrapper = shallow(
-      <VisitDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('calls useInvestigationDetails and useInvestigationSize hooks on load', () => {
+    createWrapper();
+    expect(useInvestigationDetails).toHaveBeenCalledWith(rowData.id);
+    expect(useInvestigationSize).toHaveBeenCalledWith(rowData.id);
   });
 
   it('renders calculate size button when size has not been calculated', () => {
-    const { size, ...rowDataWithoutSize } = rowData;
-
-    const wrapper = shallow(
-      <VisitDetailsPanel
-        rowData={rowDataWithoutSize}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    (useInvestigationSize as jest.Mock).mockReturnValueOnce({});
+    const wrapper = createWrapper();
+    expect(wrapper.find('#calculate-size-btn').exists()).toBeTruthy();
   });
 
   it('calculates size when button is clicked', () => {
-    const { size, ...rowDataWithoutSize } = rowData;
+    const fetchSize = jest.fn();
+    (useInvestigationSize as jest.Mock).mockReturnValueOnce({
+      refetch: fetchSize,
+    });
 
-    const wrapper = mount(
-      <VisitDetailsPanel
-        rowData={rowDataWithoutSize}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-
-    wrapper.find('#visit-details-panel button').simulate('click');
-
+    const wrapper = createWrapper();
+    wrapper.find('#calculate-size-btn').hostNodes().simulate('click');
     expect(fetchSize).toHaveBeenCalled();
-    expect(fetchSize).toHaveBeenCalledWith(1);
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
@@ -140,14 +148,7 @@ describe('Visit details panel component', () => {
       },
     ];
 
-    const wrapper = mount(
-      <VisitDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
+    const wrapper = createWrapper();
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
@@ -165,11 +166,9 @@ describe('Visit details panel component', () => {
     ];
 
     const wrapper = mount(
-      <VisitDetailsPanel
-        rowData={rowData}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
+      <QueryClientProvider client={new QueryClient()}>
+        <VisitDetailsPanel rowData={rowData} />
+      </QueryClientProvider>
     );
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
@@ -177,60 +176,6 @@ describe('Visit details panel component', () => {
     wrapper.find('#visit-publications-tab').hostNodes().simulate('click');
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
-  });
-
-  it('calls fetchDetails on load if investigationUsers, samples or publications are missing', () => {
-    mount(
-      <VisitDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-
-    expect(fetchDetails).toHaveBeenCalledTimes(1);
-    expect(fetchDetails).toHaveBeenCalledWith(1);
-    fetchDetails.mockClear();
-
-    rowData.investigationUsers = [];
-    mount(
-      <VisitDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-
-    expect(fetchDetails).toHaveBeenCalledTimes(1);
-    expect(fetchDetails).toHaveBeenCalledWith(1);
-    fetchDetails.mockClear();
-
-    rowData.samples = [];
-    mount(
-      <VisitDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-
-    expect(fetchDetails).toHaveBeenCalledTimes(1);
-    expect(fetchDetails).toHaveBeenCalledWith(1);
-    fetchDetails.mockClear();
-
-    rowData.publications = [];
-    mount(
-      <VisitDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-    expect(fetchDetails).not.toHaveBeenCalled();
   });
 
   it('gracefully handles InvestigationUsers without Users', () => {
@@ -241,14 +186,38 @@ describe('Visit details panel component', () => {
       },
     ];
 
-    const wrapper = shallow(
-      <VisitDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
+    (useInvestigationDetails as jest.Mock).mockReturnValueOnce({
+      data: rowData,
+    });
+
+    const wrapper = createWrapper();
+    expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('Shows "No <field> provided" incase of a null field', () => {
+    const { summary, startDate, endDate, ...amendedRowData } = rowData;
+
+    (useInvestigationDetails as jest.Mock).mockReturnValueOnce({
+      data: amendedRowData,
+    });
+
+    const wrapper = mount(
+      <QueryClientProvider client={new QueryClient()}>
+        <VisitDetailsPanel
+          rowData={amendedRowData}
+          detailsPanelResize={detailsPanelResize}
+        />
+      </QueryClientProvider>
     );
-    expect(wrapper).toMatchSnapshot();
+
+    expect(wrapper.html()).toContain(
+      '<b>investigations.details.start_date not provided</b>'
+    );
+    expect(wrapper.html()).toContain(
+      '<b>investigations.details.end_date not provided</b>'
+    );
+    expect(wrapper.html()).toContain(
+      '<b>investigations.details.summary not provided</b>'
+    );
   });
 });

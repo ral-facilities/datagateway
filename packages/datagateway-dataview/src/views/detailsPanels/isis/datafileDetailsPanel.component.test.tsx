@@ -145,6 +145,19 @@ describe('Datafile details panel component', () => {
   });
 
   it('does not call detailsPanelResize if not provided', () => {
+    rowData.parameters = [
+      {
+        id: 2,
+        stringValue: 'String test',
+        type: {
+          id: 3,
+          name: 'String parameter',
+          units: 'foo/s',
+          valueType: 'STRING',
+        },
+      },
+    ];
+
     const wrapper = mount(
       <QueryClientProvider client={new QueryClient()}>
         <DatafilesDetailsPanel rowData={rowData} />
