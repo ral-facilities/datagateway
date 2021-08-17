@@ -8,7 +8,7 @@ import {
   tableLink,
   TableActionProps,
   Dataset,
-  formatBytes,
+  formatCountOrSize,
   useDatasetCount,
   useDatasetsInfinite,
   parseSearchToQuery,
@@ -146,14 +146,8 @@ const ISISDatasetsTable = (
         icon: SaveIcon,
         label: t('datasets.size'),
         dataKey: 'size',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const countQuery = sizeQueries[cellProps.rowIndex];
-          if (countQuery?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return formatBytes(countQuery?.data) ?? 'Unknown';
-          }
-        },
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
         disableSort: true,
       },
       {

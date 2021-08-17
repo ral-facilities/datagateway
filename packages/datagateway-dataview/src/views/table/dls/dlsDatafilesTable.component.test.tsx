@@ -321,6 +321,4 @@ describe('DLS datafiles table component', () => {
       wrapper.find('button[aria-label="datafiles.download"]')
     ).toHaveLength(0);
   });
-
-  it.todo('transforms data successfully into correct format? #109');
 });

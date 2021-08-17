@@ -12,7 +12,7 @@ import {
 import { CalendarToday, CheckCircle, Public, Save } from '@material-ui/icons';
 import {
   Dataset,
-  formatBytes,
+  formatCountOrSize,
   parseSearchToQuery,
   useDatasetDetails,
   useDatasetSizes,
@@ -111,12 +111,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
     {
       content: (entity: Dataset) => {
-        const sizeQuery = sizeQueries[0];
-        if (sizeQuery?.isFetching) {
-          return 'Calculating...';
-        } else {
-          return formatBytes(sizeQuery?.data) ?? 'Unknown';
-        }
+        return formatCountOrSize(sizeQueries[0], true);
       },
       label: t('datasets.size'),
       icon: <Save className={classes.shortInfoIcon} />,

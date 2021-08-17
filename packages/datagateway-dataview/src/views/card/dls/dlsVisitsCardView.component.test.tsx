@@ -220,8 +220,6 @@ describe('DLS Visits - Card View', () => {
     expect(wrapper.find(VisitDetailsPanel).exists()).toBeTruthy();
   });
 
-  it.todo('displays dataset count #135');
-
   it('renders fine with incomplete data', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});

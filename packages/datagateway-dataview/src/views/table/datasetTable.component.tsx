@@ -14,6 +14,7 @@ import {
   Table,
   datasetLink,
   Dataset,
+  formatCountOrSize,
   useDatasetCount,
   useDatasetsInfinite,
   parseSearchToQuery,
@@ -176,14 +177,8 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         icon: ConfirmationNumberIcon,
         label: t('datasets.datafile_count'),
         dataKey: 'datafileCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const countQuery = datafileCountQueries[cellProps.rowIndex];
-          if (countQuery?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return countQuery?.data ?? 'Unknown';
-          }
-        },
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatCountOrSize(datafileCountQueries[cellProps.rowIndex]),
         disableSort: true,
       },
       {

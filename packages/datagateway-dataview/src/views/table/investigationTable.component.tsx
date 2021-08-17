@@ -12,6 +12,7 @@ import {
   investigationLink,
   Investigation,
   ColumnType,
+  formatCountOrSize,
   useInvestigationsInfinite,
   useInvestigationCount,
   useIds,
@@ -194,14 +195,8 @@ const InvestigationTable = (): React.ReactElement => {
         icon: ConfirmationNumberIcon,
         label: t('investigations.dataset_count'),
         dataKey: 'datasetCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const countQuery = datasetCountQueries[cellProps.rowIndex];
-          if (countQuery?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return countQuery?.data ?? 'Unknown';
-          }
-        },
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatCountOrSize(datasetCountQueries[cellProps.rowIndex]),
         disableSort: true,
       },
       {

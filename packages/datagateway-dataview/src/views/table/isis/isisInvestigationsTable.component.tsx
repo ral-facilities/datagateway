@@ -1,5 +1,5 @@
 import {
-  formatBytes,
+  formatCountOrSize,
   Investigation,
   Table,
   tableLink,
@@ -173,14 +173,8 @@ const ISISInvestigationsTable = (
         icon: SaveIcon,
         label: t('investigations.size'),
         dataKey: 'size',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const sizeQuery = sizeQueries[cellProps.rowIndex];
-          if (sizeQuery?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return formatBytes(sizeQuery?.data) ?? 'Unknown';
-          }
-        },
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
         disableSort: true,
       },
       {

@@ -22,7 +22,7 @@ Object {
   "filters": Object {},
   "information": Array [
     Object {
-      "cellContentRenderer": [Function],
+      "content": [Function],
       "dataKey": "size",
       "disableSort": true,
       "icon": Object {

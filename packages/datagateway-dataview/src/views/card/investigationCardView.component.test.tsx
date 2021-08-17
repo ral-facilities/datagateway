@@ -233,8 +233,6 @@ describe('Investigation - Card View', () => {
 
   it.todo('sets up buttons correctly #132-134');
 
-  it.todo('displays dataset count #102-108');
-
   // TODO - find a way to mock the filter values for the below tests
   it.skip('pushFilters dispatched by filter panel', () => {
     // state.dgcommon.filterData = {
@@ -263,8 +261,6 @@ describe('Investigation - Card View', () => {
     // wrapper.find(Chip).at(4).find(SvgIcon).simulate('click');
     // expect(usePushResults).toHaveBeenCalledTimes(3);
   });
-
-  it.todo('displays dataset count');
 
   it('renders fine with incomplete data', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});

@@ -275,8 +275,6 @@ describe('ISIS Datasets - Card View', () => {
 
   it.todo('constructs more information details panel #185-188');
 
-  it.todo('displays dataset sizes #132-136');
-
   // TODO - unsure what this even tests
   it.skip('usePushPage dispatched when page number is no longer valid', () => {
     const wrapper = createWrapper();

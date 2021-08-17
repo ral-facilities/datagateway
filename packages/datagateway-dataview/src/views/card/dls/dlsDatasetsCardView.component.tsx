@@ -2,6 +2,7 @@ import React from 'react';
 import {
   CardView,
   Dataset,
+  formatCountOrSize,
   tableLink,
   parseSearchToQuery,
   useDateFilter,
@@ -113,15 +114,10 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         icon: ConfirmationNumberIcon,
         label: t('datasets.datafile_count'),
         dataKey: 'datafileCount',
-        content: (dataset: Dataset): number | string => {
+        content: (dataset: Dataset): string => {
           const index = data?.findIndex((item) => item.id === dataset.id);
           if (typeof index === 'undefined') return 'Unknown';
-          const countQuery = datafileCountQueries[index];
-          if (countQuery?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return countQuery?.data ?? 'Unknown';
-          }
+          return formatCountOrSize(datafileCountQueries[index]);
         },
         disableSort: true,
       },

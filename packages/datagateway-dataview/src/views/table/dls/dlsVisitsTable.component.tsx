@@ -3,6 +3,7 @@ import {
   Table,
   tableLink,
   ColumnType,
+  formatCountOrSize,
   parseSearchToQuery,
   useDateFilter,
   useInvestigationCount,
@@ -91,14 +92,8 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
         icon: ConfirmationNumberIcon,
         label: t('investigations.dataset_count'),
         dataKey: 'datasetCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const countQuery = datasetCountQueries[cellProps.rowIndex];
-          if (countQuery?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return countQuery?.data ?? 'Unknown';
-          }
-        },
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatCountOrSize(datasetCountQueries[cellProps.rowIndex]),
         disableSort: true,
       },
       {

@@ -27,7 +27,7 @@ import {
   useTextFilter,
   useInvestigationsDatasetCount,
   useInvestigationSizes,
-  formatBytes,
+  formatCountOrSize,
   useLuceneSearch,
 } from 'datagateway-common';
 import { StateType } from '../state/app.types';
@@ -297,13 +297,7 @@ const InvestigationSearchTable = (
             hierarchy === 'isis'
               ? sizeQueries[cellProps.rowIndex]
               : datasetCountQueries[cellProps.rowIndex];
-          if (query?.isFetching) {
-            return 'Calculating...';
-          } else {
-            return hierarchy === 'isis'
-              ? formatBytes(query?.data)
-              : query?.data ?? 'Unknown';
-          }
+          return formatCountOrSize(query, hierarchy === 'isis');
         },
         disableSort: true,
       },
