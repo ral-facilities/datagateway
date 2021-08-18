@@ -12,7 +12,6 @@ import {
   useInvestigationsPaginated,
   useInvestigationCount,
   Investigation,
-  useCart,
   useInvestigationsDatasetCount,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
@@ -37,7 +36,6 @@ jest.mock('datagateway-common', () => {
     useInvestigationCount: jest.fn(),
     useInvestigationsPaginated: jest.fn(),
     useInvestigationsDatasetCount: jest.fn(),
-    useCart: jest.fn(),
   };
 });
 
@@ -90,9 +88,6 @@ describe('Investigation - Card View', () => {
       isLoading: false,
     });
     (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-    });
 
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -178,36 +173,13 @@ describe('Investigation - Card View', () => {
     );
   });
 
-  it('addToCart button displays', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.exists(AddToCartButton)).toBeTruthy();
-    // expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
-  });
-
-  // TODO - add_to_cart displays instead. Investigate why
-  it.skip('removeFromCart button displays', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-    });
-
-    const wrapper = createWrapper();
-    expect(wrapper.exists(AddToCartButton)).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual(
-      'buttons.remove_from_cart'
-    );
-  });
-
   it.todo('constructs more information details panel #185-188');
 
-  it.todo('sets up buttons correctly #132-134');
+  it('renders buttons correctly', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
+    expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
+  });
 
   // TODO - find a way to mock the filter values for the below tests
   it.skip('pushFilters dispatched by filter panel', () => {

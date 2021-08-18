@@ -6,7 +6,6 @@ import {
   useDatasetsPaginated,
   useDatasetCount,
   Dataset,
-  useCart,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -30,7 +29,6 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useDatasetCount: jest.fn(),
     useDatasetsPaginated: jest.fn(),
-    useCart: jest.fn(),
   };
 });
 
@@ -81,9 +79,6 @@ describe('DLS Datasets - Card View', () => {
     (useDatasetsPaginated as jest.Mock).mockReturnValue({
       data: cardData,
       isLoading: false,
-    });
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
     });
 
     // Prevent error logging
@@ -192,33 +187,6 @@ describe('DLS Datasets - Card View', () => {
     );
   });
 
-  it('addToCart button displays', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
-  });
-
-  // TODO - add_to_cart displays instead. Investigate why
-  it.skip('removeFromCart button displays', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-    });
-
-    const wrapper = createWrapper();
-    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual(
-      'buttons.remove_from_cart'
-    );
-  });
-
   it('displays details panel when more information is expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
@@ -230,7 +198,11 @@ describe('DLS Datasets - Card View', () => {
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
   });
 
-  it.todo('constructs buttons correctly #161');
+  it('renders buttons correctly', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
+    expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
+  });
 
   // TODO - unsure what this even tests
   it('usePushPage dispatched when page number is no longer valid', () => {

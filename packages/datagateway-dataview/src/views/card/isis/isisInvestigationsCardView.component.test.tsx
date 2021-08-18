@@ -6,7 +6,6 @@ import {
   useISISInvestigationsPaginated,
   useISISInvestigationCount,
   Investigation,
-  useCart,
   useInvestigationSizes,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
@@ -32,7 +31,6 @@ jest.mock('datagateway-common', () => {
     useISISInvestigationCount: jest.fn(),
     useISISInvestigationsPaginated: jest.fn(),
     useInvestigationSizes: jest.fn(),
-    useCart: jest.fn(),
   };
 });
 
@@ -89,9 +87,6 @@ describe('ISIS Investigations - Card View', () => {
       isLoading: false,
     });
     (useInvestigationSizes as jest.Mock).mockReturnValue([{ data: 1 }]);
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-    });
 
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -188,31 +183,10 @@ describe('ISIS Investigations - Card View', () => {
     );
   });
 
-  it('addToCart button displays', () => {
+  it('renders buttons correctly', () => {
     const wrapper = createWrapper();
-    expect(wrapper.exists(AddToCartButton)).toBeTruthy();
-    // expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
-  });
-
-  // TODO - add_to_cart displays instead. Investigate why
-  it.skip('removeFromCart button displays', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-    });
-
-    const wrapper = createWrapper();
-    expect(wrapper.exists(AddToCartButton)).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual(
-      'buttons.remove_from_cart'
-    );
+    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
+    expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
   });
 
   it('displays details panel when more information is expanded', () => {

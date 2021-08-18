@@ -6,7 +6,6 @@ import {
   useDatasetsPaginated,
   useDatasetCount,
   Dataset,
-  useCart,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -29,7 +28,6 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useDatasetCount: jest.fn(),
     useDatasetsPaginated: jest.fn(),
-    useCart: jest.fn(),
   };
 });
 
@@ -71,16 +69,6 @@ describe('Dataset - Card View', () => {
       JSON.stringify({
         dgcommon: dGCommonInitialState,
         dgdataview: dgDataViewInitialState,
-        router: {
-          action: 'POP',
-          location: {
-            hash: '',
-            key: '',
-            pathname: '/',
-            search: '',
-            state: {},
-          },
-        },
       })
     );
 
@@ -91,9 +79,6 @@ describe('Dataset - Card View', () => {
     (useDatasetsPaginated as jest.Mock).mockReturnValue({
       data: cardData,
       isLoading: false,
-    });
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
     });
 
     window.scrollTo = jest.fn();
@@ -201,38 +186,15 @@ describe('Dataset - Card View', () => {
     );
   });
 
-  it('addToCart button displays', () => {
+  it('renders buttons correctly', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
     expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
   });
 
-  // TODO - add_to_cart displays instead. Investigate why
-  it.skip('removeFromCart button displays', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-    });
-
-    const wrapper = createWrapper();
-    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual(
-      'buttons.remove_from_cart'
-    );
-  });
-
-  it.todo('renders buttons correctly');
-
   it('renders fine with incomplete data', () => {
-    (useDatasetCount as jest.Mock).mockReturnValueOnce({});
-    (useDatasetsPaginated as jest.Mock).mockReturnValueOnce({});
+    (useDatasetCount as jest.Mock).mockReturnValue({});
+    (useDatasetsPaginated as jest.Mock).mockReturnValue({});
 
     expect(() => createWrapper()).not.toThrowError();
   });

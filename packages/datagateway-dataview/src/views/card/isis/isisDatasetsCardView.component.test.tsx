@@ -6,7 +6,6 @@ import {
   useDatasetsPaginated,
   useDatasetCount,
   Dataset,
-  useCart,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -31,7 +30,6 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useDatasetCount: jest.fn(),
     useDatasetsPaginated: jest.fn(),
-    useCart: jest.fn(),
   };
 });
 
@@ -88,9 +86,6 @@ describe('ISIS Datasets - Card View', () => {
     (useDatasetsPaginated as jest.Mock).mockReturnValue({
       data: cardData,
       isLoading: false,
-    });
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
     });
 
     // Prevent error logging
@@ -229,35 +224,11 @@ describe('ISIS Datasets - Card View', () => {
     );
   });
 
-  it('addToCart button displays', () => {
+  it('renders buttons correctly', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
     expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
-  });
 
-  // TODO - add_to_cart displays instead. Investigate why
-  it.skip('removeFromCart button displays', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-    });
-
-    const wrapper = createWrapper();
-    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual(
-      'buttons.remove_from_cart'
-    );
-  });
-
-  it('download button displays', () => {
-    const wrapper = createWrapper();
     expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
     expect(wrapper.find(DownloadButton).text()).toEqual('buttons.download');
   });
