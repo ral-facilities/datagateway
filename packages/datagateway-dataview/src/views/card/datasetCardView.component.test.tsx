@@ -228,41 +228,6 @@ describe('Dataset - Card View', () => {
     );
   });
 
-  // TODO - unsure what this even tests
-  it.skip('usePushPage dispatched when page number is no longer valid', () => {
-    // expect(usePushPage).toHaveBeenCalledTimes(1);
-    // (parseSearchToQuery as jest.Mock).mockReturnValueOnce({
-    //   view: null,
-    //   search: null,
-    //   page: 2,
-    //   results: null,
-    //   filters: {},
-    //   sort: {},
-    // });
-
-    // state = {
-    //   ...state,
-    //   dgcommon: {
-    //     ...state.dgcommon,
-    //     totalDataCount: 1,
-    //     query: {
-    //       view: null,
-    //       search: null,
-    //       page: 2,
-    //       results: null,
-    //       filters: {},
-    //       sort: {},
-    //     },
-    //   },
-    // };
-    // const store = mockStore(state);
-    // wrapper.setProps({ store: store });
-    // expect(usePushPage).toHaveBeenCalledTimes(2);
-    createWrapper();
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe('?page=2');
-  });
-
   it.todo('renders buttons correctly');
 
   it('renders fine with incomplete data', () => {
