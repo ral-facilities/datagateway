@@ -181,35 +181,6 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
   });
 
-  // TODO - find a way to mock the filter values for the below tests
-  it.skip('pushFilters dispatched by filter panel', () => {
-    // state.dgcommon.filterData = {
-    //   'type.id': ['1', '2'],
-    //   'facility.id': ['1', '2'],
-    // };
-    // const wrapper = createWrapper();
-    // expect(usePushResults).toHaveBeenCalledTimes(2);
-    // const typePanel = wrapper.find(Accordion).first();
-    // typePanel.simulate('click');
-    // expect(typePanel.find(Chip).first().text()).toEqual('1');
-    // expect(typePanel.find(Chip).last().text()).toEqual('2');
-    // typePanel.find(Chip).first().simulate('click');
-    // expect(usePushResults).toHaveBeenCalledTimes(3);
-  });
-
-  // TODO - not sure how to test this
-  it.skip('pushFilters dispatched by deleting chip', () => {
-    // state.dgcommon.filterData = {
-    //   'type.id': ['1', '2'],
-    //   'facility.id': ['1', '2'],
-    // };
-    // state.dgcommon.query.filters = { 'type.id': ['1'] };
-    // const wrapper = createWrapper();
-    // expect(usePushResults).toHaveBeenCalledTimes(2);
-    // wrapper.find(Chip).at(4).find(SvgIcon).simulate('click');
-    // expect(usePushResults).toHaveBeenCalledTimes(3);
-  });
-
   it('renders fine with incomplete data', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
