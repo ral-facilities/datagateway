@@ -165,11 +165,12 @@ describe('ISIS Studies table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  // TODO: Not finding the end date filter (due to the rowData?)
-  it.skip('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', () => {
     const wrapper = createWrapper();
 
-    const filterInput = wrapper.find('[aria-label="End Date date filter to"]');
+    const filterInput = wrapper.find(
+      '[aria-label="studies.end_date date filter to"]'
+    );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
