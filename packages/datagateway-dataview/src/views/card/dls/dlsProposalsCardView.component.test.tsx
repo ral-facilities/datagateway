@@ -148,31 +148,6 @@ describe('DLS Proposals - Card View', () => {
     );
   });
 
-  // TODO - unsure what this even tests
-  it('pushPage dispatched when page number is no longer valid', () => {
-    // const wrapper = createWrapper();
-    // store = mockStore({
-    //   ...state,
-    //   dgcommon: {
-    //     ...state.dgcommon,
-    //     totalDataCount: 1,
-    //     query: {
-    //       view: null,
-    //       search: null,
-    //       page: 2,
-    //       results: null,
-    //       filters: {},
-    //       sort: {},
-    //     },
-    //   },
-    // });
-    // wrapper.setProps({ store: store });
-    // The push has outdated query?
-    // expect(store.getActions().length).toEqual(3);
-    // expect(store.getActions()[1]).toEqual(updatePage(1));
-    // expect(store.getActions()[2]).toEqual(push('?page=2'));
-  });
-
   it('renders fine with incomplete data', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});

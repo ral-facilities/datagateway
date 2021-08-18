@@ -204,30 +204,6 @@ describe('DLS Datasets - Card View', () => {
     expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
   });
 
-  // TODO - unsure what this even tests
-  it('usePushPage dispatched when page number is no longer valid', () => {
-    const wrapper = createWrapper();
-    // expect(usePushPage).toHaveBeenCalledTimes(2);
-
-    const store = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        totalDataCount: 1,
-        query: {
-          view: null,
-          search: null,
-          page: 2,
-          results: null,
-          filters: {},
-          sort: {},
-        },
-      },
-    });
-    wrapper.setProps({ store: store });
-    // expect(usePushPage).toHaveBeenCalledTimes(3);
-  });
-
   it('renders fine with incomplete data', () => {
     (useDatasetCount as jest.Mock).mockReturnValueOnce({});
     (useDatasetsPaginated as jest.Mock).mockReturnValueOnce({});
