@@ -233,7 +233,7 @@ describe('ISIS Datasets - Card View', () => {
     expect(wrapper.find(DownloadButton).text()).toEqual('buttons.download');
   });
 
-  it('displays details panel when more information is expanded', () => {
+  it('displays details panel when more information is expanded and navigates to datafiles view when tab clicked', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
@@ -242,9 +242,12 @@ describe('ISIS Datasets - Card View', () => {
       .simulate('click');
 
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
-  });
 
-  it.todo('constructs more information details panel #185-188');
+    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile'
+    );
+  });
 
   it('renders fine with incomplete data', () => {
     (useDatasetCount as jest.Mock).mockReturnValueOnce({});

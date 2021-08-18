@@ -173,8 +173,6 @@ describe('Investigation - Card View', () => {
     );
   });
 
-  it.todo('constructs more information details panel #185-188');
-
   it('renders buttons correctly', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();

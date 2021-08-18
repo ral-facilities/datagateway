@@ -20,7 +20,7 @@ import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import AddToCartButton from '../../addToCartButton.component';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
-import { createMemoryHistory } from 'history';
+import { createMemoryHistory, History } from 'history';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -41,7 +41,7 @@ describe('ISIS Investigations - Card View', () => {
   let cardData: Investigation[];
   let history: History;
 
-  const createWrapper = (): ReactWrapper => {
+  const createWrapper = (studyHierarchy = false): ReactWrapper => {
     const store = mockStore(state);
     return mount(
       <Provider store={store}>
@@ -50,7 +50,7 @@ describe('ISIS Investigations - Card View', () => {
             <ISISInvestigationsCardView
               instrumentId="1"
               instrumentChildId="1"
-              studyHierarchy={false}
+              studyHierarchy={studyHierarchy}
             />
           </QueryClientProvider>
         </Router>
@@ -118,6 +118,21 @@ describe('ISIS Investigations - Card View', () => {
       studyHierarchy
     );
     expect(useInvestigationSizes).toHaveBeenCalledWith(cardData);
+  });
+
+  it('correct link used when NOT in studyHierarchy', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
+    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1');
+  });
+
+  it('correct link used for studyHierarchy', () => {
+    const wrapper = createWrapper(true);
+
+    expect(
+      wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
+    ).toEqual('/browseStudyHierarchy/instrument/1/study/1/investigation/1');
   });
 
   it('updates filter query params on text filter', () => {
@@ -189,7 +204,7 @@ describe('ISIS Investigations - Card View', () => {
     expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
   });
 
-  it('displays details panel when more information is expanded', () => {
+  it('displays details panel when more information is expanded and navigates to datasets view when tab clicked', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
     wrapper
@@ -198,9 +213,12 @@ describe('ISIS Investigations - Card View', () => {
       .simulate('click');
 
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
-  });
 
-  it.todo('constructs more information section correctly #185-188');
+    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/1/facilityCycle/1/investigation/1/dataset'
+    );
+  });
 
   it('renders fine with incomplete data', () => {
     (useISISInvestigationCount as jest.Mock).mockReturnValueOnce({});
