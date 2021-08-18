@@ -1,42 +1,56 @@
-import { createMount, createShallow } from '@material-ui/core/test-utils';
-import axios from 'axios';
+import React from 'react';
+import { createMount } from '@material-ui/core/test-utils';
+import DLSProposalsTable from './dlsProposalsTable.component';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import {
-  dGCommonInitialState,
-  // fetchInvestigationCountRequest,
-  // fetchInvestigationsRequest,
-  // filterTable,
-  // sortTable,
   Investigation,
   useInvestigationCount,
   useInvestigationsInfinite,
+  dGCommonInitialState,
 } from 'datagateway-common';
-import React from 'react';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import DLSProposalsTable from './dlsProposalsTable.component';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Router } from 'react-router';
+import { createMemoryHistory, History } from 'history';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useInvestigationCount: jest.fn(),
+    useInvestigationsInfinite: jest.fn(),
+  };
+});
 
 describe('DLS Proposals table component', () => {
-  // let shallow;
   let mount;
   let mockStore;
   let state: StateType;
+  let rowData: Investigation[];
+  let history: History;
+
+  const createWrapper = (): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSProposalsTable />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'DLSProposalsTable' });
     mount = createMount();
-
-    mockStore = configureStore([thunk]);
-    state = JSON.parse(
-      JSON.stringify({
-        dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
-      })
-    );
-    state.dgcommon.data = [
+    rowData = [
       {
         id: 1,
         title: 'Test 1',
@@ -58,111 +72,114 @@ describe('DLS Proposals table component', () => {
         endDate: '2019-06-11',
       },
     ];
+    history = createMemoryHistory();
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    mockStore = configureStore([thunk]);
+    state = JSON.parse(
+      JSON.stringify({
+        dgdataview: dgDataViewInitialState,
+        dgcommon: dGCommonInitialState,
+      })
     );
-    global.Date.now = jest.fn(() => 1);
+
+    (useInvestigationCount as jest.Mock).mockReturnValue({
+      data: 1,
+      isLoading: false,
+    });
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: rowData,
+      isLoading: false,
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DLSProposalsTable store={mockStore(state)} />);
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
   });
 
-  // it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
-  //   let testStore = mockStore(state);
-  //   const wrapper = mount(
-  //     <Provider store={testStore}>
-  //       <MemoryRouter>
-  //         <DLSProposalsTable />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
+  it('calls the correct data fetching hooks on load', () => {
+    createWrapper();
+    expect(useInvestigationCount).toHaveBeenCalledWith([
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['name', 'title']),
+      },
+    ]);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['name', 'title']),
+      },
+    ]);
+  });
 
-  //   // simulate clearTable action
-  //   testStore = mockStore({
-  //     ...state,
-  //     dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
-  //   });
-  //   wrapper.setProps({ store: testStore });
+  it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
+    const fetchNextPage = jest.fn();
+    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
+      data: { pages: [rowData] },
+      fetchNextPage,
+    });
+    const wrapper = createWrapper();
 
-  //   expect(testStore.getActions()[0]).toEqual(
-  //     fetchInvestigationCountRequest(1)
-  //   );
-  //   expect(testStore.getActions()[1]).toEqual(fetchInvestigationsRequest(1));
-  // });
+    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
+      startIndex: 50,
+      stopIndex: 74,
+    });
 
-  // it('sends fetchInvestigations action when loadMoreRows is called', () => {
-  //   const testStore = mockStore(state);
-  //   const wrapper = shallow(<DLSProposalsTable store={testStore} />);
+    expect(fetchNextPage).toHaveBeenCalledWith({
+      pageParam: { startIndex: 50, stopIndex: 74 },
+    });
+  });
 
-  //   wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+  it('updates filter query params on text filter', () => {
+    const wrapper = createWrapper();
 
-  //   expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
-  // });
+    const filterInput = wrapper.find('input').first();
+    filterInput.instance().value = 'test';
+    filterInput.simulate('change');
 
-  // it('sends filterTable action on filter', () => {
-  //   const testStore = mockStore(state);
-  //   const wrapper = mount(
-  //     <Provider store={testStore}>
-  //       <MemoryRouter>
-  //         <DLSProposalsTable />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"title":{"value":"test","type":"include"}}'
+      )}`
+    );
 
-  //   const filterInput = wrapper.find('input').first();
-  //   filterInput.instance().value = 'test';
-  //   filterInput.simulate('change');
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
 
-  //   expect(testStore.getActions()[2]).toEqual(
-  //     filterTable('title', { value: 'test', type: 'include' })
-  //   );
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
+  });
 
-  //   filterInput.instance().value = '';
-  //   filterInput.simulate('change');
+  it('updates sort query params on sort', () => {
+    const wrapper = createWrapper();
 
-  //   expect(testStore.getActions()[4]).toEqual(filterTable('title', null));
-  // });
+    wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .first()
+      .simulate('click');
 
-  // it('sends sortTable action on sort', () => {
-  //   const testStore = mockStore(state);
-  //   const wrapper = mount(
-  //     <Provider store={testStore}>
-  //       <MemoryRouter>
-  //         <DLSProposalsTable />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+    );
+  });
 
-  //   wrapper
-  //     .find('[role="columnheader"] span[role="button"]')
-  //     .first()
-  //     .simulate('click');
+  it('renders title and name as links', () => {
+    const wrapper = createWrapper();
 
-  //   expect(testStore.getActions()[2]).toEqual(sortTable('title', 'asc'));
-  // });
+    expect(
+      wrapper.find('[aria-colindex=2]').find('p').children()
+    ).toMatchSnapshot();
 
-  // it('renders title and name as links', () => {
-  //   const wrapper = mount(
-  //     <Provider store={mockStore(state)}>
-  //       <MemoryRouter>
-  //         <DLSProposalsTable />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
-
-  //   expect(
-  //     wrapper.find('[aria-colindex=2]').find('p').children()
-  //   ).toMatchSnapshot();
-
-  //   expect(
-  //     wrapper.find('[aria-colindex=3]').find('p').children()
-  //   ).toMatchSnapshot();
-  // });
+    expect(
+      wrapper.find('[aria-colindex=3]').find('p').children()
+    ).toMatchSnapshot();
+  });
 });

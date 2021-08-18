@@ -7,8 +7,8 @@ import {
   Investigation,
   useInvestigationCount,
   useInvestigationsInfinite,
-  dGCommonInitialState,
   useInvestigationsDatasetCount,
+  dGCommonInitialState,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
@@ -127,7 +127,6 @@ describe('DLS Visits table component', () => {
         }),
       },
     ]);
-
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(rowData);
   });
 
