@@ -20,6 +20,7 @@ import { Router } from 'react-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import DownloadButton from '../../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -33,7 +34,6 @@ jest.mock('datagateway-common', () => {
     useCart: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
-    downloadDatafile: jest.fn(),
   };
 });
 
@@ -302,21 +302,9 @@ describe('ISIS datafiles table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it("doesn't display download button for datafiles with no location", () => {
-    (useDatafilesInfinite as jest.Mock).mockReturnValueOnce([
-      {
-        id: 1,
-        name: 'Test 1',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-      },
-    ]);
-
+  it('renders actions correctly', () => {
     const wrapper = createWrapper();
 
-    expect(
-      wrapper.find('button[aria-label="datafiles.download"]')
-    ).toHaveLength(0);
+    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 });

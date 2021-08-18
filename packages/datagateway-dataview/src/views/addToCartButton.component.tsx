@@ -15,7 +15,9 @@ interface AddToCartButtonProps {
 
 type AddToCartButtonCombinedProps = AddToCartButtonProps;
 
-const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
+const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
+  props: AddToCartButtonCombinedProps
+) => {
   const { entityType, entityId, allIds } = props;
   const [t] = useTranslation();
 

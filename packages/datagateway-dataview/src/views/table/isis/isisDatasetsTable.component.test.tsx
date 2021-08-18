@@ -14,7 +14,6 @@ import {
   useDatasetsInfinite,
   Dataset,
   useDatasetSizes,
-  downloadDataset,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -22,6 +21,7 @@ import { Router } from 'react-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import DownloadButton from '../../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -36,7 +36,6 @@ jest.mock('datagateway-common', () => {
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
     useDatasetSizes: jest.fn(),
-    downloadDataset: jest.fn(),
   };
 });
 
@@ -338,11 +337,9 @@ describe('ISIS Dataset table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('sends downloadData action on click of download button', () => {
+  it('renders actions correctly', () => {
     const wrapper = createWrapper();
 
-    wrapper.find('button[aria-label="datasets.download"]').simulate('click');
-
-    expect(downloadDataset).toHaveBeenCalled();
+    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 });

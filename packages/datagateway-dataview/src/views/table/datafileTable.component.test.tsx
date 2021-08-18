@@ -8,7 +8,6 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useDatafilesInfinite,
-  downloadDatafile,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -21,6 +20,7 @@ import DatafileTable, { DatafileDetailsPanel } from './datafileTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import DownloadButton from '../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -34,7 +34,6 @@ jest.mock('datagateway-common', () => {
     useCart: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
-    downloadDatafile: jest.fn(),
   };
 });
 
@@ -304,33 +303,12 @@ describe('Datafile table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('downloadDatafile dispatched on click of download button', () => {
+  it('renders actions correctly', () => {
     const wrapper = createWrapper();
 
-    wrapper.find('button[aria-label="datafiles.download"]').simulate('click');
-
-    expect(downloadDatafile).toHaveBeenCalled();
+    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 
-  it("doesn't display download button for datafiles with no location", () => {
-    (useDatafilesInfinite as jest.Mock).mockReturnValueOnce([
-      {
-        id: 1,
-        name: 'Test 1',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-      },
-    ]);
-
-    const wrapper = createWrapper();
-
-    expect(
-      wrapper.find('button[aria-label="datafiles.download"]')
-    ).toHaveLength(0);
-  });
-
-  // TODO - come back to this. Every now and then this fails due to different classNames
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <DatafileDetailsPanel

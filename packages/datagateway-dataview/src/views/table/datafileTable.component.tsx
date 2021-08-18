@@ -10,7 +10,6 @@ import {
   makeStyles,
   Theme,
   Divider,
-  IconButton,
 } from '@material-ui/core';
 import {
   Table,
@@ -29,14 +28,13 @@ import {
   useAddToCart,
   useRemoveFromCart,
   DetailsPanelProps,
-  downloadDatafile,
 } from 'datagateway-common';
-import { GetApp } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
 import { IndexRange } from 'react-virtualized';
+import DownloadButton from '../downloadButton.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -103,8 +101,6 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
-
-  const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
 
   const { filters, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -231,25 +227,14 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
       disableSelectAll={!selectAllSetting}
       detailsPanel={DatafileDetailsPanel}
       actions={[
-        // TODO - extract this later
-        function downloadButton({ rowData }: TableActionProps) {
-          const { id, location } = rowData as Datafile;
-          if (location) {
-            return (
-              <IconButton
-                aria-label={t('datafiles.download')}
-                key="download"
-                onClick={() => {
-                  downloadDatafile(idsUrl, id, location);
-                }}
-              >
-                <GetApp />
-              </IconButton>
-            );
-          } else {
-            return null;
-          }
-        },
+        ({ rowData }: TableActionProps) => (
+          <DownloadButton
+            entityType="datafile"
+            entityId={rowData.id}
+            entityName={(rowData as Datafile).location}
+            variant="icon"
+          />
+        ),
       ]}
       columns={columns}
     />

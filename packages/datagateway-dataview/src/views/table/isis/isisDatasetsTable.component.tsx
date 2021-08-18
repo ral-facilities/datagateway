@@ -2,7 +2,6 @@ import React from 'react';
 import TitleIcon from '@material-ui/icons/Title';
 import SaveIcon from '@material-ui/icons/Save';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { IconButton } from '@material-ui/core';
 import {
   Table,
   tableLink,
@@ -20,7 +19,6 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  downloadDataset,
   useDatasetSizes,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
@@ -29,7 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
-import GetApp from '@material-ui/icons/GetApp';
+import DownloadButton from '../../downloadButton.component';
 
 interface ISISDatasetsTableProps {
   instrumentId: string;
@@ -61,8 +59,6 @@ const ISISDatasetsTable = (
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
-
-  const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
 
   const { filters, sort, view } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -205,25 +201,14 @@ const ISISDatasetsTable = (
       disableSelectAll={!selectAllSetting}
       detailsPanel={detailsPanel}
       actions={[
-        function downloadButton({ rowData }: TableActionProps) {
-          const { id, name } = rowData as Dataset;
-          if (location) {
-            return (
-              <IconButton
-                aria-label={t('datasets.download')}
-                key="download"
-                size="small"
-                onClick={() => {
-                  downloadDataset(idsUrl, id, name);
-                }}
-              >
-                <GetApp />
-              </IconButton>
-            );
-          } else {
-            return null;
-          }
-        },
+        ({ rowData }: TableActionProps) => (
+          <DownloadButton
+            entityType="dataset"
+            entityId={rowData.id}
+            entityName={rowData.name}
+            variant="icon"
+          />
+        ),
       ]}
       columns={columns}
     />

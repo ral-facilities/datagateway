@@ -3,8 +3,6 @@ import TitleIcon from '@material-ui/icons/Title';
 import ExploreIcon from '@material-ui/icons/Explore';
 import SaveIcon from '@material-ui/icons/Save';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { IconButton } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
 import {
   Table,
   TableActionProps,
@@ -21,7 +19,6 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  downloadDatafile,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -29,6 +26,7 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';
 import DatafileDetailsPanel from '../../detailsPanels/isis/datafileDetailsPanel.component';
+import DownloadButton from '../../downloadButton.component';
 
 interface ISISDatafilesTableProps {
   datasetId: string;
@@ -47,8 +45,6 @@ const ISISDatafilesTable = (
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
-
-  const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
 
   const { filters, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -176,24 +172,14 @@ const ISISDatafilesTable = (
       disableSelectAll={!selectAllSetting}
       detailsPanel={DatafileDetailsPanel}
       actions={[
-        function downloadButton({ rowData }: TableActionProps) {
-          const { id, location } = rowData as Datafile;
-          if (location) {
-            return (
-              <IconButton
-                aria-label={t('datafiles.download')}
-                key="download"
-                onClick={() => {
-                  downloadDatafile(idsUrl, id, location);
-                }}
-              >
-                <GetApp />
-              </IconButton>
-            );
-          } else {
-            return null;
-          }
-        },
+        ({ rowData }: TableActionProps) => (
+          <DownloadButton
+            entityType="datafile"
+            entityId={rowData.id}
+            entityName={(rowData as Datafile).location}
+            variant="icon"
+          />
+        ),
       ]}
       columns={columns}
     />
