@@ -5,33 +5,57 @@ import { MemoryRouter } from 'react-router';
 
 import SearchPageTable from './searchPageTable';
 
-import { mount as enzymeMount, shallow as enzymeShallow } from 'enzyme';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { mount as enzymeMount, ReactWrapper } from 'enzyme';
+import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 import { setCurrentTab } from './state/actions/actions';
 import axios from 'axios';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { Store } from 'redux';
+
+jest.mock('datagateway-common', () => ({
+  ...jest.requireActual('datagateway-common'),
+  __esModule: true,
+  // mock table to opt out of rendering them in these tests as there's no need
+  Table: jest.fn(() => 'MockedTable'),
+}));
 
 describe('SearchPageTable', () => {
   let mount: typeof enzymeMount;
-  let shallow: typeof enzymeShallow;
   let state: StateType;
+  const mockStore = configureStore([thunk]);
+
+  const createWrapper = (store: Store = mockStore(state)): ReactWrapper => {
+    return mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
+        >
+          <QueryClientProvider client={new QueryClient()}>
+            <SearchPageTable />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
     mount = createMount();
-    shallow = createShallow({ untilSelector: 'Paper' });
 
     state = JSON.parse(
       JSON.stringify({ dgsearch: initialState, dgcommon: dGCommonInitialState })
     );
 
-    state.dgsearch.requestReceived = true;
-
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
+    (axios.get as jest.Mock).mockImplementation((url) => {
+      if (url.includes('count')) {
+        return Promise.resolve({ data: 0 });
+      } else {
+        return Promise.resolve({ data: [] });
+      }
+    });
   });
 
   it('renders correctly when request received', () => {
@@ -43,18 +67,17 @@ describe('SearchPageTable', () => {
         investigationTab: true,
         currentTab: 'investigation',
       },
-      searchData: {
-        investigation: Array(1),
-        dataset: Array(10),
-        datafile: Array(100),
-      },
     };
-    const mockStore = configureStore([thunk]);
-    const wrapper = shallow(
-      <Provider store={mockStore(state)}>
-        <SearchPageTable store={mockStore(state)} />
-      </Provider>
-    );
+    (axios.get as jest.Mock).mockImplementation((url) => {
+      if (url.includes('count')) {
+        return Promise.resolve({ data: 1 });
+      } else {
+        return Promise.resolve({ data: Array(1) });
+      }
+    });
+
+    const testStore = mockStore(state);
+    const wrapper = createWrapper(testStore);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -69,15 +92,8 @@ describe('SearchPageTable', () => {
       },
     };
 
-    const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchPageTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    createWrapper(testStore);
 
     expect(testStore.getActions()).toContainEqual(
       setCurrentTab('investigation')
@@ -102,15 +118,8 @@ describe('SearchPageTable', () => {
 
     // Mock to prevent error logging
     const spy = jest.spyOn(console, 'error').mockImplementation();
-    const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchPageTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    createWrapper(testStore);
     spy.mockRestore();
 
     expect(testStore.getActions()).toHaveLength(1);
@@ -135,15 +144,8 @@ describe('SearchPageTable', () => {
 
     // Mock to prevent error logging
     const spy = jest.spyOn(console, 'error').mockImplementation();
-    const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchPageTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    createWrapper(testStore);
     spy.mockRestore();
 
     expect(testStore.getActions()).toHaveLength(1);
@@ -160,15 +162,8 @@ describe('SearchPageTable', () => {
         currentTab: 'investigation',
       },
     };
-    const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchPageTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper(testStore);
 
     expect(testStore.getActions()).toContainEqual(
       setCurrentTab('investigation')

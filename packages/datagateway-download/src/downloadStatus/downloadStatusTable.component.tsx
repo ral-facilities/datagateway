@@ -8,6 +8,8 @@ import {
   TextColumnFilter,
   TableActionProps,
   DateColumnFilter,
+  DateFilter,
+  TextFilter,
 } from 'datagateway-common';
 import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
@@ -119,6 +121,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           setFilters(restOfFilters);
         }
       }}
+      value={filters[dataKey] as TextFilter}
     />
   );
 
@@ -139,6 +142,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           setFilters(restOfFilters);
         }
       }}
+      value={filters[dataKey] as TextFilter}
     />
   );
 
@@ -153,6 +157,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           setFilters(restOfFilters);
         }
       }}
+      value={filters[dataKey] as DateFilter}
     />
   );
 

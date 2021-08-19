@@ -1,5 +1,9 @@
 import React from 'react';
-import { Entity, Investigation } from 'datagateway-common';
+import {
+  Entity,
+  Investigation,
+  useInvestigationDetails,
+} from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -12,7 +16,6 @@ import {
   Link,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { Action } from 'redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,15 +30,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface InvestigationDetailsPanelProps {
   rowData: Entity;
-  fetchDetails: (investigationId: number) => Promise<void>;
   detailsPanelResize?: () => void;
-  viewDatasets?: (id: number) => Action;
+  viewDatasets?: (id: number) => void;
 }
 
 const InvestigationDetailsPanel = (
   props: InvestigationDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, fetchDetails, viewDatasets, detailsPanelResize } = props;
+  const { rowData, viewDatasets, detailsPanelResize } = props;
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
@@ -44,23 +46,11 @@ const InvestigationDetailsPanel = (
 
   const classes = useStyles();
 
-  const investigationData = rowData as Investigation;
-
-  React.useEffect(() => {
-    if (
-      !investigationData.investigationUsers ||
-      !investigationData.samples ||
-      !investigationData.publications
-    ) {
-      fetchDetails(investigationData.id);
-    }
-  }, [
-    investigationData.investigationUsers,
-    investigationData.samples,
-    investigationData.publications,
-    investigationData.id,
-    fetchDetails,
-  ]);
+  const { data } = useInvestigationDetails(rowData.id);
+  const investigationData: Investigation = {
+    ...data,
+    ...(rowData as Investigation),
+  };
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();

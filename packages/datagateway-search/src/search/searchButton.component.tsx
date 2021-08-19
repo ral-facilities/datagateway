@@ -7,7 +7,7 @@ import {
 } from 'react-i18next';
 
 interface SearchButtonProps {
-  initiateSearch: () => Promise<void>;
+  initiateSearch: () => void;
 }
 
 type SearchButtonCombinedProps = WithTranslation & SearchButtonProps;

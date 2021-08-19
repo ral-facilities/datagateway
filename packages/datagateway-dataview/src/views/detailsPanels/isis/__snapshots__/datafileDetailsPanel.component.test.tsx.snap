@@ -1,321 +1,95 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Datafile details panel component Shows "No <field> provided" incase of a null field 1`] = `
-<div
-  id="details-panel"
-  style={
-    Object {
-      "minWidth": 0,
-    }
-  }
->
-  <WithStyles(ForwardRef(Tabs))
-    aria-label="datafiles.details.tabs_label"
-    onChange={[Function]}
-    scrollButtons="auto"
-    value="details"
-    variant="scrollable"
-  >
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="datafile-details-panel"
-      id="datafile-details-tab"
-      label="datafiles.details.label"
-      value="details"
-    />
-  </WithStyles(ForwardRef(Tabs))>
-  <div
-    aria-labelledby="datafile-details-tab"
-    hidden={false}
-    id="datafile-details-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="h6"
-        >
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-2"
-        />
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datafiles.details.description
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            datafiles.details.description not provided
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datafiles.details.location
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            datafiles.details.location not provided
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-</div>
-`;
-
 exports[`Datafile details panel component renders correctly 1`] = `
-<div
-  id="details-panel"
-  style={
-    Object {
-      "minWidth": 0,
-    }
-  }
->
-  <WithStyles(ForwardRef(Tabs))
-    aria-label="datafiles.details.tabs_label"
-    onChange={[Function]}
-    scrollButtons="auto"
-    value="details"
-    variant="scrollable"
-  >
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="datafile-details-panel"
-      id="datafile-details-tab"
-      label="datafiles.details.label"
-      value="details"
-    />
-  </WithStyles(ForwardRef(Tabs))>
-  <div
-    aria-labelledby="datafile-details-tab"
-    hidden={false}
-    id="datafile-details-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="h6"
-        >
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-2"
-        />
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datafiles.details.description
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Test description
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datafiles.details.location
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            /test/location
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-</div>
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "createTime": "2019-06-11",
+    "description": "Test description",
+    "id": 1,
+    "location": "/test/location",
+    "modTime": "2019-06-10",
+    "name": "Test 1",
+  },
+}
 `;
 
 exports[`Datafile details panel component renders parameters tab when present in the data 1`] = `
-<div
-  id="details-panel"
-  style={
-    Object {
-      "minWidth": 0,
-    }
-  }
->
-  <WithStyles(ForwardRef(Tabs))
-    aria-label="datafiles.details.tabs_label"
-    onChange={[Function]}
-    scrollButtons="auto"
-    value="details"
-    variant="scrollable"
-  >
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="datafile-details-panel"
-      id="datafile-details-tab"
-      label="datafiles.details.label"
-      value="details"
-    />
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="datafile-parameters-panel"
-      id="datafile-parameters-tab"
-      label="datafiles.details.parameters.label"
-      value="parameters"
-    />
-  </WithStyles(ForwardRef(Tabs))>
-  <div
-    aria-labelledby="datafile-details-tab"
-    hidden={false}
-    id="datafile-details-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="h6"
-        >
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-2"
-        />
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datafiles.details.description
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Test description
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datafiles.details.location
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            /test/location
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-  <div
-    aria-labelledby="datafile-parameters-tab"
-    hidden={true}
-    id="datafile-parameters-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-      id="parameter-grid"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="2"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          String parameter
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            String test
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="4"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          Numeric parameter
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            1337
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="6"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          Datetime parameter
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            2019-09-10
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-</div>
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "createTime": "2019-06-11",
+    "description": "Test description",
+    "id": 1,
+    "location": "/test/location",
+    "modTime": "2019-06-10",
+    "name": "Test 1",
+    "parameters": Array [
+      Object {
+        "id": 2,
+        "stringValue": "String test",
+        "type": Object {
+          "id": 3,
+          "name": "String parameter",
+          "units": "foo/s",
+          "valueType": "STRING",
+        },
+      },
+      Object {
+        "id": 4,
+        "numericValue": 1337,
+        "type": Object {
+          "id": 5,
+          "name": "Numeric parameter",
+          "units": "bar/s",
+          "valueType": "NUMERIC",
+        },
+      },
+      Object {
+        "dateTimeValue": "2019-09-10 11:48:00",
+        "id": 6,
+        "type": Object {
+          "id": 7,
+          "name": "Datetime parameter",
+          "units": "baz/s",
+          "valueType": "DATE_AND_TIME",
+        },
+      },
+      Object {
+        "dateTimeValue": "2019-09-10 11:48:00",
+        "id": 8,
+        "type": Object {
+          "id": 9,
+          "name": "Invalid parameter",
+          "units": "n/a",
+          "valueType": "",
+        },
+      },
+      Object {
+        "id": 10,
+        "stringValue": "Missing PARAMETERTYPE",
+      },
+    ],
+  },
+}
 `;

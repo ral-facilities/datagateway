@@ -3,57 +3,32 @@ import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
-import {
-  addToCart,
-  DownloadCartItem,
-  removeFromCart,
-  StateType,
-} from 'datagateway-common';
+import { useAddToCart, useCart, useRemoveFromCart } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 
-interface AddToCartButtonProps {
+export interface AddToCartButtonProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
   allIds: number[];
 }
 
-interface AddToCartButtonStateProps {
-  cartItems: DownloadCartItem[];
-}
+type AddToCartButtonCombinedProps = AddToCartButtonProps;
 
-interface AddToCartButtonDispatchProps {
-  addToCart: (
-    entityType: 'investigation' | 'dataset' | 'datafile',
-    entityIds: number[]
-  ) => Promise<void>;
-  removeFromCart: (
-    entityType: 'investigation' | 'dataset' | 'datafile',
-    entityIds: number[]
-  ) => Promise<void>;
-}
-
-type AddToCartButtonCombinedProps = AddToCartButtonProps &
-  AddToCartButtonStateProps &
-  AddToCartButtonDispatchProps;
-
-const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
-  const {
-    addToCart,
-    removeFromCart,
-    entityType,
-    cartItems,
-    entityId,
-    allIds,
-  } = props;
+const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
+  props: AddToCartButtonCombinedProps
+) => {
+  const { entityType, entityId, allIds } = props;
   const [t] = useTranslation();
+
+  const { data: cartItems } = useCart();
+  const { mutate: addToCart } = useAddToCart(entityType);
+  const { mutate: removeFromCart } = useRemoveFromCart(entityType);
+
   const selectedIds = React.useMemo(
     () =>
       cartItems
-        .filter(
+        ?.filter(
           (cartItem) =>
             cartItem.entityType === entityType &&
             allIds.includes(cartItem.entityId)
@@ -69,7 +44,7 @@ const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
       color="primary"
       startIcon={<AddCircleOutlineOutlined />}
       disableElevation
-      onClick={() => addToCart(entityType, [entityId])}
+      onClick={() => addToCart([entityId])}
     >
       {t('buttons.add_to_cart')}
     </Button>
@@ -80,30 +55,11 @@ const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
       color="secondary"
       startIcon={<RemoveCircleOutlineOutlined />}
       disableElevation
-      onClick={() => removeFromCart(entityType, [entityId])}
+      onClick={() => removeFromCart([entityId])}
     >
       {t('buttons.remove_from_cart')}
     </Button>
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): AddToCartButtonDispatchProps => ({
-  addToCart: (
-    entityType: 'investigation' | 'dataset' | 'datafile',
-    entityIds: number[]
-  ) => dispatch(addToCart(entityType, entityIds)),
-  removeFromCart: (
-    entityType: 'investigation' | 'dataset' | 'datafile',
-    entityIds: number[]
-  ) => dispatch(removeFromCart(entityType, entityIds)),
-});
-
-const mapStateToProps = (state: StateType): AddToCartButtonStateProps => {
-  return {
-    cartItems: state.dgcommon.cartItems,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddToCartButton);
+export default AddToCartButton;

@@ -15,6 +15,8 @@ import {
   defaultTableRowRenderer,
   InfiniteLoader,
   IndexRange,
+  Index,
+  TableRowRenderer,
 } from 'react-virtualized';
 import clsx from 'clsx';
 import { Entity, Order, ICATEntity } from '../app.types';
@@ -71,7 +73,7 @@ const styles = (theme: Theme): StyleRules =>
 export interface ColumnType {
   label: string;
   dataKey: string;
-  icon?: JSX.Element;
+  icon?: React.ComponentType<unknown>;
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
@@ -88,10 +90,10 @@ export interface TableActionProps {
 }
 
 interface VirtualizedTableProps {
-  loading: boolean;
+  loading?: boolean;
   data: Entity[];
   columns: ColumnType[];
-  loadMoreRows?: (offsetParams: IndexRange) => Promise<void>;
+  loadMoreRows?: (offsetParams: IndexRange) => Promise<unknown>;
   totalRowCount?: number;
   sort: { [column: string]: Order };
   onSort: (column: string, order: Order | null) => void;
@@ -105,339 +107,371 @@ interface VirtualizedTableProps {
   disableSelectAll?: boolean;
 }
 
-const VirtualizedTable = (
-  props: VirtualizedTableProps & WithStyles<typeof styles>
-): React.ReactElement => {
-  const [expandedIndex, setExpandedIndex] = React.useState(-1);
-  const [detailPanelHeight, setDetailPanelHeight] = React.useState(rowHeight);
-  const [lastChecked, setLastChecked] = React.useState(-1);
+const VirtualizedTable = React.memo(
+  (
+    props: VirtualizedTableProps & WithStyles<typeof styles>
+  ): React.ReactElement => {
+    const [expandedIndex, setExpandedIndex] = React.useState(-1);
+    const [detailPanelHeight, setDetailPanelHeight] = React.useState(rowHeight);
+    const [lastChecked, setLastChecked] = React.useState(-1);
 
-  let tableRef: Table | null = null;
-  const detailPanelRef = React.useRef<HTMLDivElement>(null);
+    let tableRef: Table | null = null;
+    const detailPanelRef = React.useRef<HTMLDivElement>(null);
 
-  const {
-    actions,
-    actionsWidth,
-    classes,
-    columns,
-    data,
-    selectedRows,
-    allIds,
-    onCheck,
-    onUncheck,
-    loadMoreRows,
-    loading,
-    totalRowCount,
-    detailsPanel,
-    sort,
-    onSort,
-    disableSelectAll,
-  } = props;
+    const {
+      actions,
+      actionsWidth,
+      classes,
+      columns,
+      data,
+      selectedRows,
+      allIds,
+      onCheck,
+      onUncheck,
+      loadMoreRows,
+      loading,
+      totalRowCount,
+      detailsPanel,
+      sort,
+      onSort,
+      disableSelectAll,
+    } = props;
 
-  if (
-    (loadMoreRows && typeof totalRowCount === 'undefined') ||
-    (totalRowCount && typeof loadMoreRows === 'undefined')
-  )
-    throw new Error(
-      'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+    if (
+      (loadMoreRows && typeof totalRowCount === 'undefined') ||
+      (totalRowCount && typeof loadMoreRows === 'undefined')
+    )
+      throw new Error(
+        'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+      );
+
+    const [widthProps, setWidthProps] = React.useState<{
+      [dataKey: string]: {
+        width: number;
+        flexGrow?: number;
+        flexShrink?: number;
+      };
+    }>(
+      columns.reduce(
+        (
+          result: {
+            [dataKey: string]: {
+              width: number;
+              flexGrow: number;
+              flexShrink: number;
+            };
+          },
+          item
+        ) => {
+          result[item.dataKey] = {
+            width: Math.max(
+              window.innerWidth / columns.length,
+              dataColumnMinWidth
+            ),
+            flexGrow: 1,
+            flexShrink: 1,
+          };
+          return result;
+        },
+        {}
+      )
     );
 
-  const [widthProps, setWidthProps] = React.useState<{
-    [dataKey: string]: {
-      width: number;
-      flexGrow?: number;
-      flexShrink?: number;
-    };
-  }>(
-    columns.reduce(
-      (
-        result: {
-          [dataKey: string]: {
-            width: number;
-            flexGrow: number;
-            flexShrink: number;
-          };
-        },
-        item
-      ) => {
-        result[item.dataKey] = {
-          width: Math.max(
-            window.innerWidth / columns.length,
-            dataColumnMinWidth
-          ),
-          flexGrow: 1,
-          flexShrink: 1,
-        };
-        return result;
+    const detailsPanelResize = React.useCallback((): void => {
+      if (detailPanelRef && detailPanelRef.current) {
+        setDetailPanelHeight(detailPanelRef.current.clientHeight);
+      }
+      if (tableRef) {
+        tableRef.recomputeRowHeights();
+      }
+    }, [tableRef, setDetailPanelHeight]);
+
+    React.useEffect(detailsPanelResize, [
+      tableRef,
+      expandedIndex,
+      detailsPanelResize,
+    ]);
+
+    // Select the width to use for the actions column (if it was passed as a prop).
+    const actionsColumnWidth = actionsWidth || actionsColumnDefaultWidth;
+
+    const isRowLoaded = React.useCallback(
+      ({ index }: Index): boolean => !!data[index],
+      [data]
+    );
+
+    const getRowHeight = React.useCallback(
+      ({ index }: Index): number =>
+        index === expandedIndex ? rowHeight + detailPanelHeight : rowHeight,
+      [detailPanelHeight, expandedIndex]
+    );
+
+    const getRowClassName = React.useCallback(
+      ({ index }: Index): string =>
+        clsx(
+          classes.tableRow,
+          classes.flexContainer,
+          index > -1 && classes.tableRowHover
+        ),
+      [classes]
+    );
+    const getRow = React.useCallback(
+      ({ index }: Index): Entity => data[index],
+      [data]
+    );
+    const renderRow: TableRowRenderer = React.useCallback(
+      (props) => {
+        if (detailsPanel && props.index === expandedIndex) {
+          return (
+            <DetailsPanelRow
+              {...props}
+              detailsPanel={detailsPanel}
+              detailPanelRef={detailPanelRef}
+              detailsPanelResize={detailsPanelResize}
+            />
+          );
+        } else {
+          return defaultTableRowRenderer(props);
+        }
       },
-      {}
-    )
-  );
+      [detailsPanel, detailsPanelResize, expandedIndex]
+    );
 
-  const detailsPanelResize = (): void => {
-    if (detailPanelRef && detailPanelRef.current) {
-      setDetailPanelHeight(detailPanelRef.current.clientHeight);
-    }
-    if (tableRef) {
-      tableRef.recomputeRowHeights();
-    }
-  };
-
-  React.useEffect(detailsPanelResize, [tableRef, expandedIndex]);
-
-  // Select the width to use for the actions column (if it was passed as a prop).
-  const actionsColumnWidth = actionsWidth || actionsColumnDefaultWidth;
-
-  return (
-    <AutoSizer>
-      {({ height, width }) => {
-        let min_table_width = Object.values(widthProps).reduce(
-          (result, item) => {
-            if (item.flexShrink === 0 && item.flexGrow === 0) {
-              result += item.width;
-            } else {
-              result += dataColumnMinWidth;
-            }
-            return result;
-          },
-          0
+    const resizeColumn = React.useCallback(
+      (dataKey: string, deltaX: number): void => {
+        const thisColumn = widthProps[dataKey];
+        thisColumn.flexGrow = 0;
+        thisColumn.flexShrink = 0;
+        thisColumn.width = Math.max(
+          thisColumn.width + deltaX,
+          dataColumnMinWidth
         );
-        min_table_width +=
-          (selectedRows && onCheck && onUncheck ? selectColumnWidth : 0) +
-          (detailsPanel ? detailsColumnWidth : 0) +
-          (actions ? actionsColumnWidth : 0);
-        const rowCount = totalRowCount || data.length;
-        return (
-          <InfiniteLoader
-            isRowLoaded={({ index }) => !!data[index]}
-            loadMoreRows={loadMoreRows || (() => Promise.resolve())}
-            rowCount={rowCount}
-            minimumBatchSize={25}
-          >
-            {({ onRowsRendered, registerChild }) => (
-              <Table
-                ref={(ref) => {
-                  tableRef = ref;
-                  registerChild(ref);
-                }}
-                className={classes.table}
-                height={(height || 500) - scrollBarHeight}
-                width={Math.max(width, min_table_width)}
-                rowCount={data.length}
-                onRowsRendered={onRowsRendered}
-                headerHeight={headerHeight}
-                rowHeight={({ index }) =>
-                  index === expandedIndex
-                    ? rowHeight + detailPanelHeight
-                    : rowHeight
-                }
-                rowClassName={({ index }): string =>
-                  clsx(
-                    classes.tableRow,
-                    classes.flexContainer,
-                    index > -1 && classes.tableRowHover
-                  )
-                }
-                rowGetter={({ index }) => data[index]}
-                rowRenderer={(props) => {
-                  if (detailsPanel && props.index === expandedIndex) {
-                    return (
-                      <DetailsPanelRow
-                        {...props}
-                        detailsPanel={detailsPanel}
-                        detailPanelRef={detailPanelRef}
-                        detailsPanelResize={detailsPanelResize}
-                      />
-                    );
-                  } else {
-                    return defaultTableRowRenderer(props);
-                  }
-                }}
-              >
-                {selectedRows && onCheck && onUncheck && (
-                  <Column
-                    width={selectColumnWidth}
-                    flexShrink={0}
-                    key="Select"
-                    dataKey="Select"
-                    headerRenderer={(props) =>
-                      !disableSelectAll && (
-                        <SelectHeader
-                          {...props}
-                          className={clsx(
-                            classes.headerTableCell,
-                            classes.headerFlexContainer
-                          )}
-                          selectedRows={selectedRows}
-                          totalRowCount={rowCount}
-                          allIds={
-                            allIds ||
-                            data.map((d) => {
-                              const icatEntity = d as ICATEntity;
-                              return icatEntity.id;
-                            })
-                          }
-                          loading={loading}
-                          onCheck={onCheck}
-                          onUncheck={onUncheck}
-                        />
-                      )
+        setWidthProps({
+          ...widthProps,
+          [dataKey]: thisColumn,
+        });
+      },
+      [widthProps, setWidthProps]
+    );
+
+    return (
+      <AutoSizer>
+        {({ height, width }) => {
+          let min_table_width = Object.values(widthProps).reduce(
+            (result, item) => {
+              if (item.flexShrink === 0 && item.flexGrow === 0) {
+                result += item.width;
+              } else {
+                result += dataColumnMinWidth;
+              }
+              return result;
+            },
+            0
+          );
+          min_table_width +=
+            (selectedRows && onCheck && onUncheck ? selectColumnWidth : 0) +
+            (detailsPanel ? detailsColumnWidth : 0) +
+            (actions ? actionsColumnWidth : 0);
+          const rowCount = totalRowCount || data.length;
+          return (
+            <InfiniteLoader
+              isRowLoaded={isRowLoaded}
+              loadMoreRows={loadMoreRows || (() => Promise.resolve())}
+              rowCount={rowCount}
+              minimumBatchSize={25}
+            >
+              {({ onRowsRendered, registerChild }) => (
+                <Table
+                  ref={(ref) => {
+                    if (ref !== null) {
+                      tableRef = ref;
                     }
-                    className={classes.flexContainer}
-                    headerClassName={classes.headerFlexContainer}
-                    cellRenderer={(props) => (
-                      <SelectCell
-                        {...props}
-                        selectedRows={selectedRows}
-                        data={data}
-                        className={clsx(
-                          classes.tableCell,
-                          classes.flexContainer
-                        )}
-                        onCheck={onCheck}
-                        onUncheck={onUncheck}
-                        lastChecked={lastChecked}
-                        setLastChecked={setLastChecked}
-                        loading={loading}
-                      />
-                    )}
-                  />
-                )}
-                {detailsPanel && (
-                  <Column
-                    width={detailsColumnWidth}
-                    flexShrink={0}
-                    key="Expand"
-                    dataKey="expand"
-                    headerRenderer={() => (
-                      <TableCell
-                        size="small"
-                        padding="checkbox"
-                        component="div"
-                        className={clsx(
-                          classes.headerTableCell,
-                          classes.flexContainer
-                        )}
-                        variant="head"
-                      />
-                    )}
-                    className={classes.flexContainer}
-                    headerClassName={classes.headerFlexContainer}
-                    cellRenderer={(props) => (
-                      <ExpandCell
-                        {...props}
-                        expandedIndex={expandedIndex}
-                        setExpandedIndex={setExpandedIndex}
-                        className={clsx(
-                          classes.tableCell,
-                          classes.flexContainer
-                        )}
-                      />
-                    )}
-                  />
-                )}
-                {columns.map(
-                  ({
-                    cellContentRenderer,
-                    className,
-                    dataKey,
-                    label,
-                    icon,
-                    filterComponent,
-                    disableSort,
-                  }) => {
-                    return (
-                      <Column
-                        key={dataKey}
-                        dataKey={dataKey}
-                        label={label}
-                        disableSort={disableSort}
-                        headerClassName={classes.headerFlexContainer}
-                        headerRenderer={(headerProps) => (
-                          <DataHeader
-                            {...headerProps}
+                    return registerChild(ref);
+                  }}
+                  className={classes.table}
+                  height={(height || 500) - scrollBarHeight}
+                  width={Math.max(width, min_table_width)}
+                  rowCount={data.length}
+                  onRowsRendered={onRowsRendered}
+                  headerHeight={headerHeight}
+                  rowHeight={getRowHeight}
+                  rowClassName={getRowClassName}
+                  rowGetter={getRow}
+                  rowRenderer={renderRow}
+                >
+                  {selectedRows && onCheck && onUncheck && (
+                    <Column
+                      width={selectColumnWidth}
+                      flexShrink={0}
+                      key="Select"
+                      dataKey="Select"
+                      headerRenderer={(props) =>
+                        !disableSelectAll && (
+                          <SelectHeader
+                            {...props}
                             className={clsx(
                               classes.headerTableCell,
                               classes.headerFlexContainer
                             )}
-                            sort={sort}
-                            onSort={onSort}
-                            icon={icon}
-                            filterComponent={
-                              filterComponent && filterComponent(label, dataKey)
+                            selectedRows={selectedRows}
+                            totalRowCount={rowCount}
+                            allIds={
+                              allIds ||
+                              data.map((d) => {
+                                const icatEntity = d as ICATEntity;
+                                return icatEntity.id;
+                              })
                             }
-                            resizeColumn={(deltaX) => {
-                              const thisColumn = widthProps[dataKey];
-                              thisColumn.flexGrow = 0;
-                              thisColumn.flexShrink = 0;
-                              thisColumn.width = Math.max(
-                                thisColumn.width + deltaX,
-                                dataColumnMinWidth
-                              );
-                              setWidthProps({
-                                ...widthProps,
-                                [dataKey]: thisColumn,
-                              });
-                            }}
+                            loading={loading ?? false}
+                            onCheck={onCheck}
+                            onUncheck={onUncheck}
                           />
-                        )}
-                        className={clsx(classes.flexContainer, className)}
-                        cellRenderer={(props) => (
-                          <DataCell
-                            {...props}
-                            cellContentRenderer={cellContentRenderer}
-                            className={clsx(
-                              classes.tableCell,
-                              classes.flexContainer
-                            )}
-                          />
-                        )}
-                        minWidth={dataColumnMinWidth}
-                        {...widthProps[dataKey]}
-                      />
-                    );
-                  }
-                )}
-                {actions && (
-                  <Column
-                    width={actionsColumnWidth}
-                    flexShrink={0}
-                    key="Actions"
-                    dataKey="actions"
-                    className={classes.flexContainer}
-                    headerClassName={classes.headerFlexContainer}
-                    headerRenderer={(headerProps) => (
-                      <TableCell
-                        size="small"
-                        component="div"
-                        className={clsx(
-                          classes.headerTableCell,
-                          classes.headerFlexContainer
-                        )}
-                        variant="head"
-                      >
-                        Actions
-                      </TableCell>
-                    )}
-                    cellRenderer={(props) => (
-                      <ActionCell
-                        {...props}
-                        actions={actions}
-                        className={clsx(
-                          classes.tableCell,
-                          classes.flexContainer
-                        )}
-                      />
-                    )}
-                  />
-                )}
-              </Table>
-            )}
-          </InfiniteLoader>
-        );
-      }}
-    </AutoSizer>
-  );
-};
+                        )
+                      }
+                      className={classes.flexContainer}
+                      headerClassName={classes.headerFlexContainer}
+                      cellRenderer={(props) => (
+                        <SelectCell
+                          {...props}
+                          selectedRows={selectedRows}
+                          data={data}
+                          className={clsx(
+                            classes.tableCell,
+                            classes.flexContainer
+                          )}
+                          onCheck={onCheck}
+                          onUncheck={onUncheck}
+                          lastChecked={lastChecked}
+                          setLastChecked={setLastChecked}
+                          loading={loading ?? false}
+                        />
+                      )}
+                    />
+                  )}
+                  {detailsPanel && (
+                    <Column
+                      width={detailsColumnWidth}
+                      flexShrink={0}
+                      key="Expand"
+                      dataKey="expand"
+                      headerRenderer={() => (
+                        <TableCell
+                          size="small"
+                          padding="checkbox"
+                          component="div"
+                          className={clsx(
+                            classes.headerTableCell,
+                            classes.flexContainer
+                          )}
+                          variant="head"
+                        />
+                      )}
+                      className={classes.flexContainer}
+                      headerClassName={classes.headerFlexContainer}
+                      cellRenderer={(props) => (
+                        <ExpandCell
+                          {...props}
+                          expandedIndex={expandedIndex}
+                          setExpandedIndex={setExpandedIndex}
+                          className={clsx(
+                            classes.tableCell,
+                            classes.flexContainer
+                          )}
+                        />
+                      )}
+                    />
+                  )}
+                  {columns.map(
+                    ({
+                      cellContentRenderer,
+                      className,
+                      dataKey,
+                      label,
+                      icon,
+                      filterComponent,
+                      disableSort,
+                    }) => {
+                      return (
+                        <Column
+                          key={dataKey}
+                          dataKey={dataKey}
+                          label={label}
+                          disableSort={disableSort}
+                          headerClassName={classes.headerFlexContainer}
+                          headerRenderer={(headerProps) => (
+                            <DataHeader
+                              {...headerProps}
+                              className={clsx(
+                                classes.headerTableCell,
+                                classes.headerFlexContainer
+                              )}
+                              sort={sort}
+                              onSort={onSort}
+                              icon={icon}
+                              labelString={label}
+                              filterComponent={filterComponent}
+                              resizeColumn={resizeColumn}
+                            />
+                          )}
+                          className={clsx(classes.flexContainer, className)}
+                          cellRenderer={(props) => (
+                            <DataCell
+                              {...props}
+                              cellContentRenderer={cellContentRenderer}
+                              className={clsx(
+                                classes.tableCell,
+                                classes.flexContainer
+                              )}
+                            />
+                          )}
+                          minWidth={dataColumnMinWidth}
+                          {...widthProps[dataKey]}
+                        />
+                      );
+                    }
+                  )}
+                  {actions && (
+                    <Column
+                      width={actionsColumnWidth}
+                      flexShrink={0}
+                      key="Actions"
+                      dataKey="actions"
+                      className={classes.flexContainer}
+                      headerClassName={classes.headerFlexContainer}
+                      headerRenderer={(headerProps) => (
+                        <TableCell
+                          size="small"
+                          component="div"
+                          className={clsx(
+                            classes.headerTableCell,
+                            classes.headerFlexContainer
+                          )}
+                          variant="head"
+                        >
+                          Actions
+                        </TableCell>
+                      )}
+                      cellRenderer={(props) => (
+                        <ActionCell
+                          {...props}
+                          actions={actions}
+                          className={clsx(
+                            classes.tableCell,
+                            classes.flexContainer
+                          )}
+                        />
+                      )}
+                    />
+                  )}
+                </Table>
+              )}
+            </InfiniteLoader>
+          );
+        }}
+      </AutoSizer>
+    );
+  }
+);
+VirtualizedTable.displayName = 'VirtualizedTable';
 
 export default withStyles(styles)(VirtualizedTable);

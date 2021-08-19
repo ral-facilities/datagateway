@@ -140,9 +140,7 @@ describe('Datafiles Table', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
         .wait('@datafilesOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'Location')
-        .click()
-        .wait('@datafilesOrder', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Location').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');

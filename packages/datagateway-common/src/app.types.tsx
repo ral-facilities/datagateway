@@ -23,6 +23,7 @@ export interface Investigation {
   studyInvestigations?: StudyInvestigation[];
   facility?: Facility;
   datasets?: Dataset[];
+  type?: InvestigationType;
 }
 
 export interface Dataset {
@@ -35,6 +36,7 @@ export interface Dataset {
   endDate?: string;
   doi?: string;
   complete?: boolean;
+  location?: string;
   size?: number;
   datafileCount?: number;
   investigation?: Investigation;
@@ -108,13 +110,19 @@ export interface DatasetType {
   description?: string;
 }
 
+export interface InvestigationType {
+  id: number;
+  name: string;
+  description?: string;
+}
+
 export interface StudyInvestigation {
   id: number;
   study: Study;
   investigation: Investigation;
 }
 
-interface Study {
+export interface Study {
   id: number;
   pid: string;
   name: string;
@@ -123,6 +131,7 @@ interface Study {
   description?: string;
   startDate?: string;
   endDate?: string;
+  studyInvestigations?: StudyInvestigation[];
 }
 
 interface InstrumentScientist {
@@ -227,7 +236,8 @@ export type ICATEntity =
   | Datafile
   | Instrument
   | FacilityCycle
-  | StudyInvestigation;
+  | StudyInvestigation
+  | Study;
 
 export type Entity = (
   | ICATEntity
@@ -270,6 +280,22 @@ export interface FiltersType {
   [column: string]: Filter;
 }
 
+export type AdditionalFilters = {
+  filterType: string;
+  filterValue: string;
+}[];
+
 export interface SortType {
   [column: string]: Order;
+}
+
+export type ViewsType = 'table' | 'card' | null;
+
+export interface QueryParams {
+  sort: SortType;
+  filters: FiltersType;
+  view: ViewsType;
+  search: string | null;
+  page: number | null;
+  results: number | null;
 }

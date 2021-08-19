@@ -23,6 +23,7 @@ describe('ISIS - FacilityCycles Cards', () => {
     );
   });
 
+  // TODO: Check requests
   // Note that Name and Description currently fail to sort
   it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Start Date')
@@ -32,16 +33,14 @@ describe('ISIS - FacilityCycles Cards', () => {
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('2000 cycle 2');
 
-    cy.contains('[role="button"]', 'Start Date')
-      .click()
-      .wait('@getFacilityCyclesOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'Start Date').click();
+    // .wait('@getFacilityCyclesOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('#card').contains('2019 cycle ');
 
-    cy.contains('[role="button"]', 'Start Date')
-      .click()
-      .wait('@getFacilityCyclesOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'Start Date').click();
+    // .wait('@getFacilityCyclesOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('2000 cycle 2');

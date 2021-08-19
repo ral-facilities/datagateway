@@ -32,7 +32,13 @@ describe('Table component', () => {
           label: string,
           dataKey: string
         ): React.ReactElement {
-          return <TextColumnFilter label={label} onChange={jest.fn()} />;
+          return (
+            <TextColumnFilter
+              label={label}
+              onChange={jest.fn()}
+              value={undefined}
+            />
+          );
         },
       },
       {
@@ -98,6 +104,17 @@ describe('Table component', () => {
     ).toEqual('2 B');
   });
 
+  it('calls onSort function when sort label clicked', () => {
+    const wrapper = mount(<Table {...tableProps} />);
+
+    wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .first()
+      .simulate('click');
+
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc');
+  });
+
   it('renders select column correctly, with both allIds defined and undefined', () => {
     const wrapper = mount(
       <Table
@@ -146,7 +163,10 @@ describe('Table component', () => {
     );
 
     ReactTestUtils.act(() => {
-      wrapper.find('DataHeader').at(0).prop('resizeColumn')(50);
+      wrapper.find('DataHeader').at(0).prop('resizeColumn')(
+        wrapper.find('DataHeader').at(0).prop('dataKey'),
+        50
+      );
     });
 
     wrapper.update();
@@ -181,7 +201,10 @@ describe('Table component', () => {
     );
 
     ReactTestUtils.act(() => {
-      wrapper.find('DataHeader').at(0).prop('resizeColumn')(40);
+      wrapper.find('DataHeader').at(0).prop('resizeColumn')(
+        wrapper.find('DataHeader').at(0).prop('dataKey'),
+        40
+      );
     });
 
     wrapper.update();

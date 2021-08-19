@@ -1,54 +1,133 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Investigation - Card View renders correctly 1`] = `
-<ContextProvider
-  value={null}
->
-  <InvestigationCardView
-    addToCart={[Function]}
-    cartItems={Array []}
-    data={
-      Array [
-        Object {
-          "id": 1,
-          "name": "Test 1",
-          "title": "Test 1",
-          "visitId": "1",
+Object {
+  "buttons": Array [
+    [Function],
+  ],
+  "customFilters": Array [
+    Object {
+      "dataKey": "type.id",
+      "filterItems": Array [],
+      "label": "investigations.type.id",
+    },
+    Object {
+      "dataKey": "facility.id",
+      "filterItems": Array [],
+      "label": "investigations.facility.id",
+    },
+  ],
+  "data": Array [
+    Object {
+      "id": 1,
+      "name": "Test 1",
+      "title": "Test 1",
+      "visitId": "1",
+    },
+  ],
+  "description": Object {
+    "dataKey": "summary",
+    "filterComponent": [Function],
+    "label": "investigations.details.summary",
+  },
+  "filters": Object {},
+  "information": Array [
+    Object {
+      "dataKey": "doi",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
         },
-      ]
-    }
-    fetchCount={[Function]}
-    fetchData={[Function]}
-    fetchFacilityFilter={[Function]}
-    fetchTypeFilter={[Function]}
-    filterData={Object {}}
-    loadedCount={true}
-    loadedData={true}
-    pushFilters={[Function]}
-    pushPage={[Function]}
-    pushQuery={[Function]}
-    query={
-      Object {
-        "filters": Object {},
-        "page": null,
-        "results": null,
-        "search": null,
-        "sort": Object {},
-        "view": null,
-      }
-    }
-    removeFromCart={[Function]}
-    store={
-      Object {
-        "clearActions": [Function],
-        "dispatch": [Function],
-        "getActions": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-      }
-    }
-    totalDataCount={1}
-  />
-</ContextProvider>
+      },
+      "label": "investigations.doi",
+    },
+    Object {
+      "dataKey": "visitId",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.visit_id",
+    },
+    Object {
+      "dataKey": "name",
+      "disableSort": true,
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.details.name",
+    },
+    Object {
+      "content": [Function],
+      "dataKey": "datasetCount",
+      "disableSort": true,
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.dataset_count",
+    },
+    Object {
+      "dataKey": "startDate",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.details.start_date",
+    },
+    Object {
+      "dataKey": "endDate",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.details.end_date",
+    },
+  ],
+  "loadedCount": true,
+  "loadedData": true,
+  "onFilter": [Function],
+  "onPageChange": [Function],
+  "onResultsChange": [Function],
+  "onSort": [Function],
+  "page": null,
+  "results": null,
+  "sort": Object {},
+  "title": Object {
+    "content": [Function],
+    "dataKey": "title",
+    "filterComponent": [Function],
+    "label": "investigations.title",
+  },
+  "totalDataCount": 1,
+}
 `;

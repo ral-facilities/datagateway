@@ -17,47 +17,50 @@ type SelectHeaderProps = TableHeaderProps & {
   allIds: number[];
 };
 
-const SelectHeader = (props: SelectHeaderProps): React.ReactElement => {
-  const {
-    className,
-    selectedRows,
-    totalRowCount,
-    onCheck,
-    onUncheck,
-    allIds,
-    loading,
-  } = props;
+const SelectHeader = React.memo(
+  (props: SelectHeaderProps): React.ReactElement => {
+    const {
+      className,
+      selectedRows,
+      totalRowCount,
+      onCheck,
+      onUncheck,
+      allIds,
+      loading,
+    } = props;
 
-  return (
-    <TableCell
-      size="small"
-      padding="checkbox"
-      component="div"
-      className={className}
-      variant="head"
-    >
-      <Checkbox
-        indeterminate={
-          selectedRows.length > 0 && selectedRows.length < totalRowCount
-        }
-        disabled={loading}
-        icon={<CheckBoxOutlineBlank fontSize="small" />}
-        checkedIcon={<CheckBoxIcon fontSize="small" />}
-        indeterminateIcon={<IndeterminateCheckBox fontSize="small" />}
+    return (
+      <TableCell
         size="small"
-        checked={totalRowCount !== 0 && selectedRows.length === totalRowCount}
-        inputProps={{ 'aria-label': 'select all rows' }}
-        onClick={() => {
-          if (allIds.every((x) => selectedRows.includes(x))) {
-            onUncheck(allIds);
-          } else {
-            onCheck(allIds);
+        padding="checkbox"
+        component="div"
+        className={className}
+        variant="head"
+      >
+        <Checkbox
+          indeterminate={
+            selectedRows.length > 0 && selectedRows.length < totalRowCount
           }
-        }}
-        style={{ height: 20, margin: 'auto' }}
-      />
-    </TableCell>
-  );
-};
+          disabled={loading}
+          icon={<CheckBoxOutlineBlank fontSize="small" />}
+          checkedIcon={<CheckBoxIcon fontSize="small" />}
+          indeterminateIcon={<IndeterminateCheckBox fontSize="small" />}
+          size="small"
+          checked={totalRowCount !== 0 && selectedRows.length === totalRowCount}
+          inputProps={{ 'aria-label': 'select all rows' }}
+          onClick={() => {
+            if (allIds.every((x) => selectedRows.includes(x))) {
+              onUncheck(allIds);
+            } else {
+              onCheck(allIds);
+            }
+          }}
+          style={{ height: 20, margin: 'auto' }}
+        />
+      </TableCell>
+    );
+  }
+);
+SelectHeader.displayName = 'SelectHeader';
 
 export default SelectHeader;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Entity, Datafile } from 'datagateway-common';
+import { Entity, Datafile, useDatafileDetails } from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -25,28 +25,29 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface DatafileDetailsPanelProps {
   rowData: Entity;
-  fetchDetails: (datafileId: number) => Promise<void>;
-  detailsPanelResize: () => void;
+  detailsPanelResize?: () => void;
 }
 
 const DatafileDetailsPanel = (
   props: DatafileDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, fetchDetails, detailsPanelResize } = props;
+  const { rowData, detailsPanelResize } = props;
   const [value, setValue] = React.useState<'details' | 'parameters'>('details');
   const [t] = useTranslation();
   const classes = useStyles();
 
-  const datafileData = rowData as Datafile;
-
-  React.useEffect(() => {
-    if (!datafileData.parameters) {
-      fetchDetails(datafileData.id);
-    }
-  }, [datafileData.parameters, datafileData.id, fetchDetails]);
+  const { data } = useDatafileDetails(rowData.id, [
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({
+        parameters: 'type',
+      }),
+    },
+  ]);
+  const datafileData: Datafile = { ...data, ...(rowData as Datafile) };
 
   React.useLayoutEffect(() => {
-    detailsPanelResize();
+    if (detailsPanelResize) detailsPanelResize();
   }, [value, detailsPanelResize]);
 
   return (

@@ -12,6 +12,7 @@ import axios from 'axios';
 import {
   ArrowTooltip,
   EntityTypes,
+  parseSearchToQuery,
   readSciGatewayToken,
   ViewsType,
 } from 'datagateway-common';
@@ -523,7 +524,7 @@ const mapStateToProps = (state: StateType): PageBreadcrumbsStateProps => ({
   apiUrl: state.dgcommon.urls.apiUrl,
   location: state.router.location.pathname,
   breadcrumbSettings: state.dgdataview.breadcrumbSettings,
-  view: state.dgcommon.query.view,
+  view: parseSearchToQuery(state.router.location.search).view,
 });
 
 export const TranslatedBreadcrumbs = withTranslation()(PageBreadcrumbs);

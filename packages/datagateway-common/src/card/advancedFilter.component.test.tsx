@@ -10,7 +10,9 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import SaveIcon from '@material-ui/icons/Save';
 import DescriptionIcon from '@material-ui/icons/Description';
 import LinkIcon from '@material-ui/icons/Link';
-import AdvancedFilter from './advancedFilter.component';
+import AdvancedFilter, {
+  UnmemoisedAdvancedFilter,
+} from './advancedFilter.component';
 
 describe('AdvancedFilter', () => {
   let shallow;
@@ -21,7 +23,7 @@ describe('AdvancedFilter', () => {
 
   it('shows title correctly', () => {
     const wrapper = shallow(
-      <AdvancedFilter
+      <UnmemoisedAdvancedFilter
         title={{
           label: 'Test',
           dataKey: 'TEST',
@@ -45,7 +47,7 @@ describe('AdvancedFilter', () => {
 
   it('shows title correctly when no label provided', () => {
     const wrapper = shallow(
-      <AdvancedFilter
+      <UnmemoisedAdvancedFilter
         title={{
           dataKey: 'TEST',
           filterComponent: jest.fn(),
@@ -68,7 +70,7 @@ describe('AdvancedFilter', () => {
 
   it('shows description correctly', () => {
     const wrapper = shallow(
-      <AdvancedFilter
+      <UnmemoisedAdvancedFilter
         title={{ dataKey: 'TEST' }}
         description={{
           label: 'Desc',
@@ -95,7 +97,7 @@ describe('AdvancedFilter', () => {
 
   it('shows description correctly when no label provided', () => {
     const wrapper = shallow(
-      <AdvancedFilter
+      <UnmemoisedAdvancedFilter
         title={{ dataKey: 'TEST' }}
         description={{
           dataKey: 'DESC',
@@ -121,7 +123,7 @@ describe('AdvancedFilter', () => {
 
   it('shows information correctly', () => {
     const wrapper = shallow(
-      <AdvancedFilter
+      <UnmemoisedAdvancedFilter
         title={{ dataKey: 'TEST' }}
         information={[
           {
@@ -150,7 +152,7 @@ describe('AdvancedFilter', () => {
 
   it('shows information correctly when label not provided', () => {
     const wrapper = shallow(
-      <AdvancedFilter
+      <UnmemoisedAdvancedFilter
         title={{ dataKey: 'TEST' }}
         information={[
           {

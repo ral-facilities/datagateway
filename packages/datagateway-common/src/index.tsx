@@ -14,8 +14,14 @@ export { default as Table } from './table/table.component';
 export * from './table/table.component';
 export { default as DetailsPanelRow } from './table/rowRenderers/detailsPanelRow.component';
 export { default as DataHeader } from './table/headerRenderers/dataHeader.component';
-export { default as TextColumnFilter } from './table/columnFilters/textColumnFilter.component';
-export { default as DateColumnFilter } from './table/columnFilters/dateColumnFilter.component';
+export {
+  default as TextColumnFilter,
+  useTextFilter,
+} from './table/columnFilters/textColumnFilter.component';
+export {
+  default as DateColumnFilter,
+  useDateFilter,
+} from './table/columnFilters/dateColumnFilter.component';
 export { default as ActionCellComponent } from './table/cellRenderers/actionCell.component';
 export { default as DataCellComponent } from './table/cellRenderers/dataCell.component';
 export { default as ExpandCellComponent } from './table/cellRenderers/expandCell.component';
@@ -27,6 +33,7 @@ export { default as AdvancedFilter } from './card/advancedFilter.component';
 export * from './state/actions/index';
 export * from './state/middleware/dgcommon.middleware';
 export * from './state/app.types';
+export * from './api/index';
 
 export { default as DGCommonMiddleware } from './state/middleware/dgcommon.middleware';
 export { default as createReducer } from './state/reducers/createReducer';

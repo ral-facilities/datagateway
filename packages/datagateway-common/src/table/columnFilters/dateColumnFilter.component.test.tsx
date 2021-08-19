@@ -3,7 +3,12 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DateColumnFilter, {
   datesEqual,
   updateFilter,
+  useDateFilter,
 } from './dateColumnFilter.component';
+import { renderHook } from '@testing-library/react-hooks';
+import { act } from 'react-test-renderer';
+import { usePushFilters } from '../../api';
+jest.mock('../../api');
 
 describe('Date filter component', () => {
   let shallow;
@@ -202,9 +207,12 @@ describe('Date filter component', () => {
   it('calls the onChange method correctly when filling out the date inputs', () => {
     const onChange = jest.fn();
 
-    const wrapper = mount(
-      <DateColumnFilter label="test" onChange={onChange} />
-    );
+    const baseProps = {
+      label: 'test',
+      onChange,
+    };
+
+    const wrapper = mount(<DateColumnFilter {...baseProps} />);
 
     const startDateFilterInput = wrapper.find('input').first();
     startDateFilterInput.instance().value = '2019-08-06';
@@ -214,6 +222,7 @@ describe('Date filter component', () => {
       startDate: '2019-08-06',
     });
 
+    wrapper.setProps({ ...baseProps, value: { startDate: '2019-08-06' } });
     const endDateFilterInput = wrapper.find('input').last();
     endDateFilterInput.instance().value = '2019-08-06';
     endDateFilterInput.simulate('change');
@@ -223,6 +232,13 @@ describe('Date filter component', () => {
       endDate: '2019-08-06',
     });
 
+    wrapper.setProps({
+      ...baseProps,
+      value: {
+        startDate: '2019-08-06',
+        endDate: '2019-08-06',
+      },
+    });
     startDateFilterInput.instance().value = '';
     startDateFilterInput.simulate('change');
 
@@ -230,6 +246,12 @@ describe('Date filter component', () => {
       endDate: '2019-08-06',
     });
 
+    wrapper.setProps({
+      ...baseProps,
+      value: {
+        endDate: '2019-08-06',
+      },
+    });
     endDateFilterInput.instance().value = '';
     endDateFilterInput.simulate('change');
 
@@ -239,9 +261,12 @@ describe('Date filter component', () => {
   it('handles invalid date values correctly by not calling onChange, unless there was previously a value there', () => {
     const onChange = jest.fn();
 
-    const wrapper = mount(
-      <DateColumnFilter label="test" onChange={onChange} />
-    );
+    const baseProps = {
+      label: 'test',
+      onChange,
+    };
+
+    const wrapper = mount(<DateColumnFilter {...baseProps} />);
 
     const startDateFilterInput = wrapper.find('input').first();
     startDateFilterInput.instance().value = '2';
@@ -262,6 +287,7 @@ describe('Date filter component', () => {
       startDate: '2019-08-06',
     });
 
+    wrapper.setProps({ ...baseProps, value: { startDate: '2019-08-06' } });
     endDateFilterInput.instance().value = '2019-08-07';
     endDateFilterInput.simulate('change');
 
@@ -270,6 +296,13 @@ describe('Date filter component', () => {
       endDate: '2019-08-07',
     });
 
+    wrapper.setProps({
+      ...baseProps,
+      value: {
+        startDate: '2019-08-06',
+        endDate: '2019-08-07',
+      },
+    });
     startDateFilterInput.instance().value = '2';
     startDateFilterInput.simulate('change');
 
@@ -277,6 +310,12 @@ describe('Date filter component', () => {
       endDate: '2019-08-07',
     });
 
+    wrapper.setProps({
+      ...baseProps,
+      value: {
+        endDate: '2019-08-07',
+      },
+    });
     endDateFilterInput.instance().value = '201';
     endDateFilterInput.simulate('change');
 
@@ -286,21 +325,54 @@ describe('Date filter component', () => {
   it('displays error for invalid date range', () => {
     const onChange = jest.fn();
 
-    const wrapper = mount(
-      <DateColumnFilter label="test" onChange={onChange} />
-    );
+    const baseProps = {
+      label: 'test',
+      onChange,
+      value: {
+        startDate: '2019-08-09',
+        endDate: '2019-08-08',
+      },
+    };
 
-    const startDateFilterInput = wrapper.find('input').first();
-    startDateFilterInput.instance().value = '2019-08-09';
-    startDateFilterInput.simulate('change');
-
-    const endDateFilterInput = wrapper.find('input').last();
-    endDateFilterInput.instance().value = '2019-08-08';
-    endDateFilterInput.simulate('change');
+    const wrapper = mount(<DateColumnFilter {...baseProps} />);
 
     expect(wrapper.find('p.Mui-error')).toHaveLength(2);
     expect(wrapper.find('p.Mui-error').first().text()).toEqual(
       'Invalid date range'
     );
+  });
+
+  it('useTextFilter hook returns a function which can generate a working text filter', () => {
+    const pushFilters = jest.fn();
+    (usePushFilters as jest.Mock).mockImplementation(() => pushFilters);
+
+    const { result } = renderHook(() => useDateFilter({}));
+    let dateFilter;
+
+    act(() => {
+      dateFilter = result.current('Start Date', 'startDate');
+    });
+
+    const shallowWrapper = shallow(dateFilter);
+    expect(shallowWrapper).toMatchSnapshot();
+
+    const mountWrapper = mount(dateFilter);
+    const startDateFilterInput = mountWrapper.find('input').first();
+    startDateFilterInput.instance().value = '2021-08-09';
+    startDateFilterInput.simulate('change');
+
+    expect(pushFilters).toHaveBeenLastCalledWith('startDate', {
+      startDate: '2021-08-09',
+    });
+
+    mountWrapper.setProps({
+      ...mountWrapper.props(),
+      value: { startDate: '2021-08-09' },
+    });
+    startDateFilterInput.instance().value = '';
+    startDateFilterInput.simulate('change');
+
+    expect(pushFilters).toHaveBeenCalledTimes(2);
+    expect(pushFilters).toHaveBeenLastCalledWith('startDate', null);
   });
 });

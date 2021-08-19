@@ -20,27 +20,22 @@ import {
   Save,
   Storage,
 } from '@material-ui/icons';
-import { push } from 'connected-react-router';
 import {
   Dataset,
-  Entity,
-  fetchInvestigations,
-  fetchISISInvestigations,
-  formatBytes,
+  formatCountOrSize,
   Investigation,
   InvestigationUser,
+  parseSearchToQuery,
   Publication,
   Sample,
   tableLink,
-  ViewsType,
+  useInvestigation,
+  useInvestigationSizes,
   Mark,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
+import { useHistory, useLocation } from 'react-router';
 import AddToCartButton from '../../addToCartButton.component';
 import DownloadButton from '../../downloadButton.component';
 import Branding from './isisBranding.component';
@@ -101,25 +96,6 @@ interface FormattedUser {
   fullName: string;
 }
 
-interface LandingPageDispatchProps {
-  fetchFacilityCycleData: (
-    instrumentId: number,
-    FacilityCycleId: number,
-    investigationId: number
-  ) => Promise<void>;
-  fetchStudyData: (
-    instrumentId: number,
-    StudyId: number,
-    investigationId: number
-  ) => Promise<void>;
-  viewDatasets: (urlPrefix: string, view: ViewsType) => Action;
-}
-
-interface LandingPageStateProps {
-  data: Entity[];
-  view: ViewsType;
-}
-
 interface LandingPageProps {
   instrumentId: string;
   instrumentChildId: string;
@@ -127,21 +103,17 @@ interface LandingPageProps {
   studyHierarchy: boolean;
 }
 
-type LandingPageCombinedProps = LandingPageDispatchProps &
-  LandingPageStateProps &
-  LandingPageProps;
-
-const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
+const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
+  const { push } = useHistory();
+  const location = useLocation();
+  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
   const [value, setValue] = React.useState<'details'>('details');
   const citationRef = React.useRef<HTMLElement>(null);
   const [copiedCitation, setCopiedCitation] = React.useState(false);
   const {
-    fetchFacilityCycleData,
-    fetchStudyData,
-    viewDatasets,
-    data,
-    view,
     instrumentId,
     instrumentChildId,
     investigationId,
@@ -153,27 +125,40 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}`;
   const classes = useStyles();
 
-  const fetchData = studyHierarchy ? fetchStudyData : fetchFacilityCycleData;
-  React.useEffect(() => {
-    fetchData(
-      parseInt(instrumentId),
-      parseInt(instrumentChildId),
-      parseInt(investigationId)
-    );
-  }, [fetchData, instrumentId, instrumentChildId, investigationId]);
-
-  const title = React.useMemo(() => data[0]?.title, [data]);
-  const doi = React.useMemo(() => data[0]?.doi, [data]);
-  const studyInvestigation = React.useMemo(() => data[0]?.studyInvestigations, [
-    data,
+  const { data } = useInvestigation(parseInt(investigationId), [
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify([
+        {
+          investigationUsers: 'user',
+        },
+        'samples',
+        'publications',
+        'datasets',
+        {
+          studyInvestigations: 'study',
+        },
+        {
+          investigationInstruments: 'instrument',
+        },
+      ]),
+    },
   ]);
+  const sizeQueries = useInvestigationSizes(data);
+
+  const title = React.useMemo(() => data?.[0]?.title, [data]);
+  const doi = React.useMemo(() => data?.[0]?.doi, [data]);
+  const studyInvestigation = React.useMemo(
+    () => data?.[0]?.studyInvestigations,
+    [data]
+  );
 
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
-    if (data[0]?.investigationUsers) {
-      const investigationUsers = data[0]
+    if (data?.[0]?.investigationUsers) {
+      const investigationUsers = data?.[0]
         .investigationUsers as InvestigationUser[];
       investigationUsers.forEach((user) => {
         // Only keep users where we have their fullName
@@ -203,7 +188,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   }, [data]);
 
   const formattedPublications = React.useMemo(() => {
-    if (data[0]?.publications) {
+    if (data?.[0]?.publications) {
       return (data[0].publications as Publication[]).map(
         (publication) => publication.fullReference
       );
@@ -211,7 +196,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   }, [data]);
 
   const formattedSamples = React.useMemo(() => {
-    if (data[0]?.samples) {
+    if (data?.[0]?.samples) {
       return (data[0].samples as Sample[]).map((sample) => sample.name);
     }
   }, [data]);
@@ -251,7 +236,9 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => formatBytes(entity.size),
+      content: (entity: Investigation) => {
+        return formatCountOrSize(sizeQueries[0], true);
+      },
       label: t('investigations.size'),
       icon: <Save className={classes.shortInfoIcon} />,
     },
@@ -323,7 +310,13 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               <Tab
                 id="investigation-datasets-tab"
                 label={t('investigations.details.datasets')}
-                onClick={() => viewDatasets(urlPrefix, view)}
+                onClick={() =>
+                  push(
+                    view
+                      ? `${urlPrefix}/dataset?view=${view}`
+                      : `${urlPrefix}/dataset`
+                  )
+                }
               />
             </Tabs>
             <Divider />
@@ -338,11 +331,11 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               variant="h5"
               aria-label="landing-investigation-title"
             >
-              {data[0]?.title}
+              {data?.[0]?.title}
             </Typography>
 
             <Typography aria-label="landing-investigation-summary">
-              {data[0]?.summary && data[0]?.summary !== 'null'
+              {data?.[0]?.summary && data[0].summary !== 'null'
                 ? data[0].summary
                 : 'Description not provided'}
             </Typography>
@@ -488,7 +481,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
           <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
             {shortInfo.map(
               (field, i) =>
-                data[0] &&
+                data?.[0] &&
                 field.content(data[0] as Investigation) && (
                   <div className={classes.shortInfoRow} key={i}>
                     <Typography className={classes.shortInfoLabel}>
@@ -510,7 +503,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               />
             </div>
             {/* Parts */}
-            {(data[0] as Investigation)?.datasets?.map((dataset, i) => (
+            {(data?.[0] as Investigation)?.datasets?.map((dataset, i) => (
               <div key={i} className={classes.shortInfoPart}>
                 <Divider />
                 <Typography
@@ -561,95 +554,4 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): LandingPageDispatchProps => ({
-  fetchFacilityCycleData: (
-    instrumentId: number,
-    facilityCycleId: number,
-    investigationId: number
-  ) =>
-    dispatch(
-      fetchISISInvestigations({
-        instrumentId,
-        facilityCycleId,
-        optionalParams: {
-          getSize: true,
-          additionalFilters: [
-            {
-              filterType: 'where',
-              filterValue: JSON.stringify({
-                id: { eq: investigationId },
-              }),
-            },
-            {
-              filterType: 'include',
-              filterValue: JSON.stringify([
-                'investigationUsers',
-                'samples',
-                'publications',
-                'datasets',
-                // study and instrument already fetched by default
-              ]),
-            },
-          ],
-        },
-      })
-    ),
-  fetchStudyData: (
-    instrumentId: number,
-    studyId: number,
-    investigationId: number
-  ) =>
-    dispatch(
-      fetchInvestigations({
-        getSize: true,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              id: { eq: investigationId },
-              'studyInvestigations.study.id': { eq: studyId },
-            }),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              id: { eq: investigationId },
-              'investigationInstruments.instrument.id': { eq: instrumentId },
-            }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify([
-              'investigationUsers',
-              'samples',
-              'publications',
-              'datasets',
-              {
-                studyInvestigations: 'study',
-              },
-              {
-                investigationInstruments: 'instrument',
-              },
-            ]),
-          },
-        ],
-      })
-    ),
-  viewDatasets: (urlPrefix: string, view: ViewsType) => {
-    const url = view
-      ? `${urlPrefix}/dataset?view=${view}`
-      : `${urlPrefix}/dataset`;
-    return dispatch(push(url));
-  },
-});
-
-const mapStateToProps = (state: StateType): LandingPageStateProps => {
-  return {
-    data: state.dgcommon.data,
-    view: state.dgcommon.query.view,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
+export default LandingPage;

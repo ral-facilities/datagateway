@@ -17,6 +17,9 @@ import ArrowTooltip from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import hexToRbga from 'hex-to-rgba';
+import { nestedValue } from '../api';
+import { Entity } from '../app.types';
+import { CardViewDetails } from './cardView.component';
 
 const useCardStyles = makeStyles((theme: Theme) => {
   // TODO: Remove use of "vw" here
@@ -165,266 +168,314 @@ export interface EntityImageDetails {
 export interface EntityCardDetails {
   label: string;
   content?: React.ReactNode;
-  icon?: JSX.Element;
+  icon?: React.ComponentType<unknown>;
 }
 
 interface EntityCardProps {
-  title: EntityCardDetails;
+  entity: Entity;
+  title: CardViewDetails;
 
-  description?: string;
-  information?: EntityCardDetails[];
+  description?: CardViewDetails;
+  information?: CardViewDetails[];
 
-  moreInformation?: React.ReactNode;
-  buttons?: React.ReactNode[];
+  moreInformation?: (data: Entity) => React.ReactNode;
+  buttons?: ((data: Entity) => React.ReactNode)[];
 
   image?: EntityImageDetails;
-  tags?: string[];
+  customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
 }
 
-const EntityCard = (props: EntityCardProps): React.ReactElement => {
-  const classes = useCardStyles();
-  const [shadowWidth, setShadowWidth] = React.useState<number>(0);
+const EntityCard = React.memo(
+  (props: EntityCardProps): React.ReactElement => {
+    const classes = useCardStyles();
+    const { entity, image } = props;
+    const [shadowWidth, setShadowWidth] = React.useState<number>(0);
 
-  const {
-    title,
-    description,
-    information,
-    moreInformation,
-    buttons,
-    image,
-    tags,
-  } = props;
+    const moreInformation = props.moreInformation?.(entity);
 
-  // The default collapsed height for card description is 100px.
-  const defaultCollapsedHeight = 100;
-  const [isDescriptionCollapsed, setDescriptionCollapsed] = React.useState(
-    false
-  );
-  const descriptionRef = React.useRef<HTMLParagraphElement>(null);
-  const mainContentRef = React.useRef<HTMLParagraphElement>(null);
-  const [collapsibleInteraction, setCollapsibleInteraction] = React.useState(
-    false
-  );
-  const [isMoreInfoCollapsed, setMoreInfoCollapsed] = React.useState(false);
+    const title: EntityCardDetails = {
+      label: nestedValue(entity, props.title.dataKey),
+      content: props.title.content && props.title.content(entity),
+    };
 
-  React.useEffect(() => {
-    // Decide if the collapsible should be present depending on
-    // if the description height exceeds the default collapsed height.
-    if (descriptionRef && descriptionRef.current) {
-      if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
-        setCollapsibleInteraction(true);
-    }
-  }, [setCollapsibleInteraction]);
+    const description =
+      props.description?.content?.(entity) ??
+      nestedValue(entity, props.description?.dataKey ?? '');
 
-  React.useEffect(() => {
-    // Receive the resize event and set the shadow width
-    // based on the width of the "main-content" div.
-    function handleResize(): void {
-      if (mainContentRef.current?.clientWidth) {
-        setShadowWidth(mainContentRef.current.clientWidth);
+    const information: EntityCardDetails[] | undefined = props.information
+      ?.map((details) => ({
+        icon: details.icon,
+        // We can say the data key is the label if not defined.
+        label: details.label ? details.label : details.dataKey,
+        // Keep the dataKey in so we can use it for adding the tooltip
+        // once content has been created.
+        dataKey: details.dataKey,
+        content: details.content
+          ? details.content(entity)
+          : nestedValue(entity, details.dataKey),
+        noTooltip: details.noTooltip,
+      }))
+      // Filter afterwards to only show content with information.
+      .filter((v) => v.content)
+      // Add in tooltips to the content we have filtered.
+      .map((details) => ({
+        ...details,
+        // If we use custom content we can choose to not show a tooltip.
+        content: !details.noTooltip ? (
+          <ArrowTooltip title={nestedValue(entity, details.dataKey)}>
+            <Typography>{details.content}</Typography>
+          </ArrowTooltip>
+        ) : (
+          details.content
+        ),
+      }));
+
+    const buttons = props.buttons?.map((button) => button(entity));
+    const tags = props.customFilters?.map((f) =>
+      nestedValue(entity, f.dataKey)
+    );
+
+    // The default collapsed height for card description is 100px.
+    const defaultCollapsedHeight = 100;
+    const [isDescriptionCollapsed, setDescriptionCollapsed] = React.useState(
+      false
+    );
+    const descriptionRef = React.useRef<HTMLParagraphElement>(null);
+    const mainContentRef = React.useRef<HTMLParagraphElement>(null);
+    const [collapsibleInteraction, setCollapsibleInteraction] = React.useState(
+      false
+    );
+    const [isMoreInfoCollapsed, setMoreInfoCollapsed] = React.useState(false);
+
+    React.useEffect(() => {
+      // Decide if the collapsible should be present depending on
+      // if the description height exceeds the default collapsed height.
+      if (descriptionRef && descriptionRef.current) {
+        if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
+          setCollapsibleInteraction(true);
       }
-    }
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    }, [setCollapsibleInteraction]);
 
-  const [t] = useTranslation();
+    React.useEffect(() => {
+      // Receive the resize event and set the shadow width
+      // based on the width of the "main-content" div.
+      function handleResize(): void {
+        if (mainContentRef.current?.clientWidth) {
+          setShadowWidth(mainContentRef.current.clientWidth);
+        }
+      }
+      window.addEventListener('resize', handleResize);
+      handleResize();
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
-  return (
-    <Card id="card" className={classes.root}>
-      {/* We allow for additional width when having an image in the card (see card styles). */}
-      {image && (
-        <CardMedia
-          aria-label="card-image"
-          component="img"
-          className={classes.cardImage}
-          image={image.url}
-          title={image.title}
-        />
-      )}
+    const [t] = useTranslation();
 
-      {/* Card content is a flexbox (as a row):
+    return (
+      <Card id="card" className={classes.root}>
+        {/* We allow for additional width when having an image in the card (see card styles). */}
+        {image && (
+          <CardMedia
+            aria-label="card-image"
+            component="img"
+            className={classes.cardImage}
+            image={image.url}
+            title={image.title}
+          />
+        )}
+
+        {/* Card content is a flexbox (as a row):
             - has a card information area (split in horizontally - column) for title/description and tags
             - has card details area which takes up smaller space */}
-      <CardContent style={{ width: '100%', minWidth: 0 }}>
-        {/* row:
+        <CardContent style={{ width: '100%', minWidth: 0 }}>
+          {/* row:
               - main information; title and description (optional)
               - information (optional and custom)
               - more information (optional and custom)
               - buttons (custom)
         */}
-        <div className={classes.highlight}>
-          <div className={classes.main}>
-            {/* column:
+          <div className={classes.highlight}>
+            <div className={classes.main}>
+              {/* column:
                 - title/description 
             */}
-            <div aria-label="main-content" ref={mainContentRef}>
-              {/* TODO: Delay not consistent between cards? */}
-              <ArrowTooltip
-                title={title.label}
-                enterDelay={500}
-                percentageWidth={30}
-                maxEnabledHeight={32}
-              >
-                <Typography
-                  className={classes.title}
-                  component="h5"
-                  variant="h5"
-                >
-                  <span
-                    aria-label="card-title"
-                    style={{
-                      whiteSpace: isDescriptionCollapsed ? 'normal' : 'nowrap',
-                    }}
-                  >
-                    {title.content ? title.content : title.label}
-                  </span>
-                </Typography>
-              </ArrowTooltip>
-
-              <div className={classes.description}>
-                {/* Collapsed height is the minimum description content to
-                    show for each card */}
-                <Collapse
-                  in={isDescriptionCollapsed}
-                  collapsedHeight={defaultCollapsedHeight}
+              <div aria-label="main-content" ref={mainContentRef}>
+                {/* TODO: Delay not consistent between cards? */}
+                <ArrowTooltip
+                  title={title.label}
+                  enterDelay={500}
+                  percentageWidth={30}
+                  maxEnabledHeight={32}
                 >
                   <Typography
-                    aria-label="card-description"
-                    ref={descriptionRef}
-                    variant="body1"
-                    paragraph
+                    className={classes.title}
+                    component="h5"
+                    variant="h5"
                   >
-                    {description && description !== 'null'
-                      ? description
-                      : t('entity_card.no_description')}
-                  </Typography>
-                </Collapse>
-
-                {/* Button to show more/less */}
-                {collapsibleInteraction && (
-                  <div aria-label="card-description-link">
-                    <div
-                      className={
-                        isDescriptionCollapsed
-                          ? classes.shadowInvisible
-                          : classes.shadowVisible
-                      }
+                    <span
+                      aria-label="card-title"
                       style={{
-                        width: `${shadowWidth}px`,
+                        whiteSpace: isDescriptionCollapsed
+                          ? 'normal'
+                          : 'nowrap',
                       }}
-                    />
-                    <Link
-                      onClick={() => setDescriptionCollapsed((prev) => !prev)}
                     >
-                      {isDescriptionCollapsed
-                        ? t('entity_card.show_less')
-                        : t('entity_card.show_more')}
-                    </Link>
-                  </div>
-                )}
+                      {title.content ? title.content : title.label}
+                    </span>
+                  </Typography>
+                </ArrowTooltip>
+
+                <div className={classes.description}>
+                  {/* Collapsed height is the minimum description content to
+                    show for each card */}
+                  <Collapse
+                    in={isDescriptionCollapsed}
+                    collapsedHeight={defaultCollapsedHeight}
+                  >
+                    <Typography
+                      aria-label="card-description"
+                      ref={descriptionRef}
+                      variant="body1"
+                      paragraph
+                    >
+                      {description && description !== 'null'
+                        ? description
+                        : t('entity_card.no_description')}
+                    </Typography>
+                  </Collapse>
+
+                  {/* Button to show more/less */}
+                  {collapsibleInteraction && (
+                    <div aria-label="card-description-link">
+                      <div
+                        className={
+                          isDescriptionCollapsed
+                            ? classes.shadowInvisible
+                            : classes.shadowVisible
+                        }
+                        style={{
+                          width: `${shadowWidth}px`,
+                        }}
+                      />
+                      <Link
+                        onClick={() => setDescriptionCollapsed((prev) => !prev)}
+                      >
+                        {isDescriptionCollapsed
+                          ? t('entity_card.show_less')
+                          : t('entity_card.show_more')}
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Divider is optional based on if there is information/buttons. */}
-          {(information || buttons) && (
-            // Set flexItem to true to allow it to show when flex direction is column for content.
-            <Divider flexItem={true} orientation={'vertical'} />
-          )}
+            {/* Divider is optional based on if there is information/buttons. */}
+            {(information || buttons) && (
+              // Set flexItem to true to allow it to show when flex direction is column for content.
+              <Divider flexItem={true} orientation={'vertical'} />
+            )}
 
-          <div style={{ paddingLeft: 15 }}>
-            {information && (
-              <div className={classes.information}>
-                <div className={classes.informationLabel}>
-                  {information.map((info: EntityCardDetails, index: number) => (
-                    <Typography
-                      aria-label={`card-info-${info.label}`}
-                      key={index}
-                    >
-                      {info.icon}
-                      {`${info.label}:`}
-                    </Typography>
-                  ))}
+            <div style={{ paddingLeft: 15 }}>
+              {information && (
+                <div className={classes.information}>
+                  <div className={classes.informationLabel}>
+                    {information.map(
+                      (info: EntityCardDetails, index: number) => {
+                        const { label, icon: Icon } = info;
+                        return (
+                          <Typography
+                            aria-label={`card-info-${label}`}
+                            key={index}
+                          >
+                            {Icon && <Icon />}
+                            {`${label}:`}
+                          </Typography>
+                        );
+                      }
+                    )}
+                  </div>
+
+                  <div className={classes.informationData}>
+                    {information.map(
+                      (info: EntityCardDetails, index: number) => (
+                        <div
+                          aria-label={`card-info-data-${info.label}`}
+                          key={index}
+                        >
+                          {info.content && info.content}
+                        </div>
+                      )
+                    )}
+                  </div>
                 </div>
+              )}
 
-                <div className={classes.informationData}>
-                  {information.map((info: EntityCardDetails, index: number) => (
-                    <div
-                      aria-label={`card-info-data-${info.label}`}
-                      key={index}
-                    >
-                      {info.content && info.content}
+              {buttons && (
+                <div aria-label="card-buttons" className={classes.buttons}>
+                  {buttons.map((button, index) => (
+                    <div aria-label={`card-button-${index + 1}`} key={index}>
+                      {button}
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+          </div>
 
-            {buttons && (
-              <div aria-label="card-buttons" className={classes.buttons}>
-                {buttons.map((button, index) => (
-                  <div aria-label={`card-button-${index + 1}`} key={index}>
-                    {button}
-                  </div>
+          {/* More information */}
+          {moreInformation && (
+            <div style={{ paddingTop: '10px' }}>
+              <Divider />
+
+              <div
+                aria-label="card-more-information"
+                className={classes.moreInformation}
+              >
+                <Accordion
+                  square
+                  elevation={1}
+                  variant="outlined"
+                  expanded={isMoreInfoCollapsed}
+                  onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
+                >
+                  <AccordionSummary
+                    aria-label="card-more-info-expand"
+                    expandIcon={<ExpandMoreIcon />}
+                  >
+                    <Typography>More Information</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails aria-label="card-more-info-details">
+                    {/* Only render if the expansion panel has been collapsed */}
+                    {isMoreInfoCollapsed && moreInformation}
+                  </AccordionDetails>
+                </Accordion>
+              </div>
+            </div>
+          )}
+
+          {tags && (
+            <div aria-label="card-tags" className={classes.tags}>
+              <Divider />
+
+              {/* Render the array of tags passed through */}
+              <div style={{ paddingTop: '10px' }}>
+                {tags.map((v, i) => (
+                  <Chip
+                    aria-label={`card-tag-${v}`}
+                    key={i}
+                    className={classes.chip}
+                    label={v}
+                  />
                 ))}
               </div>
-            )}
-          </div>
-        </div>
-
-        {/* More information */}
-        {moreInformation && (
-          <div style={{ paddingTop: '10px' }}>
-            <Divider />
-
-            <div
-              aria-label="card-more-information"
-              className={classes.moreInformation}
-            >
-              <Accordion
-                square
-                elevation={1}
-                variant="outlined"
-                expanded={isMoreInfoCollapsed}
-                onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
-              >
-                <AccordionSummary
-                  aria-label="card-more-info-expand"
-                  expandIcon={<ExpandMoreIcon />}
-                >
-                  <Typography>More Information</Typography>
-                </AccordionSummary>
-                <AccordionDetails aria-label="card-more-info-details">
-                  {/* Only render if the expansion panel has been collapsed */}
-                  {isMoreInfoCollapsed && moreInformation}
-                </AccordionDetails>
-              </Accordion>
             </div>
-          </div>
-        )}
-
-        {tags && (
-          <div aria-label="card-tags" className={classes.tags}>
-            <Divider />
-
-            {/* Render the array of tags passed through */}
-            <div style={{ paddingTop: '10px' }}>
-              {tags.map((v, i) => (
-                <Chip
-                  aria-label={`card-tag-${v}`}
-                  key={i}
-                  className={classes.chip}
-                  label={v}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
+);
+EntityCard.displayName = 'EntityCard';
 
 export default EntityCard;

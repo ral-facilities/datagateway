@@ -10,7 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { useTranslation } from 'react-i18next';
 
 interface SearchTextProps {
-  initiateSearch: () => Promise<void>;
+  initiateSearch: () => void;
 }
 
 interface SearchTextStoreProps {

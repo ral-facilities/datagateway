@@ -1,90 +1,159 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DownloadButton from './downloadButton.component';
+import { createMount } from '@material-ui/core/test-utils';
+import DownloadButton, {
+  DownloadButtonProps,
+} from './downloadButton.component';
 import configureStore from 'redux-mock-store';
 import {
   dGCommonInitialState,
-  downloadDatafileRequest,
-  downloadDatasetRequest,
+  downloadDataset,
+  downloadDatafile,
   StateType,
 } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
-import axios from 'axios';
+import { ReactWrapper } from 'enzyme';
+import { QueryClientProvider, QueryClient } from 'react-query';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    downloadDataset: jest.fn(),
+    downloadDatafile: jest.fn(),
+  };
+});
 
 describe('Generic download button', () => {
-  let shallow;
   let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
 
+  const createWrapper = (props: DownloadButtonProps): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <MemoryRouter>
+          <QueryClientProvider client={new QueryClient()}>
+            <DownloadButton {...props} />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
+        dgcommon: {
+          ...dGCommonInitialState,
+          urls: {
+            ...dGCommonInitialState.urls,
+            idsUrl: 'https://www.example.com/ids',
+          },
+        },
       })
     );
-
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
-    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <DownloadButton
-        store={mockStore(state)}
-        entityType="dataset"
-        entityId={1}
-        entityName="test"
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const textButtonWrapper = createWrapper({
+      entityType: 'datafile',
+      entityName: 'test',
+      entityId: 1,
+    });
+    expect(textButtonWrapper.find('button').text()).toBe('buttons.download');
+
+    const iconButtonWrapper = createWrapper({
+      entityType: 'datafile',
+      entityName: 'test',
+      entityId: 1,
+      variant: 'icon',
+    });
+    expect(iconButtonWrapper.find('button').text()).toBe('');
   });
 
-  it('sends download dataset action on button press', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DownloadButton entityType="dataset" entityId={1} entityName="test" />
-        </MemoryRouter>
-      </Provider>
+  it('calls download dataset on button press for both text and icon buttons', () => {
+    let wrapper = createWrapper({
+      entityType: 'dataset',
+      entityName: 'test',
+      entityId: 1,
+    });
+
+    wrapper.find('#download-btn-1').first().simulate('click');
+    expect(downloadDataset).toHaveBeenCalledWith(
+      'https://www.example.com/ids',
+      1,
+      'test'
     );
 
-    wrapper.find('#download-btn').first().simulate('click');
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(downloadDatasetRequest(1));
+    jest.clearAllMocks();
+
+    wrapper = createWrapper({
+      entityType: 'dataset',
+      entityName: 'test',
+      entityId: 1,
+      variant: 'icon',
+    });
+
+    wrapper.find('#download-btn-1').first().simulate('click');
+    expect(downloadDataset).toHaveBeenCalledWith(
+      'https://www.example.com/ids',
+      1,
+      'test'
+    );
   });
 
-  it('sends download datafile action on button press', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DownloadButton
-            entityType="datafile"
-            entityId={1}
-            entityName="test"
-          />
-        </MemoryRouter>
-      </Provider>
+  it('calls download datafile on button press for both text and icon buttons', () => {
+    let wrapper = createWrapper({
+      entityType: 'datafile',
+      entityName: 'test',
+      entityId: 1,
+    });
+
+    wrapper.find('#download-btn-1').first().simulate('click');
+    expect(downloadDatafile).toHaveBeenCalledWith(
+      'https://www.example.com/ids',
+      1,
+      'test'
     );
 
-    wrapper.find('#download-btn').first().simulate('click');
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(downloadDatafileRequest(1));
+    jest.clearAllMocks();
+
+    wrapper = createWrapper({
+      entityType: 'dataset',
+      entityName: 'test',
+      entityId: 1,
+      variant: 'icon',
+    });
+
+    wrapper.find('#download-btn-1').first().simulate('click');
+    expect(downloadDataset).toHaveBeenCalledWith(
+      'https://www.example.com/ids',
+      1,
+      'test'
+    );
+  });
+
+  it('renders nothing when entityName is undefined', () => {
+    const wrapper = createWrapper({
+      entityType: 'datafile',
+      entityName: undefined,
+      entityId: 1,
+    });
+
+    expect(wrapper.find(DownloadButton).children().length).toBe(0);
   });
 });

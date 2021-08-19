@@ -1,4 +1,5 @@
 describe('ISIS - Instruments Cards', () => {
+  // TODO: Check requests
   beforeEach(() => {
     cy.intercept('**/instruments/count*').as('getInstrumentsCount');
     cy.intercept('**/instruments?order*').as('getInstrumentsOrder');
@@ -7,11 +8,10 @@ describe('ISIS - Instruments Cards', () => {
       ['@getInstrumentsCount', '@getInstrumentsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="container-view-button"]')
-      .click()
-      .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="container-view-button"]').click();
+    // .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
+    //   timeout: 10000,
+    // });
   });
 
   it('should load correctly', () => {

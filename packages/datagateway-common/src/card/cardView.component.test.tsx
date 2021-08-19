@@ -1,5 +1,4 @@
 import {
-  Button,
   Chip,
   Accordion,
   ListItemText,
@@ -13,8 +12,8 @@ import { ReactWrapper } from 'enzyme';
 import React from 'react';
 import axios from 'axios';
 import { default as CardView, CardViewProps } from './cardView.component';
-import { AdvancedFilter, dGCommonInitialState, TextColumnFilter } from '..';
-import { Entity } from '../app.types';
+import { AdvancedFilter, TextColumnFilter } from '..';
+import { Entity, Investigation } from '../app.types';
 
 describe('Card View', () => {
   let mount;
@@ -28,36 +27,53 @@ describe('Card View', () => {
   const loadData = jest.fn();
   const onFilter = jest.fn();
   const onPageChange = jest.fn();
-  const pushQuery = jest.fn();
+  const onSort = jest.fn();
+  const onResultsChange = jest.fn();
 
   beforeEach(() => {
     mount = createMount();
     shallow = createShallow();
+    const data: Investigation[] = [
+      {
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        visitId: '1',
+        type: { id: 1, name: '1' },
+        facility: { id: 1, name: '1' },
+      },
+      {
+        id: 2,
+        title: 'Test 2',
+        name: 'Test 2',
+        visitId: '2',
+        type: { id: 1, name: '1' },
+        facility: { id: 1, name: '1' },
+      },
+      {
+        id: 3,
+        title: 'Test 3',
+        name: 'Test 3',
+        visitId: '3',
+        type: { id: 1, name: '1' },
+        facility: { id: 1, name: '1' },
+      },
+    ];
     props = {
-      data: [
-        {
-          id: 1,
-          title: 'Test 1',
-          name: 'Test 1',
-          visitId: '1',
-          type: {
-            id: '1',
-          },
-          facility: '1',
-        },
-      ],
-      totalDataCount: 1,
-      query: dGCommonInitialState.query,
-      resultsOptions: [],
+      data,
+      totalDataCount: 3,
+      sort: {},
+      filters: {},
+      page: null,
+      results: null,
       paginationPosition: 'both',
       loadedCount: true,
       loadedData: true,
       title: { dataKey: 'title' },
-      loadData: loadData,
-      loadCount: jest.fn(),
       onPageChange: onPageChange,
       onFilter: onFilter,
-      pushQuery: pushQuery,
+      onSort: onSort,
+      onResultsChange: onResultsChange,
     };
 
     (axios.get as jest.Mock).mockImplementation(() =>
@@ -73,7 +89,8 @@ describe('Card View', () => {
     loadData.mockClear();
     onFilter.mockClear();
     onPageChange.mockClear();
-    pushQuery.mockClear();
+    onSort.mockClear();
+    onResultsChange.mockClear();
   });
 
   it('renders correctly', () => {
@@ -89,7 +106,7 @@ describe('Card View', () => {
       ],
     };
     const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find('#card').find(Chip).text()).toEqual('1');
+    expect(wrapper.find('#card').at(0).find(Chip).text()).toEqual('1');
 
     // Open custom filters
     const typePanel = wrapper.find(Accordion).first();
@@ -99,16 +116,14 @@ describe('Card View', () => {
 
     // Apply custom filters
     typePanel.find(Chip).first().simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(1, {
-      ...updatedProps.query,
-      page: 1,
-    });
+    expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
     expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
 
     // Mock result of actions
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, page: 1, filters: { 'type.id': ['1'] } },
+      page: 1,
+      filters: { 'type.id': ['1'] },
     };
 
     // Mock console.error() when updating the filter panels. We use Accordions
@@ -118,42 +133,34 @@ describe('Card View', () => {
 
     // Apply second filter
     typePanel.find(Chip).last().simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(2, {
-      ...updatedProps.query,
-      page: 1,
-    });
+    expect(onPageChange).toHaveBeenNthCalledWith(2, 1);
+
     expect(onFilter).toHaveBeenNthCalledWith(2, 'type.id', ['1', '2']);
 
     // Mock result of actions
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, filters: { 'type.id': ['1', '2'] } },
+      filters: { 'type.id': ['1', '2'] },
     };
     wrapper.setProps(updatedProps);
 
     // Remove filter
     expect(wrapper.find(Chip).at(2).text()).toEqual('Type ID - 1');
     wrapper.find(Chip).at(2).find(SvgIcon).simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(3, {
-      ...updatedProps.query,
-      page: 1,
-    });
+    expect(onPageChange).toHaveBeenNthCalledWith(3, 1);
     expect(onFilter).toHaveBeenNthCalledWith(3, 'type.id', ['2']);
 
     // Mock result of actions
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, filters: { 'type.id': ['2'] } },
+      filters: { 'type.id': ['2'] },
     };
     wrapper.setProps(updatedProps);
 
     // Remove second filter
     expect(wrapper.find(Chip).at(2).text()).toEqual('Type ID - 2');
     wrapper.find(Chip).at(2).find(SvgIcon).simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(4, {
-      ...updatedProps.query,
-      page: 1,
-    });
+    expect(onPageChange).toHaveBeenNthCalledWith(4, 1);
     expect(onFilter).toHaveBeenNthCalledWith(4, 'type.id', null);
   });
 
@@ -163,10 +170,10 @@ describe('Card View', () => {
       customFilters: [
         { label: 'Type ID', dataKey: 'type.id', filterItems: ['1', '2'] },
       ],
-      query: { ...props.query, filters: { 'type.id': 'abc' } },
+      filters: { 'type.id': { value: 'abc', type: 'include' } },
     };
     const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find('#card').find(Chip).text()).toEqual('1');
+    expect(wrapper.find('#card').at(0).find(Chip).text()).toEqual('1');
 
     // Open custom filters
     const typePanel = wrapper.find(Accordion).first();
@@ -176,16 +183,17 @@ describe('Card View', () => {
 
     // Apply custom filters
     typePanel.find(Chip).first().simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(1, {
-      ...updatedProps.query,
-      page: 1,
-    });
+    expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
     expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
   });
 
   it('advancedFilter displayed when filter component given', () => {
     const textFilter = (label: string, dataKey: string): React.ReactElement => (
-      <TextColumnFilter label={label} value="" onChange={jest.fn()} />
+      <TextColumnFilter
+        label={label}
+        value={{ value: '', type: 'include' }}
+        onChange={jest.fn()}
+      />
     );
     const updatedProps = {
       ...props,
@@ -214,7 +222,7 @@ describe('Card View', () => {
   it('buttons display correctly', () => {
     const updatedProps = {
       ...props,
-      buttons: [(entity: Entity) => <Button id="test-button">TEST</Button>],
+      buttons: [(entity: Entity) => <button id="test-button">TEST</button>],
     };
     const wrapper = createWrapper(updatedProps);
     expect(wrapper.find('#test-button').first().text()).toEqual('TEST');
@@ -239,51 +247,42 @@ describe('Card View', () => {
       title: { dataKey: 'title', content: content },
     };
     const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find('#test-title-content').text()).toEqual('TEST');
+    expect(wrapper.find('#test-title-content').at(0).text()).toEqual('TEST');
   });
 
   it('sort applied correctly', () => {
-    let updatedProps = { ...props, query: { ...props.query, page: 1 } };
+    let updatedProps = { ...props, page: 1 };
     const wrapper = createWrapper(props);
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('title');
 
     // Click to sort ascending
     button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(1, {
-      ...updatedProps.query,
-      sort: { title: 'asc' },
-    });
+    expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc');
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { title: 'asc' } },
+      sort: { title: 'asc' },
     };
     wrapper.setProps(updatedProps);
 
     // Click to sort descending
     button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(2, {
-      ...updatedProps.query,
-      sort: { title: 'desc' },
-    });
+    expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc');
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { title: 'desc' } },
+      sort: { title: 'desc' },
     };
     wrapper.setProps(updatedProps);
 
     // Click to clear sorting
     button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(3, {
-      ...updatedProps.query,
-      sort: {},
-    });
+    expect(onSort).toHaveBeenNthCalledWith(3, 'title', null);
   });
 
   it('can sort by description with label', () => {
-    let updatedProps = {
+    const updatedProps = {
       ...props,
-      query: { ...props.query, page: 1 },
+      page: 1,
       title: { dataKey: 'title', disableSort: true },
       description: { dataKey: 'name', label: 'Name' },
     };
@@ -293,40 +292,13 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(1, {
-      ...updatedProps.query,
-      sort: { name: 'asc' },
-    });
-    updatedProps = {
-      ...updatedProps,
-      query: { ...updatedProps.query, sort: { name: 'asc' } },
-    };
-    wrapper.setProps(updatedProps);
-
-    // Click to sort descending
-    button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(2, {
-      ...updatedProps.query,
-      sort: { name: 'desc' },
-    });
-    updatedProps = {
-      ...updatedProps,
-      query: { ...updatedProps.query, sort: { name: 'desc' } },
-    };
-    wrapper.setProps(updatedProps);
-
-    // Click to clear sorting
-    button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(3, {
-      ...updatedProps.query,
-      sort: {},
-    });
+    expect(onSort).toHaveBeenCalledWith('name', 'asc');
   });
 
   it('can sort by description without label', () => {
-    let updatedProps = {
+    const updatedProps = {
       ...props,
-      query: { ...props.query, page: 1 },
+      page: 1,
       title: { dataKey: 'title', disableSort: true },
       description: { dataKey: 'name' },
     };
@@ -336,38 +308,23 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(1, {
-      ...updatedProps.query,
-      sort: { name: 'asc' },
-    });
-    updatedProps = {
-      ...updatedProps,
-      query: { ...updatedProps.query, sort: { name: 'asc' } },
-    };
-    wrapper.setProps(updatedProps);
+    expect(onSort).toHaveBeenCalledWith('name', 'asc');
+  });
 
-    // Click to sort descending
-    button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(2, {
-      ...updatedProps.query,
-      sort: { name: 'desc' },
-    });
-    updatedProps = {
-      ...updatedProps,
-      query: { ...updatedProps.query, sort: { name: 'desc' } },
-    };
-    wrapper.setProps(updatedProps);
+  it('page changed when sort applied', () => {
+    const updatedProps = { ...props, page: 2 };
+    const wrapper = createWrapper(updatedProps);
+    const button = wrapper.find(ListItemText).first();
+    expect(button.text()).toEqual('title');
 
-    // Click to clear sorting
+    // Click to sort ascending
     button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(3, {
-      ...updatedProps.query,
-      sort: {},
-    });
+    expect(onSort).toHaveBeenCalledWith('title', 'asc');
+    expect(onPageChange).toHaveBeenCalledWith(1);
   });
 
   it('information displays and sorts correctly', () => {
-    let updatedProps = {
+    const updatedProps = {
       ...props,
       title: { dataKey: 'title', disableSort: true },
       description: { dataKey: 'name', disableSort: true },
@@ -379,7 +336,7 @@ describe('Card View', () => {
           content: (entity: Entity) => 'Content',
         },
       ],
-      query: { ...props.query, page: 1 },
+      page: 1,
     };
     const wrapper = createWrapper(updatedProps);
     expect(
@@ -399,34 +356,7 @@ describe('Card View', () => {
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('visitId');
     button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(1, {
-      ...updatedProps.query,
-      sort: { visitId: 'asc' },
-    });
-    updatedProps = {
-      ...updatedProps,
-      query: { ...updatedProps.query, sort: { visitId: 'asc' } },
-    };
-    wrapper.setProps(updatedProps);
-
-    // Click to sort descending
-    button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(2, {
-      ...updatedProps.query,
-      sort: { visitId: 'desc' },
-    });
-    updatedProps = {
-      ...updatedProps,
-      query: { ...updatedProps.query, sort: { visitId: 'desc' } },
-    };
-    wrapper.setProps(updatedProps);
-
-    // Click to clear sorting
-    button.simulate('click');
-    expect(pushQuery).toHaveBeenNthCalledWith(3, {
-      ...updatedProps.query,
-      sort: {},
-    });
+    expect(onSort).toHaveBeenCalledWith('visitId', 'asc');
   });
 
   it('information displays with content that has no tooltip', () => {
@@ -456,7 +386,7 @@ describe('Card View', () => {
   it('cannot sort when fields are disabled', () => {
     const updatedProps = {
       ...props,
-      query: { ...props.query, page: 1 },
+      page: 1,
       title: { dataKey: 'title', disableSort: true },
       description: { dataKey: 'name', disableSort: true },
       information: [{ dataKey: 'visitId', disableSort: true }],
@@ -468,27 +398,8 @@ describe('Card View', () => {
   it('pagination dispatches onPageChange', () => {
     const updatedProps = {
       ...props,
-      data: [
-        {
-          id: 1,
-          title: 'Test 1',
-          name: 'Test 1',
-          visitId: '1',
-          type: '1',
-          facility: '1',
-        },
-        {
-          id: 2,
-          title: 'Test 2',
-          name: 'Test 2',
-          visitId: '2',
-          type: '2',
-          facility: '2',
-        },
-      ],
-      totalDataCount: 2,
       resultsOptions: [1],
-      query: { ...props.query, results: 1 },
+      results: 1,
     };
     const wrapper = createWrapper(updatedProps);
     const pagination = wrapper.find(Pagination).first();
@@ -498,152 +409,45 @@ describe('Card View', () => {
     expect(onPageChange).toHaveBeenNthCalledWith(1, 2);
   });
 
-  it('page changed and correct data loaded when max page exceeded', () => {
+  it('page changed when max page exceeded', () => {
     const updatedProps = {
       ...props,
-      data: [
-        {
-          id: 1,
-          title: 'Test 1',
-          name: 'Test 1',
-          visitId: '1',
-          type: '1',
-          facility: '1',
-        },
-        {
-          id: 2,
-          title: 'Test 2',
-          name: 'Test 2',
-          visitId: '2',
-          type: '2',
-          facility: '2',
-        },
-      ],
-      totalDataCount: 2,
       resultsOptions: [1],
-      query: { ...props.query, results: 1, page: 3 },
-    };
-    const wrapper = createWrapper(updatedProps);
-    expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
-    wrapper.setProps({
-      ...updatedProps,
-      query: { ...updatedProps.query, page: 1 },
-    });
-    expect(loadData).toHaveBeenNthCalledWith(1, {
-      startIndex: 0,
-      stopIndex: 0,
-    });
-  });
-
-  it('loadData not called when loadedCount false', () => {
-    const updatedProps = {
-      ...props,
-      data: [
-        {
-          id: 1,
-          title: 'Test 1',
-          name: 'Test 1',
-          visitId: '1',
-          type: '1',
-          facility: '1',
-        },
-      ],
-      totalDataCount: 1,
-      resultsOptions: [1],
-      loadedCount: false,
-      loadedData: false,
-      query: { ...props.query, results: 1, page: 1 },
+      results: 1,
+      page: 4,
     };
     createWrapper(updatedProps);
-    expect(loadData).toHaveBeenCalledTimes(0);
+    expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 
   it('selector sends pushQuery with results', () => {
     const updatedProps = {
       ...props,
-      data: [
-        {
-          id: 1,
-          title: 'Test 1',
-          name: 'Test 1',
-          visitId: '1',
-          type: '1',
-          facility: '1',
-        },
-        {
-          id: 2,
-          title: 'Test 2',
-          name: 'Test 2',
-          visitId: '2',
-          type: '2',
-          facility: '2',
-        },
-        {
-          id: 3,
-          title: 'Test 3',
-          name: 'Test 3',
-          visitId: '3',
-          type: '3',
-          facility: '3',
-        },
-      ],
-      totalDataCount: 3,
       resultsOptions: [1, 2, 3],
-      query: { ...props.query, results: 1, page: 2 },
+      results: 1,
+      page: 2,
     };
     const wrapper = createWrapper(updatedProps);
     wrapper
       .find(Select)
       .props()
-      .onChange({ target: { value: 2 } });
-    expect(pushQuery).toHaveBeenNthCalledWith(1, {
-      ...updatedProps.query,
-      results: 2,
-    });
+      .onChange?.({ target: { value: 2 } });
+    expect(onResultsChange).toHaveBeenNthCalledWith(1, 2);
   });
 
   it('selector sends pushQuery with results and page', () => {
     const updatedProps = {
       ...props,
-      data: [
-        {
-          id: 1,
-          title: 'Test 1',
-          name: 'Test 1',
-          visitId: '1',
-          type: '1',
-          facility: '1',
-        },
-        {
-          id: 2,
-          title: 'Test 2',
-          name: 'Test 2',
-          visitId: '2',
-          type: '2',
-          facility: '2',
-        },
-        {
-          id: 3,
-          title: 'Test 3',
-          name: 'Test 3',
-          visitId: '3',
-          type: '3',
-          facility: '3',
-        },
-      ],
-      totalDataCount: 3,
       resultsOptions: [1, 2, 3],
-      query: { ...props.query, results: 1, page: 2 },
+      results: 1,
+      page: 2,
     };
     const wrapper = createWrapper(updatedProps);
     wrapper
       .find(Select)
       .props()
-      .onChange({ target: { value: 3 } });
-    expect(pushQuery).toHaveBeenNthCalledWith(1, {
-      ...updatedProps.query,
-      results: 3,
-      page: 1,
-    });
+      .onChange?.({ target: { value: 3 } });
+    expect(onResultsChange).toHaveBeenNthCalledWith(1, 3);
+    expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 });
