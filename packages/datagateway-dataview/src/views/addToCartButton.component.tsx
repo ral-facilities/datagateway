@@ -7,7 +7,7 @@ import { useAddToCart, useCart, useRemoveFromCart } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-interface AddToCartButtonProps {
+export interface AddToCartButtonProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
   allIds: number[];

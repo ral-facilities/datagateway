@@ -1,101 +1,126 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import AddToCartButton from './addToCartButton.component';
+import { createMount } from '@material-ui/core/test-utils';
+import AddToCartButton, {
+  AddToCartButtonProps,
+} from './addToCartButton.component';
 import configureStore from 'redux-mock-store';
 import {
-  addToCartRequest,
   dGCommonInitialState,
-  removeFromCartRequest,
   StateType,
+  useCart,
+  useAddToCart,
+  useRemoveFromCart,
 } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
-import axios from 'axios';
+import { ReactWrapper } from 'enzyme';
+import { QueryClientProvider, QueryClient } from 'react-query';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useCart: jest.fn(),
+    useAddToCart: jest.fn(),
+    useRemoveFromCart: jest.fn(),
+  };
+});
 
 describe('Generic add to cart button', () => {
-  let shallow;
   let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
+
+  const createWrapper = (props: AddToCartButtonProps): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <MemoryRouter>
+          <QueryClientProvider client={new QueryClient()}>
+            <AddToCartButton {...props} />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
+        dgcommon: {
+          ...dGCommonInitialState,
+        },
       })
     );
+
+    (useCart as jest.Mock).mockReturnValue({
+      data: [],
+    });
+    (useAddToCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <AddToCartButton
-        store={mockStore(state)}
-        allIds={[1]}
-        entityId={1}
-        entityType="investigation"
-      />
-    );
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends addToCart action on button press', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <AddToCartButton
-            allIds={[1]}
-            entityId={1}
-            entityType="investigation"
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls addToCart action on button press', () => {
+    const entityType = 'investigation';
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType,
+    });
 
     wrapper.find('#add-to-cart-btn').first().simulate('click');
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(addToCartRequest());
+
+    expect(useAddToCart).toHaveBeenCalledWith(entityType);
   });
 
   it('sends removeFromCart action on button press', () => {
-    state.dgcommon.cartItems = [
-      {
-        entityId: 1,
-        entityType: 'investigation',
-        id: 1,
-        name: 'test',
-        parentEntities: [],
-      },
-    ];
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <AddToCartButton
-            allIds={[1]}
-            entityId={1}
-            entityType="investigation"
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'investigation',
+          id: 1,
+          name: 'test',
+          parentEntities: [],
+        },
+      ],
+    });
+
+    const entityType = 'investigation';
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType,
+    });
 
     wrapper.find('#remove-from-cart-btn').first().simulate('click');
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(removeFromCartRequest());
+    expect(useRemoveFromCart).toHaveBeenCalledWith(entityType);
   });
 });
