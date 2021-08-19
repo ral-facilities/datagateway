@@ -84,10 +84,10 @@ describe('Generic add to cart button', () => {
       entityId: 1,
       entityType: 'investigation',
     });
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('button').text()).toBe('buttons.add_to_cart');
   });
 
-  it('calls addToCart action on button press', () => {
+  it('calls addToCart action on button press with item not in cart', () => {
     const entityType = 'investigation';
     const wrapper = createWrapper({
       allIds: [1],
@@ -100,7 +100,7 @@ describe('Generic add to cart button', () => {
     expect(useAddToCart).toHaveBeenCalledWith(entityType);
   });
 
-  it('sends removeFromCart action on button press', () => {
+  it('calls removeFromCart on button press with item already in cart', () => {
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
         {
