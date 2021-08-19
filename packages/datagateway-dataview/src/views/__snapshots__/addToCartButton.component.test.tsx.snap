@@ -24,7 +24,7 @@ exports[`Generic add to cart button renders correctly 1`] = `
           "entries": Array [
             Object {
               "hash": "",
-              "key": "427tr5",
+              "key": "hd2f7a",
               "pathname": "/",
               "search": "",
               "state": undefined,
@@ -38,7 +38,7 @@ exports[`Generic add to cart button renders correctly 1`] = `
           "listen": [Function],
           "location": Object {
             "hash": "",
-            "key": "427tr5",
+            "key": "hd2f7a",
             "pathname": "/",
             "search": "",
             "state": undefined,
