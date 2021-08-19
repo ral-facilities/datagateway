@@ -89,7 +89,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       label: t('studies.title'),
       dataKey: 'studyInvestigations.investigation.title',
       content: (study: Study) => {
-        return study.studyInvestigations?.[0]?.investigation.title ?? '';
+        return study.studyInvestigations?.[0]?.investigation?.title ?? '';
       },
       filterComponent: textFilter,
     }),
@@ -109,7 +109,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         content: (study: Study) =>
-          study.studyInvestigations?.[0]?.investigation.startDate ?? '',
+          study.studyInvestigations?.[0]?.investigation?.startDate ?? '',
         filterComponent: dateFilter,
       },
       {
@@ -117,7 +117,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         content: (study: Study) =>
-          study.studyInvestigations?.[0]?.investigation.endDate ?? '',
+          study.studyInvestigations?.[0]?.investigation?.endDate ?? '',
         filterComponent: dateFilter,
       },
     ],

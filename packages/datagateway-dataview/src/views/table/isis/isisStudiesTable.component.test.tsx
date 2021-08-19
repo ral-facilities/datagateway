@@ -51,16 +51,13 @@ describe('ISIS Studies table component', () => {
 
   beforeEach(() => {
     mount = createMount();
-    rowData = rowData = [
+    rowData = [
       {
         id: 1,
-        study: {
-          id: 1,
-          pid: 'doi',
-          name: 'Test 1',
-          modTime: '2000-01-01',
-          createTime: '2000-01-01',
-        },
+        pid: 'doi',
+        name: 'Test 1',
+        modTime: '2000-01-01',
+        createTime: '2000-01-01',
       },
     ];
     history = createMemoryHistory();
@@ -208,5 +205,61 @@ describe('ISIS Studies table component', () => {
     expect(
       wrapper.find('[aria-colindex=1]').find('p').children()
     ).toMatchSnapshot();
+  });
+
+  it('displays information from investigation when investigation present', () => {
+    rowData = [
+      {
+        ...rowData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...rowData[0],
+            },
+            investigation: {
+              id: 3,
+              name: 'Test',
+              title: 'Test investigation',
+              visitId: '3',
+              startDate: '2021-08-19',
+              endDate: '2021-08-20',
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+
+    const wrapper = createWrapper();
+
+    expect(wrapper.find('[aria-colindex=2]').find('p').first().text()).toBe(
+      'Test investigation'
+    );
+  });
+
+  it('renders fine when investigation is undefined', () => {
+    rowData = [
+      {
+        ...rowData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...rowData[0],
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+
+    expect(() => createWrapper()).not.toThrowError();
   });
 });
