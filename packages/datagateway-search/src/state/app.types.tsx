@@ -5,7 +5,6 @@ import { DGCommonState } from 'datagateway-common';
 
 export interface DGSearchState {
   searchText: string;
-  text: string;
   selectDate: {
     startDate: MaterialUiPickersDate;
     endDate: MaterialUiPickersDate;
@@ -14,12 +13,6 @@ export interface DGSearchState {
     dataset: boolean;
     datafile: boolean;
     investigation: boolean;
-  };
-  requestReceived: boolean;
-  searchData: {
-    dataset: number[];
-    datafile: number[];
-    investigation: number[];
   };
   tabs: {
     datasetTab: boolean;

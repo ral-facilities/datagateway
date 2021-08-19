@@ -1,7 +1,14 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import TextColumnFilter from './textColumnFilter.component';
+import TextColumnFilter, { useTextFilter } from './textColumnFilter.component';
 import { Select } from '@material-ui/core';
+import { act } from 'react-dom/test-utils';
+import { usePushFilters } from '../../api';
+import { renderHook } from '@testing-library/react-hooks';
+
+jest.mock('../../api');
+jest.useFakeTimers('modern');
+const DEBOUNCE_DELAY = 250;
 
 describe('Text filter component', () => {
   let shallow;
@@ -10,8 +17,6 @@ describe('Text filter component', () => {
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
-
-    jest.useRealTimers();
   });
 
   afterEach(() => {
@@ -20,12 +25,16 @@ describe('Text filter component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <TextColumnFilter value="test value" label="test" onChange={jest.fn()} />
+      <TextColumnFilter
+        value={{ value: 'test value', type: 'include' }}
+        label="test"
+        onChange={jest.fn()}
+      />
     );
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('calls the onChange method once when input is typed while include filter type is selected and calls again by debounced function after timeout', (done) => {
+  it('calls the onChange method once when input is typed while include filter type is selected and calls again by debounced function after timeout', () => {
     const onChange = jest.fn();
 
     const wrapper = mount(
@@ -42,19 +51,16 @@ describe('Text filter component', () => {
     textFilterInput.instance().value = 'test-again';
     textFilterInput.simulate('change');
 
-    // Jest timers do not co-operate with lodash.debounce, hence we use jest.useRealTimers
-    // and this setTimeout function set to the actual delay of the debouncing function.
-    setTimeout(() => {
-      expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange).toHaveBeenLastCalledWith({
-        value: 'test-again',
-        type: 'include',
-      });
-      done();
-    }, 250);
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith({
+      value: 'test-again',
+      type: 'include',
+    });
   });
 
-  it('calls the onChange method once when input is typed while exclude filter type is selected and calls again by debounced function after timeout', (done) => {
+  it('calls the onChange method once when input is typed while exclude filter type is selected and calls again by debounced function after timeout', () => {
     const onChange = jest.fn();
 
     const wrapper = mount(
@@ -71,19 +77,16 @@ describe('Text filter component', () => {
     textFilterInput.instance().value = 'test-again';
     textFilterInput.simulate('change');
 
-    // Jest timers do not co-operate with lodash.debounce, hence we use jest.useRealTimers
-    // and this setTimeout function set to the actual delay of the debouncing function.
-    setTimeout(() => {
-      expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange).toHaveBeenLastCalledWith({
-        value: 'test-again',
-        type: 'exclude',
-      });
-      done();
-    }, 250);
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith({
+      value: 'test-again',
+      type: 'exclude',
+    });
   });
 
-  it('calls the onChange method once when include filter type is selected while there is input and calls again by debounced function after timeout', (done) => {
+  it('calls the onChange method once when include filter type is selected while there is input', () => {
     const onChange = jest.fn();
 
     const wrapper = mount(
@@ -97,21 +100,18 @@ describe('Text filter component', () => {
     // We simulate a change in the select from 'exclude' to 'include'.
     const textFilterSelect = wrapper.find(Select).at(0);
 
-    textFilterSelect.props().onChange({ target: { value: 'include' } });
+    act(() => {
+      textFilterSelect.props().onChange({ target: { value: 'include' } });
+    });
 
-    // Jest timers do not co-operate with lodash.debounce, hence we use jest.useRealTimers
-    // and this setTimeout function set to the actual delay of the debouncing function.
-    setTimeout(() => {
-      expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange).toHaveBeenLastCalledWith({
-        value: 'test',
-        type: 'include',
-      });
-      done();
-    }, 250);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith({
+      value: 'test',
+      type: 'include',
+    });
   });
 
-  it('calls the onChange method once when exclude filter type is selected while there is input and calls again by debounced function after timeout', (done) => {
+  it('calls the onChange method once when exclude filter type is selected while there is input', () => {
     const onChange = jest.fn();
 
     const wrapper = mount(
@@ -125,21 +125,18 @@ describe('Text filter component', () => {
     // We simulate a change in the select from 'include' to 'exclude'.
     const textFilterSelect = wrapper.find(Select).at(0);
 
-    textFilterSelect.props().onChange({ target: { value: 'exclude' } });
+    act(() => {
+      textFilterSelect.props().onChange({ target: { value: 'exclude' } });
+    });
 
-    // Jest timers do not co-operate with lodash.debounce, hence we use jest.useRealTimers
-    // and this setTimeout function set to the actual delay of the debouncing function.
-    setTimeout(() => {
-      expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange).toHaveBeenLastCalledWith({
-        value: 'test',
-        type: 'exclude',
-      });
-      done();
-    }, 250);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith({
+      value: 'test',
+      type: 'exclude',
+    });
   });
 
-  it('calls the onChange method once when input is cleared and calls again by debounced function after timeout', (done) => {
+  it('calls the onChange method once when input is cleared and calls again by debounced function after timeout', () => {
     const onChange = jest.fn();
 
     const wrapper = mount(
@@ -156,13 +153,9 @@ describe('Text filter component', () => {
     textFilterInput.instance().value = '';
     textFilterInput.simulate('change');
 
-    // Jest timers do not co-operate with lodash.debounce, hence we use jest.useRealTimers
-    // and this setTimeout function set to the actual delay of the debouncing function.
-    setTimeout(() => {
-      expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange).toHaveBeenLastCalledWith(null);
-      done();
-    }, 250);
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith(null);
   });
 
   it('does not call the onChange method when filter type is selected while input is empty', () => {
@@ -179,8 +172,72 @@ describe('Text filter component', () => {
     // We simulate a change in the select from 'exclude' to 'include'.
     const textFilterSelect = wrapper.find(Select).at(0);
 
-    textFilterSelect.props().onChange({ target: { value: 'include' } });
+    act(() => {
+      textFilterSelect.props().onChange({ target: { value: 'include' } });
+    });
 
     expect(onChange).toHaveBeenCalledTimes(0);
+  });
+
+  it('updates the input value when the value prop changes', () => {
+    const baseProps = { label: 'test', onChange: jest.fn(), value: undefined };
+
+    const wrapper = mount(<TextColumnFilter {...baseProps} />);
+
+    wrapper.setProps({
+      ...baseProps,
+      value: { value: 'changed via props', type: 'include' },
+    });
+    wrapper.update();
+
+    expect(wrapper.find('input#test-filter').prop('value')).toEqual(
+      'changed via props'
+    );
+
+    wrapper.setProps({
+      ...baseProps,
+      value: undefined,
+    });
+    wrapper.update();
+
+    expect(wrapper.find('input#test-filter').prop('value')).toEqual('');
+  });
+
+  it('useTextFilter hook returns a function which can generate a working text filter', () => {
+    const pushFilters = jest.fn();
+    (usePushFilters as jest.Mock).mockImplementation(() => pushFilters);
+
+    const { result } = renderHook(() => useTextFilter({}));
+    let textFilter;
+
+    act(() => {
+      textFilter = result.current('Name', 'name');
+    });
+
+    const shallowWrapper = shallow(textFilter);
+    expect(shallowWrapper).toMatchSnapshot();
+
+    const mountWrapper = mount(textFilter);
+    // We simulate a change in the input to 'test'.
+    const textFilterInput = mountWrapper.find('input').first();
+
+    textFilterInput.instance().value = 'test';
+    textFilterInput.simulate('change');
+
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+
+    expect(pushFilters).toHaveBeenCalledTimes(1);
+    expect(pushFilters).toHaveBeenLastCalledWith('name', {
+      value: 'test',
+      type: 'include',
+    });
+
+    textFilterInput.instance().value = '';
+    textFilterInput.simulate('change');
+
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+
+    expect(pushFilters).toHaveBeenCalledTimes(2);
+    expect(pushFilters).toHaveBeenLastCalledWith('name', null);
   });
 });

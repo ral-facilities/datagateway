@@ -1,243 +1,143 @@
 import {
-  DateColumnFilter,
-  DateFilter,
-  Entity,
-  fetchStudyCount,
-  fetchStudies,
-  Filter,
-  FiltersType,
-  Order,
-  pushPageFilter,
-  pushPageSort,
-  SortType,
   Table,
   tableLink,
-  TextColumnFilter,
-  TextFilter,
-  fetchAllIds,
-  ViewsType,
+  parseSearchToQuery,
+  useStudiesInfinite,
+  useStudyCount,
+  ColumnType,
+  Study,
+  useDateFilter,
+  usePushSort,
+  useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
 
 import PublicIcon from '@material-ui/icons/Public';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import TitleIcon from '@material-ui/icons/Title';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { useLocation } from 'react-router';
 
 interface ISISStudiesTableProps {
   instrumentId: string;
 }
 
-interface ISISStudiesTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
-  data: Entity[];
-  totalDataCount: number;
-  loading: boolean;
-  error: string | null;
-  allIds: number[];
-}
+const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
+  const { instrumentId } = props;
 
-interface ISISStudiesTableDispatchProps {
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (allIds: number[], offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (allIds: number[]) => Promise<void>;
-  fetchIds: (instrumentId: number) => Promise<void>;
-}
-
-type ISISStudiesTableCombinedProps = ISISStudiesTableProps &
-  ISISStudiesTableStoreProps &
-  ISISStudiesTableDispatchProps;
-
-const ISISStudiesTable = (
-  props: ISISStudiesTableCombinedProps
-): React.ReactElement => {
-  const {
-    allIds,
-    data,
-    totalDataCount,
-    fetchIds,
-    fetchData,
-    fetchCount,
-    sort,
-    pushSort,
-    filters,
-    pushFilters,
-    view,
-    instrumentId,
-    loading,
-  } = props;
-
+  const location = useLocation();
   const [t] = useTranslation();
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
+  const { filters, view, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
   );
 
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      value={filters[dataKey] as DateFilter}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
+  const { data: totalDataCount } = useStudyCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+          eq: instrumentId,
+        },
+      }),
+    },
+  ]);
+  const { fetchNextPage, data } = useStudiesInfinite([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+          eq: instrumentId,
+        },
+      }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({
+        studyInvestigations: 'investigation',
+      }),
+    },
+  ]);
+
+  const aggregatedData: Study[] = React.useMemo(
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    [data]
   );
 
-  const [allIdsCleared, setAllIdsCleared] = React.useState(false);
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const pushSort = usePushSort();
 
-  React.useEffect(() => {
-    if (allIds.length === 0) setAllIdsCleared(true);
-  }, [setAllIdsCleared, allIds]);
+  const loadMoreRows = React.useCallback(
+    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    [fetchNextPage]
+  );
 
-  React.useEffect(() => {
-    if (allIdsCleared) fetchIds(parseInt(instrumentId));
-  }, [fetchIds, instrumentId, allIdsCleared]);
-
-  React.useEffect(() => {
-    if (allIdsCleared && allIds.length > 0) fetchCount(allIds);
-  }, [fetchCount, filters, allIds, allIdsCleared]);
-
-  React.useEffect(() => {
-    if (allIdsCleared && allIds.length > 0)
-      fetchData(allIds, { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters, allIds, allIdsCleared]);
-
-  const pathRoot = 'browseStudyHierarchy';
-  const instrumentChild = 'study';
+  const columns: ColumnType[] = React.useMemo(() => {
+    const pathRoot = 'browseStudyHierarchy';
+    const instrumentChild = 'study';
+    return [
+      {
+        icon: FingerprintIcon,
+        label: t('studies.name'),
+        dataKey: 'name',
+        cellContentRenderer: (cellProps: TableCellProps) =>
+          tableLink(
+            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.id}`,
+            cellProps.rowData.name,
+            view
+          ),
+        filterComponent: textFilter,
+      },
+      {
+        icon: TitleIcon,
+        label: t('studies.title'),
+        dataKey: 'studyInvestigations.investigation.title',
+        cellContentRenderer: (cellProps: TableCellProps) =>
+          (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
+            .title ?? '',
+        filterComponent: textFilter,
+      },
+      {
+        icon: PublicIcon,
+        label: t('studies.pid'),
+        dataKey: 'pid',
+        filterComponent: textFilter,
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('studies.start_date'),
+        dataKey: 'studyInvestigations.investigation.startDate',
+        cellContentRenderer: (cellProps: TableCellProps) =>
+          (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
+            .startDate ?? '',
+        filterComponent: dateFilter,
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('studies.end_date'),
+        dataKey: 'studyInvestigations.investigation.endDate',
+        cellContentRenderer: (cellProps: TableCellProps) =>
+          (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
+            .endDate ?? '',
+        filterComponent: dateFilter,
+      },
+    ];
+  }, [t, textFilter, dateFilter, instrumentId, view]);
 
   return (
     <Table
-      loading={loading}
-      data={data}
-      loadMoreRows={(params) => fetchData(allIds, params)}
-      totalRowCount={totalDataCount}
+      data={aggregatedData}
+      loadMoreRows={loadMoreRows}
+      totalRowCount={totalDataCount ?? 0}
       sort={sort}
       onSort={pushSort}
-      columns={[
-        {
-          icon: <FingerprintIcon />,
-          label: t('studies.name'),
-          dataKey: 'study.name',
-          cellContentRenderer: (cellProps: TableCellProps) =>
-            tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.study?.id}`,
-              cellProps.rowData.study?.name,
-              view
-            ),
-          filterComponent: textFilter,
-        },
-        {
-          icon: <TitleIcon />,
-          label: t('investigations.title'),
-          dataKey: 'investigation.title',
-          filterComponent: textFilter,
-        },
-        {
-          icon: <PublicIcon />,
-          label: t('studies.pid'),
-          dataKey: 'study.pid',
-          filterComponent: textFilter,
-        },
-        {
-          icon: <CalendarTodayIcon />,
-          label: t('investigations.start_date'),
-          dataKey: 'investigation.startDate',
-          filterComponent: dateFilter,
-        },
-        {
-          icon: <CalendarTodayIcon />,
-          label: t('investigations.end_date'),
-          dataKey: 'investigation.endDate',
-          filterComponent: dateFilter,
-        },
-      ]}
+      columns={columns}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): ISISStudiesTableDispatchProps => ({
-  fetchIds: (instrumentId: number) =>
-    dispatch(
-      fetchAllIds('investigation', [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigationInstruments.instrument.id': { eq: instrumentId },
-          }),
-        },
-      ])
-    ),
-  fetchData: (allIds: number[], offsetParams: IndexRange) =>
-    dispatch(
-      fetchStudies({
-        offsetParams,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'investigation.id': { in: allIds },
-            }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify('investigation'),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify('study'),
-          },
-        ],
-      })
-    ),
-  fetchCount: (allIds: number[]) =>
-    dispatch(
-      fetchStudyCount([
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigation.id': { in: allIds },
-          }),
-        },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify('investigation'),
-        },
-      ])
-    ),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
-});
-
-const mapStateToProps = (state: StateType): ISISStudiesTableStoreProps => {
-  return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
-    allIds: state.dgcommon.allIds,
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
-    error: state.dgcommon.error,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ISISStudiesTable);
+export default ISISStudiesTable;

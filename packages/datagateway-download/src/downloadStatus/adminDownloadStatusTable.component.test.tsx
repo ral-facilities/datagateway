@@ -245,17 +245,6 @@ describe('Admin Download Status Table', () => {
       "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) asc, UPPER(download.id) ASC LIMIT 0, 50"
     );
 
-    await act(async () => {
-      usernameSortLabel.simulate('click');
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) desc, UPPER(download.id) ASC LIMIT 0, 50"
-    );
-
     // Get the Access Method sort header.
     const accessMethodSortLabel = wrapper
       .find('[role="columnheader"] span[role="button"]')
@@ -268,7 +257,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) desc, UPPER(download.transport) asc, UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) asc, UPPER(download.transport) asc, UPPER(download.id) ASC LIMIT 0, 50"
     );
 
     await act(async () => {
@@ -279,7 +268,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) desc, UPPER(download.transport) desc, UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) asc, UPPER(download.transport) desc, UPPER(download.id) ASC LIMIT 0, 50"
     );
 
     await act(async () => {
@@ -290,9 +279,9 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) desc, UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) asc, UPPER(download.id) ASC LIMIT 0, 50"
     );
-  });
+  }, 10000);
 
   it('sends filter request on text filter', async () => {
     const wrapper = mount(
@@ -323,42 +312,6 @@ describe('Admin Download Status Table', () => {
     );
     usernameFilterInput.instance().value = '';
     usernameFilterInput.simulate('change');
-
-    // Get the Prepared ID filter input
-    const preparedIdFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.preparedId"] input')
-      .first();
-    await act(async () => {
-      preparedIdFilterInput.instance().value = 'test-prepared-id';
-      preparedIdFilterInput.simulate('change');
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.preparedId) LIKE CONCAT('%', 'test-prepared-id', '%') ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
-    );
-    preparedIdFilterInput.instance().value = '';
-    preparedIdFilterInput.simulate('change');
-
-    // Get the Access Method filter input
-    const accessMethodFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.transport"] input')
-      .first();
-    await act(async () => {
-      accessMethodFilterInput.instance().value = 'https';
-      accessMethodFilterInput.simulate('change');
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.transport) LIKE CONCAT('%', 'https', '%') ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
-    );
-    accessMethodFilterInput.instance().value = '';
-    accessMethodFilterInput.simulate('change');
 
     // Get the Availability filter input
     const availabilityFilterInput = wrapper
@@ -402,7 +355,7 @@ describe('Admin Download Status Table', () => {
       { downloadApiUrl: '', facilityName: '' },
       "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
-  });
+  }, 10000);
 
   it('sends filter request on date filter', async () => {
     const wrapper = mount(
@@ -461,7 +414,7 @@ describe('Admin Download Status Table', () => {
       { downloadApiUrl: '', facilityName: '' },
       "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
-  });
+  }, 10000);
 
   it('sends restore item and item status requests when restore button is clicked', async () => {
     jest.useFakeTimers();

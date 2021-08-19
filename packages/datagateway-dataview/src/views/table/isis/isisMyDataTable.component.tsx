@@ -1,37 +1,28 @@
 import {
-  addToCart,
-  DateColumnFilter,
-  DateFilter,
-  DownloadCartItem,
-  Entity,
-  fetchAllIds,
-  fetchInvestigationCount,
-  fetchInvestigationDetails,
-  fetchInvestigations,
-  Filter,
-  FiltersType,
-  formatBytes,
+  ColumnType,
+  formatCountOrSize,
   Investigation,
   MicroFrontendId,
   NotificationType,
-  Order,
-  pushPageFilter,
-  pushPageSort,
+  parseSearchToQuery,
   readSciGatewayToken,
-  removeFromCart,
-  SortType,
   Table,
   tableLink,
-  TextColumnFilter,
-  ViewsType,
-  TextFilter,
+  useAddToCart,
+  useAllFacilityCycles,
+  useCart,
+  useDateFilter,
+  useIds,
+  useInvestigationCount,
+  useInvestigationsInfinite,
+  useInvestigationSizes,
+  usePushSort,
+  useRemoveFromCart,
+  useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 
@@ -41,75 +32,92 @@ import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { push } from 'connected-react-router';
+import { useSelector } from 'react-redux';
+import { useLocation, useHistory } from 'react-router';
 
-interface ISISMyDataTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
-  data: Entity[];
-  totalDataCount: number;
-  loading: boolean;
-  error: string | null;
-  cartItems: DownloadCartItem[];
-  allIds: number[];
-  selectAllSetting: boolean;
-}
-
-interface ISISMyDataTableDispatchProps {
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-
-  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (username: string, offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (username: string) => Promise<void>;
-
-  fetchDetails: (investigationId: number) => Promise<void>;
-  addToCart: (entityIds: number[]) => Promise<void>;
-  removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchAllIds: (username: string) => Promise<void>;
-  viewDatasets: (urlPrefix: string) => (id: number) => Action;
-}
-
-type ISISMyDataTableCombinedProps = ISISMyDataTableStoreProps &
-  ISISMyDataTableDispatchProps;
-
-const ISISMyDataTable = (
-  props: ISISMyDataTableCombinedProps
-): React.ReactElement => {
-  const {
-    data,
-    totalDataCount,
-    fetchData,
-    fetchCount,
-    sort,
-    pushSort,
-    filters,
-    pushFilters,
-    view,
-    loading,
-    cartItems,
-    addToCart,
-    removeFromCart,
-    allIds,
-    fetchAllIds,
-    viewDatasets,
-    selectAllSetting,
-  } = props;
-
+const ISISMyDataTable = (): React.ReactElement => {
+  const selectAllSetting = useSelector(
+    (state: StateType) => state.dgdataview.selectAllSetting
+  );
+  const location = useLocation();
+  const { push } = useHistory();
   const [t] = useTranslation();
   const username = readSciGatewayToken().username || '';
+
+  const { filters, view, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  const { data: totalDataCount } = useInvestigationCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationUsers.user.name': { eq: username },
+      }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({ investigationUsers: 'user' }),
+    },
+  ]);
+  const { fetchNextPage, data } = useInvestigationsInfinite([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationUsers.user.name': { eq: username },
+      }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify([
+        {
+          investigationInstruments: 'instrument',
+        },
+        { investigationUsers: 'user' },
+        { studyInvestigations: 'study' },
+      ]),
+    },
+  ]);
+  const { data: allIds } = useIds('investigation');
+  const { data: cartItems } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
+    'investigation'
+  );
+  const {
+    mutate: removeFromCart,
+    isLoading: removeFromCartLoading,
+  } = useRemoveFromCart('investigation');
+  const { data: facilityCycles } = useAllFacilityCycles();
 
   const selectedRows = React.useMemo(
     () =>
       cartItems
-        .filter(
+        ?.filter(
           (cartItem) =>
+            allIds &&
             cartItem.entityType === 'investigation' &&
             allIds.includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
+
+  const aggregatedData: Investigation[] = React.useMemo(
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    [data]
+  );
+
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const pushSort = usePushSort();
+
+  const loadMoreRows = React.useCallback(
+    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    [fetchNextPage]
+  );
+
+  const sizeQueries = useInvestigationSizes(data);
 
   // Broadcast a SciGateway notification for any warning encountered.
   const broadcastWarning = (message: string): void => {
@@ -126,26 +134,6 @@ const ISISMyDataTable = (
     );
   };
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
-
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      value={filters[dataKey] as DateFilter}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
-
   React.useEffect(() => {
     if (localStorage.getItem('autoLogin') === 'true') {
       broadcastWarning(t('my_data_table.login_warning_msg'));
@@ -153,48 +141,156 @@ const ISISMyDataTable = (
   }, [t]);
 
   React.useEffect(() => {
-    // Sort by startDate on load.
-    pushSort('startDate', 'desc');
-  }, [pushSort]);
+    // Sort and filter by startDate upon load.
+    if (!('startDate' in sort)) pushSort('startDate', 'desc');
+    // we only want this to run on mount so ignore warning
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  React.useEffect(() => {
-    fetchCount(username);
-    fetchAllIds(username);
-  }, [fetchCount, fetchAllIds, username, filters]);
-
-  React.useEffect(() => {
-    fetchData(username, {
-      startIndex: 0,
-      stopIndex: 49,
-    });
-  }, [fetchData, username, sort, filters]);
-
-  const urlPrefix = (investigationData: Investigation): string => {
-    if (
-      investigationData?.investigationInstruments?.[0]?.instrument &&
-      investigationData?.facility?.facilityCycles
-    ) {
-      const facilityCycle = investigationData.facility.facilityCycles.find(
-        (facilitycycle) =>
-          facilitycycle.startDate &&
-          facilitycycle.endDate &&
-          investigationData.startDate &&
-          facilitycycle.startDate <= investigationData.startDate &&
-          facilitycycle.endDate >= investigationData.startDate
-      );
-      if (facilityCycle) {
-        return `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation`;
+  const urlPrefix = React.useCallback(
+    (investigationData: Investigation): string => {
+      if (
+        investigationData?.investigationInstruments?.[0]?.instrument &&
+        facilityCycles
+      ) {
+        const facilityCycle = facilityCycles.find(
+          (facilitycycle) =>
+            facilitycycle.startDate &&
+            facilitycycle.endDate &&
+            investigationData.startDate &&
+            facilitycycle.startDate <= investigationData.startDate &&
+            facilitycycle.endDate >= investigationData.startDate
+        );
+        if (facilityCycle) {
+          return `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation`;
+        }
       }
-    }
-    return '';
-  };
+      return '';
+    },
+    [facilityCycles]
+  );
+
+  const detailsPanel = React.useCallback(
+    ({ rowData, detailsPanelResize }) => (
+      <InvestigationDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        viewDatasets={
+          urlPrefix(rowData as Investigation)
+            ? (id: number) =>
+                push(`${urlPrefix(rowData as Investigation)}/${id}/dataset`)
+            : undefined
+        }
+      />
+    ),
+    [push, urlPrefix]
+  );
+
+  const columns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        icon: TitleIcon,
+        label: t('investigations.title'),
+        dataKey: 'title',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          const url = urlPrefix(investigationData);
+          if (url) {
+            return tableLink(
+              `${url}/${investigationData.id}`,
+              investigationData.title,
+              view
+            );
+          } else {
+            return investigationData.title;
+          }
+        },
+        filterComponent: textFilter,
+      },
+      {
+        icon: PublicIcon,
+        label: t('investigations.doi'),
+        dataKey: 'studyInvestigations.study.pid',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          if (investigationData?.studyInvestigations?.[0]?.study) {
+            return investigationData.studyInvestigations[0].study.pid;
+          } else {
+            return '';
+          }
+        },
+        filterComponent: textFilter,
+      },
+      {
+        icon: FingerprintIcon,
+        label: t('investigations.visit_id'),
+        dataKey: 'visitId',
+        filterComponent: textFilter,
+      },
+      {
+        icon: TitleIcon,
+        label: t('investigations.name'),
+        dataKey: 'name',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          const url = urlPrefix(investigationData);
+          if (url) {
+            return tableLink(
+              `${url}/${investigationData.id}`,
+              investigationData.name,
+              view
+            );
+          } else {
+            return investigationData.name;
+          }
+        },
+        filterComponent: textFilter,
+      },
+      {
+        icon: AssessmentIcon,
+        label: t('investigations.instrument'),
+        dataKey: 'investigationInstruments.instrument.fullName',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          if (investigationData?.investigationInstruments?.[0]?.instrument) {
+            return investigationData.investigationInstruments[0].instrument
+              .fullName;
+          } else {
+            return '';
+          }
+        },
+        filterComponent: textFilter,
+      },
+      {
+        icon: SaveIcon,
+        label: t('investigations.size'),
+        dataKey: 'size',
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+        disableSort: true,
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('investigations.start_date'),
+        dataKey: 'startDate',
+        filterComponent: dateFilter,
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('investigations.end_date'),
+        dataKey: 'endDate',
+        filterComponent: dateFilter,
+      },
+    ],
+    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+  );
 
   return (
     <Table
-      loading={loading}
-      data={data}
-      loadMoreRows={(params) => fetchData(username, params)}
-      totalRowCount={totalDataCount}
+      loading={addToCartLoading || removeFromCartLoading}
+      data={aggregatedData}
+      loadMoreRows={loadMoreRows}
+      totalRowCount={totalDataCount ?? 0}
       sort={sort}
       onSort={pushSort}
       selectedRows={selectedRows}
@@ -202,205 +298,10 @@ const ISISMyDataTable = (
       onCheck={addToCart}
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
-      detailsPanel={({ rowData, detailsPanelResize }) => {
-        return (
-          <InvestigationDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-            fetchDetails={props.fetchDetails}
-            viewDatasets={
-              urlPrefix(rowData as Investigation)
-                ? viewDatasets(urlPrefix(rowData as Investigation))
-                : undefined
-            }
-          />
-        );
-      }}
-      columns={[
-        {
-          icon: <TitleIcon />,
-          label: t('investigations.title'),
-          dataKey: 'title',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            const url = urlPrefix(investigationData);
-            if (url) {
-              return tableLink(
-                `${url}/${investigationData.id}`,
-                investigationData.title,
-                view
-              );
-            } else {
-              return investigationData.title;
-            }
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: <PublicIcon />,
-          label: t('investigations.doi'),
-          dataKey: 'studyInvestigations.study.pid',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            if (investigationData?.studyInvestigations?.[0]?.study) {
-              return investigationData.studyInvestigations[0].study.pid;
-            } else {
-              return '';
-            }
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: <FingerprintIcon />,
-          label: t('investigations.visit_id'),
-          dataKey: 'visitId',
-          filterComponent: textFilter,
-        },
-        {
-          icon: <TitleIcon />,
-          label: t('investigations.name'),
-          dataKey: 'name',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            const url = urlPrefix(investigationData);
-            if (url) {
-              return tableLink(
-                `${url}/${investigationData.id}`,
-                investigationData.name,
-                view
-              );
-            } else {
-              return investigationData.name;
-            }
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: <AssessmentIcon />,
-          label: t('investigations.instrument'),
-          dataKey: 'investigationInstruments.instrument.fullName',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            if (investigationData?.investigationInstruments?.[0]?.instrument) {
-              return investigationData.investigationInstruments[0].instrument
-                .fullName;
-            } else {
-              return '';
-            }
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: <SaveIcon />,
-          label: t('investigations.size'),
-          dataKey: 'size',
-          cellContentRenderer: (cellProps) => {
-            return formatBytes(cellProps.cellData);
-          },
-          disableSort: true,
-        },
-        {
-          icon: <CalendarTodayIcon />,
-          label: t('investigations.start_date'),
-          dataKey: 'startDate',
-          filterComponent: dateFilter,
-        },
-        {
-          icon: <CalendarTodayIcon />,
-          label: t('investigations.end_date'),
-          dataKey: 'endDate',
-          filterComponent: dateFilter,
-        },
-      ]}
+      detailsPanel={detailsPanel}
+      columns={columns}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): ISISMyDataTableDispatchProps => ({
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
-  fetchData: (username: string, offsetParams: IndexRange) =>
-    dispatch(
-      fetchInvestigations({
-        offsetParams,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'investigationUsers.user.name': { eq: username },
-            }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify([
-              {
-                investigationInstruments: 'instrument',
-              },
-              { investigationUsers: 'user' },
-              { studyInvestigations: 'study' },
-              { facility: 'facilityCycles' },
-            ]),
-          },
-        ],
-        getSize: true,
-      })
-    ),
-  fetchCount: (username: string) =>
-    dispatch(
-      fetchInvestigationCount([
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigationUsers.user.name': { eq: username },
-          }),
-        },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify({ investigationUsers: 'user' }),
-        },
-      ])
-    ),
-  fetchDetails: (investigationId: number) =>
-    dispatch(fetchInvestigationDetails(investigationId)),
-  addToCart: (entityIds: number[]) =>
-    dispatch(addToCart('investigation', entityIds)),
-  removeFromCart: (entityIds: number[]) =>
-    dispatch(removeFromCart('investigation', entityIds)),
-  fetchAllIds: (username: string) =>
-    dispatch(
-      fetchAllIds('investigation', [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigationUsers.user.name': { eq: username },
-          }),
-        },
-      ])
-    ),
-  viewDatasets: (urlPrefix: string) => {
-    return (id: number) => {
-      return dispatch(push(`${urlPrefix}/${id}/dataset`));
-    };
-  },
-});
-
-const mapStateToProps = (state: StateType): ISISMyDataTableStoreProps => {
-  return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
-    error: state.dgcommon.error,
-    cartItems: state.dgcommon.cartItems,
-    allIds: state.dgcommon.allIds,
-    selectAllSetting: state.dgdataview.selectAllSetting,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ISISMyDataTable);
+export default ISISMyDataTable;

@@ -1,22 +1,26 @@
 import { createMount, createShallow } from '@material-ui/core/test-utils';
-import axios from 'axios';
-import { push } from 'connected-react-router';
 import {
-  addToCartRequest,
   dGCommonInitialState,
-  fetchAllIdsRequest,
-  fetchInvestigationCountRequest,
-  fetchInvestigationDetailsRequest,
-  fetchInvestigationsRequest,
-  filterTable,
+  Investigation,
   NotificationType,
-  removeFromCartRequest,
-  sortTable,
+  readSciGatewayToken,
   Table,
+  useAddToCart,
+  useAllFacilityCycles,
+  useCart,
+  useIds,
+  useInvestigationCount,
+  useInvestigationDetails,
+  useInvestigationsInfinite,
+  useInvestigationSizes,
+  useRemoveFromCart,
 } from 'datagateway-common';
+import { ReactWrapper } from 'enzyme';
+import { createMemoryHistory, History } from 'history';
 import React from 'react';
+import { QueryClientProvider, QueryClient } from 'react-query';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import { AnyAction } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -24,31 +28,65 @@ import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISMyDataTable from './isisMyDataTable.component';
 
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useInvestigationCount: jest.fn(),
+    useInvestigationsInfinite: jest.fn(),
+    useInvestigationSizes: jest.fn(),
+    useIds: jest.fn(),
+    useCart: jest.fn(),
+    useAddToCart: jest.fn(),
+    useRemoveFromCart: jest.fn(),
+    useAllFacilityCycles: jest.fn(),
+    readSciGatewayToken: jest.fn(),
+    useInvestigationDetails: jest.fn(),
+  };
+});
+
 describe('ISIS Investigations table component', () => {
   let shallow;
   let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
+  let rowData: Investigation[];
+  let history: History;
   let events: CustomEvent<AnyAction>[] = [];
 
+  const createWrapper = (): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISMyDataTable />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'ISISMyDataTable' });
+    shallow = createShallow();
     mount = createMount();
     events = [];
+    history = createMemoryHistory();
 
     document.dispatchEvent = (e: Event) => {
       events.push(e as CustomEvent<AnyAction>);
       return true;
     };
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
         dgcommon: dGCommonInitialState,
       })
     );
-    state.dgcommon.data = [
+    rowData = [
       {
         id: 1,
         title: 'Test 1 title',
@@ -56,7 +94,6 @@ describe('ISIS Investigations table component', () => {
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
         investigationInstruments: [
           {
             id: 1,
@@ -72,231 +109,265 @@ describe('ISIS Investigations table component', () => {
             study: {
               id: 7,
               pid: 'study pid',
+              name: 'study',
+              createTime: '2019-06-10',
+              modTime: '2019-06-10',
+            },
+            investigation: {
+              id: 1,
+              title: 'Test 1 title',
+              name: 'Test 1 name',
+              visitId: '1',
             },
           },
         ],
-        facility: {
-          id: 8,
-          name: 'LILS',
-          facilityCycles: [
-            {
-              id: 8,
-              name: 'Cycle name',
-              startDate: '2019-06-01',
-              endDate: '2019-07-01',
-            },
-          ],
-        },
         startDate: '2019-06-10',
         endDate: '2019-06-11',
       },
     ];
-    state.dgcommon.allIds = [1];
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    (axios.delete as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    global.Date.now = jest.fn(() => 1);
+    (useCart as jest.Mock).mockReturnValue({
+      data: [],
+    });
+    (useInvestigationCount as jest.Mock).mockReturnValue({
+      data: 0,
+    });
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+    (useInvestigationSizes as jest.Mock).mockReturnValue([
+      {
+        data: 1,
+      },
+    ]);
+    (useIds as jest.Mock).mockReturnValue({
+      data: [1],
+    });
+    (useAddToCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 8,
+          name: 'Cycle name',
+          startDate: '2019-06-01',
+          endDate: '2019-07-01',
+        },
+      ],
+    });
+    (readSciGatewayToken as jest.Mock).mockReturnValue({
+      username: 'testUser',
+    });
+    (useInvestigationDetails as jest.Mock).mockReturnValue({
+      data: [],
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<ISISMyDataTable store={mockStore(state)} />);
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
   });
 
-  it('sends default sortTable action on load', () => {
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions().length).toEqual(5);
-    expect(testStore.getActions()[0]).toEqual(sortTable('startDate', 'desc'));
-  });
-
-  it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
-    let testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    // simulate clearTable action
-    testStore = mockStore({
-      ...state,
-      dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
+  it('calls the correct data fetching hooks on load', () => {
+    createWrapper();
+    expect(useInvestigationCount).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: 'testUser' },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({ investigationUsers: 'user' }),
+      },
+    ]);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: 'testUser' },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          { investigationUsers: 'user' },
+          { studyInvestigations: 'study' },
+        ]),
+      },
+    ]);
+    expect(useInvestigationSizes).toHaveBeenCalledWith({
+      pages: [rowData],
     });
-    wrapper.setProps({ store: testStore });
-
-    expect(testStore.getActions()[2]).toEqual(
-      fetchInvestigationCountRequest(1)
-    );
-    expect(testStore.getActions()[3]).toEqual(fetchAllIdsRequest(1));
-    expect(testStore.getActions()[4]).toEqual(fetchInvestigationsRequest(1));
+    expect(useIds).toHaveBeenCalledWith('investigation');
+    expect(useCart).toHaveBeenCalled();
+    expect(useAddToCart).toHaveBeenCalledWith('investigation');
+    expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
+    expect(useAllFacilityCycles).toHaveBeenCalled();
   });
 
-  it('sends fetchInvestigations action when loadMoreRows is called', () => {
-    const testStore = mockStore(state);
-    const wrapper = shallow(<ISISMyDataTable store={testStore} />);
+  it('sorts by startDate desc on load', () => {
+    createWrapper();
 
-    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
-
-    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent(JSON.stringify({ startDate: 'desc' }))}`
+    );
   });
 
-  it('sends filterTable action on text filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
+    const fetchNextPage = jest.fn();
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage,
+    });
+    const wrapper = createWrapper();
+
+    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
+      startIndex: 50,
+      stopIndex: 74,
+    });
+
+    expect(fetchNextPage).toHaveBeenCalledWith({
+      pageParam: { startIndex: 50, stopIndex: 74 },
+    });
+  });
+
+  it('updates filter query params on text filter', () => {
+    const wrapper = createWrapper();
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.title"] input')
+      .find('[aria-label="Filter by investigations.name"] input')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(
-      filterTable('title', { value: 'test', type: 'include' })
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"name":{"value":"test","type":"include"}}'
+      )}`
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[7]).toEqual(filterTable('title', null));
+    expect(history.length).toBe(4);
+    expect(history.location.search).toBe('?');
   });
 
-  it('sends filterTable action on date filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates filter query params on date filter', () => {
+    const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
-      '[aria-label="investigations.end_date date filter to"]'
+      '[aria-label="investigations.start_date date filter from"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(
-      filterTable('endDate', { endDate: '2019-08-06' })
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"startDate":{"startDate":"2019-08-06"}}'
+      )}`
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[7]).toEqual(filterTable('endDate', null));
+    expect(history.length).toBe(4);
+    expect(history.location.search).toBe('?');
   });
 
-  it('sends sortTable action on sort', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates sort query params on sort', () => {
+    const wrapper = createWrapper();
 
     wrapper
       .find('[role="columnheader"] span[role="button"]')
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[5]).toEqual(sortTable('title', 'asc'));
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+    );
   });
 
-  it('sends addToCart action on unchecked checkbox click', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls addToCart mutate function on unchecked checkbox click', () => {
+    const addToCart = jest.fn();
+    (useAddToCart as jest.Mock).mockReturnValue({
+      mutate: addToCart,
+      loading: false,
+    });
+    const wrapper = createWrapper();
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[5]).toEqual(addToCartRequest());
+    expect(addToCart).toHaveBeenCalledWith([1]);
   });
 
-  it('sends removeFromCart action on checked checkbox click', () => {
-    state.dgcommon.cartItems = [
-      {
-        entityId: 1,
-        entityType: 'investigation',
-        id: 1,
-        name: 'test',
-        parentEntities: [],
-      },
-    ];
+  it('calls removeFromCart mutate function on checked checkbox click', () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'investigation',
+          id: 1,
+          name: 'test',
+          parentEntities: [],
+        },
+      ],
+    });
 
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    const removeFromCart = jest.fn();
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
+      mutate: removeFromCart,
+      loading: false,
+    });
+
+    const wrapper = createWrapper();
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[5]).toEqual(removeFromCartRequest());
+    expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
 
   it('selected rows only considers relevant cart items', () => {
-    state.dgcommon.cartItems = [
-      {
-        entityId: 2,
-        entityType: 'investigation',
-        id: 1,
-        name: 'test',
-        parentEntities: [],
-      },
-      {
-        entityId: 1,
-        entityType: 'dataset',
-        id: 2,
-        name: 'test',
-        parentEntities: [],
-      },
-    ];
+    (useCart as jest.Mock).mockReturnValue({
+      data: [
+        {
+          entityId: 2,
+          entityType: 'investigation',
+          id: 1,
+          name: 'test',
+          parentEntities: [],
+        },
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 2,
+          name: 'test',
+          parentEntities: [],
+        },
+      ],
+    });
 
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
 
     const selectAllCheckbox = wrapper
       .find('[aria-label="select all rows"]')
@@ -306,55 +377,41 @@ describe('ISIS Investigations table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly and it sends actions', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('renders details panel correctly and it fetches data and can navigate', () => {
+    const wrapper = createWrapper();
 
     const detailsPanelWrapper = shallow(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
+        rowData: rowData[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
 
     mount(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
+        rowData: rowData[0],
         detailsPanelResize: jest.fn(),
       })
     );
 
-    expect(testStore.getActions()[5]).toEqual(
-      fetchInvestigationDetailsRequest()
-    );
+    expect(useInvestigationDetails).toHaveBeenCalledWith(1);
 
     detailsPanelWrapper.find('#investigation-datasets-tab').simulate('click');
-    expect(testStore.getActions()).toHaveLength(7);
-    expect(testStore.getActions()[6]).toEqual(
-      push('/browse/instrument/3/facilityCycle/8/investigation/1/dataset')
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/3/facilityCycle/8/investigation/1/dataset'
     );
   });
 
-  it('renders details panel without datasets link if Facility not set', () => {
-    state.dgcommon.data[0].facility = {};
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('renders details panel without datasets link if no facility cycles', () => {
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: undefined,
+    });
+
+    const wrapper = createWrapper();
 
     const detailsPanelWrapper = shallow(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
+        rowData: rowData[0],
       })
     );
 
@@ -364,13 +421,7 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('renders title and name as links', () => {
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-colindex=3]').find('p').children()
@@ -383,48 +434,33 @@ describe('ISIS Investigations table component', () => {
 
   it('gracefully handles empty arrays, missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object and missing facility cycles', () => {
     // check it doesn't error if arrays are empty
-    state.dgcommon.data[0] = {
-      ...state.dgcommon.data[0],
-      facility: {
-        id: 8,
-        name: 'LILS',
-        facilityCycles: [],
-      },
+    rowData[0] = {
+      ...rowData[0],
       investigationInstruments: [],
       studyInvestigations: [],
     };
-    let wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [],
+    });
+    let wrapper = createWrapper();
 
     expect(() => wrapper).not.toThrowError();
 
     // check it renders plain text if valid facility cycle can't be found
-    state.dgcommon.data[0] = {
-      ...state.dgcommon.data[0],
-      facility: {
-        id: 8,
-        name: 'LILS',
-        facilityCycles: [
-          {
-            id: 9,
-            startDate: '2018-01-01',
-            endDate: '2019-01-01',
-          },
-        ],
-      },
-    };
-    wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 9,
+          startDate: '2018-01-01',
+          endDate: '2019-01-01',
+        },
+      ],
+    });
+    wrapper = createWrapper();
 
     expect(wrapper.find('[aria-colindex=3]').find('p').text()).toEqual(
       'Test 1 title'
@@ -435,8 +471,8 @@ describe('ISIS Investigations table component', () => {
     );
 
     // now check that blank is returned if objects are missing
-    state.dgcommon.data[0] = {
-      ...state.dgcommon.data[0],
+    rowData[0] = {
+      ...rowData[0],
       investigationInstruments: [
         {
           id: 1,
@@ -447,18 +483,12 @@ describe('ISIS Investigations table component', () => {
           id: 6,
         },
       ],
-      facility: {
-        id: 8,
-        name: 'LILS',
-      },
     };
-    wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+    wrapper = createWrapper();
 
     expect(wrapper.find('[aria-colindex=4]').find('p').text()).toEqual('');
 
@@ -466,16 +496,16 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('sends a notification to SciGateway if user is not logged in', () => {
-    state.dgcommon.data = [];
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [] },
+      fetchNextPage: jest.fn(),
+    });
+    (readSciGatewayToken as jest.Mock).mockReturnValue({
+      username: null,
+    });
     localStorage.setItem('autoLogin', 'true');
 
-    mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <ISISMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    createWrapper();
 
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({

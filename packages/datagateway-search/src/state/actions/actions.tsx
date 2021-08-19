@@ -1,9 +1,6 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { fetchLuceneData, LuceneSearchParams } from 'datagateway-common';
-import { ActionType, ThunkResult } from '../app.types';
+import { ActionType } from '../app.types';
 import {
-  CheckRequestReceivedPayload,
-  LuceneResultTypePayload,
   SearchTextPayload,
   SearchTextType,
   SelectDatePayload,
@@ -12,13 +9,9 @@ import {
   SetDatafileTabType,
   SetDatasetTabType,
   SetInvestigationTabType,
-  StoreLuceneDatafileType,
-  StoreLuceneDatasetType,
-  StoreLuceneInvestigationType,
   ToggleDatafileType,
   ToggleDatasetType,
   ToggleInvestigationType,
-  ToggleLuceneRequestReceivedType,
   TogglePayload,
   CurrentTabPayload,
   SetCurrentTabType,
@@ -105,86 +98,6 @@ export const submitSearchText = (
   },
 });
 
-export const storeDatasetLucene = (
-  searchData: number[]
-): ActionType<LuceneResultTypePayload> => ({
-  type: StoreLuceneDatasetType,
-  payload: {
-    searchData,
-  },
-});
-
-export const storeDatafileLucene = (
-  searchData: number[]
-): ActionType<LuceneResultTypePayload> => ({
-  type: StoreLuceneDatafileType,
-  payload: {
-    searchData,
-  },
-});
-
-export const storeInvestigationLucene = (
-  searchData: number[]
-): ActionType<LuceneResultTypePayload> => ({
-  type: StoreLuceneInvestigationType,
-  payload: {
-    searchData,
-  },
-});
-
-export const toggleLuceneRequestReceived = (
-  requestReceived: boolean
-): ActionType<CheckRequestReceivedPayload> => ({
-  type: ToggleLuceneRequestReceivedType,
-  payload: {
-    requestReceived,
-  },
-});
-
-export const fetchLuceneInvestigations = (
-  params: LuceneSearchParams
-): ThunkResult<Promise<void>> => {
-  return async (dispatch, getState) => {
-    const { icatUrl } = getState().dgcommon.urls;
-
-    await fetchLuceneData('Investigation', params, {
-      icatUrl,
-    }).then((results) => {
-      dispatch(storeInvestigationLucene(results));
-      dispatch(toggleLuceneRequestReceived(true));
-    });
-  };
-};
-
-export const fetchLuceneDatasets = (
-  params: LuceneSearchParams
-): ThunkResult<Promise<void>> => {
-  return async (dispatch, getState) => {
-    const { icatUrl } = getState().dgcommon.urls;
-
-    await fetchLuceneData('Dataset', params, {
-      icatUrl,
-    }).then((results) => {
-      dispatch(storeDatasetLucene(results));
-      dispatch(toggleLuceneRequestReceived(true));
-    });
-  };
-};
-
-export const fetchLuceneDatafiles = (
-  params: LuceneSearchParams
-): ThunkResult<Promise<void>> => {
-  return async (dispatch, getState) => {
-    const { icatUrl } = getState().dgcommon.urls;
-
-    await fetchLuceneData('Datafile', params, {
-      icatUrl,
-    }).then((results) => {
-      dispatch(storeDatafileLucene(results));
-      dispatch(toggleLuceneRequestReceived(true));
-    });
-  };
-};
 export const setCurrentTab = (
   currentTab: string
 ): ActionType<CurrentTabPayload> => ({

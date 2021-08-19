@@ -8,30 +8,33 @@ type CellRendererProps = TableCellProps & {
   cellContentRenderer?: TableCellRenderer;
 };
 
-const DataCell = (props: CellRendererProps): React.ReactElement => {
-  const { className, dataKey, rowData, cellContentRenderer } = props;
+const DataCell = React.memo(
+  (props: CellRendererProps): React.ReactElement => {
+    const { className, dataKey, rowData, cellContentRenderer } = props;
 
-  // use . in dataKey name to drill down into nested row data
-  const cellValue = dataKey.split('.').reduce(function (prev, curr) {
-    return prev ? prev[curr] : null;
-  }, rowData);
+    // use . in dataKey name to drill down into nested row data
+    const cellValue = dataKey.split('.').reduce(function (prev, curr) {
+      return prev ? prev[curr] : null;
+    }, rowData);
 
-  const smWindow = !useMediaQuery('(min-width: 960px)');
-  return (
-    <TableCell
-      size="small"
-      component="div"
-      className={className}
-      variant="body"
-      style={smWindow ? { paddingLeft: 8, paddingRight: 8 } : {}}
-    >
-      <ArrowTooltip title={cellValue} enterDelay={500}>
-        <Typography variant="body2" noWrap>
-          {cellContentRenderer ? cellContentRenderer(props) : cellValue}
-        </Typography>
-      </ArrowTooltip>
-    </TableCell>
-  );
-};
+    const smWindow = !useMediaQuery('(min-width: 960px)');
+    return (
+      <TableCell
+        size="small"
+        component="div"
+        className={className}
+        variant="body"
+        style={smWindow ? { paddingLeft: 8, paddingRight: 8 } : {}}
+      >
+        <ArrowTooltip title={cellValue} enterDelay={500}>
+          <Typography variant="body2" noWrap>
+            {cellContentRenderer ? cellContentRenderer(props) : cellValue}
+          </Typography>
+        </ArrowTooltip>
+      </TableCell>
+    );
+  }
+);
+DataCell.displayName = 'DataCell';
 
 export default DataCell;

@@ -143,9 +143,7 @@ describe('DLS - Datasets Table', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
         .wait('@datasets', { timeout: 10000 });
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');

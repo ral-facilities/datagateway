@@ -14,6 +14,7 @@ import {
 
 import {
   DateColumnFilter,
+  DateFilter,
   Download,
   formatBytes,
   FormattedDownload,
@@ -21,6 +22,7 @@ import {
   Table,
   TableActionProps,
   TextColumnFilter,
+  TextFilter,
 } from 'datagateway-common';
 
 import { useTranslation } from 'react-i18next';
@@ -257,6 +259,7 @@ const AdminDownloadStatusTable: React.FC = () => {
           setFilters(restOfFilters);
         }
       }}
+      value={filters[dataKey] as TextFilter}
     />
   );
 
@@ -271,6 +274,7 @@ const AdminDownloadStatusTable: React.FC = () => {
           setFilters(restOfFilters);
         }
       }}
+      value={filters[dataKey] as DateFilter}
     />
   );
 

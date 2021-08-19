@@ -1,42 +1,65 @@
-import { createMount, createShallow } from '@material-ui/core/test-utils';
-import axios from 'axios';
+import { createMount } from '@material-ui/core/test-utils';
 import {
-  addToCartRequest,
   dGCommonInitialState,
-  fetchAllIdsRequest,
-  fetchDatafileCountRequest,
-  fetchDatafilesRequest,
-  filterTable,
-  removeFromCartRequest,
-  sortTable,
+  useDatafileCount,
+  useIds,
+  useCart,
+  useAddToCart,
+  useRemoveFromCart,
+  useDatafilesInfinite,
+  Datafile,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDatafilesTable from './dlsDatafilesTable.component';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+import { createMemoryHistory, History } from 'history';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useDatafileCount: jest.fn(),
+    useDatafilesInfinite: jest.fn(),
+    useIds: jest.fn(),
+    useCart: jest.fn(),
+    useAddToCart: jest.fn(),
+    useRemoveFromCart: jest.fn(),
+    downloadDatafile: jest.fn(),
+  };
+});
 
 describe('DLS datafiles table component', () => {
-  let shallow;
   let mount;
   let mockStore;
   let state: StateType;
+  let rowData: Datafile[];
+  let history: History;
+
+  const createWrapper = (): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSDatafilesTable datasetId="1" investigationId="2" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'DLSDatafilesTable' });
     mount = createMount();
-
-    mockStore = configureStore([thunk]);
-    state = JSON.parse(
-      JSON.stringify({
-        dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
-      })
-    );
-    state.dgcommon.data = [
+    rowData = [
       {
         id: 1,
         name: 'Test 1',
@@ -46,71 +69,114 @@ describe('DLS datafiles table component', () => {
         createTime: '2019-07-23',
       },
     ];
-    state.dgcommon.allIds = [1];
+    history = createMemoryHistory();
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    mockStore = configureStore([thunk]);
+    state = JSON.parse(
+      JSON.stringify({
+        dgdataview: dgDataViewInitialState,
+        dgcommon: dGCommonInitialState,
+      })
     );
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    (axios.delete as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    global.Date.now = jest.fn(() => 1);
+
+    (useCart as jest.Mock).mockReturnValue({
+      data: [],
+    });
+    (useDatafileCount as jest.Mock).mockReturnValue({
+      data: 0,
+    });
+    (useDatafilesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+    (useIds as jest.Mock).mockReturnValue({
+      data: [1],
+    });
+    (useAddToCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DLSDatafilesTable store={mockStore(state)} />);
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
   });
 
-  it('sends fetchDatafileCount and fetchDatafiles actions when watched store values change', () => {
-    let testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls the correct data fetching hooks on load', () => {
+    const datasetId = '1';
+    const investigationId = '2';
+    createWrapper();
+    expect(useDatafileCount).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'dataset.investigation.id': { eq: investigationId },
+        }),
+      },
+    ]);
+    expect(useDatafilesInfinite).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'dataset.investigation.id': { eq: investigationId },
+        }),
+      },
+    ]);
+    expect(useIds).toHaveBeenCalledWith('datafile', [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'dataset.investigation.id': { eq: investigationId },
+        }),
+      },
+    ]);
+    expect(useCart).toHaveBeenCalled();
+    expect(useAddToCart).toHaveBeenCalledWith('datafile');
+    expect(useRemoveFromCart).toHaveBeenCalledWith('datafile');
+  });
 
-    // simulate clearTable action
-    testStore = mockStore({
-      ...state,
-      dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
+  it('calls useDatafilesInfinite when loadMoreRows is called', () => {
+    const fetchNextPage = jest.fn();
+    (useDatafilesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage,
     });
-    wrapper.setProps({ store: testStore });
+    const wrapper = createWrapper();
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatafileCountRequest(1));
-    expect(testStore.getActions()[1]).toEqual(fetchAllIdsRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
+    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
+      startIndex: 50,
+      stopIndex: 74,
+    });
+
+    expect(fetchNextPage).toHaveBeenCalledWith({
+      pageParam: { startIndex: 50, stopIndex: 74 },
+    });
   });
 
-  it('sends fetchDatafiles action when loadMoreRows is called', () => {
-    const testStore = mockStore(state);
-    const wrapper = shallow(
-      <DLSDatafilesTable datasetId="1" store={testStore} />
-    );
-
-    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
-
-    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
-  });
-
-  it('sends filterTable action on text filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates filter query params on text filter', () => {
+    const wrapper = createWrapper();
 
     const filterInput = wrapper
       .find('[aria-label="Filter by datafiles.name"] input')
@@ -118,25 +184,22 @@ describe('DLS datafiles table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(
-      filterTable('name', { value: 'test', type: 'include' })
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"name":{"value":"test","type":"include"}}'
+      )}`
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('name', null));
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
   });
 
-  it('sends filterTable action on date filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates filter query params on date filter', () => {
+    const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
       '[aria-label="datafiles.create_time date filter to"]'
@@ -144,100 +207,94 @@ describe('DLS datafiles table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(
-      filterTable('createTime', { endDate: '2019-08-06' })
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"createTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('createTime', null));
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
   });
 
-  it('sends sortTable action on sort', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates sort query params on sort', () => {
+    const wrapper = createWrapper();
 
     wrapper
       .find('[role="columnheader"] span[role="button"]')
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[3]).toEqual(sortTable('name', 'asc'));
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+    );
   });
 
-  it('sends addToCart action on unchecked checkbox click', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls addToCart mutate function on unchecked checkbox click', () => {
+    const addToCart = jest.fn();
+    (useAddToCart as jest.Mock).mockReturnValue({
+      mutate: addToCart,
+      loading: false,
+    });
+    const wrapper = createWrapper();
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[3]).toEqual(addToCartRequest());
+    expect(addToCart).toHaveBeenCalledWith([1]);
   });
 
-  it('sends removeFromCart action on checked checkbox click', () => {
-    state.dgcommon.cartItems = [
-      {
-        entityId: 1,
-        entityType: 'datafile',
-        id: 1,
-        name: 'test',
-        parentEntities: [],
-      },
-    ];
+  it('calls removeFromCart mutate function on checked checkbox click', () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'datafile',
+          id: 1,
+          name: 'test',
+          parentEntities: [],
+        },
+      ],
+    });
 
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const removeFromCart = jest.fn();
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
+      mutate: removeFromCart,
+      loading: false,
+    });
+
+    const wrapper = createWrapper();
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[3]).toEqual(removeFromCartRequest());
+    expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
 
   it('selected rows only considers relevant cart items', () => {
-    state.dgcommon.cartItems = [
-      {
-        entityId: 1,
-        entityType: 'dataset',
-        id: 1,
-        name: 'test',
-        parentEntities: [],
-      },
-      {
-        entityId: 2,
-        entityType: 'datafile',
-        id: 2,
-        name: 'test',
-        parentEntities: [],
-      },
-    ];
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'test',
+          parentEntities: [],
+        },
+        {
+          entityId: 2,
+          entityType: 'datafile',
+          id: 2,
+          name: 'test',
+          parentEntities: [],
+        },
+      ],
+    });
 
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
 
     const selectAllCheckbox = wrapper
       .find('[aria-label="select all rows"]')
@@ -247,29 +304,21 @@ describe('DLS datafiles table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <MemoryRouter>
-        <DLSDatafilesTable store={mockStore(state)} datasetId="1" />
-      </MemoryRouter>
-    );
-    const detailsPanelWrapper = shallow(
-      wrapper.prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
-      })
-    );
-    expect(detailsPanelWrapper).toMatchSnapshot();
-  });
+  it("doesn't display download button for datafiles with no location", () => {
+    (useDatafilesInfinite as jest.Mock).mockReturnValueOnce([
+      {
+        id: 1,
+        name: 'Test 1',
+        fileSize: 1,
+        modTime: '2019-07-23',
+        createTime: '2019-07-23',
+      },
+    ]);
 
-  it('renders file size as bytes', () => {
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
 
-    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('1 B');
+    expect(
+      wrapper.find('button[aria-label="datafiles.download"]')
+    ).toHaveLength(0);
   });
 });

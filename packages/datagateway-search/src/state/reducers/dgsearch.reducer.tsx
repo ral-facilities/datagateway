@@ -7,15 +7,9 @@ import {
   SelectStartDateType,
   SelectEndDateType,
   SearchTextType,
-  ToggleLuceneRequestReceivedType,
-  StoreLuceneDatasetType,
-  StoreLuceneDatafileType,
-  StoreLuceneInvestigationType,
   TogglePayload,
   SelectDatePayload,
   SearchTextPayload,
-  CheckRequestReceivedPayload,
-  LuceneResultTypePayload,
   SetDatasetTabType,
   SetDatafileTabType,
   SetInvestigationTabType,
@@ -26,7 +20,6 @@ import {
 
 export const initialState: DGSearchState = {
   searchText: '',
-  text: '',
   selectDate: {
     startDate: null,
     endDate: null,
@@ -41,12 +34,6 @@ export const initialState: DGSearchState = {
     datafileTab: false,
     investigationTab: false,
     currentTab: 'investigation',
-  },
-  requestReceived: false,
-  searchData: {
-    dataset: [],
-    datafile: [],
-    investigation: [],
   },
   settingsLoaded: false,
   sideLayout: false,
@@ -134,55 +121,6 @@ export function selectEndDate(
   };
 }
 
-export function toggleLuceneRequestReceived(
-  state: DGSearchState,
-  payload: CheckRequestReceivedPayload
-): DGSearchState {
-  return {
-    ...state,
-    requestReceived: payload.requestReceived,
-  };
-}
-
-export function storeDatasetLuceneResults(
-  state: DGSearchState,
-  payload: LuceneResultTypePayload
-): DGSearchState {
-  return {
-    ...state,
-    searchData: {
-      ...state.searchData,
-      dataset: payload.searchData,
-    },
-  };
-}
-
-export function storeDatafileLuceneResults(
-  state: DGSearchState,
-  payload: LuceneResultTypePayload
-): DGSearchState {
-  return {
-    ...state,
-    searchData: {
-      ...state.searchData,
-      datafile: payload.searchData,
-    },
-  };
-}
-
-export function storeInvestigationLuceneResults(
-  state: DGSearchState,
-  payload: LuceneResultTypePayload
-): DGSearchState {
-  return {
-    ...state,
-    searchData: {
-      ...state.searchData,
-      investigation: payload.searchData,
-    },
-  };
-}
-
 export function handleSetDatasetTab(
   state: DGSearchState,
   payload: TogglePayload
@@ -242,10 +180,6 @@ const DGSearchReducer = createReducer(initialState, {
   [SelectStartDateType]: selectStartDate,
   [SelectEndDateType]: selectEndDate,
   [SearchTextType]: handleSearchText,
-  [ToggleLuceneRequestReceivedType]: toggleLuceneRequestReceived,
-  [StoreLuceneDatasetType]: storeDatasetLuceneResults,
-  [StoreLuceneDatafileType]: storeDatafileLuceneResults,
-  [StoreLuceneInvestigationType]: storeInvestigationLuceneResults,
   [SetDatasetTabType]: handleSetDatasetTab,
   [SetDatafileTabType]: handleSetDatafileTab,
   [SetInvestigationTabType]: handleSetInvestigationTab,

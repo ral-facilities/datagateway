@@ -14,7 +14,7 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useTranslation } from 'react-i18next';
 
 interface DatePickerProps {
-  initiateSearch: () => Promise<void>;
+  initiateSearch: () => void;
 }
 
 interface DatePickerStoreProps {

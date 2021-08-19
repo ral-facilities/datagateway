@@ -37,13 +37,15 @@
     "visit_id": "Visit ID",
     "name": "Name",
     "doi": "DOI",
-    "dataset_count": "Dataset Count"
+    "dataset_count": "Dataset Count",
+    "size": "Size"
   },
   "datasets": {
     "name": "Name",
     "create_time": "Create Time",
     "modified_time": "Modified Time",
     "datafile_count": "Datafile Count",
+    "size": "Size",
     "description": "Description",
     "investigation": "Investigation"
   },

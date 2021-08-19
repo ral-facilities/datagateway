@@ -1,147 +1,190 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Investigation Search Table component renders correctly 1`] = `
-<WithStyles(VirtualizedTable)
-  allIds={
-    Array [
-      1,
-    ]
-  }
-  columns={
-    Array [
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "title",
-        "filterComponent": [Function],
-        "label": "investigations.title",
+Object {
+  "allIds": Array [
+    1,
+  ],
+  "classes": Object {
+    "flexContainer": "VirtualizedTable-flexContainer-2",
+    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
+    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "table": "VirtualizedTable-table-1",
+    "tableCell": "VirtualizedTable-tableCell-6",
+    "tableRow": "VirtualizedTable-tableRow-4",
+    "tableRowHover": "VirtualizedTable-tableRowHover-5",
+  },
+  "columns": Array [
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "title",
+      "filterComponent": [Function],
+      "label": "investigations.title",
+    },
+    Object {
+      "dataKey": "visitId",
+      "filterComponent": [Function],
+      "label": "investigations.visit_id",
+    },
+    Object {
+      "dataKey": "name",
+      "filterComponent": [Function],
+      "label": "investigations.name",
+    },
+    Object {
+      "dataKey": "doi",
+      "filterComponent": [Function],
+      "label": "investigations.doi",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "datasetCount",
+      "disableSort": true,
+      "label": "investigations.dataset_count",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "investigationInstruments.instrument.fullName",
+      "filterComponent": [Function],
+      "label": "investigations.instrument",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "startDate",
+      "filterComponent": [Function],
+      "label": "investigations.start_date",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "endDate",
+      "filterComponent": [Function],
+      "label": "investigations.end_date",
+    },
+  ],
+  "data": Array [
+    Object {
+      "doi": "doi 1",
+      "endDate": "2019-06-11",
+      "facility": Object {
+        "id": 2,
+        "name": "facility name",
       },
-      Object {
-        "dataKey": "visitId",
-        "filterComponent": [Function],
-        "label": "investigations.visit_id",
-      },
-      Object {
-        "dataKey": "name",
-        "filterComponent": [Function],
-        "label": "investigations.name",
-      },
-      Object {
-        "dataKey": "doi",
-        "filterComponent": [Function],
-        "label": "investigations.doi",
-      },
-      Object {
-        "dataKey": "datasetCount",
-        "disableSort": true,
-        "label": "investigations.dataset_count",
-      },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "investigationInstruments.instrument.fullName",
-        "filterComponent": [Function],
-        "label": "investigations.instrument",
-      },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "startDate",
-        "filterComponent": [Function],
-        "label": "investigations.start_date",
-      },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "endDate",
-        "filterComponent": [Function],
-        "label": "investigations.end_date",
-      },
-    ]
-  }
-  data={
-    Array [
-      Object {
-        "doi": "doi 1",
-        "endDate": "2019-06-11",
-        "facility": Object {
-          "id": 2,
-          "name": "facility name",
+      "id": 1,
+      "investigationInstruments": Array [
+        Object {
+          "id": 1,
+          "instrument": Object {
+            "id": 3,
+            "name": "LARMOR",
+          },
         },
-        "id": 1,
-        "investigationInstruments": Array [
-          Object {
+      ],
+      "name": "Test 1",
+      "size": 1,
+      "startDate": "2019-06-10",
+      "studyInvestigations": Array [
+        Object {
+          "id": 6,
+          "investigation": Object {
             "id": 1,
-            "instrument": Object {
-              "id": 3,
-              "name": "LARMOR",
-            },
+            "name": "Test 1",
+            "title": "Test 1",
+            "visitId": "1",
           },
-        ],
-        "name": "Test 1",
-        "size": 1,
-        "startDate": "2019-06-10",
-        "studyInvestigations": Array [
-          Object {
-            "id": 6,
-            "study": Object {
-              "createTime": "2019-06-10",
-              "id": 7,
-              "modTime": "2019-06-10",
-              "name": "study name",
-              "pid": "study pid",
-            },
+          "study": Object {
+            "createTime": "2019-06-10",
+            "id": 7,
+            "modTime": "2019-06-10",
+            "name": "study name",
+            "pid": "study pid",
           },
-        ],
-        "summary": "foo bar",
-        "title": "Test 1",
-        "visitId": "1",
-      },
-    ]
-  }
-  detailsPanel={[Function]}
-  loadMoreRows={[Function]}
-  loading={false}
-  onCheck={[Function]}
-  onSort={[Function]}
-  onUncheck={[Function]}
-  selectedRows={Array []}
-  sort={Object {}}
-  totalRowCount={0}
-/>
+        },
+      ],
+      "summary": "foo bar",
+      "title": "Test 1",
+      "visitId": "1",
+    },
+  ],
+  "detailsPanel": [Function],
+  "loadMoreRows": [Function],
+  "loading": false,
+  "onCheck": [MockFunction],
+  "onSort": [Function],
+  "onUncheck": [MockFunction],
+  "selectedRows": Array [],
+  "sort": Object {},
+  "totalRowCount": 0,
+}
 `;
 
 exports[`Investigation Search Table component renders details panel correctly 1`] = `
-<div>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      investigations.name
-      :
-    </b>
-     
-    Test 1
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      investigations.title
-      :
-    </b>
-     
-    Test 1
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      investigations.start_date
-      :
-    </b>
-     
-    2019-06-10
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      investigations.end_date
-      :
-    </b>
-     
-    2019-06-11
-  </WithStyles(ForwardRef(Typography))>
-</div>
+<WithStyles(ForwardRef(Grid))
+  className="makeStyles-root-343"
+  container={true}
+  direction="column"
+  id="details-panel"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="h6"
+    >
+      <b>
+        Test 1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Divider))
+      className="makeStyles-divider-344"
+    />
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      investigations.details.name
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        Test 1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      investigations.details.start_date
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        2019-06-10
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      investigations.details.end_date
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        2019-06-11
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+</WithStyles(ForwardRef(Grid))>
 `;
 
 exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 1`] = `

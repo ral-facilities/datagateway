@@ -1,128 +1,185 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ISIS Investigations table component renders correctly 1`] = `
-<WithStyles(VirtualizedTable)
-  allIds={
-    Array [
-      1,
-    ]
-  }
-  columns={
-    Array [
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "title",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.title",
-      },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "studyInvestigations.study.pid",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.doi",
-      },
-      Object {
-        "dataKey": "visitId",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.visit_id",
-      },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "name",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.name",
-      },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "investigationInstruments.instrument.fullName",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.instrument",
-      },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "size",
-        "disableSort": true,
-        "icon": <Memo />,
-        "label": "investigations.size",
-      },
-      Object {
-        "dataKey": "startDate",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.start_date",
-      },
-      Object {
-        "dataKey": "endDate",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.end_date",
-      },
-    ]
-  }
-  data={
-    Array [
-      Object {
-        "doi": "doi 1",
-        "endDate": "2019-06-11",
-        "facility": Object {
-          "facilityCycles": Array [
-            Object {
-              "endDate": "2019-07-01",
-              "id": 8,
-              "name": "Cycle name",
-              "startDate": "2019-06-01",
-            },
-          ],
-          "id": 8,
-          "name": "LILS",
+Object {
+  "allIds": Array [
+    1,
+  ],
+  "classes": Object {
+    "flexContainer": "VirtualizedTable-flexContainer-2",
+    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
+    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "table": "VirtualizedTable-table-1",
+    "tableCell": "VirtualizedTable-tableCell-6",
+    "tableRow": "VirtualizedTable-tableRow-4",
+    "tableRowHover": "VirtualizedTable-tableRowHover-5",
+  },
+  "columns": Array [
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "title",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
         },
-        "id": 1,
-        "investigationInstruments": Array [
-          Object {
-            "id": 1,
-            "instrument": Object {
-              "id": 3,
-              "name": "LARMOR",
-            },
-          },
-        ],
-        "name": "Test 1 name",
-        "size": 1,
-        "startDate": "2019-06-10",
-        "studyInvestigations": Array [
-          Object {
-            "id": 6,
-            "study": Object {
-              "id": 7,
-              "pid": "study pid",
-            },
-          },
-        ],
-        "summary": "foo bar",
-        "title": "Test 1 title",
-        "visitId": "1",
       },
-    ]
-  }
-  detailsPanel={[Function]}
-  disableSelectAll={false}
-  loadMoreRows={[Function]}
-  loading={false}
-  onCheck={[Function]}
-  onSort={[Function]}
-  onUncheck={[Function]}
-  selectedRows={Array []}
-  sort={Object {}}
-  totalRowCount={0}
-/>
+      "label": "investigations.title",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "studyInvestigations.study.pid",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.doi",
+    },
+    Object {
+      "dataKey": "visitId",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.visit_id",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "name",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.name",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "investigationInstruments.instrument.fullName",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.instrument",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "size",
+      "disableSort": true,
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.size",
+    },
+    Object {
+      "dataKey": "startDate",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.start_date",
+    },
+    Object {
+      "dataKey": "endDate",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.end_date",
+    },
+  ],
+  "data": Array [
+    Object {
+      "doi": "doi 1",
+      "endDate": "2019-06-11",
+      "id": 1,
+      "investigationInstruments": Array [
+        Object {
+          "id": 1,
+          "instrument": Object {
+            "id": 3,
+            "name": "LARMOR",
+          },
+        },
+      ],
+      "name": "Test 1 name",
+      "startDate": "2019-06-10",
+      "studyInvestigations": Array [
+        Object {
+          "id": 6,
+          "investigation": Object {
+            "id": 1,
+            "name": "Test 1 name",
+            "title": "Test 1 title",
+            "visitId": "1",
+          },
+          "study": Object {
+            "createTime": "2019-06-10",
+            "id": 7,
+            "modTime": "2019-06-10",
+            "name": "study",
+            "pid": "study pid",
+          },
+        },
+      ],
+      "summary": "foo bar",
+      "title": "Test 1 title",
+      "visitId": "1",
+    },
+  ],
+  "detailsPanel": [Function],
+  "disableSelectAll": false,
+  "loadMoreRows": [Function],
+  "loading": false,
+  "onCheck": [MockFunction],
+  "onSort": [Function],
+  "onUncheck": [MockFunction],
+  "selectedRows": Array [],
+  "sort": Object {
+    "startDate": "desc",
+  },
+  "totalRowCount": 0,
+}
 `;
 
-exports[`ISIS Investigations table component renders details panel correctly and it sends actions 1`] = `
+exports[`ISIS Investigations table component renders details panel correctly and it fetches data and can navigate 1`] = `
 <div
   id="details-panel"
   style={
@@ -157,7 +214,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-343"
+      className="makeStyles-root-419"
       container={true}
       direction="column"
     >
@@ -173,7 +230,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-344"
+          className="makeStyles-divider-420"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

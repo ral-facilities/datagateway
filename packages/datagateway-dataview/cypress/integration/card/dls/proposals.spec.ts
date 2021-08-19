@@ -1,4 +1,5 @@
 describe('DLS - Proposals Cards', () => {
+  // TODO: Check requests
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
@@ -9,7 +10,7 @@ describe('DLS - Proposals Cards', () => {
     );
     cy.get('[aria-label="container-view-button"]')
       .click()
-      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+      .wait(['@getInvestigationsOrder'], {
         timeout: 10000,
       });
   });
@@ -29,6 +30,7 @@ describe('DLS - Proposals Cards', () => {
     );
   });
 
+  // TODO: Check requests
   it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Title')
       .click()
@@ -37,9 +39,8 @@ describe('DLS - Proposals Cards', () => {
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('About quickly both stop.');
 
-    cy.contains('[role="button"]', 'Title')
-      .click()
-      .wait('@getInvestigationsOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'Title').click();
+    // .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('#card').contains('Yourself smile either I pass significant.');

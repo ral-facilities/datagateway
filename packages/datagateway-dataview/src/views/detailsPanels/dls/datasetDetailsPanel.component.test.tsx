@@ -1,19 +1,44 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
-import { Dataset, DatasetType } from 'datagateway-common';
+import {
+  Dataset,
+  DatasetType,
+  useDatasetDetails,
+  useDatasetSize,
+} from 'datagateway-common';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useDatasetDetails: jest.fn(),
+    useDatasetSize: jest.fn(),
+  };
+});
 
 describe('Dataset details panel component', () => {
-  let shallow;
   let mount;
   let rowData: Dataset;
   let rowDatasetType: DatasetType;
   const detailsPanelResize = jest.fn();
-  const fetchDetails = jest.fn();
-  const fetchSize = jest.fn();
+
+  const createWrapper = (): ReactWrapper => {
+    return mount(
+      <QueryClientProvider client={new QueryClient()}>
+        <DatasetDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+        />
+      </QueryClientProvider>
+    );
+  };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     rowDatasetType = {
       id: 2,
@@ -29,24 +54,24 @@ describe('Dataset details panel component', () => {
       endDate: '2019-06-12',
       type: rowDatasetType,
     };
+
+    (useDatasetDetails as jest.Mock).mockReturnValue({
+      data: rowData,
+    });
+    (useDatasetSize as jest.Mock).mockReturnValue({
+      data: 1,
+      refetch: jest.fn(),
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
-    detailsPanelResize.mockClear();
-    fetchDetails.mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <DatasetDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('DatasetDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('renders type tab when present in the data', () => {
@@ -56,47 +81,31 @@ describe('Dataset details panel component', () => {
       description: 'Test type description',
     };
 
-    const wrapper = shallow(
-      <DatasetDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('DatasetDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('calls useDatasetDetails and useDatasetSize hooks on load', () => {
+    createWrapper();
+    expect(useDatasetDetails).toHaveBeenCalledWith(rowData.id);
+    expect(useDatasetSize).toHaveBeenCalledWith(rowData.id);
   });
 
   it('renders calculate size button when size has not been calculated', () => {
-    const { size, ...rowDataWithoutSize } = rowData;
-
-    const wrapper = shallow(
-      <DatasetDetailsPanel
-        rowData={rowDataWithoutSize}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    (useDatasetSize as jest.Mock).mockReturnValueOnce({});
+    const wrapper = createWrapper();
+    expect(wrapper.find('#calculate-size-btn').exists()).toBeTruthy();
   });
 
   it('calculates size when button is clicked', () => {
-    const { size, ...rowDataWithoutSize } = rowData;
+    const fetchSize = jest.fn();
+    (useDatasetSize as jest.Mock).mockReturnValueOnce({
+      refetch: fetchSize,
+    });
 
-    const wrapper = mount(
-      <DatasetDetailsPanel
-        rowData={rowDataWithoutSize}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-
-    wrapper.find('#dataset-details-panel button').simulate('click');
-
+    const wrapper = createWrapper();
+    wrapper.find('#calculate-size-btn').hostNodes().simulate('click');
     expect(fetchSize).toHaveBeenCalled();
-    expect(fetchSize).toHaveBeenCalledWith(1);
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
@@ -106,14 +115,7 @@ describe('Dataset details panel component', () => {
       description: 'Test type description',
     };
 
-    const wrapper = mount(
-      <DatasetDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
+    const wrapper = createWrapper();
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
@@ -130,42 +132,16 @@ describe('Dataset details panel component', () => {
     };
 
     const wrapper = mount(
-      <DatasetDetailsPanel
-        rowData={rowData}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
+      <QueryClientProvider client={new QueryClient()}>
+        <DatasetDetailsPanel rowData={rowData} />
+      </QueryClientProvider>
     );
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+    expect(detailsPanelResize).not.toHaveBeenCalled();
 
     wrapper.find('#dataset-type-tab').hostNodes().simulate('click');
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
-  });
-
-  it('calls fetchDetails on load', () => {
-    rowData = {
-      id: 1,
-      name: 'Test 1',
-      modTime: '2019-06-10',
-      createTime: '2019-06-11',
-      description: 'Test description',
-      startDate: '2019-06-11',
-      endDate: '2019-06-12',
-    };
-
-    mount(
-      <DatasetDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
-    );
-
-    expect(fetchDetails).toHaveBeenCalled();
-    expect(fetchDetails).toHaveBeenCalledWith(1);
+    expect(detailsPanelResize).not.toHaveBeenCalled();
   });
 
   it('Shows "No <field> provided" incase of a null field', () => {
@@ -176,14 +152,13 @@ describe('Dataset details panel component', () => {
       createTime: '2019-06-11',
     };
 
-    const wrapper = shallow(
-      <DatasetDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        fetchSize={fetchSize}
-      />
+    (useDatasetDetails as jest.Mock).mockReturnValueOnce({
+      data: rowData,
+    });
+
+    const wrapper = createWrapper();
+    expect(wrapper.html()).toContain(
+      '<b>datasets.details.description not provided</b>'
     );
-    expect(wrapper).toMatchSnapshot();
   });
 });

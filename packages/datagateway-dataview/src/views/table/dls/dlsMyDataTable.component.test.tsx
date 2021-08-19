@@ -1,19 +1,19 @@
-import { createMount, createShallow } from '@material-ui/core/test-utils';
-import axios from 'axios';
+import { createMount } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
-  fetchInvestigationCountRequest,
-  fetchInvestigationDetailsRequest,
-  fetchInvestigationSizeRequest,
-  fetchInvestigationsRequest,
-  filterTable,
+  Investigation,
   NotificationType,
-  sortTable,
-  Table,
+  readSciGatewayToken,
+  useInvestigationCount,
+  useInvestigationsDatasetCount,
+  useInvestigationsInfinite,
 } from 'datagateway-common';
+import { ReactWrapper } from 'enzyme';
+import { createMemoryHistory, MemoryHistory } from 'history';
 import React from 'react';
+import { QueryClientProvider, QueryClient } from 'react-query';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import { AnyAction } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -21,31 +21,57 @@ import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSMyDataTable from './dlsMyDataTable.component';
 
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useInvestigationCount: jest.fn(),
+    useInvestigationsInfinite: jest.fn(),
+    useInvestigationsDatasetCount: jest.fn(),
+    readSciGatewayToken: jest.fn(),
+  };
+});
+
 describe('DLS Visits table component', () => {
-  let shallow;
   let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
+  let rowData: Investigation[];
+  let history: MemoryHistory;
   let events: CustomEvent<AnyAction>[] = [];
 
+  const createWrapper = (): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSMyDataTable />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'DLSMyDataTable' });
     mount = createMount();
     events = [];
+    history = createMemoryHistory();
 
     document.dispatchEvent = (e: Event) => {
       events.push(e as CustomEvent<AnyAction>);
       return true;
     };
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
         dgcommon: dGCommonInitialState,
       })
     );
-    state.dgcommon.data = [
+    rowData = [
       {
         id: 1,
         title: 'Test 1',
@@ -68,81 +94,100 @@ describe('DLS Visits table component', () => {
       },
     ];
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
+    (useInvestigationCount as jest.Mock).mockReturnValue({
+      data: 0,
+    });
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([{ data: 1 }]);
+    (readSciGatewayToken as jest.Mock).mockReturnValue({
+      username: 'testUser',
+    });
     global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DLSMyDataTable store={mockStore(state)} />);
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
   });
 
-  it('sends default sortTable and default filterTable action on load', () => {
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions().length).toEqual(6);
-    expect(testStore.getActions()[0]).toEqual(sortTable('startDate', 'desc'));
-    expect(testStore.getActions()[2]).toEqual(
-      filterTable('startDate', {
-        endDate: `1970-01-01`,
-      })
-    );
-  });
-
-  it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
-    let testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    // simulate clearTable action
-    testStore = mockStore({
-      ...state,
-      dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
+  it('calls the correct data fetching hooks on load', () => {
+    createWrapper();
+    expect(useInvestigationCount).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: 'testUser' },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({ investigationUsers: 'user' }),
+      },
+    ]);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: 'testUser' },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          { investigationUsers: 'user' },
+        ]),
+      },
+    ]);
+    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
+      pages: [rowData],
     });
-    wrapper.setProps({ store: testStore });
-
-    expect(testStore.getActions()[4]).toEqual(
-      fetchInvestigationCountRequest(1)
-    );
-    expect(testStore.getActions()[5]).toEqual(fetchInvestigationsRequest(1));
   });
 
-  it('sends fetchInvestigations action when loadMoreRows is called', () => {
-    const testStore = mockStore(state);
-    const wrapper = shallow(<DLSMyDataTable store={testStore} />);
+  it('sorts by startDate desc and filters startDate to be before the current date on load', () => {
+    createWrapper();
 
-    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
-
-    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
+    expect(history.length).toBe(3);
+    expect(history.entries[1].search).toBe(
+      `?sort=${encodeURIComponent(JSON.stringify({ startDate: 'desc' }))}`
+    );
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        JSON.stringify({ startDate: { endDate: '1970-01-01' } })
+      )}`
+    );
   });
 
-  it('sends filterTable action on text filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
+    const fetchNextPage = jest.fn();
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage,
+    });
+    const wrapper = createWrapper();
+
+    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
+      startIndex: 50,
+      stopIndex: 74,
+    });
+
+    expect(fetchNextPage).toHaveBeenCalledWith({
+      pageParam: { startIndex: 50, stopIndex: 74 },
+    });
+  });
+
+  it('updates filter query params on text filter', () => {
+    const wrapper = createWrapper();
 
     const filterInput = wrapper
       .find('[aria-label="Filter by investigations.visit_id"] input')
@@ -150,25 +195,20 @@ describe('DLS Visits table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[6]).toEqual(
-      filterTable('visitId', { value: 'test', type: 'include' })
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"visitId":{"value":"test","type":"include"}}'
+      )}`
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[8]).toEqual(filterTable('visitId', null));
+    expect(history.location.search).toBe('?');
   });
 
-  it('sends filterTable action on date filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates filter query params on date filter', () => {
+    const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
       '[aria-label="investigations.end_date date filter to"]'
@@ -176,92 +216,31 @@ describe('DLS Visits table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[6]).toEqual(
-      filterTable('endDate', { endDate: '2019-08-06' })
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[8]).toEqual(filterTable('endDate', null));
+    expect(history.location.search).toBe('?');
   });
 
-  it('sends sortTable action on sort', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates sort query params on sort', () => {
+    const wrapper = createWrapper();
 
     wrapper
       .find('[role="columnheader"] span[role="button"]')
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[6]).toEqual(sortTable('title', 'asc'));
-  });
-
-  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
-
-    const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
-      })
-    );
-    expect(detailsPanelWrapper).toMatchSnapshot();
-
-    mount(
-      wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
-        detailsPanelResize: jest.fn(),
-      })
-    );
-
-    expect(testStore.getActions()[6]).toEqual(
-      fetchInvestigationDetailsRequest()
-    );
-  });
-
-  it('sends off an FetchInvestigationSize action when Calculate button is clicked', () => {
-    const { size, ...rowDataWithoutSize } = state.dgcommon.data[0];
-    const newState = state;
-    newState.dgcommon.data[0] = rowDataWithoutSize;
-    const testStore = mockStore(newState);
-
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
-
-    wrapper.find('#calculate-size-btn').first().simulate('click');
-
-    expect(testStore.getActions()[7]).toEqual(fetchInvestigationSizeRequest());
   });
 
   it('renders title and visit ID as a links', () => {
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-colindex=2]').find('p').children()
@@ -273,51 +252,48 @@ describe('DLS Visits table component', () => {
   });
 
   it('gracefully handles empty InvestigationInstrument and missing Instrument from InvestigationInstrument object', () => {
-    state.dgcommon.data[0] = {
-      ...state.dgcommon.data[0],
+    rowData[0] = {
+      ...rowData[0],
       investigationInstruments: [],
     };
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
 
-    let wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    let wrapper = createWrapper();
 
     expect(() => wrapper).not.toThrowError();
 
-    state.dgcommon.data[0] = {
-      ...state.dgcommon.data[0],
+    rowData[0] = {
+      ...rowData[0],
       investigationInstruments: [
         {
           id: 1,
         },
       ],
     };
-    wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+
+    wrapper = createWrapper();
 
     expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
   });
 
   it('sends a notification to SciGateway if user is not logged in', () => {
-    state.dgcommon.data = [];
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [] },
+      fetchNextPage: jest.fn(),
+    });
+    (readSciGatewayToken as jest.Mock).mockReturnValue({
+      username: null,
+    });
     localStorage.setItem('autoLogin', 'true');
 
-    mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <DLSMyDataTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    createWrapper();
 
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({

@@ -1,108 +1,170 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Investigation table component renders correctly 1`] = `
-<WithStyles(VirtualizedTable)
-  allIds={
-    Array [
-      1,
-    ]
-  }
-  columns={
-    Array [
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "title",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.title",
+Object {
+  "allIds": Array [
+    1,
+  ],
+  "classes": Object {
+    "flexContainer": "VirtualizedTable-flexContainer-2",
+    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
+    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "table": "VirtualizedTable-table-1",
+    "tableCell": "VirtualizedTable-tableCell-6",
+    "tableRow": "VirtualizedTable-tableRow-4",
+    "tableRowHover": "VirtualizedTable-tableRowHover-5",
+  },
+  "columns": Array [
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "title",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "dataKey": "visitId",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.visit_id",
+      "label": "investigations.title",
+    },
+    Object {
+      "dataKey": "visitId",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "dataKey": "name",
-        "disableSort": true,
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.name",
+      "label": "investigations.visit_id",
+    },
+    Object {
+      "dataKey": "name",
+      "disableSort": true,
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "dataKey": "doi",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.doi",
+      "label": "investigations.name",
+    },
+    Object {
+      "dataKey": "doi",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "dataKey": "datasetCount",
-        "disableSort": true,
-        "icon": <Memo />,
-        "label": "investigations.dataset_count",
+      "label": "investigations.doi",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "datasetCount",
+      "disableSort": true,
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "investigationInstruments.instrument.name",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.instrument",
+      "label": "investigations.dataset_count",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "investigationInstruments.instrument.name",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "startDate",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.start_date",
+      "label": "investigations.instrument",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "startDate",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "endDate",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.end_date",
+      "label": "investigations.start_date",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "endDate",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-    ]
-  }
-  data={
-    Array [
-      Object {
-        "doi": "doi 1",
-        "endDate": "2019-07-24",
-        "id": 1,
-        "investigationInstruments": Array [
-          Object {
-            "id": 3,
-            "instrument": Object {
-              "id": 4,
-              "name": "LARMOR",
-            },
+      "label": "investigations.end_date",
+    },
+  ],
+  "data": Array [
+    Object {
+      "doi": "doi 1",
+      "endDate": "2019-07-24",
+      "id": 1,
+      "investigationInstruments": Array [
+        Object {
+          "id": 3,
+          "instrument": Object {
+            "id": 4,
+            "name": "LARMOR",
           },
-        ],
-        "name": "Test 1",
-        "size": 1,
-        "startDate": "2019-07-23",
-        "title": "Test 1",
-        "visitId": "1",
-      },
-    ]
-  }
-  detailsPanel={[Function]}
-  disableSelectAll={false}
-  loadMoreRows={[Function]}
-  loading={false}
-  onCheck={[Function]}
-  onSort={[Function]}
-  onUncheck={[Function]}
-  selectedRows={Array []}
-  sort={Object {}}
-  totalRowCount={0}
-/>
+        },
+      ],
+      "name": "Test 1",
+      "size": 1,
+      "startDate": "2019-07-23",
+      "title": "Test 1",
+      "visitId": "1",
+    },
+  ],
+  "detailsPanel": [Function],
+  "disableSelectAll": false,
+  "loadMoreRows": [Function],
+  "loading": false,
+  "onCheck": [MockFunction],
+  "onSort": [Function],
+  "onUncheck": [MockFunction],
+  "selectedRows": Array [],
+  "sort": Object {},
+  "totalRowCount": 0,
+}
 `;
 
 exports[`Investigation table component renders details panel correctly 1`] = `
-<div
-  className="MuiGrid-root makeStyles-root-1 MuiGrid-container MuiGrid-direction-xs-column"
+<WithStyles(ForwardRef(Grid))
+  className="makeStyles-root-343"
+  container={true}
+  direction="column"
   id="details-panel"
 >
   <WithStyles(ForwardRef(Grid))
@@ -117,7 +179,7 @@ exports[`Investigation table component renders details panel correctly 1`] = `
       </b>
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Divider))
-      className="makeStyles-divider-2"
+      className="makeStyles-divider-344"
     />
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
@@ -165,7 +227,7 @@ exports[`Investigation table component renders details panel correctly 1`] = `
       </b>
     </WithStyles(ForwardRef(Typography))>
   </WithStyles(ForwardRef(Grid))>
-</div>
+</WithStyles(ForwardRef(Grid))>
 `;
 
 exports[`Investigation table component renders investigation title as a link 1`] = `
