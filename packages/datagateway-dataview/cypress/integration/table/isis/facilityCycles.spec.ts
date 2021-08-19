@@ -145,7 +145,7 @@ describe('ISIS - FacilityCycles Table', () => {
   });
 
   describe('should be able to filter by', () => {
-    it.skip('text', () => {
+    it('text', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .first()
@@ -157,7 +157,7 @@ describe('ISIS - FacilityCycles Table', () => {
       );
     });
 
-    it.skip('date between', () => {
+    it('date between', () => {
       cy.get('[aria-label="Start Date date filter from"]').type('2010-04-02');
 
       cy.get('[aria-label="Start Date date filter to"]')
