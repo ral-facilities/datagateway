@@ -98,7 +98,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         dataKey: 'studyInvestigations.investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) =>
           (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
-            .title ?? '',
+            ?.title ?? '',
         filterComponent: textFilter,
       },
       {
@@ -113,7 +113,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         dataKey: 'studyInvestigations.investigation.startDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
           (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
-            .startDate ?? '',
+            ?.startDate ?? '',
         filterComponent: dateFilter,
       },
       {
@@ -122,7 +122,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         dataKey: 'studyInvestigations.investigation.endDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
           (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
-            .endDate ?? '',
+            ?.endDate ?? '',
         filterComponent: dateFilter,
       },
     ];

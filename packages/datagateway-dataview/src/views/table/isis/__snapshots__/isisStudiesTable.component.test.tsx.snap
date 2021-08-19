@@ -84,14 +84,11 @@ Object {
   ],
   "data": Array [
     Object {
+      "createTime": "2000-01-01",
       "id": 1,
-      "study": Object {
-        "createTime": "2000-01-01",
-        "id": 1,
-        "modTime": "2000-01-01",
-        "name": "Test 1",
-        "pid": "doi",
-      },
+      "modTime": "2000-01-01",
+      "name": "Test 1",
+      "pid": "doi",
     },
   ],
   "loadMoreRows": [Function],
@@ -243,7 +240,9 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
               onBlur={[Function]}
               onClick={[Function]}
               onFocus={[Function]}
-            />
+            >
+              Test 1
+            </a>
           </LinkAnchor>
         </Link>
       </ForwardRef(Typography)>

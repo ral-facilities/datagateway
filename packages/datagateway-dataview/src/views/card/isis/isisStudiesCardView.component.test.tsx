@@ -55,13 +55,10 @@ describe('ISIS Studies - Card View', () => {
     cardData = [
       {
         id: 1,
-        study: {
-          id: 1,
-          pid: 'doi',
-          name: 'Test 1',
-          modTime: '2000-01-01',
-          createTime: '2000-01-01',
-        },
+        pid: 'doi',
+        name: 'Test 1',
+        modTime: '2000-01-01',
+        createTime: '2000-01-01',
       },
     ];
     history = createMemoryHistory();
@@ -180,56 +177,6 @@ describe('ISIS Studies - Card View', () => {
     expect(history.location.search).toBe('?');
   });
 
-  // it('pushFilters dispatched by date filter', () => {
-  //   const wrapper = createWrapper();
-  //   const advancedFilter = wrapper.find(AdvancedFilter);
-  //   advancedFilter.find(Link).simulate('click');
-  //   advancedFilter
-  //     .find('input')
-  //     .last()
-  //     .simulate('change', { target: { value: '2019-08-06' } });
-  //   expect(store.getActions().length).toEqual(3);
-  //   expect(store.getActions()[1]).toEqual(
-  //     filterTable('investigation.endDate', {
-  //       endDate: '2019-08-06',
-  //       startDate: undefined,
-  //     })
-  //   );
-
-  //   advancedFilter
-  //     .find('input')
-  //     .last()
-  //     .simulate('change', { target: { value: '' } });
-  //   expect(store.getActions().length).toEqual(5);
-  //   expect(store.getActions()[3]).toEqual(
-  //     filterTable('investigation.endDate', null)
-  //   );
-  //   expect(store.getActions()[4]).toEqual(push('?'));
-  // });
-
-  // it('pushFilters dispatched by text filter', () => {
-  //   const wrapper = createWrapper();
-  //   const advancedFilter = wrapper.find(AdvancedFilter);
-  //   advancedFilter.find(Link).simulate('click');
-  //   advancedFilter
-  //     .find('input')
-  //     .first()
-  //     .simulate('change', { target: { value: 'test' } });
-  //   expect(store.getActions().length).toEqual(3);
-  //   expect(store.getActions()[1]).toEqual(
-  //     filterTable('study.name', { value: 'test', type: 'include' })
-  //   );
-  //   expect(store.getActions()[2]).toEqual(push('?'));
-
-  //   advancedFilter
-  //     .find('input')
-  //     .first()
-  //     .simulate('change', { target: { value: '' } });
-  //   expect(store.getActions().length).toEqual(5);
-  //   expect(store.getActions()[3]).toEqual(filterTable('study.name', null));
-  //   expect(store.getActions()[4]).toEqual(push('?'));
-  // });
-
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -243,9 +190,61 @@ describe('ISIS Studies - Card View', () => {
     );
   });
 
+  it('displays information from investigation when investigation present', () => {
+    cardData = [
+      {
+        ...cardData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...cardData[0],
+            },
+            investigation: {
+              id: 3,
+              name: 'Test',
+              title: 'Test investigation',
+              visitId: '3',
+              startDate: '2021-08-19',
+              endDate: '2021-08-20',
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+    });
+
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper.find('[aria-label="card-description"]').first().text()
+    ).toEqual('Test investigation');
+  });
+
   it('renders fine with incomplete data', () => {
     (useStudyCount as jest.Mock).mockReturnValueOnce({});
     (useStudiesPaginated as jest.Mock).mockReturnValueOnce({});
+
+    expect(() => createWrapper()).not.toThrowError();
+
+    cardData = [
+      {
+        ...cardData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...cardData[0],
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+    });
 
     expect(() => createWrapper()).not.toThrowError();
   });
