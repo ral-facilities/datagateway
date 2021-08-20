@@ -168,6 +168,7 @@ describe('Dataset table component', () => {
       ).map(() => ({
         data: 1,
         isFetching: false,
+        isSuccess: true,
       }))
     );
     (useDatasetSizes as jest.Mock).mockImplementation((datasets) =>
@@ -179,6 +180,7 @@ describe('Dataset table component', () => {
       ).map(() => ({
         data: 1,
         isFetching: false,
+        isSuccess: true,
       }))
     );
   });

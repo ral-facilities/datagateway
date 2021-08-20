@@ -28,9 +28,9 @@ export function formatCountOrSize(
   formatAsBytes = false
 ): string {
   if (query?.isFetching) return 'Calculating...';
-  if (query?.data) {
+  if (query?.isSuccess) {
     if (formatAsBytes) return formatBytes(query.data);
-    return query.data?.toString();
+    return query.data.toString();
   }
   return 'Unknown';
 }
