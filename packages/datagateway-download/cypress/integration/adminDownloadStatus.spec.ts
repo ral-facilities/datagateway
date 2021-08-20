@@ -150,11 +150,51 @@ describe('Admin Download Status', () => {
       );
     });
 
-    it.skip('date between', () => {
-      // TODO: Test Requested Date fukter
+    it('date between', () => {
+      cy.get('[aria-label="Requested Date date filter from"]').type(
+        '2019-12-16'
+      );
+
+      cy.get('[aria-label="Requested Date date filter to"]').type('2019-12-16');
+      cy.get('[aria-rowcount="6"]').should('exist');
+
+      const currDate = new Date();
+
+      cy.get('[aria-label="Requested Date date filter from"]').clear();
+      cy.get('[aria-label="Requested Date date filter to"]').clear();
+
+      cy.get('[aria-label="Requested Date date filter from"]').type(
+        currDate.toISOString().slice(0, 10)
+      );
+
+      cy.get('[aria-rowcount="0"]').should('exist');
+
+      cy.get('[aria-label="Requested Date date filter from"]').clear();
+      cy.get('[aria-label="Requested Date date filter to"]').clear();
+
+      cy.get('[aria-label="Requested Date date filter to"]').type(
+        currDate.toISOString().slice(0, 10)
+      );
+
+      cy.get('[aria-rowcount="0"]').should('not.exist');
     });
 
     it('multiple columns', () => {
+      cy.get('[role="columnheader"]').eq(4).as('accessColumn');
+      cy.get('[role="columnheader"]').eq(5).as('availabilityColumn');
+
+      cy.get('.react-draggable')
+        .eq(4)
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: 500 })
+        .trigger('mouseup');
+
+      cy.get('.react-draggable')
+        .eq(5)
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: 700 })
+        .trigger('mouseup');
+
       cy.get('[aria-label="Filter by Access Method')
         .find('input')
         .first()
@@ -164,10 +204,10 @@ describe('Admin Download Status', () => {
         .first()
         .type('restoring', { force: true });
 
-        cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
-          'have.text',
-          'globus'
-        );
+      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
+        'have.text',
+        'globus'
+      );
     });
   });
 });
