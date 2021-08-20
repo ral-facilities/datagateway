@@ -3,7 +3,8 @@
     "results": "Results",
     "view_table": "Display as table",
     "view_cards": "Display as cards",
-    "max_results": "Max Results"
+    "max_results": "Max Results",
+    "error": "Something went wrong..."
   },
   "breadcrumbs": {
     "home": "Home",
