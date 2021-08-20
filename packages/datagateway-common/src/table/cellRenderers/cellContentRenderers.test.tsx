@@ -54,15 +54,25 @@ describe('Cell content renderers', () => {
     });
 
     it('Returns data if query is successful', () => {
-      expect(formatCountOrSize({ isFetching: false, data: 1 })).toEqual('1');
-      expect(formatCountOrSize({ data: 1 })).toEqual('1');
+      expect(
+        formatCountOrSize({ isFetching: false, isSuccess: true, data: 1 })
+      ).toEqual('1');
+      expect(formatCountOrSize({ data: 1, isSuccess: true })).toEqual('1');
     });
 
     it('Returns data formatted in bytes when byte flag is set', () => {
-      expect(formatCountOrSize({ isFetching: false, data: 1 }, true)).toEqual(
-        '1 B'
+      expect(
+        formatCountOrSize({ isFetching: false, isSuccess: true, data: 1 }, true)
+      ).toEqual('1 B');
+      expect(formatCountOrSize({ data: 10000, isSuccess: true }, true)).toEqual(
+        '9.77 KB'
       );
-      expect(formatCountOrSize({ data: 10000 }, true)).toEqual('9.77 KB');
+    });
+
+    it('Returns data if query is successful and result is zero', () => {
+      expect(
+        formatCountOrSize({ isFetching: false, isSuccess: true, data: 0 })
+      ).toEqual('0');
     });
   });
 
