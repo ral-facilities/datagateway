@@ -163,6 +163,7 @@ describe('Investigation Search Table component', () => {
         ).map(() => ({
           data: 1,
           isFetching: false,
+          isSuccess: true,
         }))
     );
     (useInvestigationSizes as jest.Mock).mockImplementation((investigations) =>
@@ -174,6 +175,7 @@ describe('Investigation Search Table component', () => {
       ).map(() => ({
         data: 1,
         isFetching: false,
+        isSuccess: true,
       }))
     );
   });
