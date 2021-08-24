@@ -29,6 +29,21 @@ import { useTranslation } from 'react-i18next';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import AddToCartButton from '../../addToCartButton.component';
+import DownloadButton from '../../downloadButton.component';
+import { Theme, createStyles, makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    actionButtons: {
+      display: 'flex',
+      flexDirection: 'column',
+      '& button': {
+        marginTop: theme.spacing(1),
+        margin: 'auto',
+      },
+    },
+  })
+);
 
 interface ISISInvestigationsCardViewProps {
   instrumentId: string;
@@ -159,17 +174,27 @@ const ISISInvestigationsCardView = (
     [data, dateFilter, sizeQueries, t, textFilter]
   );
 
+  const classes = useStyles();
+
   const buttons = React.useMemo(
     () => [
       (investigation: Investigation) => (
-        <AddToCartButton
-          entityType="investigation"
-          allIds={data?.map((investigation) => investigation.id) ?? []}
-          entityId={investigation.id}
-        />
+        <div className={classes.actionButtons}>
+          <AddToCartButton
+            entityType="investigation"
+            allIds={data?.map((investigation) => investigation.id) ?? []}
+            entityId={investigation.id}
+          />
+          <DownloadButton
+            entityType="investigation"
+            entityId={investigation.id}
+            entityName={investigation.name}
+            variant="outlined"
+          />
+        </div>
       ),
     ],
-    [data]
+    [classes.actionButtons, data]
   );
 
   const moreInformation = React.useCallback(

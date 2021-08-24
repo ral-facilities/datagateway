@@ -5,6 +5,7 @@ import axios from 'axios';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
+  downloadInvestigation,
   useInvestigation,
   useInvestigationCount,
   useInvestigationDetails,
@@ -1372,6 +1373,22 @@ describe('investigation api functions', () => {
 
         expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
       });
+    });
+  });
+
+  describe('downloadInvestigation', () => {
+    it('clicks on IDS link upon downloadInvestigation action', async () => {
+      jest.spyOn(document, 'createElement');
+      jest.spyOn(document.body, 'appendChild');
+
+      downloadInvestigation('https://www.example.com/ids', 1, 'test');
+
+      expect(document.createElement).toHaveBeenCalledWith('a');
+      const link = document.createElement('a');
+      link.href = `https://www.example.com/ids/getData?sessionId=${null}&investigationIds=${1}&compress=${false}&zip=${true}&outname=${'test'}`;
+      link.target = '_blank';
+      link.style.display = 'none';
+      expect(document.body.appendChild).toHaveBeenCalledWith(link);
     });
   });
 });

@@ -23,6 +23,7 @@ import { Router } from 'react-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import DownloadButton from '../../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -438,5 +439,11 @@ describe('ISIS Investigations table component', () => {
     wrapper = createWrapper();
     expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
     expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
+  });
+
+  it('renders actions correctly', () => {
+    const wrapper = createWrapper();
+
+    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 });

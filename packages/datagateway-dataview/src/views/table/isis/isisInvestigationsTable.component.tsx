@@ -15,6 +15,7 @@ import {
   usePushSort,
   useRemoveFromCart,
   useTextFilter,
+  TableActionProps,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +31,7 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
+import DownloadButton from '../../downloadButton.component';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
@@ -223,6 +225,16 @@ const ISISInvestigationsTable = (
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
       detailsPanel={detailsPanel}
+      actions={[
+        ({ rowData }: TableActionProps) => (
+          <DownloadButton
+            entityType="investigation"
+            entityId={rowData.id}
+            entityName={rowData.name}
+            variant="icon"
+          />
+        ),
+      ]}
       columns={columns}
     />
   );

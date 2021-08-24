@@ -6,6 +6,7 @@ import DownloadButton, {
 import configureStore from 'redux-mock-store';
 import {
   dGCommonInitialState,
+  downloadInvestigation,
   downloadDataset,
   downloadDatafile,
   StateType,
@@ -23,6 +24,7 @@ jest.mock('datagateway-common', () => {
   return {
     __esModule: true,
     ...originalModule,
+    downloadInvestigation: jest.fn(),
     downloadDataset: jest.fn(),
     downloadDatafile: jest.fn(),
   };
@@ -83,6 +85,37 @@ describe('Generic download button', () => {
       variant: 'icon',
     });
     expect(iconButtonWrapper.find('button').text()).toBe('');
+  });
+
+  it('calls download investigation on button press for both text and icon buttons', () => {
+    let wrapper = createWrapper({
+      entityType: 'investigation',
+      entityName: 'test',
+      entityId: 1,
+    });
+
+    wrapper.find('#download-btn-1').first().simulate('click');
+    expect(downloadInvestigation).toHaveBeenCalledWith(
+      'https://www.example.com/ids',
+      1,
+      'test'
+    );
+
+    jest.clearAllMocks();
+
+    wrapper = createWrapper({
+      entityType: 'investigation',
+      entityName: 'test',
+      entityId: 1,
+      variant: 'icon',
+    });
+
+    wrapper.find('#download-btn-1').first().simulate('click');
+    expect(downloadInvestigation).toHaveBeenCalledWith(
+      'https://www.example.com/ids',
+      1,
+      'test'
+    );
   });
 
   it('calls download dataset on button press for both text and icon buttons', () => {
