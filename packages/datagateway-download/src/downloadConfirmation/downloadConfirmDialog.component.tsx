@@ -810,7 +810,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <Grid item xs>
                   <Button
                     id="download-confirmation-status-link"
-                    variant="outlined"
+                    variant="contained"
                     color="primary"
                     onClick={redirectToStatusTab}
                   >
