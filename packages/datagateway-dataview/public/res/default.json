@@ -22,7 +22,7 @@
     "type": "Type",
     "url": "URL",
     "details": {
-      "tabs_label": "Instrument Details Tabs",
+      "tabs_label": "Instrument Details",
       "label": "Instrument Details",
       "name": "Name",
       "description": "Description",
@@ -69,7 +69,7 @@
     "dataset_count": "Dataset Count",
     "release_date": "Public Release",
     "details": {
-      "tabs_label": "Investigation Details Tabs",
+      "tabs_label": "Investigation Details",
       "label": "Investigation Details",
       "title": "Title",
       "name": "Name",
@@ -122,7 +122,7 @@
       "id": "Type ID"
     },
     "details": {
-      "tabs_label": "Dataset Details Tabs",
+      "tabs_label": "Dataset Details",
       "label": "Dataset Details",
       "name": "Name",
       "description": "Description",
@@ -147,7 +147,7 @@
     "location": "Location",
     "size": "Size",
     "details": {
-      "tabs_label": "Datafile Details Tabs",
+      "tabs_label": "Datafile Details",
       "label": "Datafile Details",
       "name": "Name",
       "description": "Description",
