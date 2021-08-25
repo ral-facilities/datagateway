@@ -67,7 +67,7 @@ export default class TextColumnFilter extends React.Component<
           id={`${this.props.label} filter`}
           placeholder={`${
             this.state.type.charAt(0).toUpperCase() + this.state.type.slice(1)
-          }...`}
+          }`}
           value={this.state.value}
           onChange={this.handleInputChange}
           aria-label={`Filter by ${this.props.label}`}
