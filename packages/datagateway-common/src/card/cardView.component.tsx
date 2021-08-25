@@ -151,6 +151,7 @@ function CVPagination(
       hidePrevButton={page === 1}
       hideNextButton={page >= numPages}
       showLastButton
+      aria-label="pagination"
     />
   );
 }
