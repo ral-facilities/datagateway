@@ -84,6 +84,10 @@ export default class TextColumnFilter extends React.Component<
                 onChange={(e) =>
                   this.handleSelectChange(e.target.value as string)
                 }
+                inputProps={{
+                  'aria-label': 'select-filter-type',
+                  role: 'list',
+                }}
               >
                 <MenuItem
                   key="include"
