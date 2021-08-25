@@ -150,28 +150,12 @@ describe('Admin Download Status', () => {
       );
     });
 
-    // TODO - preprod does not currently have the latest API version so dates of data are different between local tests and CI tests
-    it.skip('date between', () => {
-      cy.get('[aria-label="Requested Date date filter from"]').type(
-        '2019-12-16'
-      );
-
-      cy.get('[aria-label="Requested Date date filter to"]').type('2019-12-16');
-      cy.get('[aria-rowcount="6"]').should('exist');
-
+    it('date between', () => {
       const currDate = new Date();
-
-      cy.get('[aria-label="Requested Date date filter from"]').clear();
-      cy.get('[aria-label="Requested Date date filter to"]').clear();
 
       cy.get('[aria-label="Requested Date date filter from"]').type(
         currDate.toISOString().slice(0, 10)
       );
-
-      cy.get('[aria-rowcount="0"]').should('exist');
-
-      cy.get('[aria-label="Requested Date date filter from"]').clear();
-      cy.get('[aria-label="Requested Date date filter to"]').clear();
 
       cy.get('[aria-label="Requested Date date filter to"]').type(
         currDate.toISOString().slice(0, 10)
