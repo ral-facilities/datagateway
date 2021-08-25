@@ -29,7 +29,7 @@ import SelectCell from './cellRenderers/selectCell.component';
 import SelectHeader from './headerRenderers/selectHeader.component';
 
 const rowHeight = 30;
-const headerHeight = 110;
+const headerHeight = 140;
 const selectColumnWidth = 40;
 const detailsColumnWidth = 40;
 const actionsColumnDefaultWidth = 70;
