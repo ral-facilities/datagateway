@@ -79,6 +79,9 @@ const TextColumnFilter = (props: {
               // Do not render a value
               renderValue={() => ''}
               onChange={(e) => handleSelectChange(e.target.value as string)}
+              SelectDisplayProps={{
+                'aria-label': `include or exclude`,
+              }}
             >
               <MenuItem
                 key="include"
