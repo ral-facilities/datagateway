@@ -74,7 +74,10 @@ const DateColumnFilter = (props: {
         <KeyboardDatePicker
           clearable
           inputProps={{ 'aria-label': `${props.label} filter from` }}
-          KeyboardButtonProps={{ size: 'small' }}
+          KeyboardButtonProps={{
+            size: 'small',
+            'aria-label': `${props.label} filter from date picker`,
+          }}
           format="yyyy-MM-dd"
           aria-hidden="true"
           label="(yyyy-MM-dd)"
@@ -96,9 +99,13 @@ const DateColumnFilter = (props: {
         <KeyboardDatePicker
           clearable
           inputProps={{ 'aria-label': `${props.label} filter to` }}
-          KeyboardButtonProps={{ size: 'small' }}
           aria-hidden="true"
           label="(yyyy-MM-dd)"
+          KeyboardButtonProps={{
+            size: 'small',
+            'aria-label': `${props.label} filter to date picker`,
+          }}
+          placeholder="To...     (yyyy-MM-dd)"
           format="yyyy-MM-dd"
           value={endDate}
           views={['year', 'month', 'date']}
