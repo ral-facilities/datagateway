@@ -188,30 +188,18 @@ describe('PageContainer - Tests', () => {
     const wrapper = createWrapper();
 
     expect(wrapper.find('[aria-label="page-view"]').exists()).toBeTruthy();
-    expect(
-      wrapper.find('[aria-label="page-view-button"]').first().text()
-    ).toEqual('app.view_cards');
+    expect(wrapper.find('[aria-label="page-view"]').first().text()).toEqual(
+      'app.view_cards'
+    );
 
     // Click view button
-    wrapper.find('[aria-label="page-view-button"]').first().simulate('click');
+    wrapper.find('[aria-label="page-view"]').first().simulate('click');
     wrapper.update();
 
     // Check that the text on the button has changed
-    expect(
-      wrapper.find('[aria-label="page-view-button"]').first().text()
-    ).toEqual('app.view_table');
-
-    // Click view button again
-    wrapper
-      .find('[aria-label="container-view-button"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-
-    // Check that the text on the button has changed back
-    expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
-    ).toEqual('app.view_cards');
+    expect(wrapper.find('[aria-label="page-view"]').first().text()).toEqual(
+      'app.view_table'
+    );
   });
 
   it('display filter warning on toggle table', () => {

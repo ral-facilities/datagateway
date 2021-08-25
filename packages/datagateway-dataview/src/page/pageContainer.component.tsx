@@ -275,7 +275,7 @@ const ViewButton = (props: {
     <div className={classes.root}>
       <Button
         className="tour-dataview-view-button"
-        aria-label="page-view-button"
+        aria-label="page-view"
         variant="contained"
         color="primary"
         size="small"
