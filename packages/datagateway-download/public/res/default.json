@@ -2,8 +2,8 @@
   "downloadTab": {
     "cart_tab": "Cart",
     "downloads_tab": "Downloads",
-    "cart_tab_arialabel": "Cart tab",
-    "downloads_tab_arialabel": "Downloads tab",
+    "cart_tab_arialabel": "Cart",
+    "downloads_tab_arialabel": "Downloads",
     "download_cart_panel_arialabel": "Download cart panel",
     "download_status_panel_arialabel": "Download status panel",
     "last_updated_time_arialabel": "Last updated time",
