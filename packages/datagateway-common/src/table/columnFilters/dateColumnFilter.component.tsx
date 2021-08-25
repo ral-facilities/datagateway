@@ -105,7 +105,6 @@ const DateColumnFilter = (props: {
             size: 'small',
             'aria-label': `${props.label} filter to date picker`,
           }}
-          placeholder="To...     (yyyy-MM-dd)"
           format="yyyy-MM-dd"
           value={endDate}
           views={['year', 'month', 'date']}
