@@ -1,17 +1,11 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { format } from 'date-fns';
-import handleICATError from '../../handleICATError';
-import { readSciGatewayToken } from '../../parseTokens';
-import { ActionType, ThunkResult } from '../app.types';
-import {
-  FailurePayload,
-  FetchIdsSuccessPayload,
-  FetchLuceneIdsFailureType,
-  FetchLuceneIdsRequestType,
-  FetchLuceneIdsSuccessType,
-  RequestPayload,
-} from './actions.types';
+import { useQuery, UseQueryResult } from 'react-query';
+import { useSelector } from 'react-redux';
+import { StateType } from '..';
+import handleICATError from '../handleICATError';
+import { readSciGatewayToken } from '../parseTokens';
 
 interface QueryParameters {
   target: string;
@@ -85,67 +79,41 @@ export const fetchLuceneData = async (
     maxCount: params.maxCount ? params.maxCount : 300,
   };
 
-  let results = [];
-  results = await axios
+  return axios
     .get(`${settings.icatUrl}/lucene/data`, {
       params: queryParams,
     })
     .then((response) => {
-      // Dispatch action to save the result IDs.
+      // flatten result into array
       return response.data.map((result: { id: number }) => result.id);
     });
-
-  return results;
 };
 
-export const fetchLuceneIdsSuccess = (
-  luceneIds: number[],
-  timestamp: number
-): ActionType<FetchIdsSuccessPayload> => ({
-  type: FetchLuceneIdsSuccessType,
-  payload: {
-    data: luceneIds,
-    timestamp,
-  },
-});
-
-export const fetchLuceneIdsFailure = (
-  error: string
-): ActionType<FailurePayload> => ({
-  type: FetchLuceneIdsFailureType,
-  payload: {
-    error,
-  },
-});
-
-export const fetchLuceneIdsRequest = (
-  timestamp: number
-): ActionType<RequestPayload> => ({
-  type: FetchLuceneIdsRequestType,
-  payload: {
-    timestamp,
-  },
-});
-
-export const fetchLuceneIds = (
+export const useLuceneSearch = (
   datasearchType: DatasearchType,
   params: LuceneSearchParams
-): ThunkResult<Promise<void>> => {
-  return async (dispatch, getState) => {
-    const { icatUrl } = getState().dgcommon.urls;
+): UseQueryResult<number[], AxiosError> => {
+  const icatUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.icatUrl
+  );
 
-    const timestamp = Date.now();
-    dispatch(fetchLuceneIdsRequest(timestamp));
-
-    await fetchLuceneData(datasearchType, params, {
-      icatUrl,
-    })
-      .then((results) => {
-        dispatch(fetchLuceneIdsSuccess(results, timestamp));
-      })
-      .catch((error) => {
+  return useQuery<
+    number[],
+    AxiosError,
+    number[],
+    [string, DatasearchType, LuceneSearchParams]
+  >(
+    ['search', datasearchType, params],
+    () => {
+      return fetchLuceneData(datasearchType, params, { icatUrl });
+    },
+    {
+      onError: (error) => {
         handleICATError(error);
-        dispatch(fetchLuceneIdsFailure(error.message));
-      });
-  };
+      },
+      // we want to trigger search manually via refetch
+      // so disable the query to disable automatic fetching
+      enabled: false,
+    }
+  );
 };

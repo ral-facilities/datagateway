@@ -33,7 +33,7 @@
     "acceptance-tests",
     "webpack",
     "jest",
-    "src/setupTests.ts",
+    "src/setupTests.tsx",
     "**/*.test.*"
   ],
   "include": ["src"]

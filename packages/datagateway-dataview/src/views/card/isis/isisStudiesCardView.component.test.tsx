@@ -1,212 +1,251 @@
 import { Link, ListItemText } from '@material-ui/core';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
-import { push } from 'connected-react-router';
+import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
   dGCommonInitialState,
-  fetchAllIdsRequest,
-  fetchStudiesRequest,
-  fetchStudyCountRequest,
-  filterTable,
-  updatePage,
-  updateQueryParams,
+  useStudyCount,
+  useStudiesPaginated,
+  Study,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import { initialState } from '../../../state/reducers/dgdataview.reducer';
-import axios from 'axios';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISStudiesCardView from './isisStudiesCardView.component';
+import { createMemoryHistory, History } from 'history';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useStudyCount: jest.fn(),
+    useStudiesPaginated: jest.fn(),
+  };
+});
 
 describe('ISIS Studies - Card View', () => {
   let mount;
-  let shallow;
   let mockStore;
-  let store;
   let state: StateType;
+  let cardData: Study[];
+  let history: History;
 
   const createWrapper = (): ReactWrapper => {
-    store = mockStore(state);
+    const store = mockStore(state);
     return mount(
       <Provider store={store}>
-        <MemoryRouter>
-          <ISISStudiesCardView instrumentId="1" />
-        </MemoryRouter>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISStudiesCardView instrumentId="1" />
+          </QueryClientProvider>
+        </Router>
       </Provider>
     );
   };
 
   beforeEach(() => {
     mount = createMount();
-    shallow = createShallow();
-    mockStore = configureStore([thunk]);
-    state = {
-      dgcommon: {
-        ...dGCommonInitialState,
-        loadedCount: true,
-        loadedData: true,
-        totalDataCount: 1,
-        data: [
-          {
-            id: 1,
-            study: {
-              id: 1,
-              pid: 'doi',
-              name: 'Test 1',
-              modTime: '2000-01-01',
-              createTime: '2000-01-01',
-            },
-          },
-        ],
+    cardData = [
+      {
+        id: 1,
+        pid: 'doi',
+        name: 'Test 1',
+        modTime: '2000-01-01',
+        createTime: '2000-01-01',
       },
-      dgdataview: initialState,
-      router: {
-        action: 'POP',
-        location: {
-          hash: '',
-          key: '',
-          pathname: '/',
-          search: '',
-          state: {},
-        },
-      },
-    };
+    ];
+    history = createMemoryHistory();
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    mockStore = configureStore([thunk]);
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: dGCommonInitialState,
+        dgdataview: dgDataViewInitialState,
+      })
     );
-    global.Date.now = jest.fn(() => 1);
+
+    (useStudyCount as jest.Mock).mockReturnValue({
+      data: 1,
+      isLoading: false,
+    });
+    (useStudiesPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+      isLoading: false,
+    });
+
     // Prevent error logging
     window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <ISISStudiesCardView store={mockStore(state)} instrumentId="1" />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('CardView').props()).toMatchSnapshot();
   });
 
-  it('sends fetchAllIdRequest on load', () => {
+  it('calls the correct data fetching hooks on load', () => {
+    const instrumentId = '1';
     createWrapper();
-    expect(store.getActions().length).toEqual(1);
-    expect(store.getActions()[0]).toEqual(fetchAllIdsRequest(1));
+    expect(useStudyCount).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+            eq: instrumentId,
+          },
+        }),
+      },
+    ]);
+    expect(useStudiesPaginated).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+            eq: instrumentId,
+          },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          studyInvestigations: 'investigation',
+        }),
+      },
+    ]);
   });
 
-  it('sends fetchStudyCount and fetchStudies requests when allIds fetched', () => {
+  it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: { ...state.dgcommon, allIds: [1] },
-    });
-    wrapper.setProps({ store: store });
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[0]).toEqual(fetchStudyCountRequest(1));
-    expect(store.getActions()[1]).toEqual(fetchStudiesRequest(1));
-  });
 
-  it('pushFilters dispatched by date filter', () => {
-    const wrapper = createWrapper();
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(
-      filterTable('investigation.endDate', {
-        endDate: '2019-08-06',
-        startDate: undefined,
-      })
-    );
-
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
-    expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[3]).toEqual(
-      filterTable('investigation.endDate', null)
-    );
-    expect(store.getActions()[4]).toEqual(push('?'));
-  });
-
-  it('pushFilters dispatched by text filter', () => {
-    const wrapper = createWrapper();
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
       .find('input')
       .first()
       .simulate('change', { target: { value: 'test' } });
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(
-      filterTable('study.name', { value: 'test', type: 'include' })
+
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"name":{"value":"test","type":"include"}}'
+      )}`
     );
-    expect(store.getActions()[2]).toEqual(push('?'));
 
     advancedFilter
       .find('input')
       .first()
       .simulate('change', { target: { value: '' } });
-    expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[3]).toEqual(filterTable('study.name', null));
-    expect(store.getActions()[4]).toEqual(push('?'));
+
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
   });
 
-  it('pushSort dispatched when sort button clicked', () => {
+  it('updates filter query params on date filter', () => {
     const wrapper = createWrapper();
+
+    const advancedFilter = wrapper.find(AdvancedFilter);
+    advancedFilter.find(Link).simulate('click');
+    advancedFilter
+      .find('input')
+      .last()
+      .simulate('change', { target: { value: '2019-08-06' } });
+
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"studyInvestigations.investigation.endDate":{"endDate":"2019-08-06"}}'
+      )}`
+    );
+
+    advancedFilter
+      .find('input')
+      .last()
+      .simulate('change', { target: { value: '' } });
+
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
+  });
+
+  it('updates sort query params on sort', () => {
+    const wrapper = createWrapper();
+
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('studies.name');
     button.simulate('click');
 
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(
-      updateQueryParams({
-        ...dGCommonInitialState.query,
-        sort: { 'study.name': 'asc' },
-        page: 1,
-      })
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
-    expect(store.getActions()[2]).toEqual(push('?'));
   });
 
-  it('pushPage dispatched when page number is no longer valid', () => {
-    const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        totalDataCount: 1,
-        query: {
-          view: null,
-          search: null,
-          page: 2,
-          results: null,
-          filters: {},
-          sort: {},
-        },
+  it('displays information from investigation when investigation present', () => {
+    cardData = [
+      {
+        ...cardData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...cardData[0],
+            },
+            investigation: {
+              id: 3,
+              name: 'Test',
+              title: 'Test investigation',
+              visitId: '3',
+              startDate: '2021-08-19',
+              endDate: '2021-08-20',
+            },
+          },
+        ],
       },
+    ];
+    (useStudiesPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
     });
-    wrapper.setProps({ store: store });
 
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[0]).toEqual(updatePage(1));
-    expect(store.getActions()[1]).toEqual(push('?page=2'));
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper.find('[aria-label="card-description"]').first().text()
+    ).toEqual('Test investigation');
   });
 
-  // TODO: Can't trigger onChange for the Select element.
-  // Had a similar issue in DG download with the new version of M-UI.
-  it.todo('pushResults dispatched onChange');
+  it('renders fine with incomplete data', () => {
+    (useStudyCount as jest.Mock).mockReturnValueOnce({});
+    (useStudiesPaginated as jest.Mock).mockReturnValueOnce({});
+
+    expect(() => createWrapper()).not.toThrowError();
+
+    cardData = [
+      {
+        ...cardData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...cardData[0],
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+    });
+
+    expect(() => createWrapper()).not.toThrowError();
+  });
 });

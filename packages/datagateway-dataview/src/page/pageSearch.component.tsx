@@ -2,9 +2,8 @@
 import React from 'react';
 import { TextField, InputAdornment } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import { StateType } from 'datagateway-common/lib/state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
-import { pushPageSearch } from 'datagateway-common';
+import { StateType, pushPageSearch } from 'datagateway-common';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 

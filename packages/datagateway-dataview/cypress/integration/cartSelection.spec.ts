@@ -66,6 +66,7 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
       });
 
+      // TODO: Check requests
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
@@ -87,8 +88,8 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
           .first()
-          .clear()
-          .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
+          .clear();
+        // .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
 
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
@@ -239,6 +240,7 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
       });
 
+      // TODO: Check requests
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
@@ -260,8 +262,8 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
           .first()
-          .clear()
-          .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
+          .clear();
+        // .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
 
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
@@ -405,6 +407,7 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
       });
 
+      // TODO: Check requests
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
@@ -426,8 +429,9 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
           .first()
-          .clear()
-          .wait(['@getDatafiles', '@getDatafiles']);
+          .clear();
+        // .wait(['@getDatafiles', '@getDatafiles']);
+
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
         );
@@ -772,6 +776,7 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
       });
 
+      // TODO: Check requests
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Visit ID"]')
           .find('input')
@@ -793,8 +798,9 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="Filter by Visit ID"]')
           .find('input')
           .first()
-          .clear()
-          .wait(['@getInvestigations', '@getInvestigations']);
+          .clear();
+        // .wait(['@getInvestigations', '@getInvestigations']);
+
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
         );

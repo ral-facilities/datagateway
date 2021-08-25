@@ -1,21 +1,45 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import ISISStudyLanding from './isisStudyLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
-import { dGCommonInitialState, fetchStudiesRequest } from 'datagateway-common';
+import { dGCommonInitialState, useStudy } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
-import axios from 'axios';
-import { push } from 'connected-react-router';
+import { ReactWrapper } from 'enzyme';
+import { createMemoryHistory, History } from 'history';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { Router } from 'react-router';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useStudy: jest.fn(),
+  };
+});
 
 describe('ISIS Study Landing page', () => {
-  let shallow;
   let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
+  let history: History;
+
+  const createWrapper = (): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISStudyLanding instrumentId="4" studyId="5" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
 
   const investigationUser = [
     {
@@ -81,13 +105,6 @@ describe('ISIS Study Landing page', () => {
     },
   ];
 
-  const study = {
-    id: 7,
-    pid: 'study pid',
-    startDate: '2019-06-10',
-    endDate: '2019-06-11',
-  };
-
   const investigation = {
     id: 1,
     title: 'Title 1',
@@ -103,18 +120,16 @@ describe('ISIS Study Landing page', () => {
 
   const initialData = [
     {
-      id: 6,
-      investigation: {
-        id: 1,
-      },
+      id: 7,
+      pid: 'study pid',
+      startDate: '2019-06-10',
+      endDate: '2019-06-11',
     },
   ];
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -122,98 +137,58 @@ describe('ISIS Study Landing page', () => {
       })
     );
 
-    state.dgcommon.data = initialData;
-    state.dgcommon.allIds = [1];
+    history = createMemoryHistory();
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
-    global.Date.now = jest.fn(() => 1);
+    (useStudy as jest.Mock).mockReturnValue({
+      data: initialData,
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = shallow(
-      <ISISStudyLanding store={mockStore(state)} instrumentId="4" studyId="5" />
-    );
-    expect(wrapper).toMatchSnapshot();
+  it('calls the correct data fetching hooks', () => {
+    createWrapper();
+
+    expect(useStudy).toHaveBeenCalledWith(5);
   });
 
-  it('actions dispatched correctly', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudyLanding instrumentId="4" studyId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(fetchStudiesRequest(1));
+  it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
+    let wrapper = createWrapper();
 
     wrapper.find('#study-investigations-tab').first().simulate('click');
 
-    expect(testStore.getActions()).toHaveLength(2);
-    expect(testStore.getActions()[1]).toEqual(
-      push('/browseStudyHierarchy/instrument/4/study/5/investigation')
-    );
-  });
-
-  it('actions dispatched correctly in cardView', () => {
-    const testStore = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        query: { ...state.dgcommon.query, view: 'card' },
-      },
-    });
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudyLanding instrumentId="4" studyId="5" />
-        </MemoryRouter>
-      </Provider>
+    expect(history.location.pathname).toBe(
+      '/browseStudyHierarchy/instrument/4/study/5/investigation'
     );
 
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(fetchStudiesRequest(1));
+    history.replace('/?view=card');
+    wrapper = createWrapper();
 
     wrapper.find('#study-investigations-tab').first().simulate('click');
 
-    expect(testStore.getActions()).toHaveLength(2);
-    expect(testStore.getActions()[1]).toEqual(
-      push('/browseStudyHierarchy/instrument/4/study/5/investigation?view=card')
+    expect(history.location.pathname).toBe(
+      '/browseStudyHierarchy/instrument/4/study/5/investigation'
     );
+    expect(history.location.search).toBe('?view=card');
   });
 
   it('single user displayed correctly', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudyLanding instrumentId="4" studyId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
+    let wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-study-users-label"]')
     ).toHaveLength(0);
     expect(wrapper.find('[aria-label="landing-study-user-0"]')).toHaveLength(0);
 
-    wrapper.setProps({
-      store: mockStore({
-        ...state,
-        dgcommon: {
-          ...state.dgcommon,
-          data: [
+    (useStudy as jest.Mock).mockReturnValue({
+      data: [
+        {
+          ...initialData[0],
+          studyInvestigations: [
             {
-              ...initialData,
-              study: study,
               investigation: {
                 ...investigation,
                 investigationUsers: [investigationUser[0]],
@@ -221,8 +196,9 @@ describe('ISIS Study Landing page', () => {
             },
           ],
         },
-      }),
+      ],
     });
+    wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-study-users-label"]')
@@ -239,24 +215,12 @@ describe('ISIS Study Landing page', () => {
   });
 
   it('multiple users displayed correctly', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudyLanding instrumentId="4" studyId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    wrapper.setProps({
-      store: mockStore({
-        ...state,
-        dgcommon: {
-          ...state.dgcommon,
-          data: [
+    (useStudy as jest.Mock).mockReturnValue({
+      data: [
+        {
+          ...initialData[0],
+          studyInvestigations: [
             {
-              ...initialData,
-              study: study,
               investigation: {
                 ...investigation,
                 investigationUsers: investigationUser,
@@ -264,8 +228,9 @@ describe('ISIS Study Landing page', () => {
             },
           ],
         },
-      }),
+      ],
     });
+    const wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-study-users-label"]')
@@ -290,27 +255,6 @@ describe('ISIS Study Landing page', () => {
     );
   });
 
-  it('displays correctly when study missing', () => {
-    const testStore = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        data: [{ ...initialData, investigation: { ...investigation } }],
-      },
-    });
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudyLanding instrumentId="4" studyId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(
-      wrapper.find('[aria-label="landing-study-citation"]').first().text()
-    ).toEqual('Title 1, doi_constants.publisher.name');
-  });
-
   it('copies data citation to clipboard', () => {
     // Mock the clipboard object
     const testWriteText = jest.fn();
@@ -320,24 +264,12 @@ describe('ISIS Study Landing page', () => {
       },
     });
 
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudyLanding instrumentId="4" studyId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    wrapper.setProps({
-      store: mockStore({
-        ...state,
-        dgcommon: {
-          ...state.dgcommon,
-          data: [
+    (useStudy as jest.Mock).mockReturnValue({
+      data: [
+        {
+          ...initialData[0],
+          studyInvestigations: [
             {
-              ...initialData,
-              study: study,
               investigation: {
                 ...investigation,
                 investigationUsers: [investigationUser[0]],
@@ -345,8 +277,9 @@ describe('ISIS Study Landing page', () => {
             },
           ],
         },
-      }),
+      ],
     });
+    const wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-study-citation"]').first().text()
@@ -365,28 +298,33 @@ describe('ISIS Study Landing page', () => {
     ).toEqual('Copied citation');
   });
 
-  it('displays correctly when investigation missing', () => {
-    const testStore = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        data: [
-          {
-            study: study,
-          },
-        ],
-      },
-    });
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudyLanding instrumentId="4" studyId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('renders structured data correctly', () => {
+    // mock getElementByTagNameSpy so we can snapshot mockElement
+    const docFragment = document.createDocumentFragment();
+    const mockElement = document.createElement('head');
+    docFragment.appendChild(mockElement);
+    const mockHTMLCollection = docFragment.children;
+    jest
+      .spyOn(document, 'getElementsByTagName')
+      .mockReturnValue(mockHTMLCollection);
 
-    expect(
-      wrapper.find('[aria-label="landing-study-citation"]').first().text()
-    ).toEqual('2019: doi_constants.publisher.name, https://doi.org/study pid');
+    (useStudy as jest.Mock).mockReturnValue({
+      data: [
+        {
+          ...initialData[0],
+          studyInvestigations: [
+            {
+              investigation: {
+                ...investigation,
+                investigationUsers: investigationUser,
+              },
+            },
+          ],
+        },
+      ],
+    });
+    createWrapper();
+
+    expect(mockElement.innerHTML).toMatchSnapshot();
   });
 });

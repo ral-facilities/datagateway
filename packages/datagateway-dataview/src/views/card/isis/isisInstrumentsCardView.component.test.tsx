@@ -1,114 +1,119 @@
 import { Link, ListItemText } from '@material-ui/core';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
-import { push } from 'connected-react-router';
+import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
   dGCommonInitialState,
-  fetchInstrumentDetailsRequest,
-  filterTable,
-  updatePage,
-  updateQueryParams,
+  useInstrumentsPaginated,
+  useInstrumentCount,
+  Instrument,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import { initialState } from '../../../state/reducers/dgdataview.reducer';
-import axios from 'axios';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISInstrumentsCardView from './isisInstrumentsCardView.component';
+import { createMemoryHistory, History } from 'history';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useInstrumentCount: jest.fn(),
+    useInstrumentsPaginated: jest.fn(),
+  };
+});
 
 describe('ISIS Instruments - Card View', () => {
   let mount;
-  let shallow;
   let mockStore;
-  let store;
   let state: StateType;
+  let cardData: Instrument[];
+  let history: History;
 
   const createWrapper = (): ReactWrapper => {
-    store = mockStore(state);
+    const store = mockStore(state);
     return mount(
       <Provider store={store}>
-        <MemoryRouter>
-          <ISISInstrumentsCardView />
-        </MemoryRouter>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISInstrumentsCardView studyHierarchy={false} />
+          </QueryClientProvider>
+        </Router>
       </Provider>
     );
   };
 
   beforeEach(() => {
     mount = createMount();
-    shallow = createShallow();
-    mockStore = configureStore([thunk]);
-    state = {
-      dgcommon: {
-        ...dGCommonInitialState,
-        loadedCount: true,
-        loadedData: true,
-        totalDataCount: 1,
-        data: [
-          {
-            id: 1,
-            name: 'Test 1',
-          },
-        ],
-        allIds: [1],
+    cardData = [
+      {
+        id: 1,
+        name: 'Test 1',
       },
-      dgdataview: initialState,
-      router: {
-        action: 'POP',
-        location: {
-          hash: '',
-          key: '',
-          pathname: '/',
-          search: '',
-          state: {},
-        },
-      },
-    };
+    ];
+    history = createMemoryHistory();
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    mockStore = configureStore([thunk]);
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: dGCommonInitialState,
+        dgdataview: dgDataViewInitialState,
+      })
     );
-    global.Date.now = jest.fn(() => 1);
+
+    (useInstrumentCount as jest.Mock).mockReturnValue({
+      data: 1,
+      isLoading: false,
+    });
+    (useInstrumentsPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+      isLoading: false,
+    });
+
     // Prevent error logging
     window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <ISISInstrumentsCardView store={mockStore(state)} />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('CardView').props()).toMatchSnapshot();
+  });
+
+  it('calls the correct data fetching hooks on load', () => {
+    createWrapper();
+    expect(useInstrumentCount).toHaveBeenCalled();
+    expect(useInstrumentsPaginated).toHaveBeenCalled();
   });
 
   it('correct link used when NOT in studyHierarchy', () => {
-    store = mockStore(state);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter>
-          <ISISInstrumentsCardView studyHierarchy={false} />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
     expect(
       wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
     ).toEqual('/browse/instrument/1/facilityCycle');
   });
 
   it('correct link used for studyHierarchy', () => {
-    store = mockStore(state);
+    const store = mockStore(state);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter>
-          <ISISInstrumentsCardView studyHierarchy={true} />
-        </MemoryRouter>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISInstrumentsCardView studyHierarchy={true} />
+          </QueryClientProvider>
+        </Router>
       </Provider>
     );
     expect(
@@ -116,84 +121,60 @@ describe('ISIS Instruments - Card View', () => {
     ).toEqual('/browseStudyHierarchy/instrument/1/study');
   });
 
-  it('pushFilters dispatched by text filter', () => {
+  it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
+
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
       .find('input')
       .first()
       .simulate('change', { target: { value: 'test' } });
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(
-      filterTable('fullName', { value: 'test', type: 'include' })
+
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"fullName":{"value":"test","type":"include"}}'
+      )}`
     );
-    expect(store.getActions()[3]).toEqual(push('?'));
 
     advancedFilter
       .find('input')
       .first()
       .simulate('change', { target: { value: '' } });
-    expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('fullName', null));
-    expect(store.getActions()[5]).toEqual(push('?'));
+
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
   });
 
-  it('pushSort dispatched when sort button clicked', () => {
+  it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
+
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('instruments.name');
     button.simulate('click');
 
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(
-      updateQueryParams({
-        ...dGCommonInitialState.query,
-        sort: { fullName: 'asc' },
-        page: 1,
-      })
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
-    expect(store.getActions()[3]).toEqual(push('?'));
   });
 
-  it('pushPage dispatched when page number is no longer valid', () => {
+  it('displays details panel when more information is expanded', () => {
     const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        totalDataCount: 1,
-        query: {
-          view: null,
-          search: null,
-          page: 2,
-          results: null,
-          filters: {},
-          sort: {},
-        },
-      },
-    });
-    wrapper.setProps({ store: store });
-
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(updatePage(1));
-    expect(store.getActions()[2]).toEqual(push('?page=2'));
-  });
-
-  // TODO: Can't trigger onChange for the Select element.
-  // Had a similar issue in DG download with the new version of M-UI.
-  it.todo('pushResults dispatched onChange');
-
-  it('fetchDetails dispatched when details panel expanded', () => {
-    const wrapper = createWrapper();
+    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[2]).toEqual(fetchInstrumentDetailsRequest());
+    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('renders fine with incomplete data', () => {
+    (useInstrumentCount as jest.Mock).mockReturnValueOnce({});
+    (useInstrumentsPaginated as jest.Mock).mockReturnValueOnce({});
+
+    expect(() => createWrapper()).not.toThrowError();
   });
 });

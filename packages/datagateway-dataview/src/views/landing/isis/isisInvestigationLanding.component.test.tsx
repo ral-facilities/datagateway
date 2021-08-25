@@ -1,24 +1,55 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import ISISInvestigationLanding from './isisInvestigationLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
 import {
   dGCommonInitialState,
-  fetchInvestigationsRequest,
+  useInvestigation,
+  useInvestigationSizes,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
-import axios from 'axios';
-import { push } from 'connected-react-router';
+import { ReactWrapper } from 'enzyme';
+import { createMemoryHistory, History } from 'history';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { Router } from 'react-router';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useInvestigation: jest.fn(),
+    useInvestigationSizes: jest.fn(),
+  };
+});
 
 describe('ISIS Investigation Landing page', () => {
-  let shallow;
   let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
+  let history: History;
+
+  const createWrapper = (studyHierarchy = false): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISInvestigationLanding
+              instrumentId="4"
+              instrumentChildId="5"
+              investigationId="1"
+              studyHierarchy={studyHierarchy}
+            />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
 
   const initialData = [
     {
@@ -133,129 +164,81 @@ describe('ISIS Investigation Landing page', () => {
   ];
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
         dgcommon: dGCommonInitialState,
       })
     );
-    state.dgcommon.data = initialData;
-    state.dgcommon.allIds = [1];
+    history = createMemoryHistory();
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
-    global.Date.now = jest.fn(() => 1);
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: initialData,
+    });
+    (useInvestigationSizes as jest.Mock).mockReturnValue([
+      {
+        data: 1,
+      },
+    ]);
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = shallow(
-      <ISISInvestigationLanding
-        store={mockStore(state)}
-        instrumentId="4"
-        instrumentChildId="5"
-        investigationId="1"
-        studyHierarchy={false}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
-  });
+  it('calls the correct data fetching hooks', () => {
+    createWrapper();
 
-  it('renders correctly for studyHierarchy', () => {
-    const wrapper = shallow(
-      <ISISInvestigationLanding
-        store={mockStore(state)}
-        instrumentId="4"
-        instrumentChildId="5"
-        investigationId="1"
-        studyHierarchy={true}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('actions dispatched correctly', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
-
-    wrapper.find('#investigation-datasets-tab').first().simulate('click');
-
-    expect(testStore.getActions()).toHaveLength(2);
-    expect(testStore.getActions()[1]).toEqual(
-      push('/browse/instrument/4/facilityCycle/5/investigation/1/dataset')
-    );
-  });
-
-  it('actions dispatched correctly in cardView', () => {
-    const testStore = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        query: { ...state.dgcommon.query, view: 'card' },
+    expect(useInvestigation).toHaveBeenCalledWith(1, [
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationUsers: 'user',
+          },
+          'samples',
+          'publications',
+          'datasets',
+          {
+            studyInvestigations: 'study',
+          },
+          {
+            investigationInstruments: 'instrument',
+          },
+        ]),
       },
-    });
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
+    ]);
+    expect(useInvestigationSizes).toHaveBeenCalledWith(initialData);
+  });
+
+  it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
+    const facilityCycleWrapper = createWrapper();
+
+    facilityCycleWrapper
+      .find('#investigation-datasets-tab')
+      .first()
+      .simulate('click');
+
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
     );
 
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
+    history.replace('/?view=card');
+    const studyWrapper = createWrapper(true);
 
-    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    studyWrapper.find('#investigation-datasets-tab').first().simulate('click');
 
-    expect(testStore.getActions()).toHaveLength(2);
-    expect(testStore.getActions()[1]).toEqual(
-      push(
-        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset?view=card'
-      )
+    expect(history.location.pathname).toBe(
+      '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
     );
+    expect(history.location.search).toBe('?view=card');
   });
 
   it('users displayed correctly', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+    let wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-investigation-users-label"]')
@@ -264,10 +247,10 @@ describe('ISIS Investigation Landing page', () => {
       wrapper.find('[aria-label="landing-investigation-user-0"]')
     ).toHaveLength(0);
 
-    state.dgcommon.data = [
-      { ...initialData[0], investigationUsers: investigationUser },
-    ];
-    wrapper.setProps({ store: mockStore(state) });
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], investigationUsers: investigationUser }],
+    });
+    wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-investigation-users-label"]')
@@ -287,19 +270,7 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('publications displayed correctly', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+    let wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-investigation-publications-label"]')
@@ -308,8 +279,10 @@ describe('ISIS Investigation Landing page', () => {
       wrapper.find('[aria-label="landing-investigation-publication-0"]')
     ).toHaveLength(0);
 
-    state.dgcommon.data = [{ ...initialData[0], publications: publication }];
-    wrapper.setProps({ store: mockStore(state) });
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], publications: publication }],
+    });
+    wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-investigation-publications-label"]')
@@ -323,19 +296,7 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('samples displayed correctly', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+    let wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-investigation-samples-label"]')
@@ -344,8 +305,10 @@ describe('ISIS Investigation Landing page', () => {
       wrapper.find('[aria-label="landing-investigation-sample-0"]')
     ).toHaveLength(0);
 
-    state.dgcommon.data = [{ ...initialData[0], samples: sample }];
-    wrapper.setProps({ store: mockStore(state) });
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], samples: sample }],
+    });
+    wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-label="landing-investigation-samples-label"]')
@@ -359,25 +322,10 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('displays citation correctly when study missing', () => {
-    const testStore = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        data: [{ ...state.dgcommon.data[0], studyInvestigations: undefined }],
-      },
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], studyInvestigations: undefined }],
     });
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
     expect(
       wrapper
         .find('[aria-label="landing-investigation-citation"]')
@@ -387,30 +335,10 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('displays citation correctly with one user', () => {
-    const testStore = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        data: [
-          {
-            ...state.dgcommon.data[0],
-            investigationUsers: [investigationUser[0]],
-          },
-        ],
-      },
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
     });
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
     expect(
       wrapper
         .find('[aria-label="landing-investigation-citation"]')
@@ -422,27 +350,10 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('displays citation correctly with multiple users', () => {
-    const testStore = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        data: [
-          { ...state.dgcommon.data[0], investigationUsers: investigationUser },
-        ],
-      },
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], investigationUsers: investigationUser }],
     });
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
     expect(
       wrapper
         .find('[aria-label="landing-investigation-citation"]')
@@ -462,30 +373,10 @@ describe('ISIS Investigation Landing page', () => {
       },
     });
 
-    const testStore = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        data: [
-          {
-            ...state.dgcommon.data[0],
-            investigationUsers: [investigationUser[0]],
-          },
-        ],
-      },
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
     });
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
 
     expect(
       wrapper

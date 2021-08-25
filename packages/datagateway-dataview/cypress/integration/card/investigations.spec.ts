@@ -1,4 +1,5 @@
 describe('Investigations Cards', () => {
+  // TODO: Check requests
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
@@ -11,11 +12,7 @@ describe('Investigations Cards', () => {
       ],
       { timeout: 15000 }
     );
-    cy.get('[aria-label="page-view-button"]')
-      .click()
-      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 15000,
-      });
+    cy.get('[aria-label="page-view-button"]').click();
   });
 
   it('should load correctly', () => {

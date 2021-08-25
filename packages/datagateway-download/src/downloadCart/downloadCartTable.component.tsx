@@ -7,6 +7,7 @@ import {
   TableActionProps,
   DownloadCartItem,
   DownloadCartTableItem,
+  TextFilter,
 } from 'datagateway-common';
 import {
   IconButton,
@@ -155,6 +156,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           setFilters(restOfFilters);
         }
       }}
+      value={filters[dataKey] as TextFilter}
     />
   );
 

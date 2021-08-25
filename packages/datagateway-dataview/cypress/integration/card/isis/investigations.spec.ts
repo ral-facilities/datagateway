@@ -1,4 +1,5 @@
 describe('ISIS - Investigations Cards', () => {
+  // TODO: Check requests
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
@@ -7,11 +8,7 @@ describe('ISIS - Investigations Cards', () => {
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page-view-button"]')
-      .click()
-      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="page-view-button"]').click();
   });
 
   it('should load correctly', () => {
@@ -92,20 +89,12 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('[aria-label="Start Date date filter from"]')
       .type('2004-01-01')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
-    cy.get('[aria-label="Start Date date filter to"]')
-      .parent()
-      .find('button')
-      .click();
-    cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-    cy.contains('OK')
-      .click()
-      .wait(['@getInvestigationsCount'], { timeout: 10000 });
-    const date = new Date();
-    date.setDate(1);
-    cy.get('[aria-label="Start Date date filter to"]').should(
-      'have.value',
-      date.toISOString().slice(0, 10)
+    cy.get('#card').contains(
+      'He represent address cut environmental special size.'
     );
+    cy.get('[aria-label="Start Date date filter to"]')
+      .type('2004-01-02')
+      .wait(['@getInvestigationsCount'], { timeout: 10000 });
     cy.get('#card').should('not.exist');
   });
 

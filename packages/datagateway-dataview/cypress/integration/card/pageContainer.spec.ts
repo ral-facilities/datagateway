@@ -1,4 +1,5 @@
 describe('PageContainer Component', () => {
+  // TODO: Check requests
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
@@ -11,11 +12,7 @@ describe('PageContainer Component', () => {
       ],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page-view-button"]')
-      .click()
-      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="page-view-button"]').click();
     cy.clearDownloadCart();
   });
 

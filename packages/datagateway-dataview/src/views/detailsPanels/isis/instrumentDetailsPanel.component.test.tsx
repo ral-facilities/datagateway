@@ -1,17 +1,37 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import InstrumentsDetailsPanel from './instrumentDetailsPanel.component';
-import { Instrument } from 'datagateway-common';
+import { createMount } from '@material-ui/core/test-utils';
+import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
+import { Instrument, useInstrumentDetails } from 'datagateway-common';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useInstrumentDetails: jest.fn(),
+  };
+});
 
 describe('Instrument details panel component', () => {
-  let shallow;
   let mount;
   let rowData: Instrument;
   const detailsPanelResize = jest.fn();
-  const fetchDetails = jest.fn();
+
+  const createWrapper = (): ReactWrapper => {
+    return mount(
+      <QueryClientProvider client={new QueryClient()}>
+        <InstrumentDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+        />
+      </QueryClientProvider>
+    );
+  };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     rowData = {
       id: 1,
@@ -21,19 +41,20 @@ describe('Instrument details panel component', () => {
       type: 'testing',
       url: 'www.example.com',
     };
+
+    (useInstrumentDetails as jest.Mock).mockReturnValue({
+      data: rowData,
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
-    detailsPanelResize.mockClear();
-    fetchDetails.mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <InstrumentsDetailsPanel rowData={rowData} fetchDetails={fetchDetails} />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('InstrumentDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('renders users tab when present in the data', () => {
@@ -55,14 +76,13 @@ describe('Instrument details panel component', () => {
       },
     ];
 
-    const wrapper = shallow(
-      <InstrumentsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('InstrumentDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('calls useInstrumentDetails hook on load', () => {
+    createWrapper();
+    expect(useInstrumentDetails).toHaveBeenCalledWith(rowData.id);
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
@@ -77,13 +97,7 @@ describe('Instrument details panel component', () => {
       },
     ];
 
-    const wrapper = mount(
-      <InstrumentsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
-    );
+    const wrapper = createWrapper();
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
@@ -105,7 +119,9 @@ describe('Instrument details panel component', () => {
     ];
 
     const wrapper = mount(
-      <InstrumentsDetailsPanel rowData={rowData} fetchDetails={fetchDetails} />
+      <QueryClientProvider client={new QueryClient()}>
+        <InstrumentDetailsPanel rowData={rowData} />
+      </QueryClientProvider>
     );
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
@@ -115,19 +131,6 @@ describe('Instrument details panel component', () => {
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
   });
 
-  it('calls fetchDetails on load', () => {
-    mount(
-      <InstrumentsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
-    );
-
-    expect(fetchDetails).toHaveBeenCalled();
-    expect(fetchDetails).toHaveBeenCalledWith(1);
-  });
-
   it('gracefully handles InstrumentScientists without Users', () => {
     rowData.instrumentScientists = [
       {
@@ -135,13 +138,55 @@ describe('Instrument details panel component', () => {
       },
     ];
 
-    const wrapper = shallow(
-      <InstrumentsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
+    (useInstrumentDetails as jest.Mock).mockReturnValueOnce({
+      data: rowData,
+    });
+
+    const wrapper = createWrapper();
+    expect(wrapper.find('InstrumentDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('Shows "No <field> provided" incase of a null field', () => {
+    const { description, type, url, ...amendedRowData } = rowData;
+
+    (useInstrumentDetails as jest.Mock).mockReturnValueOnce({
+      data: amendedRowData,
+    });
+
+    const wrapper = mount(
+      <QueryClientProvider client={new QueryClient()}>
+        <InstrumentDetailsPanel
+          rowData={amendedRowData}
+          detailsPanelResize={detailsPanelResize}
+        />
+      </QueryClientProvider>
     );
-    expect(wrapper).toMatchSnapshot();
+
+    expect(wrapper.html()).toContain(
+      '<b>instruments.details.description not provided</b>'
+    );
+    expect(wrapper.html()).toContain(
+      '<b>instruments.details.type not provided</b>'
+    );
+    expect(wrapper.html()).toContain(
+      '<b>instruments.details.url not provided</b>'
+    );
+  });
+
+  it('displays shortened instrument name if full name not provided', () => {
+    rowData = {
+      id: 1,
+      name: 'My test instrument',
+      description: 'An instrument purely for testing',
+      type: 'testing',
+      url: 'www.example.com',
+    };
+
+    (useInstrumentDetails as jest.Mock).mockReturnValueOnce({
+      data: rowData,
+    });
+
+    const wrapper = createWrapper();
+    expect(wrapper.html()).toContain('<b>My test instrument</b>');
   });
 });

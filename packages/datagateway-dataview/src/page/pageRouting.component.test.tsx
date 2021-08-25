@@ -57,6 +57,7 @@ import {
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
@@ -116,10 +117,13 @@ describe('PageTable', () => {
 
   const createTableWrapper = (path: string): ReactWrapper => {
     const mockStore = configureStore([thunk]);
+    const client = new QueryClient();
     return mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
-          <PageRouting view="table" />
+          <QueryClientProvider client={client}>
+            <PageRouting view="table" />
+          </QueryClientProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -127,10 +131,13 @@ describe('PageTable', () => {
 
   const createCardWrapper = (path: string): ReactWrapper => {
     const mockStore = configureStore([thunk]);
+    const client = new QueryClient();
     return mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
-          <PageRouting view="card" />
+          <QueryClientProvider client={client}>
+            <PageRouting view="card" />
+          </QueryClientProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -138,10 +145,13 @@ describe('PageTable', () => {
 
   const createLandingWrapper = (path: string): ReactWrapper => {
     const mockStore = configureStore([thunk]);
+    const client = new QueryClient();
     return mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
-          <PageRouting view={null} />
+          <QueryClientProvider client={client}>
+            <PageRouting view={null} />
+          </QueryClientProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -157,9 +167,13 @@ describe('PageTable', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (url.includes('count')) {
+        return Promise.resolve({ data: 0 });
+      } else {
+        return Promise.resolve({ data: [] });
+      }
+    });
     (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );

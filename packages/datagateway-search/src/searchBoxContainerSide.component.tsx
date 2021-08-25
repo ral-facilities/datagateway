@@ -8,7 +8,7 @@ import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
 
 interface SearchBoxContainerProps {
-  initiateSearch: () => Promise<void>;
+  initiateSearch: () => void;
 }
 
 const SearchBoxContainerSide = (

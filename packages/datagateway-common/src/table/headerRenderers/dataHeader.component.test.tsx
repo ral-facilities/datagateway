@@ -15,8 +15,17 @@ describe('Data column header component', () => {
     sort: {},
     onSort,
     resizeColumn,
-    icon: <div>Test</div>,
+    icon: function Icon() {
+      return <div>Test</div>;
+    },
   };
+
+  const filterComponent = (
+    label: string,
+    dataKey: string
+  ): React.ReactElement => (
+    <TextColumnFilter label={label} onChange={jest.fn()} value={undefined} />
+  );
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -39,7 +48,7 @@ describe('Data column header component', () => {
       <DataHeader
         {...dataHeaderProps}
         disableSort={true}
-        filterComponent={<TextColumnFilter label="test" onChange={jest.fn()} />}
+        filterComponent={filterComponent}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -47,10 +56,7 @@ describe('Data column header component', () => {
 
   it('renders correctly with sort and filter', () => {
     const wrapper = shallow(
-      <DataHeader
-        {...dataHeaderProps}
-        filterComponent={<TextColumnFilter label="test" onChange={jest.fn()} />}
-      />
+      <DataHeader {...dataHeaderProps} filterComponent={filterComponent} />
     );
     expect(wrapper).toMatchSnapshot();
   });
@@ -93,6 +99,6 @@ describe('Data column header component', () => {
 
     wrapper.find('Draggable').prop('onDrag')(null, { deltaX: 50 });
 
-    expect(resizeColumn).toHaveBeenCalledWith(50);
+    expect(resizeColumn).toHaveBeenCalledWith('test', 50);
   });
 });

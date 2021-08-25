@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
 import {
   downloadDatafile,
@@ -7,60 +7,63 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { useSelector } from 'react-redux';
 
-interface DownloadButtonProps {
+export interface DownloadButtonProps {
   entityType: 'dataset' | 'datafile';
   entityId: number;
-  entityName: string;
+  entityName: string | undefined;
+  variant?: 'text' | 'outlined' | 'contained' | 'icon';
 }
 
-interface DownloadButtonDispatchProps {
-  downloadData: (
+const DownloadButton: React.FC<DownloadButtonProps> = (
+  props: DownloadButtonProps
+) => {
+  const { entityType, entityId, entityName, variant } = props;
+  const [t] = useTranslation();
+  const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
+
+  const downloadData = (
     entityType: 'dataset' | 'datafile',
     entityId: number,
     entityName: string
-  ) => Promise<void> | undefined;
-}
+  ): void => {
+    if (entityType === 'dataset') {
+      downloadDataset(idsUrl, entityId, entityName);
+    } else if (entityType === 'datafile') {
+      downloadDatafile(idsUrl, entityId, entityName);
+    }
+  };
 
-type DownloadButtonCombinedProps = DownloadButtonProps &
-  DownloadButtonDispatchProps;
-
-const DownloadButton = (props: DownloadButtonCombinedProps): JSX.Element => {
-  const { entityType, entityId, entityName, downloadData } = props;
-  const [t] = useTranslation();
-
-  return (
-    <Button
-      id="download-btn"
-      aria-label="Download"
-      variant="contained"
-      color="primary"
-      startIcon={<GetApp />}
-      disableElevation
-      onClick={() => downloadData(entityType, entityId, entityName)}
-    >
-      {t('buttons.download')}
-    </Button>
-  );
+  if (!entityName) return null;
+  if (variant === 'icon') {
+    return (
+      <IconButton
+        id={`download-btn-${entityId}`}
+        aria-label={t('buttons.download')}
+        size={'small'}
+        onClick={() => {
+          downloadData(entityType, entityId, entityName);
+        }}
+      >
+        <GetApp />
+      </IconButton>
+    );
+  } else {
+    return (
+      <Button
+        id={`download-btn-${entityId}`}
+        aria-label="Download"
+        variant={variant ?? 'contained'}
+        color="primary"
+        startIcon={<GetApp />}
+        disableElevation
+        onClick={() => downloadData(entityType, entityId, entityName)}
+      >
+        {t('buttons.download')}
+      </Button>
+    );
+  }
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DownloadButtonDispatchProps => ({
-  downloadData: (
-    entityType: 'dataset' | 'datafile',
-    entityId: number,
-    entityName: string
-  ) => {
-    if (entityType === 'dataset') {
-      return dispatch(downloadDataset(entityId, entityName));
-    } else if (entityType === 'datafile') {
-      return dispatch(downloadDatafile(entityId, entityName));
-    }
-  },
-});
-
-export default connect(null, mapDispatchToProps)(DownloadButton);
+export default DownloadButton;

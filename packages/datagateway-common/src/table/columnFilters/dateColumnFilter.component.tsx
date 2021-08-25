@@ -6,6 +6,8 @@ import {
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { FiltersType, DateFilter } from '../../app.types';
+import { usePushFilters } from '../../api';
 
 export function datesEqual(
   date1: MaterialUiPickersDate,
@@ -59,16 +61,12 @@ export function updateFilter({
 const DateColumnFilter = (props: {
   label: string;
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
-  value?: { startDate?: string; endDate?: string };
+  value: { startDate?: string; endDate?: string } | undefined;
 }): React.ReactElement => {
-  const [startDate, setStartDate] = React.useState<MaterialUiPickersDate>(
-    props.value && props.value.startDate
-      ? new Date(props.value.startDate)
-      : null
-  );
-  const [endDate, setEndDate] = React.useState<MaterialUiPickersDate>(
-    props.value && props.value.endDate ? new Date(props.value.endDate) : null
-  );
+  const startDate = props.value?.startDate
+    ? new Date(props.value.startDate)
+    : null;
+  const endDate = props.value?.endDate ? new Date(props.value.endDate) : null;
 
   return (
     <form>
@@ -92,7 +90,6 @@ const DateColumnFilter = (props: {
               startDateOrEndDateChanged: 'startDate',
               onChange: props.onChange,
             });
-            setStartDate(date);
           }}
         />
         <KeyboardDatePicker
@@ -114,7 +111,6 @@ const DateColumnFilter = (props: {
               startDateOrEndDateChanged: 'endDate',
               onChange: props.onChange,
             });
-            setEndDate(date);
           }}
         />
       </MuiPickersUtilsProvider>
@@ -123,3 +119,21 @@ const DateColumnFilter = (props: {
 };
 
 export default DateColumnFilter;
+
+export const useDateFilter = (
+  filters: FiltersType
+): ((label: string, dataKey: string) => React.ReactElement) => {
+  const pushFilters = usePushFilters();
+  return React.useMemo(() => {
+    const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+      <DateColumnFilter
+        label={label}
+        value={filters[dataKey] as DateFilter}
+        onChange={(value: { startDate?: string; endDate?: string } | null) =>
+          pushFilters(dataKey, value ? value : null)
+        }
+      />
+    );
+    return dateFilter;
+  }, [filters, pushFilters]);
+};
