@@ -526,10 +526,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                   onPageChange(1);
                                 }
                               }}
-                              aria-label={`Sort by ${s.dataKey}${
-                                sort[s.dataKey]
+                              aria-label={`Sort by ${s.label.toUpperCase()}${
+                                sort[s.label]
                                   ? `, current direction ${
-                                      sort[s.dataKey] === 'asc'
+                                      sort[s.label] === 'asc'
                                         ? 'ascending'
                                         : 'descending'
                                     }`
