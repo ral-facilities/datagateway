@@ -73,8 +73,11 @@ const DateColumnFilter = (props: {
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           clearable
-          inputProps={{ 'aria-label': `${props.label} date filter from` }}
-          KeyboardButtonProps={{ size: 'small' }}
+          inputProps={{ 'aria-label': `${props.label} filter from` }}
+          KeyboardButtonProps={{
+            size: 'small',
+            'aria-label': `${props.label} filter from date picker`,
+          }}
           format="yyyy-MM-dd"
           placeholder="From... (yyyy-MM-dd)"
           value={startDate}
@@ -94,8 +97,11 @@ const DateColumnFilter = (props: {
         />
         <KeyboardDatePicker
           clearable
-          inputProps={{ 'aria-label': `${props.label} date filter to` }}
-          KeyboardButtonProps={{ size: 'small' }}
+          inputProps={{ 'aria-label': `${props.label} filter to` }}
+          KeyboardButtonProps={{
+            size: 'small',
+            'aria-label': `${props.label} filter to date picker`,
+          }}
           placeholder="To...     (yyyy-MM-dd)"
           format="yyyy-MM-dd"
           value={endDate}
