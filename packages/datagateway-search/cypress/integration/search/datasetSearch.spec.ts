@@ -50,7 +50,7 @@ describe('Dataset search tab', () => {
         timeout: 15000,
       });
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .contains('10')
       .click()
@@ -84,7 +84,7 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Submit search button"]').click();
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .contains('4')
       .click();
@@ -105,7 +105,7 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .should('not.exist');
   });
@@ -119,7 +119,7 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Submit search button"]').click();
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .contains('1')
       .click();
@@ -136,7 +136,7 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Submit search button"]').click();
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .contains('1')
       .click();

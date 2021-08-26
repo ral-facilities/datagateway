@@ -20,7 +20,7 @@
     "invalid_date_message": "Invalid date range"
   },
   "searchPageTable": {
-    "tabs_arialabel": "Search table tabs",
+    "tabs_arialabel": "Search table",
     "header": "Search",
     "text": "Fill out form to the left and then click search."
   },

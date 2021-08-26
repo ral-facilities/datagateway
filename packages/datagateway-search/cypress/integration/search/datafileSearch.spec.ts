@@ -50,7 +50,7 @@ describe('Datafile search tab', () => {
         timeout: 10000,
       });
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Datafile')
       .contains('1')
       .click()
@@ -80,7 +80,7 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search button"]').click();
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Datafile')
       .contains('9')
       .click()
@@ -104,7 +104,7 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Datafile')
       .should('not.exist');
   });
@@ -119,7 +119,7 @@ describe('Datafile search tab', () => {
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Datafile')
       .contains('1')
       .click()

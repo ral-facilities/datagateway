@@ -17,8 +17,8 @@ describe('Download Status', () => {
     cy.seedDownloads().then(() => {
       cy.visit('/download');
 
-      cy.get('[aria-label="Downloads tab"]').should('exist');
-      cy.get('[aria-label="Downloads tab"]')
+      cy.get('[aria-label="Downloads"]').should('exist');
+      cy.get('[aria-label="Downloads"]')
         .click()
         .then(() => {
           cy.wait('@fetchDownloads');
