@@ -108,11 +108,7 @@ describe('PageContainer - Tests', () => {
     const wrapper = createWrapper();
 
     expect(
-      wrapper
-        .find('[aria-label="container-view-count"]')
-        .first()
-        .find('h3')
-        .text()
+      wrapper.find('[aria-label="view-count"]').first().find('h3').text()
     ).toBe('app.results: 101');
   });
 
