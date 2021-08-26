@@ -11,11 +11,10 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  MenuItem,
   Paper,
-  Select,
   TableSortLabel,
   Typography,
+  NativeSelect,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -452,15 +451,21 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             {totalDataCount > resOptions[0] && (
               <Grid container item xs={12} md={1} justify="flex-end">
                 <FormControl className={classes.formControl}>
-                  <InputLabel id="select-max-results-label">
+                  <InputLabel
+                    id="select-max-results-label"
+                    htmlFor="max-results-native-helper"
+                  >
                     Max Results
                   </InputLabel>
-                  <Select
-                    labelId="select-max-results-label"
+                  <NativeSelect
                     id="select-max-results"
                     value={results}
+                    inputProps={{
+                      name: 'Max Results',
+                      id: 'max-results-native-helper',
+                    }}
                     onChange={(e) => {
-                      const newResults = e.target.value as number;
+                      const newResults = (e.target.value as unknown) as number;
                       const newMaxPage = ~~(
                         1 +
                         (totalDataCount - 1) / newResults
@@ -478,11 +483,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           (i > 0 && totalDataCount > resOptions[i - 1])
                       )
                       .map((n, i) => (
-                        <MenuItem key={i} value={n}>
+                        <option key={i} value={n} aria-label={`${n}...`}>
                           {n}
-                        </MenuItem>
+                        </option>
                       ))}
-                  </Select>
+                  </NativeSelect>
                 </FormControl>
               </Grid>
             )}
