@@ -49,8 +49,7 @@ exports[`DownloadTab renders correctly 1`] = `
         item={true}
         xs={12}
       >
-        <WithStyles(ForwardRef(Typography))
-          component="h3"
+        <div
           style={
             Object {
               "alignItems": "center",
@@ -58,7 +57,6 @@ exports[`DownloadTab renders correctly 1`] = `
               "float": "right",
             }
           }
-          variant="subtitle1"
         >
           <BlackTooltip
             enterDelay={500}
@@ -72,20 +70,25 @@ exports[`DownloadTab renders correctly 1`] = `
               <Memo(ForwardRef(RefreshIcon)) />
             </WithStyles(ForwardRef(IconButton))>
           </BlackTooltip>
-          <p
-            style={
-              Object {
-                "paddingLeft": "10px ",
-              }
-            }
+          <WithStyles(ForwardRef(Typography))
+            component="h3"
+            variant="subtitle1"
           >
-            <b>
-              downloadTab.last_checked
-              : 
-            </b>
-             
-          </p>
-        </WithStyles(ForwardRef(Typography))>
+            <p
+              style={
+                Object {
+                  "paddingLeft": "10px ",
+                }
+              }
+            >
+              <b>
+                downloadTab.last_checked
+                : 
+              </b>
+               
+            </p>
+          </WithStyles(ForwardRef(Typography))>
+        </div>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
         item={true}
