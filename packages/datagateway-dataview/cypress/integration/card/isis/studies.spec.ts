@@ -26,8 +26,7 @@ describe('ISIS - Studies Cards', () => {
     );
   });
 
-  // TODO: Data mismatch issue (#782)
-  it.skip('should be able to sort by one field', () => {
+  it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
       .wait('@getStudiesOrder', {
@@ -35,7 +34,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('STUDY 4');
+    cy.get('#card').contains('STUDY 325');
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -56,8 +55,7 @@ describe('ISIS - Studies Cards', () => {
     cy.get('#card').contains('STUDY 4');
   });
 
-  // TODO: Data mismatch issue (#782)
-  it.skip('should be able to sort by multiple fields', () => {
+  it('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
       .wait('@getStudiesOrder', {
@@ -65,7 +63,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('STUDY 4');
+    cy.get('#card').contains('STUDY 325');
 
     cy.contains('[role="button"]', 'End Date')
       .click()
@@ -74,11 +72,10 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('STUDY 4');
+    cy.get('#card').contains('STUDY 325');
   });
 
-  // TODO: Check data is correct
-  it.skip('should be able to filter by multiple fields', () => {
+  it('should be able to filter by multiple fields', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
 
     cy.get('[aria-label="Filter by Name"]')
@@ -88,7 +85,7 @@ describe('ISIS - Studies Cards', () => {
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('STUDY 21');
+    cy.get('#card').contains('STUDY 11');
 
     cy.get('[aria-label="Filter by Title"]')
       .find('input')
