@@ -80,7 +80,7 @@ const DateColumnFilter = (props: {
           }}
           format="yyyy-MM-dd"
           aria-hidden="true"
-          label="(yyyy-MM-dd)"
+          label="From...[yyyy-MM-dd]"
           value={startDate}
           views={['year', 'month', 'date']}
           maxDate={endDate || new Date('2100-01-01')}
@@ -100,7 +100,7 @@ const DateColumnFilter = (props: {
           clearable
           inputProps={{ 'aria-label': `${props.label} filter to` }}
           aria-hidden="true"
-          label="(yyyy-MM-dd)"
+          label="To...   [yyyy-MM-dd]"
           KeyboardButtonProps={{
             size: 'small',
             'aria-label': `${props.label} filter to date picker`,
