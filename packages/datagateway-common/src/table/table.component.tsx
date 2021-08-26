@@ -298,6 +298,7 @@ const VirtualizedTable = React.memo(
                   rowClassName={getRowClassName}
                   rowGetter={getRow}
                   rowRenderer={renderRow}
+                  tabIndex={-1}
                 >
                   {selectedRows && onCheck && onUncheck && (
                     <Column
