@@ -75,8 +75,7 @@ describe('ISIS - Studies Cards', () => {
     cy.get('#card').contains('STUDY 325');
   });
 
-  // TODO: Check data is correct
-  it.skip('should be able to filter by multiple fields', () => {
+  it('should be able to filter by multiple fields', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
 
     cy.get('[aria-label="Filter by Name"]')
@@ -86,7 +85,7 @@ describe('ISIS - Studies Cards', () => {
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('STUDY 21');
+    cy.get('#card').contains('STUDY 11');
 
     cy.get('[aria-label="Filter by Title"]')
       .find('input')
