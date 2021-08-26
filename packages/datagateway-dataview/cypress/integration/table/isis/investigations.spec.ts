@@ -32,7 +32,7 @@ describe('ISIS - Investigations Table', () => {
       .then((window) => {
         const windowWidth = window.innerWidth;
         // Account for select and details column widths
-        columnWidth = (windowWidth - 40 - 40) / 7;
+        columnWidth = (windowWidth - 40 - 40 - 70) / 7;
         columnWidth = Math.floor(columnWidth * 10) / 10;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
