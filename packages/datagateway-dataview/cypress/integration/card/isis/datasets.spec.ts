@@ -8,11 +8,9 @@ describe('ISIS - Datasets Cards', () => {
     ).wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {
       timeout: 10000,
     });
-    cy.get('[aria-label="page-view-button"]')
-      .click()
-      .wait(['@getDatasetsOrder'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="page-view"]').click().wait(['@getDatasetsOrder'], {
+      timeout: 10000,
+    });
   });
 
   it('should load correctly', () => {
