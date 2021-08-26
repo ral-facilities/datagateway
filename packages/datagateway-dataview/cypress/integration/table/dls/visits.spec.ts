@@ -200,8 +200,7 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    // TODO: Data mismatch issue (#782)
-    it.skip('and then calculate file size', () => {
+    it('and then calculate file size', () => {
       // We need to wait for counts to finish, otherwise cypress
       // might interact with the details panel too quickly and
       // it re-renders during the test.
@@ -213,7 +212,7 @@ describe('DLS - Visits Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('10.8 GB', { timeout: 10000 }).should('be.visible');
+      cy.contains('10.25 GB', { timeout: 10000 }).should('be.visible');
     });
 
     // TODO: Since we only have one investigation, we cannot test

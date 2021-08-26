@@ -127,8 +127,7 @@ describe('ISIS - Studies Table', () => {
       );
     });
 
-    // TODO: one to many issue
-    it.skip('multiple columns', () => {
+    it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'Name').click();
 
@@ -139,22 +138,20 @@ describe('ISIS - Studies Table', () => {
   });
 
   describe('should be able to filter by', () => {
-    // TODO: Data mismatch issue
-    it.skip('text', () => {
+    it('text', () => {
       cy.get('[aria-label="Filter by Name"]').find('input').first().type('3');
 
       cy.get('[aria-rowcount="5"]').should('exist');
-      cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="4"] [aria-colindex="2"]').contains(
         'Peace attack I history attack. Together company interview often successful few. A fall yard let which house.'
       );
     });
 
-    // TODO: Data mismatch issue
-    it.skip('date between', () => {
+    it('date between', () => {
       cy.get('[aria-label="Start Date date filter from"]').type('2010-04-02');
 
       cy.get('[aria-rowcount="11"]').should('exist');
-      cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="9"] [aria-colindex="2"]').contains(
         'Old ok order wall bank. Floor science physical ask activity alone. Language sort test bill to century. Four direction reason. Its arm water box. Also idea quite own. None special now million.'
       );
     });
