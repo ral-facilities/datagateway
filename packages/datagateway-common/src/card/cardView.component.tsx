@@ -453,7 +453,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               <Grid container item xs={12} md={1} justify="flex-end">
                 <FormControl className={classes.formControl}>
                   <InputLabel id="select-max-results-label">
-                    Max Results
+                    {t('app.max_results')}
                   </InputLabel>
                   <Select
                     labelId="select-max-results-label"
