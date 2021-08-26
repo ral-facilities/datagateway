@@ -25,13 +25,13 @@ describe('Download Cart', () => {
     // Ensure we can move away from the table and come back to it.
     cy.get('[aria-label="Download cart panel"]').should('exist');
     // Wait for the downloads to be fetched before moving back to the cart.
-    cy.get('[aria-label="Downloads tab"]')
+    cy.get('[aria-label="Downloads"]')
       .should('exist')
       .click()
       .wait('@fetchDownloads');
     cy.get('[aria-label="Download status panel"]').should('exist');
 
-    cy.get('[aria-label="Cart tab').click().wait('@fetchCart');
+    cy.get('[aria-label="Cart').click().wait('@fetchCart');
     cy.get('[aria-label="Download cart panel"]').should('exist');
 
     cy.get('[aria-rowcount=59]', { timeout: 10000 }).should('exist');

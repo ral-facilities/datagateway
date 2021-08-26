@@ -84,7 +84,7 @@ describe('Investigation search tab', () => {
         timeout: 10000,
       });
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Investigation')
       .contains('19')
       .click();
@@ -100,7 +100,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Submit search button"]').click();
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Investigation')
       .contains('12')
       .click();
@@ -121,7 +121,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Investigation')
       .should('not.exist');
   });
