@@ -180,7 +180,7 @@ describe('Dataset table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by datasets.name"] input')
+      .find('[aria-label="Filter by datasets.name"]')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
@@ -203,7 +203,7 @@ describe('Dataset table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
-      '[aria-label="datasets.modified_time date filter to"]'
+      '[aria-label="datasets.modified_time filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
