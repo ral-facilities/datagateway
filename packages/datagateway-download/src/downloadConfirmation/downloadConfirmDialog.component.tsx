@@ -14,7 +14,6 @@ import {
   Select,
   FormControl,
   InputLabel,
-  MenuItem,
   FormHelperText,
   CircularProgress,
 } from '@material-ui/core';
@@ -519,13 +518,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       methodsUnavailable
                     }
                   >
-                    <InputLabel id="confirm-access-method-label">
+                    <InputLabel htmlFor="confirm-access-method-label">
                       {t('downloadConfirmDialog.access_method_label')}
                     </InputLabel>
                     <Select
-                      labelId="confirm-access-method-label"
+                      native
                       id="confirm-access-method"
                       value={`${methodsUnavailable ? '' : selectedMethod}`}
+                      inputProps={{
+                        name: 'access method',
+                        id: 'confirm-access-method-label',
+                      }}
                       onChange={(e) => {
                         if (!methodsUnavailable)
                           // Material UI select is not a real select element, so needs casting.
@@ -533,20 +536,24 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       }}
                     >
                       {/* Access methods from settings as items for selection */}
-                      {sortedMethods.map(([type, methodInfo], index) => (
-                        <MenuItem
-                          key={index}
-                          id={`confirm-access-method-${type}`}
-                          value={type}
-                          disabled={methodInfo.disabled === undefined}
-                        >
-                          {/* The display name will be shown as the menu item,
-                          if defined in the settings, otherwise we show the type. */}
-                          {methodInfo.displayName
-                            ? methodInfo.displayName
-                            : type.toUpperCase()}
-                        </MenuItem>
-                      ))}
+                      {sortedMethods.map(([type, methodInfo], index) => {
+                        const methodName = methodInfo.displayName
+                          ? methodInfo.displayName
+                          : type.toUpperCase();
+                        return (
+                          <option
+                            key={index}
+                            id={`confirm-access-method-${type}`}
+                            aria-label={methodName}
+                            value={type}
+                            disabled={methodInfo.disabled === undefined}
+                          >
+                            {/* The display name will be shown as the menu item,
+                            if defined in the settings, otherwise we show the type. */}
+                            {methodName}
+                          </option>
+                        );
+                      })}
                     </Select>
 
                     <FormHelperText id="confirm-access-method-help">
