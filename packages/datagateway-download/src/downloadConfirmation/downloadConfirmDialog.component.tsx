@@ -537,6 +537,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     >
                       {/* Access methods from settings as items for selection */}
                       {sortedMethods.map(([type, methodInfo], index) => {
+                        // The display name will be shown as the menu item,
+                        // if defined in the settings, otherwise we show the type.
                         const methodName = methodInfo.displayName
                           ? methodInfo.displayName
                           : type.toUpperCase();
@@ -548,8 +550,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                             value={type}
                             disabled={methodInfo.disabled === undefined}
                           >
-                            {/* The display name will be shown as the menu item,
-                            if defined in the settings, otherwise we show the type. */}
                             {methodName}
                           </option>
                         );

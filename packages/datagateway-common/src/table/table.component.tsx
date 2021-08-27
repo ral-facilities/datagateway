@@ -298,6 +298,8 @@ const VirtualizedTable = React.memo(
                   rowClassName={getRowClassName}
                   rowGetter={getRow}
                   rowRenderer={renderRow}
+                  // Disable tab focus on whole table for accessibility;
+                  // prevents screen readers outputting table contents on focus.
                   tabIndex={-1}
                 >
                   {selectedRows && onCheck && onUncheck && (
