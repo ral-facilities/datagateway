@@ -523,11 +523,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       {t('downloadConfirmDialog.access_method_label')}
                     </InputLabel>
                     <Select
-                      labelId="confirm-access-method"
+                      labelId="confirm-access-method-label"
                       id="confirm-access-method"
-                      defaultValue={`${
-                        methodsUnavailable ? '' : selectedMethod
-                      }`}
+                      value={`${methodsUnavailable ? '' : selectedMethod}`}
                       onChange={(e) => {
                         if (!methodsUnavailable)
                           // Material UI select is not a real select element, so needs casting.

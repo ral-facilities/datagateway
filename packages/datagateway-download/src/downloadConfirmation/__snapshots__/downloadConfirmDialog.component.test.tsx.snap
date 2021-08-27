@@ -521,7 +521,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                   >
                                     <div
                                       aria-haspopup="listbox"
-                                      aria-labelledby="confirm-access-method confirm-access-method"
+                                      aria-labelledby="confirm-access-method-label confirm-access-method"
                                       class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                       id="confirm-access-method"
                                       role="button"
@@ -1850,10 +1850,10 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                             </ForwardRef(InputLabel)>
                                                           </WithStyles(ForwardRef(InputLabel))>
                                                           <WithStyles(ForwardRef(Select))
-                                                            defaultValue="https"
                                                             id="confirm-access-method"
-                                                            labelId="confirm-access-method"
+                                                            labelId="confirm-access-method-label"
                                                             onChange={[Function]}
+                                                            value="https"
                                                           >
                                                             <ForwardRef(Select)
                                                               classes={
@@ -1871,13 +1871,12 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   "selectMenu": "MuiSelect-selectMenu",
                                                                 }
                                                               }
-                                                              defaultValue="https"
                                                               id="confirm-access-method"
-                                                              labelId="confirm-access-method"
+                                                              labelId="confirm-access-method-label"
                                                               onChange={[Function]}
+                                                              value="https"
                                                             >
                                                               <WithStyles(ForwardRef(Input))
-                                                                defaultValue="https"
                                                                 inputComponent={
                                                                   Object {
                                                                     "$$typeof": Symbol(react.forward_ref),
@@ -1959,7 +1958,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       "selectMenu": "MuiSelect-selectMenu",
                                                                     },
                                                                     "displayEmpty": false,
-                                                                    "labelId": "confirm-access-method",
+                                                                    "labelId": "confirm-access-method-label",
                                                                     "multiple": false,
                                                                     "onClose": undefined,
                                                                     "onOpen": undefined,
@@ -1970,6 +1969,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   }
                                                                 }
                                                                 onChange={[Function]}
+                                                                value="https"
                                                               >
                                                                 <ForwardRef(Input)
                                                                   classes={
@@ -1990,7 +1990,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       "underline": "MuiInput-underline",
                                                                     }
                                                                   }
-                                                                  defaultValue="https"
                                                                   inputComponent={
                                                                     Object {
                                                                       "$$typeof": Symbol(react.forward_ref),
@@ -2072,7 +2071,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         "selectMenu": "MuiSelect-selectMenu",
                                                                       },
                                                                       "displayEmpty": false,
-                                                                      "labelId": "confirm-access-method",
+                                                                      "labelId": "confirm-access-method-label",
                                                                       "multiple": false,
                                                                       "onClose": undefined,
                                                                       "onOpen": undefined,
@@ -2083,6 +2082,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     }
                                                                   }
                                                                   onChange={[Function]}
+                                                                  value="https"
                                                                 >
                                                                   <WithStyles(ForwardRef(InputBase))
                                                                     classes={
@@ -2103,7 +2103,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         "underline": null,
                                                                       }
                                                                     }
-                                                                    defaultValue="https"
                                                                     fullWidth={false}
                                                                     inputComponent={
                                                                       Object {
@@ -2186,7 +2185,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           "selectMenu": "MuiSelect-selectMenu",
                                                                         },
                                                                         "displayEmpty": false,
-                                                                        "labelId": "confirm-access-method",
+                                                                        "labelId": "confirm-access-method-label",
                                                                         "multiple": false,
                                                                         "onClose": undefined,
                                                                         "onOpen": undefined,
@@ -2199,6 +2198,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     multiline={false}
                                                                     onChange={[Function]}
                                                                     type="text"
+                                                                    value="https"
                                                                   >
                                                                     <ForwardRef(InputBase)
                                                                       classes={
@@ -2223,7 +2223,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           "root": "MuiInputBase-root MuiInput-root MuiInput-underline",
                                                                         }
                                                                       }
-                                                                      defaultValue="https"
                                                                       fullWidth={false}
                                                                       inputComponent={
                                                                         Object {
@@ -2306,7 +2305,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             "selectMenu": "MuiSelect-selectMenu",
                                                                           },
                                                                           "displayEmpty": false,
-                                                                          "labelId": "confirm-access-method",
+                                                                          "labelId": "confirm-access-method-label",
                                                                           "multiple": false,
                                                                           "onClose": undefined,
                                                                           "onOpen": undefined,
@@ -2319,6 +2318,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       multiline={false}
                                                                       onChange={[Function]}
                                                                       type="text"
+                                                                      value="https"
                                                                     >
                                                                       <div
                                                                         className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -2358,22 +2358,22 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                               "selectMenu": "MuiSelect-selectMenu",
                                                                             }
                                                                           }
-                                                                          defaultValue="https"
                                                                           disabled={false}
                                                                           displayEmpty={false}
                                                                           inputRef={[Function]}
-                                                                          labelId="confirm-access-method"
+                                                                          labelId="confirm-access-method-label"
                                                                           multiple={false}
                                                                           onAnimationStart={[Function]}
                                                                           onBlur={[Function]}
                                                                           onChange={[Function]}
                                                                           onFocus={[Function]}
                                                                           required={false}
+                                                                          value="https"
                                                                           variant="standard"
                                                                         >
                                                                           <div
                                                                             aria-haspopup="listbox"
-                                                                            aria-labelledby="confirm-access-method confirm-access-method"
+                                                                            aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                             className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                             id="confirm-access-method"
                                                                             onBlur={[Function]}
@@ -2432,7 +2432,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           <WithStyles(ForwardRef(Menu))
                                                                             MenuListProps={
                                                                               Object {
-                                                                                "aria-labelledby": "confirm-access-method",
+                                                                                "aria-labelledby": "confirm-access-method-label",
                                                                                 "disableListWrap": true,
                                                                                 "role": "listbox",
                                                                               }
@@ -2447,7 +2447,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             anchorEl={
                                                                               <div
                                                                                 aria-haspopup="listbox"
-                                                                                aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                 class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                 id="confirm-access-method"
                                                                                 role="button"
@@ -2463,7 +2463,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             <ForwardRef(Menu)
                                                                               MenuListProps={
                                                                                 Object {
-                                                                                  "aria-labelledby": "confirm-access-method",
+                                                                                  "aria-labelledby": "confirm-access-method-label",
                                                                                   "disableListWrap": true,
                                                                                   "role": "listbox",
                                                                                 }
@@ -2478,7 +2478,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                               anchorEl={
                                                                                 <div
                                                                                   aria-haspopup="listbox"
-                                                                                  aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                  aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                   class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                   id="confirm-access-method"
                                                                                   role="button"
@@ -2511,7 +2511,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                 anchorEl={
                                                                                   <div
                                                                                     aria-haspopup="listbox"
-                                                                                    aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                    aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                     class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                     id="confirm-access-method"
                                                                                     role="button"
@@ -2553,7 +2553,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                   anchorEl={
                                                                                     <div
                                                                                       aria-haspopup="listbox"
-                                                                                      aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                      aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                       class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                       id="confirm-access-method"
                                                                                       role="button"
@@ -2724,7 +2724,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                         >
                                                                                                           <div
                                                                                                             aria-haspopup="listbox"
-                                                                                                            aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                                            aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                                             class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                                             id="confirm-access-method"
                                                                                                             role="button"
@@ -4442,7 +4442,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                   >
                                     <div
                                       aria-haspopup="listbox"
-                                      aria-labelledby="confirm-access-method confirm-access-method"
+                                      aria-labelledby="confirm-access-method-label confirm-access-method"
                                       class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                       id="confirm-access-method"
                                       role="button"
@@ -5822,10 +5822,10 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                             </ForwardRef(InputLabel)>
                                                           </WithStyles(ForwardRef(InputLabel))>
                                                           <WithStyles(ForwardRef(Select))
-                                                            defaultValue="https"
                                                             id="confirm-access-method"
-                                                            labelId="confirm-access-method"
+                                                            labelId="confirm-access-method-label"
                                                             onChange={[Function]}
+                                                            value="https"
                                                           >
                                                             <ForwardRef(Select)
                                                               classes={
@@ -5843,13 +5843,12 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   "selectMenu": "MuiSelect-selectMenu",
                                                                 }
                                                               }
-                                                              defaultValue="https"
                                                               id="confirm-access-method"
-                                                              labelId="confirm-access-method"
+                                                              labelId="confirm-access-method-label"
                                                               onChange={[Function]}
+                                                              value="https"
                                                             >
                                                               <WithStyles(ForwardRef(Input))
-                                                                defaultValue="https"
                                                                 inputComponent={
                                                                   Object {
                                                                     "$$typeof": Symbol(react.forward_ref),
@@ -5931,7 +5930,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       "selectMenu": "MuiSelect-selectMenu",
                                                                     },
                                                                     "displayEmpty": false,
-                                                                    "labelId": "confirm-access-method",
+                                                                    "labelId": "confirm-access-method-label",
                                                                     "multiple": false,
                                                                     "onClose": undefined,
                                                                     "onOpen": undefined,
@@ -5942,6 +5941,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   }
                                                                 }
                                                                 onChange={[Function]}
+                                                                value="https"
                                                               >
                                                                 <ForwardRef(Input)
                                                                   classes={
@@ -5962,7 +5962,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       "underline": "MuiInput-underline",
                                                                     }
                                                                   }
-                                                                  defaultValue="https"
                                                                   inputComponent={
                                                                     Object {
                                                                       "$$typeof": Symbol(react.forward_ref),
@@ -6044,7 +6043,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         "selectMenu": "MuiSelect-selectMenu",
                                                                       },
                                                                       "displayEmpty": false,
-                                                                      "labelId": "confirm-access-method",
+                                                                      "labelId": "confirm-access-method-label",
                                                                       "multiple": false,
                                                                       "onClose": undefined,
                                                                       "onOpen": undefined,
@@ -6055,6 +6054,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     }
                                                                   }
                                                                   onChange={[Function]}
+                                                                  value="https"
                                                                 >
                                                                   <WithStyles(ForwardRef(InputBase))
                                                                     classes={
@@ -6075,7 +6075,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         "underline": null,
                                                                       }
                                                                     }
-                                                                    defaultValue="https"
                                                                     fullWidth={false}
                                                                     inputComponent={
                                                                       Object {
@@ -6158,7 +6157,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           "selectMenu": "MuiSelect-selectMenu",
                                                                         },
                                                                         "displayEmpty": false,
-                                                                        "labelId": "confirm-access-method",
+                                                                        "labelId": "confirm-access-method-label",
                                                                         "multiple": false,
                                                                         "onClose": undefined,
                                                                         "onOpen": undefined,
@@ -6171,6 +6170,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     multiline={false}
                                                                     onChange={[Function]}
                                                                     type="text"
+                                                                    value="https"
                                                                   >
                                                                     <ForwardRef(InputBase)
                                                                       classes={
@@ -6195,7 +6195,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           "root": "MuiInputBase-root MuiInput-root MuiInput-underline",
                                                                         }
                                                                       }
-                                                                      defaultValue="https"
                                                                       fullWidth={false}
                                                                       inputComponent={
                                                                         Object {
@@ -6278,7 +6277,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             "selectMenu": "MuiSelect-selectMenu",
                                                                           },
                                                                           "displayEmpty": false,
-                                                                          "labelId": "confirm-access-method",
+                                                                          "labelId": "confirm-access-method-label",
                                                                           "multiple": false,
                                                                           "onClose": undefined,
                                                                           "onOpen": undefined,
@@ -6291,6 +6290,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       multiline={false}
                                                                       onChange={[Function]}
                                                                       type="text"
+                                                                      value="https"
                                                                     >
                                                                       <div
                                                                         className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -6330,22 +6330,22 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                               "selectMenu": "MuiSelect-selectMenu",
                                                                             }
                                                                           }
-                                                                          defaultValue="https"
                                                                           disabled={false}
                                                                           displayEmpty={false}
                                                                           inputRef={[Function]}
-                                                                          labelId="confirm-access-method"
+                                                                          labelId="confirm-access-method-label"
                                                                           multiple={false}
                                                                           onAnimationStart={[Function]}
                                                                           onBlur={[Function]}
                                                                           onChange={[Function]}
                                                                           onFocus={[Function]}
                                                                           required={false}
+                                                                          value="https"
                                                                           variant="standard"
                                                                         >
                                                                           <div
                                                                             aria-haspopup="listbox"
-                                                                            aria-labelledby="confirm-access-method confirm-access-method"
+                                                                            aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                             className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                             id="confirm-access-method"
                                                                             onBlur={[Function]}
@@ -6404,7 +6404,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           <WithStyles(ForwardRef(Menu))
                                                                             MenuListProps={
                                                                               Object {
-                                                                                "aria-labelledby": "confirm-access-method",
+                                                                                "aria-labelledby": "confirm-access-method-label",
                                                                                 "disableListWrap": true,
                                                                                 "role": "listbox",
                                                                               }
@@ -6419,7 +6419,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             anchorEl={
                                                                               <div
                                                                                 aria-haspopup="listbox"
-                                                                                aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                 class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                 id="confirm-access-method"
                                                                                 role="button"
@@ -6435,7 +6435,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             <ForwardRef(Menu)
                                                                               MenuListProps={
                                                                                 Object {
-                                                                                  "aria-labelledby": "confirm-access-method",
+                                                                                  "aria-labelledby": "confirm-access-method-label",
                                                                                   "disableListWrap": true,
                                                                                   "role": "listbox",
                                                                                 }
@@ -6450,7 +6450,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                               anchorEl={
                                                                                 <div
                                                                                   aria-haspopup="listbox"
-                                                                                  aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                  aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                   class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                   id="confirm-access-method"
                                                                                   role="button"
@@ -6483,7 +6483,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                 anchorEl={
                                                                                   <div
                                                                                     aria-haspopup="listbox"
-                                                                                    aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                    aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                     class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                     id="confirm-access-method"
                                                                                     role="button"
@@ -6525,7 +6525,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                   anchorEl={
                                                                                     <div
                                                                                       aria-haspopup="listbox"
-                                                                                      aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                      aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                       class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                       id="confirm-access-method"
                                                                                       role="button"
@@ -6696,7 +6696,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                         >
                                                                                                           <div
                                                                                                             aria-haspopup="listbox"
-                                                                                                            aria-labelledby="confirm-access-method confirm-access-method"
+                                                                                                            aria-labelledby="confirm-access-method-label confirm-access-method"
                                                                                                             class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                                                                             id="confirm-access-method"
                                                                                                             role="button"
