@@ -144,7 +144,7 @@ describe('ISIS Studies table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by studies.name"] input')
+      .find('[aria-label="Filter by studies.name"]')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
@@ -166,7 +166,7 @@ describe('ISIS Studies table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
-      '[aria-label="studies.end_date date filter to"]'
+      '[aria-label="studies.end_date filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
