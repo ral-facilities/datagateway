@@ -152,7 +152,7 @@ describe('DLS Visits table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.visit_id"] input')
+      .find('[aria-label="Filter by investigations.visit_id"]')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
@@ -175,7 +175,7 @@ describe('DLS Visits table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
-      '[aria-label="investigations.end_date date filter to"]'
+      '[aria-label="investigations.end_date filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
