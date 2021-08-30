@@ -297,7 +297,7 @@ describe('Admin Download Status Table', () => {
 
     // Get the Username filter input
     const usernameFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.username"] input')
+      .find('[aria-label="Filter by downloadStatus.username"]')
       .first();
     await act(async () => {
       usernameFilterInput.instance().value = 'test user';
@@ -315,7 +315,7 @@ describe('Admin Download Status Table', () => {
 
     // Get the Availability filter input
     const availabilityFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.status"] input')
+      .find('[aria-label="Filter by downloadStatus.status"]')
       .first();
     await act(async () => {
       availabilityFilterInput.instance().value = 'downloadStatus.complete';
@@ -371,7 +371,7 @@ describe('Admin Download Status Table', () => {
 
     // Get the Requested Data From filter input
     const dateFromFilterInput = wrapper.find(
-      '[aria-label="downloadStatus.createdAt date filter from"]'
+      '[aria-label="downloadStatus.createdAt filter from"]'
     );
     await act(async () => {
       dateFromFilterInput.instance().value = '2020-01-01';
@@ -387,7 +387,7 @@ describe('Admin Download Status Table', () => {
 
     // Get the Requested Data To filter input
     const dateToFilterInput = wrapper.find(
-      '[aria-label="downloadStatus.createdAt date filter to"]'
+      '[aria-label="downloadStatus.createdAt filter to"]'
     );
     await act(async () => {
       dateToFilterInput.instance().value = '2020-01-02';

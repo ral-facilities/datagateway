@@ -407,7 +407,7 @@ describe('Download Status Table', () => {
     });
 
     const downloadNameFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.filename"] input')
+      .find('[aria-label="Filter by downloadStatus.filename"]')
       .first();
     downloadNameFilterInput.instance().value = '1';
     downloadNameFilterInput.simulate('change');
@@ -420,7 +420,7 @@ describe('Download Status Table', () => {
     ).toBe(true);
 
     const accessMethodFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.transport"] input')
+      .find('[aria-label="Filter by downloadStatus.transport"]')
       .first();
 
     downloadNameFilterInput.instance().value = '';
@@ -445,7 +445,7 @@ describe('Download Status Table', () => {
 
     // Test varying download availabilities.
     const availabilityFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.status"] input')
+      .find('[aria-label="Filter by downloadStatus.status"]')
       .first();
 
     availabilityFilterInput.instance().value = 'downloadStatus.complete';
@@ -481,7 +481,7 @@ describe('Download Status Table', () => {
     });
 
     const dateFromFilterInput = wrapper.find(
-      '[aria-label="downloadStatus.createdAt date filter from"]'
+      '[aria-label="downloadStatus.createdAt filter from"]'
     );
 
     dateFromFilterInput.instance().value = '2020-01-01';
@@ -490,7 +490,7 @@ describe('Download Status Table', () => {
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
 
     const dateToFilterInput = wrapper.find(
-      '[aria-label="downloadStatus.createdAt date filter to"]'
+      '[aria-label="downloadStatus.createdAt filter to"]'
     );
 
     dateToFilterInput.instance().value = '2020-01-02';

@@ -367,7 +367,7 @@ describe('Download cart table component', () => {
     });
 
     const nameFilterInput = wrapper
-      .find('[aria-label="Filter by downloadCart.name"] input')
+      .find('[aria-label="Filter by downloadCart.name"]')
       .first();
     nameFilterInput.instance().value = '1';
     nameFilterInput.simulate('change');
@@ -380,7 +380,7 @@ describe('Download cart table component', () => {
     ).toBe(false);
 
     const typeFilterInput = wrapper
-      .find('[aria-label="Filter by downloadCart.type"] input')
+      .find('[aria-label="Filter by downloadCart.type"]')
       .first();
     typeFilterInput.instance().value = 'data';
     typeFilterInput.simulate('change');
