@@ -182,20 +182,26 @@ describe('PageContainer - Tests', () => {
     history.replace(paths.toggle.investigation);
 
     const wrapper = createWrapper();
+    console.log(wrapper.debug());
 
-    expect(wrapper.find('[aria-label="page-view"]').exists()).toBeTruthy();
-    expect(wrapper.find('[aria-label="page-view"]').first().text()).toEqual(
-      'app.view_cards'
-    );
+    expect(
+      wrapper.find('[aria-label="page-view app.view_cards"]').exists()
+    ).toBeTruthy();
+    expect(
+      wrapper.find('[aria-label="page-view app.view_cards"]').first().text()
+    ).toEqual('app.view_cards');
 
     // Click view button
-    wrapper.find('[aria-label="page-view"]').first().simulate('click');
+    wrapper
+      .find('[aria-label="page-view app.view_cards"]')
+      .first()
+      .simulate('click');
     wrapper.update();
 
     // Check that the text on the button has changed
-    expect(wrapper.find('[aria-label="page-view"]').first().text()).toEqual(
-      'app.view_table'
-    );
+    expect(
+      wrapper.find('[aria-label="page-view app.view_table"]').first().text()
+    ).toEqual('app.view_table');
   });
 
   it('display filter warning on toggle table', () => {
