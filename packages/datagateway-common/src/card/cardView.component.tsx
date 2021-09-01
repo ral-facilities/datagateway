@@ -14,7 +14,7 @@ import {
   Paper,
   TableSortLabel,
   Typography,
-  NativeSelect,
+  Select,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -457,7 +457,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   >
                     {t('app.max_results')}
                   </InputLabel>
-                  <NativeSelect
+                  <Select
+                    native
                     id="select-max-results"
                     value={results}
                     inputProps={{
@@ -465,7 +466,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                       id: 'max-results-native-helper',
                     }}
                     onChange={(e) => {
-                      const newResults = (e.target.value as unknown) as number;
+                      const newResults = e.target.value as number;
                       const newMaxPage = ~~(
                         1 +
                         (totalDataCount - 1) / newResults
@@ -487,7 +488,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           {n}
                         </option>
                       ))}
-                  </NativeSelect>
+                  </Select>
                 </FormControl>
               </Grid>
             )}
