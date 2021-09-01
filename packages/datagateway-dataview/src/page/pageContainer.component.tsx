@@ -275,7 +275,9 @@ const ViewButton = (props: {
     <div className={classes.root}>
       <Button
         className="tour-dataview-view-button"
-        aria-label="page-view"
+        aria-label={`page-view ${
+          props.viewCards ? t('app.view_table') : t('app.view_cards')
+        }`}
         variant="contained"
         color="primary"
         size="small"
