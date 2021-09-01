@@ -9,21 +9,21 @@ describe('DLS - MyData Table', () => {
     cy.visit('/my-data/DLS');
   });
 
-  it.skip('should load correctly', () => {
+  it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it.skip('should be able to click an investigation to see its datasets', () => {
+  it('should be able to click an investigation to see its datasets', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
+      '/browse/proposal/INVESTIGATION%20131/investigation/131/dataset'
     );
   });
 
-  it.skip('should be able to resize a column', () => {
+  it('should be able to resize a column', () => {
     let columnWidth = 0;
 
     cy.window()
@@ -82,13 +82,63 @@ describe('DLS - MyData Table', () => {
     });
   });
 
-  describe.skip('should be able to sort by', () => {
-    // we only have one row - so can't properly test sorting
+  describe('should be able to sort by', () => {
+    it('ascending order', () => {
+      cy.contains('[role="button"]', 'Start Date').click();
+      cy.contains('[role="button"]', 'Title').click();
+
+      cy.get('[aria-sort="ascending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Experience ready course option.'
+      );
+    });
+
+    it('descending order', () => {
+      cy.contains('[role="button"]', 'Start Date').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.get('[aria-sort="descending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'not.have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Standard country something spend sign.'
+      );
+    });
+
+    it('no order', () => {
+      cy.contains('[role="button"]', 'Start Date').click();
+
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Standard country something spend sign.'
+      );
+    });
+
+    it('multiple columns', () => {
+      cy.contains('[role="button"]', 'Start Date').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Instrument').click();
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Experience ready course option.'
+      );
+    });
   });
 
   describe('should be able to filter by', () => {
-    it.skip('text', () => {
-      cy.get('[aria-rowcount="1"]').should('exist');
+    it('text', () => {
+      cy.get('[aria-rowcount="4"]').should('exist');
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
         .first()
@@ -97,8 +147,8 @@ describe('DLS - MyData Table', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
-    it.skip('date between', () => {
-      cy.get('[aria-rowcount="1"]').should('exist');
+    it('date between', () => {
+      cy.get('[aria-rowcount="4"]').should('exist');
 
       cy.get('[aria-label="Start Date date filter to"]')
         .parent()
@@ -117,18 +167,18 @@ describe('DLS - MyData Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="4"]').should('exist');
 
       cy.get('[aria-label="Start Date date filter from"]').type('2000-04-04');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
-    it.skip('multiple columns', () => {
+    it('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument')
         .find('input')
         .first()
-        .type('Who set wind carry matter.');
+        .type('Start state detail.');
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
@@ -142,20 +192,14 @@ describe('DLS - MyData Table', () => {
   });
 
   describe('should be able to view details', () => {
-    it.skip('when no other row is showing details', () => {
+    it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    // TODO: Since we only have one investigation, we cannot test
-    // showing details when another row is showing details at the moment.
-
-    it.skip('and view visit users, samples and publications', () => {
-      // We need to wait for counts to finish, otherwise cypress
-      // might interact with the details panel too quickly and
-      // it re-renders during the test.
+    it('and view visit users, samples and publications', () => {
       cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '2').should(
         'exist'
       );
@@ -164,20 +208,34 @@ describe('DLS - MyData Table', () => {
 
       cy.get('[aria-controls="visit-samples-panel"]').click();
       cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 131').should('be.visible');
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('Antonio Cooper').should('be.visible');
+      cy.get('#details-panel').contains('Kimberly Sharp').should('be.visible');
 
       cy.get('[aria-controls="visit-publications-panel"]').click();
       cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
       cy.get('#details-panel').contains(
-        'Democrat sea gas road police. Citizen relationship southern affect. Thousand national especially. In edge far education.'
+        'Guess including understand bed father.'
       );
     });
 
-    it.skip('and then not view details anymore', () => {
+    it('when another row is showing details', () => {
+      cy.get('[aria-label="Show details"]').eq(1).click();
+
+      cy.get('[aria-label="Show details"]').first().click();
+
+      cy.get('#details-panel')
+        .contains('Resource himself season pattern which cold spring.')
+        .should('be.visible');
+      cy.get('#details-panel')
+        .contains('Experience ready course option.')
+        .should('not.exist');
+      cy.get('[aria-label="Hide details"]').should('have.length', 1);
+    });
+
+    it('and then not view details anymore', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-label="Hide details"]').first().click();
