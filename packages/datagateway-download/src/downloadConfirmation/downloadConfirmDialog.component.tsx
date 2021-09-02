@@ -518,16 +518,15 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       methodsUnavailable
                     }
                   >
-                    <InputLabel htmlFor="confirm-access-method-label">
+                    <InputLabel htmlFor="confirm-access-method">
                       {t('downloadConfirmDialog.access_method_label')}
                     </InputLabel>
                     <Select
                       native
-                      id="confirm-access-method"
                       value={`${methodsUnavailable ? '' : selectedMethod}`}
                       inputProps={{
                         name: 'access method',
-                        id: 'confirm-access-method-label',
+                        id: 'confirm-access-method',
                       }}
                       onChange={(e) => {
                         if (!methodsUnavailable)
