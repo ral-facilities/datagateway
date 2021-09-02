@@ -144,10 +144,7 @@ describe('ISIS - Investigations Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('again');
+      cy.get('[aria-label="Filter by Title"]').first().type('again');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
@@ -156,9 +153,9 @@ describe('ISIS - Investigations Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2006-08-05');
+      cy.get('[aria-label="Start Date filter from"]').type('2006-08-05');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
@@ -170,7 +167,7 @@ describe('ISIS - Investigations Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('[aria-label="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -182,10 +179,7 @@ describe('ISIS - Investigations Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('again');
+      cy.get('[aria-label="Filter by Title"]').first().type('again');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

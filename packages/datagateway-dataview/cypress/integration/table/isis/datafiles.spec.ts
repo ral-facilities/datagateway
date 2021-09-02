@@ -98,10 +98,7 @@ describe('ISIS - Datafiles Table', () => {
 
     describe('should be able to filter by', () => {
       it('text', () => {
-        cy.get('[aria-label="Filter by Location"]')
-          .find('input')
-          .first()
-          .type('star');
+        cy.get('[aria-label="Filter by Location"]').first().type('star');
 
         cy.get('[aria-rowcount="1"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
@@ -110,11 +107,9 @@ describe('ISIS - Datafiles Table', () => {
       });
 
       it('date between', () => {
-        cy.get('[aria-label="Modified Time date filter from"]').type(
-          '2018-08-12'
-        );
+        cy.get('[aria-label="Modified Time filter from"]').type('2018-08-12');
 
-        cy.get('[aria-label="Modified Time date filter to"]')
+        cy.get('[aria-label="Modified Time filter to"]')
           .parent()
           .find('button')
           .click();
@@ -126,7 +121,7 @@ describe('ISIS - Datafiles Table', () => {
         const date = new Date();
         date.setDate(1);
 
-        cy.get('[aria-label="Modified Time date filter to"]').should(
+        cy.get('[aria-label="Modified Time filter to"]').should(
           'have.value',
           date.toISOString().slice(0, 10)
         );
@@ -139,13 +134,11 @@ describe('ISIS - Datafiles Table', () => {
 
       it('multiple columns', () => {
         cy.get('[aria-label="Filter by Name"]')
-          .find('input')
           .first()
           .type('5')
           .wait('@datafilesOrder', { timeout: 10000 });
 
         cy.get('[aria-label="Filter by Location"]')
-          .find('input')
           .first()
           .type('.png')
           .wait('@datafilesOrder', { timeout: 10000 });

@@ -89,10 +89,7 @@ describe('DLS - MyData Table', () => {
   describe('should be able to filter by', () => {
     it.skip('text', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('invalid');
+      cy.get('[aria-label="Filter by Title"]').first().type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
@@ -100,7 +97,7 @@ describe('DLS - MyData Table', () => {
     it.skip('date between', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
@@ -112,30 +109,26 @@ describe('DLS - MyData Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('[aria-label="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-label="Start Date date filter from"]').type('2000-04-04');
+      cy.get('[aria-label="Start Date filter from"]').type('2000-04-04');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
     it.skip('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument')
-        .find('input')
         .first()
         .type('Who set wind carry matter.');
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('invalid');
+      cy.get('[aria-label="Filter by Title"]').first().type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });

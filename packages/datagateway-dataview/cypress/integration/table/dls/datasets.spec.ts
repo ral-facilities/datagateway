@@ -158,12 +158,11 @@ describe('DLS - Datasets Table', () => {
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
-        .find('input')
         .first()
         .type('1')
         .wait('@datasets', { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter from"]')
+      cy.get('[aria-label="Create Time filter from"]')
         .type('2006-11-21')
         .wait('@datasets', { timeout: 10000 });
 
@@ -174,10 +173,7 @@ describe('DLS - Datasets Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .first()
-        .type('DATASET 1');
+      cy.get('[aria-label="Filter by Name"]').first().type('DATASET 1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -186,8 +182,8 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time date filter from"]').type('2002-01-01');
-      cy.get('[aria-label="Create Time date filter to"]').type('2006-01-01');
+      cy.get('[aria-label="Create Time filter from"]').type('2002-01-01');
+      cy.get('[aria-label="Create Time filter to"]').type('2006-01-01');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
@@ -195,12 +191,11 @@ describe('DLS - Datasets Table', () => {
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
-        .find('input')
         .first()
         .type('1')
         .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter from"]')
+      cy.get('[aria-label="Create Time filter from"]')
         .type('2006-11-21')
         .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
 

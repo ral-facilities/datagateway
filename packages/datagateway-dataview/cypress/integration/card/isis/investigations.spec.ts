@@ -76,7 +76,6 @@ describe('ISIS - Investigations Cards', () => {
   it('should be able to filter by multiple fields', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
-      .find('input')
       .first()
       .type('cut')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
@@ -86,13 +85,13 @@ describe('ISIS - Investigations Cards', () => {
       'He represent address cut environmental special size.'
     );
 
-    cy.get('[aria-label="Start Date date filter from"]')
+    cy.get('[aria-label="Start Date filter from"]')
       .type('2004-01-01')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
     cy.get('#card').contains(
       'He represent address cut environmental special size.'
     );
-    cy.get('[aria-label="Start Date date filter to"]')
+    cy.get('[aria-label="Start Date filter to"]')
       .type('2004-01-02')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
     cy.get('#card').should('not.exist');

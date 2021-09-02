@@ -65,7 +65,6 @@ describe('ISIS - FacilityCycles Cards', () => {
   it('should be able to filter by multiple fields', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
-      .find('input')
       .first()
       .type('4')
       .wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {
@@ -73,10 +72,10 @@ describe('ISIS - FacilityCycles Cards', () => {
       });
     cy.get('#card').contains('2004 cycle 1');
 
-    cy.get('[aria-label="Start Date date filter from"]')
+    cy.get('[aria-label="Start Date filter from"]')
       .type('2019-01-01')
       .wait(['@getFacilityCyclesCount'], { timeout: 10000 });
-    cy.get('[aria-label="Start Date date filter to"]')
+    cy.get('[aria-label="Start Date filter to"]')
       .parent()
       .find('button')
       .click();
@@ -86,7 +85,7 @@ describe('ISIS - FacilityCycles Cards', () => {
       .wait(['@getFacilityCyclesCount'], { timeout: 10000 });
     const date = new Date();
     date.setDate(1);
-    cy.get('[aria-label="Start Date date filter to"]').should(
+    cy.get('[aria-label="Start Date filter to"]').should(
       'have.value',
       date.toISOString().slice(0, 10)
     );

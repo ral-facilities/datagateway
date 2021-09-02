@@ -76,7 +76,6 @@ describe('ISIS - Studies Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
 
     cy.get('[aria-label="Filter by Name"]')
-      .find('input')
       .first()
       .type('1')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
@@ -85,7 +84,6 @@ describe('ISIS - Studies Cards', () => {
     cy.get('#card').contains('STUDY 11');
 
     cy.get('[aria-label="Filter by Title"]')
-      .find('input')
       .first()
       .type('peace')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
