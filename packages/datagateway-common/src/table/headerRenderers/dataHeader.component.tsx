@@ -63,9 +63,22 @@ const DataHeader = React.memo(
         </Typography>
       </TableSortLabel>
     ) : (
-      <Typography noWrap style={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
-        {label}
-      </Typography>
+      <div>
+        <label id="column-label" style={{ display: 'none' }}>
+          {label}
+        </label>
+        <Typography
+          noWrap
+          style={{
+            fontSize: 'inherit',
+            lineHeight: 'inherit',
+          }}
+          aria-labelledby="column-label"
+          tabIndex={0}
+        >
+          {label}
+        </Typography>
+      </div>
     );
 
     const smWindow = !useMediaQuery('(min-width: 960px)');
