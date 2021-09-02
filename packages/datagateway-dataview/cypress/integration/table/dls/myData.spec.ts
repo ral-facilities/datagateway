@@ -116,7 +116,7 @@ describe('DLS - MyData Table', () => {
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-label="Start Date date filter from"]').type('2000-04-04');
+      cy.get('[aria-label="Start Date filter from"]').type('2000-04-04');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });

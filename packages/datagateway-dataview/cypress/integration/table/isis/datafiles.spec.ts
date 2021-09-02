@@ -107,11 +107,9 @@ describe('ISIS - Datafiles Table', () => {
       });
 
       it('date between', () => {
-        cy.get('[aria-label="Modified Time date filter from"]').type(
-          '2018-08-12'
-        );
+        cy.get('[aria-label="Modified Time filter from"]').type('2018-08-12');
 
-        cy.get('[aria-label="Modified Time date filter to"]')
+        cy.get('[aria-label="Modified Time filter to"]')
           .parent()
           .find('button')
           .click();
@@ -123,7 +121,7 @@ describe('ISIS - Datafiles Table', () => {
         const date = new Date();
         date.setDate(1);
 
-        cy.get('[aria-label="Modified Time date filter to"]').should(
+        cy.get('[aria-label="Modified Time filter to"]').should(
           'have.value',
           date.toISOString().slice(0, 10)
         );

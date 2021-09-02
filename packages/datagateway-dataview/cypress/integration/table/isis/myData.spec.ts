@@ -107,7 +107,7 @@ describe('ISIS - MyData Table', () => {
     it.skip('date between', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
@@ -119,12 +119,12 @@ describe('ISIS - MyData Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('[aria-label="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-label="Start Date date filter from"]').type('2006-08-05');
+      cy.get('[aria-label="Start Date filter from"]').type('2006-08-05');
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 

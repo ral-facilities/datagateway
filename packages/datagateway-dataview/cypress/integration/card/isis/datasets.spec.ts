@@ -73,10 +73,10 @@ describe('ISIS - Datasets Cards', () => {
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
     cy.get('#card').contains('DATASET 337');
 
-    cy.get('[aria-label="Create Time date filter from"]')
+    cy.get('[aria-label="Create Time filter from"]')
       .type('2019-01-01')
       .wait(['@getDatasetsCount'], { timeout: 10000 });
-    cy.get('[aria-label="Create Time date filter to"]')
+    cy.get('[aria-label="Create Time filter to"]')
       .parent()
       .find('button')
       .click();
@@ -84,7 +84,7 @@ describe('ISIS - Datasets Cards', () => {
     cy.contains('OK').click().wait(['@getDatasetsCount'], { timeout: 10000 });
     const date = new Date();
     date.setDate(1);
-    cy.get('[aria-label="Create Time date filter to"]').should(
+    cy.get('[aria-label="Create Time filter to"]').should(
       'have.value',
       date.toISOString().slice(0, 10)
     );

@@ -129,15 +129,13 @@ describe('Download Status', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Requested Date date filter from"]').type(
-        '2020-01-31'
-      );
+      cy.get('[aria-label="Requested Date filter from"]').type('2020-01-31');
 
       const date = new Date();
       const month = date.toLocaleString('default', { month: 'long' });
       const year = date.getFullYear();
 
-      cy.get('[aria-label="Requested Date date filter to"]')
+      cy.get('[aria-label="Requested Date filter to"]')
         .parent()
         .find('button')
         .click();
@@ -156,7 +154,7 @@ describe('Download Status', () => {
       date.setDate(1);
       date.setMonth(date.getMonth() - 1);
 
-      cy.get('[aria-label="Requested Date date filter to"]').should(
+      cy.get('[aria-label="Requested Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -166,11 +164,11 @@ describe('Download Status', () => {
 
       const currDate = new Date();
 
-      cy.get('[aria-label="Requested Date date filter from"]').clear();
-      cy.get('[aria-label="Requested Date date filter to"]').clear();
+      cy.get('[aria-label="Requested Date filter from"]').clear();
+      cy.get('[aria-label="Requested Date filter to"]').clear();
       cy.get('[aria-rowcount="4"]').should('exist');
 
-      cy.get('[aria-label="Requested Date date filter from"]').type(
+      cy.get('[aria-label="Requested Date filter from"]').type(
         currDate.toISOString().slice(0, 10)
       );
 
