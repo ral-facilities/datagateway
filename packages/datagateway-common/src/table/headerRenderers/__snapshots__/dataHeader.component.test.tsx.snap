@@ -29,17 +29,31 @@ exports[`Data column header component renders correctly with filter but no sort 
         <Icon />
       </Styled(MuiBox)>
       <Styled(MuiBox)>
-        <WithStyles(ForwardRef(Typography))
-          noWrap={true}
-          style={
-            Object {
-              "fontSize": "inherit",
-              "lineHeight": "inherit",
+        <div>
+          <label
+            id="column-label"
+            style={
+              Object {
+                "display": "none",
+              }
             }
-          }
-        >
-          Test
-        </WithStyles(ForwardRef(Typography))>
+          >
+            Test
+          </label>
+          <WithStyles(ForwardRef(Typography))
+            aria-labelledby="column-label"
+            noWrap={true}
+            style={
+              Object {
+                "fontSize": "inherit",
+                "lineHeight": "inherit",
+              }
+            }
+            tabIndex={0}
+          >
+            Test
+          </WithStyles(ForwardRef(Typography))>
+        </div>
       </Styled(MuiBox)>
     </Styled(MuiBox)>
     <TextColumnFilter
@@ -291,17 +305,31 @@ exports[`Data column header component renders correctly without sort or filter 1
         <Icon />
       </Styled(MuiBox)>
       <Styled(MuiBox)>
-        <WithStyles(ForwardRef(Typography))
-          noWrap={true}
-          style={
-            Object {
-              "fontSize": "inherit",
-              "lineHeight": "inherit",
+        <div>
+          <label
+            id="column-label"
+            style={
+              Object {
+                "display": "none",
+              }
             }
-          }
-        >
-          Test
-        </WithStyles(ForwardRef(Typography))>
+          >
+            Test
+          </label>
+          <WithStyles(ForwardRef(Typography))
+            aria-labelledby="column-label"
+            noWrap={true}
+            style={
+              Object {
+                "fontSize": "inherit",
+                "lineHeight": "inherit",
+              }
+            }
+            tabIndex={0}
+          >
+            Test
+          </WithStyles(ForwardRef(Typography))>
+        </div>
       </Styled(MuiBox)>
     </Styled(MuiBox)>
   </div>

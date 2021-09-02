@@ -512,7 +512,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                   <label
                                     class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
                                     data-shrink="true"
-                                    for="confirm-access-method-label"
+                                    for="confirm-access-method"
                                   >
                                     downloadConfirmDialog.access_method_label
                                   </label>
@@ -522,7 +522,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     <select
                                       aria-invalid="false"
                                       class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiInput-input"
-                                      id="confirm-access-method-label"
+                                      id="confirm-access-method"
                                       name="access method"
                                     >
                                       <option
@@ -1791,7 +1791,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                           }
                                                         >
                                                           <WithStyles(ForwardRef(InputLabel))
-                                                            htmlFor="confirm-access-method-label"
+                                                            htmlFor="confirm-access-method"
                                                           >
                                                             <ForwardRef(InputLabel)
                                                               classes={
@@ -1810,7 +1810,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   "shrink": "MuiInputLabel-shrink",
                                                                 }
                                                               }
-                                                              htmlFor="confirm-access-method-label"
+                                                              htmlFor="confirm-access-method"
                                                             >
                                                               <WithStyles(ForwardRef(FormLabel))
                                                                 className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink"
@@ -1824,7 +1824,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   }
                                                                 }
                                                                 data-shrink={true}
-                                                                htmlFor="confirm-access-method-label"
+                                                                htmlFor="confirm-access-method"
                                                               >
                                                                 <ForwardRef(FormLabel)
                                                                   className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink"
@@ -1841,12 +1841,12 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     }
                                                                   }
                                                                   data-shrink={true}
-                                                                  htmlFor="confirm-access-method-label"
+                                                                  htmlFor="confirm-access-method"
                                                                 >
                                                                   <label
                                                                     className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
                                                                     data-shrink={true}
-                                                                    htmlFor="confirm-access-method-label"
+                                                                    htmlFor="confirm-access-method"
                                                                   >
                                                                     downloadConfirmDialog.access_method_label
                                                                   </label>
@@ -1855,10 +1855,9 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                             </ForwardRef(InputLabel)>
                                                           </WithStyles(ForwardRef(InputLabel))>
                                                           <WithStyles(ForwardRef(Select))
-                                                            id="confirm-access-method"
                                                             inputProps={
                                                               Object {
-                                                                "id": "confirm-access-method-label",
+                                                                "id": "confirm-access-method",
                                                                 "name": "access method",
                                                               }
                                                             }
@@ -1882,10 +1881,9 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   "selectMenu": "MuiSelect-selectMenu",
                                                                 }
                                                               }
-                                                              id="confirm-access-method"
                                                               inputProps={
                                                                 Object {
-                                                                  "id": "confirm-access-method-label",
+                                                                  "id": "confirm-access-method",
                                                                   "name": "access method",
                                                                 }
                                                               }
@@ -1954,7 +1952,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       "select": "MuiSelect-select",
                                                                       "selectMenu": "MuiSelect-selectMenu",
                                                                     },
-                                                                    "id": "confirm-access-method-label",
+                                                                    "id": "confirm-access-method",
                                                                     "multiple": false,
                                                                     "name": "access method",
                                                                     "type": undefined,
@@ -2043,7 +2041,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         "select": "MuiSelect-select",
                                                                         "selectMenu": "MuiSelect-selectMenu",
                                                                       },
-                                                                      "id": "confirm-access-method-label",
+                                                                      "id": "confirm-access-method",
                                                                       "multiple": false,
                                                                       "name": "access method",
                                                                       "type": undefined,
@@ -2133,7 +2131,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           "select": "MuiSelect-select",
                                                                           "selectMenu": "MuiSelect-selectMenu",
                                                                         },
-                                                                        "id": "confirm-access-method-label",
+                                                                        "id": "confirm-access-method",
                                                                         "multiple": false,
                                                                         "name": "access method",
                                                                         "type": undefined,
@@ -2229,7 +2227,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             "select": "MuiSelect-select",
                                                                             "selectMenu": "MuiSelect-selectMenu",
                                                                           },
-                                                                          "id": "confirm-access-method-label",
+                                                                          "id": "confirm-access-method",
                                                                           "multiple": false,
                                                                           "name": "access method",
                                                                           "type": undefined,
@@ -2274,7 +2272,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             }
                                                                           }
                                                                           disabled={false}
-                                                                          id="confirm-access-method-label"
+                                                                          id="confirm-access-method"
                                                                           inputRef={[Function]}
                                                                           multiple={false}
                                                                           name="access method"
@@ -2290,7 +2288,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             aria-invalid={false}
                                                                             className="MuiSelect-root MuiSelect-select MuiInputBase-input MuiInput-input"
                                                                             disabled={false}
-                                                                            id="confirm-access-method-label"
+                                                                            id="confirm-access-method"
                                                                             multiple={false}
                                                                             name="access method"
                                                                             onAnimationStart={[Function]}
@@ -3916,7 +3914,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                   <label
                                     class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
                                     data-shrink="true"
-                                    for="confirm-access-method-label"
+                                    for="confirm-access-method"
                                   >
                                     downloadConfirmDialog.access_method_label
                                   </label>
@@ -3926,7 +3924,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     <select
                                       aria-invalid="false"
                                       class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiInput-input"
-                                      id="confirm-access-method-label"
+                                      id="confirm-access-method"
                                       name="access method"
                                     >
                                       <option
@@ -5246,7 +5244,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                           }
                                                         >
                                                           <WithStyles(ForwardRef(InputLabel))
-                                                            htmlFor="confirm-access-method-label"
+                                                            htmlFor="confirm-access-method"
                                                           >
                                                             <ForwardRef(InputLabel)
                                                               classes={
@@ -5265,7 +5263,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   "shrink": "MuiInputLabel-shrink",
                                                                 }
                                                               }
-                                                              htmlFor="confirm-access-method-label"
+                                                              htmlFor="confirm-access-method"
                                                             >
                                                               <WithStyles(ForwardRef(FormLabel))
                                                                 className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink"
@@ -5279,7 +5277,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   }
                                                                 }
                                                                 data-shrink={true}
-                                                                htmlFor="confirm-access-method-label"
+                                                                htmlFor="confirm-access-method"
                                                               >
                                                                 <ForwardRef(FormLabel)
                                                                   className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink"
@@ -5296,12 +5294,12 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     }
                                                                   }
                                                                   data-shrink={true}
-                                                                  htmlFor="confirm-access-method-label"
+                                                                  htmlFor="confirm-access-method"
                                                                 >
                                                                   <label
                                                                     className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
                                                                     data-shrink={true}
-                                                                    htmlFor="confirm-access-method-label"
+                                                                    htmlFor="confirm-access-method"
                                                                   >
                                                                     downloadConfirmDialog.access_method_label
                                                                   </label>
@@ -5310,10 +5308,9 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                             </ForwardRef(InputLabel)>
                                                           </WithStyles(ForwardRef(InputLabel))>
                                                           <WithStyles(ForwardRef(Select))
-                                                            id="confirm-access-method"
                                                             inputProps={
                                                               Object {
-                                                                "id": "confirm-access-method-label",
+                                                                "id": "confirm-access-method",
                                                                 "name": "access method",
                                                               }
                                                             }
@@ -5337,10 +5334,9 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   "selectMenu": "MuiSelect-selectMenu",
                                                                 }
                                                               }
-                                                              id="confirm-access-method"
                                                               inputProps={
                                                                 Object {
-                                                                  "id": "confirm-access-method-label",
+                                                                  "id": "confirm-access-method",
                                                                   "name": "access method",
                                                                 }
                                                               }
@@ -5409,7 +5405,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       "select": "MuiSelect-select",
                                                                       "selectMenu": "MuiSelect-selectMenu",
                                                                     },
-                                                                    "id": "confirm-access-method-label",
+                                                                    "id": "confirm-access-method",
                                                                     "multiple": false,
                                                                     "name": "access method",
                                                                     "type": undefined,
@@ -5498,7 +5494,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         "select": "MuiSelect-select",
                                                                         "selectMenu": "MuiSelect-selectMenu",
                                                                       },
-                                                                      "id": "confirm-access-method-label",
+                                                                      "id": "confirm-access-method",
                                                                       "multiple": false,
                                                                       "name": "access method",
                                                                       "type": undefined,
@@ -5588,7 +5584,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           "select": "MuiSelect-select",
                                                                           "selectMenu": "MuiSelect-selectMenu",
                                                                         },
-                                                                        "id": "confirm-access-method-label",
+                                                                        "id": "confirm-access-method",
                                                                         "multiple": false,
                                                                         "name": "access method",
                                                                         "type": undefined,
@@ -5684,7 +5680,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             "select": "MuiSelect-select",
                                                                             "selectMenu": "MuiSelect-selectMenu",
                                                                           },
-                                                                          "id": "confirm-access-method-label",
+                                                                          "id": "confirm-access-method",
                                                                           "multiple": false,
                                                                           "name": "access method",
                                                                           "type": undefined,
@@ -5729,7 +5725,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             }
                                                                           }
                                                                           disabled={false}
-                                                                          id="confirm-access-method-label"
+                                                                          id="confirm-access-method"
                                                                           inputRef={[Function]}
                                                                           multiple={false}
                                                                           name="access method"
@@ -5745,7 +5741,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             aria-invalid={false}
                                                                             className="MuiSelect-root MuiSelect-select MuiInputBase-input MuiInput-input"
                                                                             disabled={false}
-                                                                            id="confirm-access-method-label"
+                                                                            id="confirm-access-method"
                                                                             multiple={false}
                                                                             name="access method"
                                                                             onAnimationStart={[Function]}

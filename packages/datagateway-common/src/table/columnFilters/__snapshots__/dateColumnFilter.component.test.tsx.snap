@@ -10,30 +10,25 @@ exports[`Date filter component renders correctly 1`] = `
         Object {
           "aria-label": "test filter from date picker",
           "size": "small",
-          "style": Object {
-            "backgroundColor": "white",
-            "left": "2px",
-          },
         }
       }
       allowKeyboardControl={true}
       aria-hidden="true"
-      clearable={true}
       color="secondary"
       format="yyyy-MM-dd"
       inputProps={
         Object {
-          "aria-label": "test filter from",
+          "aria-label": "test filter",
         }
       }
       invalidDateMessage="Invalid Date Format"
-      label="From...[yyyy-MM-dd]"
       maxDate={2000-01-01T00:00:00.000Z}
       maxDateMessage="Invalid date range"
       minDate={1900-01-01T00:00:00.000Z}
       minDateMessage="Date should not be before minimal date"
       onChange={[Function]}
       openTo="date"
+      placeholder="From..."
       style={
         Object {
           "whiteSpace": "nowrap",
@@ -53,30 +48,25 @@ exports[`Date filter component renders correctly 1`] = `
         Object {
           "aria-label": "test filter to date picker",
           "size": "small",
-          "style": Object {
-            "backgroundColor": "white",
-            "left": "2px",
-          },
         }
       }
       allowKeyboardControl={true}
       aria-hidden="true"
-      clearable={true}
       color="secondary"
       format="yyyy-MM-dd"
       inputProps={
         Object {
-          "aria-label": "test filter to",
+          "aria-label": "test filter",
         }
       }
       invalidDateMessage="Invalid Date Format"
-      label="To...   [yyyy-MM-dd]"
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"
       minDate={1999-01-01T00:00:00.000Z}
       minDateMessage="Invalid date range"
       onChange={[Function]}
       openTo="date"
+      placeholder="To..."
       style={
         Object {
           "whiteSpace": "nowrap",
@@ -105,30 +95,25 @@ exports[`Date filter component useTextFilter hook returns a function which can g
         Object {
           "aria-label": "Start Date filter from date picker",
           "size": "small",
-          "style": Object {
-            "backgroundColor": "white",
-            "left": "2px",
-          },
         }
       }
       allowKeyboardControl={true}
       aria-hidden="true"
-      clearable={true}
       color="secondary"
       format="yyyy-MM-dd"
       inputProps={
         Object {
-          "aria-label": "Start Date filter from",
+          "aria-label": "Start Date filter",
         }
       }
       invalidDateMessage="Invalid Date Format"
-      label="From...[yyyy-MM-dd]"
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Invalid date range"
       minDate={1900-01-01T00:00:00.000Z}
       minDateMessage="Date should not be before minimal date"
       onChange={[Function]}
       openTo="date"
+      placeholder="From..."
       style={
         Object {
           "whiteSpace": "nowrap",
@@ -148,30 +133,25 @@ exports[`Date filter component useTextFilter hook returns a function which can g
         Object {
           "aria-label": "Start Date filter to date picker",
           "size": "small",
-          "style": Object {
-            "backgroundColor": "white",
-            "left": "2px",
-          },
         }
       }
       allowKeyboardControl={true}
       aria-hidden="true"
-      clearable={true}
       color="secondary"
       format="yyyy-MM-dd"
       inputProps={
         Object {
-          "aria-label": "Start Date filter to",
+          "aria-label": "Start Date filter",
         }
       }
       invalidDateMessage="Invalid Date Format"
-      label="To...   [yyyy-MM-dd]"
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"
       minDate={1900-01-01T00:00:00.000Z}
       minDateMessage="Invalid date range"
       onChange={[Function]}
       openTo="date"
+      placeholder="To..."
       style={
         Object {
           "whiteSpace": "nowrap",
