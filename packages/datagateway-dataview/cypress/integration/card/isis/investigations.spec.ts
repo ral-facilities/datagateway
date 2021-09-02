@@ -76,7 +76,6 @@ describe('ISIS - Investigations Cards', () => {
   it('should be able to filter by multiple fields', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
-      .find('input')
       .first()
       .type('cut')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {

@@ -189,10 +189,7 @@ describe('Datafiles Table', () => {
     });
 
     it('text', () => {
-      cy.get('[aria-label="Filter by Location"]')
-        .find('input')
-        .first()
-        .type('treatment');
+      cy.get('[aria-label="Filter by Location"]').first().type('treatment');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
@@ -201,11 +198,9 @@ describe('Datafiles Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Modified Time date filter from"]').type(
-        '2019-01-01'
-      );
+      cy.get('[aria-label="Modified Time filter from"]').type('2019-01-01');
 
-      cy.get('[aria-label="Modified Time date filter to"]')
+      cy.get('[aria-label="Modified Time filter to"]')
         .parent()
         .find('button')
         .click();
@@ -217,7 +212,7 @@ describe('Datafiles Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Modified Time date filter to"]').should(
+      cy.get('[aria-label="Modified Time filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -233,12 +228,10 @@ describe('Datafiles Table', () => {
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
-        .find('input')
         .first()
         .type('4')
         .wait('@datafilesCount', { timeout: 10000 });
       cy.get('[aria-label="Filter by Location"]')
-        .find('input')
         .first()
         .type('.jpeg')
         .wait('@datafilesCount', { timeout: 10000 });

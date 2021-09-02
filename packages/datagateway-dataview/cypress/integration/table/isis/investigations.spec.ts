@@ -144,10 +144,7 @@ describe('ISIS - Investigations Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('again');
+      cy.get('[aria-label="Filter by Title"]').first().type('again');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
@@ -182,10 +179,7 @@ describe('ISIS - Investigations Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('again');
+      cy.get('[aria-label="Filter by Title"]').first().type('again');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

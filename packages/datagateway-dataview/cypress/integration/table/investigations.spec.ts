@@ -136,19 +136,16 @@ describe('Investigations Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').first().type('dog');
 
       cy.get('[aria-rowcount="7"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2019-01-01');
+      cy.get('[aria-label="Start Date filter from"]').type('2019-01-01');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
@@ -160,7 +157,7 @@ describe('Investigations Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('[aria-label="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -172,15 +169,9 @@ describe('Investigations Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').first().type('dog');
 
-      cy.get('[aria-label="Filter by Visit ID"]')
-        .find('input')
-        .first()
-        .type('9');
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('9');
 
       cy.get('[aria-rowcount="2"]').should('exist');
     });

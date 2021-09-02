@@ -81,19 +81,13 @@ describe('Download Cart', () => {
   });
 
   it('should be able to filter cart items by name and type', () => {
-    cy.get('[aria-label="Filter by Name"]')
-      .find('input')
-      .first()
-      .as('nameFilter');
+    cy.get('[aria-label="Filter by Name"]').first().as('nameFilter');
 
     cy.get('@nameFilter').type('1');
     cy.get('[aria-rowcount=15]').should('exist');
     cy.contains('DATASET 1').should('be.visible');
 
-    cy.get('[aria-label="Filter by Type"]')
-      .find('input')
-      .first()
-      .as('typeFilter');
+    cy.get('[aria-label="Filter by Type"]').first().as('typeFilter');
 
     cy.get('@typeFilter').type('in');
     cy.get('[aria-rowcount=5]').should('exist');

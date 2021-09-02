@@ -118,10 +118,7 @@ describe('Download Status', () => {
 
   describe('should be able to filter download items by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Download Name"]')
-        .find('input')
-        .first()
-        .type('file');
+      cy.get('[aria-label="Filter by Download Name"]').first().type('file');
 
       cy.get('[aria-rowcount="4"]').should('exist');
 
@@ -136,7 +133,7 @@ describe('Download Status', () => {
         '2020-01-31'
       );
 
-      let date = new Date();
+      const date = new Date();
       const month = date.toLocaleString('default', { month: 'long' });
       const year = date.getFullYear();
 
@@ -152,9 +149,7 @@ describe('Download Status', () => {
         .first()
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]')
-        .first()
-        .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
 
       cy.contains('OK').click();
 
@@ -169,7 +164,7 @@ describe('Download Status', () => {
       // There should not be results for this time period.
       cy.get('[aria-rowcount="0"]').should('exist');
 
-      let currDate = new Date();
+      const currDate = new Date();
 
       cy.get('[aria-label="Requested Date date filter from"]').clear();
       cy.get('[aria-label="Requested Date date filter to"]').clear();
@@ -193,15 +188,9 @@ describe('Download Status', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Access Method')
-        .find('input')
-        .first()
-        .type('globus');
+      cy.get('[aria-label="Filter by Access Method').first().type('globus');
 
-      cy.get('[aria-label="Filter by Availability"]')
-        .find('input')
-        .first()
-        .type('restoring');
+      cy.get('[aria-label="Filter by Availability"]').first().type('restoring');
 
       cy.get('[aria-rowcount="2"]').should('exist');
     });

@@ -139,7 +139,7 @@ describe('ISIS - Studies Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').first().type('3');
+      cy.get('[aria-label="Filter by Name"]').first().type('3');
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="4"] [aria-colindex="2"]').contains(
@@ -157,12 +157,9 @@ describe('ISIS - Studies Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').first().type('1');
+      cy.get('[aria-label="Filter by Name"]').first().type('1');
 
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('peace');
+      cy.get('[aria-label="Filter by Title"]').first().type('peace');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

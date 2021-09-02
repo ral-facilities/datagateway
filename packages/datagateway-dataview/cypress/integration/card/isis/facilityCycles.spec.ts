@@ -65,7 +65,6 @@ describe('ISIS - FacilityCycles Cards', () => {
   it('should be able to filter by multiple fields', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
-      .find('input')
       .first()
       .type('4')
       .wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {

@@ -40,7 +40,7 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('[role="columnheader"]').eq(1).as('startDateColumn');
 
     // Filtering results to remove vertical scroll bar affecting width calculations
-    cy.get('[aria-label="Filter by Name"]').find('input').first().type('2004');
+    cy.get('[aria-label="Filter by Name"]').first().type('2004');
 
     cy.get('@titleColumn').should(($column) => {
       let { width } = $column[0].getBoundingClientRect();
@@ -146,10 +146,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .first()
-        .type('2010');
+      cy.get('[aria-label="Filter by Name"]').first().type('2010');
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
@@ -184,7 +181,7 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').first().type('3');
+      cy.get('[aria-label="Filter by Name"]').first().type('3');
 
       cy.get('[aria-label="Start Date date filter from"]').type('2019-06-03');
 

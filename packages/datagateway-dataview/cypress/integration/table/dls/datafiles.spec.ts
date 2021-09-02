@@ -34,10 +34,7 @@ describe('DLS - Datafiles Table', () => {
   it('should be able to resize a column', () => {
     // Filtering results so vertical scrollbar won't appear as this can impact on the
     // column width causing these types of tests to intermittently fail
-    cy.get('[aria-label="Filter by Location"]')
-      .find('input')
-      .first()
-      .type('rise');
+    cy.get('[aria-label="Filter by Location"]').first().type('rise');
 
     let columnWidth = 0;
 
@@ -173,10 +170,7 @@ describe('DLS - Datafiles Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Location"]')
-        .find('input')
-        .first()
-        .type('rise');
+      cy.get('[aria-label="Filter by Location"]').first().type('rise');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
@@ -185,9 +179,9 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time date filter from"]').type('2019-01-01');
+      cy.get('[aria-label="Create Time filter from"]').type('2019-01-01');
 
-      cy.get('[aria-label="Create Time date filter to"]')
+      cy.get('[aria-label="Create Time filter to"]')
         .parent()
         .find('button')
         .click();
@@ -199,7 +193,7 @@ describe('DLS - Datafiles Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Create Time date filter to"]').should(
+      cy.get('[aria-label="Create Time filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -215,13 +209,11 @@ describe('DLS - Datafiles Table', () => {
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
-        .find('input')
         .first()
         .type('5')
         .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-label="Filter by Location"]')
-        .find('input')
         .first()
         .type('.png')
         .wait('@datafilesCount', { timeout: 10000 });
