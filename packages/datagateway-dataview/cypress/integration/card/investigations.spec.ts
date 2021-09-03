@@ -12,7 +12,7 @@ describe('Investigations Cards', () => {
       ],
       { timeout: 15000 }
     );
-    cy.get('[aria-label="page-view"]').click();
+    cy.get('[aria-label="page-view Display as cards"]').click();
   });
 
   it('should load correctly', () => {

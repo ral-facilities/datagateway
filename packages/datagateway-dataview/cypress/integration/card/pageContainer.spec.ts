@@ -27,7 +27,7 @@ describe('PageContainer Component', () => {
 
     cy.get('[aria-label="view-cart"]').should('exist');
 
-    cy.get('[aria-label="page-view"]').should('exist');
+    cy.get('[aria-label="page-view Display as cards"]').should('exist');
   });
 
   it('should display correct entity count', () => {
