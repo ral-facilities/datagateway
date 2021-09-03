@@ -8,7 +8,7 @@ describe('ISIS - Instruments Cards', () => {
       ['@getInstrumentsCount', '@getInstrumentsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page-view"]').click();
+    cy.get('[aria-label="page-view Display as cards"]').click();
   });
 
   it('should load correctly', () => {

@@ -176,9 +176,9 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time filter from"]').type('2005-06-12');
+      cy.get('input[id="Create Time filter from"]').type('2005-06-12');
 
-      cy.get('[aria-label="Create Time filter to"]')
+      cy.get('button[aria-label="Create Time filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -190,7 +190,7 @@ describe('ISIS - Datasets Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Create Time filter to"]').should(
+      cy.get('input[id="Create Time filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -205,7 +205,7 @@ describe('ISIS - Datasets Table', () => {
         .type('337')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time filter to"]')
+      cy.get('input[id="Create Time filter to"]')
         .type('2007-06-23')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 

@@ -7,7 +7,7 @@ describe('ISIS - Studies Cards', () => {
       ['@getStudiesCount', '@getStudiesOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page-view"]').click();
+    cy.get('[aria-label="page-view Display as cards"]').click();
   });
 
   it('should load correctly', () => {

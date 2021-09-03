@@ -198,9 +198,9 @@ describe('Datafiles Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Modified Time filter from"]').type('2019-01-01');
+      cy.get('input[id="Modified Time filter from"]').type('2019-01-01');
 
-      cy.get('[aria-label="Modified Time filter to"]')
+      cy.get('button[aria-label="Modified Time filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -212,7 +212,7 @@ describe('Datafiles Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Modified Time filter to"]').should(
+      cy.get('input[id="Modified Time filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );

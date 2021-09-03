@@ -12,7 +12,7 @@ describe('PageContainer Component', () => {
       ],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page-view"]').click();
+    cy.get('[aria-label="page-view Display as cards"]').click();
     cy.clearDownloadCart();
   });
 
@@ -64,15 +64,17 @@ describe('PageContainer Component', () => {
       10
     );
 
-    cy.get('#select-max-results', { timeout: 10000 }).click();
-    cy.get('#menu-', { timeout: 10000 }).contains('20').click();
+    cy.get('select[id="max-results-native-helper"]', {
+      timeout: 10000,
+    }).select('20');
     cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
       'have.length',
       20
     );
 
-    cy.get('#select-max-results', { timeout: 10000 }).click();
-    cy.get('#menu-', { timeout: 10000 }).contains('30').click();
+    cy.get('select[id="max-results-native-helper"]', {
+      timeout: 10000,
+    }).select('30');
     cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
       'have.length',
       30

@@ -12,7 +12,7 @@ describe('Investigations Cards', () => {
       ],
       { timeout: 15000 }
     );
-    cy.get('[aria-label="page-view"]').click();
+    cy.get('[aria-label="page-view Display as cards"]').click();
   });
 
   it('should load correctly', () => {
@@ -91,12 +91,12 @@ describe('Investigations Cards', () => {
       });
     cy.get('#card').contains('Have price already kid scene artist allow.');
 
-    cy.get('[aria-label="Start Date filter from"]')
+    cy.get('input[id="Start Date filter from"]')
       .type('2017-01-01')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('[aria-label="Start Date filter to"]')
+    cy.get('button[aria-label="Start Date filter to, date picker"]')
       .parent()
       .find('button')
       .click();
@@ -108,7 +108,7 @@ describe('Investigations Cards', () => {
       });
     const date = new Date();
     date.setDate(1);
-    cy.get('[aria-label="Start Date filter to"]').should(
+    cy.get('input[id="Start Date filter to"]').should(
       'have.value',
       date.toISOString().slice(0, 10)
     );

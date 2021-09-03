@@ -6,9 +6,9 @@
     "datasetGetSize": false,
     "datasetGetCount": true
   },
-  "idsUrl": "https://localhost:8181/ids",
-  "apiUrl": "http://localhost:5000",
-  "downloadApiUrl": "https://localhost:8181/topcat",
+  "idsUrl": "https://scigateway-preprod.esc.rl.ac.uk:8181/ids",
+  "apiUrl": "https://scigateway-preprod.esc.rl.ac.uk/datagateway-api",
+  "downloadApiUrl": "https://scigateway-preprod.esc.rl.ac.uk:8181/topcat",
   "breadcrumbs": {
     "proposal": {
       "replaceEntity": "investigation",

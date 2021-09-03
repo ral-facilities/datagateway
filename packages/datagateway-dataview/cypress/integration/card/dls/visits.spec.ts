@@ -8,7 +8,7 @@ describe('DLS - Visits Cards', () => {
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page-view"]')
+    cy.get('[aria-label="page-view Display as cards"]')
       .click()
       .wait(['@getInvestigationsOrder'], {
         timeout: 10000,
@@ -88,10 +88,10 @@ describe('DLS - Visits Cards', () => {
       });
     cy.get('#card').contains('42');
 
-    cy.get('[aria-label="Start Date filter from"]')
+    cy.get('input[id="Start Date filter from"]')
       .type('2019-01-01')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
-    cy.get('[aria-label="Start Date filter to"]')
+    cy.get('button[aria-label="Start Date filter to, date picker"]')
       .parent()
       .find('button')
       .click();
@@ -101,7 +101,7 @@ describe('DLS - Visits Cards', () => {
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
     const date = new Date();
     date.setDate(1);
-    cy.get('[aria-label="Start Date filter to"]').should(
+    cy.get('input[id="Start Date filter to"]').should(
       'have.value',
       date.toISOString().slice(0, 10)
     );
