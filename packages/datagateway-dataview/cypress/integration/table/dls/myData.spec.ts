@@ -150,7 +150,7 @@ describe('DLS - MyData Table', () => {
     it('date between', () => {
       cy.get('[aria-rowcount="4"]').should('exist');
 
-      cy.get('[aria-label="Start Date filter to"]')
+      cy.get('button[aria-label="Start Date filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -162,14 +162,14 @@ describe('DLS - MyData Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date filter to"]').should(
+      cy.get('input[id="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
 
       cy.get('[aria-rowcount="4"]').should('exist');
 
-      cy.get('[aria-label="Start Date filter from"]').type('2000-04-04');
+      cy.get('input[id="Start Date filter from"]').type('2000-04-04');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
