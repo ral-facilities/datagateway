@@ -142,7 +142,7 @@ describe('Datasets Table', () => {
       );
     });
 
-    it.only('date between', () => {
+    it('date between', () => {
       cy.get('input[id="Create Time filter from"]').type('2006-01-01', {
         force: true,
       });
