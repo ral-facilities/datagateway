@@ -182,7 +182,6 @@ describe('PageContainer - Tests', () => {
     history.replace(paths.toggle.investigation);
 
     const wrapper = createWrapper();
-    console.log(wrapper.debug());
 
     expect(
       wrapper.find('[aria-label="page-view app.view_cards"]').exists()

@@ -78,7 +78,7 @@ const DateColumnFilter = (props: {
             size: 'small',
             'aria-label': `${props.label} filter from, date picker`,
           }}
-          id="start date filter from"
+          id={props.label + ' filter from'}
           aria-hidden="true"
           format="yyyy-MM-dd"
           placeholder="From..."
@@ -104,7 +104,7 @@ const DateColumnFilter = (props: {
             size: 'small',
             'aria-label': `${props.label} filter to, date picker`,
           }}
-          id="start date filter to"
+          id={props.label + ' filter to'}
           aria-hidden="true"
           format="yyyy-MM-dd"
           placeholder="To..."

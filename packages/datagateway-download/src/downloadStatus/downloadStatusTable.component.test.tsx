@@ -481,7 +481,7 @@ describe('Download Status Table', () => {
     });
 
     const dateFromFilterInput = wrapper.find(
-      '[aria-label="downloadStatus.createdAt filter from"]'
+      'input[id="downloadStatus.createdAt filter from"]'
     );
 
     dateFromFilterInput.instance().value = '2020-01-01';
@@ -490,7 +490,7 @@ describe('Download Status Table', () => {
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
 
     const dateToFilterInput = wrapper.find(
-      '[aria-label="downloadStatus.createdAt filter to"]'
+      'input[id="downloadStatus.createdAt filter to"]'
     );
 
     dateToFilterInput.instance().value = '2020-01-02';

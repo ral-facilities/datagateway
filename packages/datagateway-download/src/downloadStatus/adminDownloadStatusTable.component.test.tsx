@@ -371,7 +371,7 @@ describe('Admin Download Status Table', () => {
 
     // Get the Requested Data From filter input
     const dateFromFilterInput = wrapper.find(
-      '[aria-label="downloadStatus.createdAt filter from"]'
+      'input[id="downloadStatus.createdAt filter from"]'
     );
     await act(async () => {
       dateFromFilterInput.instance().value = '2020-01-01';
@@ -387,7 +387,7 @@ describe('Admin Download Status Table', () => {
 
     // Get the Requested Data To filter input
     const dateToFilterInput = wrapper.find(
-      '[aria-label="downloadStatus.createdAt filter to"]'
+      'input[id="downloadStatus.createdAt filter to"]'
     );
     await act(async () => {
       dateToFilterInput.instance().value = '2020-01-02';

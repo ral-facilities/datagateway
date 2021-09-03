@@ -165,9 +165,7 @@ describe('ISIS Studies table component', () => {
   it('updates filter query params on date filter', () => {
     const wrapper = createWrapper();
 
-    const filterInput = wrapper.find(
-      '[aria-label="studies.end_date filter to"]'
-    );
+    const filterInput = wrapper.find('input[id="studies.end_date filter to"]');
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 

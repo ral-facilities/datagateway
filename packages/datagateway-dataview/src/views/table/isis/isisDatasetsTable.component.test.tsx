@@ -207,7 +207,7 @@ describe('ISIS Dataset table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
-      '[aria-label="datasets.modified_time filter to"]'
+      'input[id="datasets.modified_time filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');

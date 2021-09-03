@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ISIS Investigations table component renders correctly 1`] = `
+exports[`ISIS MyData table component renders correctly 1`] = `
 Object {
   "allIds": Array [
     1,
@@ -179,7 +179,7 @@ Object {
 }
 `;
 
-exports[`ISIS Investigations table component renders details panel correctly and it fetches data and can navigate 1`] = `
+exports[`ISIS MyData table component renders details panel correctly and it fetches data and can navigate 1`] = `
 <div
   id="details-panel"
   style={
@@ -346,7 +346,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
 </div>
 `;
 
-exports[`ISIS Investigations table component renders title and name as links 1`] = `
+exports[`ISIS MyData table component renders title and name as links 1`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -499,7 +499,7 @@ exports[`ISIS Investigations table component renders title and name as links 1`]
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title and name as links 2`] = `
+exports[`ISIS MyData table component renders title and name as links 2`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {

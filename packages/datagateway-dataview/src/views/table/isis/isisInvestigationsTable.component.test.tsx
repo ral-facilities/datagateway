@@ -224,7 +224,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
-      '[aria-label="investigations.start_date filter from"]'
+      'input[id="investigations.start_date filter from"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
