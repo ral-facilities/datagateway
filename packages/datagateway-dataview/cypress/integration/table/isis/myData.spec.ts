@@ -149,10 +149,7 @@ describe('ISIS - MyData Table', () => {
   describe('should be able to filter by', () => {
     it('text', () => {
       cy.get('[aria-rowcount="4"]').should('exist');
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('invalid');
+      cy.get('input[id="Title-filter"]').type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });

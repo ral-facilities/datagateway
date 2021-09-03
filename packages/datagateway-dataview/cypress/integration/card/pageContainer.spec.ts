@@ -27,7 +27,7 @@ describe('PageContainer Component', () => {
 
     cy.get('[aria-label="view-cart"]').should('exist');
 
-    cy.get('[aria-label="page-view Display as cards"]').should('exist');
+    cy.get('[aria-label="page-view Display as table"]').should('exist');
   });
 
   it('should display correct entity count', () => {
@@ -64,15 +64,17 @@ describe('PageContainer Component', () => {
       10
     );
 
-    cy.get('#select-max-results', { timeout: 10000 }).select('20');
-    cy.get('#select-max-results').should('have.value', '20');
+    cy.get('select[id="max-results-native-helper"]', {
+      timeout: 10000,
+    }).select('20');
     cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
       'have.length',
       20
     );
 
-    cy.get('#select-max-results', { timeout: 10000 }).select('30');
-    cy.get('#select-max-results').should('have.value', '30');
+    cy.get('select[id="max-results-native-helper"]', {
+      timeout: 10000,
+    }).select('30');
     cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
       'have.length',
       30
