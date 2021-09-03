@@ -155,9 +155,9 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date filter from"]').type('2010-04-02');
+      cy.get('input[id="Start Date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-label="Start Date filter to"]')
+      cy.get('button[aria-label="Start Date filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -169,7 +169,7 @@ describe('ISIS - FacilityCycles Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date filter to"]').should(
+      cy.get('input[id="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -183,7 +183,7 @@ describe('ISIS - FacilityCycles Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]').first().type('3');
 
-      cy.get('[aria-label="Start Date filter from"]').type('2019-06-03');
+      cy.get('input[id="Start Date filter from"]').type('2019-06-03');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

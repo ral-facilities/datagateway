@@ -179,9 +179,9 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time filter from"]').type('2019-01-01');
+      cy.get('input[id="Create Time filter from"]').type('2019-01-01');
 
-      cy.get('[aria-label="Create Time filter to"]')
+      cy.get('button[aria-label="Create Time filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -193,7 +193,7 @@ describe('DLS - Datafiles Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Create Time filter to"]').should(
+      cy.get('input[id="Create Time filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );

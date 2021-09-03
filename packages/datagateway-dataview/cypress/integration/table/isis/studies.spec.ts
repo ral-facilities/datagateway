@@ -148,7 +148,7 @@ describe('ISIS - Studies Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date filter from"]').type('2010-04-02');
+      cy.get('input[id="Start Date filter from"]').type('2010-04-02');
 
       cy.get('[aria-rowcount="11"]').should('exist');
       cy.get('[aria-rowindex="9"] [aria-colindex="2"]').contains(

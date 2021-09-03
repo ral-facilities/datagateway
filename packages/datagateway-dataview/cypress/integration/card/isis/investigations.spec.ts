@@ -85,13 +85,13 @@ describe('ISIS - Investigations Cards', () => {
       'He represent address cut environmental special size.'
     );
 
-    cy.get('[aria-label="Start Date filter from"]')
+    cy.get('input[id="Start Date filter from"]')
       .type('2004-01-01')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
     cy.get('#card').contains(
       'He represent address cut environmental special size.'
     );
-    cy.get('[aria-label="Start Date filter to"]')
+    cy.get('input[id="Start Date filter to"]')
       .type('2004-01-02')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
     cy.get('#card').should('not.exist');

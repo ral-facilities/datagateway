@@ -158,11 +158,11 @@ describe('Admin Download Status', () => {
     it('date between', () => {
       const currDate = new Date();
 
-      cy.get('[aria-label="Requested Date filter from"]').type(
+      cy.get('input[id="Requested Date filter from"]').type(
         currDate.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-label="Requested Date filter to"]').type(
+      cy.get('input[id="Requested Date filter to"]').type(
         currDate.toISOString().slice(0, 10)
       );
 
