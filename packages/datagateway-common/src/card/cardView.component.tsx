@@ -451,19 +451,15 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             {totalDataCount > resOptions[0] && (
               <Grid container item xs={12} md={1} justify="flex-end">
                 <FormControl className={classes.formControl}>
-                  <InputLabel
-                    id="select-max-results-label"
-                    htmlFor="max-results-native-helper"
-                  >
+                  <InputLabel htmlFor="select-max-results">
                     {t('app.max_results')}
                   </InputLabel>
                   <Select
                     native
-                    id="select-max-results"
                     value={results}
                     inputProps={{
                       name: 'Max Results',
-                      id: 'max-results-native-helper',
+                      id: 'select-max-results',
                     }}
                     onChange={(e) => {
                       const newResults = e.target.value as number;

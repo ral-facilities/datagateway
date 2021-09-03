@@ -525,7 +525,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       native
                       value={`${methodsUnavailable ? '' : selectedMethod}`}
                       inputProps={{
-                        name: 'access method',
+                        name: 'Access Method',
                         id: 'confirm-access-method',
                       }}
                       onChange={(e) => {
