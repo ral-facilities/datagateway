@@ -523,7 +523,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                       aria-invalid="false"
                                       class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiInput-input"
                                       id="confirm-access-method"
-                                      name="access method"
+                                      name="Access Method"
                                     >
                                       <option
                                         aria-label="HTTPS"
@@ -1858,7 +1858,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                             inputProps={
                                                               Object {
                                                                 "id": "confirm-access-method",
-                                                                "name": "access method",
+                                                                "name": "Access Method",
                                                               }
                                                             }
                                                             native={true}
@@ -1884,7 +1884,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                               inputProps={
                                                                 Object {
                                                                   "id": "confirm-access-method",
-                                                                  "name": "access method",
+                                                                  "name": "Access Method",
                                                                 }
                                                               }
                                                               native={true}
@@ -1954,7 +1954,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     },
                                                                     "id": "confirm-access-method",
                                                                     "multiple": false,
-                                                                    "name": "access method",
+                                                                    "name": "Access Method",
                                                                     "type": undefined,
                                                                     "variant": "standard",
                                                                   }
@@ -2043,7 +2043,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       },
                                                                       "id": "confirm-access-method",
                                                                       "multiple": false,
-                                                                      "name": "access method",
+                                                                      "name": "Access Method",
                                                                       "type": undefined,
                                                                       "variant": "standard",
                                                                     }
@@ -2133,7 +2133,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         },
                                                                         "id": "confirm-access-method",
                                                                         "multiple": false,
-                                                                        "name": "access method",
+                                                                        "name": "Access Method",
                                                                         "type": undefined,
                                                                         "variant": "standard",
                                                                       }
@@ -2229,7 +2229,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           },
                                                                           "id": "confirm-access-method",
                                                                           "multiple": false,
-                                                                          "name": "access method",
+                                                                          "name": "Access Method",
                                                                           "type": undefined,
                                                                           "variant": "standard",
                                                                         }
@@ -2275,7 +2275,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           id="confirm-access-method"
                                                                           inputRef={[Function]}
                                                                           multiple={false}
-                                                                          name="access method"
+                                                                          name="Access Method"
                                                                           onAnimationStart={[Function]}
                                                                           onBlur={[Function]}
                                                                           onChange={[Function]}
@@ -2290,7 +2290,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             disabled={false}
                                                                             id="confirm-access-method"
                                                                             multiple={false}
-                                                                            name="access method"
+                                                                            name="Access Method"
                                                                             onAnimationStart={[Function]}
                                                                             onBlur={[Function]}
                                                                             onChange={[Function]}
@@ -3925,7 +3925,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                       aria-invalid="false"
                                       class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiInput-input"
                                       id="confirm-access-method"
-                                      name="access method"
+                                      name="Access Method"
                                     >
                                       <option
                                         aria-label="HTTPS"
@@ -5311,7 +5311,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                             inputProps={
                                                               Object {
                                                                 "id": "confirm-access-method",
-                                                                "name": "access method",
+                                                                "name": "Access Method",
                                                               }
                                                             }
                                                             native={true}
@@ -5337,7 +5337,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                               inputProps={
                                                                 Object {
                                                                   "id": "confirm-access-method",
-                                                                  "name": "access method",
+                                                                  "name": "Access Method",
                                                                 }
                                                               }
                                                               native={true}
@@ -5407,7 +5407,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     },
                                                                     "id": "confirm-access-method",
                                                                     "multiple": false,
-                                                                    "name": "access method",
+                                                                    "name": "Access Method",
                                                                     "type": undefined,
                                                                     "variant": "standard",
                                                                   }
@@ -5496,7 +5496,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       },
                                                                       "id": "confirm-access-method",
                                                                       "multiple": false,
-                                                                      "name": "access method",
+                                                                      "name": "Access Method",
                                                                       "type": undefined,
                                                                       "variant": "standard",
                                                                     }
@@ -5586,7 +5586,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         },
                                                                         "id": "confirm-access-method",
                                                                         "multiple": false,
-                                                                        "name": "access method",
+                                                                        "name": "Access Method",
                                                                         "type": undefined,
                                                                         "variant": "standard",
                                                                       }
@@ -5682,7 +5682,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           },
                                                                           "id": "confirm-access-method",
                                                                           "multiple": false,
-                                                                          "name": "access method",
+                                                                          "name": "Access Method",
                                                                           "type": undefined,
                                                                           "variant": "standard",
                                                                         }
@@ -5728,7 +5728,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           id="confirm-access-method"
                                                                           inputRef={[Function]}
                                                                           multiple={false}
-                                                                          name="access method"
+                                                                          name="Access Method"
                                                                           onAnimationStart={[Function]}
                                                                           onBlur={[Function]}
                                                                           onChange={[Function]}
@@ -5743,7 +5743,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             disabled={false}
                                                                             id="confirm-access-method"
                                                                             multiple={false}
-                                                                            name="access method"
+                                                                            name="Access Method"
                                                                             onAnimationStart={[Function]}
                                                                             onBlur={[Function]}
                                                                             onChange={[Function]}
