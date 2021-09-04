@@ -64,7 +64,7 @@ describe('PageContainer Component', () => {
       10
     );
 
-    cy.get('select[id="max-results-native-helper"]', {
+    cy.get('select[id="select-max-results"]', {
       timeout: 10000,
     }).select('20');
     cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
@@ -72,7 +72,7 @@ describe('PageContainer Component', () => {
       20
     );
 
-    cy.get('select[id="max-results-native-helper"]', {
+    cy.get('select[id="select-max-results"]', {
       timeout: 10000,
     }).select('30');
     cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
