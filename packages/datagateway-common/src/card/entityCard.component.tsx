@@ -22,7 +22,7 @@ import { Entity } from '../app.types';
 import { CardViewDetails } from './cardView.component';
 
 const useCardStyles = makeStyles((theme: Theme) => {
-  // TODO: Remove use of "vw" here
+  // TODO: Remove use of "vw" here (?)
   // NOTE: This is width of the main content
   //       (this also matches the description shadow width).
   //       Change this width in accordance with the maxWidth in root class.
@@ -182,6 +182,8 @@ interface EntityCardProps {
   buttons?: ((data: Entity) => React.ReactNode)[];
 
   image?: EntityImageDetails;
+
+  // TODO: Rename to chips/tags?
   customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
 }
 
@@ -371,7 +373,8 @@ const EntityCard = React.memo(
             </div>
 
             {/* Divider is optional based on if there is information/buttons. */}
-            {(information || buttons) && (
+            {((information && information.length > 0) ||
+              (buttons && buttons.length > 0)) && (
               // Set flexItem to true to allow it to show when flex direction is column for content.
               <Divider flexItem={true} orientation={'vertical'} />
             )}
