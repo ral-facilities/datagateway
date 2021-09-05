@@ -29,9 +29,6 @@ import EntityCard, { EntityImageDetails } from './entityCard.component';
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      backgroundColor: theme.palette.background.paper,
-    },
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
@@ -649,11 +646,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                       there is no information or buttons. */}
                 {data.map((entity, index) => {
                   return (
-                    <ListItem
-                      key={index}
-                      alignItems="flex-start"
-                      className={classes.root}
-                    >
+                    <ListItem key={index} alignItems="flex-start">
                       {/* Create an individual card */}
                       <EntityCard
                         entity={entity}
