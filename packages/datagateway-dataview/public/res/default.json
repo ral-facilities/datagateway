@@ -195,6 +195,7 @@
   },
   "homePage": {
     "title": "DataGateway",
+    "logoLabel": "DataGateway Logo",
     "howLabel": "How it works...",
     "exploreLabel": "1. Explore",
     "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
