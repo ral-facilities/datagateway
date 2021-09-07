@@ -152,7 +152,6 @@ function CVPagination(
   );
 }
 
-// TODO: Hide/disable pagination and sort/filters if no results retrieved.
 const CardView = (props: CardViewProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
@@ -430,7 +429,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             xs={12}
             className={classes.paginationGrid}
           >
-            {/* TODO: Is there any way to avoid doing this? */}
             {/* Fake box to mirror Max Results selector */}
             {totalDataCount > resOptions[0] && (
               <Grid item xs={12} md={1}>
@@ -639,8 +637,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           {loadedData &&
             (totalDataCount > 0 ? (
               <List style={{ padding: 0, marginRight: 20 }}>
-                {/* TODO: The width of the card should take up more room when
-                        there is no information or buttons. */}
                 {data.map((entity, index) => {
                   return (
                     <ListItem key={index} alignItems="flex-start">

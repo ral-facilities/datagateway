@@ -194,7 +194,7 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
       '& span': {
         display: 'block',
         whiteSpace: 'nowrap',
-        // TODO: Remove use of "vw" here
+        // TODO: Remove use of "vw" here?
         maxWidth: '20vw',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
