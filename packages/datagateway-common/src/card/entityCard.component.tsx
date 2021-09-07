@@ -214,6 +214,9 @@ const EntityCard = React.memo((props: EntityCardProps): React.ReactElement => {
         : nestedValue(entity, details.dataKey),
       noTooltip: details.noTooltip,
     }))
+    // TODO: The only issue this might cause if someone sorts/filters
+    //       by this field and a card with no content for this field
+    //       would not show up on the card.
     // Filter afterwards to only show content with information.
     .filter((v) => v.content)
     // Add in tooltips to the content we have filtered.
