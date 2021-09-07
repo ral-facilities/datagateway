@@ -1,86 +1,40 @@
 import React from 'react';
 import {
-  createStyles,
-  Divider,
-  Grid,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+  ConfirmationNumber,
+  CalendarToday,
+  Fingerprint,
+} from '@material-ui/icons';
 import {
-  Table,
+  CardView,
   Dataset,
-  tableLink,
-  FacilityCycle,
-  ColumnType,
-  DetailsPanelProps,
-  formatCountOrSize,
   parseSearchToQuery,
-  useAddToCart,
-  useAllFacilityCycles,
-  useCart,
-  useDatasetCount,
-  useDatasetsDatafileCount,
-  useDatasetsInfinite,
-  useDatasetSizes,
   useDateFilter,
-  useIds,
-  useLuceneSearch,
+  useDatasetCount,
+  useDatasetsPaginated,
+  usePushFilters,
+  usePushPage,
+  usePushResults,
   usePushSort,
-  useRemoveFromCart,
   useTextFilter,
+  useAllFacilityCycles,
+  useLuceneSearch,
+  FacilityCycle,
+  tableLink,
+  useDatasetsDatafileCount,
+  useDatasetSizes,
+  formatCountOrSize,
 } from 'datagateway-common';
-import { StateType } from '../state/app.types';
-import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+// import AddToCartButton from '../addToCartButton.component';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
+import { StateType } from '../state/app.types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-export const DatasetDetailsPanel = (
-  props: DetailsPanelProps
-): React.ReactElement => {
-  const classes = useStyles();
-  const [t] = useTranslation();
-  const datasetData = props.rowData as Dataset;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{datasetData.name}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">{t('datasets.description')}</Typography>
-        <Typography>
-          <b>{datasetData.description}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
-
-interface DatasetTableProps {
+interface DatasetCardViewProps {
   hierarchy: string;
 }
 
-const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
+const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const { hierarchy } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
@@ -99,15 +53,23 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     startDate,
     endDate,
   });
-  const location = useLocation();
-  const [t] = useTranslation();
 
-  const { filters, sort } = React.useMemo(
+  const [t] = useTranslation();
+  const location = useLocation();
+
+  const { filters, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
 
-  const { data: totalDataCount } = useDatasetCount([
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const pushSort = usePushSort();
+  const pushFilters = usePushFilters();
+  const pushPage = usePushPage();
+  const pushResults = usePushResults();
+
+  const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -115,7 +77,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
       }),
     },
   ]);
-  const { fetchNextPage, data } = useDatasetsInfinite([
+  const { isLoading: dataLoading, data } = useDatasetsPaginated([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -129,36 +91,6 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
       }),
     },
   ]);
-  const { data: allIds } = useIds('dataset', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
-  const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'dataset'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('dataset');
-
-  const aggregatedData: Dataset[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
-
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
-
-  const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
-    [fetchNextPage]
-  );
 
   const dlsLink = (
     datasetData: Dataset,
@@ -247,19 +179,6 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     }
   }, [hierarchy, isisLink]);
 
-  const selectedRows = React.useMemo(
-    () =>
-      cartItems
-        ?.filter(
-          (cartItem) =>
-            allIds &&
-            cartItem.entityType === 'dataset' &&
-            allIds.includes(cartItem.entityId)
-        )
-        .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
-  );
-
   // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
   // the correct calculation queries for each facility
   const datasetCountQueries = useDatasetsDatafileCount(
@@ -267,79 +186,117 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   );
   const sizeQueries = useDatasetSizes(hierarchy === 'isis' ? data : []);
 
-  const columns: ColumnType[] = React.useMemo(
+  const title = React.useMemo(
+    () => ({
+      // Provide label for filter component.
+      label: t('datasets.name'),
+      // Provide both the dataKey (for tooltip) and content to render.
+      dataKey: 'name',
+      content: (dataset: Dataset) => {
+        return hierarchyLink(dataset);
+      },
+      filterComponent: textFilter,
+    }),
+    [hierarchyLink, t, textFilter]
+  );
+
+  const description = React.useMemo(
+    () => ({
+      label: t('datasets.details.description'),
+      dataKey: 'description',
+      filterComponent: textFilter,
+    }),
+    [t, textFilter]
+  );
+
+  const information = React.useMemo(
     () => [
       {
-        label: t('datasets.name'),
-        dataKey: 'name',
-        cellContentRenderer: (cellProps: TableCellProps) => {
-          const datasetData = cellProps.rowData as Dataset;
-          return hierarchyLink(datasetData);
-        },
-        filterComponent: textFilter,
-      },
-      {
+        icon: ConfirmationNumber,
         label:
           hierarchy === 'isis'
             ? t('datasets.size')
             : t('datasets.datafile_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
+        content: (dataset: Dataset): string => {
+          const index = data?.findIndex((item) => item.id === dataset.id);
+          if (typeof index === 'undefined') return 'Unknown';
           const query =
             hierarchy === 'isis'
-              ? sizeQueries[cellProps.rowIndex]
-              : datasetCountQueries[cellProps.rowIndex];
+              ? sizeQueries[index]
+              : datasetCountQueries[index];
           return formatCountOrSize(query, hierarchy === 'isis');
         },
         disableSort: true,
       },
       {
+        icon: Fingerprint,
         label: t('datasets.investigation'),
         dataKey: 'investigation.name',
-        cellContentRenderer: (cellProps: TableCellProps) => {
-          const datasetData = cellProps.rowData as Dataset;
-          return hierarchyLink(datasetData, 'investigation');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        content: (dataset: Dataset): any => {
+          return hierarchyLink(dataset, 'investigation');
         },
         filterComponent: textFilter,
       },
       {
+        icon: CalendarToday,
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
       },
       {
+        icon: CalendarToday,
         label: t('datasets.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,
       },
     ],
     [
-      t,
-      textFilter,
-      hierarchy,
+      data,
+      datasetCountQueries,
       dateFilter,
+      hierarchy,
       hierarchyLink,
       sizeQueries,
-      datasetCountQueries,
+      t,
+      textFilter,
     ]
   );
 
+  // const buttons = React.useMemo(
+  //   () => [
+  //     (dataset: Dataset) => (
+  //       <AddToCartButton
+  //         entityType="dataset"
+  //         allIds={data?.map((dataset) => dataset.id) ?? []}
+  //         entityId={dataset.id}
+  //       />
+  //     ),
+  //   ],
+  //   [data]
+  // );
+
   return (
-    <Table
-      loading={addToCartLoading || removeFromCartLoading}
-      data={aggregatedData}
-      loadMoreRows={loadMoreRows}
-      totalRowCount={totalDataCount ?? 0}
-      sort={sort}
+    <CardView
+      data={data ?? []}
+      totalDataCount={totalDataCount ?? 0}
+      onPageChange={pushPage}
+      onFilter={pushFilters}
       onSort={pushSort}
-      selectedRows={selectedRows}
-      allIds={allIds}
-      onCheck={addToCart}
-      onUncheck={removeFromCart}
-      detailsPanel={DatasetDetailsPanel}
-      columns={columns}
+      onResultsChange={pushResults}
+      loadedData={!dataLoading}
+      loadedCount={!countLoading}
+      filters={filters}
+      sort={sort}
+      page={page}
+      results={results}
+      title={title}
+      description={description}
+      information={information}
+      // buttons={buttons}
     />
   );
 };
 
-export default DatasetSearchTable;
+export default DatasetCardView;

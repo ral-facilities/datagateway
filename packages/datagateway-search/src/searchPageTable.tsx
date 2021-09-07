@@ -13,8 +13,8 @@ import {
 import { StyleRules } from '@material-ui/core/styles';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
-import InvestigationSearchTable from './table/investigationSearchTable.component';
-import DatasetSearchTable from './table/datasetSearchTable.component';
+// import InvestigationSearchTable from './table/investigationSearchTable.component';
+// import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
 import { Action, AnyAction } from 'redux';
@@ -22,6 +22,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
 import { useLuceneSearch } from 'datagateway-common';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import InvestigationCardView from './card/investigationCardView.component';
+import DatasetCardView from './card/datasetCardView.component';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -242,21 +244,23 @@ const SearchPageTable = (
       </AppBar>
 
       {investigationTab ? (
-        <TabPanel value={currentTab} index={'investigation'}>
-          <Paper
-            style={{
-              height: `calc(${containerHeight} - 96px)`,
-              minHeight: 230,
-              overflowX: 'auto',
-            }}
-            elevation={0}
-          >
-            <InvestigationSearchTable hierarchy={hierarchy} />
-          </Paper>
-        </TabPanel>
+        <InvestigationCardView hierarchy={hierarchy} />
       ) : null}
-      {datasetTab ? (
-        <TabPanel value={currentTab} index={'dataset'}>
+      {/* <TabPanel value={currentTab} index={'investigation'}>
+        <Paper
+          style={{
+            height: `calc(${containerHeight} - 96px)`,
+            minHeight: 230,
+            overflowX: 'auto',
+          }}
+          elevation={0}
+        >
+          <InvestigationSearchTable hierarchy={hierarchy} />
+        </Paper>
+      </TabPanel> */}
+
+      {datasetTab ? <DatasetCardView hierarchy={hierarchy} /> : null}
+      {/* <TabPanel value={currentTab} index={'dataset'}>
           <Paper
             style={{
               height: `calc(${containerHeight} - 96px)`,
@@ -267,8 +271,8 @@ const SearchPageTable = (
           >
             <DatasetSearchTable hierarchy={hierarchy} />
           </Paper>
-        </TabPanel>
-      ) : null}
+        </TabPanel> */}
+
       {datafileTab ? (
         <TabPanel value={currentTab} index={'datafile'}>
           <Paper
