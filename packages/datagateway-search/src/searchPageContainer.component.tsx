@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { Grid, Paper, LinearProgress } from '@material-ui/core';
+import { Grid, Paper, LinearProgress, Button } from '@material-ui/core';
 
 import SearchPageTable from './searchPageTable';
+import SearchPageCardView from './searchPageCardView';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
@@ -31,6 +32,7 @@ interface SearchPageContainerStoreProps {
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
+  currentTab: string;
 }
 
 interface SearchPageContainerDispatchProps {
@@ -56,6 +58,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setDatasetTab,
     setInvestigationTab,
     sideLayout,
+    currentTab,
   } = props;
 
   const {
@@ -107,10 +110,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       searchInvestigations();
     }
 
-    // Set the appropriate tabs.
-    setDatafileTab(datafile);
-    setDatasetTab(dataset);
-    setInvestigationTab(investigation);
+    if (dataset || datafile || investigation) {
+      // Set the appropriate tabs.
+      setDatafileTab(datafile);
+      setDatasetTab(dataset);
+      setInvestigationTab(investigation);
+    }
   }, [
     datafile,
     dataset,
@@ -127,6 +132,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   // grid padding, search box, checkboxes, date selectors, padding.
   const spacing = 2;
   const containerHeight = `calc(100vh - 64px - 30px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)`;
+
+  const [view, setView] = React.useState<'card' | 'table'>('card');
+
+  const handleChange = (): void => {
+    view === 'card' ? setView('table') : setView('card');
+  };
 
   return (
     <Switch>
@@ -165,27 +176,64 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             </Grid>
 
             {requestReceived && (
-              <Grid container justify="center" id="container-search-table">
-                <Paper
-                  style={{
-                    height: containerHeight,
-                    minHeight: 326,
-                    width: '99vw',
-                    minWidth: 584,
-                  }}
-                >
-                  {/* Show loading progress if data is still being loaded */}
-                  {loading && (
-                    <Grid item xs={12}>
-                      <LinearProgress color="secondary" />
-                    </Grid>
-                  )}
-                  <SearchPageTable
-                    containerHeight={containerHeight}
-                    hierarchy={match.params.hierarchy}
-                  />
-                </Paper>
-              </Grid>
+              <div>
+                <div>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => handleChange()}
+                    disabled={currentTab === 'datafile'}
+                  >
+                    Change view
+                  </Button>
+                </div>
+                {/* <div className={classes.root}>
+                  <Button
+                    className="tour-dataview-view-button"
+                    aria-label="container-view-button"
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    startIcon={
+                      props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />
+                    }
+                    onClick={() => props.handleButtonChange()}
+                  >
+                    {props.viewCards
+                      ? t('app.view_table')
+                      : t('app.view_cards')}
+                  </Button>
+                </div> */}
+                <Grid container justify="center" id="container-search-table">
+                  <Paper
+                    style={{
+                      height: containerHeight,
+                      minHeight: 326,
+                      width: '99vw',
+                      minWidth: 584,
+                    }}
+                  >
+                    {/* Show loading progress if data is still being loaded */}
+                    {loading && (
+                      <Grid item xs={12}>
+                        <LinearProgress color="secondary" />
+                      </Grid>
+                    )}
+                    {view === 'table' ? (
+                      <SearchPageTable
+                        containerHeight={containerHeight}
+                        hierarchy={match.params.hierarchy}
+                      />
+                    ) : (
+                      <SearchPageCardView
+                        containerHeight={containerHeight}
+                        hierarchy={match.params.hierarchy}
+                      />
+                    )}
+                  </Paper>
+                </Grid>
+              </div>
             )}
           </Grid>
         )}
@@ -216,6 +264,7 @@ const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,
   investigationTab: state.dgsearch.tabs.investigationTab,
+  currentTab: state.dgsearch.tabs.currentTab,
 });
 
 export default connect(
