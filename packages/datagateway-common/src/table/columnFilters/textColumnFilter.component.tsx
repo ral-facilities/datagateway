@@ -64,10 +64,11 @@ const TextColumnFilter = (props: {
     <div>
       <Input
         id={`${label}-filter`}
-        placeholder={`${type.charAt(0).toUpperCase() + type.slice(1)}...`}
+        placeholder={`${type.charAt(0).toUpperCase() + type.slice(1)}`}
         value={inputValue}
         onChange={handleInputChange}
-        aria-label={`Filter by ${label}`}
+        inputProps={{ 'aria-label': `Filter by ${label}` }}
+        aria-hidden={true}
         fullWidth={true}
         color="secondary"
         endAdornment={
@@ -79,6 +80,9 @@ const TextColumnFilter = (props: {
               // Do not render a value
               renderValue={() => ''}
               onChange={(e) => handleSelectChange(e.target.value as string)}
+              SelectDisplayProps={{
+                'aria-label': `include or exclude`,
+              }}
             >
               <MenuItem
                 key="include"

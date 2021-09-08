@@ -7,10 +7,7 @@ describe('ISIS - Studies Cards', () => {
       ['@getStudiesCount', '@getStudiesOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="container-view-button"]').click();
-    // .wait(['@getStudiesCount', '@getStudiesOrder'], {
-    //   timeout: 10000,
-    // });
+    cy.get('[aria-label="page-view Display as cards"]').click();
   });
 
   it('should load correctly', () => {
@@ -79,7 +76,6 @@ describe('ISIS - Studies Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
 
     cy.get('[aria-label="Filter by Name"]')
-      .find('input')
       .first()
       .type('1')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
@@ -88,7 +84,6 @@ describe('ISIS - Studies Cards', () => {
     cy.get('#card').contains('STUDY 11');
 
     cy.get('[aria-label="Filter by Title"]')
-      .find('input')
       .first()
       .type('peace')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {

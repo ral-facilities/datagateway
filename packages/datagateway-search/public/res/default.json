@@ -16,7 +16,7 @@
     "search_text_arialabel": "Search text input",
     "start_date_arialabel": "Start date input",
     "end_date_arialabel": "End date input",
-    "search_button_arialabel": "Submit search button",
+    "search_button_arialabel": "Submit search",
     "invalid_date_message": "Invalid date range"
   },
   "searchPageTable": {

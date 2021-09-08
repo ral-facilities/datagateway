@@ -1,7 +1,7 @@
 describe('Admin Download Status', () => {
   before(() => {
     // Ensure the downloads are cleared before running tests.
-    cy.login({username: 'root', password: 'pw', mechanism: 'simple'});
+    cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
 
     // Seed the initial downloads.
     cy.clearDownloads();
@@ -12,7 +12,7 @@ describe('Admin Download Status', () => {
       'fetchAdminDownloads'
     );
 
-    cy.login({username: 'root', password: 'pw', mechanism: 'simple'});
+    cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
 
     // Ensure the downloads are cleared before running tests.
     cy.clearDownloads();
@@ -38,19 +38,23 @@ describe('Admin Download Status', () => {
 
     // Typical `.should('match'...)`  doesn't work for text, tries to match the element,
     // hence a slightly different approach for doing regex on the actual text
-    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').find('p').should(($preparedId) => {
-      expect($preparedId[0].textContent).match(
-        /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
-      );
-    });
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]')
+      .find('p')
+      .should(($preparedId) => {
+        expect($preparedId[0].textContent).match(
+          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+        );
+      });
 
     cy.get('[aria-label="Refresh download status table"]').click();
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').find('p').should(($preparedId) => {
-      expect($preparedId[0].textContent).match(
-        /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
-      );
-    });
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]')
+      .find('p')
+      .should(($preparedId) => {
+        expect($preparedId[0].textContent).match(
+          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+        );
+      });
   });
 
   describe('should be able to sort download items by', () => {
@@ -108,11 +112,13 @@ describe('Admin Download Status', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').find('p').should(($preparedId) => {
-        expect($preparedId[0].textContent).match(
-          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
-        );
-      });
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]')
+        .find('p')
+        .should(($preparedId) => {
+          expect($preparedId[0].textContent).match(
+            /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+          );
+        });
     });
 
     it('multiple columns', () => {
@@ -140,7 +146,6 @@ describe('Admin Download Status', () => {
   describe('should be able to filter download items by', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by Availability"]')
-        .find('input')
         .first()
         .type('Available', { force: true });
 
@@ -153,11 +158,11 @@ describe('Admin Download Status', () => {
     it('date between', () => {
       const currDate = new Date();
 
-      cy.get('[aria-label="Requested Date date filter from"]').type(
+      cy.get('input[id="Requested Date filter from"]').type(
         currDate.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-label="Requested Date date filter to"]').type(
+      cy.get('input[id="Requested Date filter to"]').type(
         currDate.toISOString().slice(0, 10)
       );
 
@@ -181,11 +186,9 @@ describe('Admin Download Status', () => {
         .trigger('mouseup');
 
       cy.get('[aria-label="Filter by Access Method')
-        .find('input')
         .first()
         .type('globus', { force: true });
       cy.get('[aria-label="Filter by Availability"]')
-        .find('input')
         .first()
         .type('restoring', { force: true });
 

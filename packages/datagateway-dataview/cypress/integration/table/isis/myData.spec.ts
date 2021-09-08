@@ -149,10 +149,7 @@ describe('ISIS - MyData Table', () => {
   describe('should be able to filter by', () => {
     it('text', () => {
       cy.get('[aria-rowcount="4"]').should('exist');
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('invalid');
+      cy.get('input[id="Title-filter"]').type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
@@ -160,7 +157,7 @@ describe('ISIS - MyData Table', () => {
     it('date between', () => {
       cy.get('[aria-rowcount="4"]').should('exist');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('button[aria-label="Start Date filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -172,27 +169,23 @@ describe('ISIS - MyData Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('input[id="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-label="Start Date date filter from"]').type('2006-08-05');
+      cy.get('input[id="Start Date filter from"]').type('2006-08-05');
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument"]')
-        .find('input')
         .first()
         .type('Experience ready course option.');
 
       cy.get('[aria-rowcount="4"]').should('exist');
 
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('invalid');
+      cy.get('[aria-label="Filter by Title"]').first().type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });

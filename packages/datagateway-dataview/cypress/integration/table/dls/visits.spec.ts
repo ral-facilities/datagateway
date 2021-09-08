@@ -144,19 +144,16 @@ describe('DLS - Visits Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Visit ID"]')
-        .find('input')
-        .first()
-        .type('42');
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('42');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2000-04-03');
+      cy.get('input[id="Start Date filter from"]').type('2000-04-03');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('button[aria-label="Start Date filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -168,7 +165,7 @@ describe('DLS - Visits Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('input[id="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -178,15 +175,9 @@ describe('DLS - Visits Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Visit ID"]')
-        .find('input')
-        .first()
-        .type('42');
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('42');
 
-      cy.get('[aria-label="Filter by Instrument')
-        .find('input')
-        .first()
-        .type('INSTRUMENT 8');
+      cy.get('[aria-label="Filter by Instrument').first().type('INSTRUMENT 8');
 
       cy.get('[aria-rowcount="1"').should('exist');
     });

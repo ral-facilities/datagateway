@@ -19,6 +19,6 @@ describe('SearchBoxContainer Component', () => {
     cy.get('[aria-label="Dataset checkbox"]').should('exist');
     cy.get('[aria-label="Datafile checkbox"]').should('exist');
 
-    cy.get('[aria-label="Submit search button"]').should('exist');
+    cy.get('[aria-label="Submit search"]').should('exist');
   });
 });

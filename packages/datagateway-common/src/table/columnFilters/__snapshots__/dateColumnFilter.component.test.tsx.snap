@@ -8,16 +8,18 @@ exports[`Date filter component renders correctly 1`] = `
     <PickerWithState
       KeyboardButtonProps={
         Object {
+          "aria-label": "test filter from, date picker",
           "size": "small",
         }
       }
       allowKeyboardControl={true}
-      clearable={true}
+      aria-hidden="true"
       color="secondary"
       format="yyyy-MM-dd"
+      id="test filter from"
       inputProps={
         Object {
-          "aria-label": "test date filter from",
+          "aria-label": "test filter",
         }
       }
       invalidDateMessage="Invalid Date Format"
@@ -27,7 +29,12 @@ exports[`Date filter component renders correctly 1`] = `
       minDateMessage="Date should not be before minimal date"
       onChange={[Function]}
       openTo="date"
-      placeholder="From... (yyyy-MM-dd)"
+      placeholder="From..."
+      style={
+        Object {
+          "whiteSpace": "nowrap",
+        }
+      }
       value={1999-01-01T00:00:00.000Z}
       views={
         Array [
@@ -40,16 +47,18 @@ exports[`Date filter component renders correctly 1`] = `
     <PickerWithState
       KeyboardButtonProps={
         Object {
+          "aria-label": "test filter to, date picker",
           "size": "small",
         }
       }
       allowKeyboardControl={true}
-      clearable={true}
+      aria-hidden="true"
       color="secondary"
       format="yyyy-MM-dd"
+      id="test filter to"
       inputProps={
         Object {
-          "aria-label": "test date filter to",
+          "aria-label": "test filter",
         }
       }
       invalidDateMessage="Invalid Date Format"
@@ -59,7 +68,12 @@ exports[`Date filter component renders correctly 1`] = `
       minDateMessage="Invalid date range"
       onChange={[Function]}
       openTo="date"
-      placeholder="To...     (yyyy-MM-dd)"
+      placeholder="To..."
+      style={
+        Object {
+          "whiteSpace": "nowrap",
+        }
+      }
       value={2000-01-01T00:00:00.000Z}
       views={
         Array [
@@ -81,16 +95,18 @@ exports[`Date filter component useTextFilter hook returns a function which can g
     <PickerWithState
       KeyboardButtonProps={
         Object {
+          "aria-label": "Start Date filter from, date picker",
           "size": "small",
         }
       }
       allowKeyboardControl={true}
-      clearable={true}
+      aria-hidden="true"
       color="secondary"
       format="yyyy-MM-dd"
+      id="Start Date filter from"
       inputProps={
         Object {
-          "aria-label": "Start Date date filter from",
+          "aria-label": "Start Date filter",
         }
       }
       invalidDateMessage="Invalid Date Format"
@@ -100,7 +116,12 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       minDateMessage="Date should not be before minimal date"
       onChange={[Function]}
       openTo="date"
-      placeholder="From... (yyyy-MM-dd)"
+      placeholder="From..."
+      style={
+        Object {
+          "whiteSpace": "nowrap",
+        }
+      }
       value={null}
       views={
         Array [
@@ -113,16 +134,18 @@ exports[`Date filter component useTextFilter hook returns a function which can g
     <PickerWithState
       KeyboardButtonProps={
         Object {
+          "aria-label": "Start Date filter to, date picker",
           "size": "small",
         }
       }
       allowKeyboardControl={true}
-      clearable={true}
+      aria-hidden="true"
       color="secondary"
       format="yyyy-MM-dd"
+      id="Start Date filter to"
       inputProps={
         Object {
-          "aria-label": "Start Date date filter to",
+          "aria-label": "Start Date filter",
         }
       }
       invalidDateMessage="Invalid Date Format"
@@ -132,7 +155,12 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       minDateMessage="Invalid date range"
       onChange={[Function]}
       openTo="date"
-      placeholder="To...     (yyyy-MM-dd)"
+      placeholder="To..."
+      style={
+        Object {
+          "whiteSpace": "nowrap",
+        }
+      }
       value={null}
       views={
         Array [

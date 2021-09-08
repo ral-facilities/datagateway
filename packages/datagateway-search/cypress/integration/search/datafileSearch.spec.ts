@@ -27,7 +27,7 @@ describe('Datafile search tab', () => {
     cy.get('[aria-label="Investigation checkbox"]').click();
     cy.get('[aria-label="Dataset checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
         timeout: 10000,
@@ -44,7 +44,7 @@ describe('Datafile search tab', () => {
       .find('#filled-search')
       .type('2106');
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
@@ -78,7 +78,7 @@ describe('Datafile search tab', () => {
     cy.get('[aria-label="Start date input"]').type('2012-02-02');
     cy.get('[aria-label="End date input"]').type('2012-02-03');
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search"]').click();
 
     cy.get('[aria-label="Search table"]')
       .contains('Datafile')
@@ -96,7 +96,7 @@ describe('Datafile search tab', () => {
   it('should be hidden if datafile checkbox is unchecked', () => {
     cy.get('[aria-label="Datafile checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
@@ -114,7 +114,7 @@ describe('Datafile search tab', () => {
       .find('#filled-search')
       .type('1956');
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,

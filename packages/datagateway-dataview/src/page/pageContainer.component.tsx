@@ -157,7 +157,7 @@ const NavBar = React.memo(
             className="tour-dataview-breadcrumbs"
             item
             xs
-            aria-label="container-breadcrumbs"
+            aria-label="page-breadcrumbs"
           >
             {/* don't show breadcrumbs on /my-data - only on browse */}
             <Route
@@ -174,7 +174,7 @@ const NavBar = React.memo(
             item
             sm={2}
             xs={3}
-            aria-label="container-view-count"
+            aria-label="view-count"
           >
             <Route
               exact
@@ -216,7 +216,7 @@ const NavBar = React.memo(
             <IconButton
               className="tour-dataview-search-icon"
               onClick={props.navigateToSearch}
-              aria-label="container-view-search"
+              aria-label="view-search"
               style={{ margin: 'auto' }}
             >
               <SearchIcon />
@@ -234,7 +234,7 @@ const NavBar = React.memo(
             <IconButton
               className="tour-dataview-cart-icon"
               onClick={props.navigateToDownload}
-              aria-label="container-view-cart"
+              aria-label="view-cart"
               style={{ margin: 'auto' }}
             >
               <Badge
@@ -242,7 +242,7 @@ const NavBar = React.memo(
                   props.cartItems.length > 0 ? props.cartItems.length : null
                 }
                 color="primary"
-                aria-label="container-view-cart-badge"
+                aria-label="view-cart-badge"
               >
                 <ShoppingCartIcon />
               </Badge>
@@ -275,7 +275,9 @@ const ViewButton = (props: {
     <div className={classes.root}>
       <Button
         className="tour-dataview-view-button"
-        aria-label="container-view-button"
+        aria-label={`page-view ${
+          props.viewCards ? t('app.view_table') : t('app.view_cards')
+        }`}
         variant="contained"
         color="primary"
         size="small"
@@ -521,7 +523,7 @@ const PageContainer: React.FC = () => {
               )}
 
               {/* Hold the view for remainder of the page */}
-              <Grid item xs={12} aria-label="container-view">
+              <Grid item xs={12} aria-label="page-view">
                 <ViewRouting
                   view={view}
                   location={location}

@@ -8,10 +8,7 @@ describe('ISIS - Instruments Cards', () => {
       ['@getInstrumentsCount', '@getInstrumentsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="container-view-button"]').click();
-    // .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
-    //   timeout: 10000,
-    // });
+    cy.get('[aria-label="page-view Display as cards"]').click();
   });
 
   it('should load correctly', () => {
@@ -70,7 +67,6 @@ describe('ISIS - Instruments Cards', () => {
   it('should be able to filter by multiple fields', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
-      .find('input')
       .first()
       .type('Near')
       .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
@@ -79,7 +75,6 @@ describe('ISIS - Instruments Cards', () => {
     cy.get('#card').contains('Near must surface law how full.');
 
     cy.get('[aria-label="Filter by Type"]')
-      .find('input')
       .first()
       .type('4')
       .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {

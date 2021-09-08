@@ -167,10 +167,7 @@ describe('ISIS - Datasets Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .first()
-        .type('DATASET 337');
+      cy.get('[aria-label="Filter by Name"]').first().type('DATASET 337');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -179,9 +176,9 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time date filter from"]').type('2005-06-12');
+      cy.get('input[id="Create Time filter from"]').type('2005-06-12');
 
-      cy.get('[aria-label="Create Time date filter to"]')
+      cy.get('button[aria-label="Create Time filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -193,7 +190,7 @@ describe('ISIS - Datasets Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Create Time date filter to"]').should(
+      cy.get('input[id="Create Time filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -204,12 +201,11 @@ describe('ISIS - Datasets Table', () => {
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
-        .find('input')
         .first()
         .type('337')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter to"]')
+      cy.get('input[id="Create Time filter to"]')
         .type('2007-06-23')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 

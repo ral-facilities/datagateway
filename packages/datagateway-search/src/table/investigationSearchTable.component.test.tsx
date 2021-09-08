@@ -275,7 +275,7 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.title"] input')
+      .find('[aria-label="Filter by investigations.title"]')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
@@ -298,7 +298,7 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
-      '[aria-label="investigations.end_date date filter to"]'
+      'input[id="investigations.end_date filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
