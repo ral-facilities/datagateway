@@ -12,7 +12,6 @@ import { StyleRules } from '@material-ui/core/styles';
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     bigImage: {
-      alt: 'DataGateway Banner',
       height: 250,
       width: '100%',
       '& img': {
