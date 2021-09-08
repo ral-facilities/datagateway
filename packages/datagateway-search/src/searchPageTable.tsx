@@ -19,12 +19,7 @@ import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-  setCurrentTab,
-  setDatafileTab,
-  setDatasetTab,
-  setInvestigationTab,
-} from './state/actions/actions';
+import { setCurrentTab } from './state/actions/actions';
 import { useLuceneSearch } from 'datagateway-common';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
@@ -56,9 +51,6 @@ interface SearchTableStoreProps {
 
 interface SearchTableDispatchProps {
   setCurrentTab: (newValue: string) => Action;
-  setDatasetTab: (toggleOption: boolean) => Action;
-  setDatafileTab: (toggleOption: boolean) => Action;
-  setInvestigationTab: (toggleOption: boolean) => Action;
 }
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -334,12 +326,6 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): SearchTableDispatchProps => ({
   setCurrentTab: (newValue: string) => dispatch(setCurrentTab(newValue)),
-  setDatasetTab: (toggleOption: boolean) =>
-    dispatch(setDatasetTab(toggleOption)),
-  setDatafileTab: (toggleOption: boolean) =>
-    dispatch(setDatafileTab(toggleOption)),
-  setInvestigationTab: (toggleOption: boolean) =>
-    dispatch(setInvestigationTab(toggleOption)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchPageTable);
