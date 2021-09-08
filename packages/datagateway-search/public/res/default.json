@@ -38,7 +38,19 @@
     "name": "Name",
     "doi": "DOI",
     "dataset_count": "Dataset Count",
-    "size": "Size"
+    "size": "Size",
+    "details": {
+      "name": "Name",
+      "summary": "Summary",
+      "start_date": "Start Date",
+      "end_date": "End Date"
+    },
+    "facility": {
+      "id": "Facility ID"
+    },
+    "type": {
+      "id": "Type ID"
+    }
   },
   "datasets": {
     "name": "Name",
@@ -47,7 +59,10 @@
     "datafile_count": "Datafile Count",
     "size": "Size",
     "description": "Description",
-    "investigation": "Investigation"
+    "investigation": "Investigation",
+    "details": {
+      "description": "Description"
+    }
   },
   "datafiles": {
     "name": "Name",
@@ -57,6 +72,12 @@
     "dataset": "Dataset"
   },
   "app": {
-    "error": "Something went wrong..."
+    "error": "Something went wrong...",    
+    "view_table": "Display as table",
+    "view_cards": "Display as cards"
+  },
+  "advanced_filters": {
+    "show": "Show Advanced Filters",
+    "hide": "Hide Advanced Filters"
   }
 }

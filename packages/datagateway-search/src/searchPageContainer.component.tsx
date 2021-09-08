@@ -4,7 +4,15 @@ import { connect } from 'react-redux';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { Grid, Paper, LinearProgress, Button } from '@material-ui/core';
+import {
+  Grid,
+  Paper,
+  LinearProgress,
+  Button,
+  makeStyles,
+  createStyles,
+  Theme,
+} from '@material-ui/core';
 
 import SearchPageTable from './searchPageTable';
 import SearchPageCardView from './searchPageCardView';
@@ -20,6 +28,45 @@ import {
   setDatasetTab,
   setInvestigationTab,
 } from './state/actions/actions';
+import { useTranslation } from 'react-i18next';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
+import { StyleRules } from '@material-ui/core/styles';
+
+const viewButtonStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      root: {
+        padding: theme.spacing(1),
+      },
+    })
+);
+
+const ViewButton = (props: {
+  viewCards: boolean;
+  handleButtonChange: () => void;
+  disabled: boolean;
+}): React.ReactElement => {
+  const [t] = useTranslation();
+  const classes = viewButtonStyles();
+
+  return (
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-view-button"
+        aria-label="container-view-button"
+        variant="contained"
+        color="primary"
+        size="small"
+        startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
+        onClick={() => props.handleButtonChange()}
+        disabled={props.disabled}
+      >
+        {props.viewCards ? t('app.view_table') : t('app.view_cards')}
+      </Button>
+    </div>
+  );
+};
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
@@ -135,9 +182,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const [view, setView] = React.useState<'card' | 'table'>('card');
 
-  const handleChange = (): void => {
-    view === 'card' ? setView('table') : setView('card');
-  };
+  const handleButtonChange = React.useCallback((): void => {
+    const nextView = view !== 'card' ? 'card' : 'table';
+    setView(nextView);
+  }, [view]);
 
   return (
     <Switch>
@@ -177,34 +225,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
             {requestReceived && (
               <div>
-                <div>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => handleChange()}
-                    disabled={currentTab === 'datafile'}
-                  >
-                    Change view
-                  </Button>
-                </div>
-                {/* <div className={classes.root}>
-                  <Button
-                    className="tour-dataview-view-button"
-                    aria-label="container-view-button"
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    startIcon={
-                      props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />
-                    }
-                    onClick={() => props.handleButtonChange()}
-                  >
-                    {props.viewCards
-                      ? t('app.view_table')
-                      : t('app.view_cards')}
-                  </Button>
-                </div> */}
+                <ViewButton
+                  viewCards={view === 'card'}
+                  handleButtonChange={handleButtonChange}
+                  disabled={currentTab === 'datafile'}
+                />
                 <Grid container justify="center" id="container-search-table">
                   <Paper
                     style={{
