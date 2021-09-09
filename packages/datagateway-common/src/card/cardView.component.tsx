@@ -97,6 +97,8 @@ export interface CardViewProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buttons?: ((data?: any) => React.ReactNode)[];
 
+  // TODO: Icon/avatar support
+  // TODO: Colour support
   customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
   resultsOptions?: number[];
   image?: EntityImageDetails;
@@ -625,6 +627,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     <Chip
                       key={itemIndex}
                       className={classes.chip}
+                      // TODO: Icon support
                       label={`${filter.label} - ${item}`}
                       onDelete={() => {
                         changeFilter(filter.filterKey, item, true);

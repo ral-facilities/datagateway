@@ -69,6 +69,10 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       filterType: 'include',
       filterValue: JSON.stringify('investigation'),
     },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('type'),
+    },
   ]);
 
   const { data: typeIds } = useFilter('dataset', 'type.id', [

@@ -71,6 +71,10 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         investigationInstruments: 'instrument',
       }),
     },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('type'),
+    },
   ]);
   const countQueries = useInvestigationsDatasetCount(data);
   const { data: typeIds } = useFilter('investigation', 'type.id', [

@@ -121,6 +121,10 @@ describe('DLS Datasets - Card View', () => {
         filterType: 'include',
         filterValue: JSON.stringify('investigation'),
       },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify('type'),
+      },
     ]);
   });
 

@@ -46,7 +46,16 @@ const InvestigationCardView = (): React.ReactElement => {
     data: totalDataCount,
     isLoading: countLoading,
   } = useInvestigationCount();
-  const { isLoading: dataLoading, data } = useInvestigationsPaginated();
+  const { isLoading: dataLoading, data } = useInvestigationsPaginated([
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('type'),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('facility'),
+    },
+  ]);
   const countQueries = useInvestigationsDatasetCount(data);
   const { data: typeIds } = useFilter('investigation', 'type.id');
   const { data: facilityIds } = useFilter('investigation', 'facility.id');
