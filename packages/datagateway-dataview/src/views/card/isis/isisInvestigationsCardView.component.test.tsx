@@ -19,6 +19,7 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import AddToCartButton from '../../addToCartButton.component';
+import DownloadButton from '../../downloadButton.component';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { createMemoryHistory, History } from 'history';
 
@@ -202,6 +203,9 @@ describe('ISIS Investigations - Card View', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
     expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
+
+    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
+    expect(wrapper.find(DownloadButton).text()).toEqual('buttons.download');
   });
 
   it('displays details panel when more information is expanded and navigates to datasets view when tab clicked', () => {
