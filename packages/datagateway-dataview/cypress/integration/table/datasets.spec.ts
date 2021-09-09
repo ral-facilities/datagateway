@@ -134,10 +134,7 @@ describe('Datasets Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .first()
-        .type('DATASET 1');
+      cy.get('[aria-label="Filter by Name"]').first().type('DATASET 1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -146,9 +143,11 @@ describe('Datasets Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time date filter from"]').type('2006-01-01');
+      cy.get('input[id="Create Time filter from"]').type('2006-01-01', {
+        force: true,
+      });
 
-      cy.get('[aria-label="Create Time date filter to"]')
+      cy.get('button[aria-label="Create Time filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -160,7 +159,7 @@ describe('Datasets Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Create Time date filter to"]').should(
+      cy.get('input[id="Create Time filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -170,9 +169,9 @@ describe('Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').first().type('1');
+      cy.get('[aria-label="Filter by Name"]').first().type('1');
 
-      cy.get('[aria-label="Create Time date filter to"]').type('2003-01-01');
+      cy.get('input[id="Create Time filter to"]').type('2003-01-01');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');

@@ -27,6 +27,7 @@ exports[`Card View renders correctly 1`] = `
         item={true}
       >
         <WithStyles(ForwardRef(Pagination))
+          aria-label="pagination"
           color="secondary"
           count={0}
           hideNextButton={true}
@@ -204,6 +205,7 @@ exports[`Card View renders correctly 1`] = `
     xs={true}
   >
     <WithStyles(ForwardRef(Pagination))
+      aria-label="pagination"
       color="secondary"
       count={0}
       hideNextButton={true}

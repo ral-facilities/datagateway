@@ -7,7 +7,7 @@ describe('DLS - Proposals Cards', () => {
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="container-view-button"]')
+    cy.get('[aria-label="page-view Display as cards"]')
       .click()
       .wait(['@getInvestigationsOrder'], {
         timeout: 10000,
@@ -71,7 +71,6 @@ describe('DLS - Proposals Cards', () => {
   it('should be able to filter by multiple fields', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
-      .find('input')
       .first()
       .type('Dog')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
@@ -80,7 +79,6 @@ describe('DLS - Proposals Cards', () => {
     cy.get('#card').contains('Energy place money bad authority.');
 
     cy.get('[aria-label="Filter by Name"]')
-      .find('input')
       .first()
       .type('2')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {

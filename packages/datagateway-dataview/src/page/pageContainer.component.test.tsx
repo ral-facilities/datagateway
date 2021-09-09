@@ -108,11 +108,7 @@ describe('PageContainer - Tests', () => {
     const wrapper = createWrapper();
 
     expect(
-      wrapper
-        .find('[aria-label="container-view-count"]')
-        .first()
-        .find('h3')
-        .text()
+      wrapper.find('[aria-label="view-count"]').first().find('h3').text()
     ).toBe('app.results: 101');
   });
 
@@ -137,10 +133,7 @@ describe('PageContainer - Tests', () => {
   it('opens search plugin when icon clicked', () => {
     const wrapper = createWrapper();
 
-    wrapper
-      .find('[aria-label="container-view-search"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="view-search"]').first().simulate('click');
 
     expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/search/data');
@@ -149,10 +142,7 @@ describe('PageContainer - Tests', () => {
   it('opens download plugin when Download Cart clicked', () => {
     const wrapper = createWrapper();
 
-    wrapper
-      .find('[aria-label="container-view-cart"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="view-cart"]').first().simulate('click');
 
     expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/download');
@@ -193,34 +183,24 @@ describe('PageContainer - Tests', () => {
 
     const wrapper = createWrapper();
 
-    expect(wrapper.find('[aria-label="container-view"]').exists()).toBeTruthy();
     expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
+      wrapper.find('[aria-label="page-view app.view_cards"]').exists()
+    ).toBeTruthy();
+    expect(
+      wrapper.find('[aria-label="page-view app.view_cards"]').first().text()
     ).toEqual('app.view_cards');
 
     // Click view button
     wrapper
-      .find('[aria-label="container-view-button"]')
+      .find('[aria-label="page-view app.view_cards"]')
       .first()
       .simulate('click');
     wrapper.update();
 
     // Check that the text on the button has changed
     expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
+      wrapper.find('[aria-label="page-view app.view_table"]').first().text()
     ).toEqual('app.view_table');
-
-    // Click view button again
-    wrapper
-      .find('[aria-label="container-view-button"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-
-    // Check that the text on the button has changed back
-    expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
-    ).toEqual('app.view_cards');
   });
 
   it('display filter warning on toggle table', () => {

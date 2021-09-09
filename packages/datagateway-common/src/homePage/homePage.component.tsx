@@ -60,6 +60,7 @@ const styles = (theme: Theme): StyleRules =>
 
 export interface HomePageProps {
   title: string;
+  logoLabel: string;
   howLabel: string;
   exploreLabel: string;
   exploreDescription: string;
@@ -87,7 +88,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
             height: 250,
           }}
         >
-          <img src={props.logo} alt={props.title} />
+          <img src={props.logo} alt={props.logoLabel} />
         </div>
       </div>
       <div className={props.classes.howItWorks}>
@@ -110,7 +111,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
             </Typography>
             <img
               src={props.exploreImage}
-              alt=""
+              alt={props.exploreLabel}
               className={props.classes.howItWorksGridItemImage}
             />
             <Typography
@@ -134,7 +135,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
             </Typography>
             <img
               src={props.discoverImage}
-              alt=""
+              alt={props.discoverLabel}
               className={props.classes.howItWorksGridItemImage}
             />
             <Typography
@@ -158,7 +159,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
             </Typography>
             <img
               src={props.downloadImage}
-              alt=""
+              alt={props.downloadLabel}
               className={props.classes.howItWorksGridItemImage}
             />
             <Typography

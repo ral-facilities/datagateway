@@ -151,10 +151,7 @@ describe('DLS - Proposals Table', () => {
       cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
     });
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').first().type('dog');
 
       cy.get('[aria-rowcount="7"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
@@ -163,15 +160,9 @@ describe('DLS - Proposals Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').first().type('dog');
 
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .first()
-        .type('INVESTIGATION 36');
+      cy.get('[aria-label="Filter by Name"]').first().type('INVESTIGATION 36');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

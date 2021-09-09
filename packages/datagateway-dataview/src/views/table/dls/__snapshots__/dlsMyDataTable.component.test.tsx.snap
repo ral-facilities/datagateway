@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DLS Visits table component renders correctly 1`] = `
+exports[`DLS MyData table component renders correctly 1`] = `
 Object {
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
@@ -125,7 +125,7 @@ Object {
 }
 `;
 
-exports[`DLS Visits table component renders title and visit ID as a links 1`] = `
+exports[`DLS MyData table component renders title and visit ID as a links 1`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -278,7 +278,7 @@ exports[`DLS Visits table component renders title and visit ID as a links 1`] = 
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`DLS Visits table component renders title and visit ID as a links 2`] = `
+exports[`DLS MyData table component renders title and visit ID as a links 2`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {

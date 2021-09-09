@@ -11,11 +11,10 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  MenuItem,
   Paper,
-  Select,
   TableSortLabel,
   Typography,
+  Select,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -148,6 +147,7 @@ function CVPagination(
       hidePrevButton={page === 1}
       hideNextButton={page >= numPages}
       showLastButton
+      aria-label="pagination"
     />
   );
 }
@@ -447,13 +447,16 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             {totalDataCount > resOptions[0] && (
               <Grid container item xs={12} md={1} justify="flex-end">
                 <FormControl className={classes.formControl}>
-                  <InputLabel id="select-max-results-label">
-                    Max Results
+                  <InputLabel htmlFor="select-max-results">
+                    {t('app.max_results')}
                   </InputLabel>
                   <Select
-                    labelId="select-max-results-label"
-                    id="select-max-results"
+                    native
                     value={results}
+                    inputProps={{
+                      name: 'Max Results',
+                      id: 'select-max-results',
+                    }}
                     onChange={(e) => {
                       const newResults = e.target.value as number;
                       const newMaxPage = ~~(
@@ -473,9 +476,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           (i > 0 && totalDataCount > resOptions[i - 1])
                       )
                       .map((n, i) => (
-                        <MenuItem key={i} value={n}>
+                        <option key={i} value={n} aria-label={`${n}...`}>
                           {n}
-                        </MenuItem>
+                        </option>
                       ))}
                   </Select>
                 </FormControl>
@@ -520,10 +523,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                 onPageChange(1);
                               }
                             }}
-                            aria-label={`Sort by ${s.dataKey}${
-                              sort[s.dataKey]
+                            aria-label={`Sort by ${s.label.toUpperCase()}${
+                              sort[s.label]
                                 ? `, current direction ${
-                                    sort[s.dataKey] === 'asc'
+                                    sort[s.label] === 'asc'
                                       ? 'ascending'
                                       : 'descending'
                                   }`

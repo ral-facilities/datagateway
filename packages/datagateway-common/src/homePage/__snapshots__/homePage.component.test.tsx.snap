@@ -17,7 +17,6 @@ exports[`Home page component homepage renders correctly 1`] = `
       }
     >
       <img
-        alt="test-title"
         src="test-logo"
       />
     </div>
@@ -48,7 +47,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           test-exploreLabel
         </WithStyles(ForwardRef(Typography))>
         <img
-          alt=""
+          alt="test-exploreLabel"
           className="HomePage-howItWorksGridItemImage-6"
           src="test-exploreImage"
         />
@@ -72,7 +71,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           test-discoverLabel
         </WithStyles(ForwardRef(Typography))>
         <img
-          alt=""
+          alt="test-discoverLabel"
           className="HomePage-howItWorksGridItemImage-6"
           src="test-discoverImage"
         />
@@ -96,7 +95,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           test-downloadLabel
         </WithStyles(ForwardRef(Typography))>
         <img
-          alt=""
+          alt="test-downloadLabel"
           className="HomePage-howItWorksGridItemImage-6"
           src="test-downloadImage"
         />
