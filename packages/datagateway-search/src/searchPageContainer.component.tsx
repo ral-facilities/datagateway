@@ -2,7 +2,7 @@ import React from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import { Switch, Route, RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import {
   Grid,
@@ -20,7 +20,12 @@ import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { useLuceneSearch } from 'datagateway-common';
+import {
+  useLuceneSearch,
+  ViewsType,
+  parseSearchToQuery,
+  usePushView,
+} from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
@@ -32,6 +37,45 @@ import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import { StyleRules } from '@material-ui/core/styles';
+
+const storeDataView = (view: NonNullable<ViewsType>): void => {
+  localStorage.setItem('dataView', view);
+};
+
+const getView = (): string => {
+  // We store the view into localStorage so the user can
+  // return to the view they were on the next time they open the page.
+  const savedView = localStorage.getItem('dataView');
+
+  // We set to 'table' initially if there is none present.
+  if (!savedView) storeDataView('table');
+  else return savedView;
+  return 'table';
+};
+
+const togglePaths = ['/search/data'];
+
+const getPathMatch = (pathname: string): boolean => {
+  const res = togglePaths.some((p) => {
+    // Look for the character set where the parameter for ID would be
+    // replaced with the regex to catch any character between the forward slashes.
+    const match = pathname.match(p.replace(/(:[^./]*)/g, '(.)+'));
+    return match && pathname === match[0];
+  });
+  return res;
+};
+
+const getToggle = (pathname: string, view: ViewsType): boolean => {
+  return getPathMatch(pathname)
+    ? view
+      ? view === 'card'
+        ? true
+        : false
+      : getView() === 'card'
+      ? true
+      : false
+    : false;
+};
 
 const viewButtonStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -108,6 +152,31 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     currentTab,
   } = props;
 
+  const location = useLocation();
+  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+
+  const pushView = usePushView();
+
+  const handleButtonChange = React.useCallback((): void => {
+    const nextView = view !== 'card' ? 'card' : 'table';
+
+    // Set the view in local storage.
+    storeDataView(nextView);
+
+    // push the view to query parameters.
+    pushView(nextView);
+  }, [pushView, view]);
+
+  React.useEffect(() => {
+    // If the view query parameter was not found and the previously
+    // stored view is in localstorage, update our current query with the view.
+    if (getToggle(location.pathname, view) && !view) {
+      pushView('card');
+    }
+  }, [location.pathname, view, pushView]);
+
   const {
     refetch: searchInvestigations,
     isIdle: investigationsIdle,
@@ -180,13 +249,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const spacing = 2;
   const containerHeight = `calc(100vh - 64px - 30px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)`;
 
-  const [view, setView] = React.useState<'card' | 'table'>('card');
-
-  const handleButtonChange = React.useCallback((): void => {
-    const nextView = view !== 'card' ? 'card' : 'table';
-    setView(nextView);
-  }, [view]);
-
   return (
     <Switch>
       <Route
@@ -245,13 +307,13 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         <LinearProgress color="secondary" />
                       </Grid>
                     )}
-                    {view === 'table' ? (
-                      <SearchPageTable
+                    {view === 'card' ? (
+                      <SearchPageCardView
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
                       />
                     ) : (
-                      <SearchPageCardView
+                      <SearchPageTable
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
                       />
