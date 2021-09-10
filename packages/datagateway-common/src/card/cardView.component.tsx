@@ -69,6 +69,14 @@ export interface CardViewDetails {
   noTooltip?: boolean;
 }
 
+// TODO: Add support to for counts
+export interface CVCustomFilters {
+  label: string;
+  dataKey: string;
+  filterItems: string[];
+  prefixLabel?: boolean;
+}
+
 type CVPaginationPosition = 'top' | 'bottom' | 'both';
 
 export interface CardViewProps {
@@ -97,9 +105,7 @@ export interface CardViewProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buttons?: ((data?: any) => React.ReactNode)[];
 
-  // TODO: Icon/avatar support
-  // TODO: Colour support
-  customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
+  customFilters?: CVCustomFilters[];
   resultsOptions?: number[];
   image?: EntityImageDetails;
 
@@ -592,6 +598,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                           }}
                                           aria-label={`Filter by ${filter.label} ${item}`}
                                         >
+                                          {/* TODO: Colour information for a custom filter 
+                                                    needs to be shown here too */}
                                           <Chip
                                             label={
                                               <ArrowTooltip title={item}>

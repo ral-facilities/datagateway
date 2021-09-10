@@ -161,6 +161,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         label: t('investigations.type.id'),
         dataKey: 'type.id',
         filterItems: typeIds ?? [],
+        prefixLabel: true,
       },
     ],
     [t, typeIds]

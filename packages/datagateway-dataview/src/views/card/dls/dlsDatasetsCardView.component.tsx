@@ -172,6 +172,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         label: t('datasets.type.id'),
         dataKey: 'type.id',
         filterItems: typeIds ?? [],
+        prefixLabel: true,
       },
     ],
     [t, typeIds]

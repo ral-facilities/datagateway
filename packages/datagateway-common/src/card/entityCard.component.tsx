@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import hexToRbga from 'hex-to-rgba';
 import { nestedValue } from '../api';
 import { Entity } from '../app.types';
-import { CardViewDetails } from './cardView.component';
+import { CardViewDetails, CVCustomFilters } from './cardView.component';
 
 const useCardStyles = makeStyles((theme: Theme) => {
   // TODO: Remove use of "vw" here?
@@ -181,8 +181,8 @@ interface EntityCardProps {
   moreInformation?: (data: Entity) => React.ReactNode;
   buttons?: ((data: Entity) => React.ReactNode)[];
 
+  customFilters?: CVCustomFilters[];
   image?: EntityImageDetails;
-  customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
 }
 
 const EntityCard = React.memo(
@@ -234,9 +234,11 @@ const EntityCard = React.memo(
       }));
 
     const buttons = props.buttons?.map((button) => button(entity));
-    const tags = props.customFilters?.map((f) =>
-      nestedValue(entity, f.dataKey)
-    );
+    const tags = props.customFilters?.map((f) => ({
+      data: nestedValue(entity, f.dataKey),
+      label: f.label,
+      prefixLabel: f.prefixLabel ?? false,
+    }));
 
     // The default collapsed height for card description is 100px.
     const defaultCollapsedHeight = 100;
@@ -276,6 +278,7 @@ const EntityCard = React.memo(
 
     return (
       <Card id="card" className={classes.root}>
+        {/* TODO: Check width and sizing of having image on card under different circumstances */}
         {/* We allow for additional width when having an image in the card (see card styles). */}
         {image && (
           <CardMedia
@@ -465,12 +468,10 @@ const EntityCard = React.memo(
               <div style={{ paddingTop: '10px' }}>
                 {tags.map((v, i) => (
                   <Chip
-                    // TODO: Icon support
-                    aria-label={`card-tag-${v}`}
+                    aria-label={`card-tag-${v.data}`}
                     key={i}
                     className={classes.chip}
-                    // TODO: Also show label name if enabled
-                    label={v}
+                    label={v.prefixLabel ? `${v.label} - ${v.data}` : v.data}
                   />
                 ))}
               </div>
