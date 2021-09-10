@@ -9,7 +9,6 @@ import { StateType } from '../state/app.types';
 import {
   Dataset,
   dGCommonInitialState,
-  handleICATError,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
@@ -36,7 +35,6 @@ jest.mock('datagateway-common', () => {
   return {
     __esModule: true,
     ...originalModule,
-    handleICATError: jest.fn(),
     useCart: jest.fn(),
     useLuceneSearch: jest.fn(),
     useDatasetCount: jest.fn(),
@@ -187,17 +185,7 @@ describe('Dataset table component', () => {
 
   afterEach(() => {
     mount.cleanUp();
-    (handleICATError as jest.Mock).mockClear();
-    (useCart as jest.Mock).mockClear();
-    (useLuceneSearch as jest.Mock).mockClear();
-    (useDatasetCount as jest.Mock).mockClear();
-    (useDatasetsInfinite as jest.Mock).mockClear();
-    (useIds as jest.Mock).mockClear();
-    (useAddToCart as jest.Mock).mockClear();
-    (useRemoveFromCart as jest.Mock).mockClear();
-    (useAllFacilityCycles as jest.Mock).mockClear();
-    (useDatasetsDatafileCount as jest.Mock).mockClear();
-    (useDatasetSizes as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {

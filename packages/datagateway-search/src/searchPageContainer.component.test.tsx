@@ -566,7 +566,7 @@ describe('SearchPageContainer - Tests', () => {
         ...state.dgsearch.checkBox,
         dataset: false,
         datafile: false,
-        investigation: false,
+        investigation: true,
       },
     };
 
@@ -595,6 +595,6 @@ describe('SearchPageContainer - Tests', () => {
 
     expect(testStore.getActions()[0]).toEqual(setDatafileTab(false));
     expect(testStore.getActions()[1]).toEqual(setDatasetTab(false));
-    expect(testStore.getActions()[2]).toEqual(setInvestigationTab(false));
+    expect(testStore.getActions()[2]).toEqual(setInvestigationTab(true));
   });
 });

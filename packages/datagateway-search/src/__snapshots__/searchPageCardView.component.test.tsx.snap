@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SearchPageTable renders correctly when request received 1`] = `
+exports[`SearchPageCardView renders correctly when request received 1`] = `
 <Provider
   store={
     Object {
@@ -1002,238 +1002,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "observers": Array [
-                    InfiniteQueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "fetchNextPage": [Function],
-                        "fetchPreviousPage": [Function],
-                        "hasNextPage": undefined,
-                        "hasPreviousPage": undefined,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isFetchingNextPage": false,
-                        "isFetchingPreviousPage": false,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "behavior": Object {
-                          "onFetch": [Function],
-                        },
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
-                        "queryKey": Array [
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                            "sort": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                            Object {
-                              "filterType": "include",
-                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "fetchNextPage": [Function],
-                      "fetchPreviousPage": [Function],
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "behavior": Object {
-                          "onFetch": [Function],
-                        },
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
-                        "queryKey": Array [
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                            "sort": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                            Object {
-                              "filterType": "include",
-                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "behavior": Object {
-                      "onFetch": [Function],
-                    },
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
-                    "queryKey": Array [
-                      "investigation",
-                      Object {
-                        "filters": Object {},
-                        "sort": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                        Object {
-                          "filterType": "include",
-                          "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
-                  "queryKey": Array [
-                    "investigation",
-                    Object {
-                      "filters": Object {},
-                      "sort": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                      Object {
-                        "filterType": "include",
-                        "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": true,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
                     QueryObserver {
                       "client": [Circular],
                       "currentQuery": [Circular],
@@ -1278,16 +1046,23 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                         "queryKey": Array [
-                          "investigationIds",
+                          "investigation",
                           Object {
                             "filters": Object {},
+                            "page": 1,
+                            "results": 10,
+                            "sort": Object {},
                           },
                           Array [
                             Object {
                               "filterType": "where",
                               "filterValue": "{\\"id\\":{\\"in\\":[]}}",
+                            },
+                            Object {
+                              "filterType": "include",
+                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
                         ],
@@ -1314,16 +1089,23 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                         "queryKey": Array [
-                          "investigationIds",
+                          "investigation",
                           Object {
                             "filters": Object {},
+                            "page": 1,
+                            "results": 10,
+                            "sort": Object {},
                           },
                           Array [
                             Object {
                               "filterType": "where",
                               "filterValue": "{\\"id\\":{\\"in\\":[]}}",
+                            },
+                            Object {
+                              "filterType": "include",
+                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
                         ],
@@ -1342,31 +1124,45 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
+                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                     "queryKey": Array [
-                      "investigationIds",
+                      "investigation",
                       Object {
                         "filters": Object {},
+                        "page": 1,
+                        "results": 10,
+                        "sort": Object {},
                       },
                       Array [
                         Object {
                           "filterType": "where",
                           "filterValue": "{\\"id\\":{\\"in\\":[]}}",
                         },
+                        Object {
+                          "filterType": "include",
+                          "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
+                        },
                       ],
                     ],
                   },
                   "promise": Promise {},
-                  "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
+                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                   "queryKey": Array [
-                    "investigationIds",
+                    "investigation",
                     Object {
                       "filters": Object {},
+                      "page": 1,
+                      "results": 10,
+                      "sort": Object {},
                     },
                     Array [
                       Object {
                         "filterType": "where",
                         "filterValue": "{\\"id\\":{\\"in\\":[]}}",
+                      },
+                      Object {
+                        "filterType": "include",
+                        "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                       },
                     ],
                   ],
@@ -1455,9 +1251,9 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
-                        "isFetching": false,
-                        "isIdle": true,
-                        "isLoading": false,
+                        "isFetching": true,
+                        "isIdle": false,
+                        "isLoading": true,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
@@ -1466,16 +1262,19 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isSuccess": false,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "idle",
+                        "status": "loading",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
-                        "enabled": false,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"cart\\"]",
-                        "queryKey": "cart",
+                        "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
+                        "queryKey": Array [
+                          "investigation",
+                          "type.id",
+                          undefined,
+                        ],
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -1486,22 +1285,25 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": false,
+                        "isFetching": true,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "idle",
+                        "status": "loading",
                       },
                       "listeners": Array [
                         [Function],
                       ],
                       "options": Object {
                         "_defaulted": true,
-                        "enabled": false,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"cart\\"]",
-                        "queryKey": "cart",
+                        "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
+                        "queryKey": Array [
+                          "investigation",
+                          "type.id",
+                          undefined,
+                        ],
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -1514,16 +1316,34 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
-                    "enabled": false,
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"cart\\"]",
-                    "queryKey": "cart",
+                    "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
+                    "queryKey": Array [
+                      "investigation",
+                      "type.id",
+                      undefined,
+                    ],
                   },
-                  "queryHash": "[\\"cart\\"]",
-                  "queryKey": "cart",
-                  "state": Object {
+                  "promise": Promise {},
+                  "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
+                  "queryKey": Array [
+                    "investigation",
+                    "type.id",
+                    undefined,
+                  ],
+                  "retryer": Retryer {
+                    "cancel": [Function],
+                    "cancelRetry": [Function],
+                    "continue": [Function],
+                    "failureCount": 0,
+                    "isPaused": false,
+                    "isResolved": false,
+                    "isTransportCancelable": false,
+                    "promise": Promise {},
+                  },
+                  "revertState": Object {
                     "data": undefined,
                     "dataUpdateCount": 0,
                     "dataUpdatedAt": 0,
@@ -1537,10 +1357,22 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "isPaused": false,
                     "status": "idle",
                   },
+                  "state": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": true,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "loading",
+                  },
                 },
-              ],
-              "queriesMap": Object {
-                "[\\"cart\\"]": Query {
+                Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -1586,9 +1418,9 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
-                        "isFetching": false,
-                        "isIdle": true,
-                        "isLoading": false,
+                        "isFetching": true,
+                        "isIdle": false,
+                        "isLoading": true,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
@@ -1597,16 +1429,19 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isSuccess": false,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "idle",
+                        "status": "loading",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
-                        "enabled": false,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"cart\\"]",
-                        "queryKey": "cart",
+                        "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
+                        "queryKey": Array [
+                          "investigation",
+                          "facility.id",
+                          undefined,
+                        ],
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -1617,22 +1452,25 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": false,
+                        "isFetching": true,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "idle",
+                        "status": "loading",
                       },
                       "listeners": Array [
                         [Function],
                       ],
                       "options": Object {
                         "_defaulted": true,
-                        "enabled": false,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"cart\\"]",
-                        "queryKey": "cart",
+                        "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
+                        "queryKey": Array [
+                          "investigation",
+                          "facility.id",
+                          undefined,
+                        ],
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -1645,16 +1483,34 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
-                    "enabled": false,
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"cart\\"]",
-                    "queryKey": "cart",
+                    "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
+                    "queryKey": Array [
+                      "investigation",
+                      "facility.id",
+                      undefined,
+                    ],
                   },
-                  "queryHash": "[\\"cart\\"]",
-                  "queryKey": "cart",
-                  "state": Object {
+                  "promise": Promise {},
+                  "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
+                  "queryKey": Array [
+                    "investigation",
+                    "facility.id",
+                    undefined,
+                  ],
+                  "retryer": Retryer {
+                    "cancel": [Function],
+                    "cancelRetry": [Function],
+                    "continue": [Function],
+                    "failureCount": 0,
+                    "isPaused": false,
+                    "isResolved": false,
+                    "isTransportCancelable": false,
+                    "promise": Promise {},
+                  },
+                  "revertState": Object {
                     "data": undefined,
                     "dataUpdateCount": 0,
                     "dataUpdatedAt": 0,
@@ -1668,7 +1524,23 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "isPaused": false,
                     "status": "idle",
                   },
+                  "state": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": true,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "loading",
+                  },
                 },
+              ],
+              "queriesMap": Object {
                 "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
@@ -2000,239 +1872,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                 },
-                "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]": Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    InfiniteQueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "fetchNextPage": [Function],
-                        "fetchPreviousPage": [Function],
-                        "hasNextPage": undefined,
-                        "hasPreviousPage": undefined,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isFetchingNextPage": false,
-                        "isFetchingPreviousPage": false,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "behavior": Object {
-                          "onFetch": [Function],
-                        },
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
-                        "queryKey": Array [
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                            "sort": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                            Object {
-                              "filterType": "include",
-                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "fetchNextPage": [Function],
-                      "fetchPreviousPage": [Function],
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "behavior": Object {
-                          "onFetch": [Function],
-                        },
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
-                        "queryKey": Array [
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                            "sort": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                            Object {
-                              "filterType": "include",
-                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "behavior": Object {
-                      "onFetch": [Function],
-                    },
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
-                    "queryKey": Array [
-                      "investigation",
-                      Object {
-                        "filters": Object {},
-                        "sort": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                        Object {
-                          "filterType": "include",
-                          "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
-                  "queryKey": Array [
-                    "investigation",
-                    Object {
-                      "filters": Object {},
-                      "sort": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                      Object {
-                        "filterType": "include",
-                        "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": true,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
+                "[\\"investigation\\",\\"facility.id\\",null]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -2296,16 +1936,357 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
+                        "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
                         "queryKey": Array [
-                          "investigationIds",
+                          "investigation",
+                          "facility.id",
+                          undefined,
+                        ],
+                      },
+                      "currentResultState": Object {
+                        "data": undefined,
+                        "dataUpdateCount": 0,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdateCount": 0,
+                        "errorUpdatedAt": 0,
+                        "fetchFailureCount": 0,
+                        "fetchMeta": null,
+                        "isFetching": true,
+                        "isInvalidated": false,
+                        "isPaused": false,
+                        "status": "loading",
+                      },
+                      "listeners": Array [
+                        [Function],
+                      ],
+                      "options": Object {
+                        "_defaulted": true,
+                        "onError": [Function],
+                        "optimisticResults": true,
+                        "queryFn": [Function],
+                        "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
+                        "queryKey": Array [
+                          "investigation",
+                          "facility.id",
+                          undefined,
+                        ],
+                      },
+                      "previousQueryResult": undefined,
+                      "previousSelectError": null,
+                      "refetch": [Function],
+                      "refetchIntervalId": undefined,
+                      "remove": [Function],
+                      "staleTimeoutId": undefined,
+                      "trackedProps": Array [],
+                    },
+                  ],
+                  "options": Object {
+                    "_defaulted": true,
+                    "onError": [Function],
+                    "optimisticResults": true,
+                    "queryFn": [Function],
+                    "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
+                    "queryKey": Array [
+                      "investigation",
+                      "facility.id",
+                      undefined,
+                    ],
+                  },
+                  "promise": Promise {},
+                  "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
+                  "queryKey": Array [
+                    "investigation",
+                    "facility.id",
+                    undefined,
+                  ],
+                  "retryer": Retryer {
+                    "cancel": [Function],
+                    "cancelRetry": [Function],
+                    "continue": [Function],
+                    "failureCount": 0,
+                    "isPaused": false,
+                    "isResolved": false,
+                    "isTransportCancelable": false,
+                    "promise": Promise {},
+                  },
+                  "revertState": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                  "state": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": true,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "loading",
+                  },
+                },
+                "[\\"investigation\\",\\"type.id\\",null]": Query {
+                  "cache": [Circular],
+                  "cacheTime": 300000,
+                  "defaultOptions": undefined,
+                  "gcTimeout": undefined,
+                  "initialState": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                  "observers": Array [
+                    QueryObserver {
+                      "client": [Circular],
+                      "currentQuery": [Circular],
+                      "currentQueryInitialState": Object {
+                        "data": undefined,
+                        "dataUpdateCount": 0,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdateCount": 0,
+                        "errorUpdatedAt": 0,
+                        "fetchFailureCount": 0,
+                        "fetchMeta": null,
+                        "isFetching": false,
+                        "isInvalidated": false,
+                        "isPaused": false,
+                        "status": "idle",
+                      },
+                      "currentResult": Object {
+                        "data": undefined,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdatedAt": 0,
+                        "failureCount": 0,
+                        "isError": false,
+                        "isFetched": false,
+                        "isFetchedAfterMount": false,
+                        "isFetching": true,
+                        "isIdle": false,
+                        "isLoading": true,
+                        "isLoadingError": false,
+                        "isPlaceholderData": false,
+                        "isPreviousData": false,
+                        "isRefetchError": false,
+                        "isStale": true,
+                        "isSuccess": false,
+                        "refetch": [Function],
+                        "remove": [Function],
+                        "status": "loading",
+                      },
+                      "currentResultOptions": Object {
+                        "_defaulted": true,
+                        "onError": [Function],
+                        "optimisticResults": true,
+                        "queryFn": [Function],
+                        "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
+                        "queryKey": Array [
+                          "investigation",
+                          "type.id",
+                          undefined,
+                        ],
+                      },
+                      "currentResultState": Object {
+                        "data": undefined,
+                        "dataUpdateCount": 0,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdateCount": 0,
+                        "errorUpdatedAt": 0,
+                        "fetchFailureCount": 0,
+                        "fetchMeta": null,
+                        "isFetching": true,
+                        "isInvalidated": false,
+                        "isPaused": false,
+                        "status": "loading",
+                      },
+                      "listeners": Array [
+                        [Function],
+                      ],
+                      "options": Object {
+                        "_defaulted": true,
+                        "onError": [Function],
+                        "optimisticResults": true,
+                        "queryFn": [Function],
+                        "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
+                        "queryKey": Array [
+                          "investigation",
+                          "type.id",
+                          undefined,
+                        ],
+                      },
+                      "previousQueryResult": undefined,
+                      "previousSelectError": null,
+                      "refetch": [Function],
+                      "refetchIntervalId": undefined,
+                      "remove": [Function],
+                      "staleTimeoutId": undefined,
+                      "trackedProps": Array [],
+                    },
+                  ],
+                  "options": Object {
+                    "_defaulted": true,
+                    "onError": [Function],
+                    "optimisticResults": true,
+                    "queryFn": [Function],
+                    "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
+                    "queryKey": Array [
+                      "investigation",
+                      "type.id",
+                      undefined,
+                    ],
+                  },
+                  "promise": Promise {},
+                  "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
+                  "queryKey": Array [
+                    "investigation",
+                    "type.id",
+                    undefined,
+                  ],
+                  "retryer": Retryer {
+                    "cancel": [Function],
+                    "cancelRetry": [Function],
+                    "continue": [Function],
+                    "failureCount": 0,
+                    "isPaused": false,
+                    "isResolved": false,
+                    "isTransportCancelable": false,
+                    "promise": Promise {},
+                  },
+                  "revertState": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                  "state": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": true,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "loading",
+                  },
+                },
+                "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]": Query {
+                  "cache": [Circular],
+                  "cacheTime": 300000,
+                  "defaultOptions": undefined,
+                  "gcTimeout": undefined,
+                  "initialState": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                  "observers": Array [
+                    QueryObserver {
+                      "client": [Circular],
+                      "currentQuery": [Circular],
+                      "currentQueryInitialState": Object {
+                        "data": undefined,
+                        "dataUpdateCount": 0,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdateCount": 0,
+                        "errorUpdatedAt": 0,
+                        "fetchFailureCount": 0,
+                        "fetchMeta": null,
+                        "isFetching": false,
+                        "isInvalidated": false,
+                        "isPaused": false,
+                        "status": "idle",
+                      },
+                      "currentResult": Object {
+                        "data": undefined,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdatedAt": 0,
+                        "failureCount": 0,
+                        "isError": false,
+                        "isFetched": false,
+                        "isFetchedAfterMount": false,
+                        "isFetching": true,
+                        "isIdle": false,
+                        "isLoading": true,
+                        "isLoadingError": false,
+                        "isPlaceholderData": false,
+                        "isPreviousData": false,
+                        "isRefetchError": false,
+                        "isStale": true,
+                        "isSuccess": false,
+                        "refetch": [Function],
+                        "remove": [Function],
+                        "status": "loading",
+                      },
+                      "currentResultOptions": Object {
+                        "_defaulted": true,
+                        "onError": [Function],
+                        "optimisticResults": true,
+                        "queryFn": [Function],
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
+                        "queryKey": Array [
+                          "investigation",
                           Object {
                             "filters": Object {},
+                            "page": 1,
+                            "results": 10,
+                            "sort": Object {},
                           },
                           Array [
                             Object {
                               "filterType": "where",
                               "filterValue": "{\\"id\\":{\\"in\\":[]}}",
+                            },
+                            Object {
+                              "filterType": "include",
+                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
                         ],
@@ -2332,16 +2313,23 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                         "queryKey": Array [
-                          "investigationIds",
+                          "investigation",
                           Object {
                             "filters": Object {},
+                            "page": 1,
+                            "results": 10,
+                            "sort": Object {},
                           },
                           Array [
                             Object {
                               "filterType": "where",
                               "filterValue": "{\\"id\\":{\\"in\\":[]}}",
+                            },
+                            Object {
+                              "filterType": "include",
+                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
                         ],
@@ -2360,31 +2348,45 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
+                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                     "queryKey": Array [
-                      "investigationIds",
+                      "investigation",
                       Object {
                         "filters": Object {},
+                        "page": 1,
+                        "results": 10,
+                        "sort": Object {},
                       },
                       Array [
                         Object {
                           "filterType": "where",
                           "filterValue": "{\\"id\\":{\\"in\\":[]}}",
                         },
+                        Object {
+                          "filterType": "include",
+                          "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
+                        },
                       ],
                     ],
                   },
                   "promise": Promise {},
-                  "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
+                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                   "queryKey": Array [
-                    "investigationIds",
+                    "investigation",
                     Object {
                       "filters": Object {},
+                      "page": 1,
+                      "results": 10,
+                      "sort": Object {},
                     },
                     Array [
                       Object {
                         "filterType": "where",
                         "filterValue": "{\\"id\\":{\\"in\\":[]}}",
+                      },
+                      Object {
+                        "filterType": "include",
+                        "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                       },
                     ],
                   ],
@@ -3016,8 +3018,8 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
           }
         }
       >
-        <Connect(SearchPageTable)>
-          <SearchPageTable
+        <Connect(SearchPageCardView)>
+          <SearchPageCardView
             currentTab="investigation"
             datafileTab={true}
             datasetTab={true}
@@ -3097,13 +3099,13 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         className="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary MuiPaper-elevation4"
                       >
                         <WithStyles(ForwardRef(Tabs))
-                          aria-label="searchPageTable.tabs_arialabel"
+                          aria-label="searchPageCardView.tabs_arialabel"
                           className="tour-search-tab-select"
                           onChange={[Function]}
                           value="investigation"
                         >
                           <ForwardRef(Tabs)
-                            aria-label="searchPageTable.tabs_arialabel"
+                            aria-label="searchPageCardView.tabs_arialabel"
                             className="tour-search-tab-select"
                             classes={
                               Object {
@@ -3137,7 +3139,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                 }
                               >
                                 <div
-                                  aria-label="searchPageTable.tabs_arialabel"
+                                  aria-label="searchPageCardView.tabs_arialabel"
                                   className="MuiTabs-flexContainer"
                                   onKeyDown={[Function]}
                                   role="tablist"
@@ -3886,168 +3888,155 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   </WithStyles(ForwardRef(Paper))>
                 </ForwardRef(AppBar)>
               </WithStyles(ForwardRef(AppBar))>
-              <TabPanel
-                index="investigation"
-                value="investigation"
-              >
-                <Styled(MuiBox)
-                  aria-labelledby="simple-tab-investigation"
-                  border={0}
-                  component="div"
-                  hidden={false}
-                  id="simple-tabpanel-investigation"
-                  role="tabpanel"
+              <InvestigationCardView>
+                <mockConstructor
+                  customFilters={
+                    Array [
+                      Object {
+                        "dataKey": "type.id",
+                        "filterItems": Array [],
+                        "label": "investigations.type.id",
+                      },
+                      Object {
+                        "dataKey": "facility.id",
+                        "filterItems": Array [],
+                        "label": "investigations.facility.id",
+                      },
+                    ]
+                  }
+                  data={Array []}
+                  description={
+                    Object {
+                      "dataKey": "summary",
+                      "filterComponent": [Function],
+                      "label": "investigations.details.summary",
+                    }
+                  }
+                  filters={Object {}}
+                  information={
+                    Array [
+                      Object {
+                        "dataKey": "doi",
+                        "filterComponent": [Function],
+                        "icon": Object {
+                          "$$typeof": Symbol(react.memo),
+                          "compare": null,
+                          "type": Object {
+                            "$$typeof": Symbol(react.forward_ref),
+                            "render": [Function],
+                          },
+                        },
+                        "label": "investigations.doi",
+                      },
+                      Object {
+                        "dataKey": "visitId",
+                        "filterComponent": [Function],
+                        "icon": Object {
+                          "$$typeof": Symbol(react.memo),
+                          "compare": null,
+                          "type": Object {
+                            "$$typeof": Symbol(react.forward_ref),
+                            "render": [Function],
+                          },
+                        },
+                        "label": "investigations.visit_id",
+                      },
+                      Object {
+                        "dataKey": "name",
+                        "disableSort": true,
+                        "filterComponent": [Function],
+                        "icon": Object {
+                          "$$typeof": Symbol(react.memo),
+                          "compare": null,
+                          "type": Object {
+                            "$$typeof": Symbol(react.forward_ref),
+                            "render": [Function],
+                          },
+                        },
+                        "label": "investigations.details.name",
+                      },
+                      Object {
+                        "content": [Function],
+                        "dataKey": "datasetCount",
+                        "disableSort": true,
+                        "icon": Object {
+                          "$$typeof": Symbol(react.memo),
+                          "compare": null,
+                          "type": Object {
+                            "$$typeof": Symbol(react.forward_ref),
+                            "render": [Function],
+                          },
+                        },
+                        "label": "investigations.dataset_count",
+                      },
+                      Object {
+                        "content": [Function],
+                        "dataKey": "investigationInstruments.instrument.name",
+                        "filterComponent": [Function],
+                        "icon": Object {
+                          "$$typeof": Symbol(react.memo),
+                          "compare": null,
+                          "type": Object {
+                            "$$typeof": Symbol(react.forward_ref),
+                            "render": [Function],
+                          },
+                        },
+                        "label": "investigations.instrument",
+                        "noTooltip": true,
+                      },
+                      Object {
+                        "dataKey": "startDate",
+                        "filterComponent": [Function],
+                        "icon": Object {
+                          "$$typeof": Symbol(react.memo),
+                          "compare": null,
+                          "type": Object {
+                            "$$typeof": Symbol(react.forward_ref),
+                            "render": [Function],
+                          },
+                        },
+                        "label": "investigations.details.start_date",
+                      },
+                      Object {
+                        "dataKey": "endDate",
+                        "filterComponent": [Function],
+                        "icon": Object {
+                          "$$typeof": Symbol(react.memo),
+                          "compare": null,
+                          "type": Object {
+                            "$$typeof": Symbol(react.forward_ref),
+                            "render": [Function],
+                          },
+                        },
+                        "label": "investigations.details.end_date",
+                      },
+                    ]
+                  }
+                  loadedCount={true}
+                  loadedData={false}
+                  onFilter={[Function]}
+                  onPageChange={[Function]}
+                  onResultsChange={[Function]}
+                  onSort={[Function]}
+                  page={null}
+                  results={null}
+                  sort={Object {}}
+                  title={
+                    Object {
+                      "content": [Function],
+                      "dataKey": "title",
+                      "filterComponent": [Function],
+                      "label": "investigations.title",
+                    }
+                  }
+                  totalDataCount={0}
                 >
-                  <div
-                    aria-labelledby="simple-tab-investigation"
-                    className="MuiBox-root MuiBox-root-6"
-                    hidden={false}
-                    id="simple-tabpanel-investigation"
-                    role="tabpanel"
-                  >
-                    <Styled(MuiBox)
-                      p={3}
-                    >
-                      <div
-                        className="MuiBox-root MuiBox-root-7"
-                      >
-                        <WithStyles(ForwardRef(Paper))
-                          elevation={0}
-                          style={
-                            Object {
-                              "height": "calc(undefined - 96px)",
-                              "minHeight": 230,
-                              "overflowX": "auto",
-                            }
-                          }
-                        >
-                          <ForwardRef(Paper)
-                            classes={
-                              Object {
-                                "elevation0": "MuiPaper-elevation0",
-                                "elevation1": "MuiPaper-elevation1",
-                                "elevation10": "MuiPaper-elevation10",
-                                "elevation11": "MuiPaper-elevation11",
-                                "elevation12": "MuiPaper-elevation12",
-                                "elevation13": "MuiPaper-elevation13",
-                                "elevation14": "MuiPaper-elevation14",
-                                "elevation15": "MuiPaper-elevation15",
-                                "elevation16": "MuiPaper-elevation16",
-                                "elevation17": "MuiPaper-elevation17",
-                                "elevation18": "MuiPaper-elevation18",
-                                "elevation19": "MuiPaper-elevation19",
-                                "elevation2": "MuiPaper-elevation2",
-                                "elevation20": "MuiPaper-elevation20",
-                                "elevation21": "MuiPaper-elevation21",
-                                "elevation22": "MuiPaper-elevation22",
-                                "elevation23": "MuiPaper-elevation23",
-                                "elevation24": "MuiPaper-elevation24",
-                                "elevation3": "MuiPaper-elevation3",
-                                "elevation4": "MuiPaper-elevation4",
-                                "elevation5": "MuiPaper-elevation5",
-                                "elevation6": "MuiPaper-elevation6",
-                                "elevation7": "MuiPaper-elevation7",
-                                "elevation8": "MuiPaper-elevation8",
-                                "elevation9": "MuiPaper-elevation9",
-                                "outlined": "MuiPaper-outlined",
-                                "root": "MuiPaper-root",
-                                "rounded": "MuiPaper-rounded",
-                              }
-                            }
-                            elevation={0}
-                            style={
-                              Object {
-                                "height": "calc(undefined - 96px)",
-                                "minHeight": 230,
-                                "overflowX": "auto",
-                              }
-                            }
-                          >
-                            <div
-                              className="MuiPaper-root MuiPaper-elevation0 MuiPaper-rounded"
-                              style={
-                                Object {
-                                  "height": "calc(undefined - 96px)",
-                                  "minHeight": 230,
-                                  "overflowX": "auto",
-                                }
-                              }
-                            >
-                              <InvestigationSearchTable>
-                                <mockConstructor
-                                  columns={
-                                    Array [
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "title",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.title",
-                                      },
-                                      Object {
-                                        "dataKey": "visitId",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.visit_id",
-                                      },
-                                      Object {
-                                        "dataKey": "name",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.name",
-                                      },
-                                      Object {
-                                        "dataKey": "doi",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.doi",
-                                      },
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "datasetCount",
-                                        "disableSort": true,
-                                        "label": "investigations.dataset_count",
-                                      },
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "investigationInstruments.instrument.fullName",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.instrument",
-                                      },
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "startDate",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.start_date",
-                                      },
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "endDate",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.end_date",
-                                      },
-                                    ]
-                                  }
-                                  data={Array []}
-                                  detailsPanel={[Function]}
-                                  loadMoreRows={[Function]}
-                                  loading={false}
-                                  onCheck={[Function]}
-                                  onSort={[Function]}
-                                  onUncheck={[Function]}
-                                  sort={Object {}}
-                                  totalRowCount={0}
-                                >
-                                  MockedTable
-                                </mockConstructor>
-                              </InvestigationSearchTable>
-                            </div>
-                          </ForwardRef(Paper)>
-                        </WithStyles(ForwardRef(Paper))>
-                      </div>
-                    </Styled(MuiBox)>
-                  </div>
-                </Styled(MuiBox)>
-              </TabPanel>
+                  MockedCardView
+                </mockConstructor>
+              </InvestigationCardView>
             </div>
-          </SearchPageTable>
-        </Connect(SearchPageTable)>
+          </SearchPageCardView>
+        </Connect(SearchPageCardView)>
       </QueryClientProvider>
     </Router>
   </MemoryRouter>
