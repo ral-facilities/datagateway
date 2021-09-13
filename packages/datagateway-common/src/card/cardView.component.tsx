@@ -69,7 +69,7 @@ export interface CardViewDetails {
   noTooltip?: boolean;
 }
 
-// TODO: Add support to for counts
+// TODO: Add support for counts
 export interface CVCustomFilters {
   label: string;
   dataKey: string;
@@ -598,8 +598,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                           }}
                                           aria-label={`Filter by ${filter.label} ${item}`}
                                         >
-                                          {/* TODO: Colour information for a custom filter 
-                                                    needs to be shown here too */}
                                           <Chip
                                             label={
                                               <ArrowTooltip title={item}>

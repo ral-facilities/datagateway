@@ -467,3 +467,122 @@ export const useFilter = (
     }
   );
 };
+
+export const fetchFilterCountQuery = (
+  apiUrl: string,
+  // TODO: Move into a separate type?
+  entityType:
+    | 'investigation'
+    | 'dataset'
+    | 'datafile'
+    | 'facilityCycle'
+    | 'instrument'
+    | 'facility'
+    | 'study',
+  additionalFilters?: AdditionalFilters
+): Promise<number> => {
+  const params = new URLSearchParams();
+
+  if (additionalFilters) {
+    additionalFilters.forEach((filter) => {
+      params.append(filter.filterType, filter.filterValue);
+    });
+  }
+
+  // Pluralise the entity type for the request
+  // TODO: Call from a separate function?
+  const pluralisedEntityType =
+    entityType.charAt(entityType.length - 1) === 'y'
+      ? `${entityType.slice(0, entityType.length - 1)}ies`
+      : `${entityType}s`;
+
+  return axios
+    .get(`${apiUrl}/${pluralisedEntityType}/count`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => response.data);
+};
+
+// type FilterCounts = { [key: string]: string }[];
+
+export const useFilterCount = (
+  entityType:
+    | 'investigation'
+    | 'dataset'
+    | 'datafile'
+    | 'facilityCycle'
+    | 'instrument'
+    | 'facility'
+    | 'study',
+  filterKey: string,
+  filterId: string,
+  // filterIds: string[] | undefined,
+  additionalFilters?: {
+    filterType: 'where' | 'distinct' | 'include';
+    filterValue: string;
+  }[]
+): UseQueryResult<number, AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  // const queryConfigs: UseQueryOptions<
+  //   FilterCounts[],
+  //   AxiosError,
+  //   ['useFilterCount', number]
+  // >[] = React.useMemo(() => {
+  //   const ids = filterIds ?? [];
+
+  //   // return ids.map((id) => {
+  //   //   return {
+  //   //     queryKey: ['useFilterCount'],
+  //   //   };
+  //   // });
+  //   return [];
+  // }, [filterIds]);
+
+  // const queries: UseQueryResult<FilterCounts[]
+
+  // return useQueries(queryConfigs);
+
+  return useQuery<
+    number,
+    AxiosError,
+    number,
+    [
+      string,
+      (
+        | 'investigation'
+        | 'dataset'
+        | 'datafile'
+        | 'facilityCycle'
+        | 'instrument'
+        | 'facility'
+        | 'study'
+      ),
+      string,
+      string,
+      {
+        filterType: 'where' | 'distinct' | 'include';
+        filterValue: string;
+      }[]?
+    ]
+  >(
+    ['count', entityType, filterKey, filterId, additionalFilters],
+    () =>
+      fetchFilterCountQuery(apiUrl, entityType, [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            [filterKey]: { eq: filterId },
+          }),
+        },
+      ]),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};

@@ -12,6 +12,7 @@ import {
   parseSearchToQuery,
   useDateFilter,
   useFilter,
+  useFilterCount,
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
@@ -46,15 +47,7 @@ const InvestigationCardView = (): React.ReactElement => {
     data: totalDataCount,
     isLoading: countLoading,
   } = useInvestigationCount();
-  // const { data: count } = useInvestigationCount([
-  //   {
-  //     filterType: 'where',
-  //     filterValue: JSON.stringify({
-  //       'type.id': { in: [1, 2, 3] },
-  //     }),
-  //   },
-  // ]);
-  // console.log(count);
+
   const { isLoading: dataLoading, data } = useInvestigationsPaginated([
     {
       filterType: 'include',
@@ -68,6 +61,28 @@ const InvestigationCardView = (): React.ReactElement => {
   const countQueries = useInvestigationsDatasetCount(data);
   const { data: typeIds } = useFilter('investigation', 'type.id');
   const { data: facilityIds } = useFilter('investigation', 'facility.id');
+
+  const { data: typeIdCounts } = useFilterCount(
+    'investigation',
+    'type.id',
+    '1'
+    // typeIds,
+  );
+  // const { data: facilityIdCounts } = useFilterCount(
+  //   'investigation',
+  //   'facility.id'
+  //   // facilityIds
+  // );
+  console.log('Type ID count: ', typeIdCounts);
+
+  // const { data: filterCounts } = useInvestigationCount([
+  //   {
+  //     filterType: 'where',
+  //     filterValue: JSON.stringify({
+  //       'type.id': { in: [1, 2, 3] },
+  //     }),
+  //   },
+  // ]);
 
   const title = React.useMemo(
     () => ({

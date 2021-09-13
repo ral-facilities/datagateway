@@ -346,6 +346,7 @@ class PageBreadcrumbs extends React.Component<
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
           let requestEntityUrl;
           // TODO: check this is sufficient for pluralising API entity names...
+          //       (move to a separate function to be used elsewhere if needed?)
           const pluralisedApiEntity =
             apiEntity.charAt(apiEntity.length - 1) === 'y'
               ? `${apiEntity.slice(0, apiEntity.length - 1)}ies`
