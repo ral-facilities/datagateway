@@ -62,18 +62,18 @@ const InvestigationCardView = (): React.ReactElement => {
   const { data: typeIds } = useFilter('investigation', 'type.id');
   const { data: facilityIds } = useFilter('investigation', 'facility.id');
 
-  const { data: typeIdCounts } = useFilterCount(
+  const filterCountQueries = useFilterCount(
     'investigation',
     'type.id',
-    '1'
-    // typeIds,
+    // '1'
+    typeIds
   );
   // const { data: facilityIdCounts } = useFilterCount(
   //   'investigation',
   //   'facility.id'
   //   // facilityIds
   // );
-  console.log('Type ID count: ', typeIdCounts);
+  console.log(formatCountOrSize(filterCountQueries[2]));
 
   // const { data: filterCounts } = useInvestigationCount([
   //   {

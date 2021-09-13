@@ -11,7 +11,12 @@ import {
   ViewsType,
   Entity,
 } from '../app.types';
-import { useQuery, UseQueryResult } from 'react-query';
+import {
+  useQueries,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from 'react-query';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
@@ -506,8 +511,6 @@ export const fetchFilterCountQuery = (
     .then((response) => response.data);
 };
 
-// type FilterCounts = { [key: string]: string }[];
-
 export const useFilterCount = (
   entityType:
     | 'investigation'
@@ -518,35 +521,55 @@ export const useFilterCount = (
     | 'facility'
     | 'study',
   filterKey: string,
-  filterId: string,
-  // filterIds: string[] | undefined,
+  filterIds: string[] | undefined,
   additionalFilters?: {
     filterType: 'where' | 'distinct' | 'include';
     filterValue: string;
   }[]
-): UseQueryResult<number, AxiosError> => {
+): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
-  // const queryConfigs: UseQueryOptions<
-  //   FilterCounts[],
+  // return useQuery<
+  //   number,
   //   AxiosError,
-  //   ['useFilterCount', number]
-  // >[] = React.useMemo(() => {
-  //   const ids = filterIds ?? [];
+  //   number,
+  //   [
+  //     string,
+  //     (
+  //       | 'investigation'
+  //       | 'dataset'
+  //       | 'datafile'
+  //       | 'facilityCycle'
+  //       | 'instrument'
+  //       | 'facility'
+  //       | 'study'
+  //     ),
+  //     string,
+  //     string,
+  //     {
+  //       filterType: 'where' | 'distinct' | 'include';
+  //       filterValue: string;
+  //     }[]?
+  //   ]
+  // >(
+  //   ['count', entityType, filterKey, filterId, additionalFilters],
+  //   () =>
+  //     fetchFilterCountQuery(apiUrl, entityType, [
+  //       {
+  //         filterType: 'where',
+  //         filterValue: JSON.stringify({
+  //           [filterKey]: { eq: filterId },
+  //         }),
+  //       },
+  //     ]),
+  //   {
+  //     onError: (error) => {
+  //       handleICATError(error);
+  //     },
+  //   }
+  // );
 
-  //   // return ids.map((id) => {
-  //   //   return {
-  //   //     queryKey: ['useFilterCount'],
-  //   //   };
-  //   // });
-  //   return [];
-  // }, [filterIds]);
-
-  // const queries: UseQueryResult<FilterCounts[]
-
-  // return useQueries(queryConfigs);
-
-  return useQuery<
+  const queryConfigs: UseQueryOptions<
     number,
     AxiosError,
     number,
@@ -568,21 +591,36 @@ export const useFilterCount = (
         filterValue: string;
       }[]?
     ]
-  >(
-    ['count', entityType, filterKey, filterId, additionalFilters],
-    () =>
-      fetchFilterCountQuery(apiUrl, entityType, [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            [filterKey]: { eq: filterId },
-          }),
+  >[] = React.useMemo(() => {
+    const ids = filterIds ?? [];
+
+    return ids.map((filterId) => {
+      return {
+        queryKey: ['count', entityType, filterKey, filterId, additionalFilters],
+        queryFn: () =>
+          fetchFilterCountQuery(apiUrl, entityType, [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                [filterKey]: { eq: filterId },
+              }),
+            },
+          ]),
+        onError: (error) => {
+          handleICATError(error, false);
         },
-      ]),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-    }
-  );
+        staleTime: Infinity,
+      };
+    });
+  }, [apiUrl, entityType, filterIds, filterKey, additionalFilters]);
+
+  // useQueries doesn't allow us to specify type info, so ignore this line
+  // since we strongly type the queries object anyway
+  // we also need to prettier-ignore to make sure we don't wrap onto next line
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  // prettier-ignore
+  // const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
+
+  return useQueries(queryConfigs);
 };
