@@ -596,7 +596,13 @@ export const useFilterCount = (
 
     return ids.map((filterId) => {
       return {
-        queryKey: ['count', entityType, filterKey, filterId, additionalFilters],
+        queryKey: [
+          'filterCount',
+          entityType,
+          filterKey,
+          filterId,
+          additionalFilters,
+        ],
         queryFn: () =>
           fetchFilterCountQuery(apiUrl, entityType, [
             {
@@ -616,11 +622,7 @@ export const useFilterCount = (
 
   // useQueries doesn't allow us to specify type info, so ignore this line
   // since we strongly type the queries object anyway
-  // we also need to prettier-ignore to make sure we don't wrap onto next line
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  // prettier-ignore
-  // const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
-
   return useQueries(queryConfigs);
 };

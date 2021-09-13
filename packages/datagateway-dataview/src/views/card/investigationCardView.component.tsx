@@ -68,7 +68,6 @@ const InvestigationCardView = (): React.ReactElement => {
     'facility.id',
     facilityIds
   );
-  // console.log(formatCountOrSize(filterCountQueries[2]));
 
   const title = React.useMemo(
     () => ({

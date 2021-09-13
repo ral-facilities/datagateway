@@ -325,7 +325,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             filterKey: filterKey,
             label: info.label,
             items: Object.entries(info.items)
-              .filter(([, v]) => v)
+              .filter(([, v]) => v.selected)
               .map(([i]) => i),
           }),
           []
@@ -578,7 +578,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   </Box>
 
                   {/* Show the specific options available to filter by */}
-                  {/* <Box>
+                  <Box>
                     {filtersInfo &&
                       Object.entries(filtersInfo).map(
                         ([filterKey, filter], filterIndex) => {
@@ -597,20 +597,20 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                     aria-label="filter-by-list"
                                   >
                                     {Object.entries(filter.items).map(
-                                      ([item, selected], valueIndex) => (
+                                      ([name, data], valueIndex) => (
                                         <ListItem
                                           key={valueIndex}
                                           button
-                                          disabled={selected}
+                                          disabled={data.selected}
                                           onClick={() => {
-                                            changeFilter(filterKey, item);
+                                            changeFilter(filterKey, name);
                                           }}
-                                          aria-label={`Filter by ${filter.label} ${item}`}
+                                          aria-label={`Filter by ${filter.label} ${name}`}
                                         >
                                           <Chip
                                             label={
-                                              <ArrowTooltip title={item}>
-                                                <Typography>{item}</Typography>
+                                              <ArrowTooltip title={name}>
+                                                <Typography>{name}</Typography>
                                               </ArrowTooltip>
                                             }
                                           />
@@ -624,7 +624,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           );
                         }
                       )}
-                  </Box> */}
+                  </Box>
                 </Paper>
               </Grid>
             )}
