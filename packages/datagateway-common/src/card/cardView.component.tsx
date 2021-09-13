@@ -69,11 +69,13 @@ export interface CardViewDetails {
   noTooltip?: boolean;
 }
 
-// TODO: Add support for counts
 export interface CVCustomFilters {
   label: string;
   dataKey: string;
-  filterItems: string[];
+  filterItems: {
+    name: string;
+    count: string;
+  }[];
   prefixLabel?: boolean;
 }
 
@@ -116,7 +118,10 @@ interface CVFilterInfo {
   [filterKey: string]: {
     label: string;
     items: {
-      [data: string]: boolean;
+      [data: string]: {
+        selected: boolean;
+        count: number;
+      };
     };
     hasSelectedItems: boolean;
   };
@@ -276,6 +281,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     };
 
     // Get the updated info.
+    // TODO: Possible to useMemo with filters?
     const info = customFilters
       ? Object.values(customFilters).reduce((o, filter) => {
           const data: CVFilterInfo = {
@@ -285,7 +291,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               items: filter.filterItems.reduce(
                 (o, item) => ({
                   ...o,
-                  [item]: getSelectedFilter(filter.dataKey, item),
+                  [item.name]: {
+                    selected: getSelectedFilter(filter.dataKey, item.name),
+                    count: item.count,
+                  },
                 }),
                 {}
               ),
@@ -295,14 +304,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
           // Update the selected count for each filter.
           const selectedItems = Object.values(data[filter.dataKey].items).find(
-            (v) => v === true
+            (v) => v.selected === true
           );
           if (selectedItems) {
             data[filter.dataKey].hasSelectedItems = true;
           }
           return data;
         }, {})
-      : [];
+      : {};
 
     setFiltersInfo(info);
   }, [customFilters, filters]);
@@ -569,7 +578,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   </Box>
 
                   {/* Show the specific options available to filter by */}
-                  <Box>
+                  {/* <Box>
                     {filtersInfo &&
                       Object.entries(filtersInfo).map(
                         ([filterKey, filter], filterIndex) => {
@@ -615,7 +624,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           );
                         }
                       )}
-                  </Box>
+                  </Box> */}
                 </Paper>
               </Grid>
             )}

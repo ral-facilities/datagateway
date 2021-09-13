@@ -187,7 +187,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
       moreInformation={(investigation: Investigation) => (
         <VisitDetailsPanel rowData={investigation} />
       )}
-      customFilters={customFilters}
+      // customFilters={customFilters}
     />
   );
 };

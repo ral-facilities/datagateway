@@ -62,27 +62,13 @@ const InvestigationCardView = (): React.ReactElement => {
   const { data: typeIds } = useFilter('investigation', 'type.id');
   const { data: facilityIds } = useFilter('investigation', 'facility.id');
 
-  const filterCountQueries = useFilterCount(
+  const typeIdCounts = useFilterCount('investigation', 'type.id', typeIds);
+  const facilityIdCounts = useFilterCount(
     'investigation',
-    'type.id',
-    // '1'
-    typeIds
+    'facility.id',
+    facilityIds
   );
-  // const { data: facilityIdCounts } = useFilterCount(
-  //   'investigation',
-  //   'facility.id'
-  //   // facilityIds
-  // );
-  console.log(formatCountOrSize(filterCountQueries[2]));
-
-  // const { data: filterCounts } = useInvestigationCount([
-  //   {
-  //     filterType: 'where',
-  //     filterValue: JSON.stringify({
-  //       'type.id': { in: [1, 2, 3] },
-  //     }),
-  //   },
-  // ]);
+  // console.log(formatCountOrSize(filterCountQueries[2]));
 
   const title = React.useMemo(
     () => ({
@@ -168,22 +154,34 @@ const InvestigationCardView = (): React.ReactElement => {
     [data]
   );
 
+  // TODO: Use another function instead of "formatCountOrSize"
+  //       to set the value of the count of a filter.
   const customFilters = React.useMemo(
     () => [
       {
         label: t('investigations.type.id'),
         dataKey: 'type.id',
-        filterItems: typeIds ?? [],
+        filterItems: typeIds
+          ? typeIds.map((id, i) => ({
+              name: id,
+              count: formatCountOrSize(typeIdCounts[i]),
+            }))
+          : [],
         prefixLabel: true,
       },
       {
         label: t('investigations.facility.id'),
         dataKey: 'facility.id',
-        filterItems: facilityIds ?? [],
+        filterItems: facilityIds
+          ? facilityIds.map((id, i) => ({
+              name: id,
+              count: formatCountOrSize(facilityIdCounts[i]),
+            }))
+          : [],
         prefixLabel: true,
       },
     ],
-    [facilityIds, t, typeIds]
+    [facilityIds, t, typeIds, typeIdCounts, facilityIdCounts]
   );
 
   return (

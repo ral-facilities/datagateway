@@ -199,7 +199,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         <DatasetDetailsPanel rowData={dataset} />
       )}
       buttons={buttons}
-      customFilters={customFilters}
+      // customFilters={customFilters}
     />
   );
 };
