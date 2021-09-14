@@ -599,6 +599,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                     {Object.entries(filter.items).map(
                                       ([name, data], valueIndex) => (
                                         <ListItem
+                                          style={{ display: 'flex' }}
                                           key={valueIndex}
                                           button
                                           disabled={data.selected}
@@ -607,13 +608,18 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                           }}
                                           aria-label={`Filter by ${filter.label} ${name}`}
                                         >
-                                          <Chip
-                                            label={
-                                              <ArrowTooltip title={name}>
-                                                <Typography>{name}</Typography>
-                                              </ArrowTooltip>
-                                            }
-                                          />
+                                          <div style={{ flex: 1 }}>
+                                            <Chip
+                                              label={
+                                                <ArrowTooltip title={name}>
+                                                  <Typography>
+                                                    {name}
+                                                  </Typography>
+                                                </ArrowTooltip>
+                                              }
+                                            />
+                                          </div>
+                                          <Typography>{data.count}</Typography>
                                         </ListItem>
                                       )
                                     )}
