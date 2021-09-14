@@ -226,6 +226,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const [selectedFilters, setSelectedFilters] = React.useState<
     CVSelectedFilter[]
   >([]);
+  const [filterUpdate, setFilterUpdate] = React.useState(false);
 
   // Sort.
   const [cardSort, setCardSort] = React.useState<CVSort[] | null>(null);
@@ -336,6 +337,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     }
   }, [filtersInfo]);
 
+  React.useEffect(() => {
+    if (filterUpdate && loadedData) setFilterUpdate(false);
+  }, [filterUpdate, totalDataCount, loadedData]);
+
   const changeFilter = (
     filterKey: string,
     filterValue: string,
@@ -437,7 +442,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           </Grid>
         )}
 
-        {totalDataCount > 0 && (
+        {(filterUpdate || totalDataCount > 0) && (
           <Grid
             container
             item
@@ -519,7 +524,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
           >
             {/* Sorting options */}
-            {hasSort && totalDataCount > 0 && (
+            {hasSort && (filterUpdate || totalDataCount > 0) && (
               <Grid item xs>
                 <Paper>
                   <Box p={2}>
@@ -571,7 +576,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             )}
 
             {/* Filtering options */}
-            {customFilters && totalDataCount > 0 && (
+            {customFilters && (filterUpdate || totalDataCount > 0) && (
               <Grid item xs>
                 <Paper>
                   <Box p={2}>
@@ -606,6 +611,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                           disabled={data.selected}
                                           onClick={() => {
                                             changeFilter(filterKey, name);
+                                            setFilterUpdate(true);
                                           }}
                                           aria-label={`Filter by ${filter.label} ${name}`}
                                         >
@@ -653,7 +659,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         {/* Card data */}
         <Grid item xs={12} md={9}>
           {/* Selected filters array */}
-          {selectedFilters.length > 0 && totalDataCount > 0 && (
+          {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
             <div className={classes.selectedChips}>
               {selectedFilters.map((filter, filterIndex) => (
                 <li key={filterIndex}>
@@ -661,10 +667,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     <Chip
                       key={itemIndex}
                       className={classes.chip}
-                      // TODO: Icon support
                       label={`${filter.label} - ${item}`}
                       onDelete={() => {
                         changeFilter(filter.filterKey, item, true);
+                        setFilterUpdate(true);
                       }}
                     />
                   ))}
@@ -675,7 +681,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
           {/* List of cards */}
           {loadedData &&
-            (totalDataCount > 0 ? (
+            (filterUpdate || totalDataCount > 0 ? (
               <List style={{ padding: 0, marginRight: 20 }}>
                 {data.map((entity, index) => {
                   return (
@@ -710,7 +716,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       </Grid>
 
       {/*  Pagination  */}
-      {totalDataCount > 0 &&
+      {(filterUpdate || totalDataCount > 0) &&
         (paginationPos === 'bottom' || paginationPos === 'both') && (
           <Grid item xs style={{ padding: '50px' }}>
             {CVPagination(page, maxPage, onPageChange)}
