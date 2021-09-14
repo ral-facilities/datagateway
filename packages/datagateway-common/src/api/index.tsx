@@ -494,8 +494,8 @@ export const fetchFilterCountQuery = (
     });
   }
 
-  // Pluralise the entity type for the request
   // TODO: Call from a separate function?
+  // Pluralise the entity type for the request
   const pluralisedEntityType =
     entityType.charAt(entityType.length - 1) === 'y'
       ? `${entityType.slice(0, entityType.length - 1)}ies`
@@ -529,46 +529,6 @@ export const useFilterCount = (
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
-  // return useQuery<
-  //   number,
-  //   AxiosError,
-  //   number,
-  //   [
-  //     string,
-  //     (
-  //       | 'investigation'
-  //       | 'dataset'
-  //       | 'datafile'
-  //       | 'facilityCycle'
-  //       | 'instrument'
-  //       | 'facility'
-  //       | 'study'
-  //     ),
-  //     string,
-  //     string,
-  //     {
-  //       filterType: 'where' | 'distinct' | 'include';
-  //       filterValue: string;
-  //     }[]?
-  //   ]
-  // >(
-  //   ['count', entityType, filterKey, filterId, additionalFilters],
-  //   () =>
-  //     fetchFilterCountQuery(apiUrl, entityType, [
-  //       {
-  //         filterType: 'where',
-  //         filterValue: JSON.stringify({
-  //           [filterKey]: { eq: filterId },
-  //         }),
-  //       },
-  //     ]),
-  //   {
-  //     onError: (error) => {
-  //       handleICATError(error);
-  //     },
-  //   }
-  // );
-
   const queryConfigs: UseQueryOptions<
     number,
     AxiosError,
@@ -586,10 +546,7 @@ export const useFilterCount = (
       ),
       string,
       string,
-      {
-        filterType: 'where' | 'distinct' | 'include';
-        filterValue: string;
-      }[]?
+      AdditionalFilters?
     ]
   >[] = React.useMemo(() => {
     const ids = filterIds ?? [];
@@ -611,6 +568,7 @@ export const useFilterCount = (
                 [filterKey]: { eq: filterId },
               }),
             },
+            ...(additionalFilters ?? []),
           ]),
         onError: (error) => {
           handleICATError(error, false);

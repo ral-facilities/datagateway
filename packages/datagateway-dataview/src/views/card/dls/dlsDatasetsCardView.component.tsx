@@ -15,6 +15,7 @@ import {
   useTextFilter,
   useFilter,
   useDatasetsDatafileCount,
+  useFilterCount,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
@@ -76,6 +77,14 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
   ]);
 
   const { data: typeIds } = useFilter('dataset', 'type.id', [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigation.id': { eq: investigationId },
+      }),
+    },
+  ]);
+  const typeIdCounts = useFilterCount('dataset', 'type.id', typeIds, [
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -171,11 +180,16 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       {
         label: t('datasets.type.id'),
         dataKey: 'type.id',
-        filterItems: typeIds ?? [],
+        filterItems: typeIds
+          ? typeIds.map((id, i) => ({
+              name: id,
+              count: formatCountOrSize(typeIdCounts[i]),
+            }))
+          : [],
         prefixLabel: true,
       },
     ],
-    [t, typeIds]
+    [t, typeIds, typeIdCounts]
   );
 
   return (
@@ -199,7 +213,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         <DatasetDetailsPanel rowData={dataset} />
       )}
       buttons={buttons}
-      // customFilters={customFilters}
+      customFilters={customFilters}
     />
   );
 };

@@ -15,6 +15,7 @@ import {
   TableSortLabel,
   Typography,
   Select,
+  Divider,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -619,7 +620,15 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                               }
                                             />
                                           </div>
-                                          <Typography>{data.count}</Typography>
+                                          <Divider
+                                            orientation="vertical"
+                                            flexItem
+                                          />
+                                          <Typography
+                                            style={{ paddingLeft: '5%' }}
+                                          >
+                                            {data.count}
+                                          </Typography>
                                         </ListItem>
                                       )
                                     )}
