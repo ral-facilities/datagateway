@@ -473,6 +473,10 @@ export const useFilter = (
   );
 };
 
+export const formatFilterCount = (
+  query: UseQueryResult<number, Error>
+): string => (query?.isSuccess ? query.data.toString() : '');
+
 export const fetchFilterCountQuery = (
   apiUrl: string,
   // TODO: Move into a separate type?

@@ -19,6 +19,7 @@ import {
   nestedValue,
   ArrowTooltip,
   useFilterCount,
+  formatFilterCount,
 } from 'datagateway-common';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import {
@@ -170,7 +171,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         filterItems: typeIds
           ? typeIds.map((id, i) => ({
               name: id,
-              count: formatCountOrSize(typeIdCounts[i]),
+              count: formatFilterCount(typeIdCounts[i]),
             }))
           : [],
         prefixLabel: true,

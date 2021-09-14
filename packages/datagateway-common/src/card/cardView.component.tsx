@@ -620,15 +620,19 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                               }
                                             />
                                           </div>
-                                          <Divider
-                                            orientation="vertical"
-                                            flexItem
-                                          />
-                                          <Typography
-                                            style={{ paddingLeft: '5%' }}
-                                          >
-                                            {data.count}
-                                          </Typography>
+                                          {data.count && (
+                                            <Divider
+                                              orientation="vertical"
+                                              flexItem
+                                            />
+                                          )}
+                                          {data.count && (
+                                            <Typography
+                                              style={{ paddingLeft: '5%' }}
+                                            >
+                                              {data.count}
+                                            </Typography>
+                                          )}
                                         </ListItem>
                                       )
                                     )}

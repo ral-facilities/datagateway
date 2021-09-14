@@ -7,6 +7,7 @@ import {
 import {
   CardView,
   formatCountOrSize,
+  formatFilterCount,
   Investigation,
   investigationLink,
   parseSearchToQuery,
@@ -163,7 +164,7 @@ const InvestigationCardView = (): React.ReactElement => {
         filterItems: typeIds
           ? typeIds.map((id, i) => ({
               name: id,
-              count: formatCountOrSize(typeIdCounts[i]),
+              count: formatFilterCount(typeIdCounts[i]),
             }))
           : [],
         prefixLabel: true,
@@ -174,7 +175,7 @@ const InvestigationCardView = (): React.ReactElement => {
         filterItems: facilityIds
           ? facilityIds.map((id, i) => ({
               name: id,
-              count: formatCountOrSize(facilityIdCounts[i]),
+              count: formatFilterCount(facilityIdCounts[i]),
             }))
           : [],
         prefixLabel: true,

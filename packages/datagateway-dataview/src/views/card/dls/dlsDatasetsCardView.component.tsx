@@ -16,6 +16,7 @@ import {
   useFilter,
   useDatasetsDatafileCount,
   useFilterCount,
+  formatFilterCount,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
@@ -183,7 +184,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         filterItems: typeIds
           ? typeIds.map((id, i) => ({
               name: id,
-              count: formatCountOrSize(typeIdCounts[i]),
+              count: formatFilterCount(typeIdCounts[i]),
             }))
           : [],
         prefixLabel: true,
