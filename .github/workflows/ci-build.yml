@@ -1,11 +1,11 @@
 name: CI Build
-on: 
+on:
   workflow_dispatch:
   pull_request:
-  # By default, the pull_request event type is not triggered when a PR is merged into master
+  # By default, the pull_request event type is not triggered when a PR is merged into main
   push:
     branches:
-      - master
+      - main
 
 jobs:
   lint-and-unit-test:
@@ -37,13 +37,13 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
-      
+
       # Linting and unit testing
       - name: Run linting
         run: yarn lint
       - name: Run unit tests
         run: yarn test:unit
-      
+
       # Test coverage upload
       - name: Upload unit test coverage for the Common package
         if: success()
@@ -73,7 +73,6 @@ jobs:
           directory: ./packages/datagateway-download/
           flags: download
           fail_ci_if_error: true
-
 
   dataview-e2e-tests:
     name: DataGateway DataView End to End Tests
@@ -161,7 +160,7 @@ jobs:
           sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
       - name: Create config.json
         run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
-      
+
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
@@ -173,7 +172,7 @@ jobs:
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
-      
+
       # E2E tests
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -207,7 +206,6 @@ jobs:
         with:
           name: DataView-Screenshots
           path: packages/datagateway-dataview/cypress/screenshots
-
 
   download-e2e-tests:
     name: DataGateway Download End to End Tests
@@ -311,7 +309,7 @@ jobs:
           sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
       - name: Create config.json
         run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
-      
+
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
@@ -323,7 +321,7 @@ jobs:
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
-      
+
       # E2E tests
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -357,7 +355,6 @@ jobs:
         with:
           name: Download-Screenshots
           path: packages/datagateway-download/cypress/screenshots
-
 
   search-e2e-tests:
     name: DataGateway Search End to End Tests
@@ -443,7 +440,7 @@ jobs:
           sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
       - name: Create config.json
         run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
-      
+
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
@@ -452,7 +449,7 @@ jobs:
       - name: Add dummy data to icatdb
         run: |
           cd datagateway-api; poetry run python -m util.icat_db_generator
-      
+
       # Recreate Lucene indexes
       - name: Login to ICAT
         run: |
@@ -473,7 +470,7 @@ jobs:
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
-      
+
       # E2E tests
       - name: Checkout repo
         uses: actions/checkout@v2
