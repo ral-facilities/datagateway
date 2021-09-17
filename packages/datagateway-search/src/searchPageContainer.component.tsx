@@ -295,7 +295,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 <Grid container justify="center" id="container-search-table">
                   <Paper
                     style={{
-                      height: containerHeight,
+                      // Only use height for the paper component if the view is table.
+                      ...(view === 'table' ? { height: containerHeight } : {}),
                       minHeight: 326,
                       width: '99vw',
                       minWidth: 584,
