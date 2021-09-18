@@ -2,6 +2,9 @@
 
 exports[`ISIS Investigations table component renders correctly 1`] = `
 Object {
+  "actions": Array [
+    [Function],
+  ],
   "allIds": Array [
     1,
   ],

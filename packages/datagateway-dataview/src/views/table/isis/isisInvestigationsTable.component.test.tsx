@@ -23,6 +23,7 @@ import { Router } from 'react-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import DownloadButton from '../../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -201,7 +202,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.name"] input')
+      .find('[aria-label="Filter by investigations.name"]')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
@@ -224,7 +225,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
-      '[aria-label="investigations.start_date date filter from"]'
+      'input[id="investigations.start_date filter from"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
@@ -438,5 +439,11 @@ describe('ISIS Investigations table component', () => {
     wrapper = createWrapper();
     expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
     expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
+  });
+
+  it('renders actions correctly', () => {
+    const wrapper = createWrapper();
+
+    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 });

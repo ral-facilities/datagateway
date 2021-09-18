@@ -17,7 +17,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
       }
     >
       <img
-        alt="homePage.title"
+        alt="homePage.logoLabel"
         src="testdatgateway-white-text-blue-mark-logo.svg"
       />
     </div>
@@ -48,7 +48,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
           homePage.exploreLabel
         </WithStyles(ForwardRef(Typography))>
         <img
-          alt=""
+          alt="homePage.exploreLabel"
           className="HomePage-howItWorksGridItemImage-6"
           src="testexplore.jpg"
         />
@@ -72,7 +72,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
           homePage.discoverLabel
         </WithStyles(ForwardRef(Typography))>
         <img
-          alt=""
+          alt="homePage.discoverLabel"
           className="HomePage-howItWorksGridItemImage-6"
           src="testdiscover.jpg"
         />
@@ -96,7 +96,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
           homePage.downloadLabel
         </WithStyles(ForwardRef(Typography))>
         <img
-          alt=""
+          alt="homePage.downloadLabel"
           className="HomePage-howItWorksGridItemImage-6"
           src="testdownload.jpg"
         />
