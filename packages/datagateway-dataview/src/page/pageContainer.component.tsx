@@ -10,9 +10,11 @@ import {
   Badge,
   makeStyles,
   Button,
+  Tooltip,
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
+import InfoIcon from '@material-ui/icons/Info';
 import { StyleRules } from '@material-ui/core/styles';
 import {
   DownloadCartItem,
@@ -149,6 +151,9 @@ const NavBar = React.memo(
   }): React.ReactElement => {
     const [t] = useTranslation();
 
+    //Determine whether logged in anonymously
+    const loggedInAnonymously = localStorage.getItem('autoLogin') === 'true';
+
     return (
       <Sticky>
         <StyledGrid container>
@@ -165,6 +170,40 @@ const NavBar = React.memo(
               component={PageBreadcrumbs}
             />
           </Grid>
+
+          {loggedInAnonymously ? (
+            <Paper
+              square
+              style={{
+                backgroundColor: '#00e676',
+                display: 'flex',
+                flexDirection: 'column',
+                paddingLeft: 6,
+                paddingRight: 20,
+                justifyContent: 'center',
+              }}
+            >
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justify="center"
+              >
+                <Grid item>
+                  <Tooltip title="Only open data is displayed when browsing anonymously">
+                    <IconButton>
+                      <InfoIcon color="primary" />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+                <Grid item>
+                  <Typography color="inherit" variant="h6" component="h3">
+                    <b>You are viewing open data</b>
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Paper>
+          ) : null}
 
           {/* The table entity count has a size of 2 (or 3 for xs screens); the
             breadcrumbs will take the remainder of the space. */}
