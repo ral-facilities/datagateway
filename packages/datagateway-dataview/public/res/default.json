@@ -3,6 +3,7 @@
     "results": "Results",
     "view_table": "Display as table",
     "view_cards": "Display as cards",
+    "view_open_data_warning" : "You are viewing open data",
     "max_results": "Max Results",
     "error": "Something went wrong..."
   },

@@ -10,7 +10,6 @@ import {
   Badge,
   makeStyles,
   Button,
-  Tooltip,
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
@@ -190,15 +189,13 @@ const NavBar = React.memo(
                 justify="center"
               >
                 <Grid item>
-                  <Tooltip title="Only open data is displayed when browsing anonymously">
-                    <IconButton>
-                      <InfoIcon color="primary" />
-                    </IconButton>
-                  </Tooltip>
+                  <IconButton disabled>
+                    <InfoIcon color="primary" />
+                  </IconButton>
                 </Grid>
                 <Grid item>
                   <Typography color="inherit" variant="h6" component="h3">
-                    <b>You are viewing open data</b>
+                    <b>{t('app.view_open_data_warning')}</b>
                   </Typography>
                 </Grid>
               </Grid>
