@@ -81,7 +81,7 @@ const viewButtonStyles = makeStyles(
   (theme: Theme): StyleRules =>
     createStyles({
       root: {
-        padding: theme.spacing(1),
+        padding: `${theme.spacing(1)}px 0px ${theme.spacing(1)}px 0px`,
       },
     })
 );
