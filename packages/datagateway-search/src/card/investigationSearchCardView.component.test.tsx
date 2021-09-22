@@ -20,6 +20,7 @@ import { ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import { Link, ListItemText } from '@material-ui/core';
