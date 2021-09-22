@@ -3,6 +3,7 @@ import { GetApp } from '@material-ui/icons';
 import {
   downloadDatafile,
   downloadDataset,
+  downloadInvestigation,
   StateType,
 } from 'datagateway-common';
 import React from 'react';
@@ -10,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 export interface DownloadButtonProps {
-  entityType: 'dataset' | 'datafile';
+  entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
   entityName: string | undefined;
   variant?: 'text' | 'outlined' | 'contained' | 'icon';
@@ -24,11 +25,13 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
   const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
 
   const downloadData = (
-    entityType: 'dataset' | 'datafile',
+    entityType: 'investigation' | 'dataset' | 'datafile',
     entityId: number,
     entityName: string
   ): void => {
-    if (entityType === 'dataset') {
+    if (entityType === 'investigation') {
+      downloadInvestigation(idsUrl, entityId, entityName);
+    } else if (entityType === 'dataset') {
       downloadDataset(idsUrl, entityId, entityName);
     } else if (entityType === 'datafile') {
       downloadDatafile(idsUrl, entityId, entityName);

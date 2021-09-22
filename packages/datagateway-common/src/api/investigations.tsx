@@ -823,3 +823,28 @@ export const useISISInvestigationIds = (
     }
   );
 };
+
+export const downloadInvestigation = (
+  idsUrl: string,
+  investigationId: number,
+  investigationName: string
+): void => {
+  const params = {
+    sessionId: readSciGatewayToken().sessionId,
+    investigationIds: investigationId,
+    compress: false,
+    zip: true,
+    outname: investigationName,
+  };
+
+  const link = document.createElement('a');
+  link.href = `${idsUrl}/getData?${Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&')}`;
+
+  link.style.display = 'none';
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
