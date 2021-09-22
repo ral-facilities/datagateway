@@ -22,6 +22,7 @@ import {
   useCart,
   parseSearchToQuery,
   usePushView,
+  readSciGatewayToken,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -150,8 +151,9 @@ const NavBar = React.memo(
   }): React.ReactElement => {
     const [t] = useTranslation();
 
-    //Determine whether logged in anonymously
-    const loggedInAnonymously = localStorage.getItem('autoLogin') === 'true';
+    //Determine whether logged in anonymously (assume this if username is null)
+    const username = readSciGatewayToken().username;
+    const loggedInAnonymously = username === null || username === 'anon/anon';
 
     return (
       <Sticky>
