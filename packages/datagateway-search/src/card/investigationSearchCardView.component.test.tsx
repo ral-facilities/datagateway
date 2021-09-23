@@ -21,6 +21,7 @@ import { ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 
+// this is a dependency of react-router so we already have it
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';

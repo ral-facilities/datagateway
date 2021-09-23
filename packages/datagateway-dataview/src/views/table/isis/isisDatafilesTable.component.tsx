@@ -19,6 +19,7 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
+  DownloadButton,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -26,7 +27,6 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';
 import DatafileDetailsPanel from '../../detailsPanels/isis/datafileDetailsPanel.component';
-import DownloadButton from '../../downloadButton.component';
 
 interface ISISDatafilesTableProps {
   datasetId: string;
