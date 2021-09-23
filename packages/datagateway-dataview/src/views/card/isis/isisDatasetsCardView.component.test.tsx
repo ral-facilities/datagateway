@@ -7,6 +7,7 @@ import {
   useDatasetCount,
   Dataset,
   AddToCartButton,
+  DownloadButton,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -19,7 +20,6 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISDatasetsCardView from './isisDatasetsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
-import DownloadButton from '../../downloadButton.component';
 import { createMemoryHistory, History } from 'history';
 
 jest.mock('datagateway-common', () => {

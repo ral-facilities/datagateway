@@ -2,6 +2,9 @@
 
 exports[`Dataset - Card View renders correctly 1`] = `
 Object {
+  "buttons": Array [
+    [Function],
+  ],
   "data": Array [
     Object {
       "createTime": "2019-07-23",
