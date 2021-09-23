@@ -3890,6 +3890,11 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
               </WithStyles(ForwardRef(AppBar))>
               <InvestigationCardView>
                 <mockConstructor
+                  buttons={
+                    Array [
+                      [Function],
+                    ]
+                  }
                   customFilters={
                     Array [
                       Object {

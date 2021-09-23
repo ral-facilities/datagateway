@@ -138,27 +138,4 @@ describe('Investigation search tab', () => {
       });
     cy.get('[href="/browse/investigation/6/dataset"]');
   });
-
-  it('should be able to switch to dataset and datafile', () => {
-    cy.clearDownloadCart();
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('dog');
-
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
-
-    cy.get('[aria-label="Search table"]')
-      .contains('Dataset')
-      .contains('14')
-      .click();
-
-    cy.get('[aria-label="Search table"]')
-      .contains('Datafile')
-      .contains('300')
-      .click();
-  });
 });
