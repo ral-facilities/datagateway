@@ -74,6 +74,11 @@
     "size": "Size",
     "dataset": "Dataset"
   },
+  "buttons": {
+    "add_to_cart": "Add to cart",
+    "remove_from_cart": "Remove from cart",
+    "download": "Download"
+  },
   "app": {
     "error": "Something went wrong...",    
     "view_table": "Display as table",

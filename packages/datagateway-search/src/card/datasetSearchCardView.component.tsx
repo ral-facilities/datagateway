@@ -24,6 +24,7 @@ import {
   useDatasetSizes,
   formatCountOrSize,
   AddToCartButton,
+  DownloadButton,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
@@ -267,11 +268,19 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const buttons = React.useMemo(
     () => [
       (dataset: Dataset) => (
-        <AddToCartButton
-          entityType="dataset"
-          allIds={data?.map((dataset) => dataset.id) ?? []}
-          entityId={dataset.id}
-        />
+        <div>
+          <AddToCartButton
+            entityType="dataset"
+            allIds={data?.map((dataset) => dataset.id) ?? []}
+            entityId={dataset.id}
+          />
+          <DownloadButton
+            entityType="dataset"
+            entityId={dataset.id}
+            entityName={dataset.name}
+            variant="outlined"
+          />
+        </div>
       ),
     ],
     [data]

@@ -28,6 +28,7 @@ import {
   nestedValue,
   ArrowTooltip,
   AddToCartButton,
+  DownloadButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -279,11 +280,19 @@ const InvestigationCardView = (
   const buttons = React.useMemo(
     () => [
       (investigation: Investigation) => (
-        <AddToCartButton
-          entityType="investigation"
-          allIds={data?.map((investigation) => investigation.id) ?? []}
-          entityId={investigation.id}
-        />
+        <div>
+          <AddToCartButton
+            entityType="investigation"
+            allIds={data?.map((investigation) => investigation.id) ?? []}
+            entityId={investigation.id}
+          />
+          <DownloadButton
+            entityType="investigation"
+            entityId={investigation.id}
+            entityName={investigation.name}
+            variant="outlined"
+          />
+        </div>
       ),
     ],
     [data]
