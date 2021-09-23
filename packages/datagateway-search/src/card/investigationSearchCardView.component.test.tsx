@@ -11,6 +11,7 @@ import {
   Investigation,
   StateType,
   AdvancedFilter,
+  CardView,
 } from 'datagateway-common';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -72,6 +73,33 @@ describe('Investigation - Card View', () => {
         endDate: '2019-07-25',
         title: 'Test 1',
         visitId: '1',
+        investigationInstruments: [
+          {
+            id: 3,
+            instrument: {
+              id: 4,
+              name: 'LARMOR',
+            },
+          },
+        ],
+        studyInvestigations: [
+          {
+            id: 5,
+            study: {
+              id: 6,
+              pid: 'study pid',
+              name: 'study name',
+              modTime: '2019-06-10',
+              createTime: '2019-06-10',
+            },
+            investigation: {
+              id: 2,
+              title: 'Investigation test title',
+              name: 'Investigation test name',
+              visitId: '1',
+            },
+          },
+        ],
       },
     ];
     history = createMemoryHistory();
@@ -134,6 +162,8 @@ describe('Investigation - Card View', () => {
     mount.cleanUp();
     jest.clearAllMocks();
   });
+
+  //The below tests are modified from datasetSearchCardView
 
   it('renders correctly', () => {
     const wrapper = createWrapper();
@@ -247,5 +277,145 @@ describe('Investigation - Card View', () => {
     (useInvestigationsPaginated as jest.Mock).mockReturnValue({});
 
     expect(() => createWrapper()).not.toThrowError();
+  });
+
+  it('renders generic link & pending count correctly', () => {
+    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(() => [
+      {
+        isFetching: true,
+      },
+    ]);
+    const wrapper = createWrapper();
+
+    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
+      `/browse/investigation/1/dataset`
+    );
+    expect(wrapper.find(CardView).find('a').first().text()).toEqual('Test 1');
+    expect(
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-info-data-investigations.dataset_count"]')
+        .text()
+    ).toEqual('Calculating...');
+  });
+
+  it('renders DLS link correctly', () => {
+    const wrapper = createWrapper('dls');
+
+    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
+      '/browse/proposal/Investigation test name/investigation/1/dataset'
+    );
+    expect(wrapper.find(CardView).find('a').first().text()).toEqual('Test 1');
+  });
+
+  it('renders ISIS link & file sizes correctly', () => {
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 6,
+          name: 'facility cycle name',
+          startDate: '2000-06-10',
+          endDate: '2020-06-11',
+        },
+      ],
+    });
+
+    const wrapper = createWrapper('isis');
+
+    expect(useInvestigationSizes).toHaveBeenCalledWith(cardData);
+    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith([]);
+
+    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
+      `/browse/instrument/4/facilityCycle/6/investigation/1/dataset`
+    );
+    expect(wrapper.find(CardView).find('a').first().text()).toEqual('Test 1');
+    expect(
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-info-data-investigations.size"]')
+        .text()
+    ).toEqual('1 B');
+  });
+
+  it('does not render ISIS link when instrumentId cannot be found', () => {
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 4,
+          name: 'facility cycle name',
+          startDate: '2000-06-10',
+          endDate: '2020-06-11',
+        },
+      ],
+    });
+    delete cardData[0].investigation?.investigationInstruments;
+
+    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+      fetchNextPage: jest.fn(),
+    });
+    const wrapper = createWrapper('isis');
+
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(
+      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+    ).toEqual('Test 1');
+  });
+
+  it('displays only the dataset name when there is no generic investigation to link to', () => {
+    delete cardData[0].investigation;
+    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+      fetchNextPage: jest.fn(),
+    });
+
+    const wrapper = createWrapper('data');
+
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(
+      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+    ).toEqual('Test 1');
+  });
+
+  it('displays only the dataset name when there is no DLS investigation to link to', () => {
+    delete cardData[0].investigation;
+    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+      fetchNextPage: jest.fn(),
+    });
+
+    const wrapper = createWrapper('dls');
+
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(
+      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+    ).toEqual('Test 1');
+  });
+
+  it('displays only the dataset name when there is no ISIS investigation to link to', () => {
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 4,
+          name: 'facility cycle name',
+          startDate: '2000-06-10',
+          endDate: '2020-06-11',
+        },
+      ],
+    });
+    delete cardData[0].investigation;
+    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+      fetchNextPage: jest.fn(),
+    });
+
+    const wrapper = createWrapper('isis');
+
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(
+      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+    ).toEqual('Test 1');
   });
 });
