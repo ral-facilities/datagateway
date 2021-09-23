@@ -27,11 +27,11 @@ import {
   useLuceneSearch,
   nestedValue,
   ArrowTooltip,
+  AddToCartButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-// import AddToCartButton from '../addToCartButton.component';
 import { StateType } from '../state/app.types';
 import { useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
@@ -276,18 +276,18 @@ const InvestigationCardView = (
     ]
   );
 
-  // const buttons = React.useMemo(
-  //   () => [
-  //     (investigation: Investigation) => (
-  //       <AddToCartButton
-  //         entityType="investigation"
-  //         allIds={data?.map((investigation) => investigation.id) ?? []}
-  //         entityId={investigation.id}
-  //       />
-  //     ),
-  //   ],
-  //   [data]
-  // );
+  const buttons = React.useMemo(
+    () => [
+      (investigation: Investigation) => (
+        <AddToCartButton
+          entityType="investigation"
+          allIds={data?.map((investigation) => investigation.id) ?? []}
+          entityId={investigation.id}
+        />
+      ),
+    ],
+    [data]
+  );
 
   const customFilters = React.useMemo(
     () => [
@@ -322,7 +322,7 @@ const InvestigationCardView = (
       title={title}
       description={description}
       information={information}
-      // buttons={buttons}
+      buttons={buttons}
       // If was a specific dataKey on the custom filter request,
       // use that over the filterKey here.
       customFilters={customFilters}

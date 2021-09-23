@@ -23,10 +23,10 @@ import {
   useDatasetsDatafileCount,
   useDatasetSizes,
   formatCountOrSize,
+  AddToCartButton,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-// import AddToCartButton from '../addToCartButton.component';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 
@@ -264,18 +264,18 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     ]
   );
 
-  // const buttons = React.useMemo(
-  //   () => [
-  //     (dataset: Dataset) => (
-  //       <AddToCartButton
-  //         entityType="dataset"
-  //         allIds={data?.map((dataset) => dataset.id) ?? []}
-  //         entityId={dataset.id}
-  //       />
-  //     ),
-  //   ],
-  //   [data]
-  // );
+  const buttons = React.useMemo(
+    () => [
+      (dataset: Dataset) => (
+        <AddToCartButton
+          entityType="dataset"
+          allIds={data?.map((dataset) => dataset.id) ?? []}
+          entityId={dataset.id}
+        />
+      ),
+    ],
+    [data]
+  );
 
   return (
     <CardView
@@ -294,7 +294,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       title={title}
       description={description}
       information={information}
-      // buttons={buttons}
+      buttons={buttons}
     />
   );
 };

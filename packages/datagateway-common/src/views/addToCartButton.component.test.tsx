@@ -1,122 +1,121 @@
-// import React from 'react';
-// import { createMount } from '@material-ui/core/test-utils';
-// import AddToCartButton, {
-//   AddToCartButtonProps,
-// } from './addToCartButton.component';
-// import configureStore from 'redux-mock-store';
-// import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-// import { StateType } from '../state/app.types';
-// import { useCart, useAddToCart, useRemoveFromCart } from '../api/cart';
-// import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
-// import { Provider } from 'react-redux';
-// import thunk from 'redux-thunk';
-// import { MemoryRouter } from 'react-router';
-// import { ReactWrapper } from 'enzyme';
-// import { QueryClientProvider, QueryClient } from 'react-query';
+import React from 'react';
+import { createMount } from '@material-ui/core/test-utils';
+import AddToCartButton, {
+  AddToCartButtonProps,
+} from './addToCartButton.component';
+import configureStore from 'redux-mock-store';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
+import { StateType } from '../state/app.types';
+import { useCart, useAddToCart, useRemoveFromCart } from '../api/cart';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import { MemoryRouter } from 'react-router';
+import { ReactWrapper } from 'enzyme';
+import { QueryClientProvider, QueryClient } from 'react-query';
 
-// jest.mock('datagateway-common', () => {
-//   const originalModule = jest.requireActual('datagateway-common');
+jest.mock('../api/cart', () => {
+  const originalModule = jest.requireActual('../api/cart');
 
-//   return {
-//     __esModule: true,
-//     ...originalModule,
-//     useCart: jest.fn(),
-//     useAddToCart: jest.fn(),
-//     useRemoveFromCart: jest.fn(),
-//   };
-// });
+  return {
+    __esModule: true,
+    ...originalModule,
+    useCart: jest.fn(),
+    useAddToCart: jest.fn(),
+    useRemoveFromCart: jest.fn(),
+  };
+});
 
-// describe('Generic add to cart button', () => {
-//   let mount;
-//   const mockStore = configureStore([thunk]);
-//   let state: StateType;
+describe('Generic add to cart button', () => {
+  let mount;
+  const mockStore = configureStore([thunk]);
+  let state: StateType;
 
-//   const createWrapper = (props: AddToCartButtonProps): ReactWrapper => {
-//     const store = mockStore(state);
-//     return mount(
-//       <Provider store={store}>
-//         <MemoryRouter>
-//           <QueryClientProvider client={new QueryClient()}>
-//             <AddToCartButton {...props} />
-//           </QueryClientProvider>
-//         </MemoryRouter>
-//       </Provider>
-//     );
-//   };
+  const createWrapper = (props: AddToCartButtonProps): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <MemoryRouter>
+          <QueryClientProvider client={new QueryClient()}>
+            <AddToCartButton {...props} />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
 
-//   beforeEach(() => {
-//     mount = createMount();
+  beforeEach(() => {
+    mount = createMount();
 
-//     state = JSON.parse(
-//       JSON.stringify({
-//         dgdataview: dgDataViewInitialState,
-//         dgcommon: {
-//           ...dGCommonInitialState,
-//         },
-//       })
-//     );
+    state = JSON.parse(
+      JSON.stringify({
+        dgdataview: {}, //Dont need to fill, since not part of the test
+        dgcommon: {
+          ...dGCommonInitialState,
+        },
+      })
+    );
 
-//     (useCart as jest.Mock).mockReturnValue({
-//       data: [],
-//     });
-//     (useAddToCart as jest.Mock).mockReturnValue({
-//       mutate: jest.fn(),
-//       isLoading: false,
-//     });
-//     (useRemoveFromCart as jest.Mock).mockReturnValue({
-//       mutate: jest.fn(),
-//       isLoading: false,
-//     });
-//   });
+    (useCart as jest.Mock).mockReturnValue({
+      data: [],
+    });
+    (useAddToCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+      isLoading: false,
+    });
+  });
 
-//   afterEach(() => {
-//     mount.cleanUp();
-//     jest.clearAllMocks();
-//   });
+  afterEach(() => {
+    mount.cleanUp();
+    jest.clearAllMocks();
+  });
 
-//   it('renders correctly', () => {
-//     const wrapper = createWrapper({
-//       allIds: [1],
-//       entityId: 1,
-//       entityType: 'investigation',
-//     });
-//     expect(wrapper.find('button').text()).toBe('buttons.add_to_cart');
-//   });
+  it('renders correctly', () => {
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
+    expect(wrapper.find('button').text()).toBe('buttons.add_to_cart');
+  });
 
-//   it('calls addToCart action on button press with item not in cart', () => {
-//     const entityType = 'investigation';
-//     const wrapper = createWrapper({
-//       allIds: [1],
-//       entityId: 1,
-//       entityType,
-//     });
+  it('calls addToCart action on button press with item not in cart', () => {
+    const entityType = 'investigation';
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType,
+    });
 
-//     wrapper.find('#add-to-cart-btn').first().simulate('click');
+    wrapper.find('#add-to-cart-btn').first().simulate('click');
 
-//     expect(useAddToCart).toHaveBeenCalledWith(entityType);
-//   });
+    expect(useAddToCart).toHaveBeenCalledWith(entityType);
+  });
 
-//   it('calls removeFromCart on button press with item already in cart', () => {
-//     (useCart as jest.Mock).mockReturnValueOnce({
-//       data: [
-//         {
-//           entityId: 1,
-//           entityType: 'investigation',
-//           id: 1,
-//           name: 'test',
-//           parentEntities: [],
-//         },
-//       ],
-//     });
+  it('calls removeFromCart on button press with item already in cart', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'investigation',
+          id: 1,
+          name: 'test',
+          parentEntities: [],
+        },
+      ],
+    });
 
-//     const entityType = 'investigation';
-//     const wrapper = createWrapper({
-//       allIds: [1],
-//       entityId: 1,
-//       entityType,
-//     });
+    const entityType = 'investigation';
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType,
+    });
 
-//     wrapper.find('#remove-from-cart-btn').first().simulate('click');
-//     expect(useRemoveFromCart).toHaveBeenCalledWith(entityType);
-//   });
-// });
+    wrapper.find('#remove-from-cart-btn').first().simulate('click');
+    expect(useRemoveFromCart).toHaveBeenCalledWith(entityType);
+  });
+});
