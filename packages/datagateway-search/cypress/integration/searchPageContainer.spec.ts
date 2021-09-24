@@ -44,6 +44,10 @@ describe('SearchPageContainer Component', () => {
       });
   });
 
+  it('should display results correctly', () => {
+    cy.get('#container-search-table').should('exist');
+  });
+
   it('should be able to switch between tabs', () => {
     cy.get('[aria-label="Search table"]')
       .contains('Dataset')
@@ -64,10 +68,22 @@ describe('SearchPageContainer Component', () => {
   it('should be able to switch to card view', () => {
     cy.get('[aria-label="container-view-button"]').click();
     //Should now be in card view
+    cy.get('[aria-label="container-view-button"]').should('exist');
     cy.get('[aria-label="container-view-button"]').contains('Display as table');
 
     cy.get('[aria-label="container-view-button"]').click();
     //Should now be in table view
+    cy.get('[aria-label="container-view-button"]').should('exist');
     cy.get('[aria-label="container-view-button"]').contains('Display as cards');
+  });
+
+  it('should be able to scroll down and load more rows', () => {
+    cy.get('[aria-label="Search table"]')
+      .contains('Datafile')
+      .contains('300')
+      .click();
+    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
+    cy.get('[aria-rowcount="75"]').should('exist');
   });
 });
