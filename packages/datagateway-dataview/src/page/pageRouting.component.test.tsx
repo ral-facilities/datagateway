@@ -255,6 +255,17 @@ describe('PageTable', () => {
       expect(wrapper.exists(ISISMyDataTable)).toBe(true);
     });
 
+    it('redirects to login page with not signed in (ISISMyDataTable) ', () => {
+      window.localStorage.__proto__.getItem = jest
+        .fn()
+        .mockImplementationOnce((name) =>
+          name === 'autoLogin' ? 'true' : null
+        );
+      const wrapper = createTableWrapper(ISISRoutes['mydata']);
+      expect(wrapper.exists(ISISMyDataTable)).toBe(true);
+      expect(wrapper.exists('Redirect')).toBe(false);
+    });
+
     it('renders ISISInstrumentsTable for ISIS instruments route', () => {
       const wrapper = createTableWrapper(ISISRoutes['instruments']);
       expect(wrapper.exists(ISISInstrumentsTable)).toBe(true);
@@ -569,6 +580,17 @@ describe('PageTable', () => {
     it('renders DLSMyDataTable for DLS my data route', () => {
       const wrapper = createTableWrapper(DLSRoutes['mydata']);
       expect(wrapper.exists(DLSMyDataTable)).toBe(true);
+    });
+
+    it('redirects to login page with not signed in (DLSMyDataTable) ', () => {
+      window.localStorage.__proto__.getItem = jest
+        .fn()
+        .mockImplementationOnce((name) =>
+          name === 'autoLogin' ? 'true' : null
+        );
+      const wrapper = createTableWrapper(DLSRoutes['mydata']);
+      expect(wrapper.exists(DLSMyDataTable)).toBe(true);
+      expect(wrapper.exists('Redirect')).toBe(false);
     });
 
     it('renders DLSProposalTable for DLS proposal route', () => {
