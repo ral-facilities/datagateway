@@ -1,16 +1,4 @@
 describe('SearchPageContainer Component', () => {
-  beforeEach(() => {
-    cy.login();
-
-    cy.visit('/search/data/');
-  });
-
-  it('should load correctly', () => {
-    cy.title().should('equal', 'DataGateway Search');
-
-    cy.get('#container-search-filters').should('exist');
-  });
-
   let facilityName: string;
 
   before(() => {
@@ -42,6 +30,12 @@ describe('SearchPageContainer Component', () => {
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
+  });
+
+  it('should load correctly', () => {
+    cy.title().should('equal', 'DataGateway Search');
+
+    cy.get('#container-search-filters').should('exist');
   });
 
   it('should display results correctly', () => {
