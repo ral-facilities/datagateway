@@ -143,6 +143,16 @@ const togglePaths = Object.values(paths.toggle).concat(
   Object.values(paths.studyHierarchy.toggle)
 );
 
+const OpenDataWarningTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: '#f5f5f9',
+    color: 'rgba(0, 0, 0, 0.87)',
+    maxWidth: '80%',
+    fontSize: theme.typography.pxToRem(18),
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip);
+
 const NavBar = React.memo(
   (props: {
     entityCount: number;
@@ -193,13 +203,26 @@ const NavBar = React.memo(
                 aria-label="open-data-warning"
               >
                 <Grid item>
-                  <Tooltip
-                    title={t('app.open_data_warning.tooltip').toString()}
+                  <OpenDataWarningTooltip
+                    interactive
+                    title={
+                      <h4>
+                        {t('app.open_data_warning.tooltip')}
+                        <br />
+                        <br />
+                        <a
+                          href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
+                          style={{ color: '#283593' }}
+                        >
+                          {t('app.open_data_warning.tooltip_link')}
+                        </a>
+                      </h4>
+                    }
                   >
                     <IconButton>
                       <InfoIcon color="primary" />
                     </IconButton>
-                  </Tooltip>
+                  </OpenDataWarningTooltip>
                 </Grid>
                 <Grid item>
                   <Typography color="inherit" variant="h6" component="h3">

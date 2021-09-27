@@ -259,7 +259,7 @@ describe('PageContainer - Tests', () => {
 
   it('does not display warning label when logged in', () => {
     const response = { username: 'SomePerson' };
-    readSciGatewayToken.mockReturnValueOnce(response);
+    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
 
     const wrapper = createWrapper();
 
