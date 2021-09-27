@@ -438,8 +438,7 @@ const fetchFilter = (
     });
 };
 
-// TODO: name this in a way to not get confused with filtering in general?
-export const useFilter = (
+export const useCustomFilter = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   filterKey: string,
   additionalFilters?: {
@@ -479,7 +478,6 @@ export const formatFilterCount = (
 
 export const fetchFilterCountQuery = (
   apiUrl: string,
-  // TODO: Move into a separate type?
   entityType:
     | 'investigation'
     | 'dataset'
@@ -515,7 +513,7 @@ export const fetchFilterCountQuery = (
     .then((response) => response.data);
 };
 
-export const useFilterCount = (
+export const useCustomFilterCount = (
   entityType:
     | 'investigation'
     | 'dataset'

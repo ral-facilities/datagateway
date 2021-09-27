@@ -3,7 +3,7 @@ import {
   nestedValue,
   parseQueryToSearch,
   parseSearchToQuery,
-  useFilter,
+  useCustomFilter,
   useIds,
   usePushFilters,
   usePushPage,
@@ -29,6 +29,7 @@ import axios from 'axios';
 import handleICATError from '../handleICATError';
 
 import { createReactQueryWrapper } from '../setupTests';
+import { useCustomFilterCount } from '..';
 
 jest.mock('../handleICATError');
 
@@ -360,7 +361,7 @@ describe('generic api functions', () => {
     });
   });
 
-  describe('useFilter', () => {
+  describe('useCustomFilter', () => {
     it('sends axios request to fetch filters and returns successful response', async () => {
       (axios.get as jest.Mock).mockResolvedValue({
         data: [{ title: '1' }, { title: '2' }, { title: '3' }],
@@ -368,7 +369,7 @@ describe('generic api functions', () => {
 
       const { result, waitFor } = renderHook(
         () =>
-          useFilter('investigation', 'title', [
+          useCustomFilter('investigation', 'title', [
             { filterType: 'distinct', filterValue: '"name"' },
           ]),
         {
@@ -399,7 +400,7 @@ describe('generic api functions', () => {
         message: 'Test error',
       });
       const { result, waitFor } = renderHook(
-        () => useFilter('investigation', 'title'),
+        () => useCustomFilter('investigation', 'title'),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -408,6 +409,104 @@ describe('generic api functions', () => {
       await waitFor(() => result.current.isError);
 
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+    });
+  });
+
+  describe('useCustomFilterCount', () => {
+    it('sends axios request to fetch filter counts and returns successful response', async () => {
+      const filterKey = 'title';
+      (axios.get as jest.Mock).mockImplementation((url, options) =>
+        Promise.resolve({
+          data: JSON.parse(options.params.get('where'))[filterKey].eq ?? 0,
+        })
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useCustomFilterCount('investigation', 'title', ['1', '2', '3']),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.every((query) => query.isSuccess));
+
+      const params = new URLSearchParams();
+      params.append(
+        'where',
+        JSON.stringify({
+          [filterKey]: { eq: '1' },
+        })
+      );
+      expect(axios.get).toHaveBeenNthCalledWith(
+        1,
+        'https://example.com/api/investigations/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+
+      params.set(
+        'where',
+        JSON.stringify({
+          [filterKey]: { eq: '2' },
+        })
+      );
+      expect(axios.get).toHaveBeenNthCalledWith(
+        2,
+        'https://example.com/api/investigations/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+        params.toString()
+      );
+
+      params.set(
+        'where',
+        JSON.stringify({
+          [filterKey]: { eq: '3' },
+        })
+      );
+      expect(axios.get).toHaveBeenNthCalledWith(
+        3,
+        'https://example.com/api/investigations/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[2][1].params.toString()).toBe(
+        params.toString()
+      );
+
+      expect(result.current.map((query) => query.data)).toEqual([
+        '1',
+        '2',
+        '3',
+      ]);
+    });
+
+    it('sends axios request to fetch filter counts and calls handleICATError on failure', async () => {
+      (axios.get as jest.Mock).mockRejectedValue({
+        message: 'Test error',
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useCustomFilterCount('investigation', 'title', ['1', '2', '3']),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.every((query) => query.isError));
+
+      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(result.current.map((query) => query.error)).toEqual(
+        Array(3).fill({ message: 'Test error' })
+      );
     });
   });
 });

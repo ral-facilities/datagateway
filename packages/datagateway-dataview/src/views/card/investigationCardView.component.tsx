@@ -12,8 +12,8 @@ import {
   investigationLink,
   parseSearchToQuery,
   useDateFilter,
-  useFilter,
-  useFilterCount,
+  useCustomFilter,
+  useCustomFilterCount,
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
@@ -60,11 +60,15 @@ const InvestigationCardView = (): React.ReactElement => {
     },
   ]);
   const countQueries = useInvestigationsDatasetCount(data);
-  const { data: typeIds } = useFilter('investigation', 'type.id');
-  const { data: facilityIds } = useFilter('investigation', 'facility.id');
+  const { data: typeIds } = useCustomFilter('investigation', 'type.id');
+  const { data: facilityIds } = useCustomFilter('investigation', 'facility.id');
 
-  const typeIdCounts = useFilterCount('investigation', 'type.id', typeIds);
-  const facilityIdCounts = useFilterCount(
+  const typeIdCounts = useCustomFilterCount(
+    'investigation',
+    'type.id',
+    typeIds
+  );
+  const facilityIdCounts = useCustomFilterCount(
     'investigation',
     'facility.id',
     facilityIds
@@ -154,8 +158,6 @@ const InvestigationCardView = (): React.ReactElement => {
     [data]
   );
 
-  // TODO: Use another function instead of "formatCountOrSize"
-  //       to set the value of the count of a filter.
   const customFilters = React.useMemo(
     () => [
       {

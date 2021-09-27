@@ -283,7 +283,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     };
 
     // Get the updated info.
-    // TODO: Possible to useMemo with filters?
     const info = customFilters
       ? Object.values(customFilters).reduce((o, filter) => {
           const data: CVFilterInfo = {

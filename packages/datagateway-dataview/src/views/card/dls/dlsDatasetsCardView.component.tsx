@@ -13,9 +13,9 @@ import {
   usePushResults,
   usePushSort,
   useTextFilter,
-  useFilter,
+  useCustomFilter,
   useDatasetsDatafileCount,
-  useFilterCount,
+  useCustomFilterCount,
   formatFilterCount,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
@@ -77,7 +77,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     },
   ]);
 
-  const { data: typeIds } = useFilter('dataset', 'type.id', [
+  const { data: typeIds } = useCustomFilter('dataset', 'type.id', [
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -85,7 +85,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       }),
     },
   ]);
-  const typeIdCounts = useFilterCount('dataset', 'type.id', typeIds, [
+  const typeIdCounts = useCustomFilterCount('dataset', 'type.id', typeIds, [
     {
       filterType: 'where',
       filterValue: JSON.stringify({
