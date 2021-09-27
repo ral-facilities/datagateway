@@ -10,6 +10,7 @@ import {
   Badge,
   makeStyles,
   Button,
+  Tooltip,
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
@@ -191,13 +192,17 @@ const NavBar = React.memo(
                 justify="center"
               >
                 <Grid item>
-                  <IconButton disabled>
-                    <InfoIcon color="primary" />
-                  </IconButton>
+                  <Tooltip
+                    title={t('app.view_open_data_warning.tooltip').toString()}
+                  >
+                    <IconButton>
+                      <InfoIcon color="primary" />
+                    </IconButton>
+                  </Tooltip>
                 </Grid>
                 <Grid item>
                   <Typography color="inherit" variant="h6" component="h3">
-                    <b>{t('app.view_open_data_warning')}</b>
+                    <b>{t('app.view_open_data_warning.message')}</b>
                   </Typography>
                 </Grid>
               </Grid>

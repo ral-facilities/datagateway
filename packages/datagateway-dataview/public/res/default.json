@@ -3,9 +3,12 @@
     "results": "Results",
     "view_table": "Display as table",
     "view_cards": "Display as cards",
-    "view_open_data_warning" : "You are viewing open data",
     "max_results": "Max Results",
-    "error": "Something went wrong..."
+    "error": "Something went wrong...",
+    "view_open_data_warning" : {
+      "message" : "You are viewing open data",
+      "tooltip" : "Only open data is displayed when browsing anonymously."
+    }
   },
   "breadcrumbs": {
     "home": "Home",
