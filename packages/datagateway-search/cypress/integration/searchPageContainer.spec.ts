@@ -81,42 +81,40 @@ describe('SearchPageContainer Component', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  //This test appears to get a different number of result locally compared to the automated tests
-  //on github meaning the test fails
-  // it('should be able to change page in card view', () => {
-  //   cy.get('[aria-label="Search text input"]').find('#filled-search').clear();
+  it('should be able to change page in card view', () => {
+    cy.get('[aria-label="Search text input"]').find('#filled-search').clear();
 
-  //   cy.get('[aria-label="Submit search"]')
-  //     .click()
-  //     .wait(['@investigations', '@investigations', '@investigationsCount'], {
-  //       timeout: 10000,
-  //     });
+    cy.get('[aria-label="Submit search"]')
+      .click()
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
-  //   cy.get('[aria-label="container-view-button"]').click();
+    cy.get('[aria-label="container-view-button"]').click();
 
-  //   cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
-  //   cy.get('#card').contains('Guy maintain us process official people suffer.');
+    cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
+    cy.get('#card').contains('Guy maintain us process official people suffer.');
 
-  //   cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
-  //     .first()
-  //     .click();
-  //   cy.get('#card').contains('Yourself smile either I pass significant.');
+    cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
+      .first()
+      .click();
+    cy.get('#card').contains('Yourself smile either I pass significant.');
 
-  //   cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
-  //     .first()
-  //     .click();
-  //   cy.get('#card').contains('Window former upon writer help step account.');
+    cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
+      .first()
+      .click();
+    cy.get('#card').contains('Window former upon writer help step account.');
 
-  //   cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
-  //     .first()
-  //     .click();
-  //   cy.get('#card').contains('Someone statement Republican plan watch.');
+    cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
+      .first()
+      .click();
+    cy.get('#card').contains('Someone statement Republican plan watch.');
 
-  //   cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
-  //     .first()
-  //     .click();
-  //   cy.get('#card').contains(
-  //     'Including spend increase ability music skill former.'
-  //   );
-  // });
+    cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
+      .first()
+      .click();
+    cy.get('#card').contains(
+      'Including spend increase ability music skill former.'
+    );
+  });
 });
