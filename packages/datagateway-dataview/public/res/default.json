@@ -5,7 +5,7 @@
     "view_cards": "Display as cards",
     "max_results": "Max Results",
     "error": "Something went wrong...",
-    "view_open_data_warning" : {
+    "open_data_warning" : {
       "message" : "You are viewing open data",
       "tooltip" : "Only open data is displayed when browsing anonymously."
     }

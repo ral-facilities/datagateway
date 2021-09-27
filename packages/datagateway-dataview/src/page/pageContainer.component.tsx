@@ -190,10 +190,11 @@ const NavBar = React.memo(
                 direction="row"
                 alignItems="center"
                 justify="center"
+                aria-label="open-data-warning"
               >
                 <Grid item>
                   <Tooltip
-                    title={t('app.view_open_data_warning.tooltip').toString()}
+                    title={t('app.open_data_warning.tooltip').toString()}
                   >
                     <IconButton>
                       <InfoIcon color="primary" />
@@ -202,7 +203,7 @@ const NavBar = React.memo(
                 </Grid>
                 <Grid item>
                   <Typography color="inherit" variant="h6" component="h3">
-                    <b>{t('app.view_open_data_warning.message')}</b>
+                    <b>{t('app.open_data_warning.message')}</b>
                   </Typography>
                 </Grid>
               </Grid>
