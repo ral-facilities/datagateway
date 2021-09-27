@@ -145,11 +145,11 @@ const togglePaths = Object.values(paths.toggle).concat(
 
 const OpenDataWarningTooltip = withStyles((theme) => ({
   tooltip: {
-    backgroundColor: '#f5f5f9',
+    backgroundColor: '#00e676EE',
     color: 'rgba(0, 0, 0, 0.87)',
     maxWidth: '80%',
     fontSize: theme.typography.pxToRem(18),
-    border: '1px solid #dadde9',
+    //border: '1px solid #dadde9',
   },
 }))(Tooltip);
 
