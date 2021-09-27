@@ -1,6 +1,5 @@
 import React from 'react';
 import { ReactWrapper } from 'enzyme';
-
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
@@ -251,19 +250,16 @@ describe('PageTable', () => {
 
   describe('ISIS', () => {
     it('renders ISISMyDataTable for ISIS my data route', () => {
+      window.localStorage.__proto__.getItem = jest.fn().mockReturnValue(false);
       const wrapper = createTableWrapper(ISISRoutes['mydata']);
       expect(wrapper.exists(ISISMyDataTable)).toBe(true);
     });
 
-    it('redirects to login page with not signed in (ISISMyDataTable) ', () => {
-      window.localStorage.__proto__.getItem = jest
-        .fn()
-        .mockImplementationOnce((name) =>
-          name === 'autoLogin' ? 'true' : null
-        );
+    it('redirects to login page when not signed in (ISISMyDataTable) ', () => {
+      window.localStorage.__proto__.getItem = jest.fn().mockReturnValue('true');
+
       const wrapper = createTableWrapper(ISISRoutes['mydata']);
-      expect(wrapper.exists(ISISMyDataTable)).toBe(true);
-      expect(wrapper.exists('Redirect')).toBe(false);
+      expect(wrapper.exists(ISISMyDataTable)).toBe(false);
     });
 
     it('renders ISISInstrumentsTable for ISIS instruments route', () => {
@@ -578,19 +574,15 @@ describe('PageTable', () => {
 
   describe('DLS', () => {
     it('renders DLSMyDataTable for DLS my data route', () => {
+      window.localStorage.__proto__.getItem = jest.fn().mockReturnValue(false);
       const wrapper = createTableWrapper(DLSRoutes['mydata']);
       expect(wrapper.exists(DLSMyDataTable)).toBe(true);
     });
 
-    it('redirects to login page with not signed in (DLSMyDataTable) ', () => {
-      window.localStorage.__proto__.getItem = jest
-        .fn()
-        .mockImplementationOnce((name) =>
-          name === 'autoLogin' ? 'true' : null
-        );
+    it('redirects to login page when not signed in (DLSMyDataTable) ', () => {
+      window.localStorage.__proto__.getItem = jest.fn().mockReturnValue('true');
       const wrapper = createTableWrapper(DLSRoutes['mydata']);
-      expect(wrapper.exists(DLSMyDataTable)).toBe(true);
-      expect(wrapper.exists('Redirect')).toBe(false);
+      expect(wrapper.exists(DLSMyDataTable)).toBe(false);
     });
 
     it('renders DLSProposalTable for DLS proposal route', () => {
