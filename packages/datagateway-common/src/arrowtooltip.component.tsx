@@ -100,7 +100,7 @@ const ArrowTooltip = (
           // Check to ensure whether the tooltip should be visible given the width provided.
           if (
             tooltipElement.current &&
-            tooltipElement.current.offsetWidth / window.innerWidth <=
+            tooltipElement.current.offsetWidth / window.innerWidth >=
               percentageWidth / 100
           )
             setTooltipVisible(true);
