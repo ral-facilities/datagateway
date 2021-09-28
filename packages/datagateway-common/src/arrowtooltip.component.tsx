@@ -100,7 +100,7 @@ const ArrowTooltip = (
           // Check to ensure whether the tooltip should be visible given the width provided.
           if (
             tooltipElement.current &&
-            tooltipElement.current.offsetWidth / window.innerWidth >=
+            tooltipElement.current.offsetWidth / window.innerWidth <=
               percentageWidth / 100
           )
             setTooltipVisible(true);
@@ -136,6 +136,11 @@ const ArrowTooltip = (
     return () => window.removeEventListener('resize', updateTooltip);
   }, [tooltipElement, setTooltipVisible, percentageWidth, maxEnabledHeight]);
 
+  let shouldDisableHoverListener = !isTooltipVisible;
+  //Allow disableHoverListener to be overidden
+  if (props.disableHoverListener !== undefined)
+    shouldDisableHoverListener = props.disableHoverListener;
+
   return (
     <Tooltip
       ref={tooltipElement}
@@ -157,8 +162,7 @@ const ArrowTooltip = (
           <span className={arrow} ref={setArrowRef} />
         </React.Fragment>
       }
-      // TODO: This shouldn't really be calculated inside and should still be possible to be overriden by a prop.
-      disableHoverListener={!isTooltipVisible}
+      disableHoverListener={shouldDisableHoverListener}
     />
   );
 };

@@ -10,7 +10,6 @@ import {
   Badge,
   makeStyles,
   Button,
-  Tooltip,
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
@@ -24,6 +23,7 @@ import {
   parseSearchToQuery,
   usePushView,
   readSciGatewayToken,
+  ArrowTooltip,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -143,15 +143,11 @@ const togglePaths = Object.values(paths.toggle).concat(
   Object.values(paths.studyHierarchy.toggle)
 );
 
-const OpenDataWarningTooltip = withStyles((theme) => ({
-  tooltip: {
-    backgroundColor: '#00e676EE',
-    color: 'rgba(0, 0, 0, 0.87)',
-    maxWidth: '80%',
-    fontSize: theme.typography.pxToRem(18),
-    //border: '1px solid #dadde9',
+const BlackTextTypography = withStyles({
+  root: {
+    color: '#000000',
   },
-}))(Tooltip);
+})(Typography);
 
 const NavBar = React.memo(
   (props: {
@@ -203,7 +199,7 @@ const NavBar = React.memo(
                 aria-label="open-data-warning"
               >
                 <Grid item>
-                  <OpenDataWarningTooltip
+                  <ArrowTooltip
                     interactive
                     title={
                       <h4>
@@ -212,22 +208,23 @@ const NavBar = React.memo(
                         <br />
                         <a
                           href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
-                          style={{ color: '#283593' }}
+                          style={{ color: '#6793FF' }}
                         >
                           {t('app.open_data_warning.tooltip_link')}
                         </a>
                       </h4>
                     }
+                    disableHoverListener={false}
                   >
                     <IconButton>
                       <InfoIcon color="primary" />
                     </IconButton>
-                  </OpenDataWarningTooltip>
+                  </ArrowTooltip>
                 </Grid>
                 <Grid item>
-                  <Typography color="inherit" variant="h6" component="h3">
+                  <BlackTextTypography variant="h6">
                     <b>{t('app.open_data_warning.message')}</b>
-                  </Typography>
+                  </BlackTextTypography>
                 </Grid>
               </Grid>
             </Paper>
