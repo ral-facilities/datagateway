@@ -51,4 +51,9 @@ describe('PageContainer Component', () => {
       .should('not.be.hidden')
       .contains('2');
   });
+
+  it('should not display the open data warning when logged in', () => {
+    //Logged in by default, so should not have open data warning
+    cy.get('[aria-label="open-data-warning"]').should('not.exist');
+  });
 });
