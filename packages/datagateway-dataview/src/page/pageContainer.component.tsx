@@ -282,7 +282,7 @@ const ViewButton = (props: {
         }`}
         variant="contained"
         color="primary"
-        size="small"
+        size="medium"
         startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
         onClick={() => props.handleButtonChange()}
       >
@@ -291,6 +291,43 @@ const ViewButton = (props: {
     </div>
   );
 };
+
+const SelectionAlert = React.memo(
+  (): React.ReactElement => {
+    const [selecNotificationOpen, setSelecNotificationOpen] = React.useState(
+      true
+    );
+
+    return (
+      <React.Fragment>
+        {selecNotificationOpen && (
+          <Alert
+            variant="filled"
+            severity="warning"
+            style={{
+              width: '90%',
+              marginTop: '2px',
+            }}
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => setSelecNotificationOpen(false)}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+          >
+            <b>x item(s) were added/removed from selection.</b>{' '}
+            <a href={'localhost:3000'}>Go to selections.</a>
+          </Alert>
+        )}
+      </React.Fragment>
+    );
+  }
+);
+SelectionAlert.displayName = 'SelectionAlert';
 
 const StyledRouting = (props: {
   viewStyle: ViewsType;
@@ -420,7 +457,6 @@ const PageContainer: React.FC = () => {
     location.search,
   ]);
   const [totalDataCount, setTotalDataCount] = React.useState(0);
-  const [selecNotficationOpen, setSelecNotificationOpen] = React.useState(true);
 
   // exclude size and count queries from showing the linear progress bar for performance
   const isFetchingNum = useIsFetching({
@@ -523,27 +559,9 @@ const PageContainer: React.FC = () => {
                       )}
                     />
                   </Grid>
-                  {selecNotficationOpen && (
-                    <Grid item xs={true}>
-                      <Alert
-                        variant="filled"
-                        severity="warning"
-                        style={{ width: '80%' }}
-                        action={
-                          <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            size="small"
-                            onClick={() => setSelecNotificationOpen(false)}
-                          >
-                            <CloseIcon fontSize="inherit" />
-                          </IconButton>
-                        }
-                      >
-                        This is a test.
-                      </Alert>
-                    </Grid>
-                  )}
+                  <Grid item xs={true}>
+                    <SelectionAlert />
+                  </Grid>
                 </StyledGrid>
               </Grid>
 
