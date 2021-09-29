@@ -11,8 +11,10 @@ import {
   makeStyles,
   Button,
 } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
 import { StyleRules } from '@material-ui/core/styles';
 import {
   DownloadCartItem,
@@ -418,6 +420,7 @@ const PageContainer: React.FC = () => {
     location.search,
   ]);
   const [totalDataCount, setTotalDataCount] = React.useState(0);
+  const [selecNotficationOpen, setSelecNotificationOpen] = React.useState(true);
 
   // exclude size and count queries from showing the linear progress bar for performance
   const isFetchingNum = useIsFetching({
@@ -501,18 +504,47 @@ const PageContainer: React.FC = () => {
             />
 
             <StyledGrid container>
-              {/* Toggle between the table and card view */}
-              <Grid item xs={12}>
-                <Route
-                  exact
-                  path={togglePaths}
-                  render={() => (
-                    <ViewButton
-                      viewCards={view === 'card'}
-                      handleButtonChange={handleButtonChange}
+              <Grid
+                item
+                xs={12}
+                style={{ marginTop: '10px', marginBottom: '10px' }}
+              >
+                <StyledGrid container>
+                  {/* Toggle between the table and card view */}
+                  <Grid item xs={'auto'}>
+                    <Route
+                      exact
+                      path={togglePaths}
+                      render={() => (
+                        <ViewButton
+                          viewCards={view === 'card'}
+                          handleButtonChange={handleButtonChange}
+                        />
+                      )}
                     />
+                  </Grid>
+                  {selecNotficationOpen && (
+                    <Grid item xs={true}>
+                      <Alert
+                        variant="filled"
+                        severity="warning"
+                        style={{ width: '80%' }}
+                        action={
+                          <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => setSelecNotificationOpen(false)}
+                          >
+                            <CloseIcon fontSize="inherit" />
+                          </IconButton>
+                        }
+                      >
+                        This is a test.
+                      </Alert>
+                    </Grid>
                   )}
-                />
+                </StyledGrid>
               </Grid>
 
               {/* Show loading progress if data is still being loaded */}
