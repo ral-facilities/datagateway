@@ -293,14 +293,40 @@ const ViewButton = (props: {
 };
 
 const SelectionAlert = React.memo(
-  (): React.ReactElement => {
-    const [selecNotificationOpen, setSelecNotificationOpen] = React.useState(
-      true
-    );
+  (props: { selectedItems: DownloadCartItem[] }): React.ReactElement => {
+    const [alertOpen, setAlertOpen] = React.useState(false);
+
+    //Current number of selections
+    const newNumSelecItems = props.selectedItems.length;
+
+    //Default text when there has been no change
+    const defaultAlertText =
+      'You have ' + newNumSelecItems + ' item(s) in your selections.';
+
+    //Store number of selections on last update of this component (for keeping track of changes to cart)
+    const [numSelectedItems, setNumSelectedItems] = React.useState(0);
+    const [alertText, setAlertText] = React.useState(defaultAlertText);
+
+    //Check for a change and assign text based on increase or decrease
+    if (newNumSelecItems !== numSelectedItems) {
+      const difference = newNumSelecItems - numSelectedItems;
+
+      if (difference > 0)
+        setAlertText(
+          '' + difference + ' item(s) have been added to selection.'
+        );
+      else
+        setAlertText(
+          '' + difference * -1 + ' item(s) have been removed from selection.'
+        );
+      setNumSelectedItems(newNumSelecItems);
+      //Change has occurred so need to ensure displayed
+      setAlertOpen(true);
+    }
 
     return (
       <React.Fragment>
-        {selecNotificationOpen && (
+        {alertOpen && (
           <Alert
             variant="filled"
             severity="warning"
@@ -313,14 +339,13 @@ const SelectionAlert = React.memo(
                 aria-label="close"
                 color="inherit"
                 size="small"
-                onClick={() => setSelecNotificationOpen(false)}
+                onClick={() => setAlertOpen(false)}
               >
                 <CloseIcon fontSize="inherit" />
               </IconButton>
             }
           >
-            <b>x item(s) were added/removed from selection.</b>{' '}
-            <a href={'localhost:3000'}>Go to selections.</a>
+            <b>{alertText}</b> <a href={'localhost:3000'}>Go to selections.</a>
           </Alert>
         )}
       </React.Fragment>
@@ -560,7 +585,7 @@ const PageContainer: React.FC = () => {
                     />
                   </Grid>
                   <Grid item xs={true}>
-                    <SelectionAlert />
+                    <SelectionAlert selectedItems={cartItems ?? []} />
                   </Grid>
                 </StyledGrid>
               </Grid>
