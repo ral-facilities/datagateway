@@ -54,4 +54,6 @@ export { default as Mark } from './mark.component';
 
 export { default as HomePage } from './homePage/homePage.component';
 
+export { default as SelectionAlert } from './views/selectionAlert.component';
+
 // ReactDOM.render(<App />, document.getElementById('root'));
