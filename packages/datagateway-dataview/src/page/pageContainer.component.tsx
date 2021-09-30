@@ -522,7 +522,10 @@ const PageContainer: React.FC = () => {
                     />
                   </Grid>
                   <Grid item xs={true}>
-                    <SelectionAlert selectedItems={cartItems ?? []} />
+                    <SelectionAlert
+                      selectedItems={cartItems ?? []}
+                      widthPercent={98}
+                    />
                   </Grid>
                 </StyledGrid>
               </Grid>

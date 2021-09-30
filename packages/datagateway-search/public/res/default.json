@@ -56,6 +56,13 @@
     "size": "Size",
     "dataset": "Dataset"
   },
+  "selec_alert" : {
+    "item": "item has",
+    "items" : "items have",
+    "added" : "been added to selection.",
+    "removed" : "been removed from selection.",
+    "link" : "Go to selections."
+  },
   "app": {
     "error": "Something went wrong..."
   }

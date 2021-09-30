@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
-import { useLuceneSearch } from 'datagateway-common';
+import { SelectionAlert, useCart, useLuceneSearch } from 'datagateway-common';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 const badgeStyles = (theme: Theme): StyleRules =>
@@ -139,6 +139,8 @@ const SearchPageTable = (
     return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
   };
 
+  const { data: cartItems } = useCart();
+
   return (
     <div>
       <AppBar position="static">
@@ -240,6 +242,8 @@ const SearchPageTable = (
           )}
         </Tabs>
       </AppBar>
+
+      <SelectionAlert selectedItems={cartItems ?? []} widthPercent={-1} />
 
       {investigationTab ? (
         <TabPanel value={currentTab} index={'investigation'}>

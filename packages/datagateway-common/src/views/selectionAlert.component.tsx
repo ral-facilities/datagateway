@@ -1,21 +1,28 @@
 import { Theme, createStyles, IconButton, makeStyles } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
-import { StyleRules } from '@material-ui/core/styles';
 import { DownloadCartItem } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-const selectionAlertStyles = makeStyles(
-  (theme: Theme): StyleRules =>
+//Note: Use widthPercentValue = -1 to auto fill to the screen
+type SelectionAlertProps = {
+  widthPercentValue: number;
+};
+
+const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
+  (theme: Theme) =>
     createStyles({
       root: {
-        width: '90%',
+        width: ({ widthPercentValue }) =>
+          widthPercentValue < 0 ? 'auto' : `${widthPercentValue}%`,
         marginTop: '2px',
+        flex: '1',
+        marginRight: 'auto',
       },
       animate: {
-        width: '90%',
+        width: ({ widthPercentValue }) => `${widthPercentValue}%`,
         marginTop: '2px',
         animation: `$pulsate 700ms ${theme.transitions.easing.easeInOut}`,
       },
@@ -40,8 +47,13 @@ const selectionAlertStyles = makeStyles(
 );
 
 const SelectionAlert = React.memo(
-  (props: { selectedItems: DownloadCartItem[] }): React.ReactElement => {
-    const classes = selectionAlertStyles();
+  (props: {
+    selectedItems: DownloadCartItem[];
+    widthPercent: number;
+  }): React.ReactElement => {
+    const classes = selectionAlertStyles({
+      widthPercentValue: props.widthPercent,
+    });
     const [t] = useTranslation();
     const [alertOpen, setAlertOpen] = React.useState(false);
     const [animating, setAnimating] = React.useState(false);
