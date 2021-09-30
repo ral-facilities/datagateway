@@ -420,6 +420,16 @@ describe('Card View', () => {
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 
+  it('results changed when incompatible result is manually entered in URL', () => {
+    const updatedProps = {
+      ...props,
+      resultsOptions: [1],
+      results: 4,
+    };
+    createWrapper(updatedProps);
+    expect(onResultsChange).toHaveBeenNthCalledWith(1, 1);
+  });
+
   it('selector sends pushQuery with results', () => {
     const updatedProps = {
       ...props,
@@ -432,7 +442,7 @@ describe('Card View', () => {
       .find(Select)
       .props()
       .onChange?.({ target: { value: 2 } });
-    expect(onResultsChange).toHaveBeenNthCalledWith(1, 2);
+    expect(onResultsChange).toHaveBeenNthCalledWith(2, 2);
   });
 
   it('selector sends pushQuery with results and page', () => {
@@ -447,7 +457,7 @@ describe('Card View', () => {
       .find(Select)
       .props()
       .onChange?.({ target: { value: 3 } });
-    expect(onResultsChange).toHaveBeenNthCalledWith(1, 3);
+    expect(onResultsChange).toHaveBeenNthCalledWith(2, 3);
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 });

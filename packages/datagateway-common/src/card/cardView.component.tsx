@@ -397,6 +397,20 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     totalDataCount,
     loadedCount,
   ]);
+  // Handle (max) result
+  React.useEffect(() => {
+    if (loadedCount) {
+      if (results === resOptions[0]) {
+        onResultsChange(results);
+      } else if (results === resOptions[1]) {
+        onResultsChange(results);
+      } else if (results === resOptions[2]) {
+        onResultsChange(results);
+      } else {
+        onResultsChange(resOptions[0]);
+      }
+    }
+  }, [onResultsChange, resOptions, results, loadedCount]);
 
   const [t] = useTranslation();
 
@@ -467,7 +481,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                         1 +
                         (totalDataCount - 1) / newResults
                       );
+
                       onResultsChange(newResults);
+
                       if (page > newMaxPage) {
                         onPageChange(1);
                       }
