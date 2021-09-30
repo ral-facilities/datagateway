@@ -204,6 +204,13 @@
     "downloadLabel": "3. Download",
     "downloadDescription": "Retrieve the experimental data using a variety of download methods."
   },
+  "selec_alert" : {
+    "item": "item has",
+    "items" : "items have",
+    "added" : "been added to selection.",
+    "removed" : "been removed from selection.",
+    "link" : "Go to selections."
+  },
   "doi_constants": {
     "keywords": [
       "STFC > ISIS",

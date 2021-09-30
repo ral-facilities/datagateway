@@ -327,6 +327,7 @@ const selectionAlertStyles = makeStyles(
 const SelectionAlert = React.memo(
   (props: { selectedItems: DownloadCartItem[] }): React.ReactElement => {
     const classes = selectionAlertStyles();
+    const [t] = useTranslation();
     const [alertOpen, setAlertOpen] = React.useState(false);
     const [animating, setAnimating] = React.useState(false);
     const [alertText, setAlertText] = React.useState('');
@@ -340,14 +341,19 @@ const SelectionAlert = React.memo(
     if (newNumSelecItems !== numSelectedItems) {
       const difference = newNumSelecItems - numSelectedItems;
 
+      //Obtain plural if needed
+      const itemText =
+        Math.abs(difference) > 1
+          ? t('selec_alert.items')
+          : t('selec_alert.item');
+
       if (difference > 0)
-        setAlertText(
-          '' + difference + ' item(s) have been added to selection.'
-        );
+        setAlertText(`
+          ${difference} ${itemText} ${t('selec_alert.added')}`);
       else
-        setAlertText(
-          '' + difference * -1 + ' item(s) have been removed from selection.'
-        );
+        setAlertText(`
+          ${difference * -1} ${itemText} ${t('selec_alert.removed')}`);
+
       setNumSelectedItems(newNumSelecItems);
       //Change has occurred so need to ensure displayed
       setAlertOpen(true);
@@ -373,7 +379,8 @@ const SelectionAlert = React.memo(
               </IconButton>
             }
           >
-            <b>{alertText}</b> <a href={'localhost:3000'}>Go to selections.</a>
+            <b>{alertText}</b>{' '}
+            <a href={'localhost:3000'}>{t('selec_alert.link')}</a>
           </Alert>
         )}
       </React.Fragment>
