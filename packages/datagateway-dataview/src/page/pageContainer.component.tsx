@@ -292,20 +292,49 @@ const ViewButton = (props: {
   );
 };
 
+const selectionAlertStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      root: {
+        width: '90%',
+        marginTop: '2px',
+      },
+      animate: {
+        width: '90%',
+        marginTop: '2px',
+        animation: `$pulsate 700ms ${theme.transitions.easing.easeInOut}`,
+      },
+      '@keyframes pulsate': {
+        '0%': {
+          backgroundColor: 'orange',
+        },
+        '25%': {
+          backgroundColor: 'red',
+        },
+        '50%': {
+          backgroundColor: 'orange',
+        },
+        '75%': {
+          backgroundColor: 'red',
+        },
+        '100%': {
+          backgroundColor: 'orange',
+        },
+      },
+    })
+);
+
 const SelectionAlert = React.memo(
   (props: { selectedItems: DownloadCartItem[] }): React.ReactElement => {
+    const classes = selectionAlertStyles();
     const [alertOpen, setAlertOpen] = React.useState(false);
+    const [animating, setAnimating] = React.useState(false);
+    const [alertText, setAlertText] = React.useState('');
+    //Store number of selections on last update of this component (for keeping track of changes to cart)
+    const [numSelectedItems, setNumSelectedItems] = React.useState(0);
 
     //Current number of selections
     const newNumSelecItems = props.selectedItems.length;
-
-    //Default text when there has been no change
-    const defaultAlertText =
-      'You have ' + newNumSelecItems + ' item(s) in your selections.';
-
-    //Store number of selections on last update of this component (for keeping track of changes to cart)
-    const [numSelectedItems, setNumSelectedItems] = React.useState(0);
-    const [alertText, setAlertText] = React.useState(defaultAlertText);
 
     //Check for a change and assign text based on increase or decrease
     if (newNumSelecItems !== numSelectedItems) {
@@ -322,6 +351,7 @@ const SelectionAlert = React.memo(
       setNumSelectedItems(newNumSelecItems);
       //Change has occurred so need to ensure displayed
       setAlertOpen(true);
+      setAnimating(true);
     }
 
     return (
@@ -330,10 +360,8 @@ const SelectionAlert = React.memo(
           <Alert
             variant="filled"
             severity="warning"
-            style={{
-              width: '90%',
-              marginTop: '2px',
-            }}
+            className={animating ? classes.animate : classes.root}
+            onAnimationEnd={() => setAnimating(false)}
             action={
               <IconButton
                 aria-label="close"
