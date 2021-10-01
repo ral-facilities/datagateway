@@ -400,11 +400,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   // Handle (max) result
   React.useEffect(() => {
     if (loadedCount) {
-      if (results === resOptions[0]) {
-        onResultsChange(results);
-      } else if (results === resOptions[1]) {
-        onResultsChange(results);
-      } else if (results === resOptions[2]) {
+      if (
+        results === resOptions[0] ||
+        results === resOptions[1] ||
+        results === resOptions[2]
+      ) {
         onResultsChange(results);
       } else {
         onResultsChange(resOptions[0]);
