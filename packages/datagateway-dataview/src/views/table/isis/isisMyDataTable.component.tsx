@@ -79,7 +79,14 @@ const ISISMyDataTable = (): React.ReactElement => {
       ]),
     },
   ]);
-  const { data: allIds } = useIds('investigation');
+  const { data: allIds } = useIds('investigation', [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationUsers.user.name': { eq: username },
+      }),
+    },
+  ]);
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'investigation'
