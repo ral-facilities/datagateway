@@ -207,7 +207,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         return linkType === 'investigation'
           ? tableLink(
               `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}`,
-              datasetData.investigation.name
+              datasetData.investigation.title
             )
           : tableLink(
               `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}`,
@@ -227,7 +227,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
       return linkType === 'investigation'
         ? tableLink(
             `/browse/investigation/${datasetData.investigation.id}/dataset`,
-            datasetData.investigation.name
+            datasetData.investigation.title
           )
         : tableLink(
             `/browse/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`,
@@ -295,7 +295,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
       },
       {
         label: t('datasets.investigation'),
-        dataKey: 'investigation.name',
+        dataKey: 'investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const datasetData = cellProps.rowData as Dataset;
           return hierarchyLink(datasetData, 'investigation');

@@ -182,7 +182,7 @@ Object {
     },
     Object {
       "cellContentRenderer": [Function],
-      "dataKey": "investigation.name",
+      "dataKey": "investigation.title",
       "filterComponent": [Function],
       "label": "datasets.investigation",
     },
