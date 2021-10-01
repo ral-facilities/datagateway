@@ -10,7 +10,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import { DownloadCartItem } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 //Note: By default auto fill to the avaiable space
 type SelectionAlertProps = {
@@ -30,8 +29,8 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
           marginSide === undefined ? '0px' : marginSide,
         marginRight: ({ marginSide }) =>
           marginSide === undefined ? '0px' : marginSide,
-        padding: '3px',
-        paddingBottom: '3px',
+        paddingTop: '0px',
+        paddingBottom: '6px',
       },
       animate: {
         backgroundColor: 'orange',
@@ -42,8 +41,8 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
           marginSide === undefined ? '0px' : marginSide,
         marginRight: ({ marginSide }) =>
           marginSide === undefined ? '0px' : marginSide,
-        padding: '3px',
-        paddingBottom: '3px',
+        paddingTop: '0px',
+        paddingBottom: '6px',
         animation: `$pulsate 700ms ${theme.transitions.easing.easeInOut}`,
       },
       '@keyframes pulsate': {
@@ -75,6 +74,7 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
 const SelectionAlert = React.memo(
   (props: {
     selectedItems: DownloadCartItem[];
+    navigateToSelections: () => void;
     width?: string;
     marginSide?: string;
   }): React.ReactElement => {
@@ -122,27 +122,26 @@ const SelectionAlert = React.memo(
             className={animating ? classes.animate : classes.root}
             onAnimationEnd={() => setAnimating(false)}
           >
-            <Grid container alignItems="center">
+            <Grid container alignItems="flex-end">
               <Grid item className={classes.text}>
-                <b>{alertText}</b>{' '}
-                <Link to="/download">
-                  <button
-                    style={{
-                      background: 'inherit',
-                      border: 'none',
-                      padding: '0!important',
-                      fontFamily: 'arial, sans-serif',
-                      color: '#069',
-                      textDecoration: 'underline',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                    }}
-                  >
-                    {t('selec_alert.link')}
-                  </button>
-                </Link>
+                <b aria-label="alert-text">{alertText}</b>{' '}
+                <button
+                  style={{
+                    background: 'inherit',
+                    border: 'none',
+                    padding: '0!important',
+                    fontFamily: 'arial, sans-serif',
+                    color: '#069',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                  }}
+                  onClick={props.navigateToSelections}
+                >
+                  {t('selec_alert.link')}
+                </button>
               </Grid>
-              <Grid item justify="flex-end">
+              <Grid item>
                 <IconButton
                   aria-label="close"
                   color="inherit"
