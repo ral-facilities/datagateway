@@ -243,7 +243,7 @@ const SearchPageTable = (
         </Tabs>
       </AppBar>
 
-      <SelectionAlert selectedItems={cartItems ?? []} widthPercent={-1} />
+      <SelectionAlert selectedItems={cartItems ?? []} />
 
       {investigationTab ? (
         <TabPanel value={currentTab} index={'investigation'}>

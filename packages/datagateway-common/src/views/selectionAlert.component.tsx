@@ -1,29 +1,49 @@
-import { Theme, createStyles, IconButton, makeStyles } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
+import {
+  Theme,
+  createStyles,
+  IconButton,
+  makeStyles,
+  Grid,
+  Paper,
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { DownloadCartItem } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-//Note: Use widthPercentValue = -1 to auto fill to the screen
+//Note: By default auto fill to the avaiable space
 type SelectionAlertProps = {
-  widthPercentValue: number;
+  width?: string;
+  marginSide?: string;
 };
 
 const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
   (theme: Theme) =>
     createStyles({
       root: {
-        width: ({ widthPercentValue }) =>
-          widthPercentValue < 0 ? 'auto' : `${widthPercentValue}%`,
-        marginTop: '2px',
-        flex: '1',
-        marginRight: 'auto',
+        backgroundColor: 'orange',
+        color: 'white',
+        width: ({ width }) => (width === undefined ? 'auto' : width),
+        marginTop: '8px',
+        marginLeft: ({ marginSide }) =>
+          marginSide === undefined ? '0px' : marginSide,
+        marginRight: ({ marginSide }) =>
+          marginSide === undefined ? '0px' : marginSide,
+        padding: '3px',
+        paddingBottom: '3px',
       },
       animate: {
-        width: ({ widthPercentValue }) => `${widthPercentValue}%`,
-        marginTop: '2px',
+        backgroundColor: 'orange',
+        color: 'white',
+        width: ({ width }) => (width === undefined ? 'auto' : `${width}`),
+        marginTop: '8px',
+        marginLeft: ({ marginSide }) =>
+          marginSide === undefined ? '0px' : marginSide,
+        marginRight: ({ marginSide }) =>
+          marginSide === undefined ? '0px' : marginSide,
+        padding: '3px',
+        paddingBottom: '3px',
         animation: `$pulsate 700ms ${theme.transitions.easing.easeInOut}`,
       },
       '@keyframes pulsate': {
@@ -43,16 +63,24 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
           backgroundColor: 'orange',
         },
       },
+      text: {
+        textAlign: 'center',
+        justifyItems: 'center',
+        alignItems: 'center',
+        flex: '1',
+      },
     })
 );
 
 const SelectionAlert = React.memo(
   (props: {
     selectedItems: DownloadCartItem[];
-    widthPercent: number;
+    width?: string;
+    marginSide?: string;
   }): React.ReactElement => {
     const classes = selectionAlertStyles({
-      widthPercentValue: props.widthPercent,
+      width: props.width,
+      marginSide: props.marginSide,
     });
     const [t] = useTranslation();
     const [alertOpen, setAlertOpen] = React.useState(false);
@@ -90,40 +118,42 @@ const SelectionAlert = React.memo(
     return (
       <React.Fragment>
         {alertOpen && (
-          <Alert
-            variant="filled"
-            severity="warning"
+          <Paper
             className={animating ? classes.animate : classes.root}
             onAnimationEnd={() => setAnimating(false)}
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => setAlertOpen(false)}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
           >
-            <b>{alertText}</b>{' '}
-            <Link to="/download">
-              <button
-                style={{
-                  background: 'inherit',
-                  border: 'none',
-                  padding: '0!important',
-                  fontFamily: 'arial, sans-serif',
-                  color: '#069',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                }}
-              >
-                {t('selec_alert.link')}
-              </button>
-            </Link>
-          </Alert>
+            <Grid container alignItems="center">
+              <Grid item className={classes.text}>
+                <b>{alertText}</b>{' '}
+                <Link to="/download">
+                  <button
+                    style={{
+                      background: 'inherit',
+                      border: 'none',
+                      padding: '0!important',
+                      fontFamily: 'arial, sans-serif',
+                      color: '#069',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                    }}
+                  >
+                    {t('selec_alert.link')}
+                  </button>
+                </Link>
+              </Grid>
+              <Grid item justify="flex-end">
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => setAlertOpen(false)}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              </Grid>
+            </Grid>
+          </Paper>
         )}
       </React.Fragment>
     );

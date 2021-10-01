@@ -281,7 +281,7 @@ const ViewButton = (props: {
         }`}
         variant="contained"
         color="primary"
-        size="medium"
+        size="small"
         startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
         onClick={() => props.handleButtonChange()}
       >
@@ -524,7 +524,7 @@ const PageContainer: React.FC = () => {
                   <Grid item xs={true}>
                     <SelectionAlert
                       selectedItems={cartItems ?? []}
-                      widthPercent={98}
+                      marginSide={'8px'}
                     />
                   </Grid>
                 </StyledGrid>
