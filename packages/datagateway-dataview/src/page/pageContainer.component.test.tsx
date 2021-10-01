@@ -248,7 +248,7 @@ describe('PageContainer - Tests', () => {
 
   it('displays warning label when browsing data anonymously', () => {
     const response = { username: 'anon/anon' };
-    readSciGatewayToken.mockReturnValueOnce(response);
+    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
 
     const wrapper = createWrapper();
 

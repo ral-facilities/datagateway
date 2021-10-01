@@ -216,9 +216,11 @@ const NavBar = React.memo(
                     }
                     disableHoverListener={false}
                   >
-                    <IconButton>
-                      <InfoIcon color="primary" />
-                    </IconButton>
+                    <div>
+                      <IconButton disabled>
+                        <InfoIcon color="primary" />
+                      </IconButton>
+                    </div>
                   </ArrowTooltip>
                 </Grid>
                 <Grid item>
