@@ -1,0 +1,118 @@
+import {
+  createStyles,
+  FormControl,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  Select,
+  Theme,
+} from '@material-ui/core';
+import axios, { AxiosError } from 'axios';
+import {
+  handleICATError,
+  InvestigationUser,
+  parseSearchToQuery,
+  readSciGatewayToken,
+  StateType,
+  usePushFilters,
+} from 'datagateway-common';
+import React from 'react';
+import { UseQueryResult, useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 100,
+    },
+  })
+);
+
+const fetchRoles = (apiUrl: string, username: string): Promise<string[]> => {
+  const params = new URLSearchParams();
+
+  params.append('distinct', JSON.stringify('role'));
+  params.append(
+    'where',
+    JSON.stringify({
+      'user.name': { eq: username },
+    })
+  );
+
+  return axios
+    .get<InvestigationUser[]>(`${apiUrl}/investigationusers`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => {
+      return response.data.map((x) => x.role);
+    });
+};
+
+export const useRoles = (
+  username: string
+): UseQueryResult<string[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery<string[], AxiosError, string[], [string, string]>(
+    ['roles', username],
+    () => fetchRoles(apiUrl, username),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+const RoleSelector: React.FC = () => {
+  const classes = useStyles();
+  const location = useLocation();
+  const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const username = readSciGatewayToken().username ?? '';
+  const role =
+    filters['investigationUsers.role'] &&
+    !Array.isArray(filters['investigationUsers.role']) &&
+    'value' in filters['investigationUsers.role'] &&
+    typeof filters['investigationUsers.role'].value === 'string'
+      ? filters['investigationUsers.role'].value
+      : '';
+  const { data: roles } = useRoles(username);
+  const pushFilters = usePushFilters();
+
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+    pushFilters(
+      'investigationUsers.role',
+      event.target.value
+        ? {
+            value: event.target.value as string,
+            type: 'include',
+          }
+        : null
+    );
+  };
+
+  return (
+    <FormControl className={classes.formControl}>
+      <InputLabel>Select role</InputLabel>
+      <Select value={role} onChange={handleChange}>
+        <MenuItem value={''}>
+          <em>All</em>
+        </MenuItem>
+        {roles?.map((role) => (
+          <MenuItem key={role} value={role}>
+            {role}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
+
+export default RoleSelector;

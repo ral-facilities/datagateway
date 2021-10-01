@@ -36,6 +36,7 @@ import { Location as LocationType } from 'history';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
+import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
 const usePaperStyles = makeStyles(
@@ -512,6 +513,11 @@ const PageContainer: React.FC = () => {
                       handleButtonChange={handleButtonChange}
                     />
                   )}
+                />
+                <Route
+                  exact
+                  path={Object.values(paths.myData)}
+                  render={() => <RoleSelector />}
                 />
               </Grid>
 
