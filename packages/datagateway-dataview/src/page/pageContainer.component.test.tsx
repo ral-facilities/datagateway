@@ -240,4 +240,28 @@ describe('PageContainer - Tests', () => {
 
     expect(history.location.search).toBe('?view=card');
   });
+
+  it('opens download plugin when link in SelectionAlert clicked', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'Test 1',
+          parentEntities: [],
+        },
+      ],
+    });
+
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('[aria-label="selection-alert-link"]')
+      .first()
+      .simulate('click');
+
+    expect(history.length).toBe(2);
+    expect(history.location.pathname).toBe('/download');
+  });
 });

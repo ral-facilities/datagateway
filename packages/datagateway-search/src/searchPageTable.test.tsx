@@ -2,6 +2,8 @@ import React from 'react';
 import { StateType } from './state/app.types';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
 
 import SearchPageTable from './searchPageTable';
 
@@ -10,18 +12,23 @@ import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';
-import { dGCommonInitialState } from 'datagateway-common';
+import { dGCommonInitialState, useCart } from 'datagateway-common';
 import { setCurrentTab } from './state/actions/actions';
 import axios from 'axios';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Store } from 'redux';
 
-jest.mock('datagateway-common', () => ({
-  ...jest.requireActual('datagateway-common'),
-  __esModule: true,
-  // mock table to opt out of rendering them in these tests as there's no need
-  Table: jest.fn(() => 'MockedTable'),
-}));
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    // mock table to opt out of rendering them in these tests as there's no need
+    Table: jest.fn(() => 'MockedTable'),
+    useCart: jest.fn(() => originalModule.useCart()),
+  };
+});
 
 describe('SearchPageTable', () => {
   let mount: typeof enzymeMount;
@@ -175,5 +182,40 @@ describe('SearchPageTable', () => {
       .simulate('click');
 
     expect(testStore.getActions()).toContainEqual(setCurrentTab('dataset'));
+  });
+
+  it('opens download plugin when link in SelectionAlert clicked', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'Test 1',
+          parentEntities: [],
+        },
+      ],
+    });
+
+    const mockStore = configureStore([thunk]);
+    const history: History = createMemoryHistory({
+      initialEntries: ['/'],
+    });
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <SearchPageTable />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="selection-alert-link"]')
+      .first()
+      .simulate('click');
+
+    expect(history.location.pathname).toBe('/download');
   });
 });
