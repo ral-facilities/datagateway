@@ -45,9 +45,9 @@ describe('SelectionAlert', () => {
         navigateToSelections={() => undefined}
       />
     );
-    expect(wrapper.find('[aria-label="alert-text"]').text().trim()).toEqual(
-      '1 selec_alert.item selec_alert.added'
-    );
+    expect(
+      wrapper.find('[aria-label="selection-alert-text"]').text().trim()
+    ).toEqual('1 selec_alert.item selec_alert.added');
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -58,9 +58,9 @@ describe('SelectionAlert', () => {
         navigateToSelections={() => undefined}
       />
     );
-    expect(wrapper.find('[aria-label="alert-text"]').text().trim()).toEqual(
-      '3 selec_alert.items selec_alert.added'
-    );
+    expect(
+      wrapper.find('[aria-label="selection-alert-text"]').text().trim()
+    ).toEqual('3 selec_alert.items selec_alert.added');
   });
 
   it('can modify the width and margin of the alert', () => {
@@ -73,5 +73,90 @@ describe('SelectionAlert', () => {
       />
     );
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly with one item removed', () => {
+    const wrapper = mount(
+      <SelectionAlert
+        selectedItems={cartItems}
+        navigateToSelections={() => undefined}
+      />
+    );
+    wrapper.setProps({ selectedItems: [cartItems[0], cartItems[1]] });
+    expect(
+      wrapper.find('[aria-label="selection-alert-text"]').text().trim()
+    ).toEqual('1 selec_alert.item selec_alert.removed');
+  });
+
+  it('renders correctly with all items removed', () => {
+    const wrapper = mount(
+      <SelectionAlert
+        selectedItems={cartItems}
+        navigateToSelections={() => undefined}
+      />
+    );
+    wrapper.setProps({ selectedItems: [] });
+    expect(
+      wrapper.find('[aria-label="selection-alert-text"]').text().trim()
+    ).toEqual('3 selec_alert.items selec_alert.removed');
+  });
+
+  it('does not render when nothing has changed', () => {
+    const wrapper = mount(
+      <SelectionAlert
+        selectedItems={[]}
+        navigateToSelections={() => undefined}
+      />
+    );
+    expect(wrapper.find('[aria-label="selection-alert"]').exists()).toBeFalsy();
+  });
+
+  it('does not render when closed', () => {
+    const wrapper = mount(
+      <SelectionAlert
+        selectedItems={cartItems}
+        navigateToSelections={() => undefined}
+      />
+    );
+    wrapper
+      .find('[aria-label="selection-alert-close"]')
+      .first()
+      .simulate('click');
+    wrapper.update();
+    expect(wrapper.find('[aria-label="selection-alert"]').exists()).toBeFalsy();
+  });
+
+  it('renders correctly after animation finished', () => {
+    const wrapper = mount(
+      <SelectionAlert
+        selectedItems={cartItems}
+        navigateToSelections={() => undefined}
+      />
+    );
+    wrapper
+      .find('[aria-label="selection-alert"]')
+      .first()
+      .simulate('animationEnd');
+    wrapper.update();
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('clicking link calls navigateToSelections', () => {
+    let navigated = false;
+    const navigate = (): void => {
+      navigated = true;
+    };
+    const wrapper = mount(
+      <SelectionAlert
+        selectedItems={cartItems}
+        navigateToSelections={navigate}
+      />
+    );
+    wrapper
+      .find('[aria-label="selection-alert-link"]')
+      .first()
+      .simulate('click');
+    //wrapper.update();
+    expect(navigated).toBeTruthy();
   });
 });

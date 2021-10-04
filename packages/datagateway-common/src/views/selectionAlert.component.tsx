@@ -119,13 +119,15 @@ const SelectionAlert = React.memo(
       <React.Fragment>
         {alertOpen && (
           <Paper
+            aria-label="selection-alert"
             className={animating ? classes.animate : classes.root}
             onAnimationEnd={() => setAnimating(false)}
           >
             <Grid container alignItems="flex-end">
               <Grid item className={classes.text}>
-                <b aria-label="alert-text">{alertText}</b>{' '}
+                <b aria-label="selection-alert-text">{alertText}</b>{' '}
                 <button
+                  aria-label="selection-alert-link"
                   style={{
                     background: 'inherit',
                     border: 'none',
@@ -143,7 +145,7 @@ const SelectionAlert = React.memo(
               </Grid>
               <Grid item>
                 <IconButton
-                  aria-label="close"
+                  aria-label="selection-alert-close"
                   color="inherit"
                   size="small"
                   onClick={() => setAlertOpen(false)}
