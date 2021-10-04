@@ -146,6 +146,7 @@ const togglePaths = Object.values(paths.toggle).concat(
 const BlackTextTypography = withStyles({
   root: {
     color: '#000000',
+    fontSize: '14px',
   },
 })(Typography);
 
@@ -180,56 +181,57 @@ const NavBar = React.memo(
           </Grid>
 
           {loggedInAnonymously ? (
-            <Paper
-              square
-              style={{
-                backgroundColor: '#00e676',
-                display: 'flex',
-                flexDirection: 'column',
-                paddingLeft: 6,
-                paddingRight: 20,
-                justifyContent: 'center',
-              }}
-            >
-              <Grid
-                container
-                direction="row"
-                alignItems="center"
-                justify="center"
-                aria-label="open-data-warning"
+            <Grid item sm={1} xs={2}>
+              <Paper
+                square
+                style={{
+                  backgroundColor: '#00e676',
+                  flexGrow: 1,
+                  paddingLeft: 0,
+                  paddingRight: 20,
+                  justifyContent: 'center',
+                }}
               >
-                <Grid item>
-                  <ArrowTooltip
-                    interactive
-                    title={
-                      <h4>
-                        {t('app.open_data_warning.tooltip')}
-                        <br />
-                        <br />
-                        <a
-                          href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
-                          style={{ color: '#6793FF' }}
-                        >
-                          {t('app.open_data_warning.tooltip_link')}
-                        </a>
-                      </h4>
-                    }
-                    disableHoverListener={false}
-                  >
-                    <div>
-                      <IconButton disabled>
-                        <InfoIcon color="primary" />
-                      </IconButton>
-                    </div>
-                  </ArrowTooltip>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                  aria-label="open-data-warning"
+                >
+                  <Grid item>
+                    <ArrowTooltip
+                      interactive
+                      title={
+                        <h4>
+                          {t('app.open_data_warning.tooltip')}
+                          <br />
+                          <br />
+                          <a
+                            href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
+                            style={{ color: '#6793FF' }}
+                          >
+                            {t('app.open_data_warning.tooltip_link')}
+                          </a>
+                        </h4>
+                      }
+                      disableHoverListener={false}
+                    >
+                      <div>
+                        <IconButton disabled>
+                          <InfoIcon color="primary" />
+                        </IconButton>
+                      </div>
+                    </ArrowTooltip>
+                  </Grid>
+                  <Grid item>
+                    <BlackTextTypography variant="h6">
+                      <b>{t('app.open_data_warning.message')}</b>
+                    </BlackTextTypography>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <BlackTextTypography variant="h6">
-                    <b>{t('app.open_data_warning.message')}</b>
-                  </BlackTextTypography>
-                </Grid>
-              </Grid>
-            </Paper>
+              </Paper>
+            </Grid>
           ) : null}
 
           {/* The table entity count has a size of 2 (or 3 for xs screens); the
