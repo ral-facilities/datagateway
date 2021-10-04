@@ -29,8 +29,8 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
           marginSide === undefined ? '0px' : marginSide,
         marginRight: ({ marginSide }) =>
           marginSide === undefined ? '0px' : marginSide,
-        paddingTop: '0px',
-        paddingBottom: '6px',
+        paddingTop: '2px',
+        paddingBottom: '3px',
       },
       animate: {
         backgroundColor: 'orange',
@@ -41,8 +41,8 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
           marginSide === undefined ? '0px' : marginSide,
         marginRight: ({ marginSide }) =>
           marginSide === undefined ? '0px' : marginSide,
-        paddingTop: '0px',
-        paddingBottom: '6px',
+        paddingTop: '2px',
+        paddingBottom: '3px',
         animation: `$pulsate 700ms ${theme.transitions.easing.easeInOut}`,
       },
       '@keyframes pulsate': {

@@ -59,8 +59,8 @@
   "selec_alert" : {
     "item": "item has",
     "items" : "items have",
-    "added" : "been added to selection.",
-    "removed" : "been removed from selection.",
+    "added" : "been added to selections.",
+    "removed" : "been removed from selections.",
     "link" : "Go to selections."
   },
   "app": {

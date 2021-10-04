@@ -242,6 +242,12 @@ describe('PageContainer - Tests', () => {
   });
 
   it('opens download plugin when link in SelectionAlert clicked', () => {
+    //Note: 'view' in page container is nether table nor card when first opened
+
+    localStorage.setItem('dataView', 'table');
+    history.replace(paths.toggle.investigation);
+
+    // Supply data to make SelectionAlert display
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
         {
@@ -253,7 +259,6 @@ describe('PageContainer - Tests', () => {
         },
       ],
     });
-
     const wrapper = createWrapper();
 
     wrapper
@@ -261,7 +266,6 @@ describe('PageContainer - Tests', () => {
       .first()
       .simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/download');
   });
 });

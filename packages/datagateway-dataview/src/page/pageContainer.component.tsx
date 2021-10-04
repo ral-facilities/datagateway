@@ -521,13 +521,15 @@ const PageContainer: React.FC = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={true}>
-                    <SelectionAlert
-                      selectedItems={cartItems ?? []}
-                      navigateToSelections={navigateToDownload}
-                      marginSide={'8px'}
-                    />
-                  </Grid>
+                  {view !== 'card' && (
+                    <Grid item xs={true}>
+                      <SelectionAlert
+                        selectedItems={cartItems ?? []}
+                        navigateToSelections={navigateToDownload}
+                        marginSide={'8px'}
+                      />
+                    </Grid>
+                  )}
                 </StyledGrid>
               </Grid>
 
