@@ -2,7 +2,7 @@
 
 exports[`SelectionAlert can modify the width and margin of the alert 1`] = `
 <SelectionAlert
-  marginSide="20px"
+  marginSide="4px"
   navigateToSelections={[Function]}
   selectedItems={
     Array [
@@ -29,7 +29,7 @@ exports[`SelectionAlert can modify the width and margin of the alert 1`] = `
       },
     ]
   }
-  width="10px"
+  width="100px"
 >
   <WithStyles(ForwardRef(Paper))
     aria-label="selection-alert"

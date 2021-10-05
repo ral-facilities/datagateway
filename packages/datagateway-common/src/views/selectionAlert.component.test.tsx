@@ -68,8 +68,8 @@ describe('SelectionAlert', () => {
       <SelectionAlert
         selectedItems={cartItems}
         navigateToSelections={() => undefined}
-        width={'10px'}
-        marginSide={'20px'}
+        width={'100px'}
+        marginSide={'4px'}
       />
     );
     expect(wrapper).toMatchSnapshot();
