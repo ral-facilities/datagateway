@@ -296,6 +296,7 @@ SafeDLSDatasetsCardView.displayName = 'SafeDLSDatasetsCardView';
 interface PageRoutingProps {
   view: ViewsType;
   location: LocationType;
+  loggedInAnonymously: boolean;
 }
 
 class PageRouting extends React.PureComponent<PageRoutingProps> {
@@ -317,8 +318,9 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         />
 
         {/* My Data routes */}
+
         <Route exact path={paths.myData.dls}>
-          {localStorage.getItem('autoLogin') === 'true' ? (
+          {this.props.loggedInAnonymously === true ? (
             <Redirect to={'/login'} />
           ) : (
             <DLSMyDataTable />
@@ -326,7 +328,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         </Route>
 
         <Route exact path={paths.myData.isis}>
-          {localStorage.getItem('autoLogin') === 'true' ? (
+          {this.props.loggedInAnonymously === true ? (
             <Redirect to={'/login'} />
           ) : (
             <ISISMyDataTable />

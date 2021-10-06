@@ -116,7 +116,10 @@ describe('PageTable', () => {
   let state: StateType;
   let history: History;
 
-  const createTableWrapper = (path: string): ReactWrapper => {
+  const createTableWrapper = (
+    path: string,
+    loggedInAnonymously?: boolean | undefined
+  ): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     const client = new QueryClient();
     history.push(path);
@@ -124,7 +127,12 @@ describe('PageTable', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={client}>
-            <PageRouting view="table" />
+            <PageRouting
+              loggedInAnonymously={
+                loggedInAnonymously === undefined ? false : loggedInAnonymously
+              }
+              view="table"
+            />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -252,18 +260,12 @@ describe('PageTable', () => {
 
   describe('ISIS', () => {
     it('renders ISISMyDataTable for ISIS my data route', () => {
-      localStorage.__proto__.getItem = jest
-        .fn()
-        .mockImplementation((name) => (name === 'autoLogin' ? 'false' : null));
-      const wrapper = createTableWrapper(ISISRoutes['mydata']);
+      const wrapper = createTableWrapper(ISISRoutes['mydata'], false);
       expect(wrapper.exists(ISISMyDataTable)).toBe(true);
     });
 
     it('redirects to login page when not signed in (ISISMyDataTable) ', () => {
-      localStorage.__proto__.getItem = jest
-        .fn()
-        .mockImplementation((name) => (name === 'autoLogin' ? 'true' : null));
-      const wrapper = createTableWrapper(ISISRoutes['mydata']);
+      const wrapper = createTableWrapper(ISISRoutes['mydata'], true);
       expect(wrapper.exists(ISISMyDataTable)).toBe(false);
       expect(history.length).toBe(2);
       expect(history.location.pathname).toBe('/login');
@@ -581,18 +583,12 @@ describe('PageTable', () => {
 
   describe('DLS', () => {
     it('renders DLSMyDataTable for DLS my data route', () => {
-      localStorage.__proto__.getItem = jest
-        .fn()
-        .mockImplementation((name) => (name === 'autoLogin' ? 'false' : null));
-      const wrapper = createTableWrapper(DLSRoutes['mydata']);
+      const wrapper = createTableWrapper(DLSRoutes['mydata'], false);
       expect(wrapper.exists(DLSMyDataTable)).toBe(true);
     });
 
     it('redirects to login page when not signed in (DLSMyDataTable) ', () => {
-      localStorage.__proto__.getItem = jest
-        .fn()
-        .mockImplementation((name) => (name === 'autoLogin' ? 'true' : null));
-      const wrapper = createTableWrapper(DLSRoutes['mydata']);
+      const wrapper = createTableWrapper(DLSRoutes['mydata'], true);
       expect(wrapper.exists(DLSMyDataTable)).toBe(false);
       expect(history.length).toBe(2);
       expect(history.location.pathname).toBe('/login');
