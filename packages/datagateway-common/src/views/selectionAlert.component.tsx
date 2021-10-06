@@ -5,6 +5,7 @@ import {
   makeStyles,
   Grid,
   Paper,
+  Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { DownloadCartItem } from '../app.types';
@@ -30,7 +31,7 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
         marginRight: ({ marginSide }) =>
           marginSide === undefined ? '0px' : marginSide,
         paddingTop: '2px',
-        paddingBottom: '3px',
+        paddingBottom: '2px',
       },
       animate: {
         backgroundColor: 'orange',
@@ -42,7 +43,7 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
         marginRight: ({ marginSide }) =>
           marginSide === undefined ? '0px' : marginSide,
         paddingTop: '2px',
-        paddingBottom: '3px',
+        paddingBottom: '2px',
         animation: `$pulsate 700ms ${theme.transitions.easing.easeInOut}`,
       },
       '@keyframes pulsate': {
@@ -123,9 +124,11 @@ const SelectionAlert = React.memo(
             className={animating ? classes.animate : classes.root}
             onAnimationEnd={() => setAnimating(false)}
           >
-            <Grid container alignItems="flex-end">
+            <Grid container>
               <Grid item className={classes.text}>
-                <b aria-label="selection-alert-text">{alertText}</b>{' '}
+                <Typography aria-label="selection-alert-text" display="inline">
+                  {alertText}
+                </Typography>{' '}
                 <button
                   aria-label="selection-alert-link"
                   style={{

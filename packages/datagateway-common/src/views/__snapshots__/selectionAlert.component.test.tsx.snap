@@ -65,11 +65,9 @@ exports[`SelectionAlert renders correctly 1`] = `
         onAnimationEnd={[Function]}
       >
         <WithStyles(ForwardRef(Grid))
-          alignItems="flex-end"
           container={true}
         >
           <ForwardRef(Grid)
-            alignItems="flex-end"
             classes={
               Object {
                 "align-content-xs-center": "MuiGrid-align-content-xs-center",
@@ -180,7 +178,7 @@ exports[`SelectionAlert renders correctly 1`] = `
             container={true}
           >
             <div
-              className="MuiGrid-root MuiGrid-container MuiGrid-align-items-xs-flex-end"
+              className="MuiGrid-root MuiGrid-container"
             >
               <WithStyles(ForwardRef(Grid))
                 className="makeStyles-text-4"
@@ -300,12 +298,57 @@ exports[`SelectionAlert renders correctly 1`] = `
                   <div
                     className="MuiGrid-root makeStyles-text-4 MuiGrid-item"
                   >
-                    <b
+                    <WithStyles(ForwardRef(Typography))
                       aria-label="selection-alert-text"
+                      display="inline"
                     >
-                      
+                      <ForwardRef(Typography)
+                        aria-label="selection-alert-text"
+                        classes={
+                          Object {
+                            "alignCenter": "MuiTypography-alignCenter",
+                            "alignJustify": "MuiTypography-alignJustify",
+                            "alignLeft": "MuiTypography-alignLeft",
+                            "alignRight": "MuiTypography-alignRight",
+                            "body1": "MuiTypography-body1",
+                            "body2": "MuiTypography-body2",
+                            "button": "MuiTypography-button",
+                            "caption": "MuiTypography-caption",
+                            "colorError": "MuiTypography-colorError",
+                            "colorInherit": "MuiTypography-colorInherit",
+                            "colorPrimary": "MuiTypography-colorPrimary",
+                            "colorSecondary": "MuiTypography-colorSecondary",
+                            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+                            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+                            "displayBlock": "MuiTypography-displayBlock",
+                            "displayInline": "MuiTypography-displayInline",
+                            "gutterBottom": "MuiTypography-gutterBottom",
+                            "h1": "MuiTypography-h1",
+                            "h2": "MuiTypography-h2",
+                            "h3": "MuiTypography-h3",
+                            "h4": "MuiTypography-h4",
+                            "h5": "MuiTypography-h5",
+                            "h6": "MuiTypography-h6",
+                            "noWrap": "MuiTypography-noWrap",
+                            "overline": "MuiTypography-overline",
+                            "paragraph": "MuiTypography-paragraph",
+                            "root": "MuiTypography-root",
+                            "srOnly": "MuiTypography-srOnly",
+                            "subtitle1": "MuiTypography-subtitle1",
+                            "subtitle2": "MuiTypography-subtitle2",
+                          }
+                        }
+                        display="inline"
+                      >
+                        <p
+                          aria-label="selection-alert-text"
+                          className="MuiTypography-root MuiTypography-body1 MuiTypography-displayInline"
+                        >
+                          
             1 selec_alert.item selec_alert.added
-                    </b>
+                        </p>
+                      </ForwardRef(Typography)>
+                    </WithStyles(ForwardRef(Typography))>
                      
                     <button
                       aria-label="selection-alert-link"
@@ -672,11 +715,9 @@ exports[`SelectionAlert renders correctly after animation finished 1`] = `
         onAnimationEnd={[Function]}
       >
         <WithStyles(ForwardRef(Grid))
-          alignItems="flex-end"
           container={true}
         >
           <ForwardRef(Grid)
-            alignItems="flex-end"
             classes={
               Object {
                 "align-content-xs-center": "MuiGrid-align-content-xs-center",
@@ -787,7 +828,7 @@ exports[`SelectionAlert renders correctly after animation finished 1`] = `
             container={true}
           >
             <div
-              className="MuiGrid-root MuiGrid-container MuiGrid-align-items-xs-flex-end"
+              className="MuiGrid-root MuiGrid-container"
             >
               <WithStyles(ForwardRef(Grid))
                 className="makeStyles-text-4"
@@ -907,12 +948,57 @@ exports[`SelectionAlert renders correctly after animation finished 1`] = `
                   <div
                     className="MuiGrid-root makeStyles-text-4 MuiGrid-item"
                   >
-                    <b
+                    <WithStyles(ForwardRef(Typography))
                       aria-label="selection-alert-text"
+                      display="inline"
                     >
-                      
+                      <ForwardRef(Typography)
+                        aria-label="selection-alert-text"
+                        classes={
+                          Object {
+                            "alignCenter": "MuiTypography-alignCenter",
+                            "alignJustify": "MuiTypography-alignJustify",
+                            "alignLeft": "MuiTypography-alignLeft",
+                            "alignRight": "MuiTypography-alignRight",
+                            "body1": "MuiTypography-body1",
+                            "body2": "MuiTypography-body2",
+                            "button": "MuiTypography-button",
+                            "caption": "MuiTypography-caption",
+                            "colorError": "MuiTypography-colorError",
+                            "colorInherit": "MuiTypography-colorInherit",
+                            "colorPrimary": "MuiTypography-colorPrimary",
+                            "colorSecondary": "MuiTypography-colorSecondary",
+                            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+                            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+                            "displayBlock": "MuiTypography-displayBlock",
+                            "displayInline": "MuiTypography-displayInline",
+                            "gutterBottom": "MuiTypography-gutterBottom",
+                            "h1": "MuiTypography-h1",
+                            "h2": "MuiTypography-h2",
+                            "h3": "MuiTypography-h3",
+                            "h4": "MuiTypography-h4",
+                            "h5": "MuiTypography-h5",
+                            "h6": "MuiTypography-h6",
+                            "noWrap": "MuiTypography-noWrap",
+                            "overline": "MuiTypography-overline",
+                            "paragraph": "MuiTypography-paragraph",
+                            "root": "MuiTypography-root",
+                            "srOnly": "MuiTypography-srOnly",
+                            "subtitle1": "MuiTypography-subtitle1",
+                            "subtitle2": "MuiTypography-subtitle2",
+                          }
+                        }
+                        display="inline"
+                      >
+                        <p
+                          aria-label="selection-alert-text"
+                          className="MuiTypography-root MuiTypography-body1 MuiTypography-displayInline"
+                        >
+                          
             3 selec_alert.items selec_alert.added
-                    </b>
+                        </p>
+                      </ForwardRef(Typography)>
+                    </WithStyles(ForwardRef(Typography))>
                      
                     <button
                       aria-label="selection-alert-link"

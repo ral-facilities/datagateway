@@ -48,7 +48,7 @@ describe('SelectionAlert', () => {
       />
     );
     expect(
-      wrapper.find('[aria-label="selection-alert-text"]').text().trim()
+      wrapper.find('[aria-label="selection-alert-text"]').first().text().trim()
     ).toEqual('1 selec_alert.item selec_alert.added');
     expect(wrapper).toMatchSnapshot();
   });
@@ -61,7 +61,7 @@ describe('SelectionAlert', () => {
       />
     );
     expect(
-      wrapper.find('[aria-label="selection-alert-text"]').text().trim()
+      wrapper.find('[aria-label="selection-alert-text"]').first().text().trim()
     ).toEqual('3 selec_alert.items selec_alert.added');
   });
 
@@ -74,7 +74,7 @@ describe('SelectionAlert', () => {
     );
     wrapper.setProps({ selectedItems: [cartItems[0], cartItems[1]] });
     expect(
-      wrapper.find('[aria-label="selection-alert-text"]').text().trim()
+      wrapper.find('[aria-label="selection-alert-text"]').first().text().trim()
     ).toEqual('1 selec_alert.item selec_alert.removed');
   });
 
@@ -87,7 +87,7 @@ describe('SelectionAlert', () => {
     );
     wrapper.setProps({ selectedItems: [] });
     expect(
-      wrapper.find('[aria-label="selection-alert-text"]').text().trim()
+      wrapper.find('[aria-label="selection-alert-text"]').first().text().trim()
     ).toEqual('3 selec_alert.items selec_alert.removed');
   });
 

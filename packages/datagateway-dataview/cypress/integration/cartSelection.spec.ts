@@ -228,6 +228,15 @@ describe('Add/remove from cart functionality', () => {
             );
           });
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
 
     describe('in DLS table', () => {
@@ -390,6 +399,15 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="select row 1"]').should('be.checked');
         cy.get('[aria-label="select row 0"]').should('be.checked');
+      });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
       });
     });
 
@@ -556,6 +574,15 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 1"]').should('be.checked');
         cy.get('[aria-label="select row 0"]').should('be.checked');
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
   });
 
@@ -649,6 +676,15 @@ describe('Add/remove from cart functionality', () => {
             );
           });
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
 
     describe('in DLS table', () => {
@@ -709,6 +745,15 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
         cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
 
     describe('in ISIS table', () => {
@@ -768,6 +813,15 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
         cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
+      });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
       });
     });
   });
@@ -988,6 +1042,15 @@ describe('Add/remove from cart functionality', () => {
             );
           });
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
 
     describe('in ISIS browse table', () => {
@@ -1052,6 +1115,15 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
         cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
 
     describe('in ISIS my data table', () => {
@@ -1113,6 +1185,15 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
         cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
+      });
+
+      it.skip('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
       });
     });
   });
