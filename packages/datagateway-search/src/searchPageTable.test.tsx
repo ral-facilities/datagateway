@@ -10,7 +10,7 @@ import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';
-import { dGCommonInitialState } from 'datagateway-common';
+import { dGCommonInitialState, useCart } from 'datagateway-common';
 import { setCurrentTab } from './state/actions/actions';
 import axios from 'axios';
 import { QueryClientProvider, QueryClient } from 'react-query';
@@ -180,5 +180,31 @@ describe('SearchPageTable', () => {
       .simulate('click');
 
     expect(testStore.getActions()).toContainEqual(setCurrentTab('dataset'));
+  });
+
+  it('shows SelectionAlert banner when item selected', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'Test 1',
+          parentEntities: [],
+        },
+      ],
+    });
+    const wrapper = createWrapper();
+
+    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeTruthy();
+  });
+
+  it('does not show SelectionAlert banner when no items are selected', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [],
+    });
+    const wrapper = createWrapper();
+
+    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeFalsy();
   });
 });
