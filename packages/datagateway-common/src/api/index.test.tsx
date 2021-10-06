@@ -36,6 +36,7 @@ jest.mock('../handleICATError');
 describe('generic api functions', () => {
   afterEach(() => {
     (handleICATError as jest.Mock).mockClear();
+    (axios.get as jest.Mock).mockClear();
   });
 
   describe('nestedValue', () => {
@@ -380,8 +381,7 @@ describe('generic api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       const params = new URLSearchParams();
-      params.append('order', JSON.stringify('id asc'));
-      params.append('distinct', JSON.stringify(['name', 'id']));
+      params.append('distinct', JSON.stringify(['name', 'title']));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/investigations',
