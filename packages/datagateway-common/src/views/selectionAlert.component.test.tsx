@@ -43,6 +43,8 @@ describe('SelectionAlert', () => {
       <SelectionAlert
         selectedItems={cart}
         navigateToSelections={() => undefined}
+        width={'100px'}
+        marginSide={'4px'}
       />
     );
     expect(
@@ -61,18 +63,6 @@ describe('SelectionAlert', () => {
     expect(
       wrapper.find('[aria-label="selection-alert-text"]').text().trim()
     ).toEqual('3 selec_alert.items selec_alert.added');
-  });
-
-  it('can modify the width and margin of the alert', () => {
-    const wrapper = mount(
-      <SelectionAlert
-        selectedItems={cartItems}
-        navigateToSelections={() => undefined}
-        width={'100px'}
-        marginSide={'4px'}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
   });
 
   it('renders correctly with one item removed', () => {
