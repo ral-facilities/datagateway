@@ -242,11 +242,6 @@ describe('PageContainer - Tests', () => {
   });
 
   it('shows SelectionAlert banner when item selected', () => {
-    //Note: 'view' in page container is nether table nor card when first opened
-
-    localStorage.setItem('dataView', 'table');
-    history.replace(paths.toggle.investigation);
-
     // Supply data to make SelectionAlert display
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
@@ -265,9 +260,6 @@ describe('PageContainer - Tests', () => {
   });
 
   it('does not show SelectionAlert banner when no items are selected', () => {
-    localStorage.setItem('dataView', 'table');
-    history.replace(paths.toggle.investigation);
-
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [],
     });
@@ -277,9 +269,6 @@ describe('PageContainer - Tests', () => {
   });
 
   it('opens download plugin when link in SelectionAlert clicked', () => {
-    localStorage.setItem('dataView', 'table');
-    history.replace(paths.toggle.investigation);
-
     // Supply data to make SelectionAlert display
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
