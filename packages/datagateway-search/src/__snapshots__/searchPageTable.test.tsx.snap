@@ -716,217 +716,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"cart\\"]",
-                        "queryKey": "cart",
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "enabled": false,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"cart\\"]",
-                        "queryKey": "cart",
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": false,
-                        "isIdle": true,
-                        "isLoading": false,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "idle",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "enabled": false,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"cart\\"]",
-                        "queryKey": "cart",
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "enabled": false,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"cart\\"]",
-                        "queryKey": "cart",
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "enabled": false,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"cart\\"]",
-                    "queryKey": "cart",
-                  },
-                  "queryHash": "[\\"cart\\"]",
-                  "queryKey": "cart",
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                },
-                Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": false,
-                        "isIdle": true,
-                        "isLoading": false,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "idle",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "enabled": false,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
                         "queryHash": "[\\"facilityCycle\\"]",
                         "queryKey": "facilityCycle",
                       },
@@ -1620,9 +1409,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "loading",
                   },
                 },
-              ],
-              "queriesMap": Object {
-                "[\\"cart\\"]": Query {
+                Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -1724,6 +1511,55 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       "staleTimeoutId": undefined,
                       "trackedProps": Array [],
                     },
+                  ],
+                  "options": Object {
+                    "_defaulted": true,
+                    "enabled": false,
+                    "onError": [Function],
+                    "optimisticResults": true,
+                    "queryFn": [Function],
+                    "queryHash": "[\\"cart\\"]",
+                    "queryKey": "cart",
+                  },
+                  "queryHash": "[\\"cart\\"]",
+                  "queryKey": "cart",
+                  "state": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                },
+              ],
+              "queriesMap": Object {
+                "[\\"cart\\"]": Query {
+                  "cache": [Circular],
+                  "cacheTime": 300000,
+                  "defaultOptions": undefined,
+                  "gcTimeout": undefined,
+                  "initialState": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                  "observers": Array [
                     QueryObserver {
                       "client": [Circular],
                       "currentQuery": [Circular],
@@ -4050,10 +3886,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   </WithStyles(ForwardRef(Paper))>
                 </ForwardRef(AppBar)>
               </WithStyles(ForwardRef(AppBar))>
-              <SelectionAlert
-                navigateToSelections={[Function]}
-                selectedItems={Array []}
-              />
               <TabPanel
                 index="investigation"
                 value="investigation"
@@ -4068,7 +3900,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                 >
                   <div
                     aria-labelledby="simple-tab-investigation"
-                    className="MuiBox-root MuiBox-root-12"
+                    className="MuiBox-root MuiBox-root-6"
                     hidden={false}
                     id="simple-tabpanel-investigation"
                     role="tabpanel"
@@ -4077,7 +3909,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       p={3}
                     >
                       <div
-                        className="MuiBox-root MuiBox-root-13"
+                        className="MuiBox-root MuiBox-root-7"
                       >
                         <WithStyles(ForwardRef(Paper))
                           elevation={0}
@@ -4227,7 +4059,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                 >
                   <div
                     aria-labelledby="simple-tab-dataset"
-                    className="MuiBox-root MuiBox-root-14"
+                    className="MuiBox-root MuiBox-root-8"
                     hidden={true}
                     id="simple-tabpanel-dataset"
                     role="tabpanel"
@@ -4248,7 +4080,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                 >
                   <div
                     aria-labelledby="simple-tab-datafile"
-                    className="MuiBox-root MuiBox-root-15"
+                    className="MuiBox-root MuiBox-root-9"
                     hidden={true}
                     id="simple-tabpanel-datafile"
                     role="tabpanel"

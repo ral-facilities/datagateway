@@ -17,11 +17,10 @@ import InvestigationSearchTable from './table/investigationSearchTable.component
 import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
-import { SelectionAlert, useCart, useLuceneSearch } from 'datagateway-common';
+import { useLuceneSearch } from 'datagateway-common';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 const badgeStyles = (theme: Theme): StyleRules =>
@@ -140,11 +139,6 @@ const SearchPageTable = (
     return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
   };
 
-  const { data: cartItems } = useCart();
-  const { push } = useHistory();
-
-  const navigateToDownload = React.useCallback(() => push('/download'), [push]);
-
   return (
     <div>
       <AppBar position="static">
@@ -246,11 +240,6 @@ const SearchPageTable = (
           )}
         </Tabs>
       </AppBar>
-
-      <SelectionAlert
-        selectedItems={cartItems ?? []}
-        navigateToSelections={navigateToDownload}
-      />
 
       {investigationTab ? (
         <TabPanel value={currentTab} index={'investigation'}>

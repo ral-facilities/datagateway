@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from './state/app.types';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
-import { dGCommonInitialState } from 'datagateway-common';
+import { dGCommonInitialState, useCart } from 'datagateway-common';
 
 import { createMount } from '@material-ui/core/test-utils';
 import { MemoryRouter } from 'react-router';
@@ -23,6 +23,16 @@ import {
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 jest.mock('loglevel');
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useCart: jest.fn(() => originalModule.useCart()),
+  };
+});
 
 describe('SearchPageContainer - Tests', () => {
   let state: StateType;
@@ -596,5 +606,49 @@ describe('SearchPageContainer - Tests', () => {
     expect(testStore.getActions()[0]).toEqual(setDatafileTab(false));
     expect(testStore.getActions()[1]).toEqual(setDatasetTab(false));
     expect(testStore.getActions()[2]).toEqual(setInvestigationTab(false));
+  });
+
+  it('shows SelectionAlert banner when item selected', async () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'Test 1',
+          parentEntities: [],
+        },
+      ],
+    });
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeTruthy();
+  });
+
+  it('does not show SelectionAlert banner when no items are selected', async () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: [],
+    });
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeFalsy();
   });
 });

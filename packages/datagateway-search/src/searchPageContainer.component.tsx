@@ -11,7 +11,8 @@ import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { useLuceneSearch } from 'datagateway-common';
+import { SelectionAlert, useLuceneSearch, useCart } from 'datagateway-common';
+import { useHistory } from 'react-router-dom';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
@@ -128,6 +129,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const spacing = 2;
   const containerHeight = `calc(100vh - 64px - 30px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)`;
 
+  const { data: cartItems } = useCart();
+  const { push } = useHistory();
+
+  const navigateToDownload = React.useCallback(() => push('/download'), [push]);
+
   return (
     <Switch>
       <Route
@@ -165,27 +171,33 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             </Grid>
 
             {requestReceived && (
-              <Grid container justify="center" id="container-search-table">
-                <Paper
-                  style={{
-                    height: containerHeight,
-                    minHeight: 326,
-                    width: '99vw',
-                    minWidth: 584,
-                  }}
-                >
-                  {/* Show loading progress if data is still being loaded */}
-                  {loading && (
-                    <Grid item xs={12}>
-                      <LinearProgress color="secondary" />
-                    </Grid>
-                  )}
-                  <SearchPageTable
-                    containerHeight={containerHeight}
-                    hierarchy={match.params.hierarchy}
-                  />
-                </Paper>
-              </Grid>
+              <div>
+                <SelectionAlert
+                  selectedItems={cartItems ?? []}
+                  navigateToSelections={navigateToDownload}
+                />
+                <Grid container justify="center" id="container-search-table">
+                  <Paper
+                    style={{
+                      height: containerHeight,
+                      minHeight: 326,
+                      width: '99vw',
+                      minWidth: 584,
+                    }}
+                  >
+                    {/* Show loading progress if data is still being loaded */}
+                    {loading && (
+                      <Grid item xs={12}>
+                        <LinearProgress color="secondary" />
+                      </Grid>
+                    )}
+                    <SearchPageTable
+                      containerHeight={containerHeight}
+                      hierarchy={match.params.hierarchy}
+                    />
+                  </Paper>
+                </Grid>
+              </div>
             )}
           </Grid>
         )}
