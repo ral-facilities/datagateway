@@ -146,7 +146,7 @@ const togglePaths = Object.values(paths.toggle).concat(
 const BlackTextTypography = withStyles({
   root: {
     color: '#000000',
-    fontSize: '14px',
+    fontSize: '16px',
   },
 })(Typography);
 
@@ -181,12 +181,13 @@ const NavBar = React.memo(
           </Grid>
 
           {loggedInAnonymously ? (
-            <Grid item sm={1} xs={2}>
+            <Grid item>
               <Paper
                 square
                 style={{
                   backgroundColor: '#00e676',
-                  flexGrow: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
                   paddingLeft: 0,
                   paddingRight: 20,
                   justifyContent: 'center',
