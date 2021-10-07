@@ -401,16 +401,16 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   // Handle (max) result
   React.useEffect(() => {
     if (loadedCount) {
-      if (resOptions.includes(results) === true) {
-        if (
-          resOptions.findIndex((result) => result === results) !== 0 &&
-          resOptions[resOptions.findIndex((result) => result === results) - 1] <
-            totalDataCount
-        ) {
-          onResultsChange(results);
-        } else {
-          onResultsChange(resOptions[0]);
-        }
+      if (
+        resOptions
+          .filter(
+            (n, i) =>
+              (i === 0 && totalDataCount > n) ||
+              (i > 0 && totalDataCount > resOptions[i - 1])
+          )
+          .includes(results) === true
+      ) {
+        onResultsChange(results);
       } else {
         onResultsChange(resOptions[0]);
       }
