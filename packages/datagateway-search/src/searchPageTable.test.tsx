@@ -16,16 +16,12 @@ import axios from 'axios';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Store } from 'redux';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    // mock table to opt out of rendering them in these tests as there's no need
-    Table: jest.fn(() => 'MockedTable'),
-  };
-});
+jest.mock('datagateway-common', () => ({
+  ...jest.requireActual('datagateway-common'),
+  __esModule: true,
+  // mock table to opt out of rendering them in these tests as there's no need
+  Table: jest.fn(() => 'MockedTable'),
+}));
 
 describe('SearchPageTable', () => {
   let mount: typeof enzymeMount;
