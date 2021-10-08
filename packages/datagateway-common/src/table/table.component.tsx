@@ -332,7 +332,7 @@ const VirtualizedTable = React.memo(
                           />
                         )
                       }
-                      className={`${classes.flexContainer} tour-dataview-checkbox`}
+                      className={classes.flexContainer}
                       headerClassName={classes.headerFlexContainer}
                       cellRenderer={(props) => (
                         <SelectCell
@@ -370,7 +370,7 @@ const VirtualizedTable = React.memo(
                           variant="head"
                         />
                       )}
-                      className={`${classes.flexContainer} tour-dataview-expand`}
+                      className={classes.flexContainer}
                       headerClassName={classes.headerFlexContainer}
                       cellRenderer={(props) => (
                         <ExpandCell
@@ -407,8 +407,7 @@ const VirtualizedTable = React.memo(
                               {...headerProps}
                               className={clsx(
                                 classes.headerTableCell,
-                                classes.headerFlexContainer,
-                                'tour-dataview-sort'
+                                classes.headerFlexContainer
                               )}
                               sort={sort}
                               onSort={onSort}
