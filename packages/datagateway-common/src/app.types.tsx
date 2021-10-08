@@ -83,6 +83,8 @@ export interface User {
   id: number;
   name: string;
   fullName?: string;
+  givenName?: string;
+  familyName?: string;
 }
 
 export interface Sample {

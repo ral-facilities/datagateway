@@ -161,8 +161,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       const investigationUsers = data?.[0]
         .investigationUsers as InvestigationUser[];
       investigationUsers.forEach((user) => {
+        let fullname = user.user?.fullName;
+        // Use givenName and familyName instead if provided
+        if (user.user?.givenName && user.user?.familyName)
+          fullname = `${user.user?.givenName} ${user.user?.familyName}`;
+
         // Only keep users where we have their fullName
-        const fullname = user.user?.fullName;
         if (fullname) {
           switch (user.role) {
             case 'principal_experimenter':
