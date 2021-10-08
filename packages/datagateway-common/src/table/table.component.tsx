@@ -294,6 +294,7 @@ const VirtualizedTable = React.memo(
                   rowCount={data.length}
                   onRowsRendered={onRowsRendered}
                   headerHeight={headerHeight}
+                  gridClassName={'tour-dataview-data'}
                   rowHeight={getRowHeight}
                   rowClassName={getRowClassName}
                   rowGetter={getRow}
@@ -331,7 +332,7 @@ const VirtualizedTable = React.memo(
                           />
                         )
                       }
-                      className={classes.flexContainer}
+                      className={`${classes.flexContainer} tour-dataview-checkbox`}
                       headerClassName={classes.headerFlexContainer}
                       cellRenderer={(props) => (
                         <SelectCell
@@ -369,7 +370,7 @@ const VirtualizedTable = React.memo(
                           variant="head"
                         />
                       )}
-                      className={classes.flexContainer}
+                      className={`${classes.flexContainer} tour-dataview-expand`}
                       headerClassName={classes.headerFlexContainer}
                       cellRenderer={(props) => (
                         <ExpandCell
@@ -400,13 +401,14 @@ const VirtualizedTable = React.memo(
                           dataKey={dataKey}
                           label={label}
                           disableSort={disableSort}
-                          headerClassName={classes.headerFlexContainer}
+                          headerClassName={`${classes.headerFlexContainer} tour-dataview-filter`}
                           headerRenderer={(headerProps) => (
                             <DataHeader
                               {...headerProps}
                               className={clsx(
                                 classes.headerTableCell,
-                                classes.headerFlexContainer
+                                classes.headerFlexContainer,
+                                'tour-dataview-sort'
                               )}
                               sort={sort}
                               onSort={onSort}
