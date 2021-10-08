@@ -142,6 +142,21 @@ describe('ISIS Investigation Landing page', () => {
       role: 'experimenter',
       user: {
         id: 4,
+        name: 'MJ',
+        fullName: 'John Smith',
+        //Add different givenName and familyName to test they are used instead
+        givenName: 'Mary',
+        familyName: 'Jane',
+      },
+    },
+    {
+      id: 5,
+      investigation: {
+        id: 1,
+      },
+      role: 'experimenter',
+      user: {
+        id: 5,
         name: 'JS',
         fullName: '',
       },
@@ -265,7 +280,10 @@ describe('ISIS Investigation Landing page', () => {
       wrapper.find('[aria-label="landing-investigation-user-2"]').first().text()
     ).toEqual('Experimenter: Jesse Smith');
     expect(
-      wrapper.find('[aria-label="landing-investigation-user-3"]')
+      wrapper.find('[aria-label="landing-investigation-user-3"]').first().text()
+    ).toEqual('Experimenter: Mary Jane');
+    expect(
+      wrapper.find('[aria-label="landing-investigation-user-4"]')
     ).toHaveLength(0);
   });
 
