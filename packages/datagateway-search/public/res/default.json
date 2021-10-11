@@ -57,10 +57,10 @@
     "dataset": "Dataset"
   },
   "selec_alert" : {
-    "item": "item has",
-    "items" : "items have",
-    "added" : "been added to selections.",
-    "removed" : "been removed from selections.",
+    "added": "{{count}} item has been added to selections.",
+    "added_plural" : "{{count}} items have been added to selections.",
+    "removed" : "{{count}} item has been removed from selections.",
+    "removed_plural" : "{{count}} items have been removed from selections.",
     "link" : "Go to selections."
   },
   "app": {

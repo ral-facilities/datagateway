@@ -72,8 +72,6 @@ describe('Datafile search tab', () => {
     cy.get('[aria-label="select all rows"]')
       .should('have.attr', 'data-indeterminate')
       .and('eq', 'false');
-
-    //
   });
 
   it('should be able to search by date range', () => {

@@ -97,18 +97,9 @@ const SelectionAlert = React.memo(
     if (newNumSelecItems !== numSelectedItems) {
       const difference = newNumSelecItems - numSelectedItems;
 
-      //Obtain plural if needed
-      const itemText =
-        Math.abs(difference) > 1
-          ? t('selec_alert.items')
-          : t('selec_alert.item');
-
       if (difference > 0)
-        setAlertText(`
-            ${difference} ${itemText} ${t('selec_alert.added')}`);
-      else
-        setAlertText(`
-            ${difference * -1} ${itemText} ${t('selec_alert.removed')}`);
+        setAlertText(t('selec_alert.added', { count: difference }));
+      else setAlertText(t('selec_alert.removed', { count: difference * -1 }));
 
       setNumSelectedItems(newNumSelecItems);
       //Change has occurred so need to ensure displayed
