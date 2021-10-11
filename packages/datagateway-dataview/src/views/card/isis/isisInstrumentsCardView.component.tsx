@@ -84,7 +84,11 @@ const ISISInstrumentsCardView = (
         label: t('instruments.url'),
         dataKey: 'url',
         content: function Content(instrument: Instrument) {
-          return <Link href={instrument.url}>{instrument.url}</Link>;
+          return instrument && instrument.url ? (
+            <Link href={instrument.url}>{instrument.url}</Link>
+          ) : (
+            ''
+          );
         },
         filterComponent: textFilter,
       },

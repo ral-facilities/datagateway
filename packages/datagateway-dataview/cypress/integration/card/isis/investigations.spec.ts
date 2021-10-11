@@ -1,5 +1,4 @@
 describe('ISIS - Investigations Cards', () => {
-  // TODO: Check requests
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');

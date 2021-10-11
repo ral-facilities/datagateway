@@ -16,7 +16,7 @@ exports[`Card View renders correctly 1`] = `
   >
     <WithStyles(ForwardRef(Grid))
       alignItems="center"
-      className="makeStyles-paginationGrid-6"
+      className="makeStyles-paginationGrid-5"
       container={true}
       direction="row"
       item={true}
@@ -110,7 +110,6 @@ exports[`Card View renders correctly 1`] = `
       >
         <WithStyles(ForwardRef(ListItem))
           alignItems="flex-start"
-          className="makeStyles-root-1"
           key="0"
         >
           <EntityCard
@@ -139,7 +138,6 @@ exports[`Card View renders correctly 1`] = `
         </WithStyles(ForwardRef(ListItem))>
         <WithStyles(ForwardRef(ListItem))
           alignItems="flex-start"
-          className="makeStyles-root-1"
           key="1"
         >
           <EntityCard
@@ -168,7 +166,6 @@ exports[`Card View renders correctly 1`] = `
         </WithStyles(ForwardRef(ListItem))>
         <WithStyles(ForwardRef(ListItem))
           alignItems="flex-start"
-          className="makeStyles-root-1"
           key="2"
         >
           <EntityCard

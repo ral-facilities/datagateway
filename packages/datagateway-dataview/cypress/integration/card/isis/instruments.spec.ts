@@ -1,5 +1,4 @@
 describe('ISIS - Instruments Cards', () => {
-  // TODO: Check requests
   beforeEach(() => {
     cy.intercept('**/instruments/count*').as('getInstrumentsCount');
     cy.intercept('**/instruments?order*').as('getInstrumentsOrder');

@@ -7,11 +7,13 @@ import {
 import {
   CardView,
   formatCountOrSize,
+  formatFilterCount,
   Investigation,
   investigationLink,
   parseSearchToQuery,
   useDateFilter,
-  useFilter,
+  useCustomFilter,
+  useCustomFilterCount,
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
@@ -46,10 +48,31 @@ const InvestigationCardView = (): React.ReactElement => {
     data: totalDataCount,
     isLoading: countLoading,
   } = useInvestigationCount();
-  const { isLoading: dataLoading, data } = useInvestigationsPaginated();
+
+  const { isLoading: dataLoading, data } = useInvestigationsPaginated([
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('type'),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('facility'),
+    },
+  ]);
   const countQueries = useInvestigationsDatasetCount(data);
-  const { data: typeIds } = useFilter('investigation', 'type.id');
-  const { data: facilityIds } = useFilter('investigation', 'facility.id');
+  const { data: typeIds } = useCustomFilter('investigation', 'type.id');
+  const { data: facilityIds } = useCustomFilter('investigation', 'facility.id');
+
+  const typeIdCounts = useCustomFilterCount(
+    'investigation',
+    'type.id',
+    typeIds
+  );
+  const facilityIdCounts = useCustomFilterCount(
+    'investigation',
+    'facility.id',
+    facilityIds
+  );
 
   const title = React.useMemo(
     () => ({
@@ -140,15 +163,27 @@ const InvestigationCardView = (): React.ReactElement => {
       {
         label: t('investigations.type.id'),
         dataKey: 'type.id',
-        filterItems: typeIds ?? [],
+        filterItems: typeIds
+          ? typeIds.map((id, i) => ({
+              name: id,
+              count: formatFilterCount(typeIdCounts[i]),
+            }))
+          : [],
+        prefixLabel: true,
       },
       {
         label: t('investigations.facility.id'),
         dataKey: 'facility.id',
-        filterItems: facilityIds ?? [],
+        filterItems: facilityIds
+          ? facilityIds.map((id, i) => ({
+              name: id,
+              count: formatFilterCount(facilityIdCounts[i]),
+            }))
+          : [],
+        prefixLabel: true,
       },
     ],
-    [facilityIds, t, typeIds]
+    [facilityIds, t, typeIds, typeIdCounts, facilityIdCounts]
   );
 
   return (
