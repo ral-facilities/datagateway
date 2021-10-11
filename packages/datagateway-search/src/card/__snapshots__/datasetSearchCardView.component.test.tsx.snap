@@ -81,7 +81,7 @@ Object {
     },
     Object {
       "content": [Function],
-      "dataKey": "investigation.name",
+      "dataKey": "investigation.title",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),

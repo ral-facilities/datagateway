@@ -140,7 +140,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
         return linkType === 'investigation'
           ? tableLink(
               `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}`,
-              datasetData.investigation.name
+              datasetData.investigation.title
             )
           : tableLink(
               `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}`,
@@ -160,7 +160,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       return linkType === 'investigation'
         ? tableLink(
             `/browse/investigation/${datasetData.investigation.id}/dataset`,
-            datasetData.investigation.name
+            datasetData.investigation.title
           )
         : tableLink(
             `/browse/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`,
@@ -233,7 +233,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       {
         icon: Fingerprint,
         label: t('datasets.investigation'),
-        dataKey: 'investigation.name',
+        dataKey: 'investigation.title',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         content: (dataset: Dataset): any => {
           return hierarchyLink(dataset, 'investigation');

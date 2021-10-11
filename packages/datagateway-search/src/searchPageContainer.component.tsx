@@ -106,10 +106,8 @@ const ViewButton = (props: {
         onClick={() => props.handleButtonChange()}
         disabled={props.disabled}
       >
-        {props.viewCards
-          ? props.disabled
-            ? t('app.view_cards')
-            : t('app.view_table')
+        {props.viewCards && !props.disabled
+          ? t('app.view_table')
           : t('app.view_cards')}
       </Button>
     </div>
