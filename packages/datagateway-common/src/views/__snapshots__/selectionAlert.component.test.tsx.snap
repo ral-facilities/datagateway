@@ -344,8 +344,7 @@ exports[`SelectionAlert renders correctly 1`] = `
                           aria-label="selection-alert-text"
                           className="MuiTypography-root MuiTypography-body1 MuiTypography-displayInline"
                         >
-                          
-            1 selec_alert.item selec_alert.added
+                          selec_alert.added
                         </p>
                       </ForwardRef(Typography)>
                     </WithStyles(ForwardRef(Typography))>
@@ -994,8 +993,7 @@ exports[`SelectionAlert renders correctly after animation finished 1`] = `
                           aria-label="selection-alert-text"
                           className="MuiTypography-root MuiTypography-body1 MuiTypography-displayInline"
                         >
-                          
-            3 selec_alert.items selec_alert.added
+                          selec_alert.added
                         </p>
                       </ForwardRef(Typography)>
                     </WithStyles(ForwardRef(Typography))>
