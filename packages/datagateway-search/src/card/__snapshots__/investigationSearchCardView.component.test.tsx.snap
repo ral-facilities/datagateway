@@ -10,11 +10,13 @@ Object {
       "dataKey": "type.id",
       "filterItems": Array [],
       "label": "investigations.type.id",
+      "prefixLabel": true,
     },
     Object {
       "dataKey": "facility.id",
       "filterItems": Array [],
       "label": "investigations.facility.id",
+      "prefixLabel": true,
     },
   ],
   "data": Array [
