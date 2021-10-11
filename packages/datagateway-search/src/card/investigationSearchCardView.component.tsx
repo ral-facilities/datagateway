@@ -11,7 +11,7 @@ import {
   Investigation,
   parseSearchToQuery,
   useDateFilter,
-  useFilter,
+  useCustomFilter,
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
@@ -162,8 +162,8 @@ const InvestigationCardView = (
       }),
     },
   ]);
-  const { data: typeIds } = useFilter('investigation', 'type.id');
-  const { data: facilityIds } = useFilter('investigation', 'facility.id');
+  const { data: typeIds } = useCustomFilter('investigation', 'type.id');
+  const { data: facilityIds } = useCustomFilter('investigation', 'facility.id');
 
   // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
   // the correct calculation queries for each facility
