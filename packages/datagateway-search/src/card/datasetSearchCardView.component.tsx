@@ -101,7 +101,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       return linkType === 'investigation'
         ? tableLink(
             `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset`,
-            datasetData.investigation.name
+            datasetData.investigation.title
           )
         : tableLink(
             `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`,
