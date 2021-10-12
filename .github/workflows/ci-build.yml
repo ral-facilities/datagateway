@@ -99,7 +99,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: ubuntu-20-work
+          ref: master
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -233,7 +233,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: ubuntu-20-work
+          ref: master
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -383,7 +383,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: ubuntu-20-work
+          ref: master
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
