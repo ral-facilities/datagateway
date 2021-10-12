@@ -1,11 +1,9 @@
 import { Button, IconButton } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
-import {
-  downloadDatafile,
-  downloadDataset,
-  downloadInvestigation,
-  StateType,
-} from 'datagateway-common';
+import { downloadDatafile } from '../api/datafiles';
+import { downloadDataset } from '../api/datasets';
+import { downloadInvestigation } from '../api/investigations';
+import { StateType } from '../state/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';

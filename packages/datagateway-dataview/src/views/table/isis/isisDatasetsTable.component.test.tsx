@@ -14,6 +14,7 @@ import {
   useDatasetsInfinite,
   Dataset,
   useDatasetSizes,
+  DownloadButton,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -21,7 +22,6 @@ import { Router } from 'react-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import DownloadButton from '../../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');

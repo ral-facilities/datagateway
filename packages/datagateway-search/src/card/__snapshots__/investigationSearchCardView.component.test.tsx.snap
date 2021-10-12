@@ -1,0 +1,182 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Investigation - Card View renders correctly 1`] = `
+Object {
+  "buttons": Array [
+    [Function],
+  ],
+  "customFilters": Array [
+    Object {
+      "dataKey": "type.id",
+      "filterItems": Array [],
+      "label": "investigations.type.id",
+      "prefixLabel": true,
+    },
+    Object {
+      "dataKey": "facility.id",
+      "filterItems": Array [],
+      "label": "investigations.facility.id",
+      "prefixLabel": true,
+    },
+  ],
+  "data": Array [
+    Object {
+      "createTime": "2019-07-23",
+      "endDate": "2019-07-25",
+      "id": 1,
+      "investigationInstruments": Array [
+        Object {
+          "id": 3,
+          "instrument": Object {
+            "id": 4,
+            "name": "LARMOR",
+          },
+        },
+      ],
+      "modTime": "2019-07-23",
+      "name": "Investigation test name",
+      "size": 1,
+      "startDate": "2019-07-24",
+      "studyInvestigations": Array [
+        Object {
+          "id": 5,
+          "investigation": Object {
+            "id": 2,
+            "name": "Investigation test name",
+            "title": "Investigation test title",
+            "visitId": "1",
+          },
+          "study": Object {
+            "createTime": "2019-06-10",
+            "id": 6,
+            "modTime": "2019-06-10",
+            "name": "study name",
+            "pid": "study pid",
+          },
+        },
+      ],
+      "title": "Test 1",
+      "visitId": "1",
+    },
+  ],
+  "description": Object {
+    "dataKey": "summary",
+    "filterComponent": [Function],
+    "label": "investigations.details.summary",
+  },
+  "filters": Object {},
+  "information": Array [
+    Object {
+      "dataKey": "doi",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.doi",
+    },
+    Object {
+      "dataKey": "visitId",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.visit_id",
+    },
+    Object {
+      "dataKey": "name",
+      "disableSort": true,
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.details.name",
+    },
+    Object {
+      "content": [Function],
+      "dataKey": "datasetCount",
+      "disableSort": true,
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.dataset_count",
+    },
+    Object {
+      "content": [Function],
+      "dataKey": "investigationInstruments.instrument.name",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.instrument",
+      "noTooltip": true,
+    },
+    Object {
+      "dataKey": "startDate",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.details.start_date",
+    },
+    Object {
+      "dataKey": "endDate",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "investigations.details.end_date",
+    },
+  ],
+  "loadedCount": true,
+  "loadedData": true,
+  "onFilter": [Function],
+  "onPageChange": [Function],
+  "onResultsChange": [Function],
+  "onSort": [Function],
+  "page": null,
+  "results": null,
+  "sort": Object {},
+  "title": Object {
+    "content": [Function],
+    "dataKey": "title",
+    "filterComponent": [Function],
+    "label": "investigations.title",
+  },
+  "totalDataCount": 1,
+}
+`;

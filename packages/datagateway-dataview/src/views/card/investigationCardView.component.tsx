@@ -22,11 +22,11 @@ import {
   usePushResults,
   usePushSort,
   useTextFilter,
+  AddToCartButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import AddToCartButton from '../addToCartButton.component';
 
 const InvestigationCardView = (): React.ReactElement => {
   const [t] = useTranslation();

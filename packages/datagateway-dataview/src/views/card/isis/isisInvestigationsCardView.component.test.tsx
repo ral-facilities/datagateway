@@ -7,6 +7,8 @@ import {
   useISISInvestigationCount,
   Investigation,
   useInvestigationSizes,
+  AddToCartButton,
+  DownloadButton,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -18,8 +20,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import AddToCartButton from '../../addToCartButton.component';
-import DownloadButton from '../../downloadButton.component';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { createMemoryHistory, History } from 'history';
 
