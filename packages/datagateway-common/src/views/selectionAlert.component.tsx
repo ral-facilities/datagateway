@@ -78,7 +78,7 @@ const SelectionAlert = React.memo(
     navigateToSelections: () => void;
     width?: string;
     marginSide?: string;
-  }): React.ReactElement => {
+  }): React.ReactElement | null => {
     const classes = selectionAlertStyles({
       width: props.width,
       marginSide: props.marginSide,
@@ -107,51 +107,47 @@ const SelectionAlert = React.memo(
       setAnimating(true);
     }
 
-    return (
-      <React.Fragment>
-        {alertOpen && (
-          <Paper
-            aria-label="selection-alert"
-            className={animating ? classes.animate : classes.root}
-            onAnimationEnd={() => setAnimating(false)}
-          >
-            <Grid container>
-              <Grid item className={classes.text}>
-                <Typography aria-label="selection-alert-text" display="inline">
-                  {alertText}
-                </Typography>{' '}
-                <button
-                  aria-label="selection-alert-link"
-                  style={{
-                    background: 'inherit',
-                    border: 'none',
-                    padding: '0!important',
-                    fontFamily: 'arial, sans-serif',
-                    color: '#069',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                  }}
-                  onClick={props.navigateToSelections}
-                >
-                  {t('selec_alert.link')}
-                </button>
-              </Grid>
-              <Grid item>
-                <IconButton
-                  aria-label="selection-alert-close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => setAlertOpen(false)}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </Paper>
-        )}
-      </React.Fragment>
-    );
+    return alertOpen ? (
+      <Paper
+        aria-label="selection-alert"
+        className={animating ? classes.animate : classes.root}
+        onAnimationEnd={() => setAnimating(false)}
+      >
+        <Grid container>
+          <Grid item className={classes.text}>
+            <Typography aria-label="selection-alert-text" display="inline">
+              {alertText}
+            </Typography>{' '}
+            <button
+              aria-label="selection-alert-link"
+              style={{
+                background: 'inherit',
+                border: 'none',
+                padding: '0!important',
+                fontFamily: 'arial, sans-serif',
+                color: '#069',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                fontSize: '14px',
+              }}
+              onClick={props.navigateToSelections}
+            >
+              {t('selec_alert.link')}
+            </button>
+          </Grid>
+          <Grid item>
+            <IconButton
+              aria-label="selection-alert-close"
+              color="inherit"
+              size="small"
+              onClick={() => setAlertOpen(false)}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </Paper>
+    ) : null;
   }
 );
 SelectionAlert.displayName = 'SelectionAlert';
