@@ -24,6 +24,9 @@
     "header": "Search",
     "text": "Fill out form to the left and then click search."
   },
+  "searchPageCardView": {
+    "tabs_arialabel": "Search table"
+  },
   "tabs": {
     "investigation": "Investigation",
     "dataset": "Dataset",
@@ -38,7 +41,19 @@
     "name": "Name",
     "doi": "DOI",
     "dataset_count": "Dataset Count",
-    "size": "Size"
+    "size": "Size",
+    "details": {
+      "name": "Name",
+      "summary": "Summary",
+      "start_date": "Start Date",
+      "end_date": "End Date"
+    },
+    "facility": {
+      "id": "Facility ID"
+    },
+    "type": {
+      "id": "Type ID"
+    }
   },
   "datasets": {
     "name": "Name",
@@ -47,7 +62,10 @@
     "datafile_count": "Datafile Count",
     "size": "Size",
     "description": "Description",
-    "investigation": "Investigation"
+    "investigation": "Investigation",
+    "details": {
+      "description": "Description"
+    }
   },
   "datafiles": {
     "name": "Name",
@@ -55,6 +73,11 @@
     "location": "Location",
     "size": "Size",
     "dataset": "Dataset"
+  },
+  "buttons": {
+    "add_to_cart": "Add to cart",
+    "remove_from_cart": "Remove from cart",
+    "download": "Download"
   },
   "selec_alert" : {
     "added": "{{count}} item has been added to selections.",
@@ -64,6 +87,12 @@
     "link" : "Go to selections."
   },
   "app": {
-    "error": "Something went wrong..."
+    "error": "Something went wrong...",    
+    "view_table": "Display as table",
+    "view_cards": "Display as cards"
+  },
+  "advanced_filters": {
+    "show": "Show Advanced Filters",
+    "hide": "Hide Advanced Filters"
   }
 }

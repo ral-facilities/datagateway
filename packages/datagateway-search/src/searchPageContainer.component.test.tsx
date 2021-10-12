@@ -576,7 +576,7 @@ describe('SearchPageContainer - Tests', () => {
         ...state.dgsearch.checkBox,
         dataset: false,
         datafile: false,
-        investigation: false,
+        investigation: true,
       },
     };
 
@@ -605,7 +605,39 @@ describe('SearchPageContainer - Tests', () => {
 
     expect(testStore.getActions()[0]).toEqual(setDatafileTab(false));
     expect(testStore.getActions()[1]).toEqual(setDatasetTab(false));
-    expect(testStore.getActions()[2]).toEqual(setInvestigationTab(false));
+    expect(testStore.getActions()[2]).toEqual(setInvestigationTab(true));
+  });
+
+  it('switches view button display name when clicked', async () => {
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').exists()
+    ).toBeTruthy();
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').first().text()
+    ).toEqual('app.view_cards');
+
+    // Click view button
+    wrapper
+      .find('[aria-label="container-view-button"]')
+      .first()
+      .simulate('click');
+    wrapper.update();
+
+    // Check that the text on the button has changed
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').first().text()
+    ).toEqual('app.view_table');
   });
 
   it('shows SelectionAlert banner when item selected', async () => {

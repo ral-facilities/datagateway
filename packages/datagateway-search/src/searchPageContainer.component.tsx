@@ -2,17 +2,33 @@ import React from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import { Switch, Route, RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-import { Grid, Paper, LinearProgress } from '@material-ui/core';
+import {
+  Grid,
+  Paper,
+  LinearProgress,
+  Button,
+  makeStyles,
+  createStyles,
+  Theme,
+} from '@material-ui/core';
 
 import SearchPageTable from './searchPageTable';
+import SearchPageCardView from './searchPageCardView';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { SelectionAlert, useLuceneSearch, useCart } from 'datagateway-common';
 import { useHistory } from 'react-router-dom';
+import {
+  useLuceneSearch,
+  ViewsType,
+  parseSearchToQuery,
+  usePushView,
+  useCart,
+  SelectionAlert,
+} from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
@@ -20,6 +36,86 @@ import {
   setDatasetTab,
   setInvestigationTab,
 } from './state/actions/actions';
+import { useTranslation } from 'react-i18next';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
+import { StyleRules } from '@material-ui/core/styles';
+
+const storeDataView = (view: NonNullable<ViewsType>): void => {
+  localStorage.setItem('dataView', view);
+};
+
+const getView = (): string => {
+  // We store the view into localStorage so the user can
+  // return to the view they were on the next time they open the page.
+  const savedView = localStorage.getItem('dataView');
+
+  // We set to 'table' initially if there is none present.
+  if (!savedView) storeDataView('table');
+  else return savedView;
+  return 'table';
+};
+
+const togglePaths = ['/search/data'];
+
+const getPathMatch = (pathname: string): boolean => {
+  const res = togglePaths.some((p) => {
+    // Look for the character set where the parameter for ID would be
+    // replaced with the regex to catch any character between the forward slashes.
+    const match = pathname.match(p.replace(/(:[^./]*)/g, '(.)+'));
+    return match && pathname === match[0];
+  });
+  return res;
+};
+
+const getToggle = (pathname: string, view: ViewsType): boolean => {
+  return getPathMatch(pathname)
+    ? view
+      ? view === 'card'
+        ? true
+        : false
+      : getView() === 'card'
+      ? true
+      : false
+    : false;
+};
+
+const viewButtonStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      root: {
+        padding: `${theme.spacing(1)}px 0px ${theme.spacing(1)}px 0px`,
+      },
+    })
+);
+
+const ViewButton = (props: {
+  viewCards: boolean;
+  handleButtonChange: () => void;
+  disabled: boolean;
+}): React.ReactElement => {
+  const [t] = useTranslation();
+  const classes = viewButtonStyles();
+
+  return (
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-view-button"
+        aria-label="container-view-button"
+        variant="contained"
+        color="primary"
+        size="small"
+        startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
+        onClick={() => props.handleButtonChange()}
+        disabled={props.disabled}
+      >
+        {props.viewCards && !props.disabled
+          ? t('app.view_table')
+          : t('app.view_cards')}
+      </Button>
+    </div>
+  );
+};
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
@@ -32,6 +128,7 @@ interface SearchPageContainerStoreProps {
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
+  currentTab: string;
 }
 
 interface SearchPageContainerDispatchProps {
@@ -57,7 +154,33 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setDatasetTab,
     setInvestigationTab,
     sideLayout,
+    currentTab,
   } = props;
+
+  const location = useLocation();
+  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+
+  const pushView = usePushView();
+
+  const handleButtonChange = React.useCallback((): void => {
+    const nextView = view !== 'card' ? 'card' : 'table';
+
+    // Set the view in local storage.
+    storeDataView(nextView);
+
+    // push the view to query parameters.
+    pushView(nextView);
+  }, [pushView, view]);
+
+  React.useEffect(() => {
+    // If the view query parameter was not found and the previously
+    // stored view is in localstorage, update our current query with the view.
+    if (getToggle(location.pathname, view) && !view) {
+      pushView('card');
+    }
+  }, [location.pathname, view, pushView]);
 
   const {
     refetch: searchInvestigations,
@@ -108,10 +231,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       searchInvestigations();
     }
 
-    // Set the appropriate tabs.
-    setDatafileTab(datafile);
-    setDatasetTab(dataset);
-    setInvestigationTab(investigation);
+    if (dataset || datafile || investigation) {
+      // Set the appropriate tabs.
+      setDatafileTab(datafile);
+      setDatasetTab(dataset);
+      setInvestigationTab(investigation);
+    }
   }, [
     datafile,
     dataset,
@@ -127,6 +252,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   // Table should take up page but leave room for: SG appbar, SG footer,
   // grid padding, search box, checkboxes, date selectors, padding.
   const spacing = 2;
+  // TODO: Container height is too small on smaller screens (e.g. laptops).
   const containerHeight = `calc(100vh - 64px - 30px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)`;
 
   const { data: cartItems } = useCart();
@@ -176,12 +302,18 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   selectedItems={cartItems ?? []}
                   navigateToSelections={navigateToDownload}
                 />
+                <ViewButton
+                  viewCards={view === 'card'}
+                  handleButtonChange={handleButtonChange}
+                  disabled={currentTab === 'datafile'}
+                />
                 <Grid container justify="center" id="container-search-table">
                   <Paper
                     style={{
-                      height: containerHeight,
+                      // Only use height for the paper component if the view is table.
+                      ...(view === 'table' ? { height: containerHeight } : {}),
                       minHeight: 326,
-                      width: '99vw',
+                      width: '98vw',
                       minWidth: 584,
                     }}
                   >
@@ -191,10 +323,17 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         <LinearProgress color="secondary" />
                       </Grid>
                     )}
-                    <SearchPageTable
-                      containerHeight={containerHeight}
-                      hierarchy={match.params.hierarchy}
-                    />
+                    {view === 'card' ? (
+                      <SearchPageCardView
+                        containerHeight={containerHeight}
+                        hierarchy={match.params.hierarchy}
+                      />
+                    ) : (
+                      <SearchPageTable
+                        containerHeight={containerHeight}
+                        hierarchy={match.params.hierarchy}
+                      />
+                    )}
                   </Paper>
                 </Grid>
               </div>
@@ -228,6 +367,7 @@ const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,
   investigationTab: state.dgsearch.tabs.investigationTab,
+  currentTab: state.dgsearch.tabs.currentTab,
 });
 
 export default connect(

@@ -8,6 +8,7 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useDatafilesInfinite,
+  DownloadButton,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -20,7 +21,6 @@ import DatafileTable, { DatafileDetailsPanel } from './datafileTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import DownloadButton from '../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');

@@ -4,22 +4,17 @@ import AddToCartButton, {
   AddToCartButtonProps,
 } from './addToCartButton.component';
 import configureStore from 'redux-mock-store';
-import {
-  dGCommonInitialState,
-  StateType,
-  useCart,
-  useAddToCart,
-  useRemoveFromCart,
-} from 'datagateway-common';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
+import { StateType } from '../state/app.types';
+import { useCart, useAddToCart, useRemoveFromCart } from '../api/cart';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+jest.mock('../api/cart', () => {
+  const originalModule = jest.requireActual('../api/cart');
 
   return {
     __esModule: true,
@@ -53,7 +48,7 @@ describe('Generic add to cart button', () => {
 
     state = JSON.parse(
       JSON.stringify({
-        dgdataview: dgDataViewInitialState,
+        dgdataview: {}, //Dont need to fill, since not part of the test
         dgcommon: {
           ...dGCommonInitialState,
         },

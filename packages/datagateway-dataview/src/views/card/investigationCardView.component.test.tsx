@@ -13,6 +13,7 @@ import {
   useInvestigationCount,
   Investigation,
   useInvestigationsDatasetCount,
+  AddToCartButton,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -24,7 +25,6 @@ import { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import InvestigationCardView from './investigationCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import AddToCartButton from '../addToCartButton.component';
 import { createMemoryHistory, History } from 'history';
 
 jest.mock('datagateway-common', () => {

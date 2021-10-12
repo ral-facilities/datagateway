@@ -26,11 +26,11 @@ import {
   useStudy,
   Mark,
   ViewsType,
+  AddToCartButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
-import AddToCartButton from '../../addToCartButton.component';
 import Branding from './isisBranding.component';
 import Button from '@material-ui/core/Button';
 
