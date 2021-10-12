@@ -85,6 +85,7 @@ const viewButtonStyles = makeStyles(
     createStyles({
       root: {
         padding: `${theme.spacing(1)}px 0px ${theme.spacing(1)}px 0px`,
+        marginRight: theme.spacing(1),
       },
     })
 );
@@ -298,15 +299,21 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
             {requestReceived && (
               <div>
-                <SelectionAlert
-                  selectedItems={cartItems ?? []}
-                  navigateToSelections={navigateToDownload}
-                />
-                <ViewButton
-                  viewCards={view === 'card'}
-                  handleButtonChange={handleButtonChange}
-                  disabled={currentTab === 'datafile'}
-                />
+                <Grid container>
+                  <Grid item xs={'auto'}>
+                    <ViewButton
+                      viewCards={view === 'card'}
+                      handleButtonChange={handleButtonChange}
+                      disabled={currentTab === 'datafile'}
+                    />
+                  </Grid>
+                  <Grid item xs={true}>
+                    <SelectionAlert
+                      selectedItems={cartItems ?? []}
+                      navigateToSelections={navigateToDownload}
+                    />
+                  </Grid>
+                </Grid>
                 <Grid container justify="center" id="container-search-table">
                   <Paper
                     style={{
