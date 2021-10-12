@@ -194,7 +194,6 @@ export const useFacilityCycleCount = (
       return fetchFacilityCycleCount(apiUrl, instrumentId, filters);
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },

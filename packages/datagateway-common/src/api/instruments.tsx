@@ -150,7 +150,6 @@ export const useInstrumentCount = (): UseQueryResult<number, AxiosError> => {
       return fetchInstrumentCount(apiUrl, filters);
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },
