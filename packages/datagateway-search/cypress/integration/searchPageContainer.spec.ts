@@ -121,24 +121,6 @@ describe('SearchPageContainer Component', () => {
   });
 
   it('should display selection alert banner correctly', () => {
-    cy.intercept('/investigations/count?where=%7B%22id').as(
-      'investigationsCount'
-    );
-    cy.intercept('/investigations?').as('investigations');
-    cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
-
-    //Check banner displays when it should
-    cy.clearDownloadCart();
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('test');
-
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
-
     cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`)
       .click()
       .wait('@topcat', { timeout: 10000 });
