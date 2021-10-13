@@ -118,7 +118,7 @@ describe('PageTable', () => {
 
   const createTableWrapper = (
     path: string,
-    loggedInAnonymously?: boolean | undefined
+    loggedInAnonymously?: boolean
   ): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     const client = new QueryClient();
