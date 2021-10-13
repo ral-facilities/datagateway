@@ -1,8 +1,17 @@
 describe('PageContainer Component', () => {
+  it('should display the open data warning when no logged in', () => {
+    cy.visit('/browse/investigation/');
+    cy.get('[aria-label="open-data-warning"]').should('not.exist');
+  });
+
   beforeEach(() => {
     cy.login();
     cy.visit('/browse/investigation/');
     cy.clearDownloadCart();
+  });
+
+  it('should not display the open data warning when logged in', () => {
+    cy.get('[aria-label="open-data-warning"]').should('not.exist');
   });
 
   it('should load correctly', () => {
@@ -50,10 +59,5 @@ describe('PageContainer Component', () => {
       .children()
       .should('not.be.hidden')
       .contains('2');
-  });
-
-  it('should not display the open data warning when logged in', () => {
-    //Logged in by default, so should not have open data warning
-    cy.get('[aria-label="open-data-warning"]').should('not.exist');
   });
 });
