@@ -278,10 +278,10 @@ describe('ISIS Investigation Landing page', () => {
     ).toEqual('Local Contact: Jane Smith');
     expect(
       wrapper.find('[aria-label="landing-investigation-user-2"]').first().text()
-    ).toEqual('Experimenter: Jesse Smith');
+    ).toEqual('Experimenter: Jane, Mary');
     expect(
       wrapper.find('[aria-label="landing-investigation-user-3"]').first().text()
-    ).toEqual('Experimenter: Mary Jane');
+    ).toEqual('Experimenter: Jesse Smith');
     expect(
       wrapper.find('[aria-label="landing-investigation-user-4"]')
     ).toHaveLength(0);

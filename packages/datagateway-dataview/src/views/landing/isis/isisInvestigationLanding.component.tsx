@@ -164,7 +164,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         let fullname = user.user?.fullName;
         // Use givenName and familyName instead if provided
         if (user.user?.givenName && user.user?.familyName)
-          fullname = `${user.user?.givenName} ${user.user?.familyName}`;
+          fullname = `${user.user?.familyName}, ${user.user?.givenName}`;
 
         // Only keep users where we have their fullName
         if (fullname) {
