@@ -17,7 +17,7 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';

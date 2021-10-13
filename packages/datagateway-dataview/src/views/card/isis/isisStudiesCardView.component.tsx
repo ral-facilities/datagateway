@@ -16,7 +16,7 @@ import {
 import PublicIcon from '@material-ui/icons/Public';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 interface ISISStudiesCVProps {
   instrumentId: string;

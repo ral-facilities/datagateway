@@ -1,7 +1,6 @@
 import React from 'react';
 import { Location as LocationType } from 'history';
-import { Switch, Route, RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Switch, Route, RouteComponentProps, Link } from 'react-router-dom';
 
 import InvestigationTable from '../views/table/investigationTable.component';
 import DatasetTable from '../views/table/datasetTable.component';

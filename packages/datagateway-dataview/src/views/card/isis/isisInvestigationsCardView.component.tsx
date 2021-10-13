@@ -29,7 +29,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -8,7 +8,7 @@ import { setLogger } from 'react-query';
 import { WrapperComponent } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { createMemoryHistory, History } from 'history';

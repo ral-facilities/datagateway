@@ -18,7 +18,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import TitleIcon from '@material-ui/icons/Title';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 interface ISISStudiesTableProps {
   instrumentId: string;

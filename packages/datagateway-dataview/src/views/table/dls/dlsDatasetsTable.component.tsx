@@ -23,7 +23,7 @@ import {
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 

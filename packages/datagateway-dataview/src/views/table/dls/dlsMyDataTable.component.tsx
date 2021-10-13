@@ -26,7 +26,7 @@ import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 const DLSMyDataTable = (): React.ReactElement => {
   const [t] = useTranslation();

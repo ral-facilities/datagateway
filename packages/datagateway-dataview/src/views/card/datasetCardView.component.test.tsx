@@ -11,7 +11,7 @@ import {
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';

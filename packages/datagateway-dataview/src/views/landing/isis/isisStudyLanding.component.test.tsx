@@ -10,7 +10,7 @@ import thunk from 'redux-thunk';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');

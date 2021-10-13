@@ -25,7 +25,7 @@ import {
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useHistory } from 'react-router';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 

@@ -20,7 +20,7 @@ import {
 import { Save, CalendarToday } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -30,7 +30,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import Branding from './isisBranding.component';
 import Button from '@material-ui/core/Button';
 

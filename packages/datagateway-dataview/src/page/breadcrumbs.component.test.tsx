@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { StateType } from '../state/app.types';

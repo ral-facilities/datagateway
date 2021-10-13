@@ -6,7 +6,7 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 
 import { createMount } from '@material-ui/core/test-utils';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import PageRouting from './pageRouting.component';
 import { Provider } from 'react-redux';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';

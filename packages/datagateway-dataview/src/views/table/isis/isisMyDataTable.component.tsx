@@ -33,7 +33,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useSelector } from 'react-redux';
-import { useLocation, useHistory } from 'react-router';
+import { useLocation, useHistory } from 'react-router-dom';
 
 const ISISMyDataTable = (): React.ReactElement => {
   const selectAllSetting = useSelector(

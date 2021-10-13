@@ -14,7 +14,7 @@ import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 

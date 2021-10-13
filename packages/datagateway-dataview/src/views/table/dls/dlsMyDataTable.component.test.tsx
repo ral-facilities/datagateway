@@ -13,7 +13,7 @@ import { createMemoryHistory, MemoryHistory } from 'history';
 import React from 'react';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { AnyAction } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
