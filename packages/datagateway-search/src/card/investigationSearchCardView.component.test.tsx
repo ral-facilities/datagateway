@@ -16,7 +16,7 @@ import {
 import InvestigationSearchCardView from './investigationSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';

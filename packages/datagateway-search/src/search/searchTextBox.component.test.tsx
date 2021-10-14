@@ -5,7 +5,7 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import SearchTextBox from './searchTextBox.component';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import { submitSearchText } from '../state/actions/actions';
 

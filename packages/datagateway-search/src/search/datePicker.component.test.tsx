@@ -6,7 +6,7 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import SelectDates from './datePicker.component';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 
 jest.mock('loglevel');

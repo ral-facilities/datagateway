@@ -8,7 +8,7 @@ import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.
 import { dGCommonInitialState } from 'datagateway-common';
 
 import { createMount } from '@material-ui/core/test-utils';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import SearchPageContainer from './searchPageContainer.component';
 import { LinearProgress } from '@material-ui/core';
 import { Provider } from 'react-redux';

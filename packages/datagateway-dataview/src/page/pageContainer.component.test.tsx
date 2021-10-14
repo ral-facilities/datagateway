@@ -99,7 +99,7 @@ describe('PageContainer - Tests', () => {
     (useCart as jest.Mock).mockClear();
   });
 
-  it('displays the correct entity count', () => {
+  it.only('displays the correct entity count', () => {
     history.replace(paths.toggle.investigation);
     (useQueryClient as jest.Mock).mockReturnValue({
       getQueryData: jest.fn(() => 101),

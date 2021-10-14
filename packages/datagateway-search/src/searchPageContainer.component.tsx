@@ -1,8 +1,13 @@
 import React from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
-import { Switch, Route, RouteComponentProps } from 'react-router';
-import { Link, useLocation } from 'react-router-dom';
+import {
+  Switch,
+  Route,
+  RouteComponentProps,
+  Link,
+  useLocation,
+} from 'react-router-dom';
 
 import {
   Grid,
