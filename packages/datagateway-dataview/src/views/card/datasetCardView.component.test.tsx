@@ -1,4 +1,3 @@
-import { Link, ListItemText } from '@material-ui/core';
 import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
@@ -127,7 +126,10 @@ describe('Dataset - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter
+      .find('[aria-label="advanced-filters-link"]')
+      .first()
+      .simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -153,7 +155,10 @@ describe('Dataset - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter
+      .find('[aria-label="advanced-filters-link"]')
+      .first()
+      .simulate('click');
     advancedFilter
       .find('input')
       .last()
@@ -176,7 +181,7 @@ describe('Dataset - Card View', () => {
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
-    const button = wrapper.find(ListItemText).first();
+    const button = wrapper.find('[aria-label="ListItemText"]').first();
     expect(button.text()).toEqual('datasets.name');
     button.simulate('click');
 

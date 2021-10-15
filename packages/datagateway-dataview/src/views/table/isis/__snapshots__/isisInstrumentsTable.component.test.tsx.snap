@@ -56,7 +56,6 @@ Array [
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -83,7 +82,6 @@ Array [
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -102,7 +100,6 @@ Array [
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],
@@ -158,7 +155,6 @@ Array [
           component={
             Object {
               "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
               "propTypes": Object {
                 "innerRef": [Function],
                 "onClick": [Function],
@@ -206,7 +202,6 @@ Array [
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -233,7 +228,6 @@ Array [
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -252,7 +246,6 @@ Array [
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],
@@ -308,7 +301,6 @@ Array [
           component={
             Object {
               "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
               "propTypes": Object {
                 "innerRef": [Function],
                 "onClick": [Function],
@@ -361,7 +353,6 @@ Array [
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -388,7 +379,6 @@ Array [
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -407,7 +397,6 @@ Array [
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],
@@ -463,7 +452,6 @@ Array [
           component={
             Object {
               "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
               "propTypes": Object {
                 "innerRef": [Function],
                 "onClick": [Function],
@@ -511,7 +499,6 @@ Array [
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -538,7 +525,6 @@ Array [
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -557,7 +543,6 @@ Array [
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],
@@ -613,7 +598,6 @@ Array [
           component={
             Object {
               "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
               "propTypes": Object {
                 "innerRef": [Function],
                 "onClick": [Function],

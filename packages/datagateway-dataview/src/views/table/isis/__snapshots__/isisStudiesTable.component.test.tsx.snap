@@ -103,7 +103,6 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -130,7 +129,6 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -149,7 +147,6 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -205,7 +202,6 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],

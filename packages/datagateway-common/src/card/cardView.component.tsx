@@ -555,7 +555,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                 : ''
                             }`}
                           >
-                            <ListItemText primary={s.label} />
+                            <ListItemText
+                              aria-label="ListItemText"
+                              primary={s.label}
+                            />
                             <ListItemIcon>
                               <TableSortLabel
                                 active={s.dataKey in sort}
