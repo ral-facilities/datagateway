@@ -401,33 +401,21 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   // Handle (max) result
   React.useEffect(() => {
     if (loadedCount) {
-      const newMaxPage = ~~(1 + (totalDataCount - 1) / results);
-      if (newMaxPage !== maxPage) {
-        if (
-          resOptions
-            .filter(
-              (n, i) =>
-                (i === 0 && totalDataCount > n) ||
-                (i > 0 && totalDataCount > resOptions[i - 1])
-            )
-            .includes(results) === true
-        ) {
-          onResultsChange(results);
-        } else {
-          onResultsChange(resOptions[0]);
-        }
+      if (
+        resOptions
+          .filter(
+            (n, i) =>
+              (i === 0 && totalDataCount > n) ||
+              (i > 0 && totalDataCount > resOptions[i - 1])
+          )
+          .includes(results) === true
+      ) {
+        onResultsChange(results);
+      } else {
+        onResultsChange(resOptions[0]);
       }
-    } else {
-      onResultsChange(results);
     }
-  }, [
-    onResultsChange,
-    resOptions,
-    results,
-    loadedCount,
-    totalDataCount,
-    maxPage,
-  ]);
+  }, [onResultsChange, resOptions, results, loadedCount, totalDataCount]);
 
   const [t] = useTranslation();
 
