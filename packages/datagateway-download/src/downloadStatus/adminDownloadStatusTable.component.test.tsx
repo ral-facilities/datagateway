@@ -9,7 +9,6 @@ import {
 import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
-import { Select } from '@material-ui/core';
 
 jest.mock('../downloadApi');
 
@@ -330,7 +329,9 @@ describe('Admin Download Status Table', () => {
     );
 
     // We simulate a change in the select from 'include' to 'exclude'.
-    const availabilityFilterSelect = wrapper.find(Select).at(5);
+    const availabilityFilterSelect = wrapper
+      .find('[id="select-filter-type"]')
+      .at(15);
     await act(async () => {
       availabilityFilterSelect
         .props()
