@@ -119,7 +119,7 @@ Object {
 
 exports[`Investigation Search Table component renders details panel correctly 1`] = `
 <WithStyles(ForwardRef(Grid))
-  className="makeStyles-root-343"
+  className="makeStyles-root-1"
   container={true}
   direction="column"
   id="details-panel"
@@ -136,7 +136,7 @@ exports[`Investigation Search Table component renders details panel correctly 1`
       </b>
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Divider))
-      className="makeStyles-divider-344"
+      className="makeStyles-divider-2"
     />
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
@@ -192,7 +192,6 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -219,7 +218,6 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -238,7 +236,6 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -294,7 +291,6 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],

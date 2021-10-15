@@ -25,7 +25,6 @@ import configureStore from 'redux-mock-store';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-import { Link, ListItemText } from '@material-ui/core';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -214,7 +213,10 @@ describe('Investigation - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter
+      .find('[aria-label="advanced-filters-link"]')
+      .first()
+      .simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -240,7 +242,10 @@ describe('Investigation - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter
+      .find('[aria-label="advanced-filters-link"]')
+      .first()
+      .simulate('click');
     advancedFilter
       .find('input')
       .last()
@@ -263,7 +268,7 @@ describe('Investigation - Card View', () => {
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
-    const button = wrapper.find(ListItemText).first();
+    const button = wrapper.find('[aria-label="ListItemText"]').first();
     expect(button.text()).toEqual('investigations.title');
     button.simulate('click');
 
