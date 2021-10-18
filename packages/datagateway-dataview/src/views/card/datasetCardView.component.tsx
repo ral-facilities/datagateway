@@ -13,10 +13,10 @@ import {
   usePushResults,
   usePushSort,
   useTextFilter,
+  AddToCartButton,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import AddToCartButton from '../addToCartButton.component';
 
 interface DatasetCardViewProps {
   investigationId: string;

@@ -1,5 +1,4 @@
 describe('PageContainer Component', () => {
-  // TODO: Check requests
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');

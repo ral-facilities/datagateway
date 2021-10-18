@@ -15,6 +15,7 @@ import {
   TableSortLabel,
   Typography,
   Select,
+  Divider,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -28,9 +29,6 @@ import EntityCard, { EntityImageDetails } from './entityCard.component';
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      backgroundColor: theme.palette.background.paper,
-    },
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
@@ -72,6 +70,16 @@ export interface CardViewDetails {
   noTooltip?: boolean;
 }
 
+export interface CVCustomFilters {
+  label: string;
+  dataKey: string;
+  filterItems: {
+    name: string;
+    count: string;
+  }[];
+  prefixLabel?: boolean;
+}
+
 type CVPaginationPosition = 'top' | 'bottom' | 'both';
 
 export interface CardViewProps {
@@ -100,7 +108,7 @@ export interface CardViewProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buttons?: ((data?: any) => React.ReactNode)[];
 
-  customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
+  customFilters?: CVCustomFilters[];
   resultsOptions?: number[];
   image?: EntityImageDetails;
 
@@ -111,7 +119,10 @@ interface CVFilterInfo {
   [filterKey: string]: {
     label: string;
     items: {
-      [data: string]: boolean;
+      [data: string]: {
+        selected: boolean;
+        count: number;
+      };
     };
     hasSelectedItems: boolean;
   };
@@ -155,7 +166,6 @@ function CVPagination(
   );
 }
 
-// TODO: Hide/disable pagination and sort/filters if no results retrieved.
 const CardView = (props: CardViewProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
@@ -216,6 +226,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const [selectedFilters, setSelectedFilters] = React.useState<
     CVSelectedFilter[]
   >([]);
+  const [filterUpdate, setFilterUpdate] = React.useState(false);
 
   // Sort.
   const [cardSort, setCardSort] = React.useState<CVSort[] | null>(null);
@@ -281,7 +292,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               items: filter.filterItems.reduce(
                 (o, item) => ({
                   ...o,
-                  [item]: getSelectedFilter(filter.dataKey, item),
+                  [item.name]: {
+                    selected: getSelectedFilter(filter.dataKey, item.name),
+                    count: item.count,
+                  },
                 }),
                 {}
               ),
@@ -291,14 +305,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
           // Update the selected count for each filter.
           const selectedItems = Object.values(data[filter.dataKey].items).find(
-            (v) => v === true
+            (v) => v.selected === true
           );
           if (selectedItems) {
             data[filter.dataKey].hasSelectedItems = true;
           }
           return data;
         }, {})
-      : [];
+      : {};
 
     setFiltersInfo(info);
   }, [customFilters, filters]);
@@ -312,7 +326,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             filterKey: filterKey,
             label: info.label,
             items: Object.entries(info.items)
-              .filter(([, v]) => v)
+              .filter(([, v]) => v.selected)
               .map(([i]) => i),
           }),
           []
@@ -321,6 +335,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       setSelectedFilters(selected);
     }
   }, [filtersInfo]);
+
+  React.useEffect(() => {
+    if (filterUpdate && loadedData) setFilterUpdate(false);
+  }, [filterUpdate, totalDataCount, loadedData]);
 
   const changeFilter = (
     filterKey: string,
@@ -442,7 +460,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           </Grid>
         )}
 
-        {totalDataCount > 0 && loadedData && (
+        {(filterUpdate || totalDataCount > 0) && (
           <Grid
             container
             item
@@ -511,171 +529,181 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      {loadedData && (
-        <Grid container direction="row">
-          <Grid item xs={12} md={3}>
-            <Grid
-              item
-              container
-              direction="column"
-              justify="flex-start"
-              alignItems="stretch"
-              spacing={5}
-              xs={12}
-              style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-            >
-              {/* Sorting options */}
-              {hasSort && totalDataCount > 0 && (
-                <Grid item xs>
-                  <Paper>
-                    <Box p={2}>
-                      <Typography variant="h5">Sort By</Typography>
-                    </Box>
+      <Grid container direction="row">
+        <Grid item xs={12} md={3}>
+          <Grid
+            item
+            container
+            direction="column"
+            justify="flex-start"
+            alignItems="stretch"
+            spacing={5}
+            xs={12}
+            style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+          >
+            {/* Sorting options */}
+            {hasSort && (filterUpdate || totalDataCount > 0) && (
+              <Grid item xs>
+                <Paper>
+                  <Box p={2}>
+                    <Typography variant="h5">Sort By</Typography>
+                  </Box>
 
-                    {/* Show all the available sort options: 
+                  {/* Show all the available sort options: 
                         title, description and the further information (if provided) */}
-                    <Box>
-                      <List component="nav" aria-label="sort-by-list">
-                        {cardSort &&
-                          cardSort.map((s, i) => (
-                            <ListItem
-                              key={i}
-                              button
-                              onClick={() => {
-                                onSort(s.dataKey, nextSortDirection(s.dataKey));
-                                if (page !== 1) {
-                                  onPageChange(1);
-                                }
-                              }}
-                              aria-label={`Sort by ${s.label.toUpperCase()}${
-                                sort[s.label]
-                                  ? `, current direction ${
-                                      sort[s.label] === 'asc'
-                                        ? 'ascending'
-                                        : 'descending'
-                                    }`
-                                  : ''
-                              }`}
-                            >
-                              <ListItemText primary={s.label} />
-                              <ListItemIcon>
-                                <TableSortLabel
-                                  active={s.dataKey in sort}
-                                  direction={sort[s.dataKey]}
-                                  // Set tabindex to -1 to prevent button focus
-                                  tabIndex={-1}
-                                >
-                                  {s.dataKey in sort && sort[s.dataKey]}
-                                </TableSortLabel>
-                              </ListItemIcon>
-                            </ListItem>
-                          ))}
-                      </List>
-                    </Box>
-                  </Paper>
-                </Grid>
-              )}
-
-              {/* Filtering options */}
-              {customFilters && (
-                <Grid item xs>
-                  <Paper>
-                    <Box p={2}>
-                      <Typography variant="h5">Filter By</Typography>
-                    </Box>
-
-                    {/* Show the specific options available to filter by */}
-                    <Box>
-                      {filtersInfo &&
-                        Object.entries(filtersInfo).map(
-                          ([filterKey, filter], filterIndex) => {
-                            return (
-                              <Accordion
-                                key={filterIndex}
-                                defaultExpanded={filter.hasSelectedItems}
+                  <Box>
+                    <List component="nav" aria-label="sort-by-list">
+                      {cardSort &&
+                        cardSort.map((s, i) => (
+                          <ListItem
+                            key={i}
+                            button
+                            onClick={() => {
+                              onSort(s.dataKey, nextSortDirection(s.dataKey));
+                              if (page !== 1) {
+                                onPageChange(1);
+                              }
+                            }}
+                            aria-label={`Sort by ${s.label.toUpperCase()}${
+                              sort[s.label]
+                                ? `, current direction ${
+                                    sort[s.label] === 'asc'
+                                      ? 'ascending'
+                                      : 'descending'
+                                  }`
+                                : ''
+                            }`}
+                          >
+                            <ListItemText primary={s.label} />
+                            <ListItemIcon>
+                              <TableSortLabel
+                                active={s.dataKey in sort}
+                                direction={sort[s.dataKey]}
+                                // Set tabindex to -1 to prevent button focus
+                                tabIndex={-1}
                               >
-                                <AccordionSummary
-                                  expandIcon={<ExpandMoreIcon />}
-                                >
-                                  <Typography>{filter.label}</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                  <div className={classes.expandDetails}>
-                                    <List
-                                      component="nav"
-                                      aria-label="filter-by-list"
-                                    >
-                                      {Object.entries(filter.items).map(
-                                        ([item, selected], valueIndex) => (
-                                          <ListItem
-                                            key={valueIndex}
-                                            button
-                                            disabled={selected}
-                                            onClick={() => {
-                                              changeFilter(filterKey, item);
-                                            }}
-                                            aria-label={`Filter by ${filter.label} ${item}`}
-                                          >
+                                {s.dataKey in sort && sort[s.dataKey]}
+                              </TableSortLabel>
+                            </ListItemIcon>
+                          </ListItem>
+                        ))}
+                    </List>
+                  </Box>
+                </Paper>
+              </Grid>
+            )}
+
+            {/* Filtering options */}
+            {customFilters && (filterUpdate || totalDataCount > 0) && (
+              <Grid item xs>
+                <Paper>
+                  <Box p={2}>
+                    <Typography variant="h5">Filter By</Typography>
+                  </Box>
+
+                  {/* Show the specific options available to filter by */}
+                  <Box>
+                    {filtersInfo &&
+                      Object.entries(filtersInfo).map(
+                        ([filterKey, filter], filterIndex) => {
+                          return (
+                            <Accordion
+                              key={filterIndex}
+                              defaultExpanded={filter.hasSelectedItems}
+                            >
+                              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Typography>{filter.label}</Typography>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                <div className={classes.expandDetails}>
+                                  <List
+                                    component="nav"
+                                    aria-label="filter-by-list"
+                                  >
+                                    {Object.entries(filter.items).map(
+                                      ([name, data], valueIndex) => (
+                                        <ListItem
+                                          style={{ display: 'flex' }}
+                                          key={valueIndex}
+                                          button
+                                          disabled={data.selected}
+                                          onClick={() => {
+                                            changeFilter(filterKey, name);
+                                            setFilterUpdate(true);
+                                          }}
+                                          aria-label={`Filter by ${filter.label} ${name}`}
+                                        >
+                                          <div style={{ flex: 1 }}>
                                             <Chip
                                               label={
-                                                <ArrowTooltip title={item}>
+                                                <ArrowTooltip title={name}>
                                                   <Typography>
-                                                    {item}
+                                                    {name}
                                                   </Typography>
                                                 </ArrowTooltip>
                                               }
                                             />
-                                          </ListItem>
-                                        )
-                                      )}
-                                    </List>
-                                  </div>
-                                </AccordionDetails>
-                              </Accordion>
-                            );
-                          }
-                        )}
-                    </Box>
-                  </Paper>
-                </Grid>
-              )}
-            </Grid>
-          </Grid>
-
-          {/* Card data */}
-          <Grid item xs={12} md={9}>
-            {/* Selected filters array */}
-            {selectedFilters.length > 0 && (
-              <div className={classes.selectedChips}>
-                {selectedFilters.map((filter, filterIndex) => (
-                  <li key={filterIndex}>
-                    {filter.items.map((item, itemIndex) => (
-                      <Chip
-                        key={itemIndex}
-                        className={classes.chip}
-                        label={`${filter.label} - ${item}`}
-                        onDelete={() => {
-                          changeFilter(filter.filterKey, item, true);
-                        }}
-                      />
-                    ))}
-                  </li>
-                ))}
-              </div>
+                                          </div>
+                                          {data.count && (
+                                            <Divider
+                                              orientation="vertical"
+                                              flexItem
+                                            />
+                                          )}
+                                          {data.count && (
+                                            <Typography
+                                              style={{ paddingLeft: '5%' }}
+                                            >
+                                              {data.count}
+                                            </Typography>
+                                          )}
+                                        </ListItem>
+                                      )
+                                    )}
+                                  </List>
+                                </div>
+                              </AccordionDetails>
+                            </Accordion>
+                          );
+                        }
+                      )}
+                  </Box>
+                </Paper>
+              </Grid>
             )}
+          </Grid>
+        </Grid>
 
-            {/* List of cards */}
-            {totalDataCount > 0 ? (
+        {/* Card data */}
+        <Grid item xs={12} md={9}>
+          {/* Selected filters array */}
+          {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
+            <div className={classes.selectedChips}>
+              {selectedFilters.map((filter, filterIndex) => (
+                <li key={filterIndex}>
+                  {filter.items.map((item, itemIndex) => (
+                    <Chip
+                      key={itemIndex}
+                      className={classes.chip}
+                      label={`${filter.label} - ${item}`}
+                      onDelete={() => {
+                        changeFilter(filter.filterKey, item, true);
+                        setFilterUpdate(true);
+                      }}
+                    />
+                  ))}
+                </li>
+              ))}
+            </div>
+          )}
+
+          {/* List of cards */}
+          {loadedData &&
+            (filterUpdate || totalDataCount > 0 ? (
               <List style={{ padding: 0, marginRight: 20 }}>
-                {/* TODO: The width of the card should take up more room when
-                      there is no information or buttons. */}
                 {data.map((entity, index) => {
                   return (
-                    <ListItem
-                      key={index}
-                      alignItems="flex-start"
-                      className={classes.root}
-                    >
+                    <ListItem key={index} alignItems="flex-start">
                       {/* Create an individual card */}
                       <EntityCard
                         entity={entity}
@@ -683,7 +711,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                         description={description}
                         information={information}
                         moreInformation={moreInformation}
-                        // Pass in the react nodes with the data to the card.
+                        // Pass in the React nodes with the data to the card.
                         buttons={buttons}
                         // Pass tag names to the card given the specified data key for the filter.
                         customFilters={customFilters}
@@ -701,14 +729,12 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   </Typography>
                 </Paper>
               </Grid>
-            )}
-          </Grid>
+            ))}
         </Grid>
-      )}
+      </Grid>
 
       {/*  Pagination  */}
-      {totalDataCount > 0 &&
-        loadedData &&
+      {(filterUpdate || totalDataCount > 0) &&
         (paginationPos === 'bottom' || paginationPos === 'both') && (
           <Grid item xs style={{ padding: '50px' }}>
             {CVPagination(page, maxPage, onPageChange)}

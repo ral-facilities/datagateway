@@ -3,7 +3,7 @@ import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
-import { useAddToCart, useCart, useRemoveFromCart } from 'datagateway-common';
+import { useAddToCart, useCart, useRemoveFromCart } from '../api/cart';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
