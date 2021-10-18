@@ -1,5 +1,6 @@
 describe('DLS - MyData Table', () => {
   it('Should redirect when logged in anonymously', () => {
+    cy.login();
     cy.visit('/my-data/DLS');
     cy.url().should('include', '/login');
   });

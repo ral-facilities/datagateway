@@ -1,5 +1,6 @@
 describe('ISIS - MyData Table', () => {
   it('Should redirect when logged in anonymously', () => {
+    cy.login();
     cy.visit('/my-data/ISIS');
     cy.url().should('include', '/login');
   });
