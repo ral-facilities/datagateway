@@ -110,7 +110,7 @@ Object {
   "onResultsChange": [Function],
   "onSort": [Function],
   "page": null,
-  "results": null,
+  "results": 10,
   "sort": Object {},
   "title": Object {
     "content": [Function],

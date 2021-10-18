@@ -146,7 +146,6 @@ describe('ISIS Investigations - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
@@ -158,7 +157,6 @@ describe('ISIS Investigations - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -172,7 +170,6 @@ describe('ISIS Investigations - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
@@ -182,7 +179,6 @@ describe('ISIS Investigations - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -193,7 +189,6 @@ describe('ISIS Investigations - Card View', () => {
     expect(button.text()).toEqual('investigations.title');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );

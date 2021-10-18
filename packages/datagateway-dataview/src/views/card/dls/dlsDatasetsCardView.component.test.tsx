@@ -134,7 +134,6 @@ describe('DLS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -146,7 +145,6 @@ describe('DLS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -160,7 +158,6 @@ describe('DLS Datasets - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
@@ -170,7 +167,6 @@ describe('DLS Datasets - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -181,7 +177,6 @@ describe('DLS Datasets - Card View', () => {
     expect(button.text()).toEqual('datasets.name');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
