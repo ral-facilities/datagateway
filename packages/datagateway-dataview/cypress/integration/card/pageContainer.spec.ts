@@ -37,6 +37,34 @@ describe('PageContainer Component', () => {
       .contains('Results: 239');
   });
 
+  it('Should default to 10 when the results value is not a vaild result ([10,20,30]) when manually changed in the url ', () => {
+    cy.login();
+    cy.visit('/browse/investigation?view=card&results=125');
+    cy.url().should('include', 'results=10');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      10
+    );
+    cy.visit('/browse/investigation?view=card&results=25');
+    cy.url().should('include', 'results=10');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      10
+    );
+    cy.visit('/browse/investigation?view=card&results=15');
+    cy.url().should('include', 'results=10');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      10
+    );
+    cy.visit('/browse/investigation?view=card&results=5');
+    cy.url().should('include', 'results=10');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      10
+    );
+  });
+
   it('should display number of items in cart correctly', () => {
     // Check that the download cart has displayed correctly.
     cy.get('[aria-label="view-cart-badge"]', { timeout: 10000 })
