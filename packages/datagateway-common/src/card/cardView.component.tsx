@@ -418,7 +418,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
   // Handle (max) result
   React.useEffect(() => {
-    if (loadedCount) {
+    if (loadedCount && props.results) {
       if (
         resOptions
           .filter(
@@ -426,14 +426,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               (i === 0 && totalDataCount > n) ||
               (i > 0 && totalDataCount > resOptions[i - 1])
           )
-          .includes(results) === true
+          .includes(props.results) === true
       ) {
-        onResultsChange(results);
+        onResultsChange(props.results);
       } else {
         onResultsChange(resOptions[0]);
       }
     }
-  }, [onResultsChange, resOptions, results, loadedCount, totalDataCount]);
+  }, [onResultsChange, resOptions, loadedCount, totalDataCount, props.results]);
 
   const [t] = useTranslation();
 

@@ -4013,7 +4013,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                       },
                     ]
                   }
-                  loadedCount={true}
+                  loadedCount={false}
                   loadedData={false}
                   onFilter={[Function]}
                   onPageChange={[Function]}
