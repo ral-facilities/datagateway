@@ -168,8 +168,8 @@
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "buttons": {
-    "add_to_cart": "Add to cart",
-    "remove_from_cart": "Remove from cart",
+    "add_to_cart": "Add to selections",
+    "remove_from_cart": "Remove from selections",
     "download": "Download"
   },
   "advanced_filters": {
