@@ -1,5 +1,4 @@
 describe('Investigations Cards', () => {
-  // TODO: Check requests
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
@@ -89,7 +88,7 @@ describe('Investigations Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('Have price already kid scene artist allow.');
+    cy.get('#card').contains('Show fly image herself yard challenge by.');
 
     cy.get('input[id="Start Date filter from"]')
       .type('2017-01-01')

@@ -365,8 +365,15 @@ const StyledRouting = (props: {
   view: ViewsType;
   location: LocationType;
   displayFilterMessage: boolean;
+  loggedInAnonymously: boolean;
 }): React.ReactElement => {
-  const { view, location, viewStyle, displayFilterMessage } = props;
+  const {
+    view,
+    location,
+    viewStyle,
+    displayFilterMessage,
+    loggedInAnonymously,
+  } = props;
   const [t] = useTranslation();
   const paperClasses = usePaperStyles();
   const tableClassName = displayFilterMessage
@@ -392,7 +399,11 @@ const StyledRouting = (props: {
           viewStyle === 'card' ? paperClasses.cardPaper : tableClassName
         }
       >
-        <PageRouting view={view} location={location} />
+        <PageRouting
+          loggedInAnonymously={loggedInAnonymously}
+          view={view}
+          location={location}
+        />
       </Paper>
     </div>
   );
@@ -404,8 +415,15 @@ const ViewRouting = React.memo(
     loadedCount: boolean;
     totalDataCount: number;
     location: LocationType;
+    loggedInAnonymously: boolean;
   }): React.ReactElement => {
-    const { view, loadedCount, totalDataCount, location } = props;
+    const {
+      view,
+      loadedCount,
+      totalDataCount,
+      location,
+      loggedInAnonymously,
+    } = props;
     const displayFilterMessage = loadedCount && totalDataCount === 0;
 
     return (
@@ -416,7 +434,13 @@ const ViewRouting = React.memo(
           path={Object.values(paths.landing).concat(
             Object.values(paths.studyHierarchy.landing)
           )}
-          render={() => <PageRouting view={view} location={location} />}
+          render={() => (
+            <PageRouting
+              loggedInAnonymously={loggedInAnonymously}
+              view={view}
+              location={location}
+            />
+          )}
         />
         {/* For "toggle" paths, check state for the current view to determine styling */}
         <Route exact path={togglePaths}>
@@ -424,6 +448,7 @@ const ViewRouting = React.memo(
             viewStyle={view}
             view={view}
             location={location}
+            loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
           />
         </Route>
@@ -434,6 +459,7 @@ const ViewRouting = React.memo(
             viewStyle={'table'}
             view={view}
             location={location}
+            loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
           />
         </Route>
@@ -555,6 +581,11 @@ const PageContainer: React.FC = () => {
     }
   }, [location.pathname, view, prevView, prevLocation.pathname, pushView]);
 
+  //Determine whether logged in anonymously (assume this if username is null)
+
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously = username === null || username === 'anon/anon';
+
   return (
     <SwitchRouting location={location}>
       {/* Load the homepage */}
@@ -598,6 +629,7 @@ const PageContainer: React.FC = () => {
                   view={view}
                   location={location}
                   loadedCount={loadedCount}
+                  loggedInAnonymously={loggedInAnonymously}
                   totalDataCount={totalDataCount ?? 0}
                 />
               </Grid>

@@ -13,15 +13,17 @@ import {
   usePushResults,
   usePushSort,
   useTextFilter,
-  useFilter,
+  useCustomFilter,
   useDatasetsDatafileCount,
+  AddToCartButton,
+  useCustomFilterCount,
+  formatFilterCount,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import AddToCartButton from '../../addToCartButton.component';
 
 interface DLSDatasetsCVProps {
   proposalName: string;
@@ -69,9 +71,21 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       filterType: 'include',
       filterValue: JSON.stringify('investigation'),
     },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('type'),
+    },
   ]);
 
-  const { data: typeIds } = useFilter('dataset', 'type.id', [
+  const { data: typeIds } = useCustomFilter('dataset', 'type.id', [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigation.id': { eq: investigationId },
+      }),
+    },
+  ]);
+  const typeIdCounts = useCustomFilterCount('dataset', 'type.id', typeIds, [
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -167,10 +181,16 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       {
         label: t('datasets.type.id'),
         dataKey: 'type.id',
-        filterItems: typeIds ?? [],
+        filterItems: typeIds
+          ? typeIds.map((id, i) => ({
+              name: id,
+              count: formatFilterCount(typeIdCounts[i]),
+            }))
+          : [],
+        prefixLabel: true,
       },
     ],
-    [t, typeIds]
+    [t, typeIds, typeIdCounts]
   );
 
   return (

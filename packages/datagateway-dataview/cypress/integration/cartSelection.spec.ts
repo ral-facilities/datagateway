@@ -66,7 +66,6 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
       });
 
-      // TODO: Check requests
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .first()
@@ -85,7 +84,6 @@ describe('Add/remove from cart functionality', () => {
         ).should('be.checked');
 
         cy.get('[aria-label="Filter by Location"]').first().clear();
-        // .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
 
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
@@ -236,7 +234,6 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
       });
 
-      // TODO: Check requests
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .first()
@@ -255,7 +252,6 @@ describe('Add/remove from cart functionality', () => {
         ).should('be.checked');
 
         cy.get('[aria-label="Filter by Location"]').first().clear();
-        // .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
 
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
@@ -399,7 +395,6 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
       });
 
-      // TODO: Check requests
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .first()
@@ -418,7 +413,6 @@ describe('Add/remove from cart functionality', () => {
         ).should('be.checked');
 
         cy.get('[aria-label="Filter by Location"]').first().clear();
-        // .wait(['@getDatafiles', '@getDatafiles']);
 
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
@@ -764,7 +758,6 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
       });
 
-      // TODO: Check requests
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Visit ID"]')
           .first()
@@ -783,7 +776,6 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
 
         cy.get('[aria-label="Filter by Visit ID"]').first().clear();
-        // .wait(['@getInvestigations', '@getInvestigations']);
 
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
