@@ -1,12 +1,11 @@
 import React from 'react';
 import { ReactWrapper } from 'enzyme';
-
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 
 import { createMount } from '@material-ui/core/test-utils';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import PageRouting from './pageRouting.component';
 import { Provider } from 'react-redux';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
@@ -59,6 +58,7 @@ import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { createMemoryHistory, History } from 'history';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
@@ -115,17 +115,27 @@ const DLSRoutes = {
 describe('PageTable', () => {
   let mount;
   let state: StateType;
+  let history: History;
 
-  const createTableWrapper = (path: string): ReactWrapper => {
+  const createTableWrapper = (
+    path: string,
+    loggedInAnonymously?: boolean
+  ): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     const client = new QueryClient();
+    history.push(path);
     return mount(
       <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
+        <Router history={history}>
           <QueryClientProvider client={client}>
-            <PageRouting view="table" />
+            <PageRouting
+              loggedInAnonymously={
+                loggedInAnonymously === undefined ? false : loggedInAnonymously
+              }
+              view="table"
+            />
           </QueryClientProvider>
-        </MemoryRouter>
+        </Router>
       </Provider>
     );
   };
@@ -133,13 +143,14 @@ describe('PageTable', () => {
   const createCardWrapper = (path: string): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     const client = new QueryClient();
+    history.push(path);
     return mount(
       <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
+        <Router history={history}>
           <QueryClientProvider client={client}>
             <PageRouting view="card" />
           </QueryClientProvider>
-        </MemoryRouter>
+        </Router>
       </Provider>
     );
   };
@@ -147,19 +158,21 @@ describe('PageTable', () => {
   const createLandingWrapper = (path: string): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     const client = new QueryClient();
+    history.push(path);
     return mount(
       <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
+        <Router history={history}>
           <QueryClientProvider client={client}>
             <PageRouting view={null} />
           </QueryClientProvider>
-        </MemoryRouter>
+        </Router>
       </Provider>
     );
   };
 
   beforeEach(() => {
     mount = createMount();
+    history = createMemoryHistory();
 
     state = JSON.parse(
       JSON.stringify({
@@ -191,12 +204,7 @@ describe('PageTable', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockRestore();
-    (checkInstrumentAndFacilityCycleId as jest.Mock).mockRestore();
-    (checkInstrumentId as jest.Mock).mockRestore();
-    (checkStudyId as jest.Mock).mockRestore();
-    (checkInvestigationId as jest.Mock).mockRestore();
-    (checkProposalName as jest.Mock).mockRestore();
+    jest.resetAllMocks();
   });
 
   describe('Generic', () => {
@@ -254,8 +262,15 @@ describe('PageTable', () => {
 
   describe('ISIS', () => {
     it('renders ISISMyDataTable for ISIS my data route', () => {
-      const wrapper = createTableWrapper(ISISRoutes['mydata']);
+      const wrapper = createTableWrapper(ISISRoutes['mydata'], false);
       expect(wrapper.exists(ISISMyDataTable)).toBe(true);
+    });
+
+    it('redirects to login page when not signed in (ISISMyDataTable) ', () => {
+      const wrapper = createTableWrapper(ISISRoutes['mydata'], true);
+      expect(wrapper.exists(ISISMyDataTable)).toBe(false);
+      expect(history.length).toBe(2);
+      expect(history.location.pathname).toBe('/login');
     });
 
     it('renders ISISInstrumentsTable for ISIS instruments route', () => {
@@ -599,8 +614,15 @@ describe('PageTable', () => {
 
   describe('DLS', () => {
     it('renders DLSMyDataTable for DLS my data route', () => {
-      const wrapper = createTableWrapper(DLSRoutes['mydata']);
+      const wrapper = createTableWrapper(DLSRoutes['mydata'], false);
       expect(wrapper.exists(DLSMyDataTable)).toBe(true);
+    });
+
+    it('redirects to login page when not signed in (DLSMyDataTable) ', () => {
+      const wrapper = createTableWrapper(DLSRoutes['mydata'], true);
+      expect(wrapper.exists(DLSMyDataTable)).toBe(false);
+      expect(history.length).toBe(2);
+      expect(history.location.pathname).toBe('/login');
     });
 
     it('renders DLSProposalTable for DLS proposal route', () => {

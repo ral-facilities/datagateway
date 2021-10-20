@@ -1,6 +1,6 @@
 import React from 'react';
 import { Location as LocationType } from 'history';
-import { Switch, Route, RouteComponentProps } from 'react-router';
+import { Switch, Route, RouteComponentProps, Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import InvestigationTable from '../views/table/investigationTable.component';
@@ -333,6 +333,7 @@ SafeDLSDatasetsCardView.displayName = 'SafeDLSDatasetsCardView';
 interface PageRoutingProps {
   view: ViewsType;
   location: LocationType;
+  loggedInAnonymously: boolean;
 }
 
 class PageRouting extends React.PureComponent<PageRoutingProps> {
@@ -354,8 +355,22 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         />
 
         {/* My Data routes */}
-        <Route path={paths.myData.dls} component={DLSMyDataTable} />
-        <Route path={paths.myData.isis} component={ISISMyDataTable} />
+
+        <Route exact path={paths.myData.dls}>
+          {this.props.loggedInAnonymously === true ? (
+            <Redirect to={'/login'} />
+          ) : (
+            <DLSMyDataTable />
+          )}
+        </Route>
+
+        <Route exact path={paths.myData.isis}>
+          {this.props.loggedInAnonymously === true ? (
+            <Redirect to={'/login'} />
+          ) : (
+            <ISISMyDataTable />
+          )}
+        </Route>
 
         {/* DLS routes */}
         <Route
