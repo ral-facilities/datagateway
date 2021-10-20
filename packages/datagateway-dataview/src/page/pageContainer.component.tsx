@@ -157,12 +157,9 @@ const NavBar = React.memo(
     cartItems: DownloadCartItem[];
     navigateToSearch: () => void;
     navigateToDownload: () => void;
+    loggedInAnonymously: boolean;
   }): React.ReactElement => {
     const [t] = useTranslation();
-
-    //Determine whether logged in anonymously (assume this if username is null)
-    const username = readSciGatewayToken().username;
-    const loggedInAnonymously = username === null || username === 'anon/anon';
 
     return (
       <Sticky>
@@ -181,7 +178,7 @@ const NavBar = React.memo(
             />
           </Grid>
 
-          {loggedInAnonymously ? (
+          {props.loggedInAnonymously ? (
             <Grid item>
               <Paper
                 square
@@ -583,7 +580,6 @@ const PageContainer: React.FC = () => {
   }, [location.pathname, view, prevView, prevLocation.pathname, pushView]);
 
   //Determine whether logged in anonymously (assume this if username is null)
-
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
 
@@ -600,6 +596,7 @@ const PageContainer: React.FC = () => {
               cartItems={cartItems ?? []}
               navigateToSearch={navigateToSearch}
               navigateToDownload={navigateToDownload}
+              loggedInAnonymously={loggedInAnonymously}
             />
 
             <StyledGrid container>

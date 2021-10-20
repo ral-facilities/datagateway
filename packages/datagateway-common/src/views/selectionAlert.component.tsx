@@ -22,8 +22,8 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
   (theme: Theme) =>
     createStyles({
       root: {
-        backgroundColor: 'orange',
-        color: 'white',
+        backgroundColor: '#00e676',
+        color: 'black',
         width: ({ width }) => (width === undefined ? 'auto' : width),
         marginTop: '8px',
         marginLeft: ({ marginSide }) =>
@@ -34,8 +34,8 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
         paddingBottom: '2px',
       },
       animate: {
-        backgroundColor: 'orange',
-        color: 'white',
+        backgroundColor: '#00e676',
+        color: 'black',
         width: ({ width }) => (width === undefined ? 'auto' : `${width}`),
         marginTop: '8px',
         marginLeft: ({ marginSide }) =>
@@ -48,19 +48,19 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
       },
       '@keyframes pulsate': {
         '0%': {
-          backgroundColor: 'orange',
+          backgroundColor: '#00e676',
         },
         '25%': {
-          backgroundColor: 'red',
+          backgroundColor: '#00B343',
         },
         '50%': {
-          backgroundColor: 'orange',
+          backgroundColor: '#00e676',
         },
         '75%': {
-          backgroundColor: 'red',
+          backgroundColor: '#00B343',
         },
         '100%': {
-          backgroundColor: 'orange',
+          backgroundColor: '#00e676',
         },
       },
       text: {
