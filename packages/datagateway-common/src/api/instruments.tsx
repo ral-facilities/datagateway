@@ -102,7 +102,7 @@ export const useInstrumentsInfinite = (): UseInfiniteQueryResult<
     Instrument[],
     [string, { sort: SortType; filters: FiltersType }]
   >(
-    ['investigation', { sort, filters }],
+    ['instrument', { sort, filters }],
     (params) => {
       const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };

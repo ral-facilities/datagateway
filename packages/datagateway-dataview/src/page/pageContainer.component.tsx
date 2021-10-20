@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
+import InfoIcon from '@material-ui/icons/Info';
 import { StyleRules } from '@material-ui/core/styles';
 import {
   DownloadCartItem,
@@ -21,6 +22,8 @@ import {
   useCart,
   parseSearchToQuery,
   usePushView,
+  readSciGatewayToken,
+  ArrowTooltip,
   SelectionAlert,
 } from 'datagateway-common';
 import React from 'react';
@@ -141,6 +144,13 @@ const togglePaths = Object.values(paths.toggle).concat(
   Object.values(paths.studyHierarchy.toggle)
 );
 
+const BlackTextTypography = withStyles({
+  root: {
+    color: '#000000',
+    fontSize: '16px',
+  },
+})(Typography);
+
 const NavBar = React.memo(
   (props: {
     entityCount: number;
@@ -149,6 +159,10 @@ const NavBar = React.memo(
     navigateToDownload: () => void;
   }): React.ReactElement => {
     const [t] = useTranslation();
+
+    //Determine whether logged in anonymously (assume this if username is null)
+    const username = readSciGatewayToken().username;
+    const loggedInAnonymously = username === null || username === 'anon/anon';
 
     return (
       <Sticky>
@@ -166,6 +180,62 @@ const NavBar = React.memo(
               component={PageBreadcrumbs}
             />
           </Grid>
+
+          {loggedInAnonymously ? (
+            <Grid item>
+              <Paper
+                square
+                style={{
+                  backgroundColor: '#00e676',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  paddingLeft: 0,
+                  paddingRight: 20,
+                  justifyContent: 'center',
+                }}
+              >
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                  aria-label="open-data-warning"
+                >
+                  <Grid item>
+                    <ArrowTooltip
+                      interactive
+                      title={
+                        <h4>
+                          {t('app.open_data_warning.tooltip')}
+                          <br />
+                          <br />
+                          <a
+                            href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
+                            style={{ color: '#6793FF' }}
+                          >
+                            {t('app.open_data_warning.tooltip_link')}
+                          </a>
+                        </h4>
+                      }
+                      disableHoverListener={false}
+                    >
+                      <IconButton
+                        disableRipple
+                        style={{ backgroundColor: 'transparent' }}
+                      >
+                        <InfoIcon color="primary" />
+                      </IconButton>
+                    </ArrowTooltip>
+                  </Grid>
+                  <Grid item>
+                    <BlackTextTypography variant="h6">
+                      <b>{t('app.open_data_warning.message')}</b>
+                    </BlackTextTypography>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+          ) : null}
 
           {/* The table entity count has a size of 2 (or 3 for xs screens); the
             breadcrumbs will take the remainder of the space. */}
@@ -296,8 +366,15 @@ const StyledRouting = (props: {
   view: ViewsType;
   location: LocationType;
   displayFilterMessage: boolean;
+  loggedInAnonymously: boolean;
 }): React.ReactElement => {
-  const { view, location, viewStyle, displayFilterMessage } = props;
+  const {
+    view,
+    location,
+    viewStyle,
+    displayFilterMessage,
+    loggedInAnonymously,
+  } = props;
   const [t] = useTranslation();
   const paperClasses = usePaperStyles();
   const tableClassName = displayFilterMessage
@@ -323,7 +400,11 @@ const StyledRouting = (props: {
           viewStyle === 'card' ? paperClasses.cardPaper : tableClassName
         }
       >
-        <PageRouting view={view} location={location} />
+        <PageRouting
+          loggedInAnonymously={loggedInAnonymously}
+          view={view}
+          location={location}
+        />
       </Paper>
     </div>
   );
@@ -335,8 +416,15 @@ const ViewRouting = React.memo(
     loadedCount: boolean;
     totalDataCount: number;
     location: LocationType;
+    loggedInAnonymously: boolean;
   }): React.ReactElement => {
-    const { view, loadedCount, totalDataCount, location } = props;
+    const {
+      view,
+      loadedCount,
+      totalDataCount,
+      location,
+      loggedInAnonymously,
+    } = props;
     const displayFilterMessage = loadedCount && totalDataCount === 0;
 
     return (
@@ -347,7 +435,13 @@ const ViewRouting = React.memo(
           path={Object.values(paths.landing).concat(
             Object.values(paths.studyHierarchy.landing)
           )}
-          render={() => <PageRouting view={view} location={location} />}
+          render={() => (
+            <PageRouting
+              loggedInAnonymously={loggedInAnonymously}
+              view={view}
+              location={location}
+            />
+          )}
         />
         {/* For "toggle" paths, check state for the current view to determine styling */}
         <Route exact path={togglePaths}>
@@ -355,6 +449,7 @@ const ViewRouting = React.memo(
             viewStyle={view}
             view={view}
             location={location}
+            loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
           />
         </Route>
@@ -365,6 +460,7 @@ const ViewRouting = React.memo(
             viewStyle={'table'}
             view={view}
             location={location}
+            loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
           />
         </Route>
@@ -486,6 +582,11 @@ const PageContainer: React.FC = () => {
     }
   }, [location.pathname, view, prevView, prevLocation.pathname, pushView]);
 
+  //Determine whether logged in anonymously (assume this if username is null)
+
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously = username === null || username === 'anon/anon';
+
   return (
     <SwitchRouting location={location}>
       {/* Load the homepage */}
@@ -544,6 +645,7 @@ const PageContainer: React.FC = () => {
                   view={view}
                   location={location}
                   loadedCount={loadedCount}
+                  loggedInAnonymously={loggedInAnonymously}
                   totalDataCount={totalDataCount ?? 0}
                 />
               </Grid>

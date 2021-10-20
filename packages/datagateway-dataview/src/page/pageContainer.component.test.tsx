@@ -5,7 +5,11 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
-import { dGCommonInitialState, useCart } from 'datagateway-common';
+import {
+  dGCommonInitialState,
+  readSciGatewayToken,
+  useCart,
+} from 'datagateway-common';
 
 import { LinearProgress } from '@material-ui/core';
 import { createLocation, createMemoryHistory, History } from 'history';
@@ -37,6 +41,7 @@ jest.mock('datagateway-common', () => {
     // mock table and cardview to opt out of rendering them in these tests as there's no need
     Table: jest.fn(() => 'MockedTable'),
     CardView: jest.fn(() => 'MockedCardView'),
+    readSciGatewayToken: jest.fn(() => originalModule.readSciGatewayToken()),
   };
 });
 
@@ -239,6 +244,28 @@ describe('PageContainer - Tests', () => {
     createWrapper();
 
     expect(history.location.search).toBe('?view=card');
+  });
+
+  it('displays warning label when browsing data anonymously', () => {
+    const response = { username: 'anon/anon' };
+    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
+
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper.find('[aria-label="open-data-warning"]').exists()
+    ).toBeTruthy();
+  });
+
+  it('does not display warning label when logged in', () => {
+    const response = { username: 'SomePerson' };
+    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
+
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper.find('[aria-label="open-data-warning"]').exists()
+    ).toBeFalsy();
   });
 
   it('shows SelectionAlert banner when item selected', () => {
