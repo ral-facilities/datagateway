@@ -12,7 +12,7 @@ import { createLocation, createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 
 import PageContainer, { paths } from './pageContainer.component';
-import { checkInvestigationId } from './idCheckFunctions';
+import { checkInstrumentId, checkInvestigationId } from './idCheckFunctions';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
@@ -163,9 +163,7 @@ describe('PageContainer - Tests', () => {
 
   it('display filter warning on datafile table', async () => {
     history.replace('/browse/investigation/1/dataset/25/datafile');
-    (checkInvestigationId as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve(true)
-    );
+    (checkInvestigationId as jest.Mock).mockResolvedValueOnce(true);
 
     const wrapper = createWrapper();
 
@@ -222,6 +220,7 @@ describe('PageContainer - Tests', () => {
   });
 
   it('do not use StyledRouting component on landing pages', () => {
+    (checkInstrumentId as jest.Mock).mockResolvedValueOnce(true);
     (useQueryClient as jest.Mock).mockReturnValue({
       getQueryData: jest.fn(),
     });
