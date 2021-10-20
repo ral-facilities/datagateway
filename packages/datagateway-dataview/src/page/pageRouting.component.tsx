@@ -261,7 +261,6 @@ SafeISISInvestigationLanding.displayName = 'SafeISISInvestigationLanding';
 
 const SafeISISStudyLanding = React.memo(
   (props: { instrumentId: string; studyId: string }): React.ReactElement => {
-    console.log('creating safe isis study landing page');
     const SafeISISStudyLanding = withIdCheck(
       checkInstrumentId(parseInt(props.instrumentId), parseInt(props.studyId))
     )(ISISStudyLanding);
