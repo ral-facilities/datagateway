@@ -39,11 +39,6 @@ describe('SearchPageContainer Component', () => {
         'investigationsCount'
       );
       cy.intercept('/investigations?').as('investigations');
-      cy.intercept('/datasets/count?where=%7B%22id').as('datasetsCount');
-      cy.intercept('/datasets?').as('datasets');
-      cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
-      cy.intercept('/datafiles?').as('datafiles');
-      cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
 
       cy.clearDownloadCart();
       cy.get('[aria-label="Search text input"]')
@@ -117,11 +112,6 @@ describe('SearchPageContainer Component', () => {
         'investigationsCount'
       );
       cy.intercept('/investigations?').as('investigations');
-      cy.intercept('/datasets/count?where=%7B%22id').as('datasetsCount');
-      cy.intercept('/datasets?').as('datasets');
-      cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
-      cy.intercept('/datafiles?').as('datafiles');
-      cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
 
       cy.clearDownloadCart();
       cy.get('[aria-label="Submit search"]')
