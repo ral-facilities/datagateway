@@ -158,7 +158,7 @@ const LinkedInvestigation = (
         <div className={classes.shortInfoRow} key={i}>
           <Typography className={classes.shortInfoLabel}>
             {field.icon}
-            {field.label}
+            {field.label}:
           </Typography>
           <Typography className={classes.shortInfoValue}>
             {field.content(investigation)}
