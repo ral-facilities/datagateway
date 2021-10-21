@@ -294,7 +294,6 @@ const VirtualizedTable = React.memo(
                   rowCount={data.length}
                   onRowsRendered={onRowsRendered}
                   headerHeight={headerHeight}
-                  gridClassName={'tour-dataview-data'}
                   rowHeight={getRowHeight}
                   rowClassName={getRowClassName}
                   rowGetter={getRow}

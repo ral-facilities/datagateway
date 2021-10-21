@@ -217,6 +217,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               SG footer, tabs, table padding, text below table, and buttons
               (respectively). */}
           <Paper
+            className="tour-download-results"
             style={{
               height:
                 'calc(100vh - 64px - 30px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
@@ -289,7 +290,10 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                         );
                       }}
                     >
-                      <RemoveCircle color={isDeleting ? 'error' : 'inherit'} />
+                      <RemoveCircle
+                        className="tour-download-remove-single"
+                        color={isDeleting ? 'error' : 'inherit'}
+                      />
                     </IconButton>
                   );
                 },
@@ -333,6 +337,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           >
             <Grid item>
               <Button
+                className="tour-download-remove-button"
                 id="removeAllButton"
                 variant="contained"
                 color="primary"
@@ -344,11 +349,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 }
                 disabled={fileCount <= 0 || totalSize <= 0}
               >
-                {t('downloadCart.remove_all')}
+                {t('downloadCart.remove_all_right_bow')}
               </Button>
             </Grid>
             <Grid item>
               <Button
+                className="tour-download-download-button"
                 onClick={() => setShowConfirmation(true)}
                 id="downloadCartButton"
                 variant="contained"
