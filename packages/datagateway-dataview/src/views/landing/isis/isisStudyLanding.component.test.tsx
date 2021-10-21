@@ -273,7 +273,6 @@ describe('ISIS Study Landing page', () => {
       ],
     });
     const wrapper = createWrapper();
-    console.log(wrapper.find(MuiLink).at(2).debug());
     expect(
       wrapper
         .find('[aria-label="landing-study-doi-link"]')
