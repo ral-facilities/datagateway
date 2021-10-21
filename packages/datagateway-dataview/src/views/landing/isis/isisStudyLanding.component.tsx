@@ -111,7 +111,18 @@ const LinkedInvestigation = (
 
   const shortInvestigationInfo = [
     {
-      content: (entity: Investigation) => entity.doi,
+      content: function doiFormat(entity: Investigation) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              aria-label="landing-study-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('investigations.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -147,7 +158,7 @@ const LinkedInvestigation = (
         <div className={classes.shortInfoRow} key={i}>
           <Typography className={classes.shortInfoLabel}>
             {field.icon}
-            {field.label}:
+            {field.label}
           </Typography>
           <Typography className={classes.shortInfoValue}>
             {field.content(investigation)}

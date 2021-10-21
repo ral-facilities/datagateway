@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link as MuiLink } from '@material-ui/core';
 import { createMount } from '@material-ui/core/test-utils';
 import ISISStudyLanding from './isisStudyLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -253,6 +254,36 @@ describe('ISIS Study Landing page', () => {
     ).toEqual(
       'John Smith et al; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
     );
+  });
+
+  it('displays DOI and renders it as a link', () => {
+    (useStudy as jest.Mock).mockReturnValue({
+      data: [
+        {
+          ...initialData[0],
+          studyInvestigations: [
+            {
+              investigation: {
+                ...investigation,
+                investigationUsers: investigationUser,
+              },
+            },
+          ],
+        },
+      ],
+    });
+    const wrapper = createWrapper();
+    console.log(wrapper.find(MuiLink).at(2).debug());
+    expect(
+      wrapper
+        .find('[aria-label="landing-study-doi-link"]')
+        .first()
+        .exists(MuiLink)
+    ).toBe(true);
+
+    expect(
+      wrapper.find('[aria-label="landing-study-doi-link"]').first().text()
+    ).toEqual('doi 1');
   });
 
   it('copies data citation to clipboard', () => {
