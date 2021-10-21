@@ -6,6 +6,7 @@ import {
   Grid,
   Paper,
   Typography,
+  darken,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { DownloadCartItem } from '../app.types';
@@ -18,11 +19,14 @@ type SelectionAlertProps = {
   marginSide?: string;
 };
 
+export const selectionAlertColor = '#FFA500';
+const selectionAlertColorDark = darken(selectionAlertColor, 0.2);
+
 const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
   (theme: Theme) =>
     createStyles({
       root: {
-        backgroundColor: '#00e676',
+        backgroundColor: selectionAlertColor,
         color: 'black',
         width: ({ width }) => (width === undefined ? 'auto' : width),
         marginTop: '8px',
@@ -34,7 +38,7 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
         paddingBottom: '2px',
       },
       animate: {
-        backgroundColor: '#00e676',
+        backgroundColor: selectionAlertColor,
         color: 'black',
         width: ({ width }) => (width === undefined ? 'auto' : `${width}`),
         marginTop: '8px',
@@ -48,19 +52,19 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
       },
       '@keyframes pulsate': {
         '0%': {
-          backgroundColor: '#00e676',
+          backgroundColor: selectionAlertColor,
         },
         '25%': {
-          backgroundColor: '#00B343',
+          backgroundColor: selectionAlertColorDark,
         },
         '50%': {
-          backgroundColor: '#00e676',
+          backgroundColor: selectionAlertColor,
         },
         '75%': {
-          backgroundColor: '#00B343',
+          backgroundColor: selectionAlertColorDark,
         },
         '100%': {
-          backgroundColor: '#00e676',
+          backgroundColor: selectionAlertColor,
         },
       },
       text: {
@@ -125,7 +129,7 @@ const SelectionAlert = React.memo(
                 border: 'none',
                 padding: '0!important',
                 fontFamily: 'arial, sans-serif',
-                color: '#069',
+                color: '#040091',
                 textDecoration: 'underline',
                 cursor: 'pointer',
                 fontSize: '14px',

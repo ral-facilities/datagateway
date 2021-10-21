@@ -25,6 +25,7 @@ import {
   readSciGatewayToken,
   ArrowTooltip,
   SelectionAlert,
+  selectionAlertColor,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -183,7 +184,7 @@ const NavBar = React.memo(
               <Paper
                 square
                 style={{
-                  backgroundColor: '#00e676',
+                  backgroundColor: selectionAlertColor,
                   display: 'flex',
                   flexDirection: 'column',
                   paddingLeft: 0,

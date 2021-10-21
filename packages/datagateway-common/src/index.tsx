@@ -56,6 +56,9 @@ export { default as HomePage } from './homePage/homePage.component';
 
 export { default as AddToCartButton } from './views/addToCartButton.component';
 export { default as DownloadButton } from './views/downloadButton.component';
-export { default as SelectionAlert } from './views/selectionAlert.component';
+export {
+  default as SelectionAlert,
+  selectionAlertColor,
+} from './views/selectionAlert.component';
 
 // ReactDOM.render(<App />, document.getElementById('root'));

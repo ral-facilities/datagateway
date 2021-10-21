@@ -356,7 +356,7 @@ exports[`SelectionAlert renders correctly 1`] = `
                         Object {
                           "background": "inherit",
                           "border": "none",
-                          "color": "#069",
+                          "color": "#040091",
                           "cursor": "pointer",
                           "fontFamily": "arial, sans-serif",
                           "fontSize": "14px",
@@ -1005,7 +1005,7 @@ exports[`SelectionAlert renders correctly after animation finished 1`] = `
                         Object {
                           "background": "inherit",
                           "border": "none",
-                          "color": "#069",
+                          "color": "#040091",
                           "cursor": "pointer",
                           "fontFamily": "arial, sans-serif",
                           "fontSize": "14px",
