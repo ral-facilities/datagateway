@@ -17,6 +17,7 @@ import {
   usePushFilters,
 } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseQueryResult, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -75,6 +76,7 @@ const RoleSelector: React.FC = () => {
   const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
+  const [t] = useTranslation();
   const username = readSciGatewayToken().username ?? '';
   const role =
     filters['investigationUsers.role'] &&
@@ -99,11 +101,11 @@ const RoleSelector: React.FC = () => {
   };
 
   return (
-    <FormControl className={classes.formControl}>
-      <InputLabel>Select role</InputLabel>
-      <Select value={role} onChange={handleChange}>
+    <FormControl id="role-selector" className={classes.formControl}>
+      <InputLabel>{t('my_data_table.role_selector')}</InputLabel>
+      <Select value={roles?.includes(role) ? role : ''} onChange={handleChange}>
         <MenuItem value={''}>
-          <em>All</em>
+          <em>{t('my_data_table.all_roles')}</em>
         </MenuItem>
         {roles?.map((role) => (
           <MenuItem key={role} value={role}>
