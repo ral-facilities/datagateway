@@ -182,29 +182,29 @@ describe('SearchPageContainer Component', () => {
         'Including spend increase ability music skill former.'
       );
     });
-  });
 
-  it('should display selection alert banner correctly', () => {
-    cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`)
-      .click()
-      .wait('@topcat', { timeout: 10000 });
+    it('should display selection alert banner correctly', () => {
+      cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`)
+        .click()
+        .wait('@investigations', { timeout: 10000 });
 
-    cy.get('[aria-label="selection-alert"]').should('exist');
-    cy.get('[aria-label="selection-alert-text"]')
-      .invoke('text')
-      .then((text) => {
-        expect(text.trim()).equal('1 item has been added to selections.');
+      cy.get('[aria-label="selection-alert"]').should('exist');
+      cy.get('[aria-label="selection-alert-text"]')
+        .invoke('text')
+        .then((text) => {
+          expect(text.trim()).equal('1 item has been added to selections.');
+        });
+
+      //Check can go to selections
+      cy.get('[aria-label="selection-alert-link"]').click();
+      cy.location().should((loc) => {
+        expect(loc.pathname).to.equal('/download');
       });
+      cy.go('back');
 
-    //Check can go to selections
-    cy.get('[aria-label="selection-alert-link"]').click();
-    cy.location().should((loc) => {
-      expect(loc.pathname).to.equal('/download');
+      //Check can close banner
+      cy.get('[aria-label="selection-alert-close"]').click();
+      cy.get('[aria-label="selection-alert"]').should('not.exist');
     });
-    cy.go('back');
-
-    //Check can close banner
-    cy.get('[aria-label="selection-alert-close"]').click();
-    cy.get('[aria-label="selection-alert"]').should('not.exist');
   });
 });
