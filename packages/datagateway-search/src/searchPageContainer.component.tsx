@@ -33,6 +33,7 @@ import {
   setDatafileTab,
   setDatasetTab,
   setInvestigationTab,
+  submitSearchText,
 } from './state/actions/actions';
 import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -130,6 +131,7 @@ interface SearchPageContainerStoreProps {
 }
 
 interface SearchPageContainerDispatchProps {
+  submitSearchText: (searchText: string) => Action;
   setDatasetTab: (toggleOption: boolean) => Action;
   setDatafileTab: (toggleOption: boolean) => Action;
   setInvestigationTab: (toggleOption: boolean) => Action;
@@ -148,6 +150,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     datafile,
     dataset,
     investigation,
+    submitSearchText,
     setDatafileTab,
     setDatasetTab,
     setInvestigationTab,
@@ -253,6 +256,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setInvestigationTab,
   ]);
 
+  React.useEffect(() => {
+    if (search) {
+      submitSearchText(search);
+    }
+  }, [search, submitSearchText, initiateSearch]);
+
   // Table should take up page but leave room for: SG appbar, SG footer,
   // grid padding, search box, checkboxes, date selectors, padding.
   const spacing = 2;
@@ -343,6 +352,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): SearchPageContainerDispatchProps => ({
+  submitSearchText: (searchText: string) =>
+    dispatch(submitSearchText(searchText)),
   setDatasetTab: (toggleOption: boolean) =>
     dispatch(setDatasetTab(toggleOption)),
   setDatafileTab: (toggleOption: boolean) =>
