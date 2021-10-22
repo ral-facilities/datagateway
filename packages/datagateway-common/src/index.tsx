@@ -54,4 +54,7 @@ export { default as Mark } from './mark.component';
 
 export { default as HomePage } from './homePage/homePage.component';
 
+export { default as AddToCartButton } from './views/addToCartButton.component';
+export { default as DownloadButton } from './views/downloadButton.component';
+
 // ReactDOM.render(<App />, document.getElementById('root'));

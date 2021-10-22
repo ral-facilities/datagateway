@@ -32,12 +32,12 @@ import {
   useInvestigation,
   useInvestigationSizes,
   Mark,
+  AddToCartButton,
+  DownloadButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
-import AddToCartButton from '../../addToCartButton.component';
-import DownloadButton from '../../downloadButton.component';
 import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>

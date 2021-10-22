@@ -13,8 +13,6 @@ import {
 import { StyleRules } from '@material-ui/core/styles';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
-import InvestigationSearchTable from './table/investigationSearchTable.component';
-import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
 import { Action, AnyAction } from 'redux';
@@ -22,6 +20,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
 import { useLuceneSearch } from 'datagateway-common';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import InvestigationCardView from './card/investigationSearchCardView.component';
+import DatasetCardView from './card/datasetSearchCardView.component';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -34,12 +34,12 @@ const badgeStyles = (theme: Theme): StyleRules =>
     },
   });
 
-interface SearchTableProps {
+interface SearchCardViewProps {
   containerHeight: string;
   hierarchy: string;
 }
 
-interface SearchTableStoreProps {
+interface SearchCardViewStoreProps {
   searchText: string;
   startDate: MaterialUiPickersDate;
   endDate: MaterialUiPickersDate;
@@ -49,7 +49,7 @@ interface SearchTableStoreProps {
   currentTab: string;
 }
 
-interface SearchTableDispatchProps {
+interface SearchCardViewDispatchProps {
   setCurrentTab: (newValue: string) => Action;
 }
 interface TabPanelProps {
@@ -85,8 +85,10 @@ function a11yProps(index: string): React.ReactFragment {
 
 const StyledBadge = withStyles(badgeStyles)(Badge);
 
-const SearchPageTable = (
-  props: SearchTableProps & SearchTableStoreProps & SearchTableDispatchProps
+const SearchPageCardView = (
+  props: SearchCardViewProps &
+    SearchCardViewStoreProps &
+    SearchCardViewDispatchProps
 ): React.ReactElement => {
   const {
     searchText,
@@ -169,7 +171,7 @@ const SearchPageTable = (
           className="tour-search-tab-select"
           value={currentTab}
           onChange={handleChange}
-          aria-label={t('searchPageTable.tabs_arialabel')}
+          aria-label={t('searchPageCardView.tabs_arialabel')}
         >
           {investigationTab ? (
             <Tab
@@ -265,33 +267,11 @@ const SearchPageTable = (
       </AppBar>
 
       {currentTab === 'investigation' && (
-        <TabPanel value={currentTab} index={'investigation'}>
-          <Paper
-            style={{
-              height: `calc(${containerHeight} - 96px)`,
-              minHeight: 230,
-              overflowX: 'auto',
-            }}
-            elevation={0}
-          >
-            <InvestigationSearchTable hierarchy={hierarchy} />
-          </Paper>
-        </TabPanel>
+        <InvestigationCardView hierarchy={hierarchy} />
       )}
-      {currentTab === 'dataset' && (
-        <TabPanel value={currentTab} index={'dataset'}>
-          <Paper
-            style={{
-              height: `calc(${containerHeight} - 96px)`,
-              minHeight: 230,
-              overflowX: 'auto',
-            }}
-            elevation={0}
-          >
-            <DatasetSearchTable hierarchy={hierarchy} />
-          </Paper>
-        </TabPanel>
-      )}
+
+      {currentTab === 'dataset' && <DatasetCardView hierarchy={hierarchy} />}
+
       {currentTab === 'datafile' && (
         <TabPanel value={currentTab} index={'datafile'}>
           <Paper
@@ -310,7 +290,7 @@ const SearchPageTable = (
   );
 };
 
-const mapStateToProps = (state: StateType): SearchTableStoreProps => {
+const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
   return {
     searchText: state.dgsearch.searchText,
     startDate: state.dgsearch.selectDate.startDate,
@@ -324,8 +304,8 @@ const mapStateToProps = (state: StateType): SearchTableStoreProps => {
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
-): SearchTableDispatchProps => ({
+): SearchCardViewDispatchProps => ({
   setCurrentTab: (newValue: string) => dispatch(setCurrentTab(newValue)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchPageTable);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchPageCardView);

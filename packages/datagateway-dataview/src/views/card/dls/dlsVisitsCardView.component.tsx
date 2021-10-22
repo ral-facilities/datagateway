@@ -7,7 +7,7 @@ import {
   tableLink,
   parseSearchToQuery,
   useDateFilter,
-  useFilter,
+  useCustomFilter,
   useInvestigationCount,
   useInvestigationsPaginated,
   usePushFilters,
@@ -18,6 +18,8 @@ import {
   useInvestigationsDatasetCount,
   nestedValue,
   ArrowTooltip,
+  useCustomFilterCount,
+  formatFilterCount,
 } from 'datagateway-common';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import {
@@ -71,14 +73,29 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         investigationInstruments: 'instrument',
       }),
     },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('type'),
+    },
   ]);
   const countQueries = useInvestigationsDatasetCount(data);
-  const { data: typeIds } = useFilter('investigation', 'type.id', [
+  const { data: typeIds } = useCustomFilter('investigation', 'type.id', [
     {
       filterType: 'where',
       filterValue: JSON.stringify({ name: { eq: proposalName } }),
     },
   ]);
+  const typeIdCounts = useCustomFilterCount(
+    'investigation',
+    'type.id',
+    typeIds,
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ name: { eq: proposalName } }),
+      },
+    ]
+  );
 
   const title = React.useMemo(
     () => ({
@@ -156,10 +173,16 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
       {
         label: t('investigations.type.id'),
         dataKey: 'type.id',
-        filterItems: typeIds ?? [],
+        filterItems: typeIds
+          ? typeIds.map((id, i) => ({
+              name: id,
+              count: formatFilterCount(typeIdCounts[i]),
+            }))
+          : [],
+        prefixLabel: true,
       },
     ],
-    [t, typeIds]
+    [t, typeIds, typeIdCounts]
   );
 
   return (
