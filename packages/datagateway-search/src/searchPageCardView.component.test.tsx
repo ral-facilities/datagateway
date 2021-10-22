@@ -3,7 +3,7 @@ import { StateType } from './state/app.types';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
 
-import SearchPageTable from './searchPageTable';
+import SearchPageCardView from './searchPageCardView';
 
 import { mount as enzymeMount, ReactWrapper } from 'enzyme';
 import { createMount } from '@material-ui/core/test-utils';
@@ -15,16 +15,16 @@ import { setCurrentTab } from './state/actions/actions';
 import axios from 'axios';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Store } from 'redux';
-import InvestigationSearchTable from './table/investigationSearchTable.component';
+import InvestigationSearchCardView from './card/investigationSearchCardView.component';
 
 jest.mock('datagateway-common', () => ({
   ...jest.requireActual('datagateway-common'),
   __esModule: true,
-  // mock table to opt out of rendering them in these tests as there's no need
-  Table: jest.fn(() => 'MockedTable'),
+  // mock card view to opt out of rendering them in these tests as there's no need
+  CardView: jest.fn(() => 'MockedCardView'),
 }));
 
-describe('SearchPageTable', () => {
+describe('SearchPageCardView', () => {
   let mount: typeof enzymeMount;
   let state: StateType;
   const mockStore = configureStore([thunk]);
@@ -36,7 +36,7 @@ describe('SearchPageTable', () => {
           initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
         >
           <QueryClientProvider client={new QueryClient()}>
-            <SearchPageTable />
+            <SearchPageCardView />
           </QueryClientProvider>
         </MemoryRouter>
       </Provider>
@@ -98,7 +98,7 @@ describe('SearchPageTable', () => {
     expect(testStore.getState().dgsearch.tabs.currentTab).toEqual(
       'investigation'
     );
-    expect(wrapper.exists(InvestigationSearchTable)).toBeTruthy();
+    expect(wrapper.exists(InvestigationSearchCardView)).toBeTruthy();
   });
 
   it('defaults to dataset tab when investigation tab is hidden', () => {
@@ -169,7 +169,7 @@ describe('SearchPageTable', () => {
     expect(testStore.getState().dgsearch.tabs.currentTab).toEqual(
       'investigation'
     );
-    expect(wrapper.exists(InvestigationSearchTable)).toBeTruthy();
+    expect(wrapper.exists(InvestigationSearchCardView)).toBeTruthy();
 
     wrapper
       .find('[aria-controls="simple-tabpanel-dataset"]')

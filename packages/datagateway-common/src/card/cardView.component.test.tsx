@@ -102,7 +102,20 @@ describe('Card View', () => {
     let updatedProps = {
       ...props,
       customFilters: [
-        { label: 'Type ID', dataKey: 'type.id', filterItems: ['1', '2'] },
+        {
+          label: 'Type ID',
+          dataKey: 'type.id',
+          filterItems: [
+            {
+              name: '1',
+              count: '1',
+            },
+            {
+              name: '2',
+              count: '1',
+            },
+          ],
+        },
       ],
     };
     const wrapper = createWrapper(updatedProps);
@@ -168,7 +181,20 @@ describe('Card View', () => {
     const updatedProps = {
       ...props,
       customFilters: [
-        { label: 'Type ID', dataKey: 'type.id', filterItems: ['1', '2'] },
+        {
+          label: 'Type ID',
+          dataKey: 'type.id',
+          filterItems: [
+            {
+              name: '1',
+              count: '1',
+            },
+            {
+              name: '2',
+              count: '1',
+            },
+          ],
+        },
       ],
       filters: { 'type.id': { value: 'abc', type: 'include' } },
     };

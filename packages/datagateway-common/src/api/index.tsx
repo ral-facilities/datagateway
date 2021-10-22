@@ -11,7 +11,12 @@ import {
   ViewsType,
   Entity,
 } from '../app.types';
-import { useQuery, UseQueryResult } from 'react-query';
+import {
+  useQueries,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from 'react-query';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
@@ -433,8 +438,7 @@ const fetchFilter = (
     });
 };
 
-// TODO: name this in a way to not get confused with filtering in general?
-export const useFilter = (
+export const useCustomFilter = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   filterKey: string,
   additionalFilters?: {
@@ -466,4 +470,119 @@ export const useFilter = (
       },
     }
   );
+};
+
+export const formatFilterCount = (
+  query: UseQueryResult<number, Error>
+): string => (query?.isSuccess ? query.data.toString() : '');
+
+export const fetchFilterCountQuery = (
+  apiUrl: string,
+  entityType:
+    | 'investigation'
+    | 'dataset'
+    | 'datafile'
+    | 'facilityCycle'
+    | 'instrument'
+    | 'facility'
+    | 'study',
+  additionalFilters?: AdditionalFilters
+): Promise<number> => {
+  const params = new URLSearchParams();
+
+  if (additionalFilters) {
+    additionalFilters.forEach((filter) => {
+      params.append(filter.filterType, filter.filterValue);
+    });
+  }
+
+  // TODO: Call from a separate function?
+  // Pluralise the entity type for the request
+  const pluralisedEntityType =
+    entityType.charAt(entityType.length - 1) === 'y'
+      ? `${entityType.slice(0, entityType.length - 1)}ies`
+      : `${entityType}s`;
+
+  return axios
+    .get(`${apiUrl}/${pluralisedEntityType}/count`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => response.data);
+};
+
+export const useCustomFilterCount = (
+  entityType:
+    | 'investigation'
+    | 'dataset'
+    | 'datafile'
+    | 'facilityCycle'
+    | 'instrument'
+    | 'facility'
+    | 'study',
+  filterKey: string,
+  filterIds: string[] | undefined,
+  additionalFilters?: {
+    filterType: 'where' | 'distinct' | 'include';
+    filterValue: string;
+  }[]
+): UseQueryResult<number, AxiosError>[] => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  const queryConfigs: UseQueryOptions<
+    number,
+    AxiosError,
+    number,
+    [
+      string,
+      (
+        | 'investigation'
+        | 'dataset'
+        | 'datafile'
+        | 'facilityCycle'
+        | 'instrument'
+        | 'facility'
+        | 'study'
+      ),
+      string,
+      string,
+      AdditionalFilters?
+    ]
+  >[] = React.useMemo(() => {
+    const ids = filterIds ?? [];
+
+    return ids.map((filterId) => {
+      return {
+        queryKey: [
+          'filterCount',
+          entityType,
+          filterKey,
+          filterId,
+          additionalFilters,
+        ],
+        queryFn: () =>
+          fetchFilterCountQuery(apiUrl, entityType, [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                [filterKey]: { eq: filterId },
+              }),
+            },
+            ...(additionalFilters ?? []),
+          ]),
+        onError: (error) => {
+          handleICATError(error, false);
+        },
+        staleTime: Infinity,
+      };
+    });
+  }, [apiUrl, entityType, filterIds, filterKey, additionalFilters]);
+
+  // useQueries doesn't allow us to specify type info, so ignore this line
+  // since we strongly type the queries object anyway
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return useQueries(queryConfigs);
 };

@@ -4,31 +4,20 @@ import DownloadButton, {
   DownloadButtonProps,
 } from './downloadButton.component';
 import configureStore from 'redux-mock-store';
-import {
-  dGCommonInitialState,
-  downloadInvestigation,
-  downloadDataset,
-  downloadDatafile,
-  StateType,
-} from 'datagateway-common';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
+import { downloadDatafile } from '../api/datafiles';
+import { downloadDataset } from '../api/datasets';
+import { downloadInvestigation } from '../api/investigations';
+import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    downloadInvestigation: jest.fn(),
-    downloadDataset: jest.fn(),
-    downloadDatafile: jest.fn(),
-  };
-});
+jest.mock('../api/datafiles');
+jest.mock('../api/datasets');
+jest.mock('../api/investigations');
 
 describe('Generic download button', () => {
   let mount;
@@ -53,7 +42,7 @@ describe('Generic download button', () => {
 
     state = JSON.parse(
       JSON.stringify({
-        dgdataview: dgDataViewInitialState,
+        dgdataview: {}, //Dont need to fill, since not part of the test
         dgcommon: {
           ...dGCommonInitialState,
           urls: {

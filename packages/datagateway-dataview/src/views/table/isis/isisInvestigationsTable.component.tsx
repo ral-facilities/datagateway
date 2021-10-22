@@ -16,6 +16,7 @@ import {
   useRemoveFromCart,
   useTextFilter,
   TableActionProps,
+  DownloadButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +32,6 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
-import DownloadButton from '../../downloadButton.component';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
