@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
+import InfoIcon from '@material-ui/icons/Info';
 import { StyleRules } from '@material-ui/core/styles';
 import {
   DownloadCartItem,
@@ -22,6 +23,7 @@ import {
   parseSearchToQuery,
   usePushView,
   readSciGatewayToken,
+  ArrowTooltip,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -141,12 +143,20 @@ const togglePaths = Object.values(paths.toggle).concat(
   Object.values(paths.studyHierarchy.toggle)
 );
 
+const BlackTextTypography = withStyles({
+  root: {
+    color: '#000000',
+    fontSize: '16px',
+  },
+})(Typography);
+
 const NavBar = React.memo(
   (props: {
     entityCount: number;
     cartItems: DownloadCartItem[];
     navigateToSearch: () => void;
     navigateToDownload: () => void;
+    loggedInAnonymously: boolean;
   }): React.ReactElement => {
     const [t] = useTranslation();
 
@@ -166,6 +176,62 @@ const NavBar = React.memo(
               component={PageBreadcrumbs}
             />
           </Grid>
+
+          {props.loggedInAnonymously ? (
+            <Grid item>
+              <Paper
+                square
+                style={{
+                  backgroundColor: '#00e676',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  paddingLeft: 0,
+                  paddingRight: 20,
+                  justifyContent: 'center',
+                }}
+              >
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                  aria-label="open-data-warning"
+                >
+                  <Grid item>
+                    <ArrowTooltip
+                      interactive
+                      title={
+                        <h4>
+                          {t('app.open_data_warning.tooltip')}
+                          <br />
+                          <br />
+                          <a
+                            href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
+                            style={{ color: '#6793FF' }}
+                          >
+                            {t('app.open_data_warning.tooltip_link')}
+                          </a>
+                        </h4>
+                      }
+                      disableHoverListener={false}
+                    >
+                      <IconButton
+                        disableRipple
+                        style={{ backgroundColor: 'transparent' }}
+                      >
+                        <InfoIcon color="primary" />
+                      </IconButton>
+                    </ArrowTooltip>
+                  </Grid>
+                  <Grid item>
+                    <BlackTextTypography variant="h6">
+                      <b>{t('app.open_data_warning.message')}</b>
+                    </BlackTextTypography>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+          ) : null}
 
           {/* The table entity count has a size of 2 (or 3 for xs screens); the
             breadcrumbs will take the remainder of the space. */}
@@ -513,7 +579,6 @@ const PageContainer: React.FC = () => {
   }, [location.pathname, view, prevView, prevLocation.pathname, pushView]);
 
   //Determine whether logged in anonymously (assume this if username is null)
-
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
 
@@ -530,6 +595,7 @@ const PageContainer: React.FC = () => {
               cartItems={cartItems ?? []}
               navigateToSearch={navigateToSearch}
               navigateToDownload={navigateToDownload}
+              loggedInAnonymously={loggedInAnonymously}
             />
 
             <StyledGrid container>
