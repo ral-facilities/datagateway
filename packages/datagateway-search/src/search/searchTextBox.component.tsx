@@ -8,8 +8,6 @@ import { StateType } from '../state/app.types';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
-import { parseSearchToQuery, usePushSearchText } from 'datagateway-common';
 
 interface SearchTextProps {
   initiateSearch: () => void;
@@ -30,22 +28,10 @@ type SearchTextCombinedProps = SearchTextProps &
 const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
   const { searchText, submitSearchText, initiateSearch } = props;
 
-  const location = useLocation();
-  const pushSearchText = usePushSearchText();
-
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
-  const searchTextURL = queryParams.searchText;
-
   const sendSearchText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const searchText = event.target.value;
-    pushSearchText(searchText);
+    submitSearchText(searchText);
   };
-
-  React.useEffect(() => {
-    submitSearchText(searchTextURL ? searchTextURL : '');
-  }, [searchTextURL, submitSearchText]);
 
   const [t] = useTranslation();
 

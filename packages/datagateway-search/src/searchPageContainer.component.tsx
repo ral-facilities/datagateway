@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import { Switch, Route, RouteComponentProps } from 'react-router';
@@ -25,6 +25,7 @@ import {
   ViewsType,
   parseSearchToQuery,
   usePushView,
+  usePushSearchText,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -32,6 +33,7 @@ import {
   setDatafileTab,
   setDatasetTab,
   setInvestigationTab,
+  submitSearchText,
 } from './state/actions/actions';
 import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -129,6 +131,7 @@ interface SearchPageContainerStoreProps {
 }
 
 interface SearchPageContainerDispatchProps {
+  submitSearchText: (searchText: string) => Action;
   setDatasetTab: (toggleOption: boolean) => Action;
   setDatafileTab: (toggleOption: boolean) => Action;
   setInvestigationTab: (toggleOption: boolean) => Action;
@@ -147,6 +150,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     datafile,
     dataset,
     investigation,
+    submitSearchText,
     setDatafileTab,
     setDatasetTab,
     setInvestigationTab,
@@ -155,11 +159,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   } = props;
 
   const location = useLocation();
-  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
+  const searchTextURL = queryParams.searchText;
+  const { view } = queryParams;
 
   const pushView = usePushView();
+  const pushSearchText = usePushSearchText();
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';
@@ -214,6 +221,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     investigationsFetching || datasetsFetching || datafilesFetching;
 
   const initiateSearch = React.useCallback(() => {
+    pushSearchText(searchText);
     if (dataset) {
       // Fetch lucene datasets
       searchDatasets();
@@ -238,6 +246,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     datafile,
     dataset,
     investigation,
+    pushSearchText,
+    searchText,
     searchDatafiles,
     searchDatasets,
     searchInvestigations,
@@ -245,6 +255,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setDatasetTab,
     setInvestigationTab,
   ]);
+
+  useEffect(() => {
+    if (searchTextURL) {
+      submitSearchText(searchTextURL);
+    }
+    //Only want to resubmit if a new URL is supplied
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTextURL]);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
   // grid padding, search box, checkboxes, date selectors, padding.
@@ -336,6 +354,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): SearchPageContainerDispatchProps => ({
+  submitSearchText: (searchText: string) =>
+    dispatch(submitSearchText(searchText)),
   setDatasetTab: (toggleOption: boolean) =>
     dispatch(setDatasetTab(toggleOption)),
   setDatafileTab: (toggleOption: boolean) =>
