@@ -60,6 +60,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const filters = query.get('filters');
   const sort = query.get('sort');
   const view = query.get('view') as ViewsType;
+  const searchText = query.get('searchText');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -105,6 +106,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     results: results ? Number(results) : null,
     filters: parsedFilters,
     sort: parsedSort,
+    searchText: searchText ? searchText : null,
   };
 
   return params;
@@ -246,21 +248,6 @@ export const usePushSort = (): ((
   );
 };
 
-export const usePushSearch = (): ((search: string) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (search: string) => {
-      const query = {
-        ...parseSearchToQuery(window.location.search),
-        search,
-      };
-      push(`?${parseQueryToSearch(query).toString()}`);
-    },
-    [push]
-  );
-};
-
 export const usePushFilters = (): ((
   filterKey: string,
   filter: Filter | null
@@ -332,6 +319,21 @@ export const usePushView = (): ((view: ViewsType) => void) => {
       const query = {
         ...parseSearchToQuery(window.location.search),
         view,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushSearchText = (): ((searchText: string) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (searchText: string) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        searchText,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },

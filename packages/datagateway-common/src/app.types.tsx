@@ -298,4 +298,5 @@ export interface QueryParams {
   search: string | null;
   page: number | null;
   results: number | null;
+  searchText: string | null;
 }

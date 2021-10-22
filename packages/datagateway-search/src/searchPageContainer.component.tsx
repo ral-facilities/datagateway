@@ -25,7 +25,6 @@ import {
   ViewsType,
   parseSearchToQuery,
   usePushView,
-  usePushSearch,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -161,7 +160,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   ]);
 
   const pushView = usePushView();
-  const pushSearch = usePushSearch();
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';
@@ -216,7 +214,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     investigationsFetching || datasetsFetching || datafilesFetching;
 
   const initiateSearch = React.useCallback(() => {
-    pushSearch(searchText);
     if (dataset) {
       // Fetch lucene datasets
       searchDatasets();
@@ -238,8 +235,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       setInvestigationTab(investigation);
     }
   }, [
-    pushSearch,
-    searchText,
     datafile,
     dataset,
     investigation,
