@@ -416,6 +416,25 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     loadedCount,
   ]);
 
+  // Handle (max) result
+  React.useEffect(() => {
+    if (loadedCount && props.results) {
+      if (
+        resOptions
+          .filter(
+            (n, i) =>
+              (i === 0 && totalDataCount > n) ||
+              (i > 0 && totalDataCount > resOptions[i - 1])
+          )
+          .includes(props.results) === true
+      ) {
+        onResultsChange(props.results);
+      } else {
+        onResultsChange(resOptions[0]);
+      }
+    }
+  }, [onResultsChange, resOptions, loadedCount, totalDataCount, props.results]);
+
   const [t] = useTranslation();
 
   return (
