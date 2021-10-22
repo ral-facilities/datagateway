@@ -118,7 +118,7 @@ exports[`Download cart table component renders correctly 1`] = `
             onClick={[Function]}
             variant="contained"
           >
-            downloadCart.remove_all_right_bow
+            downloadCart.remove_all
           </WithStyles(ForwardRef(Button))>
         </WithStyles(ForwardRef(Grid))>
         <WithStyles(ForwardRef(Grid))
