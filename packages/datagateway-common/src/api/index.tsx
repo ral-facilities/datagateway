@@ -61,6 +61,9 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const sort = query.get('sort');
   const view = query.get('view') as ViewsType;
   const searchText = query.get('searchText');
+  const dataset = query.get('dataset');
+  const datafile = query.get('datafile');
+  const investigation = query.get('investigation');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -107,6 +110,9 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     filters: parsedFilters,
     sort: parsedSort,
     searchText: searchText ? searchText : null,
+    dataset: dataset ? Boolean(dataset) : true,
+    datafile: datafile ? Boolean(datafile) : true,
+    investigation: investigation ? Boolean(investigation) : true,
   };
 
   return params;
@@ -334,6 +340,53 @@ export const usePushSearchText = (): ((searchText: string) => void) => {
       const query = {
         ...parseSearchToQuery(window.location.search),
         searchText,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushToggleDataset = (): ((toggleDataset: boolean) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (toggleDataset: boolean) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        toggleDataset,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushToggleDatafile = (): ((datafile: boolean) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (datafile: boolean) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        datafile,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushToggleInvestigation = (): ((
+  investigation: boolean
+) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (investigation: boolean) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        investigation,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },

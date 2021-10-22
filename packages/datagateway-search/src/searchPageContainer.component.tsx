@@ -26,6 +26,9 @@ import {
   parseSearchToQuery,
   usePushView,
   usePushSearchText,
+  usePushToggleDataset,
+  usePushToggleInvestigation,
+  usePushToggleDatafile,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -34,6 +37,9 @@ import {
   setDatasetTab,
   setInvestigationTab,
   submitSearchText,
+  toggleDatafile,
+  toggleDataset,
+  toggleInvestigation,
 } from './state/actions/actions';
 import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -132,6 +138,9 @@ interface SearchPageContainerStoreProps {
 
 interface SearchPageContainerDispatchProps {
   submitSearchText: (searchText: string) => Action;
+  toggleDataset: (toggleOption: boolean) => Action;
+  toggleDatafile: (toggleOption: boolean) => Action;
+  toggleInvestigation: (toggleOption: boolean) => Action;
   setDatasetTab: (toggleOption: boolean) => Action;
   setDatafileTab: (toggleOption: boolean) => Action;
   setInvestigationTab: (toggleOption: boolean) => Action;
@@ -151,6 +160,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     dataset,
     investigation,
     submitSearchText,
+    toggleDataset,
+    toggleDatafile,
+    toggleInvestigation,
     setDatafileTab,
     setDatasetTab,
     setInvestigationTab,
@@ -163,10 +175,16 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     location.search,
   ]);
   const searchTextURL = queryParams.searchText;
+  const datasetURL = queryParams.dataset;
+  const datafileURL = queryParams.datafile;
+  const investigationURL = queryParams.investigation;
   const { view } = queryParams;
 
   const pushView = usePushView();
   const pushSearchText = usePushSearchText();
+  const pushToggleDataset = usePushToggleDataset();
+  const pushToggleDatafile = usePushToggleDatafile();
+  const pushToggleInvestigation = usePushToggleInvestigation();
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';
@@ -188,6 +206,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   useEffect(() => {
     if (searchTextURL) submitSearchText(searchTextURL);
+    toggleDataset(datasetURL);
+    toggleDatafile(datafileURL);
+    toggleInvestigation(investigationURL);
     //Only want to resubmit if a new URL is supplied
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTextURL]);
@@ -228,6 +249,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
+    pushToggleDatafile(datafile);
+    pushToggleDataset(dataset);
+    pushToggleInvestigation(investigation);
+
     if (dataset) {
       // Fetch lucene datasets
       searchDatasets();
@@ -253,6 +278,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     dataset,
     investigation,
     pushSearchText,
+    pushToggleDatafile,
+    pushToggleDataset,
+    pushToggleInvestigation,
     searchText,
     searchDatafiles,
     searchDatasets,
@@ -265,8 +293,24 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   useEffect(() => {
     //Start search automatically if URL and searchText match in case loading
     //page from a specific URL
-    if (searchTextURL === searchText) initiateSearch();
-  }, [initiateSearch, searchTextURL, searchText]);
+    if (
+      searchTextURL === searchText &&
+      datasetURL === dataset &&
+      datafileURL === datafile &&
+      investigationURL === investigation
+    )
+      initiateSearch();
+  }, [
+    initiateSearch,
+    searchTextURL,
+    searchText,
+    datasetURL,
+    dataset,
+    datafileURL,
+    datafile,
+    investigationURL,
+    investigation,
+  ]);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
   // grid padding, search box, checkboxes, date selectors, padding.
@@ -360,6 +404,12 @@ const mapDispatchToProps = (
 ): SearchPageContainerDispatchProps => ({
   submitSearchText: (searchText: string) =>
     dispatch(submitSearchText(searchText)),
+  toggleDataset: (toggleOption: boolean) =>
+    dispatch(toggleDataset(toggleOption)),
+  toggleDatafile: (toggleOption: boolean) =>
+    dispatch(toggleDatafile(toggleOption)),
+  toggleInvestigation: (toggleOption: boolean) =>
+    dispatch(toggleInvestigation(toggleOption)),
   setDatasetTab: (toggleOption: boolean) =>
     dispatch(setDatasetTab(toggleOption)),
   setDatafileTab: (toggleOption: boolean) =>
