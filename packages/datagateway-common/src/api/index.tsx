@@ -64,9 +64,8 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const dataset = query.get('dataset');
   const datafile = query.get('datafile');
   const investigation = query.get('investigation');
-
-  console.log('HELLO');
-  console.log(investigation);
+  const startDateString = query.get('startDate');
+  const endDateString = query.get('endDate');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -104,6 +103,12 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     }
   }
 
+  let startDate = null;
+  let endDate = null;
+
+  if (startDateString) startDate = new Date(startDateString);
+  if (endDateString) endDate = new Date(endDateString);
+
   // Create the query parameters object.
   const params: QueryParams = {
     view: view,
@@ -116,6 +121,8 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     dataset: dataset !== null ? dataset === 'true' : true,
     datafile: datafile !== null ? datafile === 'true' : true,
     investigation: investigation !== null ? investigation === 'true' : true,
+    startDate: startDate,
+    endDate: endDate,
   };
 
   return params;
@@ -390,6 +397,36 @@ export const usePushToggleInvestigation = (): ((
       const query = {
         ...parseSearchToQuery(window.location.search),
         investigation,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushStartDate = (): ((startDate: Date) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (startDate: Date) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        startDate,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushEndDate = (): ((endDate: Date) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (endDate: Date) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        endDate,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },

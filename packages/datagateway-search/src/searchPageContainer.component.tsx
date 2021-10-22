@@ -29,10 +29,14 @@ import {
   usePushToggleDataset,
   usePushToggleInvestigation,
   usePushToggleDatafile,
+  usePushStartDate,
+  usePushEndDate,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
+  selectStartDate,
+  selectEndDate,
   setDatafileTab,
   setDatasetTab,
   setInvestigationTab,
@@ -141,6 +145,8 @@ interface SearchPageContainerDispatchProps {
   toggleDataset: (toggleOption: boolean) => Action;
   toggleDatafile: (toggleOption: boolean) => Action;
   toggleInvestigation: (toggleOption: boolean) => Action;
+  selectStartDate: (date: MaterialUiPickersDate) => Action;
+  selectEndDate: (date: MaterialUiPickersDate) => Action;
   setDatasetTab: (toggleOption: boolean) => Action;
   setDatafileTab: (toggleOption: boolean) => Action;
   setInvestigationTab: (toggleOption: boolean) => Action;
@@ -163,6 +169,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     toggleDataset,
     toggleDatafile,
     toggleInvestigation,
+    selectStartDate,
+    selectEndDate,
     setDatafileTab,
     setDatasetTab,
     setInvestigationTab,
@@ -178,6 +186,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const datasetURL = queryParams.dataset;
   const datafileURL = queryParams.datafile;
   const investigationURL = queryParams.investigation;
+  const startDateURL = queryParams.startDate;
+  const endDateURL = queryParams.endDate;
   const { view } = queryParams;
 
   const pushView = usePushView();
@@ -185,6 +195,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const pushToggleDataset = usePushToggleDataset();
   const pushToggleDatafile = usePushToggleDatafile();
   const pushToggleInvestigation = usePushToggleInvestigation();
+  const pushStartDate = usePushStartDate();
+  const pushEndDate = usePushEndDate();
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';
@@ -211,9 +223,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     toggleDataset(datasetURL);
     toggleDatafile(datafileURL);
     toggleInvestigation(investigationURL);
+    selectStartDate(startDateURL);
+    selectEndDate(endDateURL);
     //Only want to resubmit if a new URL is supplied
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTextURL]);
+  }, []);
 
   const {
     refetch: searchInvestigations,
@@ -254,6 +268,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     pushToggleDatafile(datafile);
     pushToggleDataset(dataset);
     pushToggleInvestigation(investigation);
+    if (startDate) pushStartDate(startDate);
+    if (endDate) pushEndDate(endDate);
 
     if (dataset) {
       // Fetch lucene datasets
@@ -276,14 +292,18 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       setInvestigationTab(investigation);
     }
   }, [
+    searchText,
     datafile,
     dataset,
     investigation,
+    startDate,
+    endDate,
     pushSearchText,
     pushToggleDatafile,
     pushToggleDataset,
     pushToggleInvestigation,
-    searchText,
+    pushStartDate,
+    pushEndDate,
     searchDatafiles,
     searchDatasets,
     searchInvestigations,
@@ -412,6 +432,9 @@ const mapDispatchToProps = (
     dispatch(toggleDatafile(toggleOption)),
   toggleInvestigation: (toggleOption: boolean) =>
     dispatch(toggleInvestigation(toggleOption)),
+  selectStartDate: (date: MaterialUiPickersDate) =>
+    dispatch(selectStartDate(date)),
+  selectEndDate: (date: MaterialUiPickersDate) => dispatch(selectEndDate(date)),
   setDatasetTab: (toggleOption: boolean) =>
     dispatch(setDatasetTab(toggleOption)),
   setDatafileTab: (toggleOption: boolean) =>

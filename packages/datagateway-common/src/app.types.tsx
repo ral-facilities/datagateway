@@ -302,4 +302,6 @@ export interface QueryParams {
   dataset: boolean;
   datafile: boolean;
   investigation: boolean;
+  startDate: Date | null;
+  endDate: Date | null;
 }
