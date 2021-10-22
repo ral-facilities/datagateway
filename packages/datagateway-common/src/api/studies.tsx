@@ -211,7 +211,6 @@ export const useStudyCount = (
       return fetchStudyCount(apiUrl, filters, additionalFilters);
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },

@@ -203,11 +203,7 @@ describe('instrument api functions', () => {
         wrapper: createReactQueryWrapper(history),
       });
 
-      // testing default is 0
-      expect(result.current.data).toEqual(0);
-
-      await waitFor(() => result.current.isFetching);
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => result.current.isSuccess);
 
       params.append(
         'where',
