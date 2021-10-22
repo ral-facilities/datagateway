@@ -25,6 +25,7 @@ import {
   ViewsType,
   parseSearchToQuery,
   usePushView,
+  usePushSearch,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -155,11 +156,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   } = props;
 
   const location = useLocation();
-  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { view, search } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
 
   const pushView = usePushView();
+  const pushSearch = usePushSearch();
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';
@@ -214,6 +218,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     investigationsFetching || datasetsFetching || datafilesFetching;
 
   const initiateSearch = React.useCallback(() => {
+    pushSearch(searchText);
     if (dataset) {
       // Fetch lucene datasets
       searchDatasets();
@@ -235,6 +240,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       setInvestigationTab(investigation);
     }
   }, [
+    pushSearch,
+    searchText,
     datafile,
     dataset,
     investigation,

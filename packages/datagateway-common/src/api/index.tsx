@@ -246,6 +246,21 @@ export const usePushSort = (): ((
   );
 };
 
+export const usePushSearch = (): ((search: string) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (search: string) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        search,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
 export const usePushFilters = (): ((
   filterKey: string,
   filter: Filter | null
