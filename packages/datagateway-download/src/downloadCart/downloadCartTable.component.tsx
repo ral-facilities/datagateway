@@ -349,7 +349,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 }
                 disabled={fileCount <= 0 || totalSize <= 0}
               >
-                {t('downloadCart.remove_all_right_bow')}
+                {t('downloadCart.remove_all')}
               </Button>
             </Grid>
             <Grid item>
