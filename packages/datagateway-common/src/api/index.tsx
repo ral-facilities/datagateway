@@ -65,6 +65,9 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const datafile = query.get('datafile');
   const investigation = query.get('investigation');
 
+  console.log('HELLO');
+  console.log(investigation);
+
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
   if (filters) {
@@ -110,9 +113,9 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     filters: parsedFilters,
     sort: parsedSort,
     searchText: searchText ? searchText : null,
-    dataset: dataset ? Boolean(dataset) : true,
-    datafile: datafile ? Boolean(datafile) : true,
-    investigation: investigation ? Boolean(investigation) : true,
+    dataset: dataset !== null ? dataset === 'true' : true,
+    datafile: datafile !== null ? datafile === 'true' : true,
+    investigation: investigation !== null ? investigation === 'true' : true,
   };
 
   return params;
@@ -347,14 +350,14 @@ export const usePushSearchText = (): ((searchText: string) => void) => {
   );
 };
 
-export const usePushToggleDataset = (): ((toggleDataset: boolean) => void) => {
+export const usePushToggleDataset = (): ((dataset: boolean) => void) => {
   const { push } = useHistory();
 
   return React.useCallback(
-    (toggleDataset: boolean) => {
+    (dataset: boolean) => {
       const query = {
         ...parseSearchToQuery(window.location.search),
-        toggleDataset,
+        dataset,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },

@@ -206,6 +206,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   useEffect(() => {
     if (searchTextURL) submitSearchText(searchTextURL);
+    console.log(location.search);
+    console.log(investigationURL);
     toggleDataset(datasetURL);
     toggleDatafile(datafileURL);
     toggleInvestigation(investigationURL);
