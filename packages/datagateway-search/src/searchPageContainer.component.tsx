@@ -186,6 +186,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     }
   }, [location.pathname, view, pushView]);
 
+  useEffect(() => {
+    if (searchTextURL) submitSearchText(searchTextURL);
+    //Only want to resubmit if a new URL is supplied
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTextURL]);
+
   const {
     refetch: searchInvestigations,
     isIdle: investigationsIdle,
@@ -257,12 +263,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   ]);
 
   useEffect(() => {
-    if (searchTextURL) {
-      submitSearchText(searchTextURL);
-    }
-    //Only want to resubmit if a new URL is supplied
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTextURL]);
+    //Start search automatically if URL and searchText match in case loading
+    //page from a specific URL
+    if (searchTextURL === searchText) initiateSearch();
+  }, [initiateSearch, searchTextURL, searchText]);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
   // grid padding, search box, checkboxes, date selectors, padding.
