@@ -120,7 +120,7 @@ describe('generic api functions', () => {
 
     it('parses query string with search parameters successfully', () => {
       const query =
-        '?view=table&searchText=testText&dataset=true&datafile=false&investigation=true&startDate=Sun+Oct+17+2021+10%3A03%3A00+GMT%2B0100+%28British+Summer+Time%29&endDate=Mon+Oct+25+2021+10%3A03%3A00+GMT%2B0100+%28British+Summer+Time%29';
+        'view=table&searchText=testText&dataset=true&datafile=false&investigation=true&startDate=2021-10-17&endDate=2021-10-25';
 
       expect(parseSearchToQuery(query)).toEqual({
         view: 'table',
@@ -133,8 +133,8 @@ describe('generic api functions', () => {
         dataset: true,
         datafile: false,
         investigation: true,
-        startDate: new Date('2021-10-17T09:03:00.000Z'),
-        endDate: new Date('2021-10-25T09:03:00.000Z'),
+        startDate: new Date('2021-10-17T00:00:00'),
+        endDate: new Date('2021-10-25T23:59:59'),
       });
     });
 
@@ -189,12 +189,12 @@ describe('generic api functions', () => {
         dataset: true,
         datafile: false,
         investigation: true,
-        startDate: new Date('Sun Oct 17 2021 10:03:00 GMT+0100'),
-        endDate: new Date('Mon Oct 25 2021 10:03:00 GMT+0100'),
+        startDate: new Date('2021-10-17T00:00:00Z'),
+        endDate: new Date('2021-10-25T23:59:59Z'),
       };
 
       const params = new URLSearchParams(
-        '?view=table&searchText=testText&dataset=true&datafile=false&investigation=true&startDate=Sun+Oct+17+2021+10%3A03%3A00+GMT%2B0100+%28British+Summer+Time%29&endDate=Mon+Oct+25+2021+10%3A03%3A00+GMT%2B0100+%28British+Summer+Time%29'
+        '?view=table&searchText=testText&dataset=true&datafile=false&investigation=true&startDate=2021-10-17&endDate=2021-10-25'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -413,11 +413,11 @@ describe('generic api functions', () => {
         });
 
         act(() => {
-          result.current(new Date('2021-10-25'));
+          result.current(new Date('2021-10-17T00:00:00Z'));
         });
 
         expect(pushSpy).toHaveBeenCalledWith(
-          expect.stringContaining('?startDate=Mon+Oct+25+2021')
+          expect.stringContaining('?startDate=2021-10-17')
         );
       });
     });
@@ -429,11 +429,11 @@ describe('generic api functions', () => {
         });
 
         act(() => {
-          result.current(new Date('2021-10-25'));
+          result.current(new Date('2021-10-25T23:59:59Z'));
         });
 
         expect(pushSpy).toHaveBeenCalledWith(
-          expect.stringContaining('?endDate=Mon+Oct+25+2021')
+          expect.stringContaining('?endDate=2021-10-25')
         );
       });
     });

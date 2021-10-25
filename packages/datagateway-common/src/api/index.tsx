@@ -106,8 +106,8 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   let startDate = null;
   let endDate = null;
 
-  if (startDateString) startDate = new Date(startDateString);
-  if (endDateString) endDate = new Date(endDateString);
+  if (startDateString) startDate = new Date(startDateString + 'T00:00:00');
+  if (endDateString) endDate = new Date(endDateString + 'T23:59:59');
 
   // Create the query parameters object.
   const params: QueryParams = {
@@ -137,10 +137,22 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
 
   const queryParams = new URLSearchParams();
 
+  const formatDate = (date: Date): string => {
+    const day = date.getUTCDate();
+    //January = 0, not 1
+    const month = date.getUTCMonth() + 1;
+    const year = date.getUTCFullYear();
+    return `${year}-${month > 9 ? month : '0' + month}-${
+      day > 9 ? day : '0' + day
+    }`;
+  };
+
   // Loop and add all the query parameters which is in use.
   for (const [q, v] of Object.entries(query)) {
     if (v !== null && q !== 'filters' && q !== 'sort') {
-      queryParams.append(q, v);
+      if (q === 'startDate' || q === 'endDate') {
+        queryParams.append(q, formatDate(v));
+      } else queryParams.append(q, v);
     }
   }
 

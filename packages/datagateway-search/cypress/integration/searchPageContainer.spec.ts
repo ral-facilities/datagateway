@@ -266,7 +266,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.location().should((loc) => {
         expect(loc.search).to.contains(
-          '?searchText=dog&dataset=true&datafile=true&investigation=true&startDate=Thu+Jan+01+2009'
+          '?searchText=dog&dataset=true&datafile=true&investigation=true&startDate=2009-01-01'
         );
       });
 
@@ -278,7 +278,7 @@ describe('SearchPageContainer Component', () => {
 
     it('should be able to load results from a URL', () => {
       cy.visit(
-        '/search/data/?view=card&searchText=test&dataset=true&datafile=true&investigation=true&startDate=Thu+Jan+01+2009'
+        '/search/data/?view=card&searchText=test&dataset=true&datafile=true&investigation=true&startDate=2009-01-01'
       ).wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
