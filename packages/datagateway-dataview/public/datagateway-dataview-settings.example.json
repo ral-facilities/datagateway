@@ -41,8 +41,23 @@
         "Displays the current number of items in the download selections, and navigates to Datagateway Download"
     },
     {
-      "target": ".tour-dataview-view-button",
-      "content": "Switch between table and card views"
+      "target": ".tour-dataview-toggle-card",
+      "content": "Toggle between list and card view"
+    },
+    {
+      "target": ".tour-dataview-filter",
+      "content":
+        "The filters allow for selecting certain aspects to include or exclude from the data. Here you can add the title text to include/exclude."
+    },
+    {
+      "target": ".tour-dataview-sort",
+      "content":
+        "The results can be sorted by clicking on the title of the filter. This funtionality is available for filters that allow such usage."
+    },
+    {
+      "target": ".tour-dataview-data",
+      "content":
+        "The results are displayed here, where it allows for expanding to view details and selecting specific results to add to the cart"
     }
   ],
   "routes": [

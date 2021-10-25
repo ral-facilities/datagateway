@@ -51,6 +51,7 @@ const DataHeader = React.memo(
 
     const inner = !disableSort ? (
       <TableSortLabel
+        className={'tour-dataview-sort'}
         active={dataKey in sort}
         direction={currSortDirection}
         onClick={() => onSort(dataKey, nextSortDirection)}

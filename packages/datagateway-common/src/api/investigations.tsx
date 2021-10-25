@@ -410,7 +410,6 @@ export const useInvestigationCount = (
       return fetchInvestigationCount(apiUrl, filters, additionalFilters);
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },
@@ -736,7 +735,6 @@ export const useISISInvestigationCount = (
       }
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },

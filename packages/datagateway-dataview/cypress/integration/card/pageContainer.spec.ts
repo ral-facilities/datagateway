@@ -36,6 +36,56 @@ describe('PageContainer Component', () => {
       .contains('Results: 239');
   });
 
+  it('Should default to 10 when the results value is not a vaild result ([10,20,30]) when manually changed in the url ', () => {
+    cy.login();
+    cy.visit('/browse/investigation?view=card&results=125');
+    cy.url().should('include', 'results=10');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      10
+    );
+    cy.visit('/browse/investigation?view=card&results=25');
+    cy.url().should('include', 'results=10');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      10
+    );
+    cy.visit('/browse/investigation?view=card&results=15');
+    cy.url().should('include', 'results=10');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      10
+    );
+    cy.visit('/browse/investigation?view=card&results=5');
+    cy.url().should('include', 'results=10');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      10
+    );
+  });
+
+  it('Should not default to 10 when the results value is a vaild result ([10,20,30]) when manually changed in the url ', () => {
+    cy.login();
+    cy.visit('/browse/investigation?view=card&results=10');
+    cy.url().should('include', 'results=10');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      10
+    );
+    cy.visit('/browse/investigation?view=card&results=20');
+    cy.url().should('include', 'results=20');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      20
+    );
+    cy.visit('/browse/investigation?view=card&results=30');
+    cy.url().should('include', 'results=30');
+    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+      'have.length',
+      30
+    );
+  });
+
   it('should display number of items in cart correctly', () => {
     // Check that the download cart has displayed correctly.
     cy.get('[aria-label="view-cart-badge"]', { timeout: 10000 })
@@ -110,5 +160,26 @@ describe('PageContainer Component', () => {
   it('should load the homepage if navigating to home', () => {
     cy.visit('/datagateway');
     cy.get('div[id="dg-homepage"]');
+  });
+
+  it('should display selection alert banner correctly', () => {
+    cy.get('[aria-label="selection-alert"]', { timeout: 10000 }).should(
+      'not.exist'
+    );
+
+    cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(0).click();
+
+    cy.get('[aria-label="selection-alert"]', { timeout: 10000 }).should(
+      'exist'
+    );
+    cy.get('[aria-label="selection-alert-text"]')
+      .invoke('text')
+      .then((text) => {
+        expect(text.trim()).equal('1 item has been added to selections.');
+      });
+    cy.get('[aria-label="selection-alert-close"]').click();
+    cy.get('[aria-label="selection-alert"]', { timeout: 10000 }).should(
+      'not.exist'
+    );
   });
 });
