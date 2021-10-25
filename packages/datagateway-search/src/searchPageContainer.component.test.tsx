@@ -5,10 +5,14 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from './state/app.types';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
-import { dGCommonInitialState } from 'datagateway-common';
+import {
+  dGCommonInitialState,
+  parseSearchToQuery,
+  QueryParams,
+} from 'datagateway-common';
 
 import { createMount } from '@material-ui/core/test-utils';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import SearchPageContainer from './searchPageContainer.component';
 import { LinearProgress } from '@material-ui/core';
 import { Provider } from 'react-redux';
@@ -23,6 +27,18 @@ import {
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 jest.mock('loglevel');
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    parseSearchToQuery: jest.fn((queryParams: string) =>
+      originalModule.parseSearchToQuery(queryParams)
+    ),
+  };
+});
 
 describe('SearchPageContainer - Tests', () => {
   let state: StateType;
@@ -629,5 +645,128 @@ describe('SearchPageContainer - Tests', () => {
     expect(
       wrapper.find('[aria-label="container-view-button"]').first().text()
     ).toEqual('app.view_table');
+  });
+
+  // let history: History;
+  // let wrapper: WrapperComponent<unknown>;
+  // let pushSpy: jest.SpyInstance;
+  // beforeEach(() => {
+  //   history = createMemoryHistory();
+  //   pushSpy = jest.spyOn(history, 'push');
+  //   const newWrapper: WrapperComponent<unknown> = ({ children }) => (
+  //     <Router history={history}>{children}</Router>
+  //   );
+  //   wrapper = newWrapper;
+  // });
+
+  // it.only('generates correct url', async () => {
+  //   state.dgsearch = {
+  //     ...state.dgsearch,
+  //     searchText: 'hello',
+  //     selectDate: {
+  //       startDate: new Date('2013-11-11'),
+  //       endDate: new Date('2016-11-11'),
+  //     },
+  //     checkBox: {
+  //       ...state.dgsearch.checkBox,
+  //       dataset: false,
+  //       datafile: false,
+  //       investigation: true,
+  //     },
+  //   };
+
+  //   const wrapper = createWrapper();
+
+  //   wrapper
+  //     .find('button[aria-label="searchBox.search_button_arialabel"]')
+  //     .simulate('click');
+
+  //   await act(async () => {
+  //     await flushPromises();
+  //     wrapper.update();
+  //   });
+  // });
+
+  it('initiates search when url contains the required parameters', async () => {
+    const returnParams: QueryParams = {
+      view: 'card',
+      search: null,
+      page: null,
+      results: null,
+      filters: {},
+      sort: {},
+      searchText: 'test',
+      dataset: false,
+      datafile: true,
+      investigation: false,
+      startDate: new Date('2021-10-23'),
+      endDate: new Date('2021-10-25'),
+    };
+
+    const dGSearchInitialState = {
+      searchText: returnParams.searchText,
+      selectDate: {
+        startDate: returnParams.startDate,
+        endDate: returnParams.endDate,
+      },
+      checkBox: {
+        dataset: returnParams.dataset,
+        datafile: returnParams.datafile,
+        investigation: returnParams.investigation,
+      },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+        currentTab: 'investigation',
+      },
+      sideLayout: false,
+      settingsLoaded: true,
+    };
+
+    state = {
+      dgcommon: {
+        ...dGCommonInitialState,
+        urls: {
+          ...dGCommonInitialState.urls,
+          icatUrl: 'https://example.com/icat',
+        },
+      },
+      dgsearch: dGSearchInitialState,
+      router: {
+        action: 'POP',
+        location: {
+          hash: '',
+          key: '',
+          pathname: '/',
+          search: '',
+          state: {},
+        },
+      },
+    };
+    (parseSearchToQuery as jest.Mock).mockReturnValue(returnParams);
+
+    const wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Datafile',
+            lower: '202110230000',
+            text: 'test',
+            upper: '202110252359',
+          },
+          sessionId: null,
+        },
+      }
+    );
   });
 });

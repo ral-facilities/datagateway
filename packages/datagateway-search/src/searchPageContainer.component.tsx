@@ -258,7 +258,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     investigationsFetching || datasetsFetching || datafilesFetching;
 
   const initiateSearch = React.useCallback(() => {
-    console.log('SEARCH');
     pushSearchParams(searchText, dataset, datafile, investigation);
     if (startDate) pushStartDate(startDate);
     if (endDate) pushEndDate(endDate);

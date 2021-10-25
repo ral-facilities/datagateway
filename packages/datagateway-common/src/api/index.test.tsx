@@ -29,7 +29,12 @@ import axios from 'axios';
 import handleICATError from '../handleICATError';
 
 import { createReactQueryWrapper } from '../setupTests';
-import { useCustomFilterCount } from '..';
+import {
+  useCustomFilterCount,
+  usePushEndDate,
+  usePushSearchParams,
+  usePushStartDate,
+} from '..';
 
 jest.mock('../handleICATError');
 
@@ -156,10 +161,39 @@ describe('generic api functions', () => {
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
+        searchText: null,
+        dataset: null,
+        datafile: null,
+        investigation: null,
+        startDate: null,
+        endDate: null,
       };
 
       const params = new URLSearchParams(
         '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}'
+      );
+
+      expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
+    });
+
+    it('parses query object with search parameters successfully', () => {
+      const query: QueryParams = {
+        view: 'table',
+        search: null,
+        page: null,
+        results: null,
+        filters: {},
+        sort: {},
+        searchText: 'testText',
+        dataset: true,
+        datafile: false,
+        investigation: true,
+        startDate: new Date('2021-10-17T09:03:00.000Z'),
+        endDate: new Date('2021-10-25T09:03:00.000Z'),
+      };
+
+      const params = new URLSearchParams(
+        '?view=table&searchText=testText&dataset=true&datafile=false&investigation=true&startDate=Sun+Oct+17+2021+10%3A03%3A00+GMT%2B0100+%28British+Summer+Time%29&endDate=Mon+Oct+25+2021+10%3A03%3A00+GMT%2B0100+%28British+Summer+Time%29'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -336,6 +370,54 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?view=table');
+      });
+    });
+
+    describe('usePushSearchParams', () => {
+      it('returns callback that when called pushes search parameters to the url query', () => {
+        const { result } = renderHook(() => usePushSearchParams(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('test', true, false, true);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith(
+          '?searchText=test&dataset=true&datafile=false&investigation=true'
+        );
+      });
+    });
+
+    describe('usePushStartDate', () => {
+      it('returns callback that when called pushes startDate to the url query', () => {
+        const { result } = renderHook(() => usePushStartDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-25'));
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith(
+          expect.stringContaining('?startDate=Mon+Oct+25+2021+01')
+        );
+      });
+    });
+
+    describe('usePushEndDate', () => {
+      it('returns callback that when called pushes endDate to the url query', () => {
+        const { result } = renderHook(() => usePushEndDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-25'));
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith(
+          expect.stringContaining('?endDate=Mon+Oct+25+2021+01')
+        );
       });
     });
   });
