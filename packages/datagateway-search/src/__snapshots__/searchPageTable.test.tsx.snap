@@ -3994,6 +3994,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                         "label": "investigations.name",
                                       },
                                       Object {
+                                        "cellContentRenderer": [Function],
                                         "dataKey": "doi",
                                         "filterComponent": [Function],
                                         "label": "investigations.doi",

@@ -3923,6 +3923,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                   information={
                     Array [
                       Object {
+                        "content": [Function],
                         "dataKey": "doi",
                         "filterComponent": [Function],
                         "icon": Object {
