@@ -84,7 +84,9 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
         required
         error={error}
         component="fieldset"
-        className={sideLayout ? classes.formControlSide : classes.formControl}
+        className={`${
+          sideLayout ? classes.formControlSide : classes.formControl
+        } tour-search-checkbox`}
       >
         <FormGroup row={!sideLayout}>
           <FormLabel component="legend" className={classes.formLabel}>
