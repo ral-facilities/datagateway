@@ -133,8 +133,8 @@ describe('generic api functions', () => {
         dataset: true,
         datafile: false,
         investigation: true,
-        startDate: new Date('2021-10-17T00:00:00'),
-        endDate: new Date('2021-10-25T23:59:59'),
+        startDate: new Date('2021-10-17T00:00:00Z'),
+        endDate: new Date('2021-10-25T00:00:00Z'),
       });
     });
 
@@ -190,7 +190,7 @@ describe('generic api functions', () => {
         datafile: false,
         investigation: true,
         startDate: new Date('2021-10-17T00:00:00Z'),
-        endDate: new Date('2021-10-25T23:59:59Z'),
+        endDate: new Date('2021-10-25T00:00:00Z'),
       };
 
       const params = new URLSearchParams(
@@ -429,7 +429,7 @@ describe('generic api functions', () => {
         });
 
         act(() => {
-          result.current(new Date('2021-10-25T23:59:59Z'));
+          result.current(new Date('2021-10-25T00:00:00Z'));
         });
 
         expect(pushSpy).toHaveBeenCalledWith(

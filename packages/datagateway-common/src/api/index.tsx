@@ -106,8 +106,8 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   let startDate = null;
   let endDate = null;
 
-  if (startDateString) startDate = new Date(startDateString + 'T00:00:00');
-  if (endDateString) endDate = new Date(endDateString + 'T23:59:59');
+  if (startDateString) startDate = new Date(startDateString + 'T00:00:00Z');
+  if (endDateString) endDate = new Date(endDateString + 'T00:00:00Z');
 
   // Create the query parameters object.
   const params: QueryParams = {

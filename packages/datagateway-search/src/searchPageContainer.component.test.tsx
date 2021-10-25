@@ -740,10 +740,10 @@ describe('SearchPageContainer - Tests', () => {
       '?searchText=hello&dataset=false&datafile=false&investigation=true'
     );
     expect(pushSpy).toHaveBeenCalledWith(
-      expect.stringContaining('?startDate=Mon+Nov+11+2013')
+      expect.stringContaining('?startDate=2013-11-11')
     );
     expect(pushSpy).toHaveBeenCalledWith(
-      expect.stringContaining('?endDate=Fri+Nov+11+2016')
+      expect.stringContaining('?endDate=2016-11-11')
     );
   });
 
@@ -759,8 +759,8 @@ describe('SearchPageContainer - Tests', () => {
       dataset: false,
       datafile: true,
       investigation: false,
-      startDate: new Date('2021-10-23'),
-      endDate: new Date('2021-10-25'),
+      startDate: new Date('2021-10-23T00:00:00Z'),
+      endDate: new Date('2021-10-25T00:00:00Z'),
     };
 
     const dGSearchInitialState = {
