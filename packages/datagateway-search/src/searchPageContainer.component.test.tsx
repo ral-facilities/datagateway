@@ -176,7 +176,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -214,7 +214,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -252,7 +252,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -283,7 +283,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -319,7 +319,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -355,7 +355,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -385,7 +385,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -421,7 +421,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -457,7 +457,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -479,7 +479,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -511,7 +511,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -543,7 +543,7 @@ describe('SearchPageContainer - Tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenLastCalledWith(
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {
         params: {
@@ -583,6 +583,7 @@ describe('SearchPageContainer - Tests', () => {
         </MemoryRouter>
       </Provider>
     );
+    testStore.clearActions();
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')

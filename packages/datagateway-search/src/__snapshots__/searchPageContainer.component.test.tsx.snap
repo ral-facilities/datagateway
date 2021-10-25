@@ -1057,11 +1057,17 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
             investigation={false}
             investigationTab={true}
             searchText=""
+            selectEndDate={[Function]}
+            selectStartDate={[Function]}
             setDatafileTab={[Function]}
             setDatasetTab={[Function]}
             setInvestigationTab={[Function]}
             sideLayout={false}
             startDate={null}
+            submitSearchText={[Function]}
+            toggleDatafile={[Function]}
+            toggleDataset={[Function]}
+            toggleInvestigation={[Function]}
           >
             <Switch>
               <Route

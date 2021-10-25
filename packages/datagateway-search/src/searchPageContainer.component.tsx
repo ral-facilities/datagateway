@@ -214,9 +214,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   useEffect(() => {
     if (searchTextURL) submitSearchText(searchTextURL);
-    toggleDataset(datasetURL);
-    toggleDatafile(datafileURL);
-    toggleInvestigation(investigationURL);
+    if (datasetURL !== null) toggleDataset(datasetURL);
+    if (datafileURL !== null) toggleDatafile(datafileURL);
+    if (investigationURL !== null) toggleInvestigation(investigationURL);
     selectStartDate(startDateURL);
     selectEndDate(endDateURL);
     //Only want to resubmit if a new URL is supplied
@@ -258,6 +258,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     investigationsFetching || datasetsFetching || datafilesFetching;
 
   const initiateSearch = React.useCallback(() => {
+    console.log('SEARCH');
     pushSearchParams(searchText, dataset, datafile, investigation);
     if (startDate) pushStartDate(startDate);
     if (endDate) pushEndDate(endDate);

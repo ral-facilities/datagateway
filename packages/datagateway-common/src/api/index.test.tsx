@@ -103,6 +103,32 @@ describe('generic api functions', () => {
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
+        searchText: null,
+        dataset: null,
+        datafile: null,
+        investigation: null,
+        startDate: null,
+        endDate: null,
+      });
+    });
+
+    it('parses query string with search parameters successfully', () => {
+      const query =
+        '?view=table&searchText=testText&dataset=true&datafile=false&investigation=true&startDate=Sun+Oct+17+2021+10%3A03%3A00+GMT%2B0100+%28British+Summer+Time%29&endDate=Mon+Oct+25+2021+10%3A03%3A00+GMT%2B0100+%28British+Summer+Time%29';
+
+      expect(parseSearchToQuery(query)).toEqual({
+        view: 'table',
+        search: null,
+        page: null,
+        results: null,
+        filters: {},
+        sort: {},
+        searchText: 'testText',
+        dataset: true,
+        datafile: false,
+        investigation: true,
+        startDate: new Date('2021-10-17T09:03:00.000Z'),
+        endDate: new Date('2021-10-25T09:03:00.000Z'),
       });
     });
 

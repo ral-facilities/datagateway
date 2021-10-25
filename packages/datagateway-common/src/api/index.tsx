@@ -118,9 +118,9 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     filters: parsedFilters,
     sort: parsedSort,
     searchText: searchText ? searchText : null,
-    dataset: dataset !== null ? dataset === 'true' : true,
-    datafile: datafile !== null ? datafile === 'true' : true,
-    investigation: investigation !== null ? investigation === 'true' : true,
+    dataset: dataset !== null ? dataset === 'true' : null,
+    datafile: datafile !== null ? datafile === 'true' : null,
+    investigation: investigation !== null ? investigation === 'true' : null,
     startDate: startDate,
     endDate: endDate,
   };
