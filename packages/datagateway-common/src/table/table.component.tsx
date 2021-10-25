@@ -400,7 +400,7 @@ const VirtualizedTable = React.memo(
                           dataKey={dataKey}
                           label={label}
                           disableSort={disableSort}
-                          headerClassName={classes.headerFlexContainer}
+                          headerClassName={`${classes.headerFlexContainer} tour-dataview-filter`}
                           headerRenderer={(headerProps) => (
                             <DataHeader
                               {...headerProps}

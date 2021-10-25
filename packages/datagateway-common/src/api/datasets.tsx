@@ -404,7 +404,6 @@ export const useDatasetCount = (
       return fetchDatasetCountQuery(apiUrl, filters, additionalFilters);
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },

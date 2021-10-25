@@ -9,6 +9,7 @@ import {
   dGCommonInitialState,
   parseSearchToQuery,
   QueryParams,
+  useCart,
 } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import { createMount } from '@material-ui/core/test-utils';
@@ -37,6 +38,7 @@ jest.mock('datagateway-common', () => {
     parseSearchToQuery: jest.fn((queryParams: string) =>
       originalModule.parseSearchToQuery(queryParams)
     ),
+    useCart: jest.fn(() => originalModule.useCart()),
   };
 });
 
@@ -645,6 +647,50 @@ describe('SearchPageContainer - Tests', () => {
     expect(
       wrapper.find('[aria-label="container-view-button"]').first().text()
     ).toEqual('app.view_table');
+  });
+
+  it('shows SelectionAlert banner when item selected', async () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'Test 1',
+          parentEntities: [],
+        },
+      ],
+    });
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeTruthy();
+  });
+
+  it('does not show SelectionAlert banner when no items are selected', async () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: [],
+    });
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeFalsy();
   });
 
   it('generates correct url on search', async () => {

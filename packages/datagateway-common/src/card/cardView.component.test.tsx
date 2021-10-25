@@ -446,6 +446,30 @@ describe('Card View', () => {
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 
+  it('results changed when max results exceeded', () => {
+    const updatedProps = {
+      ...props,
+      totalDataCount: 100,
+      resultsOptions: [10, 20, 30],
+      results: 40,
+      page: 1,
+    };
+    createWrapper(updatedProps);
+    expect(onResultsChange).toHaveBeenNthCalledWith(1, 10);
+  });
+
+  it('results changed when max results exceeded when total data count is between 10 and 20)', () => {
+    const updatedProps = {
+      ...props,
+      totalDataCount: 14,
+      resultsOptions: [10, 20, 30],
+      results: 30,
+      page: 1,
+    };
+    createWrapper(updatedProps);
+    expect(onResultsChange).toHaveBeenNthCalledWith(1, 10);
+  });
+
   it('selector sends pushQuery with results', () => {
     const updatedProps = {
       ...props,
@@ -458,7 +482,7 @@ describe('Card View', () => {
       .find(Select)
       .props()
       .onChange?.({ target: { value: 2 } });
-    expect(onResultsChange).toHaveBeenNthCalledWith(1, 2);
+    expect(onResultsChange).toHaveBeenNthCalledWith(2, 2);
   });
 
   it('selector sends pushQuery with results and page', () => {
@@ -473,7 +497,7 @@ describe('Card View', () => {
       .find(Select)
       .props()
       .onChange?.({ target: { value: 3 } });
-    expect(onResultsChange).toHaveBeenNthCalledWith(1, 3);
+    expect(onResultsChange).toHaveBeenNthCalledWith(2, 3);
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 });

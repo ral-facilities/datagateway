@@ -133,7 +133,6 @@ describe('Dataset - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -145,7 +144,6 @@ describe('Dataset - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -159,7 +157,6 @@ describe('Dataset - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
@@ -169,7 +166,6 @@ describe('Dataset - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -180,7 +176,6 @@ describe('Dataset - Card View', () => {
     expect(button.text()).toEqual('datasets.name');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
