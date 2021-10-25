@@ -25,10 +25,7 @@ import {
   ViewsType,
   parseSearchToQuery,
   usePushView,
-  usePushSearchText,
-  usePushToggleDataset,
-  usePushToggleInvestigation,
-  usePushToggleDatafile,
+  usePushSearchParams,
   usePushStartDate,
   usePushEndDate,
 } from 'datagateway-common';
@@ -182,19 +179,18 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const searchTextURL = queryParams.searchText;
-  const datasetURL = queryParams.dataset;
-  const datafileURL = queryParams.datafile;
-  const investigationURL = queryParams.investigation;
-  const startDateURL = queryParams.startDate;
-  const endDateURL = queryParams.endDate;
+  const {
+    searchText: searchTextURL,
+    dataset: datasetURL,
+    datafile: datafileURL,
+    investigation: investigationURL,
+    startDate: startDateURL,
+    endDate: endDateURL,
+  } = queryParams;
   const { view } = queryParams;
 
   const pushView = usePushView();
-  const pushSearchText = usePushSearchText();
-  const pushToggleDataset = usePushToggleDataset();
-  const pushToggleDatafile = usePushToggleDatafile();
-  const pushToggleInvestigation = usePushToggleInvestigation();
+  const pushSearchParams = usePushSearchParams();
   const pushStartDate = usePushStartDate();
   const pushEndDate = usePushEndDate();
 
@@ -218,8 +214,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   useEffect(() => {
     if (searchTextURL) submitSearchText(searchTextURL);
-    console.log(location.search);
-    console.log(investigationURL);
     toggleDataset(datasetURL);
     toggleDatafile(datafileURL);
     toggleInvestigation(investigationURL);
@@ -264,10 +258,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     investigationsFetching || datasetsFetching || datafilesFetching;
 
   const initiateSearch = React.useCallback(() => {
-    pushSearchText(searchText);
-    pushToggleDatafile(datafile);
-    pushToggleDataset(dataset);
-    pushToggleInvestigation(investigation);
+    pushSearchParams(searchText, dataset, datafile, investigation);
     if (startDate) pushStartDate(startDate);
     if (endDate) pushEndDate(endDate);
 
@@ -298,10 +289,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     investigation,
     startDate,
     endDate,
-    pushSearchText,
-    pushToggleDatafile,
-    pushToggleDataset,
-    pushToggleInvestigation,
+    pushSearchParams,
     pushStartDate,
     pushEndDate,
     searchDatafiles,
@@ -319,7 +307,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       searchTextURL === searchText &&
       datasetURL === dataset &&
       datafileURL === datafile &&
-      investigationURL === investigation
+      investigationURL === investigation &&
+      startDateURL?.toString() === startDate?.toString() &&
+      endDateURL?.toString() === endDate?.toString()
     )
       initiateSearch();
   }, [
@@ -332,6 +322,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     datafile,
     investigationURL,
     investigation,
+    startDateURL,
+    startDate,
+    endDateURL,
+    endDate,
   ]);
 
   // Table should take up page but leave room for: SG appbar, SG footer,

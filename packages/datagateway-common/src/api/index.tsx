@@ -342,60 +342,26 @@ export const usePushView = (): ((view: ViewsType) => void) => {
   );
 };
 
-export const usePushSearchText = (): ((searchText: string) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (searchText: string) => {
-      const query = {
-        ...parseSearchToQuery(window.location.search),
-        searchText,
-      };
-      push(`?${parseQueryToSearch(query).toString()}`);
-    },
-    [push]
-  );
-};
-
-export const usePushToggleDataset = (): ((dataset: boolean) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (dataset: boolean) => {
-      const query = {
-        ...parseSearchToQuery(window.location.search),
-        dataset,
-      };
-      push(`?${parseQueryToSearch(query).toString()}`);
-    },
-    [push]
-  );
-};
-
-export const usePushToggleDatafile = (): ((datafile: boolean) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (datafile: boolean) => {
-      const query = {
-        ...parseSearchToQuery(window.location.search),
-        datafile,
-      };
-      push(`?${parseQueryToSearch(query).toString()}`);
-    },
-    [push]
-  );
-};
-
-export const usePushToggleInvestigation = (): ((
+export const usePushSearchParams = (): ((
+  searchText: string,
+  dataset: boolean,
+  datafile: boolean,
   investigation: boolean
 ) => void) => {
   const { push } = useHistory();
 
   return React.useCallback(
-    (investigation: boolean) => {
+    (
+      searchText: string,
+      dataset: boolean,
+      datafile: boolean,
+      investigation: boolean
+    ) => {
       const query = {
         ...parseSearchToQuery(window.location.search),
+        searchText,
+        dataset,
+        datafile,
         investigation,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
