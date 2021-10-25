@@ -161,4 +161,25 @@ describe('PageContainer Component', () => {
     cy.visit('/datagateway');
     cy.get('div[id="dg-homepage"]');
   });
+
+  it('should display selection alert banner correctly', () => {
+    cy.get('[aria-label="selection-alert"]', { timeout: 10000 }).should(
+      'not.exist'
+    );
+
+    cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(0).click();
+
+    cy.get('[aria-label="selection-alert"]', { timeout: 10000 }).should(
+      'exist'
+    );
+    cy.get('[aria-label="selection-alert-text"]')
+      .invoke('text')
+      .then((text) => {
+        expect(text.trim()).equal('1 item has been added to selections.');
+      });
+    cy.get('[aria-label="selection-alert-close"]').click();
+    cy.get('[aria-label="selection-alert"]', { timeout: 10000 }).should(
+      'not.exist'
+    );
+  });
 });

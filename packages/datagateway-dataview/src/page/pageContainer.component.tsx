@@ -24,6 +24,8 @@ import {
   usePushView,
   readSciGatewayToken,
   ArrowTooltip,
+  SelectionAlert,
+  selectionAlertColor,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -182,7 +184,7 @@ const NavBar = React.memo(
               <Paper
                 square
                 style={{
-                  backgroundColor: '#00e676',
+                  backgroundColor: selectionAlertColor,
                   display: 'flex',
                   flexDirection: 'column',
                   paddingLeft: 0,
@@ -599,18 +601,33 @@ const PageContainer: React.FC = () => {
             />
 
             <StyledGrid container>
-              {/* Toggle between the table and card view */}
-              <Grid item xs={12}>
-                <Route
-                  exact
-                  path={togglePaths}
-                  render={() => (
-                    <ViewButton
-                      viewCards={view === 'card'}
-                      handleButtonChange={handleButtonChange}
+              <Grid
+                item
+                xs={12}
+                style={{ marginTop: '10px', marginBottom: '10px' }}
+              >
+                <StyledGrid container>
+                  {/* Toggle between the table and card view */}
+                  <Grid item xs={'auto'}>
+                    <Route
+                      exact
+                      path={togglePaths}
+                      render={() => (
+                        <ViewButton
+                          viewCards={view === 'card'}
+                          handleButtonChange={handleButtonChange}
+                        />
+                      )}
                     />
-                  )}
-                />
+                  </Grid>
+                  <Grid item xs={true}>
+                    <SelectionAlert
+                      selectedItems={cartItems ?? []}
+                      navigateToSelections={navigateToDownload}
+                      marginSide={'8px'}
+                    />
+                  </Grid>
+                </StyledGrid>
               </Grid>
 
               {/* Show loading progress if data is still being loaded */}

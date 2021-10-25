@@ -267,4 +267,54 @@ describe('PageContainer - Tests', () => {
       wrapper.find('[aria-label="open-data-warning"]').exists()
     ).toBeFalsy();
   });
+
+  it('shows SelectionAlert banner when item selected', () => {
+    // Supply data to make SelectionAlert display
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'Test 1',
+          parentEntities: [],
+        },
+      ],
+    });
+    const wrapper = createWrapper();
+
+    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeTruthy();
+  });
+
+  it('does not show SelectionAlert banner when no items are selected', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [],
+    });
+    const wrapper = createWrapper();
+
+    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeFalsy();
+  });
+
+  it('opens download plugin when link in SelectionAlert clicked', () => {
+    // Supply data to make SelectionAlert display
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'Test 1',
+          parentEntities: [],
+        },
+      ],
+    });
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('[aria-label="selection-alert-link"]')
+      .first()
+      .simulate('click');
+
+    expect(history.location.pathname).toBe('/download');
+  });
 });
