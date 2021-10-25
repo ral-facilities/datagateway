@@ -24,6 +24,7 @@ import {
   usePushView,
   readSciGatewayToken,
   ArrowTooltip,
+  useReplaceView,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -544,6 +545,7 @@ const PageContainer: React.FC = () => {
   const { data: cartItems } = useCart();
 
   const pushView = usePushView();
+  const replaceView = useReplaceView();
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';
@@ -574,9 +576,10 @@ const PageContainer: React.FC = () => {
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
     if (getToggle(location.pathname, view) && !view) {
-      pushView('card');
+      //Replace rather than push here to ensure going back doesn't just go to the same page without the query which would execute this code again
+      replaceView('card');
     }
-  }, [location.pathname, view, prevView, prevLocation.pathname, pushView]);
+  }, [location.pathname, view, prevView, prevLocation.pathname, replaceView]);
 
   //Determine whether logged in anonymously (assume this if username is null)
   const username = readSciGatewayToken().username;

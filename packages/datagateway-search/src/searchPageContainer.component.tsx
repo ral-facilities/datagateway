@@ -25,6 +25,7 @@ import {
   ViewsType,
   parseSearchToQuery,
   usePushView,
+  useReplaceView,
   usePushSearchParams,
   usePushStartDate,
   usePushEndDate,
@@ -190,6 +191,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const { view } = queryParams;
 
   const pushView = usePushView();
+  const replaceView = useReplaceView();
   const pushSearchParams = usePushSearchParams();
   const pushStartDate = usePushStartDate();
   const pushEndDate = usePushEndDate();
@@ -208,9 +210,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
     if (getToggle(location.pathname, view) && !view) {
-      pushView('card');
+      replaceView('card');
     }
-  }, [location.pathname, view, pushView]);
+  }, [location.pathname, view, replaceView]);
 
   useEffect(() => {
     if (searchTextURL) submitSearchText(searchTextURL);

@@ -10,6 +10,7 @@ import {
   usePushResults,
   usePushSort,
   usePushView,
+  useReplaceView,
 } from './index';
 import {
   FiltersType,
@@ -240,9 +241,11 @@ describe('generic api functions', () => {
     let history: History;
     let wrapper: WrapperComponent<unknown>;
     let pushSpy: jest.SpyInstance;
+    let replaceSpy: jest.SpyInstance;
     beforeEach(() => {
       history = createMemoryHistory();
       pushSpy = jest.spyOn(history, 'push');
+      replaceSpy = jest.spyOn(history, 'replace');
       const newWrapper: WrapperComponent<unknown> = ({ children }) => (
         <Router history={history}>{children}</Router>
       );
@@ -370,6 +373,20 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?view=table');
+      });
+    });
+
+    describe('useReplaceView', () => {
+      it('returns callback that when called replaces the current page with a new one in the url query', () => {
+        const { result } = renderHook(() => useReplaceView(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('table');
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith('?view=table');
       });
     });
 

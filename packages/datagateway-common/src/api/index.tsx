@@ -342,6 +342,21 @@ export const usePushView = (): ((view: ViewsType) => void) => {
   );
 };
 
+export const useReplaceView = (): ((view: ViewsType) => void) => {
+  const { replace } = useHistory();
+
+  return React.useCallback(
+    (view: ViewsType) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        view,
+      };
+      replace(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [replace]
+  );
+};
+
 export const usePushSearchParams = (): ((
   searchText: string,
   dataset: boolean,
