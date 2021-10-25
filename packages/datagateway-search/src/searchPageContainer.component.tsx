@@ -210,6 +210,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
     if (getToggle(location.pathname, view) && !view) {
+      //Replace rather than push here to ensure going back doesn't just go to the same
+      //page without the query which would execute this code again
       replaceView('card');
     }
   }, [location.pathname, view, replaceView]);
