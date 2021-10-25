@@ -5,7 +5,7 @@ exports[`Checkbox component tests renders correctly 1`] = `
   className="makeStyles-root-1"
 >
   <WithStyles(ForwardRef(FormControl))
-    className="makeStyles-formControl-2"
+    className="makeStyles-formControl-2 tour-search-checkbox"
     component="fieldset"
     error={false}
     required={true}

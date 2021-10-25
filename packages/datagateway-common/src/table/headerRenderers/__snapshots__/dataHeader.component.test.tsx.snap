@@ -116,6 +116,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       <Styled(MuiBox)>
         <WithStyles(ForwardRef(TableSortLabel))
           active={false}
+          className="tour-dataview-sort"
           onClick={[Function]}
         >
           <WithStyles(ForwardRef(Typography))
@@ -206,6 +207,7 @@ exports[`Data column header component renders correctly with sort but no filter 
       <Styled(MuiBox)>
         <WithStyles(ForwardRef(TableSortLabel))
           active={false}
+          className="tour-dataview-sort"
           onClick={[Function]}
         >
           <WithStyles(ForwardRef(Typography))
