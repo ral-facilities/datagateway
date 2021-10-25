@@ -10,9 +10,9 @@ import {
   parseSearchToQuery,
   QueryParams,
 } from 'datagateway-common';
-
+import { createMemoryHistory } from 'history';
 import { createMount } from '@material-ui/core/test-utils';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Router } from 'react-router-dom';
 import SearchPageContainer from './searchPageContainer.component';
 import { LinearProgress } from '@material-ui/core';
 import { Provider } from 'react-redux';
@@ -647,45 +647,59 @@ describe('SearchPageContainer - Tests', () => {
     ).toEqual('app.view_table');
   });
 
-  // let history: History;
-  // let wrapper: WrapperComponent<unknown>;
-  // let pushSpy: jest.SpyInstance;
-  // beforeEach(() => {
-  //   history = createMemoryHistory();
-  //   pushSpy = jest.spyOn(history, 'push');
-  //   const newWrapper: WrapperComponent<unknown> = ({ children }) => (
-  //     <Router history={history}>{children}</Router>
-  //   );
-  //   wrapper = newWrapper;
-  // });
+  it('generates correct url on search', async () => {
+    const history = createMemoryHistory();
+    history.push('/search/data');
+    const pushSpy = jest.spyOn(history, 'push');
 
-  // it.only('generates correct url', async () => {
-  //   state.dgsearch = {
-  //     ...state.dgsearch,
-  //     searchText: 'hello',
-  //     selectDate: {
-  //       startDate: new Date('2013-11-11'),
-  //       endDate: new Date('2016-11-11'),
-  //     },
-  //     checkBox: {
-  //       ...state.dgsearch.checkBox,
-  //       dataset: false,
-  //       datafile: false,
-  //       investigation: true,
-  //     },
-  //   };
+    state.dgsearch = {
+      ...state.dgsearch,
+      searchText: 'hello',
+      selectDate: {
+        startDate: new Date('2013-11-11'),
+        endDate: new Date('2016-11-11'),
+      },
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: false,
+        datafile: false,
+        investigation: true,
+      },
+    };
 
-  //   const wrapper = createWrapper();
+    const createWrapperNew = (): ReactWrapper => {
+      const mockStore = configureStore([thunk]);
+      return mount(
+        <Provider store={mockStore(state)}>
+          <Router history={history}>
+            <QueryClientProvider client={new QueryClient()}>
+              <SearchPageContainer />
+            </QueryClientProvider>
+          </Router>
+        </Provider>
+      );
+    };
 
-  //   wrapper
-  //     .find('button[aria-label="searchBox.search_button_arialabel"]')
-  //     .simulate('click');
+    const wrapper = createWrapperNew();
 
-  //   await act(async () => {
-  //     await flushPromises();
-  //     wrapper.update();
-  //   });
-  // });
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+    expect(pushSpy).toHaveBeenCalledWith(
+      '?searchText=hello&dataset=false&datafile=false&investigation=true'
+    );
+    expect(pushSpy).toHaveBeenCalledWith(
+      expect.stringContaining('?startDate=Mon+Nov+11+2013')
+    );
+    expect(pushSpy).toHaveBeenCalledWith(
+      expect.stringContaining('?endDate=Fri+Nov+11+2016')
+    );
+  });
 
   it('initiates search when url contains the required parameters', async () => {
     const returnParams: QueryParams = {
