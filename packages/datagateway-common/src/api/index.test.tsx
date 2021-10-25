@@ -189,8 +189,8 @@ describe('generic api functions', () => {
         dataset: true,
         datafile: false,
         investigation: true,
-        startDate: new Date('2021-10-17T09:03:00.000Z'),
-        endDate: new Date('2021-10-25T09:03:00.000Z'),
+        startDate: new Date('Sun Oct 17 2021 10:03:00 GMT+0100'),
+        endDate: new Date('Mon Oct 25 2021 10:03:00 GMT+0100'),
       };
 
       const params = new URLSearchParams(
@@ -417,7 +417,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith(
-          expect.stringContaining('?startDate=Mon+Oct+25+2021+01')
+          expect.stringContaining('?startDate=Mon+Oct+25+2021')
         );
       });
     });
@@ -433,7 +433,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith(
-          expect.stringContaining('?endDate=Mon+Oct+25+2021+01')
+          expect.stringContaining('?endDate=Mon+Oct+25+2021')
         );
       });
     });
