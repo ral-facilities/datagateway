@@ -638,7 +638,12 @@ const PageContainer: React.FC = () => {
               )}
 
               {/* Hold the view for remainder of the page */}
-              <Grid item xs={12} aria-label="page-view">
+              <Grid
+                className="tour-dataview-data"
+                item
+                xs={12}
+                aria-label="page-view"
+              >
                 <ViewRouting
                   view={view}
                   location={location}
