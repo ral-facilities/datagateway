@@ -8,6 +8,7 @@ import {
   readSciGatewayToken,
   Table,
   tableLink,
+  externalSiteLink,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
@@ -214,7 +215,11 @@ const ISISMyDataTable = (): React.ReactElement => {
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           if (investigationData?.studyInvestigations?.[0]?.study) {
-            return investigationData.studyInvestigations[0].study.pid;
+            return externalSiteLink(
+              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
+              investigationData.studyInvestigations[0].study.pid,
+              view
+            );
           } else {
             return '';
           }

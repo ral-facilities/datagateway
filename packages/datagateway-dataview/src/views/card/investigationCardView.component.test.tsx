@@ -5,6 +5,7 @@ import {
   ListItemText,
   // SvgIcon,
 } from '@material-ui/core';
+
 import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
@@ -67,6 +68,7 @@ describe('Investigation - Card View', () => {
         title: 'Test 1',
         name: 'Test 1',
         visitId: '1',
+        doi: 'doi 1',
       },
     ];
     history = createMemoryHistory();
@@ -158,6 +160,20 @@ describe('Investigation - Card View', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('displays DOI and renders the Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testId="investigation-card-doi-link"]').first().text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testId="investigation-card-doi-link"]')
+        .first()
+        .exists('a')
+    ).toBe(true);
   });
 
   it('updates sort query params on sort', () => {

@@ -271,6 +271,17 @@ describe('Investigation Search Table component', () => {
     });
   });
 
+  it('displays DOI and renders the Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testId="table-study-doi-link"]').first().text()
+    ).toEqual('doi 1 ');
+
+    expect(
+      wrapper.find('[data-testId="table-study-doi-link"]').first().exists('a')
+    ).toBe(true);
+  });
+
   it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
 

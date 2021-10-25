@@ -21,6 +21,7 @@ Object {
   ],
   "data": Array [
     Object {
+      "doi": "doi 1",
       "id": 1,
       "name": "Test 1",
       "title": "Test 1",
@@ -35,6 +36,7 @@ Object {
   "filters": Object {},
   "information": Array [
     Object {
+      "content": [Function],
       "dataKey": "doi",
       "filterComponent": [Function],
       "icon": Object {

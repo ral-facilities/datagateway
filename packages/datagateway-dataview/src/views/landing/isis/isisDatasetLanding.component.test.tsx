@@ -54,25 +54,22 @@ describe('ISIS Dataset Landing page', () => {
     );
   };
 
-  const initialData: Dataset[] = [
-    {
-      id: 87,
-      name: 'Test 1',
-      description: 'foo bar',
-      modTime: '2019-06-10',
-      createTime: '2019-06-10',
-      doi: 'doi 1',
-      startDate: '2019-06-10',
-      endDate: '2019-06-11',
-      complete: true,
-      type: {
-        id: 1,
-        name: 'Type 1',
-        description: 'The first type',
-      },
+  const initialData: Dataset = {
+    id: 87,
+    name: 'Test 1',
+    description: 'foo bar',
+    modTime: '2019-06-10',
+    createTime: '2019-06-10',
+    doi: 'doi 1',
+    startDate: '2019-06-10',
+    endDate: '2019-06-11',
+    complete: true,
+    type: {
+      id: 1,
+      name: 'Type 1',
+      description: 'The first type',
     },
-  ];
-
+  };
   beforeEach(() => {
     mount = createMount();
 
@@ -127,6 +124,24 @@ describe('ISIS Dataset Landing page', () => {
     expect(history.location.search).toBe('?view=card');
   });
 
+  it('displays DOI and renders the Link ', () => {
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper
+        .find('[data-testId="isis-datset-landing-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testId="isis-datset-landing-doi-link"]')
+        .first()
+        .exists('a')
+    ).toBe(true);
+  });
+
   it('useDatasetSizes queries not sent if no data returned from useDatasetDetails', () => {
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: undefined,
@@ -136,7 +151,7 @@ describe('ISIS Dataset Landing page', () => {
   });
 
   it('incomplete datasets render correctly', () => {
-    initialData[0].complete = false;
+    initialData.complete = false;
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: initialData,
     });

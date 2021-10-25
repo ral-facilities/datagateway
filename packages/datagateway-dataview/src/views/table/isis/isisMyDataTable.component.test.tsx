@@ -401,6 +401,16 @@ describe('ISIS MyData table component', () => {
       '/browse/instrument/3/facilityCycle/8/investigation/1/dataset'
     );
   });
+  it('displays DOI and renders the Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testId="table-study-doi-link"]').first().text()
+    ).toEqual('study pid ');
+
+    expect(
+      wrapper.find('[data-testId="table-study-doi-link"]').first().exists('a')
+    ).toBe(true);
+  });
 
   it('renders details panel without datasets link if no facility cycles', () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({

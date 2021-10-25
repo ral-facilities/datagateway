@@ -74,6 +74,7 @@ describe('Investigation - Card View', () => {
         endDate: '2019-07-25',
         title: 'Test 1',
         visitId: '1',
+        doi: 'doi 1',
         investigationInstruments: [
           {
             id: 3,
@@ -339,7 +340,22 @@ describe('Investigation - Card View', () => {
         .text()
     ).toEqual('1 B');
   });
+  it('displays DOI and renders the Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testId="investigation-search-card-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
 
+    expect(
+      wrapper
+        .find('[data-testId="investigation-search-card-doi-link"]')
+        .first()
+        .exists('a')
+    ).toBe(true);
+  });
   it('does not render ISIS link when instrumentId cannot be found', () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
@@ -359,7 +375,7 @@ describe('Investigation - Card View', () => {
     });
     const wrapper = createWrapper('isis');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');
@@ -374,7 +390,7 @@ describe('Investigation - Card View', () => {
 
     const wrapper = createWrapper('data');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');
@@ -389,7 +405,7 @@ describe('Investigation - Card View', () => {
 
     const wrapper = createWrapper('dls');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');
@@ -414,7 +430,7 @@ describe('Investigation - Card View', () => {
 
     const wrapper = createWrapper('isis');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');

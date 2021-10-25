@@ -364,6 +364,23 @@ describe('ISIS Investigation Landing page', () => {
     );
   });
 
+  it('displays DOI and renders the Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testId="isis-investigation-landing-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testId="isis-investigation-landing-doi-link"]')
+        .first()
+        .exists('a')
+    ).toBe(true);
+  });
+
   it('copies data citation to clipboard', () => {
     // Mock the clipboard object
     const testWriteText = jest.fn();
