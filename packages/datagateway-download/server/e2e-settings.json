@@ -42,11 +42,11 @@
     },
     {
       "target": ".tour-download-remove-button",
-      "content": "This allows to remove all the selected results in one click"
+      "content": "Allows you to remove all the selected results in one click"
     },
     {
       "target": ".tour-download-download-button",
-      "content": "Allows to download the selection of results shown above."
+      "content": "Allows you to download the selection of results shown above."
     }
   ],
   "routes": [
