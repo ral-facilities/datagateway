@@ -399,6 +399,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {doi && (
                   <a
                     href={`https://doi.org/${doi}`}
+                    style={{ color: '#86b4ff' }}
                   >{`https://doi.org/${doi}`}</a>
                 )}
               </i>
