@@ -80,7 +80,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   };
 
   return (
-    <div>
+    <div className="tour-search-dates">
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <>
           <KeyboardDatePicker

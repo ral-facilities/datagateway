@@ -173,7 +173,6 @@ export const useDatafileCount = (
       return fetchDatafileCountQuery(apiUrl, filters, additionalFilters);
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },

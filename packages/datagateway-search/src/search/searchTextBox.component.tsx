@@ -42,6 +42,7 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
   return (
     <div>
       <TextField
+        className="tour-search-textfield"
         id="filled-search"
         label={t('searchBox.search_text')}
         type="search"

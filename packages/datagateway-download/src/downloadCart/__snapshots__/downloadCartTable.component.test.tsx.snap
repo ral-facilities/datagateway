@@ -18,6 +18,7 @@ exports[`Download cart table component renders correctly 1`] = `
       item={true}
     >
       <WithStyles(ForwardRef(Paper))
+        className="tour-download-results"
         style={
           Object {
             "height": "calc(100vh - 64px - 30px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)",
@@ -110,6 +111,7 @@ exports[`Download cart table component renders correctly 1`] = `
           item={true}
         >
           <WithStyles(ForwardRef(Button))
+            className="tour-download-remove-button"
             color="primary"
             disabled={true}
             id="removeAllButton"
@@ -123,6 +125,7 @@ exports[`Download cart table component renders correctly 1`] = `
           item={true}
         >
           <WithStyles(ForwardRef(Button))
+            className="tour-download-download-button"
             color="primary"
             disabled={true}
             id="downloadCartButton"
