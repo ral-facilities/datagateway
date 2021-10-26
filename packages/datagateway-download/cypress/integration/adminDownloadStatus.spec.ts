@@ -58,7 +58,7 @@ describe('Admin Download Status', () => {
   });
 
   it('should be able to scroll down and load more rows', () => {
-    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-rowcount="50"]', { timeout: 10000 }).should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
     cy.get('[aria-rowcount="75"]', { timeout: 10000 }).should('exist');
   });
