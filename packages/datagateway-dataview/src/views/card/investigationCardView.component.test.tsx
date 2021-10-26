@@ -162,7 +162,7 @@ describe('Investigation - Card View', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('displays DOI and renders the Link ', () => {
+  it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
       wrapper.find('[data-testId="investigation-card-doi-link"]').first().text()
@@ -170,10 +170,10 @@ describe('Investigation - Card View', () => {
 
     expect(
       wrapper
-        .find('[data-testId="investigation-card-doi-link"]')
+        .find('[data-testId="investigations-card-doi-link"]')
         .first()
-        .exists('a')
-    ).toBe(true);
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
   });
 
   it('updates sort query params on sort', () => {

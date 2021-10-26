@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link as MuiLink } from '@material-ui/core';
 import { createMount } from '@material-ui/core/test-utils';
 import ISISStudyLanding from './isisStudyLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -256,7 +255,7 @@ describe('ISIS Study Landing page', () => {
     );
   });
 
-  it('displays DOI and renders it as a link', () => {
+  it('displays DOI and renders the expected link', () => {
     (useStudy as jest.Mock).mockReturnValue({
       data: [
         {
@@ -275,13 +274,13 @@ describe('ISIS Study Landing page', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[aria-label="landing-study-doi-link"]')
+        .find('[data-testId="landing-study-doi-link"]')
         .first()
-        .exists(MuiLink)
-    ).toBe(true);
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
 
     expect(
-      wrapper.find('[aria-label="landing-study-doi-link"]').first().text()
+      wrapper.find('[data-testId="landing-study-doi-link"]').first().text()
     ).toEqual('doi 1');
   });
 

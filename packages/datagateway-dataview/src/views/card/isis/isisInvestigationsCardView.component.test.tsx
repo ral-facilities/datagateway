@@ -68,7 +68,7 @@ describe('ISIS Investigations - Card View', () => {
         name: 'Test 1',
         visitId: '1',
         studyInvestigations: [
-          { id: 1, study: { id: 1, pid: 'study pid test' }, name: 'study 1' },
+          { id: 1, study: { id: 1, pid: 'study pid' }, name: 'study 1' },
         ],
       },
     ];
@@ -188,21 +188,21 @@ describe('ISIS Investigations - Card View', () => {
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
-  it('displays DOI and renders the Link ', () => {
+  it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
         .find('[data-testId="isis-investigations-card-doi-link"]')
         .first()
         .text()
-    ).toEqual('study pid test');
+    ).toEqual('study pid');
 
     expect(
       wrapper
         .find('[data-testId="isis-investigations-card-doi-link"]')
         .first()
-        .exists('a')
-    ).toBe(true);
+        .prop('href')
+    ).toEqual('https://doi.org/study pid');
   });
 
   it('updates sort query params on sort', () => {

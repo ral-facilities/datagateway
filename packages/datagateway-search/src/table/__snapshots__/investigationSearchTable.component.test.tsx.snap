@@ -426,7 +426,6 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
           onFocus={[Function]}
         >
           doi 1
-           
         </a>
       </ForwardRef(Typography)>
     </WithStyles(ForwardRef(Typography))>

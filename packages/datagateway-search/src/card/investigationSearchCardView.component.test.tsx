@@ -340,7 +340,7 @@ describe('Investigation - Card View', () => {
         .text()
     ).toEqual('1 B');
   });
-  it('displays DOI and renders the Link ', () => {
+  it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
@@ -353,8 +353,8 @@ describe('Investigation - Card View', () => {
       wrapper
         .find('[data-testId="investigation-search-card-doi-link"]')
         .first()
-        .exists('a')
-    ).toBe(true);
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
   });
   it('does not render ISIS link when instrumentId cannot be found', () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({

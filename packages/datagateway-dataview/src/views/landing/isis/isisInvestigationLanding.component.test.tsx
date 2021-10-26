@@ -364,7 +364,7 @@ describe('ISIS Investigation Landing page', () => {
     );
   });
 
-  it('displays DOI and renders the Link ', () => {
+  it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
@@ -377,8 +377,8 @@ describe('ISIS Investigation Landing page', () => {
       wrapper
         .find('[data-testId="isis-investigation-landing-doi-link"]')
         .first()
-        .exists('a')
-    ).toBe(true);
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
   });
 
   it('copies data citation to clipboard', () => {

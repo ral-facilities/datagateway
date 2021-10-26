@@ -85,7 +85,7 @@ export function externalSiteLink(
 ): React.ReactElement {
   return (
     <Link href={linkUrl} data-testId="table-study-doi-link">
-      {linkText}{' '}
+      {linkText}
     </Link>
   );
 }

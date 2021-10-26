@@ -561,7 +561,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
           onFocus={[Function]}
         >
           study pid
-           
         </a>
       </ForwardRef(Typography)>
     </WithStyles(ForwardRef(Typography))>
@@ -805,7 +804,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
           onFocus={[Function]}
         >
           study pid
-           
         </a>
       </ForwardRef(Typography)>
     </WithStyles(ForwardRef(Typography))>

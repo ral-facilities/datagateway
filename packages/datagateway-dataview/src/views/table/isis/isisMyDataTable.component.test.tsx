@@ -401,15 +401,15 @@ describe('ISIS MyData table component', () => {
       '/browse/instrument/3/facilityCycle/8/investigation/1/dataset'
     );
   });
-  it('displays DOI and renders the Link ', () => {
+  it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
       wrapper.find('[data-testId="table-study-doi-link"]').first().text()
-    ).toEqual('study pid ');
+    ).toEqual('study pid');
 
     expect(
-      wrapper.find('[data-testId="table-study-doi-link"]').first().exists('a')
-    ).toBe(true);
+      wrapper.find('[data-testId="table-study-doi-link"]').first().prop('href')
+    ).toEqual('https://doi.org/study pid');
   });
 
   it('renders details panel without datasets link if no facility cycles', () => {

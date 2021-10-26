@@ -124,7 +124,7 @@ describe('ISIS Dataset Landing page', () => {
     expect(history.location.search).toBe('?view=card');
   });
 
-  it('displays DOI and renders the Link ', () => {
+  it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
 
     expect(
@@ -138,8 +138,8 @@ describe('ISIS Dataset Landing page', () => {
       wrapper
         .find('[data-testId="isis-dataset-landing-doi-link"]')
         .first()
-        .exists('a')
-    ).toBe(true);
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
   });
 
   it('useDatasetSizes queries not sent if no data returned from useDatasetDetails', () => {
