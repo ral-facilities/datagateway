@@ -57,6 +57,12 @@ describe('Admin Download Status', () => {
       });
   });
 
+  it('should be able to scroll down and load more rows', () => {
+    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
+    cy.get('[aria-rowcount="75"]').should('exist');
+  });
+
   describe('should be able to sort download items by', () => {
     it('ascending order', () => {
       cy.get('.react-draggable')
