@@ -78,9 +78,15 @@ const ArrowTooltip = (
   props: TooltipProps & {
     percentageWidth?: number;
     maxEnabledHeight?: number;
+    disableHoverListener?: boolean;
   }
 ): React.ReactElement => {
-  const { percentageWidth, maxEnabledHeight, ...tooltipProps } = props;
+  const {
+    percentageWidth,
+    maxEnabledHeight,
+    disableHoverListener,
+    ...tooltipProps
+  } = props;
 
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
@@ -134,7 +140,18 @@ const ArrowTooltip = (
     window.addEventListener('resize', updateTooltip);
     updateTooltip();
     return () => window.removeEventListener('resize', updateTooltip);
-  }, [tooltipElement, setTooltipVisible, percentageWidth, maxEnabledHeight]);
+  }, [
+    tooltipElement,
+    setTooltipVisible,
+    percentageWidth,
+    maxEnabledHeight,
+    disableHoverListener,
+  ]);
+
+  let shouldDisableHoverListener = !isTooltipVisible;
+  //Allow disableHoverListener to be overidden
+  if (disableHoverListener !== undefined)
+    shouldDisableHoverListener = disableHoverListener;
 
   return (
     <Tooltip
@@ -157,8 +174,7 @@ const ArrowTooltip = (
           <span className={arrow} ref={setArrowRef} />
         </React.Fragment>
       }
-      // TODO: This shouldn't really be calculated inside and should still be possible to be overriden by a prop.
-      disableHoverListener={!isTooltipVisible}
+      disableHoverListener={shouldDisableHoverListener}
     />
   );
 };

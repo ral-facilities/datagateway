@@ -8,13 +8,15 @@ describe('ArrowTooltip component', () => {
   let mount;
   const createWrapper = (
     percentageWidth?: number,
-    maxEnabledHeight?: number
+    maxEnabledHeight?: number,
+    disableHoverListener?: boolean
   ): ReactWrapper => {
     return mount(
       <ArrowTooltip
         title={'test'}
         percentageWidth={percentageWidth}
         maxEnabledHeight={maxEnabledHeight}
+        disableHoverListener={disableHoverListener}
       >
         <div />
       </ArrowTooltip>
@@ -80,5 +82,30 @@ describe('ArrowTooltip component', () => {
 
     const wrapper = createWrapper(undefined, undefined);
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(false);
+  });
+
+  it('tooltip disabled when offsetWidth >= scrollWidth', () => {
+    // Mock the value of scrollWidth
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', {
+      configurable: true,
+      value: 0,
+    });
+
+    const wrapper = createWrapper(undefined, undefined);
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
+  });
+
+  it('tooltip disabled when disableHoverListener = false', () => {
+    // From 'tooltip disabled when offsetHeight >= maxEnabledHeight' this is a case that should enable the
+    // hover listener, but force it to be disabled
+    const wrapper = createWrapper(-1, -1, false);
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(false);
+  });
+
+  it('tooltip enabled when disableHoverListener = true', () => {
+    // From 'tooltip unchanged when offsetHeight < maxEnabledHeight' this is a case that should disable the
+    // hover listener, but force it to be enabled
+    const wrapper = createWrapper(-1, 1, true);
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
   });
 });
