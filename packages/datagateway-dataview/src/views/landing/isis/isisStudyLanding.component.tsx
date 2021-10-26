@@ -438,7 +438,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {pid && (
                   <a
                     href={`https://doi.org/${pid}`}
-                    style={{ color: '#80acff' }}
+                    style={{ color: '#86b4ff' }}
                   >{`https://doi.org/${pid}`}</a>
                 )}
               </i>
