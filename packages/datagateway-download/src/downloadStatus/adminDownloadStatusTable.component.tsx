@@ -66,7 +66,6 @@ const AdminDownloadStatusTable: React.FC = () => {
       | { startDate?: string; endDate?: string };
   }>({});
   const [data, setData] = React.useState<FormattedDownload[]>([]);
-  const [dataCount, setDataCount] = React.useState<number>(-1);
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
   const [lastChecked, setLastChecked] = React.useState(
@@ -187,19 +186,6 @@ const AdminDownloadStatusTable: React.FC = () => {
     ]
   );
 
-  const fetchDataCount = useCallback(() => {
-    const queryOffset = buildQueryOffset();
-    fetchAdminDownloads(
-      {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
-      },
-      queryOffset
-    ).then((downloads) => {
-      setDataCount(downloads.length);
-    });
-  }, [buildQueryOffset, settings.downloadApiUrl, settings.facilityName]);
-
   React.useEffect(() => {
     // Clear the current contents, this will make sure
     // there is visually a refresh of the table
@@ -207,13 +193,6 @@ const AdminDownloadStatusTable: React.FC = () => {
 
     if (dgDownloadElement) {
       setDataLoaded(false);
-      // Setting a max value as some data count fetch requests can take a long time to respond.
-      // This allows for the table to be scrolled and new rows to be loaded without having to
-      // wait for the count to be set once these requests respond. If the table is scrolled
-      // to the bottom and there are no more rows to be loaded then the underlying InfiniteLoader
-      // component is designed to stop requesting new rows.
-      setDataCount(Number.MAX_VALUE);
-      fetchDataCount();
       fetchInitialData();
       setDataLoaded(true);
     }
@@ -224,7 +203,6 @@ const AdminDownloadStatusTable: React.FC = () => {
     filters,
     sort,
     fetchInitialData,
-    fetchDataCount,
   ]);
 
   React.useEffect(() => {
@@ -236,7 +214,7 @@ const AdminDownloadStatusTable: React.FC = () => {
       setLastChecked(new Date().toLocaleString());
       setDataLoaded(true);
     }
-  }, [fetchDataCount, fetchInitialData, refreshDownloads]);
+  }, [fetchInitialData, refreshDownloads]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -409,7 +387,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                   data={data}
                   loading={!dataLoaded}
                   loadMoreRows={fetchMoreData}
-                  totalRowCount={dataCount}
+                  totalRowCount={Number.MAX_SAFE_INTEGER}
                   actionsWidth={100}
                   actions={[
                     function RestoreButton({ rowData }: TableActionProps) {
