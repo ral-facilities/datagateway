@@ -15,7 +15,7 @@ Object {
           "name": "study 1",
           "study": Object {
             "id": 1,
-            "pid": "study pid test",
+            "pid": "study pid",
           },
         },
       ],

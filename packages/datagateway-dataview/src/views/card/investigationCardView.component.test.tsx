@@ -170,7 +170,7 @@ describe('Investigation - Card View', () => {
 
     expect(
       wrapper
-        .find('[data-testId="investigations-card-doi-link"]')
+        .find('[data-testId="investigation-card-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi 1');
