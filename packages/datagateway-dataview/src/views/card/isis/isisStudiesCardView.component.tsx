@@ -17,6 +17,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import { format, sub, set } from 'date-fns';
 
 interface ISISStudiesCVProps {
   instrumentId: string;
@@ -40,12 +41,27 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const unembargoDate = format(
+    // set s and ms to 0 to escape recursive loop of fetching data every time they change
+    sub(set(new Date(), { seconds: 0, milliseconds: 0 }), { years: 3 }),
+    'yyyy-MM-dd HH:mm:ss'
+  );
+
   const { data: totalDataCount, isLoading: countLoading } = useStudyCount([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
         'studyInvestigations.investigation.investigationInstruments.instrument.id': {
           eq: instrumentId,
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        // TODO: check exactly how ISIS does this
+        'studyInvestigations.investigation.endDate': {
+          lte: unembargoDate,
         },
       }),
     },
@@ -56,6 +72,15 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       filterValue: JSON.stringify({
         'studyInvestigations.investigation.investigationInstruments.instrument.id': {
           eq: instrumentId,
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        // TODO: check exactly how ISIS does this
+        'studyInvestigations.investigation.endDate': {
+          lte: unembargoDate,
         },
       }),
     },
