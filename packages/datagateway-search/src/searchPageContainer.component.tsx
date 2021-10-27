@@ -28,8 +28,8 @@ import {
   usePushView,
   useReplaceView,
   usePushSearchParams,
-  usePushStartDate,
-  usePushEndDate,
+  usePushSearchStartDate,
+  usePushSearchEndDate,
   useCart,
   SelectionAlert,
 } from 'datagateway-common';
@@ -197,8 +197,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const pushView = usePushView();
   const replaceView = useReplaceView();
   const pushSearchParams = usePushSearchParams();
-  const pushStartDate = usePushStartDate();
-  const pushEndDate = usePushEndDate();
+  const pushStartDate = usePushSearchStartDate();
+  const pushEndDate = usePushSearchEndDate();
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';

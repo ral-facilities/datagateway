@@ -21,6 +21,7 @@ import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import format from 'date-fns/format';
 
 export * from './cart';
 export * from './facilityCycles';
@@ -137,21 +138,11 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
 
   const queryParams = new URLSearchParams();
 
-  const formatDate = (date: Date): string => {
-    const day = date.getUTCDate();
-    //January = 0, not 1
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
-    return `${year}-${month > 9 ? month : '0' + month}-${
-      day > 9 ? day : '0' + day
-    }`;
-  };
-
   // Loop and add all the query parameters which is in use.
   for (const [q, v] of Object.entries(query)) {
     if (v !== null && q !== 'filters' && q !== 'sort') {
       if (q === 'startDate' || q === 'endDate') {
-        queryParams.append(q, formatDate(v));
+        queryParams.append(q, format(v, 'yyyy-MM-dd'));
       } else queryParams.append(q, v);
     }
   }
@@ -397,7 +388,7 @@ export const usePushSearchParams = (): ((
   );
 };
 
-export const usePushStartDate = (): ((startDate: Date) => void) => {
+export const usePushSearchStartDate = (): ((startDate: Date) => void) => {
   const { push } = useHistory();
 
   return React.useCallback(
@@ -412,7 +403,7 @@ export const usePushStartDate = (): ((startDate: Date) => void) => {
   );
 };
 
-export const usePushEndDate = (): ((endDate: Date) => void) => {
+export const usePushSearchEndDate = (): ((endDate: Date) => void) => {
   const { push } = useHistory();
 
   return React.useCallback(
