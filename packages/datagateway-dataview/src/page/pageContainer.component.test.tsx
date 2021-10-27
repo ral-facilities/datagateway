@@ -206,6 +206,14 @@ describe('PageContainer - Tests', () => {
     ).toEqual('app.view_table');
   });
 
+  it('displays role selector when on My Data route', () => {
+    history.replace(paths.myData.root);
+
+    const wrapper = createWrapper();
+
+    expect(wrapper.find('#role-selector').exists()).toBeTruthy();
+  });
+
   it('display filter warning on toggle table', () => {
     history.replace(`${paths.toggle.investigation}?view=table`);
 
