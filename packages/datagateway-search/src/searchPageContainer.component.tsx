@@ -263,15 +263,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   ]);
 
   React.useEffect(() => {
-    //Start search automatically if URL has been supplied with parameters
-    if (
-      queryParams.searchText ||
-      queryParams.dataset !== null ||
-      queryParams.datafile !== null ||
-      queryParams.investigation !== null ||
-      queryParams.startDate ||
-      queryParams.endDate
-    )
+    //Start search automatically if URL has been supplied with parameters (other than just the checkbox states)
+    if (queryParams.searchText || queryParams.startDate || queryParams.endDate)
       initiateSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

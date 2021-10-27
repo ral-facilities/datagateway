@@ -5,13 +5,8 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from './state/app.types';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
-import {
-  dGCommonInitialState,
-  parseSearchToQuery,
-  QueryParams,
-  useCart,
-} from 'datagateway-common';
-import { createMemoryHistory } from 'history';
+import { dGCommonInitialState, useCart } from 'datagateway-common';
+import { createMemoryHistory, History } from 'history';
 import { createMount } from '@material-ui/core/test-utils';
 import { MemoryRouter, Router } from 'react-router-dom';
 import SearchPageContainer from './searchPageContainer.component';
@@ -45,22 +40,31 @@ jest.mock('datagateway-common', () => {
 describe('SearchPageContainer - Tests', () => {
   let state: StateType;
   let mount;
+  let queryClient: QueryClient;
+  let history: History;
 
-  const createWrapper = (path = '/search/data'): ReactWrapper => {
+  const createWrapper = (
+    h: History = history,
+    client: QueryClient = queryClient
+  ): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     return mount(
       <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
-          <QueryClientProvider client={new QueryClient()}>
+        <Router history={h}>
+          <QueryClientProvider client={queryClient}>
             <SearchPageContainer />
           </QueryClientProvider>
-        </MemoryRouter>
+        </Router>
       </Provider>
     );
   };
 
   beforeEach(() => {
     mount = createMount();
+    queryClient = new QueryClient();
+    history = createMemoryHistory({
+      initialEntries: ['/search/data'],
+    });
 
     const dGSearchInitialState = {
       searchText: '',
@@ -114,7 +118,16 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('renders searchPageContainer correctly', () => {
-    const wrapper = createWrapper('/');
+    const mockStore = configureStore([thunk]);
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
+          <QueryClientProvider client={queryClient}>
+            <SearchPageContainer />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
 
     expect(wrapper).toMatchSnapshot();
   });
@@ -180,14 +193,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if date and search text properties are in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      searchText: 'hello',
-      selectDate: {
-        startDate: new Date('2013-11-11'),
-        endDate: new Date('2016-11-11'),
-      },
-    };
+    history.replace(
+      '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11'
+    );
 
     const wrapper = createWrapper();
 
@@ -212,20 +220,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if date and search text properties are in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      searchText: 'hello',
-      selectDate: {
-        startDate: new Date('2013-11-11'),
-        endDate: new Date('2016-11-11'),
-      },
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: true,
-        datafile: false,
-        investigation: false,
-      },
-    };
+    history.replace(
+      '/search/data?searchText=hello&datafile=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
+    );
 
     const wrapper = createWrapper();
 
@@ -250,20 +247,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if date and search text properties are in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      searchText: 'hello',
-      selectDate: {
-        startDate: new Date('2013-11-11'),
-        endDate: new Date('2016-11-11'),
-      },
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: false,
-        datafile: false,
-        investigation: true,
-      },
-    };
+    history.replace(
+      '/search/data?searchText=hello&dataset=false&datafile=false&startDate=2013-11-11&endDate=2016-11-11'
+    );
 
     const wrapper = createWrapper();
 
@@ -288,13 +274,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if only start date is in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      selectDate: {
-        ...state.dgsearch.selectDate,
-        startDate: new Date('2013-11-11'),
-      },
-    };
+    history.replace(
+      '/search/data?dataset=false&investigation=false&startDate=2013-11-11'
+    );
 
     const wrapper = createWrapper();
 
@@ -318,19 +300,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if only start date is in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      selectDate: {
-        ...state.dgsearch.selectDate,
-        startDate: new Date('2013-11-11'),
-      },
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: true,
-        datafile: false,
-        investigation: false,
-      },
-    };
+    history.replace(
+      '/search/data?datafile=false&investigation=false&startDate=2013-11-11'
+    );
 
     const wrapper = createWrapper();
 
@@ -354,19 +326,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if only start date is in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      selectDate: {
-        ...state.dgsearch.selectDate,
-        startDate: new Date('2013-11-11'),
-      },
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: false,
-        datafile: false,
-        investigation: true,
-      },
-    };
+    history.replace(
+      '/search/data?dataset=false&datafile=false&startDate=2013-11-11'
+    );
 
     const wrapper = createWrapper();
 
@@ -390,13 +352,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if only end date is in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      selectDate: {
-        ...state.dgsearch.selectDate,
-        endDate: new Date('2016-11-11'),
-      },
-    };
+    history.replace(
+      '/search/data?dataset=false&investigation=false&endDate=2016-11-11'
+    );
 
     const wrapper = createWrapper();
 
@@ -420,19 +378,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if only end date is in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      selectDate: {
-        ...state.dgsearch.selectDate,
-        endDate: new Date('2016-11-11'),
-      },
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: true,
-        datafile: false,
-        investigation: false,
-      },
-    };
+    history.replace(
+      '/search/data?datafile=false&investigation=false&endDate=2016-11-11'
+    );
 
     const wrapper = createWrapper();
 
@@ -456,19 +404,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if only end date is in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      selectDate: {
-        ...state.dgsearch.selectDate,
-        endDate: new Date('2016-11-11'),
-      },
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: false,
-        datafile: false,
-        investigation: true,
-      },
-    };
+    history.replace(
+      '/search/data?dataset=false&datafile=false&endDate=2016-11-11'
+    );
 
     const wrapper = createWrapper();
 
@@ -492,6 +430,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if date and search text properties are not in use', () => {
+    history.replace('/search/data?dataset=false&investigation=false');
+
     const wrapper = createWrapper();
 
     wrapper
@@ -514,15 +454,7 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if date and search text properties are not in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: true,
-        datafile: false,
-        investigation: false,
-      },
-    };
+    history.replace('/search/data?datafile=false&investigation=false');
 
     const wrapper = createWrapper();
 
@@ -546,15 +478,7 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if date and search text properties are not in use', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: false,
-        datafile: false,
-        investigation: true,
-      },
-    };
+    history.replace('/search/data?dataset=false&datafile=false');
 
     const wrapper = createWrapper();
 
@@ -578,30 +502,20 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('sends actions to update tabs when user clicks search button', async () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: false,
-        datafile: false,
-        investigation: true,
-      },
-    };
-
     const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
-        <MemoryRouter
-          initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
-        >
+        <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <SearchPageContainer />
           </QueryClientProvider>
-        </MemoryRouter>
+        </Router>
       </Provider>
     );
     testStore.clearActions();
+
+    history.replace('/search/data?dataset=false&datafile=false');
 
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
@@ -693,125 +607,13 @@ describe('SearchPageContainer - Tests', () => {
     expect(wrapper.exists('[aria-label="selection-alert"]')).toBeFalsy();
   });
 
-  it('generates correct url on search', async () => {
-    const history = createMemoryHistory();
-    history.push('/search/data');
-    const pushSpy = jest.spyOn(history, 'push');
-
-    state.dgsearch = {
-      ...state.dgsearch,
-      searchText: 'hello',
-      selectDate: {
-        startDate: new Date('2013-11-11'),
-        endDate: new Date('2016-11-11'),
-      },
-      checkBox: {
-        ...state.dgsearch.checkBox,
-        dataset: false,
-        datafile: false,
-        investigation: true,
-      },
-    };
-
-    const createWrapperNew = (): ReactWrapper => {
-      const mockStore = configureStore([thunk]);
-      return mount(
-        <Provider store={mockStore(state)}>
-          <Router history={history}>
-            <QueryClientProvider client={new QueryClient()}>
-              <SearchPageContainer />
-            </QueryClientProvider>
-          </Router>
-        </Provider>
-      );
-    };
-
-    const wrapper = createWrapperNew();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-    expect(pushSpy).toHaveBeenCalledWith(
-      '?searchText=hello&dataset=false&datafile=false&investigation=true'
+  it('initiates search when visiting a direct url', async () => {
+    history.replace(
+      '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11'
     );
-    expect(pushSpy).toHaveBeenCalledWith(
-      expect.stringContaining('?startDate=2013-11-11')
-    );
-    expect(pushSpy).toHaveBeenCalledWith(
-      expect.stringContaining('?endDate=2016-11-11')
-    );
-  });
-
-  it('initiates search when url contains the required parameters', async () => {
-    const returnParams: QueryParams = {
-      view: 'card',
-      search: null,
-      page: null,
-      results: null,
-      filters: {},
-      sort: {},
-      searchText: 'test',
-      dataset: false,
-      datafile: true,
-      investigation: false,
-      startDate: new Date('2021-10-23T00:00:00Z'),
-      endDate: new Date('2021-10-25T00:00:00Z'),
-    };
-
-    const dGSearchInitialState = {
-      searchText: returnParams.searchText,
-      selectDate: {
-        startDate: returnParams.startDate,
-        endDate: returnParams.endDate,
-      },
-      checkBox: {
-        dataset: returnParams.dataset,
-        datafile: returnParams.datafile,
-        investigation: returnParams.investigation,
-      },
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-        currentTab: 'investigation',
-      },
-      sideLayout: false,
-      settingsLoaded: true,
-    };
-
-    state = {
-      dgcommon: {
-        ...dGCommonInitialState,
-        urls: {
-          ...dGCommonInitialState.urls,
-          icatUrl: 'https://example.com/icat',
-        },
-      },
-      dgsearch: dGSearchInitialState,
-      router: {
-        action: 'POP',
-        location: {
-          hash: '',
-          key: '',
-          pathname: '/',
-          search: '',
-          state: {},
-        },
-      },
-    };
-    (parseSearchToQuery as jest.Mock).mockReturnValue(returnParams);
 
     const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    wrapper.update();
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
@@ -820,9 +622,9 @@ describe('SearchPageContainer - Tests', () => {
           maxCount: 300,
           query: {
             target: 'Datafile',
-            lower: '202110230000',
-            text: 'test',
-            upper: '202110252359',
+            lower: '201311110000',
+            text: 'hello',
+            upper: '201611112359',
           },
           sessionId: null,
         },
