@@ -95,11 +95,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         setDataLoaded(true);
         setSizesLoaded(false);
         setSizesFinished(false);
-        getCartDatafileCount(cartItems, {
-          apiUrl: settings.apiUrl,
-        }).then((count) => {
-          setFileCount(count);
-        });
       });
   }, [
     settings.facilityName,
@@ -147,14 +142,30 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     settings.downloadApiUrl,
   ]);
 
-  //Update file count, whenever data is changed
   React.useEffect(() => {
-    getCartDatafileCount(data, {
-      apiUrl: settings.apiUrl,
-    }).then((count) => {
-      setFileCount(count);
-    });
-  }, [data, settings.apiUrl]);
+    //Recalculate the file count whenever data is changed, but make sure
+    //sizes have been loaded as data is obtained in chunks
+    if (
+      settings.facilityName &&
+      settings.apiUrl &&
+      settings.downloadApiUrl &&
+      dgDownloadElement &&
+      sizesLoaded
+    ) {
+      getCartDatafileCount(data, {
+        apiUrl: settings.apiUrl,
+      }).then((count) => {
+        setFileCount(count);
+      });
+    }
+  }, [
+    data,
+    sizesLoaded,
+    settings.facilityName,
+    settings.apiUrl,
+    settings.downloadApiUrl,
+    dgDownloadElement,
+  ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
