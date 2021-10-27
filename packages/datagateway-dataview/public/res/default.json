@@ -5,10 +5,10 @@
     "view_cards": "Display as cards",
     "max_results": "Max Results",
     "error": "Something went wrong...",
-    "open_data_warning" : {
-      "message" : "Open data",
-      "tooltip" : "Only open data is displayed when browsing anonymously. Please login to see embargoed data.",
-      "tooltip_link" : "Click here to learn more about our data policy."
+    "open_data_warning": {
+      "message": "Open data",
+      "tooltip": "Only open data is displayed when browsing anonymously. Please login to see embargoed data.",
+      "tooltip_link": "Click here to learn more about our data policy."
     }
   },
   "breadcrumbs": {
@@ -164,7 +164,6 @@
     }
   },
   "my_data_table": {
-    "login_warning_msg": "You need to be logged in to be able to see your own data.",
     "role_selector": "Select role",
     "all_roles": "All"
   },
@@ -186,9 +185,14 @@
       "title": ["Title", "Name", "Type"],
       "fingerprint": ["Visit ID", "Name"],
       "public": ["DOI"],
-      "confirmation_number": ["Dataset Count"," Datafile Count"],
+      "confirmation_number": ["Dataset Count", " Datafile Count"],
       "assessment": ["Instrument", "Beamline"],
-      "calendar_today": ["Start Date", "End Date", "Create Time", "Modified Time"],
+      "calendar_today": [
+        "Start Date",
+        "End Date",
+        "Create Time",
+        "Modified Time"
+      ],
       "explore": ["Location"],
       "save": ["Size"],
       "description": ["Description", "Summary"],
@@ -211,12 +215,12 @@
     "downloadLabel": "3. Download",
     "downloadDescription": "Retrieve the experimental data using a variety of download methods."
   },
-  "selec_alert" : {
+  "selec_alert": {
     "added": "{{count}} item has been added to selections.",
-    "added_plural" : "{{count}} items have been added to selections.",
-    "removed" : "{{count}} item has been removed from selections.",
-    "removed_plural" : "{{count}} items have been removed from selections.",
-    "link" : "Go to selections."
+    "added_plural": "{{count}} items have been added to selections.",
+    "removed": "{{count}} item has been removed from selections.",
+    "removed_plural": "{{count}} items have been removed from selections.",
+    "link": "Go to selections."
   },
   "doi_constants": {
     "keywords": [
