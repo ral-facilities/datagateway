@@ -40,7 +40,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains('STUDY 494');
+    cy.get('#card').contains('STUDY 29');
 
     cy.contains('[role="button"]', 'Start Date')
       .click()

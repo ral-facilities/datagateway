@@ -141,8 +141,8 @@ describe('ISIS - Studies Table', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by Name"]').first().type('3');
 
-      cy.get('[aria-rowcount="5"]').should('exist');
-      cy.get('[aria-rowindex="4"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-rowindex="3"] [aria-colindex="2"]').contains(
         'Peace attack I history attack. Together company interview often successful few. A fall yard let which house.'
       );
     });
@@ -150,9 +150,9 @@ describe('ISIS - Studies Table', () => {
     it('date between', () => {
       cy.get('input[id="Start Date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-rowcount="11"]').should('exist');
-      cy.get('[aria-rowindex="9"] [aria-colindex="2"]').contains(
-        'Old ok order wall bank. Floor science physical ask activity alone. Language sort test bill to century. Four direction reason. Its arm water box. Also idea quite own. None special now million.'
+      cy.get('[aria-rowcount="8"]').should('exist');
+      cy.get('[aria-rowindex="8"] [aria-colindex="2"]').contains(
+        'Peace attack I history attack. Together company interview often successful few. A fall yard let which house.'
       );
     });
 
