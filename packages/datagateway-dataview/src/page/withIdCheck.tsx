@@ -105,9 +105,9 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
               <Grid container item justify="center">
                 <Typography variant="body1" className={classes.message}>
                   <Trans t={t} i18nKey="loading.message">
-                    We&apos;re sorry, it seems as though the URL you requested
-                    is attempting to fetch incorrect data. Please double check
-                    your URL, navigate back via the breadcrumbs or{' '}
+                    We&#39;re sorry, it seems as though the URL you requested is
+                    attempting to fetch incorrect data. Please double check your
+                    URL, navigate back via the breadcrumbs or{' '}
                     <Link
                       component={RouterLink}
                       to={props.location.pathname
