@@ -17,7 +17,7 @@ describe('Admin Download Status', () => {
     // Ensure the downloads are cleared before running tests.
     cy.clearDownloads();
 
-    cy.seedDownloadCart().then(() => {
+    cy.seedDownloads().then(() => {
       cy.visit('/admin-download');
     });
   });
@@ -55,12 +55,6 @@ describe('Admin Download Status', () => {
           /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
         );
       });
-  });
-
-  it('should be able to scroll down and load more rows', () => {
-    cy.get('[aria-rowcount="50"]', { timeout: 30000 }).should('exist');
-    cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="75"]', { timeout: 30000 }).should('exist');
   });
 
   describe('should be able to sort download items by', () => {
