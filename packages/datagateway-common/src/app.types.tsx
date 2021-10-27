@@ -299,9 +299,9 @@ export interface QueryParams {
   page: number | null;
   results: number | null;
   searchText: string | null;
-  dataset: boolean | null;
-  datafile: boolean | null;
-  investigation: boolean | null;
+  dataset: boolean;
+  datafile: boolean;
+  investigation: boolean;
   startDate: Date | null;
   endDate: Date | null;
 }

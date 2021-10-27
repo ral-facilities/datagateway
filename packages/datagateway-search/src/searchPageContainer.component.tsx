@@ -19,16 +19,13 @@ import SearchPageCardView from './searchPageCardView';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useHistory } from 'react-router-dom';
 import {
   useLuceneSearch,
   ViewsType,
   parseSearchToQuery,
   useUpdateView,
-  usePushSearchParams,
-  usePushSearchStartDate,
-  usePushSearchEndDate,
+  usePushSearchText,
   useCart,
   SelectionAlert,
 } from 'datagateway-common';
@@ -153,60 +150,25 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const { view } = queryParams;
+  const {
+    view,
+    dataset,
+    datafile,
+    investigation,
+    startDate,
+    endDate,
+  } = queryParams;
 
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
-  const pushSearchParams = usePushSearchParams();
-  const pushStartDate = usePushSearchStartDate();
-  const pushEndDate = usePushSearchEndDate();
+  const pushSearchText = usePushSearchText();
 
   const [searchText, setSearchText] = React.useState(
     queryParams.searchText ? queryParams.searchText : ''
   );
 
-  const [dataset, toggleDataset] = React.useState(
-    queryParams.dataset !== null ? queryParams.dataset : true
-  );
-
-  const [datafile, toggleDatafile] = React.useState(
-    queryParams.datafile !== null ? queryParams.datafile : true
-  );
-
-  const [investigation, toggleInvestigation] = React.useState(
-    queryParams.investigation !== null ? queryParams.investigation : true
-  );
-
-  const [startDate, setStartDate] = React.useState(
-    queryParams.startDate ? queryParams.startDate : null
-  );
-
-  const [endDate, setEndDate] = React.useState(
-    queryParams.endDate ? queryParams.endDate : null
-  );
-
   const handleSearchText = (searchText: string): void => {
     setSearchText(searchText);
-  };
-
-  const handleToggleDataset = (toggleOption: boolean): void => {
-    toggleDataset(toggleOption);
-  };
-
-  const handleToggleDatafile = (toggleOption: boolean): void => {
-    toggleDatafile(toggleOption);
-  };
-
-  const handleToggleInvestigation = (toggleOption: boolean): void => {
-    toggleInvestigation(toggleOption);
-  };
-
-  const handleSelectStartDate = (startDate: MaterialUiPickersDate): void => {
-    setStartDate(startDate);
-  };
-
-  const handleSelectEndDate = (endDate: MaterialUiPickersDate): void => {
-    setEndDate(endDate);
   };
 
   const handleButtonChange = React.useCallback((): void => {
@@ -264,9 +226,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     investigationsFetching || datasetsFetching || datafilesFetching;
 
   const initiateSearch = React.useCallback(() => {
-    pushSearchParams(searchText, dataset, datafile, investigation);
-    if (startDate) pushStartDate(startDate);
-    if (endDate) pushEndDate(endDate);
+    pushSearchText(searchText);
 
     if (dataset) {
       // Fetch lucene datasets
@@ -293,11 +253,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     datafile,
     dataset,
     investigation,
-    startDate,
-    endDate,
-    pushSearchParams,
-    pushStartDate,
-    pushEndDate,
+    pushSearchText,
     searchDatafiles,
     searchDatasets,
     searchInvestigations,
@@ -354,18 +310,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 <Paper style={{ height: '100%', width: '100%' }}>
                   <SearchBoxContainerSide
                     searchText={searchText}
-                    dataset={dataset}
-                    datafile={datafile}
-                    investigation={investigation}
-                    startDate={startDate}
-                    endDate={endDate}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchText}
-                    onToggleDataset={handleToggleDataset}
-                    onToggleDatafile={handleToggleDatafile}
-                    onToggleInvestigation={handleToggleInvestigation}
-                    onSelectStartDate={handleSelectStartDate}
-                    onSelectEndDate={handleSelectEndDate}
                   />
                 </Paper>
               ) : (
@@ -378,18 +324,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 >
                   <SearchBoxContainer
                     searchText={searchText}
-                    dataset={dataset}
-                    datafile={datafile}
-                    investigation={investigation}
-                    startDate={startDate}
-                    endDate={endDate}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchText}
-                    onToggleDataset={handleToggleDataset}
-                    onToggleDatafile={handleToggleDatafile}
-                    onToggleInvestigation={handleToggleInvestigation}
-                    onSelectStartDate={handleSelectStartDate}
-                    onSelectEndDate={handleSelectEndDate}
                   />
                 </Paper>
               )}

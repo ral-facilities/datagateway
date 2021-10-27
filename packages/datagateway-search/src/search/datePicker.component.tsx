@@ -7,15 +7,16 @@ import {
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useTranslation } from 'react-i18next';
+import {
+  parseSearchToQuery,
+  usePushSearchEndDate,
+  usePushSearchStartDate,
+} from 'datagateway-common';
+import { useLocation } from 'react-router';
 
 interface DatePickerProps {
-  startDate: MaterialUiPickersDate;
-  endDate: MaterialUiPickersDate;
   initiateSearch: () => void;
-  onSelectStartDate: (startDate: MaterialUiPickersDate) => void;
-  onSelectEndDate: (endDate: MaterialUiPickersDate) => void;
 }
 
 interface DatePickerStoreProps {
@@ -33,17 +34,18 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
-  const {
-    startDate,
-    endDate,
-    sideLayout,
-    onSelectStartDate,
-    onSelectEndDate,
-    initiateSearch,
-  } = props;
+  const { sideLayout, initiateSearch } = props;
   const classes = useStyles();
 
   const [t] = useTranslation();
+
+  const location = useLocation();
+  const { startDate, endDate } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+  const pushStartDate = usePushSearchStartDate();
+  const pushEndDate = usePushSearchEndDate();
 
   const isValidSearch = (): boolean => {
     // Check the values for each date field are valid dates
@@ -86,7 +88,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             format="yyyy-MM-dd"
             value={startDate}
             onChange={(date) => {
-              onSelectStartDate(date);
+              pushStartDate(date);
             }}
             onKeyDown={handleKeyDown}
             animateYearScrolling
@@ -107,7 +109,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             format="yyyy-MM-dd"
             value={endDate}
             onChange={(date) => {
-              onSelectEndDate(date);
+              pushEndDate(date);
             }}
             onKeyDown={handleKeyDown}
             animateYearScrolling

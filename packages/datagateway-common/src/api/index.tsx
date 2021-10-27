@@ -119,9 +119,9 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     filters: parsedFilters,
     sort: parsedSort,
     searchText: searchText ? searchText : null,
-    dataset: dataset !== null ? dataset === 'true' : null,
-    datafile: datafile !== null ? datafile === 'true' : null,
-    investigation: investigation !== null ? investigation === 'true' : null,
+    dataset: dataset !== null ? dataset === 'true' : true,
+    datafile: datafile !== null ? datafile === 'true' : true,
+    investigation: investigation !== null ? investigation === 'true' : true,
     startDate: startDate,
     endDate: endDate,
   };
@@ -348,8 +348,22 @@ export const useUpdateView = (
   );
 };
 
-export const usePushSearchParams = (): ((
-  searchText: string,
+export const usePushSearchText = (): ((searchText: string) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (searchText: string) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        searchText,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushSearchToggles = (): ((
   dataset: boolean,
   datafile: boolean,
   investigation: boolean
@@ -357,15 +371,9 @@ export const usePushSearchParams = (): ((
   const { push } = useHistory();
 
   return React.useCallback(
-    (
-      searchText: string,
-      dataset: boolean,
-      datafile: boolean,
-      investigation: boolean
-    ) => {
+    (dataset: boolean, datafile: boolean, investigation: boolean) => {
       const query = {
         ...parseSearchToQuery(window.location.search),
-        searchText,
         dataset,
         datafile,
         investigation,
@@ -376,31 +384,51 @@ export const usePushSearchParams = (): ((
   );
 };
 
-export const usePushSearchStartDate = (): ((startDate: Date) => void) => {
+export const usePushSearchStartDate = (): ((
+  startDate: Date | null
+) => void) => {
   const { push } = useHistory();
 
   return React.useCallback(
-    (startDate: Date) => {
-      const query = {
-        ...parseSearchToQuery(window.location.search),
-        startDate,
-      };
-      push(`?${parseQueryToSearch(query).toString()}`);
+    (startDate: Date | null) => {
+      //If null remove from URL instead
+      if (startDate) {
+        const query = {
+          ...parseSearchToQuery(window.location.search),
+          startDate,
+        };
+        push(`?${parseQueryToSearch(query).toString()}`);
+      } else {
+        const searchParams = parseQueryToSearch(
+          parseSearchToQuery(window.location.search)
+        );
+        searchParams.delete('startDate');
+        push(`?${searchParams.toString()}`);
+      }
     },
     [push]
   );
 };
 
-export const usePushSearchEndDate = (): ((endDate: Date) => void) => {
+export const usePushSearchEndDate = (): ((endDate: Date | null) => void) => {
   const { push } = useHistory();
 
   return React.useCallback(
-    (endDate: Date) => {
-      const query = {
-        ...parseSearchToQuery(window.location.search),
-        endDate,
-      };
-      push(`?${parseQueryToSearch(query).toString()}`);
+    (endDate: Date | null) => {
+      //If null remove from URL instead
+      if (endDate) {
+        const query = {
+          ...parseSearchToQuery(window.location.search),
+          endDate,
+        };
+        push(`?${parseQueryToSearch(query).toString()}`);
+      } else {
+        const searchParams = parseQueryToSearch(
+          parseSearchToQuery(window.location.search)
+        );
+        searchParams.delete('endDate');
+        push(`?${searchParams.toString()}`);
+      }
     },
     [push]
   );

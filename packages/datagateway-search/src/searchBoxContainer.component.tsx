@@ -6,42 +6,17 @@ import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 interface SearchBoxContainerProps {
   searchText: string;
-  dataset: boolean;
-  datafile: boolean;
-  investigation: boolean;
-  startDate: MaterialUiPickersDate;
-  endDate: MaterialUiPickersDate;
   initiateSearch: () => void;
   onSearchTextChange: (searchText: string) => void;
-  onToggleDataset: (toggleOption: boolean) => void;
-  onToggleDatafile: (toggleOption: boolean) => void;
-  onToggleInvestigation: (toggleOption: boolean) => void;
-  onSelectStartDate: (startDate: MaterialUiPickersDate) => void;
-  onSelectEndDate: (endDate: MaterialUiPickersDate) => void;
 }
 
 const SearchBoxContainer = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
-  const {
-    searchText,
-    dataset,
-    datafile,
-    investigation,
-    startDate,
-    endDate,
-    initiateSearch,
-    onSearchTextChange,
-    onToggleDataset,
-    onToggleDatafile,
-    onToggleInvestigation,
-    onSelectStartDate,
-    onSelectEndDate,
-  } = props;
+  const { searchText, initiateSearch, onSearchTextChange } = props;
 
   return (
     <Grid
@@ -70,26 +45,13 @@ const SearchBoxContainer = (
       <Grid container item justify="center" style={{ paddingBottom: 8 }}>
         <Grid item style={{ display: 'flex' }}>
           <Box m="auto">
-            <CheckboxesGroup
-              dataset={dataset}
-              datafile={datafile}
-              investigation={investigation}
-              onToggleDataset={onToggleDataset}
-              onToggleDatafile={onToggleDatafile}
-              onToggleInvestigation={onToggleInvestigation}
-            />
+            <CheckboxesGroup />
           </Box>
         </Grid>
 
         <Grid item>
           <Box px={0.75}>
-            <SelectDates
-              startDate={startDate}
-              endDate={endDate}
-              initiateSearch={initiateSearch}
-              onSelectStartDate={onSelectStartDate}
-              onSelectEndDate={onSelectEndDate}
-            />
+            <SelectDates initiateSearch={initiateSearch} />
           </Box>
         </Grid>
       </Grid>

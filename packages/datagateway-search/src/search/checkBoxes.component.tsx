@@ -8,6 +8,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
+import { parseSearchToQuery, usePushSearchToggles } from 'datagateway-common';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,43 +29,31 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface CheckBoxProps {
-  dataset: boolean;
-  datafile: boolean;
-  investigation: boolean;
-  onToggleDataset: (toggleOption: boolean) => void;
-  onToggleDatafile: (toggleOption: boolean) => void;
-  onToggleInvestigation: (toggleOption: boolean) => void;
-}
-
 interface CheckBoxStoreProps {
   sideLayout: boolean;
 }
 
-type CheckBoxCombinedProps = CheckBoxProps & CheckBoxStoreProps;
-
-const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
+const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
   const classes = useStyles();
-  const {
-    dataset,
-    datafile,
-    investigation,
-    sideLayout,
-    onToggleDataset,
-    onToggleDatafile,
-    onToggleInvestigation,
-  } = props;
+  const { sideLayout } = props;
+
+  const location = useLocation();
+  const { dataset, datafile, investigation } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+  const pushSearchToggles = usePushSearchToggles();
 
   const handleChange = (name: string, checked: boolean) => (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const toggleOption = !checked;
     if (name === 'Investigation') {
-      onToggleInvestigation(toggleOption);
+      pushSearchToggles(dataset, datafile, toggleOption);
     } else if (name === 'Datafile') {
-      onToggleDatafile(toggleOption);
+      pushSearchToggles(dataset, toggleOption, investigation);
     } else if (name === 'Dataset') {
-      onToggleDataset(toggleOption);
+      pushSearchToggles(toggleOption, datafile, investigation);
     }
   };
 
