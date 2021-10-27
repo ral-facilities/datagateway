@@ -17,7 +17,7 @@ describe('Admin Download Status', () => {
     // Ensure the downloads are cleared before running tests.
     cy.clearDownloads();
 
-    cy.seedDownloads().then(() => {
+    cy.seedDownloadCart().then(() => {
       cy.visit('/admin-download');
     });
   });
