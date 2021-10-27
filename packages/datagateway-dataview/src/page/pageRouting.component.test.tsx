@@ -49,7 +49,8 @@ import ISISDatasetLanding from '../views/landing/isis/isisDatasetLanding.compone
 
 import {
   checkInstrumentAndFacilityCycleId,
-  checkInstrumentAndStudyId,
+  checkInstrumentId,
+  checkStudyId,
   checkInvestigationId,
   checkProposalName,
 } from './idCheckFunctions';
@@ -190,9 +191,10 @@ describe('PageTable', () => {
     (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
-    (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+    (checkInstrumentId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
+    (checkStudyId as jest.Mock).mockImplementation(() => Promise.resolve(true));
     (checkInvestigationId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
@@ -202,7 +204,7 @@ describe('PageTable', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   describe('Generic', () => {
@@ -450,6 +452,20 @@ describe('PageTable', () => {
       expect(wrapper.exists(ISISStudyLanding)).toBe(true);
     });
 
+    it('does not render ISISStudyLanding for incorrect ISIS study route for studyHierarchy', async () => {
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      const wrapper = createLandingWrapper(
+        ISISStudyHierarchyRoutes['landing']['study']
+      );
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISStudyLanding)).toBe(false);
+    });
+
     it('renders ISISInvestigationsTable for ISIS investigations route in Study Hierarchy', () => {
       const wrapper = createTableWrapper(
         ISISStudyHierarchyRoutes['investigations']
@@ -474,7 +490,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetsTable for incorrect ISIS datasets route in Study Hierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       const wrapper = createTableWrapper(ISISStudyHierarchyRoutes['datasets']);
@@ -497,7 +516,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISInvestigationLanding for incorrect ISIS investigation route for studyHierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       const wrapper = createLandingWrapper(
@@ -520,7 +542,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetsCardView for incorrect ISIS datasets route in Study Hierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       const wrapper = createCardWrapper(ISISStudyHierarchyRoutes['datasets']);
@@ -543,7 +568,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetLanding for incorrect ISIS dataset route for studyHierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       const wrapper = createLandingWrapper(
@@ -566,7 +594,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatafilesTable for incorrect ISIS datafiles route in Study Hierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       (checkInvestigationId as jest.Mock).mockImplementation(() =>
