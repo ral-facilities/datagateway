@@ -113,8 +113,17 @@ describe('Admin Download Status Table', () => {
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
-    (fetchAdminDownloads as jest.Mock).mockImplementation(() =>
-      Promise.resolve(downloadItems)
+    (fetchAdminDownloads as jest.Mock).mockImplementation(
+      (
+        settings: { facilityName: string; downloadApiUrl: string },
+        queryOffset?: string
+      ) => {
+        //Only return the 5 results when initialy requesting so that only a total
+        //of 5 results will be loaded
+        if (queryOffset?.endsWith('LIMIT 0, 50'))
+          return Promise.resolve(downloadItems);
+        else return Promise.resolve([]);
+      }
     );
     (adminDownloadDeleted as jest.Mock).mockImplementation(() =>
       Promise.resolve()
@@ -152,9 +161,40 @@ describe('Admin Download Status Table', () => {
     });
 
     expect(fetchAdminDownloads).toHaveBeenCalledTimes(2);
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+    expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
+      1,
       { downloadApiUrl: '', facilityName: '' },
       "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+    );
+    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+  });
+
+  it('fetches more download items when loadMoreRows is called', async () => {
+    const wrapper = mount(
+      <div id="datagateway-download">
+        <AdminDownloadStatusTable />
+      </div>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    await act(async () => {
+      wrapper.find('VirtualizedTable').prop('loadMoreRows')({
+        startIndex: 5,
+        stopIndex: 9,
+      });
+
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(fetchAdminDownloads).toHaveBeenCalledTimes(3);
+    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+      { downloadApiUrl: '', facilityName: '' },
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 5, 5"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -211,7 +251,8 @@ describe('Admin Download Status Table', () => {
     });
 
     expect(fetchAdminDownloads).toHaveBeenCalledTimes(3);
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+    expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
+      3,
       { downloadApiUrl: '', facilityName: '' },
       "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
