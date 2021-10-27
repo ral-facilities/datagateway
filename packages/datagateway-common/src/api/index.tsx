@@ -143,7 +143,14 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
     if (v !== null && q !== 'filters' && q !== 'sort') {
       if (q === 'startDate' || q === 'endDate') {
         queryParams.append(q, format(v, 'yyyy-MM-dd'));
-      } else queryParams.append(q, v);
+      } else if (
+        //Take default value of these as true, so don't put in url if this is the case
+        !(
+          (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
+          v === true
+        )
+      )
+        queryParams.append(q, v);
     }
   }
 

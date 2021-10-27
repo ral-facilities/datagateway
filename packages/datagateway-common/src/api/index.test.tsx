@@ -31,8 +31,9 @@ import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   useCustomFilterCount,
+  usePushSearchText,
+  usePushSearchToggles,
   usePushSearchEndDate,
-  usePushSearchParams,
   usePushSearchStartDate,
 } from '..';
 
@@ -109,9 +110,9 @@ describe('generic api functions', () => {
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
         searchText: null,
-        dataset: null,
-        datafile: null,
-        investigation: null,
+        dataset: true,
+        datafile: true,
+        investigation: true,
         startDate: null,
         endDate: null,
       });
@@ -119,7 +120,7 @@ describe('generic api functions', () => {
 
     it('parses query string with search parameters successfully', () => {
       const query =
-        'view=table&searchText=testText&dataset=true&datafile=false&investigation=true&startDate=2021-10-17&endDate=2021-10-25';
+        'view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25';
 
       expect(parseSearchToQuery(query)).toEqual({
         view: 'table',
@@ -162,9 +163,9 @@ describe('generic api functions', () => {
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
         searchText: null,
-        dataset: null,
-        datafile: null,
-        investigation: null,
+        dataset: true,
+        datafile: true,
+        investigation: true,
         startDate: null,
         endDate: null,
       };
@@ -193,7 +194,7 @@ describe('generic api functions', () => {
       };
 
       const params = new URLSearchParams(
-        '?view=table&searchText=testText&dataset=true&datafile=false&investigation=true&startDate=2021-10-17&endDate=2021-10-25'
+        '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -387,18 +388,32 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushSearchParams', () => {
-      it('returns callback that when called pushes search parameters to the url query', () => {
-        const { result } = renderHook(() => usePushSearchParams(), {
+    describe('usePushSearchText', () => {
+      it('returns callback that when called pushes search text to the url query', () => {
+        const { result } = renderHook(() => usePushSearchText(), {
           wrapper,
         });
 
         act(() => {
-          result.current('test', true, false, true);
+          result.current('test');
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith('?searchText=test');
+      });
+    });
+
+    describe('usePushSearchToggles', () => {
+      it('returns callback that when called pushes search toggles to the url query', () => {
+        const { result } = renderHook(() => usePushSearchToggles(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(false, false, false);
         });
 
         expect(pushSpy).toHaveBeenCalledWith(
-          '?searchText=test&dataset=true&datafile=false&investigation=true'
+          '?dataset=false&datafile=false&investigation=false'
         );
       });
     });
