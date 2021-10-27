@@ -2,8 +2,6 @@ import {
   ColumnType,
   formatCountOrSize,
   Investigation,
-  MicroFrontendId,
-  NotificationType,
   parseSearchToQuery,
   readSciGatewayToken,
   Table,
@@ -118,27 +116,6 @@ const ISISMyDataTable = (): React.ReactElement => {
   );
 
   const sizeQueries = useInvestigationSizes(data);
-
-  // Broadcast a SciGateway notification for any warning encountered.
-  const broadcastWarning = (message: string): void => {
-    document.dispatchEvent(
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: NotificationType,
-          payload: {
-            severity: 'warning',
-            message,
-          },
-        },
-      })
-    );
-  };
-
-  React.useEffect(() => {
-    if (localStorage.getItem('autoLogin') === 'true') {
-      broadcastWarning(t('my_data_table.login_warning_msg'));
-    }
-  }, [t]);
 
   React.useEffect(() => {
     // Sort and filter by startDate upon load.
