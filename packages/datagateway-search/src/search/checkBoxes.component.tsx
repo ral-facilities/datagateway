@@ -6,14 +6,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { connect } from 'react-redux';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
-import {
-  toggleDataset,
-  toggleDatafile,
-  toggleInvestigation,
-} from '../state/actions/actions';
 import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,20 +27,20 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface CheckBoxStoreProps {
+interface CheckBoxProps {
   dataset: boolean;
   datafile: boolean;
   investigation: boolean;
+  onToggleDataset: (toggleOption: boolean) => void;
+  onToggleDatafile: (toggleOption: boolean) => void;
+  onToggleInvestigation: (toggleOption: boolean) => void;
+}
+
+interface CheckBoxStoreProps {
   sideLayout: boolean;
 }
 
-interface CheckBoxDispatchProps {
-  toggleDataset: (toggleOption: boolean) => Action;
-  toggleDatafile: (toggleOption: boolean) => Action;
-  toggleInvestigation: (toggleOption: boolean) => Action;
-}
-
-type CheckBoxCombinedProps = CheckBoxStoreProps & CheckBoxDispatchProps;
+type CheckBoxCombinedProps = CheckBoxProps & CheckBoxStoreProps;
 
 const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
   const classes = useStyles();
@@ -56,9 +49,9 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
     datafile,
     investigation,
     sideLayout,
-    toggleDataset,
-    toggleDatafile,
-    toggleInvestigation,
+    onToggleDataset,
+    onToggleDatafile,
+    onToggleInvestigation,
   } = props;
 
   const handleChange = (name: string, checked: boolean) => (
@@ -66,11 +59,11 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
   ): void => {
     const toggleOption = !checked;
     if (name === 'Investigation') {
-      toggleInvestigation(toggleOption);
+      onToggleInvestigation(toggleOption);
     } else if (name === 'Datafile') {
-      toggleDatafile(toggleOption);
+      onToggleDatafile(toggleOption);
     } else if (name === 'Dataset') {
-      toggleDataset(toggleOption);
+      onToggleDataset(toggleOption);
     }
   };
 
@@ -139,24 +132,10 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): CheckBoxDispatchProps => ({
-  toggleDataset: (toggleOption: boolean) =>
-    dispatch(toggleDataset(toggleOption)),
-  toggleDatafile: (toggleOption: boolean) =>
-    dispatch(toggleDatafile(toggleOption)),
-  toggleInvestigation: (toggleOption: boolean) =>
-    dispatch(toggleInvestigation(toggleOption)),
-});
-
 const mapStateToProps = (state: StateType): CheckBoxStoreProps => {
   return {
-    dataset: state.dgsearch.checkBox.dataset,
-    datafile: state.dgsearch.checkBox.datafile,
-    investigation: state.dgsearch.checkBox.investigation,
     sideLayout: state.dgsearch.sideLayout,
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CheckboxesGroup);
+export default connect(mapStateToProps)(CheckboxesGroup);

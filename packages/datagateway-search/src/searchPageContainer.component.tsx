@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import { Switch, Route, RouteComponentProps } from 'react-router';
@@ -35,15 +35,9 @@ import {
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
-  selectStartDate,
-  selectEndDate,
   setDatafileTab,
   setDatasetTab,
   setInvestigationTab,
-  submitSearchText,
-  toggleDatafile,
-  toggleDataset,
-  toggleInvestigation,
 } from './state/actions/actions';
 import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -129,12 +123,6 @@ const ViewButton = (props: {
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
-  searchText: string;
-  dataset: boolean;
-  datafile: boolean;
-  investigation: boolean;
-  startDate: MaterialUiPickersDate;
-  endDate: MaterialUiPickersDate;
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
@@ -142,12 +130,6 @@ interface SearchPageContainerStoreProps {
 }
 
 interface SearchPageContainerDispatchProps {
-  submitSearchText: (searchText: string) => Action;
-  toggleDataset: (toggleOption: boolean) => Action;
-  toggleDatafile: (toggleOption: boolean) => Action;
-  toggleInvestigation: (toggleOption: boolean) => Action;
-  selectStartDate: (date: MaterialUiPickersDate) => Action;
-  selectEndDate: (date: MaterialUiPickersDate) => Action;
   setDatasetTab: (toggleOption: boolean) => Action;
   setDatafileTab: (toggleOption: boolean) => Action;
   setInvestigationTab: (toggleOption: boolean) => Action;
@@ -160,18 +142,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   props: SearchPageContainerCombinedProps
 ) => {
   const {
-    searchText,
-    startDate,
-    endDate,
-    datafile,
-    dataset,
-    investigation,
-    submitSearchText,
-    toggleDataset,
-    toggleDatafile,
-    toggleInvestigation,
-    selectStartDate,
-    selectEndDate,
     setDatafileTab,
     setDatasetTab,
     setInvestigationTab,
@@ -183,14 +153,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const {
-    searchText: searchTextURL,
-    dataset: datasetURL,
-    datafile: datafileURL,
-    investigation: investigationURL,
-    startDate: startDateURL,
-    endDate: endDateURL,
-  } = queryParams;
   const { view } = queryParams;
 
   const pushView = useUpdateView('push');
@@ -198,6 +160,54 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const pushSearchParams = usePushSearchParams();
   const pushStartDate = usePushSearchStartDate();
   const pushEndDate = usePushSearchEndDate();
+
+  const [searchText, setSearchText] = React.useState(
+    queryParams.searchText ? queryParams.searchText : ''
+  );
+
+  const [dataset, toggleDataset] = React.useState(
+    queryParams.dataset !== null ? queryParams.dataset : true
+  );
+
+  const [datafile, toggleDatafile] = React.useState(
+    queryParams.datafile !== null ? queryParams.datafile : true
+  );
+
+  const [investigation, toggleInvestigation] = React.useState(
+    queryParams.investigation !== null ? queryParams.investigation : true
+  );
+
+  const [startDate, setStartDate] = React.useState(
+    queryParams.startDate ? queryParams.startDate : null
+  );
+
+  const [endDate, setEndDate] = React.useState(
+    queryParams.endDate ? queryParams.endDate : null
+  );
+
+  const handleSearchText = (searchText: string): void => {
+    setSearchText(searchText);
+  };
+
+  const handleToggleDataset = (toggleOption: boolean): void => {
+    toggleDataset(toggleOption);
+  };
+
+  const handleToggleDatafile = (toggleOption: boolean): void => {
+    toggleDatafile(toggleOption);
+  };
+
+  const handleToggleInvestigation = (toggleOption: boolean): void => {
+    toggleInvestigation(toggleOption);
+  };
+
+  const handleSelectStartDate = (startDate: MaterialUiPickersDate): void => {
+    setStartDate(startDate);
+  };
+
+  const handleSelectEndDate = (endDate: MaterialUiPickersDate): void => {
+    setEndDate(endDate);
+  };
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';
@@ -218,17 +228,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       replaceView('card');
     }
   }, [location.pathname, view, replaceView]);
-
-  useEffect(() => {
-    if (searchTextURL) submitSearchText(searchTextURL);
-    if (datasetURL !== null) toggleDataset(datasetURL);
-    if (datafileURL !== null) toggleDatafile(datafileURL);
-    if (investigationURL !== null) toggleInvestigation(investigationURL);
-    selectStartDate(startDateURL);
-    selectEndDate(endDateURL);
-    //Only want to resubmit if a new URL is supplied
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const {
     refetch: searchInvestigations,
@@ -307,33 +306,19 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setInvestigationTab,
   ]);
 
-  useEffect(() => {
-    //Start search automatically if URL and searchText match in case loading
-    //page from a specific URL
+  React.useEffect(() => {
+    //Start search automatically if URL has been supplied with parameters
     if (
-      searchTextURL === searchText &&
-      datasetURL === dataset &&
-      datafileURL === datafile &&
-      investigationURL === investigation &&
-      startDateURL?.toString() === startDate?.toString() &&
-      endDateURL?.toString() === endDate?.toString()
+      queryParams.searchText ||
+      queryParams.dataset !== null ||
+      queryParams.datafile !== null ||
+      queryParams.investigation !== null ||
+      queryParams.startDate ||
+      queryParams.endDate
     )
       initiateSearch();
-  }, [
-    initiateSearch,
-    searchTextURL,
-    searchText,
-    datasetURL,
-    dataset,
-    datafileURL,
-    datafile,
-    investigationURL,
-    investigation,
-    startDateURL,
-    startDate,
-    endDateURL,
-    endDate,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
   // grid padding, search box, checkboxes, date selectors, padding.
@@ -367,7 +352,21 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             <Grid item id="container-search-filters">
               {sideLayout ? (
                 <Paper style={{ height: '100%', width: '100%' }}>
-                  <SearchBoxContainerSide initiateSearch={initiateSearch} />
+                  <SearchBoxContainerSide
+                    searchText={searchText}
+                    dataset={dataset}
+                    datafile={datafile}
+                    investigation={investigation}
+                    startDate={startDate}
+                    endDate={endDate}
+                    initiateSearch={initiateSearch}
+                    onSearchTextChange={handleSearchText}
+                    onToggleDataset={handleToggleDataset}
+                    onToggleDatafile={handleToggleDatafile}
+                    onToggleInvestigation={handleToggleInvestigation}
+                    onSelectStartDate={handleSelectStartDate}
+                    onSelectEndDate={handleSelectEndDate}
+                  />
                 </Paper>
               ) : (
                 <Paper
@@ -377,7 +376,21 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                     minWidth: 584, // Minimum width to ensure search box contents stay aligned
                   }}
                 >
-                  <SearchBoxContainer initiateSearch={initiateSearch} />
+                  <SearchBoxContainer
+                    searchText={searchText}
+                    dataset={dataset}
+                    datafile={datafile}
+                    investigation={investigation}
+                    startDate={startDate}
+                    endDate={endDate}
+                    initiateSearch={initiateSearch}
+                    onSearchTextChange={handleSearchText}
+                    onToggleDataset={handleToggleDataset}
+                    onToggleDatafile={handleToggleDatafile}
+                    onToggleInvestigation={handleToggleInvestigation}
+                    onSelectStartDate={handleSelectStartDate}
+                    onSelectEndDate={handleSelectEndDate}
+                  />
                 </Paper>
               )}
             </Grid>
@@ -440,17 +453,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): SearchPageContainerDispatchProps => ({
-  submitSearchText: (searchText: string) =>
-    dispatch(submitSearchText(searchText)),
-  toggleDataset: (toggleOption: boolean) =>
-    dispatch(toggleDataset(toggleOption)),
-  toggleDatafile: (toggleOption: boolean) =>
-    dispatch(toggleDatafile(toggleOption)),
-  toggleInvestigation: (toggleOption: boolean) =>
-    dispatch(toggleInvestigation(toggleOption)),
-  selectStartDate: (date: MaterialUiPickersDate) =>
-    dispatch(selectStartDate(date)),
-  selectEndDate: (date: MaterialUiPickersDate) => dispatch(selectEndDate(date)),
   setDatasetTab: (toggleOption: boolean) =>
     dispatch(setDatasetTab(toggleOption)),
   setDatafileTab: (toggleOption: boolean) =>
@@ -461,12 +463,6 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   sideLayout: state.dgsearch.sideLayout,
-  searchText: state.dgsearch.searchText,
-  dataset: state.dgsearch.checkBox.dataset,
-  datafile: state.dgsearch.checkBox.datafile,
-  investigation: state.dgsearch.checkBox.investigation,
-  startDate: state.dgsearch.selectDate.startDate,
-  endDate: state.dgsearch.selectDate.endDate,
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,
   investigationTab: state.dgsearch.tabs.investigationTab,

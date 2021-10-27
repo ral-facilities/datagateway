@@ -6,15 +6,42 @@ import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 interface SearchBoxContainerProps {
+  searchText: string;
+  dataset: boolean;
+  datafile: boolean;
+  investigation: boolean;
+  startDate: MaterialUiPickersDate;
+  endDate: MaterialUiPickersDate;
   initiateSearch: () => void;
+  onSearchTextChange: (searchText: string) => void;
+  onToggleDataset: (toggleOption: boolean) => void;
+  onToggleDatafile: (toggleOption: boolean) => void;
+  onToggleInvestigation: (toggleOption: boolean) => void;
+  onSelectStartDate: (startDate: MaterialUiPickersDate) => void;
+  onSelectEndDate: (endDate: MaterialUiPickersDate) => void;
 }
 
 const SearchBoxContainerSide = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
-  const { initiateSearch } = props;
+  const {
+    searchText,
+    dataset,
+    datafile,
+    investigation,
+    startDate,
+    endDate,
+    initiateSearch,
+    onSearchTextChange,
+    onToggleDataset,
+    onToggleDatafile,
+    onToggleInvestigation,
+    onSelectStartDate,
+    onSelectEndDate,
+  } = props;
 
   return (
     <Grid
@@ -26,18 +53,35 @@ const SearchBoxContainerSide = (
     >
       <Grid item>
         <Box px={2}>
-          <SearchTextBox initiateSearch={initiateSearch} />
+          <SearchTextBox
+            searchText={searchText}
+            initiateSearch={initiateSearch}
+            onChange={onSearchTextChange}
+          />
         </Box>
       </Grid>
 
       <Grid item>
         <Box px={2}>
-          <SelectDates initiateSearch={initiateSearch} />
+          <SelectDates
+            startDate={startDate}
+            endDate={endDate}
+            initiateSearch={initiateSearch}
+            onSelectStartDate={onSelectStartDate}
+            onSelectEndDate={onSelectEndDate}
+          />
         </Box>
       </Grid>
 
       <Grid item>
-        <CheckboxesGroup />
+        <CheckboxesGroup
+          dataset={dataset}
+          datafile={datafile}
+          investigation={investigation}
+          onToggleDataset={onToggleDataset}
+          onToggleDatafile={onToggleDatafile}
+          onToggleInvestigation={onToggleInvestigation}
+        />
       </Grid>
 
       <Grid item>
