@@ -214,7 +214,14 @@ describe('ISIS MyData table component', () => {
     expect(useInvestigationSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('investigation');
+    expect(useIds).toHaveBeenCalledWith('investigation', [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: 'testUser' },
+        }),
+      },
+    ]);
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
     expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');

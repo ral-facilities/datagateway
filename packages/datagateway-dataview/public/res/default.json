@@ -163,7 +163,10 @@
       }
     }
   },
-  "my_data_table": {},
+  "my_data_table": {
+    "role_selector": "Select role",
+    "all_roles": "All"
+  },
   "loading": {
     "verifying": "Verifying URL",
     "oops": "Oops!",
