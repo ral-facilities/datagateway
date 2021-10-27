@@ -330,8 +330,11 @@ export const usePushResults = (): ((results: number) => void) => {
   );
 };
 
-export const usePushView = (): ((view: ViewsType) => void) => {
-  const { push } = useHistory();
+export const useUpdateView = (
+  updateMethod: 'push' | 'replace'
+): ((view: ViewsType) => void) => {
+  const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
 
   return React.useCallback(
     (view: ViewsType) => {
@@ -339,24 +342,9 @@ export const usePushView = (): ((view: ViewsType) => void) => {
         ...parseSearchToQuery(window.location.search),
         view,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      functionToUse(`?${parseQueryToSearch(query).toString()}`);
     },
-    [push]
-  );
-};
-
-export const useReplaceView = (): ((view: ViewsType) => void) => {
-  const { replace } = useHistory();
-
-  return React.useCallback(
-    (view: ViewsType) => {
-      const query = {
-        ...parseSearchToQuery(window.location.search),
-        view,
-      };
-      replace(`?${parseQueryToSearch(query).toString()}`);
-    },
-    [replace]
+    [functionToUse]
   );
 };
 

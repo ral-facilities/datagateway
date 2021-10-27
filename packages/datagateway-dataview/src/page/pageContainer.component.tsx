@@ -21,12 +21,11 @@ import {
   ViewsType,
   useCart,
   parseSearchToQuery,
-  usePushView,
+  useUpdateView,
   readSciGatewayToken,
   ArrowTooltip,
   SelectionAlert,
   selectionAlertColor,
-  useReplaceView,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -546,8 +545,8 @@ const PageContainer: React.FC = () => {
 
   const { data: cartItems } = useCart();
 
-  const pushView = usePushView();
-  const replaceView = useReplaceView();
+  const pushView = useUpdateView('push');
+  const replaceView = useUpdateView('replace');
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';

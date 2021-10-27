@@ -25,8 +25,7 @@ import {
   useLuceneSearch,
   ViewsType,
   parseSearchToQuery,
-  usePushView,
-  useReplaceView,
+  useUpdateView,
   usePushSearchParams,
   usePushSearchStartDate,
   usePushSearchEndDate,
@@ -194,8 +193,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   } = queryParams;
   const { view } = queryParams;
 
-  const pushView = usePushView();
-  const replaceView = useReplaceView();
+  const pushView = useUpdateView('push');
+  const replaceView = useUpdateView('replace');
   const pushSearchParams = usePushSearchParams();
   const pushStartDate = usePushSearchStartDate();
   const pushEndDate = usePushSearchEndDate();

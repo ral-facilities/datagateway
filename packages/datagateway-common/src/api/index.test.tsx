@@ -9,8 +9,7 @@ import {
   usePushPage,
   usePushResults,
   usePushSort,
-  usePushView,
-  useReplaceView,
+  useUpdateView,
 } from './index';
 import {
   FiltersType,
@@ -32,9 +31,9 @@ import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   useCustomFilterCount,
-  usePushEndDate,
+  usePushSearchEndDate,
   usePushSearchParams,
-  usePushStartDate,
+  usePushSearchStartDate,
 } from '..';
 
 jest.mock('../handleICATError');
@@ -362,9 +361,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushView', () => {
+    describe('useUpdateView', () => {
       it('returns callback that when called pushes a new page to the url query', () => {
-        const { result } = renderHook(() => usePushView(), {
+        const { result } = renderHook(() => useUpdateView('push'), {
           wrapper,
         });
 
@@ -374,11 +373,9 @@ describe('generic api functions', () => {
 
         expect(pushSpy).toHaveBeenCalledWith('?view=table');
       });
-    });
 
-    describe('useReplaceView', () => {
       it('returns callback that when called replaces the current page with a new one in the url query', () => {
-        const { result } = renderHook(() => useReplaceView(), {
+        const { result } = renderHook(() => useUpdateView('replace'), {
           wrapper,
         });
 
@@ -408,7 +405,7 @@ describe('generic api functions', () => {
 
     describe('usePushStartDate', () => {
       it('returns callback that when called pushes startDate to the url query', () => {
-        const { result } = renderHook(() => usePushStartDate(), {
+        const { result } = renderHook(() => usePushSearchStartDate(), {
           wrapper,
         });
 
@@ -424,7 +421,7 @@ describe('generic api functions', () => {
 
     describe('usePushEndDate', () => {
       it('returns callback that when called pushes endDate to the url query', () => {
-        const { result } = renderHook(() => usePushEndDate(), {
+        const { result } = renderHook(() => usePushSearchEndDate(), {
           wrapper,
         });
 
