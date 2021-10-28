@@ -191,7 +191,7 @@ export const getApiParams = (props: {
           if (filter.type === 'include') {
             searchParams.append(
               'where',
-              JSON.stringify({ [column]: { like: filter.value } })
+              JSON.stringify({ [column]: { ilike: filter.value } })
             );
           } else {
             searchParams.append(

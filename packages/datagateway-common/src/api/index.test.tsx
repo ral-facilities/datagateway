@@ -158,7 +158,7 @@ describe('generic api functions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('id asc'));
-      params.append('where', JSON.stringify({ name: { like: 'test' } }));
+      params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
       params.append('where', JSON.stringify({ title: { nlike: 'test' } }));
       params.append(
         'where',
