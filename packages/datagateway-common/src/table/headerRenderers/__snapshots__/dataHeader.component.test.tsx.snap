@@ -43,6 +43,7 @@ exports[`Data column header component renders correctly with filter but no sort 
       </Styled(MuiBox)>
     </Styled(MuiBox)>
     <TextColumnFilter
+      label="Test"
       onChange={[MockFunction]}
     />
   </div>
@@ -134,6 +135,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       </Styled(MuiBox)>
     </Styled(MuiBox)>
     <TextColumnFilter
+      label="Test"
       onChange={[MockFunction]}
     />
   </div>

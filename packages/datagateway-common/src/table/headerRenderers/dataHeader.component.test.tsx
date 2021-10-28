@@ -10,6 +10,7 @@ describe('Data column header component', () => {
   const resizeColumn = jest.fn();
   const dataHeaderProps = {
     label: 'Test',
+    labelString: 'Test',
     dataKey: 'test',
     className: 'test-class',
     sort: {},
@@ -100,5 +101,18 @@ describe('Data column header component', () => {
     wrapper.find('Draggable').prop('onDrag')(null, { deltaX: 50 });
 
     expect(resizeColumn).toHaveBeenCalledWith('test', 50);
+  });
+
+  it('sends a columnResize event when column resizer is finished dragging', () => {
+    const mockDispatchEvent = jest
+      .spyOn(window, 'dispatchEvent')
+      .mockImplementationOnce(() => true);
+
+    const wrapper = shallow(<DataHeader {...dataHeaderProps} />);
+
+    wrapper.find('Draggable').prop('onStop')();
+
+    expect(mockDispatchEvent).toHaveBeenCalledWith(expect.any(Event));
+    expect(mockDispatchEvent.mock.calls[0][0].type).toBe('columnResize');
   });
 });
