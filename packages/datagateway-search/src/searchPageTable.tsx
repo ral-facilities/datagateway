@@ -35,7 +35,6 @@ const badgeStyles = (theme: Theme): StyleRules =>
   });
 
 interface SearchTableProps {
-  searchText: string;
   containerHeight: string;
   hierarchy: string;
 }
@@ -87,7 +86,6 @@ const SearchPageTable = (
   props: SearchTableProps & SearchTableStoreProps & SearchTableDispatchProps
 ): React.ReactElement => {
   const {
-    searchText,
     investigationTab,
     datasetTab,
     datafileTab,
@@ -103,6 +101,7 @@ const SearchPageTable = (
     location.search,
   ]);
   const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: investigation } = useLuceneSearch('Investigation', {
     searchText,
@@ -276,10 +275,7 @@ const SearchPageTable = (
             }}
             elevation={0}
           >
-            <InvestigationSearchTable
-              hierarchy={hierarchy}
-              searchText={searchText}
-            />
+            <InvestigationSearchTable hierarchy={hierarchy} />
           </Paper>
         </TabPanel>
       )}

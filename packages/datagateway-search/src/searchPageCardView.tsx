@@ -35,7 +35,6 @@ const badgeStyles = (theme: Theme): StyleRules =>
   });
 
 interface SearchCardViewProps {
-  searchText: string;
   containerHeight: string;
   hierarchy: string;
 }
@@ -89,7 +88,6 @@ const SearchPageCardView = (
     SearchCardViewDispatchProps
 ): React.ReactElement => {
   const {
-    searchText,
     investigationTab,
     datasetTab,
     datafileTab,
@@ -105,6 +103,7 @@ const SearchPageCardView = (
     location.search,
   ]);
   const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: investigation } = useLuceneSearch('Investigation', {
     searchText,
@@ -269,12 +268,10 @@ const SearchPageCardView = (
       </AppBar>
 
       {currentTab === 'investigation' && (
-        <InvestigationCardView hierarchy={hierarchy} searchText={searchText} />
+        <InvestigationCardView hierarchy={hierarchy} />
       )}
 
-      {currentTab === 'dataset' && (
-        <DatasetCardView hierarchy={hierarchy} searchText={searchText} />
-      )}
+      {currentTab === 'dataset' && <DatasetCardView hierarchy={hierarchy} />}
 
       {currentTab === 'datafile' && (
         <TabPanel value={currentTab} index={'datafile'}>

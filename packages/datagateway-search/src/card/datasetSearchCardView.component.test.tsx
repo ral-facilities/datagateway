@@ -53,7 +53,7 @@ describe('Dataset - Card View', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <DatasetSearchCardView hierarchy={hierarchy ?? ''} searchText="" />
+            <DatasetSearchCardView hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
         </Router>
       </Provider>

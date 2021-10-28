@@ -64,10 +64,7 @@ describe('Investigation Search Table component', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <InvestigationSearchTable
-              hierarchy={hierarchy ?? ''}
-              searchText=""
-            />
+            <InvestigationSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
         </Router>
       </Provider>

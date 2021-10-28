@@ -59,7 +59,7 @@ describe('Datafile search table component', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <DatafileSearchTable hierarchy={hierarchy ?? ''} searchText="" />
+            <DatafileSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
         </Router>
       </Provider>

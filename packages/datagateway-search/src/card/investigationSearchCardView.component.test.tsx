@@ -54,10 +54,7 @@ describe('Investigation - Card View', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <InvestigationSearchCardView
-              hierarchy={hierarchy ?? ''}
-              searchText=""
-            />
+            <InvestigationSearchCardView hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
         </Router>
       </Provider>

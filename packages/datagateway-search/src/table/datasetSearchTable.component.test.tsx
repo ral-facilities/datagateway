@@ -62,7 +62,7 @@ describe('Dataset table component', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <DatasetSearchTable hierarchy={hierarchy ?? ''} searchText="" />
+            <DatasetSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
         </Router>
       </Provider>

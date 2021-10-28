@@ -13,7 +13,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       pb={1}
       pl={2}
     >
-      <Connect(SearchTextBox)
+      <SearchTextBox
         initiateSearch={[MockFunction]}
       />
     </Styled(MuiBox)>
@@ -85,7 +85,7 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
     <Styled(MuiBox)
       px={2}
     >
-      <Connect(SearchTextBox)
+      <SearchTextBox
         initiateSearch={[MockFunction]}
       />
     </Styled(MuiBox)>
