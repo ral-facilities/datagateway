@@ -38,7 +38,7 @@
     {
       "target": ".tour-dataview-cart-icon",
       "content":
-        "Displays the current number of items in the download cart, and navigates to Datagateway Download"
+        "Displays the current number of items in the download selections, and navigates to Datagateway Download"
     },
     {
       "target": ".tour-dataview-toggle-card",
@@ -57,7 +57,7 @@
     {
       "target": ".tour-dataview-data",
       "content":
-        "The results are displayed here, where it allows for expanding to view details and selecting specific results to add to the cart"
+        "The results are displayed here, where it allows for expanding to view details and selecting specific results to add to the selections"
     }
   ],
   "routes": [

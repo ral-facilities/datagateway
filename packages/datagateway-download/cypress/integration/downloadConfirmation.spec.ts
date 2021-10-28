@@ -23,7 +23,7 @@ describe('Download Confirmation', () => {
     });
 
     // Open the confirmation dialog and confirm it is present.
-    cy.contains('Download Cart').click();
+    cy.contains('Download Selections').click();
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
   });
 

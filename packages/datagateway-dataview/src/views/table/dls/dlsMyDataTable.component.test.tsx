@@ -2,7 +2,6 @@ import { createMount } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
   Investigation,
-  NotificationType,
   readSciGatewayToken,
   useInvestigationCount,
   useInvestigationsDatasetCount,
@@ -281,27 +280,5 @@ describe('DLS MyData table component', () => {
     wrapper = createWrapper();
 
     expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
-  });
-
-  it('sends a notification to SciGateway if user is not logged in', () => {
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [] },
-      fetchNextPage: jest.fn(),
-    });
-    (readSciGatewayToken as jest.Mock).mockReturnValue({
-      username: null,
-    });
-    localStorage.setItem('autoLogin', 'true');
-
-    createWrapper();
-
-    expect(events.length).toBe(1);
-    expect(events[0].detail).toEqual({
-      type: NotificationType,
-      payload: {
-        severity: 'warning',
-        message: 'my_data_table.login_warning_msg',
-      },
-    });
   });
 });
