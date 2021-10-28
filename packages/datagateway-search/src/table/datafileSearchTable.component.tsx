@@ -81,13 +81,12 @@ export const DatafileDetailsPanel = (
 
 interface DatafileSearchTableProps {
   hierarchy: string;
-  searchText: string;
 }
 
 const DatafileSearchTable = (
   props: DatafileSearchTableProps
 ): React.ReactElement => {
-  const { hierarchy, searchText } = props;
+  const { hierarchy } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
@@ -96,6 +95,7 @@ const DatafileSearchTable = (
     location.search,
   ]);
   const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: luceneData } = useLuceneSearch('Datafile', {
     searchText,

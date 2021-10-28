@@ -94,13 +94,12 @@ export const InvestigationDetailsPanel = (
 
 interface InvestigationTableProps {
   hierarchy: string;
-  searchText: string;
 }
 
 const InvestigationSearchTable = (
   props: InvestigationTableProps
 ): React.ReactElement => {
-  const { hierarchy, searchText } = props;
+  const { hierarchy } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
@@ -109,6 +108,8 @@ const InvestigationSearchTable = (
     location.search,
   ]);
   const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
+
   const { data: luceneData } = useLuceneSearch('Investigation', {
     searchText,
     startDate,

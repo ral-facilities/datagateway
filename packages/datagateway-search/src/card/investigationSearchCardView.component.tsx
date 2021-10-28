@@ -39,21 +39,21 @@ import { Typography } from '@material-ui/core';
 
 interface InvestigationCardProps {
   hierarchy: string;
-  searchText: string;
 }
 
 const InvestigationCardView = (
   props: InvestigationCardProps
 ): React.ReactElement => {
-  const { hierarchy, searchText } = props;
+  const { hierarchy } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
 
-  const { filters, sort, page, results } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { filters, sort, page, results, startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
@@ -122,11 +122,6 @@ const InvestigationCardView = (
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
-
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
-  const { startDate, endDate } = queryParams;
 
   const { data: luceneData } = useLuceneSearch('Investigation', {
     searchText,

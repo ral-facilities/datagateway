@@ -76,11 +76,10 @@ export const DatasetDetailsPanel = (
 
 interface DatasetTableProps {
   hierarchy: string;
-  searchText: string;
 }
 
 const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
-  const { hierarchy, searchText } = props;
+  const { hierarchy } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
@@ -89,6 +88,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     location.search,
   ]);
   const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: luceneData } = useLuceneSearch('Dataset', {
     searchText,

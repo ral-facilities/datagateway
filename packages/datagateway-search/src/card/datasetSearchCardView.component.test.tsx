@@ -185,7 +185,7 @@ describe('Dataset - Card View', () => {
     createWrapper();
 
     expect(useLuceneSearch).toHaveBeenCalledWith('Dataset', {
-      searchText: undefined,
+      searchText: '',
       startDate: null,
       endDate: null,
     });

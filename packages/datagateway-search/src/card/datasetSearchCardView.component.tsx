@@ -31,11 +31,10 @@ import { useLocation } from 'react-router-dom';
 
 interface DatasetCardViewProps {
   hierarchy: string;
-  searchText: string;
 }
 
 const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
-  const { hierarchy, searchText } = props;
+  const { hierarchy } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
@@ -44,6 +43,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     location.search,
   ]);
   const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: luceneData } = useLuceneSearch('Dataset', {
     searchText,
