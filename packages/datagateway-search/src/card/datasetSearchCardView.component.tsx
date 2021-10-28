@@ -28,27 +28,23 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { StateType } from '../state/app.types';
 
 interface DatasetCardViewProps {
   hierarchy: string;
+  searchText: string;
 }
 
 const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
-  const { hierarchy } = props;
+  const { hierarchy, searchText } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
-  const searchText = useSelector(
-    (state: StateType) => state.dgsearch.searchText
-  );
-  const startDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.startDate
-  );
-  const endDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.endDate
-  );
+  const location = useLocation();
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { startDate, endDate } = queryParams;
+
   const { data: luceneData } = useLuceneSearch('Dataset', {
     searchText,
     startDate,
@@ -56,7 +52,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   });
 
   const [t] = useTranslation();
-  const location = useLocation();
 
   const { filters, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),

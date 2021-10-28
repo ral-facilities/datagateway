@@ -36,7 +36,7 @@ describe('SearchPageCardView', () => {
           initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
         >
           <QueryClientProvider client={new QueryClient()}>
-            <SearchPageCardView />
+            <SearchPageCardView searchText="" />
           </QueryClientProvider>
         </MemoryRouter>
       </Provider>

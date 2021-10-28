@@ -53,7 +53,7 @@ describe('Dataset - Card View', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <DatasetSearchCardView hierarchy={hierarchy ?? ''} />
+            <DatasetSearchCardView hierarchy={hierarchy ?? ''} searchText="" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -185,9 +185,9 @@ describe('Dataset - Card View', () => {
     createWrapper();
 
     expect(useLuceneSearch).toHaveBeenCalledWith('Dataset', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: undefined,
+      startDate: null,
+      endDate: null,
     });
 
     expect(useDatasetCount).toHaveBeenCalledWith([

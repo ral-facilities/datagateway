@@ -361,11 +361,13 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                       <SearchPageCardView
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
+                        searchText={searchText}
                       />
                     ) : (
                       <SearchPageTable
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
+                        searchText={searchText}
                       />
                     )}
                   </Paper>

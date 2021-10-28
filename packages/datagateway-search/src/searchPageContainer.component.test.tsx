@@ -67,16 +67,6 @@ describe('SearchPageContainer - Tests', () => {
     });
 
     const dGSearchInitialState = {
-      searchText: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
-      checkBox: {
-        dataset: false,
-        datafile: true,
-        investigation: false,
-      },
       tabs: {
         datasetTab: true,
         datafileTab: true,

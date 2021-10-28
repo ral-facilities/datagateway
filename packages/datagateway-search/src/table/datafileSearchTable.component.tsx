@@ -30,9 +30,7 @@ import {
   useTextFilter,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
-import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -83,30 +81,27 @@ export const DatafileDetailsPanel = (
 
 interface DatafileSearchTableProps {
   hierarchy: string;
+  searchText: string;
 }
 
 const DatafileSearchTable = (
   props: DatafileSearchTableProps
 ): React.ReactElement => {
-  const { hierarchy } = props;
+  const { hierarchy, searchText } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
-  const searchText = useSelector(
-    (state: StateType) => state.dgsearch.searchText
-  );
-  const startDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.startDate
-  );
-  const endDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.endDate
-  );
+  const location = useLocation();
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { startDate, endDate } = queryParams;
+
   const { data: luceneData } = useLuceneSearch('Datafile', {
     searchText,
     startDate,
     endDate,
   });
-  const location = useLocation();
   const [t] = useTranslation();
 
   const { filters, sort } = React.useMemo(

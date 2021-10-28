@@ -59,7 +59,7 @@ describe('Datafile search table component', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <DatafileSearchTable hierarchy={hierarchy ?? ''} />
+            <DatafileSearchTable hierarchy={hierarchy ?? ''} searchText="" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -188,9 +188,9 @@ describe('Datafile search table component', () => {
 
     expect(useCart).toHaveBeenCalled();
     expect(useLuceneSearch).toHaveBeenCalledWith('Datafile', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: '',
+      startDate: null,
+      endDate: null,
     });
 
     expect(useDatafileCount).toHaveBeenCalledWith([

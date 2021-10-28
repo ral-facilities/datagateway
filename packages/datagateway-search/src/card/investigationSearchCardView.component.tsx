@@ -35,18 +35,17 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { StateType } from '../state/app.types';
-import { useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 
 interface InvestigationCardProps {
   hierarchy: string;
+  searchText: string;
 }
 
 const InvestigationCardView = (
   props: InvestigationCardProps
 ): React.ReactElement => {
-  const { hierarchy } = props;
+  const { hierarchy, searchText } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -124,15 +123,11 @@ const InvestigationCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const searchText = useSelector(
-    (state: StateType) => state.dgsearch.searchText
-  );
-  const startDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.startDate
-  );
-  const endDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.endDate
-  );
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { startDate, endDate } = queryParams;
+
   const { data: luceneData } = useLuceneSearch('Investigation', {
     searchText,
     startDate,

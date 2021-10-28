@@ -36,7 +36,7 @@ describe('SearchPageTable', () => {
           initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
         >
           <QueryClientProvider client={new QueryClient()}>
-            <SearchPageTable />
+            <SearchPageTable searchText="" />
           </QueryClientProvider>
         </MemoryRouter>
       </Provider>

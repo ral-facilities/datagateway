@@ -62,7 +62,7 @@ describe('Dataset table component', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <DatasetSearchTable hierarchy={hierarchy ?? ''} />
+            <DatasetSearchTable hierarchy={hierarchy ?? ''} searchText="" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -202,9 +202,9 @@ describe('Dataset table component', () => {
 
     expect(useCart).toHaveBeenCalled();
     expect(useLuceneSearch).toHaveBeenCalledWith('Dataset', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: '',
+      startDate: null,
+      endDate: null,
     });
 
     expect(useDatasetCount).toHaveBeenCalledWith([
