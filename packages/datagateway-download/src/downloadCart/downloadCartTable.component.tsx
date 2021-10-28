@@ -134,25 +134,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         setSizesFinished(true);
       });
       setSizesLoaded(true);
-    }
-  }, [
-    data,
-    sizesLoaded,
-    settings.facilityName,
-    settings.apiUrl,
-    settings.downloadApiUrl,
-  ]);
-
-  React.useEffect(() => {
-    //Recalculate the file count whenever data is changed, but make sure
-    //sizes have been loaded as data is obtained in chunks
-    if (
-      settings.facilityName &&
-      settings.apiUrl &&
-      settings.downloadApiUrl &&
-      dgDownloadElement &&
-      sizesLoaded
-    ) {
+    } else if (fileCount === -1) {
       getCartDatafileCount(data, {
         apiUrl: settings.apiUrl,
       }).then((count) => {
@@ -161,11 +143,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     }
   }, [
     data,
+    fileCount,
     sizesLoaded,
     settings.facilityName,
     settings.apiUrl,
     settings.downloadApiUrl,
-    dgDownloadElement,
   ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -302,13 +284,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                                 facilityName: settings.facilityName,
                                 downloadApiUrl: settings.downloadApiUrl,
                               }
-                            ).then(() =>
+                            ).then(() => {
                               setData(
                                 data.filter(
                                   (item) => item.entityId !== cartItem.entityId
                                 )
-                              )
-                            ),
+                              );
+                              setFileCount(-1);
+                            }),
                           100
                         );
                       }}
@@ -368,7 +351,10 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   removeAllDownloadCartItems({
                     facilityName: settings.facilityName,
                     downloadApiUrl: settings.downloadApiUrl,
-                  }).then(() => setData([]))
+                  }).then(() => {
+                    setData([]);
+                    setFileCount(0);
+                  })
                 }
                 disabled={fileCount <= 0 || totalSize <= 0}
               >
