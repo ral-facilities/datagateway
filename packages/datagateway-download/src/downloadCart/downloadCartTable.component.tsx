@@ -95,6 +95,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         setDataLoaded(true);
         setSizesLoaded(false);
         setSizesFinished(false);
+        setFileCount(-1);
       });
   }, [
     settings.facilityName,
