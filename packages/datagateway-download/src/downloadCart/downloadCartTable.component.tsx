@@ -347,7 +347,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     downloadApiUrl: settings.downloadApiUrl,
                   }).then(() => setData([]))
                 }
-                disabled={fileCount <= 0 || totalSize <= 0}
               >
                 {t('downloadCart.remove_all')}
               </Button>
