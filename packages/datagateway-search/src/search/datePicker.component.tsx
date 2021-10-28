@@ -14,6 +14,7 @@ import {
   usePushSearchStartDate,
 } from 'datagateway-common';
 import { useLocation } from 'react-router';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 interface DatePickerProps {
   initiateSearch: () => void;
@@ -67,6 +68,17 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
     return false;
   };
 
+  const handleChange = (
+    date: MaterialUiPickersDate,
+    dateName: string
+  ): void => {
+    //Only push date when valid (and not every keypress when typing)
+    if (date === null || !isNaN(date.getDate())) {
+      if (dateName === 'startDate') pushStartDate(date);
+      else if (dateName === 'endDate') pushEndDate(date);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter' && isValidSearch()) {
       initiateSearch();
@@ -88,7 +100,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             format="yyyy-MM-dd"
             value={startDate}
             onChange={(date) => {
-              pushStartDate(date);
+              handleChange(date, 'startDate');
             }}
             onKeyDown={handleKeyDown}
             animateYearScrolling
@@ -109,7 +121,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             format="yyyy-MM-dd"
             value={endDate}
             onChange={(date) => {
-              pushEndDate(date);
+              handleChange(date, 'endDate');
             }}
             onKeyDown={handleKeyDown}
             animateYearScrolling

@@ -59,9 +59,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('#container-search-filters').should('exist');
       cy.location().should((loc) => {
-        expect(loc.search).to.eq(
-          '?searchText=dog&dataset=true&datafile=true&investigation=true'
-        );
+        expect(loc.search).to.eq('?searchText=dog');
       });
     });
 
@@ -95,9 +93,7 @@ describe('SearchPageContainer Component', () => {
       );
 
       cy.location().should((loc) => {
-        expect(loc.search).to.eq(
-          '?view=card&searchText=dog&dataset=true&datafile=true&investigation=true'
-        );
+        expect(loc.search).to.eq('?view=card&searchText=dog');
       });
 
       cy.get('[aria-label="container-view-button"]').click();
@@ -109,9 +105,7 @@ describe('SearchPageContainer Component', () => {
       );
 
       cy.location().should((loc) => {
-        expect(loc.search).to.eq(
-          '?view=table&searchText=dog&dataset=true&datafile=true&investigation=true'
-        );
+        expect(loc.search).to.eq('?view=table&searchText=dog');
       });
     });
 
@@ -239,7 +233,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.location().should((loc) => {
         expect(loc.search).to.eq(
-          '?searchText=dog&dataset=true&datafile=false&investigation=false'
+          '?searchText=dog&datafile=false&investigation=false'
         );
       });
 
@@ -265,9 +259,7 @@ describe('SearchPageContainer Component', () => {
         });
 
       cy.location().should((loc) => {
-        expect(loc.search).to.contains(
-          '?searchText=dog&dataset=true&datafile=true&investigation=true&startDate=2009-01-01'
-        );
+        expect(loc.search).to.contains('?searchText=dog&startDate=2009-01-01');
       });
 
       cy.get('[aria-label="Search table"]')
@@ -278,7 +270,7 @@ describe('SearchPageContainer Component', () => {
 
     it('should be able to load results from a URL', () => {
       cy.visit(
-        '/search/data/?view=card&searchText=test&dataset=true&datafile=true&investigation=true&startDate=2009-01-01'
+        '/search/data/?view=card&searchText=test&startDate=2009-01-01'
       ).wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
