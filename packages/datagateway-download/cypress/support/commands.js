@@ -131,7 +131,7 @@ Cypress.Commands.add('clearDownloadCart', () => {
 
 Cypress.Commands.add('seedDownloadCart', () => {
   const entities = ['investigation', 'dataset', 'datafile'];
-  const items = Array(10)
+  const items = Array(60)
     .fill()
     .map((value, index) => `${entities[index % 2]} ${index}`)
     .join(', ');

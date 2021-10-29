@@ -34,10 +34,10 @@ describe('Download Cart', () => {
     cy.get('[aria-label="Selections').click().wait('@fetchCart');
     cy.get('[aria-label="Download selections panel"]').should('exist');
 
-    cy.get('[aria-rowcount=9]', { timeout: 10000 }).should('exist');
+    cy.get('[aria-rowcount=59]', { timeout: 10000 }).should('exist');
   });
 
-  it.skip('should be able to sort cart items by name and type', () => {
+  it('should be able to sort cart items by name and type', () => {
     cy.get('[aria-rowindex=1] [aria-colindex=1]')
       .invoke('text')
       .as('unsortedFirstItem');
@@ -80,7 +80,7 @@ describe('Download Cart', () => {
     );
   });
 
-  it.skip('should be able to filter cart items by name and type', () => {
+  it('should be able to filter cart items by name and type', () => {
     cy.get('[aria-label="Filter by Name"]').first().as('nameFilter');
 
     cy.get('@nameFilter').type('1');
@@ -99,7 +99,7 @@ describe('Download Cart', () => {
     cy.contains('INVESTIGATION 2').should('be.visible');
   });
 
-  it.skip('should be able to remove individual items from the cart', () => {
+  it('should be able to remove individual items from the cart', () => {
     cy.intercept('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('[role="button"]', 'Name').click();
     cy.contains('Calculating...', { timeout: 20000 }).should('not.exist');
@@ -116,7 +116,7 @@ describe('Download Cart', () => {
     );
   });
 
-  it.skip('should be able to remove all items from the cart', () => {
+  it('should be able to remove all items from the cart', () => {
     cy.intercept('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('[role="button"]', 'Name').click();
     cy.contains('Calculating...', { timeout: 20000 }).should('not.exist');
@@ -131,7 +131,7 @@ describe('Download Cart', () => {
     );
   });
 
-  it.skip('should be able open and close the download confirmation dialog', () => {
+  it('should be able open and close the download confirmation dialog', () => {
     cy.contains('Calculating...', { timeout: 20000 }).should('not.exist');
     cy.contains('Download Selections').click();
 

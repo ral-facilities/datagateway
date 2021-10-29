@@ -23,8 +23,8 @@ import {
   removeAllDownloadCartItems,
   removeDownloadCartItem,
   getSize,
-  getCartDatafileCount,
   getIsTwoLevel,
+  getDatafileCount,
 } from '../downloadApi';
 import chunk from 'lodash.chunk';
 
@@ -50,7 +50,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
   const [sizesFinished, setSizesFinished] = React.useState(true);
 
-  const [fileCount, setFileCount] = React.useState<number>(-1);
   const fileCountMax = settings.fileCountMax;
   const totalSizeMax = settings.totalSizeMax;
 
@@ -65,6 +64,20 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       return data.reduce((accumulator, nextItem) => {
         if (nextItem.size > -1) {
           return accumulator + nextItem.size;
+        } else {
+          return accumulator;
+        }
+      }, 0);
+    } else {
+      return -1;
+    }
+  }, [data, sizesFinished]);
+
+  const fileCount = React.useMemo(() => {
+    if (sizesFinished) {
+      return data.reduce((accumulator, nextItem) => {
+        if (nextItem.fileCount > -1) {
+          return accumulator + nextItem.fileCount;
         } else {
           return accumulator;
         }
@@ -91,11 +104,16 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         facilityName: settings.facilityName,
         downloadApiUrl: settings.downloadApiUrl,
       }).then((cartItems) => {
-        setData(cartItems.map((cartItem) => ({ ...cartItem, size: -1 })));
+        setData(
+          cartItems.map((cartItem) => ({
+            ...cartItem,
+            size: -1,
+            fileCount: -1,
+          }))
+        );
         setDataLoaded(true);
         setSizesLoaded(false);
         setSizesFinished(false);
-        setFileCount(-1);
       });
   }, [
     settings.facilityName,
@@ -115,15 +133,26 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
         const chunkIndexOffset = chunkIndex * chunkSize;
         chunk.forEach((cartItem, index) => {
-          const promise = getSize(cartItem.entityId, cartItem.entityType, {
+          const promiseSize = getSize(cartItem.entityId, cartItem.entityType, {
             facilityName: settings.facilityName,
             apiUrl: settings.apiUrl,
             downloadApiUrl: settings.downloadApiUrl,
           }).then((size) => {
             updatedData[chunkIndexOffset + index].size = size;
           });
-          chunkPromises.push(promise);
-          allPromises.push(promise);
+          const promiseFileCount = getDatafileCount(
+            cartItem.entityId,
+            cartItem.entityType,
+            {
+              apiUrl: settings.apiUrl,
+            }
+          ).then((fileCount) => {
+            updatedData[chunkIndexOffset + index].fileCount = fileCount;
+          });
+          chunkPromises.push(promiseSize);
+          allPromises.push(promiseSize);
+          chunkPromises.push(promiseFileCount);
+          allPromises.push(promiseFileCount);
         });
 
         Promise.all(chunkPromises).then(() => {
@@ -134,16 +163,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         setSizesFinished(true);
       });
       setSizesLoaded(true);
-    } else if (fileCount === -1) {
-      getCartDatafileCount(data, {
-        apiUrl: settings.apiUrl,
-      }).then((count) => {
-        setFileCount(count);
-      });
     }
   }, [
     data,
-    fileCount,
     sizesLoaded,
     settings.facilityName,
     settings.apiUrl,
@@ -290,7 +312,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                                   (item) => item.entityId !== cartItem.entityId
                                 )
                               );
-                              setFileCount(-1);
                             }),
                           100
                         );
@@ -353,7 +374,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     downloadApiUrl: settings.downloadApiUrl,
                   }).then(() => {
                     setData([]);
-                    setFileCount(0);
                   })
                 }
                 disabled={fileCount <= 0 || totalSize <= 0}

@@ -227,6 +227,7 @@ export interface SubmitCart {
 
 export type DownloadCartTableItem = DownloadCartItem & {
   size: number;
+  fileCount: number;
   [key: string]: string | number | DownloadCartItem[];
 };
 
