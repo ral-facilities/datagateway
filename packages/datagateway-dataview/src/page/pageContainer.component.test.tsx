@@ -232,7 +232,7 @@ describe('PageContainer - Tests', () => {
     expect(wrapper.exists('[aria-label="filter-message"]')).toBeFalsy();
   });
 
-  it('do not use StyledRouting component on landing pages', () => {
+  it('do not use StyledRouting component on landing pages', async () => {
     (checkInstrumentId as jest.Mock).mockResolvedValueOnce(true);
     (useQueryClient as jest.Mock).mockReturnValue({
       getQueryData: jest.fn(),
@@ -240,6 +240,11 @@ describe('PageContainer - Tests', () => {
     history.replace(`${paths.studyHierarchy.landing.isisStudyLanding}`);
 
     const wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     expect(wrapper.exists('StyledRouting')).toBeFalsy();
   });
