@@ -75,9 +75,16 @@
     "dataset": "Dataset"
   },
   "buttons": {
-    "add_to_cart": "Add to cart",
-    "remove_from_cart": "Remove from cart",
+    "add_to_cart": "Add to selections",
+    "remove_from_cart": "Remove from selections",
     "download": "Download"
+  },
+  "selec_alert" : {
+    "added": "{{count}} item has been added to selections.",
+    "added_plural" : "{{count}} items have been added to selections.",
+    "removed" : "{{count}} item has been removed from selections.",
+    "removed_plural" : "{{count}} items have been removed from selections.",
+    "link" : "Go to selections."
   },
   "app": {
     "error": "Something went wrong...",    

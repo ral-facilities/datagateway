@@ -97,7 +97,7 @@ describe('ISIS Dataset Landing page', () => {
   it('calls the correct data fetching hooks', () => {
     createWrapper();
 
-    expect(useDatasetDetails).toHaveBeenCalledWith(1);
+    expect(useDatasetDetails).toHaveBeenCalledWith(87);
     expect(useDatasetSizes).toHaveBeenCalledWith([initialData]);
   });
 

@@ -24,6 +24,8 @@ import {
   usePushView,
   readSciGatewayToken,
   ArrowTooltip,
+  SelectionAlert,
+  selectionAlertColor,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +41,7 @@ import { Location as LocationType } from 'history';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
+import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
 const usePaperStyles = makeStyles(
@@ -156,12 +159,9 @@ const NavBar = React.memo(
     cartItems: DownloadCartItem[];
     navigateToSearch: () => void;
     navigateToDownload: () => void;
+    loggedInAnonymously: boolean;
   }): React.ReactElement => {
     const [t] = useTranslation();
-
-    //Determine whether logged in anonymously (assume this if username is null)
-    const username = readSciGatewayToken().username;
-    const loggedInAnonymously = username === null || username === 'anon/anon';
 
     return (
       <Sticky>
@@ -180,12 +180,12 @@ const NavBar = React.memo(
             />
           </Grid>
 
-          {loggedInAnonymously ? (
+          {props.loggedInAnonymously ? (
             <Grid item>
               <Paper
                 square
                 style={{
-                  backgroundColor: '#00e676',
+                  backgroundColor: selectionAlertColor,
                   display: 'flex',
                   flexDirection: 'column',
                   paddingLeft: 0,
@@ -582,7 +582,6 @@ const PageContainer: React.FC = () => {
   }, [location.pathname, view, prevView, prevLocation.pathname, pushView]);
 
   //Determine whether logged in anonymously (assume this if username is null)
-
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
 
@@ -599,21 +598,42 @@ const PageContainer: React.FC = () => {
               cartItems={cartItems ?? []}
               navigateToSearch={navigateToSearch}
               navigateToDownload={navigateToDownload}
+              loggedInAnonymously={loggedInAnonymously}
             />
 
             <StyledGrid container>
-              {/* Toggle between the table and card view */}
-              <Grid item xs={12}>
-                <Route
-                  exact
-                  path={togglePaths}
-                  render={() => (
-                    <ViewButton
-                      viewCards={view === 'card'}
-                      handleButtonChange={handleButtonChange}
+              <Grid
+                item
+                xs={12}
+                style={{ marginTop: '10px', marginBottom: '10px' }}
+              >
+                <StyledGrid container>
+                  {/* Toggle between the table and card view */}
+                  <Grid item xs={'auto'}>
+                    <Route
+                      exact
+                      path={togglePaths}
+                      render={() => (
+                        <ViewButton
+                          viewCards={view === 'card'}
+                          handleButtonChange={handleButtonChange}
+                        />
+                      )}
                     />
-                  )}
-                />
+                    <Route
+                      exact
+                      path={Object.values(paths.myData)}
+                      render={() => <RoleSelector />}
+                    />
+                  </Grid>
+                  <Grid item xs={true}>
+                    <SelectionAlert
+                      selectedItems={cartItems ?? []}
+                      navigateToSelections={navigateToDownload}
+                      marginSide={'8px'}
+                    />
+                  </Grid>
+                </StyledGrid>
               </Grid>
 
               {/* Show loading progress if data is still being loaded */}
@@ -624,7 +644,12 @@ const PageContainer: React.FC = () => {
               )}
 
               {/* Hold the view for remainder of the page */}
-              <Grid item xs={12} aria-label="page-view">
+              <Grid
+                className="tour-dataview-data"
+                item
+                xs={12}
+                aria-label="page-view"
+              >
                 <ViewRouting
                   view={view}
                   location={location}

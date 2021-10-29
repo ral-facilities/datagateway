@@ -131,7 +131,6 @@ describe('ISIS Instruments - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"fullName":{"value":"test","type":"include"}}'
@@ -143,7 +142,6 @@ describe('ISIS Instruments - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -154,7 +152,6 @@ describe('ISIS Instruments - Card View', () => {
     expect(button.text()).toEqual('instruments.name');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );

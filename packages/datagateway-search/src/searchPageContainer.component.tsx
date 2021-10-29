@@ -20,11 +20,14 @@ import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { useHistory } from 'react-router-dom';
 import {
   useLuceneSearch,
   ViewsType,
   parseSearchToQuery,
   usePushView,
+  useCart,
+  SelectionAlert,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -82,6 +85,7 @@ const viewButtonStyles = makeStyles(
     createStyles({
       root: {
         padding: `${theme.spacing(1)}px 0px ${theme.spacing(1)}px 0px`,
+        marginRight: theme.spacing(1),
       },
     })
 );
@@ -252,6 +256,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   // TODO: Container height is too small on smaller screens (e.g. laptops).
   const containerHeight = `calc(100vh - 64px - 30px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)`;
 
+  const { data: cartItems } = useCart();
+  const { push } = useHistory();
+
+  const navigateToDownload = React.useCallback(() => push('/download'), [push]);
+
   return (
     <Switch>
       <Route
@@ -290,11 +299,21 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
             {requestReceived && (
               <div>
-                <ViewButton
-                  viewCards={view === 'card'}
-                  handleButtonChange={handleButtonChange}
-                  disabled={currentTab === 'datafile'}
-                />
+                <Grid container>
+                  <Grid item xs={'auto'}>
+                    <ViewButton
+                      viewCards={view === 'card'}
+                      handleButtonChange={handleButtonChange}
+                      disabled={currentTab === 'datafile'}
+                    />
+                  </Grid>
+                  <Grid item xs={true}>
+                    <SelectionAlert
+                      selectedItems={cartItems ?? []}
+                      navigateToSelections={navigateToDownload}
+                    />
+                  </Grid>
+                </Grid>
                 <Grid container justify="center" id="container-search-table">
                   <Paper
                     style={{

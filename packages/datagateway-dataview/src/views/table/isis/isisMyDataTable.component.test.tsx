@@ -2,7 +2,6 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
   Investigation,
-  NotificationType,
   readSciGatewayToken,
   Table,
   useAddToCart,
@@ -215,7 +214,14 @@ describe('ISIS MyData table component', () => {
     expect(useInvestigationSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('investigation');
+    expect(useIds).toHaveBeenCalledWith('investigation', [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: 'testUser' },
+        }),
+      },
+    ]);
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
     expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
@@ -503,27 +509,5 @@ describe('ISIS MyData table component', () => {
     expect(wrapper.find('[aria-colindex=4]').find('p').text()).toEqual('');
 
     expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
-  });
-
-  it('sends a notification to SciGateway if user is not logged in', () => {
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [] },
-      fetchNextPage: jest.fn(),
-    });
-    (readSciGatewayToken as jest.Mock).mockReturnValue({
-      username: null,
-    });
-    localStorage.setItem('autoLogin', 'true');
-
-    createWrapper();
-
-    expect(events.length).toBe(1);
-    expect(events[0].detail).toEqual({
-      type: NotificationType,
-      payload: {
-        severity: 'warning',
-        message: 'my_data_table.login_warning_msg',
-      },
-    });
   });
 });

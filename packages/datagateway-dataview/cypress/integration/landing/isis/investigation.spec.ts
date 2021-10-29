@@ -7,6 +7,7 @@ describe('ISIS - Investigation Landing', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+    cy.contains('Again bad simply low summer').should('be.visible');
   });
 
   it('should be able to click an investigation to see its datasets', () => {

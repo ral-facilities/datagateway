@@ -8,11 +8,16 @@ import {
   DGThemeProvider,
   Preloader,
 } from 'datagateway-common';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createBrowserHistory } from 'history';
+import {
+  createBrowserHistory,
+  LocationListener,
+  Location,
+  Action,
+  // eslint-disable-next-line import/no-extraneous-dependencies
+} from 'history';
 import * as log from 'loglevel';
 import React from 'react';
-import { connect, Provider } from 'react-redux';
+import { batch, connect, Provider } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
@@ -31,6 +36,45 @@ const composeEnhancers =
 /* eslint-enable */
 
 const history = createBrowserHistory();
+
+// fix query string freeze bug
+// see https://github.com/supasate/connected-react-router/issues/311#issuecomment-692017995
+let listeners: LocationListener<unknown>[] = [];
+
+function appendListener(fn: LocationListener<unknown>): () => void {
+  let isActive = true;
+
+  const listener: LocationListener<unknown> = (...args) => {
+    if (isActive) fn(...args);
+  };
+
+  listeners.push(listener);
+
+  return () => {
+    isActive = false;
+    listeners = listeners.filter((item) => item !== listener);
+  };
+}
+
+function notifyListeners(
+  ...args: [location: Location<unknown>, action: Action]
+): void {
+  listeners.forEach((listener) => listener(...args));
+}
+
+// make only one subscription to history changes and proxy to our internal listeners
+history.listen((...args) => {
+  // here's the key change
+  batch(() => {
+    notifyListeners(...args);
+  });
+});
+
+// monkey patch to store subscriptions into our own pool
+history.listen = (fn) => {
+  return appendListener(fn);
+};
+
 const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
 
 const generateClassName = createGenerateClassName({
