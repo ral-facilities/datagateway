@@ -188,6 +188,7 @@ describe('ISIS Investigations - Card View', () => {
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
+
   it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(

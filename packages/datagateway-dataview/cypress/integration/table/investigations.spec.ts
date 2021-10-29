@@ -19,6 +19,7 @@ describe('Investigations Table', () => {
     cy.get('[aria-label="grid"]').scrollTo('bottom');
     cy.get('[aria-rowcount="75"]').should('exist');
   });
+
   it('should be able to click a DOI render the correct webpage ', () => {
     cy.contains('0-449-78690-0').should(
       'have.attr',

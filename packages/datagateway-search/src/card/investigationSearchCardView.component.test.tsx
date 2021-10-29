@@ -340,6 +340,7 @@ describe('Investigation - Card View', () => {
         .text()
     ).toEqual('1 B');
   });
+
   it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
