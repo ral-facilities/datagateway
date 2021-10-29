@@ -167,6 +167,22 @@ describe('Investigation details panel component', () => {
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
   });
 
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testId="investigation-details-panel-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+    expect(
+      wrapper
+        .find('[data-testId="investigation-details-panel-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
+  });
+
   it('gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users', () => {
     rowData.studyInvestigations = [
       {

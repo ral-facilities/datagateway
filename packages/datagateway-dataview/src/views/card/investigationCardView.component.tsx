@@ -4,6 +4,7 @@ import {
   Fingerprint,
   Public,
 } from '@material-ui/icons';
+import { Link as MuiLink } from '@material-ui/core';
 import {
   CardView,
   formatCountOrSize,
@@ -100,8 +101,20 @@ const InvestigationCardView = (): React.ReactElement => {
   const information = React.useMemo(
     () => [
       {
-        icon: Public,
+        content: function doiFormat(entity: Investigation) {
+          return (
+            entity?.doi && (
+              <MuiLink
+                href={`https://doi.org/${entity.doi}`}
+                data-testId="investigation-card-doi-link"
+              >
+                {entity.doi}
+              </MuiLink>
+            )
+          );
+        },
         label: t('investigations.doi'),
+        icon: Public,
         dataKey: 'doi',
         filterComponent: textFilter,
       },

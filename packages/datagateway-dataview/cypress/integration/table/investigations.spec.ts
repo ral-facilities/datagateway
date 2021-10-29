@@ -20,6 +20,14 @@ describe('Investigations Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
+  it('should be able to click a DOI render the correct webpage ', () => {
+    cy.contains('0-449-78690-0').should(
+      'have.attr',
+      'href',
+      'https://doi.org/0-449-78690-0'
+    );
+  });
+
   it('should be able to resize a column', () => {
     let columnWidth = 0;
 

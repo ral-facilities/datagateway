@@ -10,6 +10,7 @@ import {
 import {
   Table,
   investigationLink,
+  externalSiteLink,
   Investigation,
   ColumnType,
   formatCountOrSize,
@@ -189,8 +190,17 @@ const InvestigationTable = (): React.ReactElement => {
         icon: PublicIcon,
         label: t('investigations.doi'),
         dataKey: 'doi',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          return externalSiteLink(
+            `https://doi.org/${investigationData.doi}`,
+            investigationData.doi,
+            view
+          );
+        },
         filterComponent: textFilter,
       },
+
       {
         icon: ConfirmationNumberIcon,
         label: t('investigations.dataset_count'),

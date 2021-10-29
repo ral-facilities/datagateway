@@ -3,6 +3,7 @@ import {
   Divider,
   Grid,
   makeStyles,
+  Link as MuiLink,
   Paper,
   Tab,
   Tabs,
@@ -105,7 +106,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const shortInfo = [
     {
-      content: (entity: Dataset) => entity.doi,
+      content: function doiFormat(entity: Dataset) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              data-testId="isis-dataset-landing-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('datasets.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },

@@ -31,6 +31,14 @@ describe('ISIS - Study Landing', () => {
     );
   });
 
+  it('should be able to click a DOI render the correct webpage ', () => {
+    cy.contains('1-314-79096-X').should(
+      'have.attr',
+      'href',
+      'https://doi.org/1-314-79096-X'
+    );
+  });
+
   it('should load correctly when investigation missing', () => {
     cy.intercept('/studies', [
       {
