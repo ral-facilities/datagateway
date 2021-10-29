@@ -113,7 +113,6 @@ exports[`Download cart table component renders correctly 1`] = `
           <WithStyles(ForwardRef(Button))
             className="tour-download-remove-button"
             color="primary"
-            disabled={true}
             id="removeAllButton"
             onClick={[Function]}
             variant="contained"
