@@ -8,7 +8,7 @@ import {
   removeAllDownloadCartItems,
   removeDownloadCartItem,
   getSize,
-  getCartDatafileCount,
+  getDatafileCount,
 } from '../downloadApi';
 import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
@@ -85,7 +85,7 @@ describe('Download cart table component', () => {
       Promise.resolve()
     );
     (getSize as jest.Mock).mockImplementation(() => Promise.resolve(1));
-    (getCartDatafileCount as jest.Mock).mockImplementation(() =>
+    (getDatafileCount as jest.Mock).mockImplementation(() =>
       Promise.resolve(7)
     );
   });
@@ -94,7 +94,7 @@ describe('Download cart table component', () => {
     mount.cleanUp();
     (fetchDownloadCartItems as jest.Mock).mockClear();
     (getSize as jest.Mock).mockClear();
-    (getCartDatafileCount as jest.Mock).mockClear();
+    (getDatafileCount as jest.Mock).mockClear();
     (removeAllDownloadCartItems as jest.Mock).mockClear();
     (removeDownloadCartItem as jest.Mock).mockClear();
     jest.clearAllTimers();
@@ -178,9 +178,9 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    expect(getCartDatafileCount).toHaveBeenCalled();
+    expect(getDatafileCount).toHaveBeenCalled();
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      expect.stringContaining('downloadCart.number_of_files: 7')
+      expect.stringContaining('downloadCart.number_of_files: 28')
     );
   });
 
