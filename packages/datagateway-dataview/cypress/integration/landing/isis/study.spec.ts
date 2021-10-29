@@ -32,10 +32,10 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('should be able to click a DOI render the correct webpage ', () => {
-    cy.contains('0-01-491314-3').should(
+    cy.contains('1-314-79096-X').should(
       'have.attr',
       'href',
-      'https://doi.org/0-01-491314-3'
+      'https://doi.org/1-314-79096-X'
     );
   });
 
