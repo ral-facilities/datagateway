@@ -247,7 +247,7 @@ Object {
 
 exports[`Dataset table component renders details panel correctly 1`] = `
 <div
-  className="MuiGrid-root makeStyles-root-235 MuiGrid-container MuiGrid-direction-xs-column"
+  className="MuiGrid-root makeStyles-root-226 MuiGrid-container MuiGrid-direction-xs-column"
   id="details-panel"
 >
   <WithStyles(ForwardRef(Grid))
@@ -262,7 +262,7 @@ exports[`Dataset table component renders details panel correctly 1`] = `
       </b>
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Divider))
-      className="makeStyles-divider-236"
+      className="makeStyles-divider-227"
     />
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))

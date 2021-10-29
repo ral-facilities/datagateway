@@ -214,7 +214,7 @@ exports[`ISIS MyData table component renders details panel correctly and it fetc
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-419"
+      className="makeStyles-root-408"
       container={true}
       direction="column"
     >
@@ -230,7 +230,7 @@ exports[`ISIS MyData table component renders details panel correctly and it fetc
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-420"
+          className="makeStyles-divider-409"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

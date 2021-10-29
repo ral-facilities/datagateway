@@ -119,7 +119,7 @@ Object {
 
 exports[`Investigation Search Table component renders details panel correctly 1`] = `
 <WithStyles(ForwardRef(Grid))
-  className="makeStyles-root-343"
+  className="makeStyles-root-334"
   container={true}
   direction="column"
   id="details-panel"
@@ -136,7 +136,7 @@ exports[`Investigation Search Table component renders details panel correctly 1`
       </b>
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Divider))
-      className="makeStyles-divider-344"
+      className="makeStyles-divider-335"
     />
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
