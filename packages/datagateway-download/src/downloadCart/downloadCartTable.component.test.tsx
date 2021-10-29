@@ -180,7 +180,7 @@ describe('Download cart table component', () => {
 
     expect(getDatafileCount).toHaveBeenCalled();
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      expect.stringContaining('downloadCart.number_of_files: 7')
+      expect.stringContaining('downloadCart.number_of_files: 28')
     );
   });
 
