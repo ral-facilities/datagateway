@@ -285,9 +285,13 @@ exports[`ISIS Investigations table component renders details panel correctly and
           investigations.details.doi
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b>
+          <WithStyles(ForwardRef(Link))
+            data-testId="investigation-details-panel-doi-link"
+            href="https://doi.org/doi 1"
+          >
             doi 1
-          </b>
+          </WithStyles(ForwardRef(Link))>
+          ;
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
