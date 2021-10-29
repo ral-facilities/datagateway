@@ -432,6 +432,18 @@ describe('generic api functions', () => {
           expect.stringContaining('?startDate=2021-10-17')
         );
       });
+      it('returns callback that when called with null can remove startDate from the url query', () => {
+        const { result } = renderHook(() => usePushSearchStartDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-17T00:00:00Z'));
+          result.current(null);
+        });
+
+        expect(pushSpy).toHaveBeenLastCalledWith('?');
+      });
     });
 
     describe('usePushEndDate', () => {
@@ -447,6 +459,18 @@ describe('generic api functions', () => {
         expect(pushSpy).toHaveBeenCalledWith(
           expect.stringContaining('?endDate=2021-10-25')
         );
+      });
+      it('returns callback that when called with null can remove endDate from the url query', () => {
+        const { result } = renderHook(() => usePushSearchEndDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-25T00:00:00Z'));
+          result.current(null);
+        });
+
+        expect(pushSpy).toHaveBeenLastCalledWith('?');
       });
     });
   });

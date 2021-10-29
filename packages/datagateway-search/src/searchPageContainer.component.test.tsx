@@ -42,6 +42,7 @@ describe('SearchPageContainer - Tests', () => {
   let mount;
   let queryClient: QueryClient;
   let history: History;
+  let pushSpy;
 
   const createWrapper = (
     h: History = history,
@@ -51,7 +52,7 @@ describe('SearchPageContainer - Tests', () => {
     return mount(
       <Provider store={mockStore(state)}>
         <Router history={h}>
-          <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={client}>
             <SearchPageContainer />
           </QueryClientProvider>
         </Router>
@@ -65,6 +66,7 @@ describe('SearchPageContainer - Tests', () => {
     history = createMemoryHistory({
       initialEntries: ['/search/data'],
     });
+    pushSpy = jest.spyOn(history, 'push');
 
     const dGSearchInitialState = {
       tabs: {
@@ -551,6 +553,25 @@ describe('SearchPageContainer - Tests', () => {
     expect(
       wrapper.find('[aria-label="container-view-button"]').first().text()
     ).toEqual('app.view_table');
+  });
+
+  it('search text state is updated when text is changed and pushes when search initiated', async () => {
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('[aria-label="searchBox.search_text_arialabel"] input')
+      .simulate('change', { target: { value: 'test' } });
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(pushSpy).toHaveBeenCalledWith('?searchText=test');
   });
 
   it('shows SelectionAlert banner when item selected', async () => {

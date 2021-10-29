@@ -167,7 +167,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     queryParams.searchText ? queryParams.searchText : ''
   );
 
-  const handleSearchText = (searchText: string): void => {
+  const handleSearchTextChange = (searchText: string): void => {
     setSearchText(searchText);
   };
 
@@ -304,7 +304,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   <SearchBoxContainerSide
                     searchText={searchText}
                     initiateSearch={initiateSearch}
-                    onSearchTextChange={handleSearchText}
+                    onSearchTextChange={handleSearchTextChange}
                   />
                 </Paper>
               ) : (
@@ -318,7 +318,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   <SearchBoxContainer
                     searchText={searchText}
                     initiateSearch={initiateSearch}
-                    onSearchTextChange={handleSearchText}
+                    onSearchTextChange={handleSearchTextChange}
                   />
                 </Paper>
               )}
