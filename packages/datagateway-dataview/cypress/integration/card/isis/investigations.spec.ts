@@ -101,6 +101,9 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('INVESTIGATION 16');
+    cy.get('#card')
+      .contains('1-314-79096-X')
+      .should('have.attr', 'href', 'https://doi.org/1-314-79096-X');
     cy.get('#investigation-users-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
