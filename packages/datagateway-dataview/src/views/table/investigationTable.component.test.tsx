@@ -168,6 +168,17 @@ describe('Investigation table component', () => {
     });
   });
 
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testId="table-study-doi-link"]').first().text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper.find('[data-testId="table-study-doi-link"]').first().prop('href')
+    ).toEqual('https://doi.org/doi 1');
+  });
+
   it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
 
@@ -275,6 +286,7 @@ describe('Investigation table component', () => {
           entityType: 'investigation',
           id: 1,
           name: 'test',
+          doi: 'Test 1',
           parentEntities: [],
         },
         {
@@ -282,6 +294,7 @@ describe('Investigation table component', () => {
           entityType: 'dataset',
           id: 2,
           name: 'test',
+          doi: 'Test 2',
           parentEntities: [],
         },
       ],

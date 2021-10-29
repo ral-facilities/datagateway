@@ -18,6 +18,14 @@ describe('ISIS - Investigation Landing', () => {
     );
   });
 
+  it('should be able to click a DOI render the correct webpage ', () => {
+    cy.contains('0-16-038549-0').should(
+      'have.attr',
+      'href',
+      'https://doi.org/0-16-038549-0'
+    );
+  });
+
   it('should be able to click a specific dataset', () => {
     cy.get('[aria-label="landing-investigation-part-label"')
       .children()
