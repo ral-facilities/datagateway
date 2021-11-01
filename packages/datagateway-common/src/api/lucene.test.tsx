@@ -40,8 +40,6 @@ describe('Lucene actions', () => {
       sessionId: null,
       query: {
         target: 'Datafile',
-        lower: '0000001010000',
-        upper: '9000012312359',
       },
       maxCount: 300,
     };
