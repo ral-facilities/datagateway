@@ -12,7 +12,7 @@ describe('Lucene actions', () => {
     (handleICATError as jest.Mock).mockClear();
   });
 
-  it('sends axios request to fetch lucene search results once refetch function is called and returns successful response with default params', async () => {
+  it('sends axios request to fetch lucene search results for datafiles once refetch function is called and returns successful response with default params', async () => {
     (axios.get as jest.Mock).mockResolvedValue({
       data: [{ id: 1 }],
     });
@@ -40,6 +40,48 @@ describe('Lucene actions', () => {
       sessionId: null,
       query: {
         target: 'Datafile',
+      },
+      maxCount: 300,
+    };
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/lucene/data',
+      {
+        params: params,
+      }
+    );
+    expect(result.current.data).toEqual([1]);
+  });
+
+  it('sends axios request to fetch lucene search results for investigations once refetch function is called and returns successful response with default params', async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: [{ id: 1 }],
+    });
+
+    const luceneSearchParams = {
+      searchText: '',
+      startDate: null,
+      endDate: null,
+    };
+    const { result, waitFor } = renderHook(
+      () => useLuceneSearch('Investigation', luceneSearchParams),
+      {
+        wrapper: createReactQueryWrapper(),
+      }
+    );
+
+    expect(axios.get).not.toHaveBeenCalled();
+    expect(result.current.isIdle).toBe(true);
+
+    result.current.refetch();
+
+    await waitFor(() => result.current.isSuccess);
+
+    const params = {
+      sessionId: null,
+      query: {
+        target: 'Investigation',
+        lower: '0000001010000',
+        upper: '9000012312359',
       },
       maxCount: 300,
     };
