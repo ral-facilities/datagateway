@@ -238,24 +238,24 @@ const NavBar = React.memo(
 
           {/* The table entity count has a size of 2 (or 3 for xs screens); the
             breadcrumbs will take the remainder of the space. */}
-          <Grid
-            className="tour-dataview-results"
-            style={{ textAlign: 'center' }}
-            item
-            sm={2}
-            xs={3}
-            aria-label="view-count"
-          >
-            <Route
-              exact
-              path={Object.values(paths.myData).concat(
-                Object.values(paths.toggle),
-                Object.values(paths.standard),
-                Object.values(paths.studyHierarchy.toggle),
-                Object.values(paths.studyHierarchy.standard)
-              )}
-              render={() => {
-                return (
+          <Route
+            exact
+            path={Object.values(paths.myData).concat(
+              Object.values(paths.toggle),
+              Object.values(paths.standard),
+              Object.values(paths.studyHierarchy.toggle),
+              Object.values(paths.studyHierarchy.standard)
+            )}
+            render={() => {
+              return (
+                <Grid
+                  className="tour-dataview-results"
+                  style={{ textAlign: 'center' }}
+                  item
+                  sm={2}
+                  xs={3}
+                  aria-label="view-count"
+                >
                   <Paper
                     square
                     style={{
@@ -270,10 +270,10 @@ const NavBar = React.memo(
                       <b>{t('app.results')}:</b> {props.entityCount}
                     </Typography>
                   </Paper>
-                );
-              }}
-            />
-          </Grid>
+                </Grid>
+              );
+            }}
+          />
           <Paper
             square
             style={{
