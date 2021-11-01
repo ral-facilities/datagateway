@@ -112,8 +112,8 @@ export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
+      refetchOnWindowFocus: true,
+      staleTime: 5000,
     },
   },
 });
