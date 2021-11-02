@@ -7,31 +7,26 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) Includes view in 
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.investigation {count:100}"
         url="/browse/investigation?view=card"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-1"
         displayName="Test 1"
         key="breadcrumb-1"
         url="/browse/investigation/1/dataset?view=card"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-2"
         displayName="INVESTIGATION 1"
         key="breadcrumb-2"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-last"
         displayName="breadcrumbs.datafile {count:100}"
         isLast={true}
       />
@@ -155,11 +150,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                     className="MuiPaper-root MuiPaper-elevation0"
                   >
                     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-                      aria-label="breadcrumb"
+                      aria-label="breadcrumbs.aria_label"
                       separator=""
                     >
                       <WithStyles(ForwardRef(Breadcrumbs))
-                        aria-label="breadcrumb"
+                        aria-label="breadcrumbs.aria_label"
                         classes={
                           Object {
                             "root": "WithStyles(ForwardRef(Breadcrumbs))-root-1",
@@ -168,7 +163,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                         separator=""
                       >
                         <ForwardRef(Breadcrumbs)
-                          aria-label="breadcrumb"
+                          aria-label="breadcrumbs.aria_label"
                           classes={
                             Object {
                               "li": "MuiBreadcrumbs-li",
@@ -180,13 +175,13 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                           separator=""
                         >
                           <WithStyles(ForwardRef(Typography))
-                            aria-label="breadcrumb"
+                            aria-label="breadcrumbs.aria_label"
                             className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1"
                             color="textSecondary"
                             component="nav"
                           >
                             <ForwardRef(Typography)
-                              aria-label="breadcrumb"
+                              aria-label="breadcrumbs.aria_label"
                               className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1"
                               classes={
                                 Object {
@@ -226,7 +221,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                               component="nav"
                             >
                               <nav
-                                aria-label="breadcrumb"
+                                aria-label="breadcrumbs.aria_label"
                                 className="MuiTypography-root MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1 MuiTypography-body1 MuiTypography-colorTextSecondary"
                               >
                                 <ol
@@ -237,7 +232,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                     key="child-0"
                                   >
                                     <WrappedBreadcrumb
-                                      ariaLabel="Breadcrumb-home"
                                       displayName="breadcrumbs.home"
                                       key=".0"
                                     >
@@ -322,11 +316,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               title={null}
                                             >
                                               <WithStyles(ForwardRef(Typography))
-                                                aria-label="Breadcrumb-home"
                                                 color="textPrimary"
                                               >
                                                 <ForwardRef(Typography)
-                                                  aria-label="Breadcrumb-home"
                                                   classes={
                                                     Object {
                                                       "alignCenter": "MuiTypography-alignCenter",
@@ -364,7 +356,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   color="textPrimary"
                                                 >
                                                   <p
-                                                    aria-label="Breadcrumb-home"
                                                     className="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                   >
                                                     <span>
@@ -380,7 +371,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   class=""
                                                 >
                                                   <p
-                                                    aria-label="Breadcrumb-home"
                                                     class="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                   >
                                                     <span>
@@ -420,7 +410,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                     key="child-1"
                                   >
                                     <WrappedBreadcrumb
-                                      ariaLabel="Breadcrumb-base"
                                       displayName="breadcrumbs.investigation {count:100}"
                                       key=".1"
                                       url="/browse/investigation"
@@ -506,7 +495,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               title={null}
                                             >
                                               <WithStyles(ForwardRef(Link))
-                                                aria-label="Breadcrumb-base"
                                                 component={
                                                   Object {
                                                     "$$typeof": Symbol(react.forward_ref),
@@ -524,7 +512,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                 to="/browse/investigation"
                                               >
                                                 <ForwardRef(Link)
-                                                  aria-label="Breadcrumb-base"
                                                   classes={
                                                     Object {
                                                       "button": "MuiLink-button",
@@ -552,7 +539,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   to="/browse/investigation"
                                                 >
                                                   <WithStyles(ForwardRef(Typography))
-                                                    aria-label="Breadcrumb-base"
                                                     className="MuiLink-root MuiLink-underlineHover"
                                                     color="primary"
                                                     component={
@@ -575,7 +561,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                     variant="inherit"
                                                   >
                                                     <ForwardRef(Typography)
-                                                      aria-label="Breadcrumb-base"
                                                       className="MuiLink-root MuiLink-underlineHover"
                                                       classes={
                                                         Object {
@@ -632,14 +617,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                       variant="inherit"
                                                     >
                                                       <Link
-                                                        aria-label="Breadcrumb-base"
                                                         className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
                                                         onBlur={[Function]}
                                                         onFocus={[Function]}
                                                         to="/browse/investigation"
                                                       >
                                                         <LinkAnchor
-                                                          aria-label="Breadcrumb-base"
                                                           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
                                                           href="/browse/investigation"
                                                           navigate={[Function]}
@@ -647,7 +630,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                           onFocus={[Function]}
                                                         >
                                                           <a
-                                                            aria-label="Breadcrumb-base"
                                                             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
                                                             href="/browse/investigation"
                                                             onBlur={[Function]}
@@ -671,7 +653,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   class=""
                                                 >
                                                   <a
-                                                    aria-label="Breadcrumb-base"
                                                     class="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
                                                     href="/browse/investigation"
                                                   >
@@ -712,7 +693,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                     key="child-2"
                                   >
                                     <WrappedBreadcrumb
-                                      ariaLabel="Breadcrumb-hierarchy-1"
                                       displayName="Test 1"
                                       key=".2:$breadcrumb-1"
                                       url="/browse/investigation/1/dataset"
@@ -798,7 +778,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               title={null}
                                             >
                                               <WithStyles(ForwardRef(Link))
-                                                aria-label="Breadcrumb-hierarchy-1"
                                                 component={
                                                   Object {
                                                     "$$typeof": Symbol(react.forward_ref),
@@ -816,7 +795,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                 to="/browse/investigation/1/dataset"
                                               >
                                                 <ForwardRef(Link)
-                                                  aria-label="Breadcrumb-hierarchy-1"
                                                   classes={
                                                     Object {
                                                       "button": "MuiLink-button",
@@ -844,7 +822,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   to="/browse/investigation/1/dataset"
                                                 >
                                                   <WithStyles(ForwardRef(Typography))
-                                                    aria-label="Breadcrumb-hierarchy-1"
                                                     className="MuiLink-root MuiLink-underlineHover"
                                                     color="primary"
                                                     component={
@@ -867,7 +844,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                     variant="inherit"
                                                   >
                                                     <ForwardRef(Typography)
-                                                      aria-label="Breadcrumb-hierarchy-1"
                                                       className="MuiLink-root MuiLink-underlineHover"
                                                       classes={
                                                         Object {
@@ -924,14 +900,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                       variant="inherit"
                                                     >
                                                       <Link
-                                                        aria-label="Breadcrumb-hierarchy-1"
                                                         className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
                                                         onBlur={[Function]}
                                                         onFocus={[Function]}
                                                         to="/browse/investigation/1/dataset"
                                                       >
                                                         <LinkAnchor
-                                                          aria-label="Breadcrumb-hierarchy-1"
                                                           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
                                                           href="/browse/investigation/1/dataset"
                                                           navigate={[Function]}
@@ -939,7 +913,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                           onFocus={[Function]}
                                                         >
                                                           <a
-                                                            aria-label="Breadcrumb-hierarchy-1"
                                                             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
                                                             href="/browse/investigation/1/dataset"
                                                             onBlur={[Function]}
@@ -963,7 +936,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   class=""
                                                 >
                                                   <a
-                                                    aria-label="Breadcrumb-hierarchy-1"
                                                     class="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
                                                     href="/browse/investigation/1/dataset"
                                                   >
@@ -1004,7 +976,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                     key="child-3"
                                   >
                                     <WrappedBreadcrumb
-                                      ariaLabel="Breadcrumb-hierarchy-2"
                                       displayName="INVESTIGATION 1"
                                       key=".2:$breadcrumb-2"
                                     >
@@ -1089,11 +1060,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               title={null}
                                             >
                                               <WithStyles(ForwardRef(Typography))
-                                                aria-label="Breadcrumb-hierarchy-2"
                                                 color="textPrimary"
                                               >
                                                 <ForwardRef(Typography)
-                                                  aria-label="Breadcrumb-hierarchy-2"
                                                   classes={
                                                     Object {
                                                       "alignCenter": "MuiTypography-alignCenter",
@@ -1131,7 +1100,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   color="textPrimary"
                                                 >
                                                   <p
-                                                    aria-label="Breadcrumb-hierarchy-2"
                                                     className="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                   >
                                                     <span>
@@ -1147,7 +1115,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   class=""
                                                 >
                                                   <p
-                                                    aria-label="Breadcrumb-hierarchy-2"
                                                     class="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                   >
                                                     <span>
@@ -1187,7 +1154,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                     key="child-4"
                                   >
                                     <WrappedBreadcrumb
-                                      ariaLabel="Breadcrumb-last"
                                       displayName="breadcrumbs.datafile {count:100}"
                                       isLast={true}
                                       key=".3"
@@ -1273,11 +1239,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               title={null}
                                             >
                                               <WithStyles(ForwardRef(Typography))
-                                                aria-label="Breadcrumb-last"
                                                 color="textPrimary"
                                               >
                                                 <ForwardRef(Typography)
-                                                  aria-label="Breadcrumb-last"
                                                   classes={
                                                     Object {
                                                       "alignCenter": "MuiTypography-alignCenter",
@@ -1315,7 +1279,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   color="textPrimary"
                                                 >
                                                   <p
-                                                    aria-label="Breadcrumb-last"
                                                     className="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                   >
                                                     <span>
@@ -1333,7 +1296,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   class=""
                                                 >
                                                   <p
-                                                    aria-label="Breadcrumb-last"
                                                     class="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                   >
                                                     <span>
@@ -1391,37 +1353,31 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.proposal {count:100}"
         url="/browse/proposal"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-1"
         displayName="INVESTIGATION 1"
         key="breadcrumb-1"
         url="/browse/proposal/INVESTIGATION 1/investigation"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-2"
         displayName="Test 1"
         key="breadcrumb-2"
         url="/browse/proposal/INVESTIGATION 1/investigation/1/dataset"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-3"
         displayName="INVESTIGATION 1"
         key="breadcrumb-3"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-last"
         displayName="breadcrumbs.datafile {count:100}"
         isLast={true}
       />
@@ -1437,31 +1393,26 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.proposal {count:100}"
         url="/browse/proposal"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-1"
         displayName="INVESTIGATION 1"
         key="breadcrumb-1"
         url="/browse/proposal/INVESTIGATION 1/investigation"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-2"
         displayName="Test 1"
         key="breadcrumb-2"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-last"
         displayName="breadcrumbs.dataset {count:100}"
         isLast={true}
       />
@@ -1477,25 +1428,21 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.proposal {count:100}"
         url="/browse/proposal"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-1"
         displayName="INVESTIGATION 1"
         key="breadcrumb-1"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-last"
         displayName="breadcrumbs.investigation {count:100}"
         isLast={true}
       />
@@ -1511,15 +1458,13 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.proposal {count:100}"
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1534,43 +1479,36 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.instrument {count:100}"
         url="/browse/instrument"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-1"
         displayName="INVESTIGATION 1"
         key="breadcrumb-1"
         url="/browse/instrument/1/facilityCycle"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-2"
         displayName="INVESTIGATION 1"
         key="breadcrumb-2"
         url="/browse/instrument/1/facilityCycle/1/investigation"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-3"
         displayName="Test 1"
         key="breadcrumb-3"
         url="/browse/instrument/1/facilityCycle/1/investigation/1/dataset"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-4"
         displayName="INVESTIGATION 1"
         key="breadcrumb-4"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-last"
         displayName="breadcrumbs.datafile {count:100}"
         isLast={true}
       />
@@ -1586,37 +1524,31 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.instrument {count:100}"
         url="/browse/instrument"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-1"
         displayName="INVESTIGATION 1"
         key="breadcrumb-1"
         url="/browse/instrument/1/facilityCycle"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-2"
         displayName="INVESTIGATION 1"
         key="breadcrumb-2"
         url="/browse/instrument/1/facilityCycle/1/investigation"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-3"
         displayName="Test 1"
         key="breadcrumb-3"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-last"
         displayName="breadcrumbs.dataset {count:100}"
         isLast={true}
       />
@@ -1632,25 +1564,21 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.instrument {count:100}"
         url="/browse/instrument"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-1"
         displayName="INVESTIGATION 1"
         key="breadcrumb-1"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-last"
         displayName="breadcrumbs.facilityCycle {count:100}"
         isLast={true}
       />
@@ -1666,15 +1594,13 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.instrument {count:100}"
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1689,31 +1615,26 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.investigation {count:100}"
         url="/browse/investigation"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-1"
         displayName="Test 1"
         key="breadcrumb-1"
         url="/browse/investigation/1/dataset"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-2"
         displayName="INVESTIGATION 1"
         key="breadcrumb-2"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-last"
         displayName="breadcrumbs.datafile {count:100}"
         isLast={true}
       />
@@ -1729,25 +1650,21 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.investigation {count:100}"
         url="/browse/investigation"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-hierarchy-1"
         displayName="Test 1"
         key="breadcrumb-1"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-last"
         displayName="breadcrumbs.dataset {count:100}"
         isLast={true}
       />
@@ -1763,15 +1680,13 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
     square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
-      aria-label="breadcrumb"
+      aria-label="breadcrumbs.aria_label"
       separator=""
     >
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-home"
         displayName="breadcrumbs.home"
       />
       <WrappedBreadcrumb
-        ariaLabel="Breadcrumb-base"
         displayName="breadcrumbs.investigation {count:100}"
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>

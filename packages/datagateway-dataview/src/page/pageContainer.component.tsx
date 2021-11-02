@@ -167,12 +167,7 @@ const NavBar = React.memo(
       <Sticky>
         <StyledGrid container>
           {/* Hold the breadcrumbs at top left of the page. */}
-          <Grid
-            className="tour-dataview-breadcrumbs"
-            item
-            xs
-            aria-label="page-breadcrumbs"
-          >
+          <Grid className="tour-dataview-breadcrumbs" item xs>
             {/* don't show breadcrumbs on /my-data - only on browse */}
             <Route
               path={[paths.root, paths.studyHierarchy.root]}
@@ -198,7 +193,6 @@ const NavBar = React.memo(
                   direction="row"
                   alignItems="center"
                   justify="center"
-                  aria-label="open-data-warning"
                 >
                   <Grid item>
                     <ArrowTooltip
@@ -221,6 +215,9 @@ const NavBar = React.memo(
                       <IconButton
                         disableRipple
                         style={{ backgroundColor: 'transparent' }}
+                        aria-label={t(
+                          'app.open_data_warning.tooltip_aria_label'
+                        )}
                       >
                         <InfoIcon color="primary" />
                       </IconButton>
@@ -254,7 +251,6 @@ const NavBar = React.memo(
                   item
                   sm={2}
                   xs={3}
-                  aria-label="view-count"
                 >
                   <Paper
                     square
@@ -286,7 +282,7 @@ const NavBar = React.memo(
             <IconButton
               className="tour-dataview-search-icon"
               onClick={props.navigateToSearch}
-              aria-label="view-search"
+              aria-label={t('buttons.search')}
               style={{ margin: 'auto' }}
             >
               <SearchIcon />
@@ -304,7 +300,7 @@ const NavBar = React.memo(
             <IconButton
               className="tour-dataview-cart-icon"
               onClick={props.navigateToDownload}
-              aria-label="view-cart"
+              aria-label={t('buttons.cart')}
               style={{ margin: 'auto' }}
             >
               <Badge
@@ -312,7 +308,6 @@ const NavBar = React.memo(
                   props.cartItems.length > 0 ? props.cartItems.length : null
                 }
                 color="primary"
-                aria-label="view-cart-badge"
               >
                 <ShoppingCartIcon />
               </Badge>
@@ -345,9 +340,6 @@ const ViewButton = (props: {
     <div className={classes.root}>
       <Button
         className="tour-dataview-view-button"
-        aria-label={`page-view ${
-          props.viewCards ? t('app.view_table') : t('app.view_cards')
-        }`}
         variant="contained"
         color="primary"
         size="small"
@@ -387,7 +379,7 @@ const StyledRouting = (props: {
             align="center"
             variant="h6"
             component="h6"
-            aria-label="filter-message"
+            data-test-id="filter-message"
           >
             {t('loading.filter_message')}
           </Typography>
@@ -644,12 +636,7 @@ const PageContainer: React.FC = () => {
               )}
 
               {/* Hold the view for remainder of the page */}
-              <Grid
-                className="tour-dataview-data"
-                item
-                xs={12}
-                aria-label="page-view"
-              >
+              <Grid className="tour-dataview-data" item xs={12}>
                 <ViewRouting
                   view={view}
                   location={location}

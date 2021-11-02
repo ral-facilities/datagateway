@@ -5,8 +5,8 @@ describe('PageContainer Component', () => {
       password: 'pw',
       mechanism: 'simple',
     });
-    cy.get('[aria-label="page-breadcrumbs"]').should('exist');
-    cy.get('[aria-label="open-data-warning"]').should('not.exist');
+    cy.get('[aria-label="Breadcrumbs"]').should('exist');
+    cy.contains('Open data').should('not.exist');
   });
 
   beforeEach(() => {
@@ -16,54 +16,47 @@ describe('PageContainer Component', () => {
   });
 
   it('should display the open data warning when not logged in', () => {
-    cy.get('[aria-label="open-data-warning"]').should('exist');
+    cy.contains('Open data');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
 
-    cy.get('[aria-label="page-breadcrumbs"]').should('exist');
+    cy.get('[aria-label="Breadcrumbs"]').should('exist');
 
-    cy.get('[aria-label="view-count"]').should('exist');
+    cy.contains('Results: ');
 
-    cy.get('[aria-label="view-search"]').should('exist');
+    cy.get('[aria-label="Go to search"]').should('exist');
 
-    cy.get('[aria-label="view-cart"]').should('exist');
+    cy.get('[aria-label="Go to selections"]').should('exist');
 
-    cy.get('[aria-label="page-view Display as cards"]').should('exist');
+    cy.contains('Display as cards');
   });
 
   it('should display correct entity count', () => {
     // Check that the entity count has displayed correctly.
-    cy.get('[aria-label="view-count"]')
-      .should('be.visible')
-      .contains('Results: 239');
+    cy.contains('Results: 239').should('be.visible');
   });
 
   it('should display number of items in cart correctly', () => {
-    cy.get('[aria-label="view-cart-badge"]', { timeout: 10000 })
-      .children()
-      .should('be.hidden');
+    cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+      // matches empty string i.e. no badge
+      /^$/
+    );
 
     cy.get('[aria-label="select row 0"]', { timeout: 10000 }).check();
     cy.get('[aria-label="select row 0"]', { timeout: 10000 }).should(
       'be.checked'
     );
 
-    cy.get('[aria-label="view-cart-badge"]', { timeout: 10000 })
-      .children()
-      .should('not.be.hidden')
-      .contains('1');
+    cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains('1');
 
     cy.get('[aria-label="select row 1"]', { timeout: 10000 }).check();
     cy.get('[aria-label="select row 1"]', { timeout: 10000 }).should(
       'be.checked'
     );
 
-    cy.get('[aria-label="view-cart-badge"]', { timeout: 10000 })
-      .children()
-      .should('not.be.hidden')
-      .contains('2');
+    cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains('2');
   });
 
   it('should display selection alert banner correctly', () => {

@@ -7,11 +7,13 @@
     "error": "Something went wrong...",
     "open_data_warning": {
       "message": "Open data",
+      "tooltip_aria_label": "Open data information tooltip",
       "tooltip": "Only open data is displayed when browsing anonymously. Please login to see embargoed data.",
       "tooltip_link": "Click here to learn more about our data policy."
     }
   },
   "breadcrumbs": {
+    "aria_label": "Breadcrumbs",
     "home": "Home",
     "instrument_plural": "Instruments",
     "facilityCycle_plural": "Facility Cycles",
@@ -174,6 +176,8 @@
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "buttons": {
+    "search": "Go to search",
+    "cart": "Go to selections",
     "add_to_cart": "Add to selections",
     "remove_from_cart": "Remove from selections",
     "download": "Download"
@@ -182,21 +186,45 @@
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters",
     "icons": {
-      "title": ["Title", "Name", "Type"],
-      "fingerprint": ["Visit ID", "Name"],
-      "public": ["DOI"],
-      "confirmation_number": ["Dataset Count", " Datafile Count"],
-      "assessment": ["Instrument", "Beamline"],
+      "title": [
+        "Title",
+        "Name",
+        "Type"
+      ],
+      "fingerprint": [
+        "Visit ID",
+        "Name"
+      ],
+      "public": [
+        "DOI"
+      ],
+      "confirmation_number": [
+        "Dataset Count",
+        " Datafile Count"
+      ],
+      "assessment": [
+        "Instrument",
+        "Beamline"
+      ],
       "calendar_today": [
         "Start Date",
         "End Date",
         "Create Time",
         "Modified Time"
       ],
-      "explore": ["Location"],
-      "save": ["Size"],
-      "description": ["Description", "Summary"],
-      "link": ["URL"]
+      "explore": [
+        "Location"
+      ],
+      "save": [
+        "Size"
+      ],
+      "description": [
+        "Description",
+        "Summary"
+      ],
+      "link": [
+        "URL"
+      ]
     }
   },
   "entity_card": {

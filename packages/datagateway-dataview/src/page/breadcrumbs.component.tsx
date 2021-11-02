@@ -54,7 +54,6 @@ interface PageBreadcrumbsState {
 
 interface WrappedBreadcrumbProps {
   displayName: string;
-  ariaLabel: string;
   url?: string;
   isLast?: boolean;
 }
@@ -71,15 +70,11 @@ class WrappedBreadcrumb extends React.Component<WrappedBreadcrumbProps> {
       <ArrowTooltip title={this.props.displayName} percentageWidth={20}>
         <div>
           {this.props.url ? (
-            <MaterialLink
-              component={Link}
-              to={this.props.url}
-              aria-label={this.props.ariaLabel}
-            >
+            <MaterialLink component={Link} to={this.props.url}>
               <span>{this.props.displayName}</span>
             </MaterialLink>
           ) : (
-            <Typography color="textPrimary" aria-label={this.props.ariaLabel}>
+            <Typography color="textPrimary">
               <span>
                 {this.props.isLast ? (
                   <i>{this.props.displayName}</i>
@@ -463,22 +458,22 @@ class PageBreadcrumbs extends React.Component<
         <Paper square elevation={0}>
           {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
           {this.currentPathnames.length > 0 ? (
-            <StyledBreadcrumbs aria-label="breadcrumb" separator="">
+            <StyledBreadcrumbs
+              aria-label={this.props.t('breadcrumbs.aria_label')}
+              separator=""
+            >
               <WrappedBreadcrumb
                 displayName={this.props.t('breadcrumbs.home')}
-                ariaLabel="Breadcrumb-home"
               />
 
               {/* // Return the base entity as a link. */}
               {breadcrumbState.base.isLast ? (
                 <WrappedBreadcrumb
                   displayName={breadcrumbState.base.displayName}
-                  ariaLabel="Breadcrumb-base"
                 />
               ) : (
                 <WrappedBreadcrumb
                   displayName={breadcrumbState.base.displayName}
-                  ariaLabel="Breadcrumb-base"
                   url={breadcrumbState.base.url + viewString}
                 />
               )}
@@ -492,13 +487,11 @@ class PageBreadcrumbs extends React.Component<
                 return index + 1 === hierarchyKeys.length ? (
                   <WrappedBreadcrumb
                     displayName={breadcrumbInfo.displayName}
-                    ariaLabel={`Breadcrumb-hierarchy-${index + 1}`}
                     key={`breadcrumb-${index + 1}`}
                   />
                 ) : (
                   <WrappedBreadcrumb
                     displayName={breadcrumbInfo.displayName}
-                    ariaLabel={`Breadcrumb-hierarchy-${index + 1}`}
                     url={breadcrumbInfo.url + viewString}
                     key={`breadcrumb-${index + 1}`}
                   />
@@ -509,7 +502,6 @@ class PageBreadcrumbs extends React.Component<
               {breadcrumbState.last.displayName !== '' ? (
                 <WrappedBreadcrumb
                   displayName={breadcrumbState.last.displayName}
-                  ariaLabel="Breadcrumb-last"
                   isLast={true}
                 />
               ) : null}

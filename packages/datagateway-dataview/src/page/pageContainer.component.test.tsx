@@ -113,7 +113,7 @@ describe('PageContainer - Tests', () => {
     const wrapper = createWrapper();
 
     expect(
-      wrapper.find('[aria-label="view-count"]').first().find('h3').text()
+      wrapper.find('.tour-dataview-results').first().find('h3').text()
     ).toBe('app.results: 101');
   });
 
@@ -138,7 +138,7 @@ describe('PageContainer - Tests', () => {
   it('opens search plugin when icon clicked', () => {
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+    wrapper.find('[aria-label="buttons.search"]').first().simulate('click');
 
     expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/search/data');
@@ -147,7 +147,7 @@ describe('PageContainer - Tests', () => {
   it('opens download plugin when Download Cart clicked', () => {
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="view-cart"]').first().simulate('click');
+    wrapper.find('[aria-label="buttons.cart"]').first().simulate('click');
 
     expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/download');
@@ -177,7 +177,7 @@ describe('PageContainer - Tests', () => {
       wrapper.update();
     });
     expect(
-      wrapper.find('[aria-label="filter-message"]').first().text()
+      wrapper.find('[data-test-id="filter-message"]').first().text()
     ).toEqual('loading.filter_message');
   });
 
@@ -186,24 +186,19 @@ describe('PageContainer - Tests', () => {
 
     const wrapper = createWrapper();
 
-    expect(
-      wrapper.find('[aria-label="page-view app.view_cards"]').exists()
-    ).toBeTruthy();
-    expect(
-      wrapper.find('[aria-label="page-view app.view_cards"]').first().text()
-    ).toEqual('app.view_cards');
+    expect(wrapper.find('.tour-dataview-view-button').exists()).toBeTruthy();
+    expect(wrapper.find('.tour-dataview-view-button').first().text()).toEqual(
+      'app.view_cards'
+    );
 
     // Click view button
-    wrapper
-      .find('[aria-label="page-view app.view_cards"]')
-      .first()
-      .simulate('click');
+    wrapper.find('.tour-dataview-view-button').first().simulate('click');
     wrapper.update();
 
     // Check that the text on the button has changed
-    expect(
-      wrapper.find('[aria-label="page-view app.view_table"]').first().text()
-    ).toEqual('app.view_table');
+    expect(wrapper.find('.tour-dataview-view-button').first().text()).toEqual(
+      'app.view_table'
+    );
   });
 
   it('displays role selector when on My Data route', () => {
@@ -220,7 +215,7 @@ describe('PageContainer - Tests', () => {
     const wrapper = createWrapper();
 
     expect(
-      wrapper.find('[aria-label="filter-message"]').first().text()
+      wrapper.find('[data-test-id="filter-message"]').first().text()
     ).toEqual('loading.filter_message');
   });
 
@@ -229,7 +224,7 @@ describe('PageContainer - Tests', () => {
 
     const wrapper = createWrapper();
 
-    expect(wrapper.exists('[aria-label="filter-message"]')).toBeFalsy();
+    expect(wrapper.exists('[data-test-id="filter-message"]')).toBeFalsy();
   });
 
   it('do not use StyledRouting component on landing pages', () => {
