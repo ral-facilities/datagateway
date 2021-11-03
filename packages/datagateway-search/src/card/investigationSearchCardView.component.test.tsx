@@ -340,14 +340,14 @@ describe('Investigation - Card View', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-testid="investigation-search-card-doi-link"]')
+        .find('[data-test-id="investigation-search-card-doi-link"]')
         .first()
         .text()
     ).toEqual('doi 1');
 
     expect(
       wrapper
-        .find('[data-testid="investigation-search-card-doi-link"]')
+        .find('[data-test-id="investigation-search-card-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi 1');

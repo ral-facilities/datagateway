@@ -236,7 +236,7 @@ const InvestigationCardView = (
             entity?.doi && (
               <MuiLink
                 href={`https://doi.org/${entity.doi}`}
-                data-testid="investigation-search-card-doi-link"
+                data-test-id="investigation-search-card-doi-link"
               >
                 {entity.doi}
               </MuiLink>

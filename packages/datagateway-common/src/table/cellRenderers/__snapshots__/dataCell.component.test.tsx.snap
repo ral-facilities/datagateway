@@ -66,13 +66,15 @@ exports[`Data cell component renders provided cell data correctly 1`] = `
 >
   <ArrowTooltip
     enterDelay={500}
-    title="non nested property"
+    title="provided test"
   >
     <WithStyles(ForwardRef(Typography))
       noWrap={true}
       variant="body2"
     >
-      provided test
+      <b>
+        provided test
+      </b>
     </WithStyles(ForwardRef(Typography))>
   </ArrowTooltip>
 </div>

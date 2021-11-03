@@ -201,11 +201,11 @@ describe('ISIS Investigations table component', () => {
   it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
-      wrapper.find('[data-testid="table-study-doi-link"]').first().text()
+      wrapper.find('[data-test-id="table-study-doi-link"]').first().text()
     ).toEqual('study pid');
 
     expect(
-      wrapper.find('[data-testid="table-study-doi-link"]').first().prop('href')
+      wrapper.find('[data-test-id="table-study-doi-link"]').first().prop('href')
     ).toEqual('https://doi.org/study pid');
   });
 

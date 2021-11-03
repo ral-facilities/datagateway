@@ -274,11 +274,11 @@ describe('Investigation Search Table component', () => {
   it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
-      wrapper.find('[data-testid="table-study-doi-link"]').first().text()
+      wrapper.find('[data-test-id="table-study-doi-link"]').first().text()
     ).toEqual('doi 1');
 
     expect(
-      wrapper.find('[data-testid="table-study-doi-link"]').first().prop('href')
+      wrapper.find('[data-test-id="table-study-doi-link"]').first().prop('href')
     ).toEqual('https://doi.org/doi 1');
   });
 
@@ -449,6 +449,7 @@ describe('Investigation Search Table component', () => {
         name: 'test',
         title: 'test',
         visitId: '1',
+        doi: 'Test 1',
         investigationInstruments: [],
       },
     ];
