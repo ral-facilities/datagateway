@@ -34,6 +34,7 @@ import {
   Route,
   useLocation,
   useHistory,
+  useRouteMatch,
 } from 'react-router-dom';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
@@ -145,6 +146,16 @@ export const paths = {
 const togglePaths = Object.values(paths.toggle).concat(
   Object.values(paths.studyHierarchy.toggle)
 );
+
+// ISIS base paths - required for linking to correct search view
+const isisPaths = [
+  paths.myData.isis,
+  paths.toggle.isisInstrument,
+  paths.studyHierarchy.root,
+];
+
+// DLS base paths - required for linking to correct search view
+const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
 
 const BlackTextTypography = withStyles({
   root: {
@@ -560,9 +571,20 @@ const PageContainer: React.FC = () => {
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
-  const navigateToSearch = React.useCallback(() => push('/search/data'), [
-    push,
-  ]);
+  const isisRouteMatch = useRouteMatch(isisPaths);
+  const dlsRouteMatch = useRouteMatch(dlsPaths);
+  const isISISRoute = isisRouteMatch !== null;
+  const isDLSRoute = dlsRouteMatch !== null;
+
+  const navigateToSearch = React.useCallback(() => {
+    if (isISISRoute) {
+      return push('/search/isis');
+    } else if (isDLSRoute) {
+      return push('/search/dls');
+    } else {
+      return push('/search/data');
+    }
+  }, [push, isISISRoute, isDLSRoute]);
 
   React.useEffect(() => {
     prevLocationRef.current = location;

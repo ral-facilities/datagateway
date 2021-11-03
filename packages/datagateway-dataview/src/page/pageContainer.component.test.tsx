@@ -140,8 +140,17 @@ describe('PageContainer - Tests', () => {
 
     wrapper.find('[aria-label="view-search"]').first().simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/search/data');
+
+    history.push('/browse/instrument');
+    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+
+    expect(history.location.pathname).toBe('/search/isis');
+
+    history.push('/browse/proposal');
+    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+
+    expect(history.location.pathname).toBe('/search/dls');
   });
 
   it('opens download plugin when Download Cart clicked', () => {
