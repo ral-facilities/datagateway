@@ -171,13 +171,13 @@ describe('Investigation details panel component', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-testId="investigation-details-panel-doi-link"]')
+        .find('[data-testid="investigation-details-panel-doi-link"]')
         .first()
         .text()
     ).toEqual('doi 1');
     expect(
       wrapper
-        .find('[data-testId="investigation-details-panel-doi-link"]')
+        .find('[data-testid="investigation-details-panel-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi 1');

@@ -84,7 +84,7 @@ export function externalSiteLink(
   view?: ViewsType
 ): React.ReactElement {
   return (
-    <Link href={linkUrl} data-testId="table-study-doi-link">
+    <Link href={linkUrl} data-testid="table-study-doi-link">
       {linkText}
     </Link>
   );

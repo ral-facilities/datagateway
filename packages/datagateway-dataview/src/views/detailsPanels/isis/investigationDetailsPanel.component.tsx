@@ -175,7 +175,7 @@ const InvestigationDetailsPanel = (
               {investigationData.doi && investigationData.doi !== 'null' ? (
                 <MuiLink
                   href={`https://doi.org/${investigationData.doi}`}
-                  data-testId="investigation-details-panel-doi-link"
+                  data-testid="investigation-details-panel-doi-link"
                 >
                   {investigationData.doi}
                 </MuiLink>

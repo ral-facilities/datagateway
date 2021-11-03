@@ -307,7 +307,7 @@ exports[`ISIS MyData table component renders details panel correctly and it fetc
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <WithStyles(ForwardRef(Link))
-            data-testId="investigation-details-panel-doi-link"
+            data-testid="investigation-details-panel-doi-link"
             href="https://doi.org/doi 1"
           >
             doi 1

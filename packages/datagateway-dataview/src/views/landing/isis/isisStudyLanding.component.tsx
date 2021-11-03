@@ -116,7 +116,7 @@ const LinkedInvestigation = (
           entity?.doi && (
             <MuiLink
               href={`https://doi.org/${entity.doi}`}
-              data-testId="landing-study-doi-link"
+              data-testid="landing-study-doi-link"
             >
               {entity.doi}
             </MuiLink>

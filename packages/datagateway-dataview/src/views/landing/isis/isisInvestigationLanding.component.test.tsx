@@ -368,14 +368,14 @@ describe('ISIS Investigation Landing page', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-testId="isis-investigation-landing-doi-link"]')
+        .find('[data-testid="isis-investigation-landing-doi-link"]')
         .first()
         .text()
     ).toEqual('doi 1');
 
     expect(
       wrapper
-        .find('[data-testId="isis-investigation-landing-doi-link"]')
+        .find('[data-testid="isis-investigation-landing-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi 1');
