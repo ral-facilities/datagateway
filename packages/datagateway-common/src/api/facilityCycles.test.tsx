@@ -102,7 +102,7 @@ describe('facility cycle api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(20));
@@ -172,7 +172,7 @@ describe('facility cycle api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(0));
@@ -261,7 +261,7 @@ describe('facility cycle api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
 
