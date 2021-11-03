@@ -21,6 +21,7 @@ import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import format from 'date-fns/format';
 
 export * from './cart';
 export * from './facilityCycles';
@@ -60,6 +61,12 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const filters = query.get('filters');
   const sort = query.get('sort');
   const view = query.get('view') as ViewsType;
+  const searchText = query.get('searchText');
+  const dataset = query.get('dataset');
+  const datafile = query.get('datafile');
+  const investigation = query.get('investigation');
+  const startDateString = query.get('startDate');
+  const endDateString = query.get('endDate');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -97,6 +104,12 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     }
   }
 
+  let startDate = null;
+  let endDate = null;
+
+  if (startDateString) startDate = new Date(startDateString + 'T00:00:00Z');
+  if (endDateString) endDate = new Date(endDateString + 'T00:00:00Z');
+
   // Create the query parameters object.
   const params: QueryParams = {
     view: view,
@@ -105,6 +118,12 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     results: results ? Number(results) : null,
     filters: parsedFilters,
     sort: parsedSort,
+    searchText: searchText ? searchText : null,
+    dataset: dataset !== null ? dataset === 'true' : true,
+    datafile: datafile !== null ? datafile === 'true' : true,
+    investigation: investigation !== null ? investigation === 'true' : true,
+    startDate: startDate,
+    endDate: endDate,
   };
 
   return params;
@@ -122,7 +141,16 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
   // Loop and add all the query parameters which is in use.
   for (const [q, v] of Object.entries(query)) {
     if (v !== null && q !== 'filters' && q !== 'sort') {
-      queryParams.append(q, v);
+      if (q === 'startDate' || q === 'endDate') {
+        queryParams.append(q, format(v, 'yyyy-MM-dd'));
+      } else if (
+        //Take default value of these as true, so don't put in url if this is the case
+        !(
+          (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
+          v === true
+        )
+      )
+        queryParams.append(q, v);
     }
   }
 
@@ -309,8 +337,11 @@ export const usePushResults = (): ((results: number) => void) => {
   );
 };
 
-export const usePushView = (): ((view: ViewsType) => void) => {
-  const { push } = useHistory();
+export const useUpdateView = (
+  updateMethod: 'push' | 'replace'
+): ((view: ViewsType) => void) => {
+  const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
 
   return React.useCallback(
     (view: ViewsType) => {
@@ -318,7 +349,93 @@ export const usePushView = (): ((view: ViewsType) => void) => {
         ...parseSearchToQuery(window.location.search),
         view,
       };
+      functionToUse(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [functionToUse]
+  );
+};
+
+export const usePushSearchText = (): ((searchText: string) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (searchText: string) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        searchText,
+      };
       push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushSearchToggles = (): ((
+  dataset: boolean,
+  datafile: boolean,
+  investigation: boolean
+) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (dataset: boolean, datafile: boolean, investigation: boolean) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        dataset,
+        datafile,
+        investigation,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushSearchStartDate = (): ((
+  startDate: Date | null
+) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (startDate: Date | null) => {
+      //If null remove from URL instead
+      if (startDate) {
+        const query = {
+          ...parseSearchToQuery(window.location.search),
+          startDate,
+        };
+        push(`?${parseQueryToSearch(query).toString()}`);
+      } else {
+        const searchParams = parseQueryToSearch(
+          parseSearchToQuery(window.location.search)
+        );
+        searchParams.delete('startDate');
+        push(`?${searchParams.toString()}`);
+      }
+    },
+    [push]
+  );
+};
+
+export const usePushSearchEndDate = (): ((endDate: Date | null) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (endDate: Date | null) => {
+      //If null remove from URL instead
+      if (endDate) {
+        const query = {
+          ...parseSearchToQuery(window.location.search),
+          endDate,
+        };
+        push(`?${parseQueryToSearch(query).toString()}`);
+      } else {
+        const searchParams = parseQueryToSearch(
+          parseSearchToQuery(window.location.search)
+        );
+        searchParams.delete('endDate');
+        push(`?${searchParams.toString()}`);
+      }
     },
     [push]
   );

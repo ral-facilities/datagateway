@@ -1,44 +1,42 @@
 import React from 'react';
 import { StateType } from '../state/app.types';
-import {
-  toggleDataset,
-  toggleDatafile,
-  toggleInvestigation,
-} from '../state/actions/actions';
 import { Provider } from 'react-redux';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import CheckBoxesGroup from './checkBoxes.component';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
 import { initialState } from '../state/reducers/dgsearch.reducer';
+import { createMemoryHistory, History } from 'history';
+import { Router } from 'react-router-dom';
 
 jest.mock('loglevel');
 
 describe('Checkbox component tests', () => {
-  let shallow;
+  let mount;
   let state: StateType;
   let mockStore;
-  let mount;
+  let testStore;
+  let history: History;
+  let pushSpy;
+
+  const createWrapper = (h: History = history): ReactWrapper => {
+    return mount(
+      <Provider store={testStore}>
+        <Router history={h}>
+          <CheckBoxesGroup />
+        </Router>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
+    history = createMemoryHistory();
+    pushSpy = jest.spyOn(history, 'push');
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
     state.dgsearch = {
-      searchText: '',
-      text: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
-      checkBox: {
-        dataset: true,
-        datafile: true,
-        investigation: false,
-      },
       tabs: {
         datasetTab: true,
         datafileTab: true,
@@ -54,61 +52,63 @@ describe('Checkbox component tests', () => {
     };
 
     mockStore = configureStore([thunk]);
+    testStore = mockStore(state);
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<CheckBoxesGroup store={mockStore(state)} />);
-    expect(wrapper).toMatchSnapshot();
+    history.replace('/?searchText=&investigation=false');
+    const wrapper = createWrapper();
+    const investigationCheckbox = wrapper.find(
+      '[aria-label="Investigation checkbox"]'
+    );
+    expect(investigationCheckbox.exists());
+    investigationCheckbox.find('input').forEach((node) => {
+      expect(node.props().checked).toEqual(false);
+    });
+
+    const datasetCheckbox = wrapper.find('[aria-label="Dataset checkbox"]');
+    expect(datasetCheckbox.exists());
+    datasetCheckbox.find('input').forEach((node) => {
+      expect(node.props().checked).toEqual(true);
+    });
+
+    const datafileCheckbox = wrapper.find('[aria-label="Datafile checkbox"]');
+    expect(datafileCheckbox.exists());
+    datafileCheckbox.find('input').forEach((node) => {
+      expect(node.props().checked).toEqual(true);
+    });
   });
 
-  it('sends a toggleDataset action when user clicks checkbox', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <CheckBoxesGroup />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('pushes URL with new dataset value when user clicks checkbox', () => {
+    history.replace('/?searchText=&investigation=false');
+    const wrapper = createWrapper();
 
     wrapper
       .find('[aria-label="searchBox.checkboxes.dataset_arialabel"]')
       .simulate('change');
 
-    expect(testStore.getActions()[0]).toEqual(toggleDataset(false));
+    expect(pushSpy).toHaveBeenCalledWith('?dataset=false&investigation=false');
   });
 
-  it('sends a toggleDatafile action when user clicks checkbox', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <CheckBoxesGroup />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('pushes URL with new datafile value when user clicks checkbox', () => {
+    history.replace('/?searchText=&investigation=false');
+    const wrapper = createWrapper();
 
     wrapper
       .find('[aria-label="searchBox.checkboxes.datafile_arialabel"]')
       .simulate('change');
 
-    expect(testStore.getActions()[0]).toEqual(toggleDatafile(false));
+    expect(pushSpy).toHaveBeenCalledWith('?datafile=false&investigation=false');
   });
 
-  it('sends a toggleInvestigation action when user clicks checkbox', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <CheckBoxesGroup />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('pushes URL with new investigation value when user clicks checkbox', () => {
+    history.replace('/?searchText=&investigation=false');
+    const wrapper = createWrapper();
 
     wrapper
       .find('[aria-label="searchBox.checkboxes.investigation_arialabel"]')
       .simulate('change');
 
-    expect(testStore.getActions()[0]).toEqual(toggleInvestigation(true));
+    expect(pushSpy).toHaveBeenCalledWith('?');
   });
 });

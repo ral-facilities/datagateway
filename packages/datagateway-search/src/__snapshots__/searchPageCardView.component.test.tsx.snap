@@ -3017,11 +3017,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
             currentTab="investigation"
             datafileTab={true}
             datasetTab={true}
-            endDate={null}
             investigationTab={true}
-            searchText=""
             setCurrentTab={[Function]}
-            startDate={null}
           >
             <div>
               <WithStyles(ForwardRef(AppBar))

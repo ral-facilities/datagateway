@@ -6,6 +6,7 @@ describe('SearchPageContainer Component', () => {
       if (settings.facilityName) facilityName = settings.facilityName;
     });
   });
+
   it('Should default back to 10 when any result is manually entered into the url', () => {
     cy.login();
     cy.visit('/search/data?view=card&results=100');
@@ -31,6 +32,7 @@ describe('SearchPageContainer Component', () => {
       10
     );
   });
+
   describe('SearchPageContianer Components', () => {
     beforeEach(() => {
       cy.login();
@@ -56,6 +58,9 @@ describe('SearchPageContainer Component', () => {
       cy.title().should('equal', 'DataGateway Search');
 
       cy.get('#container-search-filters').should('exist');
+      cy.location().should((loc) => {
+        expect(loc.search).to.eq('?searchText=dog');
+      });
     });
 
     it('should display results correctly', () => {
@@ -87,12 +92,21 @@ describe('SearchPageContainer Component', () => {
         'Display as table'
       );
 
+      cy.location().should((loc) => {
+        expect(loc.search).to.eq('?view=card&searchText=dog');
+      });
+
       cy.get('[aria-label="container-view-button"]').click();
+
       //Should now be in table view
       cy.get('[aria-label="container-view-button"]').should('exist');
       cy.get('[aria-label="container-view-button"]').contains(
         'Display as cards'
       );
+
+      cy.location().should((loc) => {
+        expect(loc.search).to.eq('?view=table&searchText=dog');
+      });
     });
 
     it('should be able to scroll down and load more rows', () => {
@@ -205,6 +219,80 @@ describe('SearchPageContainer Component', () => {
       //Check can close banner
       cy.get('[aria-label="selection-alert-close"]').click();
       cy.get('[aria-label="selection-alert"]').should('not.exist');
+    });
+
+    it('should be able to deselect checkboxes', () => {
+      cy.get('[aria-label="Investigation checkbox"]').click();
+      cy.get('[aria-label="Datafile checkbox"]').click();
+
+      cy.get('[aria-label="Submit search"]')
+        .click()
+        .wait(['@investigations', '@investigations', '@investigationsCount'], {
+          timeout: 10000,
+        });
+
+      cy.location().should((loc) => {
+        expect(loc.search).to.eq(
+          '?searchText=dog&datafile=false&investigation=false'
+        );
+      });
+
+      cy.get('[aria-label="Search table"]')
+        .contains('Investigation')
+        .should('not.exist');
+      cy.get('[aria-label="Search table"]')
+        .contains('Datafile')
+        .should('not.exist');
+      cy.get('[aria-label="Search table"]')
+        .contains('Dataset')
+        .contains('14')
+        .should('exist');
+    });
+
+    it('should be able to select a start date', () => {
+      cy.get('[aria-label="Start date input"]').type('2009-01-01');
+
+      cy.get('[aria-label="Submit search"]')
+        .click()
+        .wait(['@investigations', '@investigations', '@investigationsCount'], {
+          timeout: 10000,
+        });
+
+      cy.location().should((loc) => {
+        expect(loc.search).to.contains('?searchText=dog&startDate=2009-01-01');
+      });
+
+      cy.get('[aria-label="Search table"]')
+        .contains('Investigation')
+        .contains('8')
+        .should('exist');
+    });
+
+    it('should be able to load results from a URL', () => {
+      cy.visit(
+        '/search/data/?view=card&searchText=test&startDate=2009-01-01'
+      ).wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
+
+      //Should be in card view
+      cy.get('[aria-label="container-view-button"]').should('exist');
+      cy.get('[aria-label="container-view-button"]').contains(
+        'Display as table'
+      );
+
+      cy.get('[aria-label="Search table"]')
+        .contains('Investigation')
+        .contains('4')
+        .should('exist');
+      cy.get('[aria-label="Search table"]')
+        .contains('Dataset')
+        .contains('7')
+        .should('exist');
+      cy.get('[aria-label="Search table"]')
+        .contains('Datafile')
+        .contains('300')
+        .should('exist');
     });
   });
 });

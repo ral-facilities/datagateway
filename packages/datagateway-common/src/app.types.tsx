@@ -299,4 +299,10 @@ export interface QueryParams {
   search: string | null;
   page: number | null;
   results: number | null;
+  searchText: string | null;
+  dataset: boolean;
+  datafile: boolean;
+  investigation: boolean;
+  startDate: Date | null;
+  endDate: Date | null;
 }

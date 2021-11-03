@@ -8,13 +8,15 @@ import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
 
 interface SearchBoxContainerProps {
+  searchText: string;
   initiateSearch: () => void;
+  onSearchTextChange: (searchText: string) => void;
 }
 
 const SearchBoxContainer = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
-  const { initiateSearch } = props;
+  const { searchText, initiateSearch, onSearchTextChange } = props;
 
   return (
     <Grid
@@ -26,7 +28,11 @@ const SearchBoxContainer = (
     >
       <Grid item xs={8}>
         <Box pl={2} pb={1}>
-          <SearchTextBox initiateSearch={initiateSearch} />
+          <SearchTextBox
+            searchText={searchText}
+            initiateSearch={initiateSearch}
+            onChange={onSearchTextChange}
+          />
         </Box>
       </Grid>
 
