@@ -106,7 +106,7 @@ const InvestigationCardView = (): React.ReactElement => {
             entity?.doi && (
               <MuiLink
                 href={`https://doi.org/${entity.doi}`}
-                data-testId="investigation-card-doi-link"
+                data-test-id="investigation-card-doi-link"
               >
                 {entity.doi}
               </MuiLink>
