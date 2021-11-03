@@ -34,13 +34,8 @@ const urlParamsBuilder = (
     target: datasearchtype,
   };
 
-  //Do not assign query.lower for datafiles when there is no start date
-  //as this fixes issue when using lucene 4.10.0 instead of 4.11.1
-  if (datasearchtype !== 'Datafile' || params.startDate !== null) {
-    const stringStartDate =
-      params.startDate !== null
-        ? format(params.startDate, 'yyyy-MM-dd')
-        : '00000-01-01';
+  if (params.startDate !== null) {
+    const stringStartDate = format(params.startDate, 'yyyy-MM-dd');
     const stringStartDateArray = stringStartDate.split('-');
     query.lower =
       stringStartDateArray[0] +
@@ -49,13 +44,8 @@ const urlParamsBuilder = (
       '0000';
   }
 
-  //Do not assign query.upper for datafiles when there is no end date
-  //as this fixes issue when using lucene 4.10.0 instead of 4.11.1
-  if (datasearchtype !== 'Datafile' || params.endDate !== null) {
-    const stringEndDate =
-      params.endDate !== null
-        ? format(params.endDate, 'yyyy-MM-dd')
-        : '90000-12-31';
+  if (params.endDate !== null) {
+    const stringEndDate = format(params.endDate, 'yyyy-MM-dd');
     const stringEndDateArray = stringEndDate.split('-');
     query.upper =
       stringEndDateArray[0] +

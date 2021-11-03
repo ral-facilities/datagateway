@@ -336,7 +336,6 @@ describe('SearchPageContainer - Tests', () => {
           query: {
             target: 'Dataset',
             lower: '201311110000',
-            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -372,7 +371,6 @@ describe('SearchPageContainer - Tests', () => {
           query: {
             target: 'Investigation',
             lower: '201311110000',
-            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -436,7 +434,6 @@ describe('SearchPageContainer - Tests', () => {
           maxCount: 300,
           query: {
             target: 'Dataset',
-            lower: '0000001010000',
             upper: '201611112359',
           },
           sessionId: null,
@@ -472,7 +469,6 @@ describe('SearchPageContainer - Tests', () => {
           maxCount: 300,
           query: {
             target: 'Investigation',
-            lower: '0000001010000',
             upper: '201611112359',
           },
           sessionId: null,
@@ -524,8 +520,6 @@ describe('SearchPageContainer - Tests', () => {
           maxCount: 300,
           query: {
             target: 'Dataset',
-            lower: '0000001010000',
-            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -556,8 +550,6 @@ describe('SearchPageContainer - Tests', () => {
           maxCount: 300,
           query: {
             target: 'Investigation',
-            lower: '0000001010000',
-            upper: '9000012312359',
           },
           sessionId: null,
         },
