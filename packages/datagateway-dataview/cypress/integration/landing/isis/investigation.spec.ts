@@ -7,6 +7,7 @@ describe('ISIS - Investigation Landing', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+    cy.contains('Again bad simply low summer').should('be.visible');
   });
 
   it('should be able to click an investigation to see its datasets', () => {
@@ -14,6 +15,14 @@ describe('ISIS - Investigation Landing', () => {
     cy.location('pathname').should(
       'eq',
       '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
+    );
+  });
+
+  it('should be able to click a DOI render the correct webpage ', () => {
+    cy.contains('0-16-038549-0').should(
+      'have.attr',
+      'href',
+      'https://doi.org/0-16-038549-0'
     );
   });
 

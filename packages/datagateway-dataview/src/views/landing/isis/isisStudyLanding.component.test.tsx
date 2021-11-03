@@ -255,6 +255,35 @@ describe('ISIS Study Landing page', () => {
     );
   });
 
+  it('displays DOI and renders the expected link', () => {
+    (useStudy as jest.Mock).mockReturnValue({
+      data: [
+        {
+          ...initialData[0],
+          studyInvestigations: [
+            {
+              investigation: {
+                ...investigation,
+                investigationUsers: investigationUser,
+              },
+            },
+          ],
+        },
+      ],
+    });
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-test-id="landing-study-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
+
+    expect(
+      wrapper.find('[data-test-id="landing-study-doi-link"]').first().text()
+    ).toEqual('doi 1');
+  });
+
   it('copies data citation to clipboard', () => {
     // Mock the clipboard object
     const testWriteText = jest.fn();

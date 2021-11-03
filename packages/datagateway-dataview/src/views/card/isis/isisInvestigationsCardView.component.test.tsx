@@ -67,6 +67,9 @@ describe('ISIS Investigations - Card View', () => {
         title: 'Test 1',
         name: 'Test 1',
         visitId: '1',
+        studyInvestigations: [
+          { id: 1, study: { id: 1, pid: 'study pid' }, name: 'study 1' },
+        ],
       },
     ];
     history = createMemoryHistory();
@@ -180,6 +183,23 @@ describe('ISIS Investigations - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+  });
+
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-test-id="isis-investigations-card-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('study pid');
+
+    expect(
+      wrapper
+        .find('[data-test-id="isis-investigations-card-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/study pid');
   });
 
   it('updates sort query params on sort', () => {

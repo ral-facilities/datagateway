@@ -34,6 +34,7 @@ import {
   Route,
   useLocation,
   useHistory,
+  useRouteMatch,
 } from 'react-router-dom';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
@@ -41,6 +42,7 @@ import { Location as LocationType } from 'history';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
+import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
 const usePaperStyles = makeStyles(
@@ -145,6 +147,16 @@ const togglePaths = Object.values(paths.toggle).concat(
   Object.values(paths.studyHierarchy.toggle)
 );
 
+// ISIS base paths - required for linking to correct search view
+const isisPaths = [
+  paths.myData.isis,
+  paths.toggle.isisInstrument,
+  paths.studyHierarchy.root,
+];
+
+// DLS base paths - required for linking to correct search view
+const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
+
 const BlackTextTypography = withStyles({
   root: {
     color: '#000000',
@@ -237,24 +249,24 @@ const NavBar = React.memo(
 
           {/* The table entity count has a size of 2 (or 3 for xs screens); the
             breadcrumbs will take the remainder of the space. */}
-          <Grid
-            className="tour-dataview-results"
-            style={{ textAlign: 'center' }}
-            item
-            sm={2}
-            xs={3}
-            aria-label="view-count"
-          >
-            <Route
-              exact
-              path={Object.values(paths.myData).concat(
-                Object.values(paths.toggle),
-                Object.values(paths.standard),
-                Object.values(paths.studyHierarchy.toggle),
-                Object.values(paths.studyHierarchy.standard)
-              )}
-              render={() => {
-                return (
+          <Route
+            exact
+            path={Object.values(paths.myData).concat(
+              Object.values(paths.toggle),
+              Object.values(paths.standard),
+              Object.values(paths.studyHierarchy.toggle),
+              Object.values(paths.studyHierarchy.standard)
+            )}
+            render={() => {
+              return (
+                <Grid
+                  className="tour-dataview-results"
+                  style={{ textAlign: 'center' }}
+                  item
+                  sm={2}
+                  xs={3}
+                  aria-label="view-count"
+                >
                   <Paper
                     square
                     style={{
@@ -269,10 +281,10 @@ const NavBar = React.memo(
                       <b>{t('app.results')}:</b> {props.entityCount}
                     </Typography>
                   </Paper>
-                );
-              }}
-            />
-          </Grid>
+                </Grid>
+              );
+            }}
+          />
           <Paper
             square
             style={{
@@ -560,9 +572,20 @@ const PageContainer: React.FC = () => {
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
-  const navigateToSearch = React.useCallback(() => push('/search/data'), [
-    push,
-  ]);
+  const isisRouteMatch = useRouteMatch(isisPaths);
+  const dlsRouteMatch = useRouteMatch(dlsPaths);
+  const isISISRoute = isisRouteMatch !== null;
+  const isDLSRoute = dlsRouteMatch !== null;
+
+  const navigateToSearch = React.useCallback(() => {
+    if (isISISRoute) {
+      return push('/search/isis');
+    } else if (isDLSRoute) {
+      return push('/search/dls');
+    } else {
+      return push('/search/data');
+    }
+  }, [push, isISISRoute, isDLSRoute]);
 
   React.useEffect(() => {
     prevLocationRef.current = location;
@@ -621,6 +644,11 @@ const PageContainer: React.FC = () => {
                           handleButtonChange={handleButtonChange}
                         />
                       )}
+                    />
+                    <Route
+                      exact
+                      path={Object.values(paths.myData)}
+                      render={() => <RoleSelector />}
                     />
                   </Grid>
                   <Grid item xs={true}>

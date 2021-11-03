@@ -35,7 +35,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
+import { Typography, Link as MuiLink } from '@material-ui/core';
 
 interface InvestigationCardProps {
   hierarchy: string;
@@ -202,6 +202,18 @@ const InvestigationCardView = (
   const information = React.useMemo(
     () => [
       {
+        content: function doiFormat(entity: Investigation) {
+          return (
+            entity?.doi && (
+              <MuiLink
+                href={`https://doi.org/${entity.doi}`}
+                data-test-id="investigation-search-card-doi-link"
+              >
+                {entity.doi}
+              </MuiLink>
+            )
+          );
+        },
         icon: Public,
         label: t('investigations.doi'),
         dataKey: 'doi',

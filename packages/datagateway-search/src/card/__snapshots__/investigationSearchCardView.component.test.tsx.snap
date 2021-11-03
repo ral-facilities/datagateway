@@ -22,6 +22,7 @@ Object {
   "data": Array [
     Object {
       "createTime": "2019-07-23",
+      "doi": "doi 1",
       "endDate": "2019-07-25",
       "id": 1,
       "investigationInstruments": Array [
@@ -67,6 +68,7 @@ Object {
   "filters": Object {},
   "information": Array [
     Object {
+      "content": [Function],
       "dataKey": "doi",
       "filterComponent": [Function],
       "icon": Object {

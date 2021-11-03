@@ -197,6 +197,12 @@ describe('ISIS - Investigations Table', () => {
     it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
+      cy.contains('1-314-79096-X').should(
+        'have.attr',
+        'href',
+        'https://doi.org/1-314-79096-X'
+      );
+
       cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });

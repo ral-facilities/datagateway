@@ -16,7 +16,7 @@ import { createLocation, createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 
 import PageContainer, { paths } from './pageContainer.component';
-import { checkInvestigationId } from './idCheckFunctions';
+import { checkInstrumentId, checkInvestigationId } from './idCheckFunctions';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
@@ -140,8 +140,17 @@ describe('PageContainer - Tests', () => {
 
     wrapper.find('[aria-label="view-search"]').first().simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/search/data');
+
+    history.push('/browse/instrument');
+    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+
+    expect(history.location.pathname).toBe('/search/isis');
+
+    history.push('/browse/proposal');
+    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+
+    expect(history.location.pathname).toBe('/search/dls');
   });
 
   it('opens download plugin when Download Cart clicked', () => {
@@ -168,9 +177,7 @@ describe('PageContainer - Tests', () => {
 
   it('display filter warning on datafile table', async () => {
     history.replace('/browse/investigation/1/dataset/25/datafile');
-    (checkInvestigationId as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve(true)
-    );
+    (checkInvestigationId as jest.Mock).mockResolvedValueOnce(true);
 
     const wrapper = createWrapper();
 
@@ -208,6 +215,14 @@ describe('PageContainer - Tests', () => {
     ).toEqual('app.view_table');
   });
 
+  it('displays role selector when on My Data route', () => {
+    history.replace(paths.myData.root);
+
+    const wrapper = createWrapper();
+
+    expect(wrapper.find('#role-selector').exists()).toBeTruthy();
+  });
+
   it('display filter warning on toggle table', () => {
     history.replace(`${paths.toggle.investigation}?view=table`);
 
@@ -226,13 +241,19 @@ describe('PageContainer - Tests', () => {
     expect(wrapper.exists('[aria-label="filter-message"]')).toBeFalsy();
   });
 
-  it('do not use StyledRouting component on landing pages', () => {
+  it('do not use StyledRouting component on landing pages', async () => {
+    (checkInstrumentId as jest.Mock).mockResolvedValueOnce(true);
     (useQueryClient as jest.Mock).mockReturnValue({
       getQueryData: jest.fn(),
     });
     history.replace(`${paths.studyHierarchy.landing.isisStudyLanding}`);
 
     const wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     expect(wrapper.exists('StyledRouting')).toBeFalsy();
   });

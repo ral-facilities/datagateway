@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography, Link as MuiLink } from '@material-ui/core';
 import {
   Fingerprint,
   Public,
@@ -124,6 +124,18 @@ const ISISInvestigationsCardView = (
         filterComponent: textFilter,
       },
       {
+        content: function doiFormat(entity: Investigation) {
+          return (
+            entity?.studyInvestigations?.[0]?.study.pid && (
+              <MuiLink
+                href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
+                data-test-id="isis-investigations-card-doi-link"
+              >
+                {entity.studyInvestigations[0].study.pid}
+              </MuiLink>
+            )
+          );
+        },
         icon: Public,
         label: t('investigations.doi'),
         dataKey: 'studyInvestigations[0].study.pid',

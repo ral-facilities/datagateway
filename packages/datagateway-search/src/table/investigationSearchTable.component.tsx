@@ -11,6 +11,7 @@ import {
   Table,
   Investigation,
   tableLink,
+  externalSiteLink,
   FacilityCycle,
   ColumnType,
   DetailsPanelProps,
@@ -279,6 +280,13 @@ const InvestigationSearchTable = (
       {
         label: t('investigations.doi'),
         dataKey: 'doi',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          return externalSiteLink(
+            `https://doi.org/${investigationData.doi}`,
+            investigationData.doi
+          );
+        },
         filterComponent: textFilter,
       },
       {

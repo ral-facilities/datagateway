@@ -211,7 +211,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       content: function doiFormat(entity: Investigation) {
         return (
           entity?.doi && (
-            <MuiLink href={`https://doi.org/${entity.doi}`}>
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              data-test-id="isis-investigation-landing-doi-link"
+            >
               {entity.doi}
             </MuiLink>
           )
@@ -283,7 +286,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const shortDatasetInfo = [
     {
-      content: (entity: Dataset) => entity.doi,
+      content: function doiFormat(entity: Dataset) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              aria-label="landing-study-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('datasets.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },

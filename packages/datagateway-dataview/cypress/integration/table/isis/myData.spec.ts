@@ -153,6 +153,22 @@ describe('ISIS - MyData Table', () => {
     });
 
     describe('should be able to filter by', () => {
+      it('role', () => {
+        cy.get('[aria-rowcount="4"]').should('exist');
+
+        cy.get('#role-selector').click();
+        cy.get('[role="listbox"]')
+          .find('[role="option"]')
+          .should('have.length', 3);
+        cy.get('[role="option"][data-value="PI"]').click();
+
+        cy.get('[aria-rowcount="3"]').should('exist');
+
+        cy.get('#role-selector').click();
+        cy.get('[role="option"]').first().click();
+        cy.get('[aria-rowcount="4"]').should('exist');
+      });
+
       it('text', () => {
         cy.get('[aria-rowcount="4"]').should('exist');
         cy.get('input[id="Title-filter"]').type('invalid');

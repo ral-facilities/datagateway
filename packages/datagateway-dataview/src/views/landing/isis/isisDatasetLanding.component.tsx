@@ -3,6 +3,7 @@ import {
   Divider,
   Grid,
   makeStyles,
+  Link as MuiLink,
   Paper,
   Tab,
   Tabs,
@@ -100,12 +101,23 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
   const classes = useStyles();
 
-  const { data } = useDatasetDetails(parseInt(investigationId));
+  const { data } = useDatasetDetails(parseInt(datasetId));
   const sizeQueries = useDatasetSizes(data ? [data] : []);
 
   const shortInfo = [
     {
-      content: (entity: Dataset) => entity.doi,
+      content: function doiFormat(entity: Dataset) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              data-test-id="isis-dataset-landing-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('datasets.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },

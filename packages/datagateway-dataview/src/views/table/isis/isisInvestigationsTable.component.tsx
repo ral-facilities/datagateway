@@ -3,6 +3,7 @@ import {
   Investigation,
   Table,
   tableLink,
+  externalSiteLink,
   useISISInvestigationsInfinite,
   useISISInvestigationCount,
   useISISInvestigationIds,
@@ -143,14 +144,6 @@ const ISISInvestigationsTable = (
         icon: FingerprintIcon,
         label: t('investigations.name'),
         dataKey: 'name',
-        cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigationData = cellProps.rowData as Investigation;
-          return tableLink(
-            `${urlPrefix}/${investigationData.id}`,
-            investigationData.name,
-            view
-          );
-        },
         filterComponent: textFilter,
       },
       {
@@ -160,8 +153,8 @@ const ISISInvestigationsTable = (
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           if (investigationData?.studyInvestigations?.[0]?.study) {
-            return tableLink(
-              `${urlPrefix}/${investigationData.id}`,
+            return externalSiteLink(
+              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
               investigationData.studyInvestigations[0].study.pid,
               view
             );
