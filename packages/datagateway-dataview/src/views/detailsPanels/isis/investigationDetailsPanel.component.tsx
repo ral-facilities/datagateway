@@ -182,7 +182,6 @@ const InvestigationDetailsPanel = (
               ) : (
                 <b>{`${t('investigations.details.doi')} not provided`}</b>
               )}
-              ;
             </Typography>
           </Grid>
           <Grid item xs>

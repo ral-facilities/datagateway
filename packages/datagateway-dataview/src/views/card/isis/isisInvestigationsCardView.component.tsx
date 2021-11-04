@@ -201,7 +201,6 @@ const ISISInvestigationsCardView = (
             entityType="investigation"
             entityId={investigation.id}
             entityName={investigation.name}
-            variant="outlined"
           />
         </div>
       ),

@@ -28,10 +28,24 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
 interface DatasetCardViewProps {
   hierarchy: string;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    actionButtons: {
+      display: 'flex',
+      flexDirection: 'column',
+      '& button': {
+        marginTop: theme.spacing(1),
+        margin: 'auto',
+      },
+    },
+  })
+);
 
 const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const { hierarchy } = props;
@@ -260,10 +274,12 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     ]
   );
 
+  const classes = useStyles();
+
   const buttons = React.useMemo(
     () => [
       (dataset: Dataset) => (
-        <div>
+        <div className={classes.actionButtons}>
           <AddToCartButton
             entityType="dataset"
             allIds={data?.map((dataset) => dataset.id) ?? []}
@@ -273,12 +289,11 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
             entityType="dataset"
             entityId={dataset.id}
             entityName={dataset.name}
-            variant="outlined"
           />
         </div>
       ),
     ],
-    [data]
+    [classes.actionButtons, data]
   );
 
   return (

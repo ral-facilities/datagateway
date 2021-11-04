@@ -35,11 +35,30 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Typography, Link as MuiLink } from '@material-ui/core';
+import {
+  Typography,
+  Link as MuiLink,
+  makeStyles,
+  createStyles,
+  Theme,
+} from '@material-ui/core';
 
 interface InvestigationCardProps {
   hierarchy: string;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    actionButtons: {
+      display: 'flex',
+      flexDirection: 'column',
+      '& button': {
+        marginTop: theme.spacing(1),
+        margin: 'auto',
+      },
+    },
+  })
+);
 
 const InvestigationCardView = (
   props: InvestigationCardProps
@@ -292,10 +311,12 @@ const InvestigationCardView = (
     ]
   );
 
+  const classes = useStyles();
+
   const buttons = React.useMemo(
     () => [
       (investigation: Investigation) => (
-        <div>
+        <div className={classes.actionButtons}>
           <AddToCartButton
             entityType="investigation"
             allIds={data?.map((investigation) => investigation.id) ?? []}
@@ -305,12 +326,11 @@ const InvestigationCardView = (
             entityType="investigation"
             entityId={investigation.id}
             entityName={investigation.name}
-            variant="outlined"
           />
         </div>
       ),
     ],
-    [data]
+    [classes.actionButtons, data]
   );
 
   const customFilters = React.useMemo(

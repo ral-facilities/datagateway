@@ -165,7 +165,6 @@ const ISISDatasetsCardView = (
             entityType="dataset"
             entityId={dataset.id}
             entityName={dataset.name}
-            variant="outlined"
           />
         </div>
       ),

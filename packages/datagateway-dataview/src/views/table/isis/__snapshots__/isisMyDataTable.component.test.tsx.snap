@@ -312,7 +312,6 @@ exports[`ISIS MyData table component renders details panel correctly and it fetc
           >
             doi 1
           </WithStyles(ForwardRef(Link))>
-          ;
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

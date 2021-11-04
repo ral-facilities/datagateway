@@ -42,7 +42,7 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
     },
     howItWorksGridItemTitle: {
-      color: '#FF6900',
+      color: '#F26300',
       fontWeight: 'bold',
       paddingBottom: 10,
     },

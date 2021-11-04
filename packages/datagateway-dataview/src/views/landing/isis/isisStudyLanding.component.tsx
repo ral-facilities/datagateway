@@ -447,9 +447,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {t('doi_constants.publisher.name')}
                 {pid && ', '}
                 {pid && (
-                  <a
+                  <MuiLink
                     href={`https://doi.org/${pid}`}
-                  >{`https://doi.org/${pid}`}</a>
+                  >{`https://doi.org/${pid}`}</MuiLink>
                 )}
               </i>
             </Typography>
