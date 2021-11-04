@@ -19,13 +19,13 @@ import SearchPageCardView from './searchPageCardView';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useHistory } from 'react-router-dom';
 import {
   useLuceneSearch,
   ViewsType,
   parseSearchToQuery,
-  usePushView,
+  useUpdateView,
+  usePushSearchText,
   useCart,
   SelectionAlert,
 } from 'datagateway-common';
@@ -120,12 +120,6 @@ const ViewButton = (props: {
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
-  searchText: string;
-  dataset: boolean;
-  datafile: boolean;
-  investigation: boolean;
-  startDate: MaterialUiPickersDate;
-  endDate: MaterialUiPickersDate;
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
@@ -145,12 +139,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   props: SearchPageContainerCombinedProps
 ) => {
   const {
-    searchText,
-    startDate,
-    endDate,
-    datafile,
-    dataset,
-    investigation,
     setDatafileTab,
     setDatasetTab,
     setInvestigationTab,
@@ -159,11 +147,29 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   } = props;
 
   const location = useLocation();
-  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
+  const {
+    view,
+    dataset,
+    datafile,
+    investigation,
+    startDate,
+    endDate,
+  } = queryParams;
 
-  const pushView = usePushView();
+  const pushView = useUpdateView('push');
+  const replaceView = useUpdateView('replace');
+  const pushSearchText = usePushSearchText();
+
+  const [searchText, setSearchText] = React.useState(
+    queryParams.searchText ? queryParams.searchText : ''
+  );
+
+  const handleSearchTextChange = (searchText: string): void => {
+    setSearchText(searchText);
+  };
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';
@@ -179,9 +185,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
     if (getToggle(location.pathname, view) && !view) {
-      pushView('card');
+      //Replace rather than push here to ensure going back doesn't just go to the same
+      //page without the query which would execute this code again
+      replaceView('card');
     }
-  }, [location.pathname, view, pushView]);
+  }, [location.pathname, view, replaceView]);
 
   const {
     refetch: searchInvestigations,
@@ -218,6 +226,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     investigationsFetching || datasetsFetching || datafilesFetching;
 
   const initiateSearch = React.useCallback(() => {
+    pushSearchText(searchText);
+
     if (dataset) {
       // Fetch lucene datasets
       searchDatasets();
@@ -239,9 +249,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       setInvestigationTab(investigation);
     }
   }, [
+    searchText,
     datafile,
     dataset,
     investigation,
+    pushSearchText,
     searchDatafiles,
     searchDatasets,
     searchInvestigations,
@@ -249,6 +261,13 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setDatasetTab,
     setInvestigationTab,
   ]);
+
+  React.useEffect(() => {
+    //Start search automatically if URL has been supplied with parameters (other than just the checkbox states)
+    if (queryParams.searchText || queryParams.startDate || queryParams.endDate)
+      initiateSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
   // grid padding, search box, checkboxes, date selectors, padding.
@@ -282,7 +301,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             <Grid item id="container-search-filters">
               {sideLayout ? (
                 <Paper style={{ height: '100%', width: '100%' }}>
-                  <SearchBoxContainerSide initiateSearch={initiateSearch} />
+                  <SearchBoxContainerSide
+                    searchText={searchText}
+                    initiateSearch={initiateSearch}
+                    onSearchTextChange={handleSearchTextChange}
+                  />
                 </Paper>
               ) : (
                 <Paper
@@ -292,7 +315,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                     minWidth: 584, // Minimum width to ensure search box contents stay aligned
                   }}
                 >
-                  <SearchBoxContainer initiateSearch={initiateSearch} />
+                  <SearchBoxContainer
+                    searchText={searchText}
+                    initiateSearch={initiateSearch}
+                    onSearchTextChange={handleSearchTextChange}
+                  />
                 </Paper>
               )}
             </Grid>
@@ -365,12 +392,6 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   sideLayout: state.dgsearch.sideLayout,
-  searchText: state.dgsearch.searchText,
-  dataset: state.dgsearch.checkBox.dataset,
-  datafile: state.dgsearch.checkBox.datafile,
-  investigation: state.dgsearch.checkBox.investigation,
-  startDate: state.dgsearch.selectDate.startDate,
-  endDate: state.dgsearch.selectDate.endDate,
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,
   investigationTab: state.dgsearch.tabs.investigationTab,

@@ -157,7 +157,7 @@ describe('investigation api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(20));
@@ -241,7 +241,7 @@ describe('investigation api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(0));
@@ -733,7 +733,7 @@ describe('investigation api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('distinct', JSON.stringify(['name', 'title']));
@@ -847,7 +847,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(20));
@@ -891,7 +891,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(20));
@@ -987,7 +987,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(0));
@@ -1059,7 +1059,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(0));
@@ -1177,7 +1177,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
 
@@ -1210,7 +1210,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append(
@@ -1283,7 +1283,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
 
@@ -1317,7 +1317,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append(

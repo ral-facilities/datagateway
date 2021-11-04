@@ -185,9 +185,9 @@ describe('Dataset - Card View', () => {
     createWrapper();
 
     expect(useLuceneSearch).toHaveBeenCalledWith('Dataset', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: '',
+      startDate: null,
+      endDate: null,
     });
 
     expect(useDatasetCount).toHaveBeenCalledWith([

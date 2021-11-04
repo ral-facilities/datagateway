@@ -35,8 +35,6 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { StateType } from '../state/app.types';
-import { useSelector } from 'react-redux';
 import {
   Typography,
   Link as MuiLink,
@@ -70,10 +68,11 @@ const InvestigationCardView = (
   const [t] = useTranslation();
   const location = useLocation();
 
-  const { filters, sort, page, results } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { filters, sort, page, results, startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
@@ -143,15 +142,6 @@ const InvestigationCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const searchText = useSelector(
-    (state: StateType) => state.dgsearch.searchText
-  );
-  const startDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.startDate
-  );
-  const endDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.endDate
-  );
   const { data: luceneData } = useLuceneSearch('Investigation', {
     searchText,
     startDate,

@@ -5,32 +5,26 @@ import {
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import { Action, AnyAction } from 'redux';
-import { selectStartDate, selectEndDate } from '../state/actions/actions';
 import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useTranslation } from 'react-i18next';
+import {
+  parseSearchToQuery,
+  usePushSearchEndDate,
+  usePushSearchStartDate,
+} from 'datagateway-common';
+import { useLocation } from 'react-router';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 interface DatePickerProps {
   initiateSearch: () => void;
 }
 
 interface DatePickerStoreProps {
-  startDate: MaterialUiPickersDate;
-  endDate: MaterialUiPickersDate;
   sideLayout: boolean;
 }
 
-interface DatePickerDispatchProps {
-  selectStartDate: (date: MaterialUiPickersDate) => Action;
-  selectEndDate: (date: MaterialUiPickersDate) => Action;
-}
-
-type DatePickerCombinedProps = DatePickerProps &
-  DatePickerStoreProps &
-  DatePickerDispatchProps;
+type DatePickerCombinedProps = DatePickerProps & DatePickerStoreProps;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,17 +35,18 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
-  const {
-    startDate,
-    endDate,
-    sideLayout,
-    selectStartDate,
-    selectEndDate,
-    initiateSearch,
-  } = props;
+  const { sideLayout, initiateSearch } = props;
   const classes = useStyles();
 
   const [t] = useTranslation();
+
+  const location = useLocation();
+  const { startDate, endDate } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+  const pushStartDate = usePushSearchStartDate();
+  const pushEndDate = usePushSearchEndDate();
 
   const isValidSearch = (): boolean => {
     // Check the values for each date field are valid dates
@@ -71,6 +66,17 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
 
     // No valid search
     return false;
+  };
+
+  const handleChange = (
+    date: MaterialUiPickersDate,
+    dateName: string
+  ): void => {
+    //Only push date when valid (and not every keypress when typing)
+    if (date === null || !isNaN(date.getDate())) {
+      if (dateName === 'startDate') pushStartDate(date);
+      else if (dateName === 'endDate') pushEndDate(date);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent): void => {
@@ -94,7 +100,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             format="yyyy-MM-dd"
             value={startDate}
             onChange={(date) => {
-              selectStartDate(date);
+              handleChange(date, 'startDate');
             }}
             onKeyDown={handleKeyDown}
             animateYearScrolling
@@ -115,7 +121,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             format="yyyy-MM-dd"
             value={endDate}
             onChange={(date) => {
-              selectEndDate(date);
+              handleChange(date, 'endDate');
             }}
             onKeyDown={handleKeyDown}
             animateYearScrolling
@@ -129,21 +135,11 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   );
 }
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DatePickerDispatchProps => ({
-  selectStartDate: (date: MaterialUiPickersDate) =>
-    dispatch(selectStartDate(date)),
-  selectEndDate: (date: MaterialUiPickersDate) => dispatch(selectEndDate(date)),
-});
-
 const mapStateToProps = (state: StateType): DatePickerStoreProps => {
   return {
     // date: state.dgsearch.selectDate.date,
-    startDate: state.dgsearch.selectDate.startDate,
-    endDate: state.dgsearch.selectDate.endDate,
     sideLayout: state.dgsearch.sideLayout,
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SelectDates);
+export default connect(mapStateToProps)(SelectDates);

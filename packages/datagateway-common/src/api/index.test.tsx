@@ -9,7 +9,7 @@ import {
   usePushPage,
   usePushResults,
   usePushSort,
-  usePushView,
+  useUpdateView,
 } from './index';
 import {
   FiltersType,
@@ -29,7 +29,13 @@ import axios from 'axios';
 import handleICATError from '../handleICATError';
 
 import { createReactQueryWrapper } from '../setupTests';
-import { useCustomFilterCount } from '..';
+import {
+  useCustomFilterCount,
+  usePushSearchText,
+  usePushSearchToggles,
+  usePushSearchEndDate,
+  usePushSearchStartDate,
+} from '..';
 
 jest.mock('../handleICATError');
 
@@ -103,6 +109,32 @@ describe('generic api functions', () => {
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
+        searchText: null,
+        dataset: true,
+        datafile: true,
+        investigation: true,
+        startDate: null,
+        endDate: null,
+      });
+    });
+
+    it('parses query string with search parameters successfully', () => {
+      const query =
+        'view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25';
+
+      expect(parseSearchToQuery(query)).toEqual({
+        view: 'table',
+        search: null,
+        page: null,
+        results: null,
+        filters: {},
+        sort: {},
+        searchText: 'testText',
+        dataset: true,
+        datafile: false,
+        investigation: true,
+        startDate: new Date('2021-10-17T00:00:00Z'),
+        endDate: new Date('2021-10-25T00:00:00Z'),
       });
     });
 
@@ -130,10 +162,39 @@ describe('generic api functions', () => {
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
+        searchText: null,
+        dataset: true,
+        datafile: true,
+        investigation: true,
+        startDate: null,
+        endDate: null,
       };
 
       const params = new URLSearchParams(
         '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}'
+      );
+
+      expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
+    });
+
+    it('parses query object with search parameters successfully', () => {
+      const query: QueryParams = {
+        view: 'table',
+        search: null,
+        page: null,
+        results: null,
+        filters: {},
+        sort: {},
+        searchText: 'testText',
+        dataset: true,
+        datafile: false,
+        investigation: true,
+        startDate: new Date('2021-10-17T00:00:00Z'),
+        endDate: new Date('2021-10-25T00:00:00Z'),
+      };
+
+      const params = new URLSearchParams(
+        '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -158,7 +219,7 @@ describe('generic api functions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('id asc'));
-      params.append('where', JSON.stringify({ name: { like: 'test' } }));
+      params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
       params.append('where', JSON.stringify({ title: { nlike: 'test' } }));
       params.append(
         'where',
@@ -180,9 +241,11 @@ describe('generic api functions', () => {
     let history: History;
     let wrapper: WrapperComponent<unknown>;
     let pushSpy: jest.SpyInstance;
+    let replaceSpy: jest.SpyInstance;
     beforeEach(() => {
       history = createMemoryHistory();
       pushSpy = jest.spyOn(history, 'push');
+      replaceSpy = jest.spyOn(history, 'replace');
       const newWrapper: WrapperComponent<unknown> = ({ children }) => (
         <Router history={history}>{children}</Router>
       );
@@ -299,9 +362,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushView', () => {
+    describe('useUpdateView', () => {
       it('returns callback that when called pushes a new page to the url query', () => {
-        const { result } = renderHook(() => usePushView(), {
+        const { result } = renderHook(() => useUpdateView('push'), {
           wrapper,
         });
 
@@ -310,6 +373,104 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?view=table');
+      });
+
+      it('returns callback that when called replaces the current page with a new one in the url query', () => {
+        const { result } = renderHook(() => useUpdateView('replace'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('table');
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith('?view=table');
+      });
+    });
+
+    describe('usePushSearchText', () => {
+      it('returns callback that when called pushes search text to the url query', () => {
+        const { result } = renderHook(() => usePushSearchText(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('test');
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith('?searchText=test');
+      });
+    });
+
+    describe('usePushSearchToggles', () => {
+      it('returns callback that when called pushes search toggles to the url query', () => {
+        const { result } = renderHook(() => usePushSearchToggles(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(false, false, false);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith(
+          '?dataset=false&datafile=false&investigation=false'
+        );
+      });
+    });
+
+    describe('usePushStartDate', () => {
+      it('returns callback that when called pushes startDate to the url query', () => {
+        const { result } = renderHook(() => usePushSearchStartDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-17T00:00:00Z'));
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith(
+          expect.stringContaining('?startDate=2021-10-17')
+        );
+      });
+      it('returns callback that when called with null can remove startDate from the url query', () => {
+        const { result } = renderHook(() => usePushSearchStartDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-17T00:00:00Z'));
+          result.current(null);
+        });
+
+        expect(pushSpy).toHaveBeenLastCalledWith('?');
+      });
+    });
+
+    describe('usePushEndDate', () => {
+      it('returns callback that when called pushes endDate to the url query', () => {
+        const { result } = renderHook(() => usePushSearchEndDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-25T00:00:00Z'));
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith(
+          expect.stringContaining('?endDate=2021-10-25')
+        );
+      });
+      it('returns callback that when called with null can remove endDate from the url query', () => {
+        const { result } = renderHook(() => usePushSearchEndDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-25T00:00:00Z'));
+          result.current(null);
+        });
+
+        expect(pushSpy).toHaveBeenLastCalledWith('?');
       });
     });
   });

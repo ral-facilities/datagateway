@@ -1307,19 +1307,13 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
         <Connect(SearchPageContainer)>
           <SearchPageContainer
             currentTab="investigation"
-            datafile={true}
             datafileTab={true}
-            dataset={false}
             datasetTab={true}
-            endDate={null}
-            investigation={false}
             investigationTab={true}
-            searchText=""
             setDatafileTab={[Function]}
             setDatasetTab={[Function]}
             setInvestigationTab={[Function]}
             sideLayout={false}
-            startDate={null}
           >
             <Switch>
               <Route
