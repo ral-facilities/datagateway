@@ -1,6 +1,6 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import axios, { AxiosError } from 'axios';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import { useQuery, UseQueryResult } from 'react-query';
 import { useSelector } from 'react-redux';
 import { StateType } from '..';
@@ -34,24 +34,22 @@ const urlParamsBuilder = (
     target: datasearchtype,
   };
 
-  if (params.startDate !== null) {
-    const stringStartDate = format(params.startDate, 'yyyy-MM-dd');
-    const stringStartDateArray = stringStartDate.split('-');
+  if (params.startDate !== null || params.endDate !== null) {
     query.lower =
-      stringStartDateArray[0] +
-      stringStartDateArray[1] +
-      stringStartDateArray[2] +
-      '0000';
-  }
+      params.startDate !== null
+        ? format(
+            set(params.startDate, { hours: 0, minutes: 0 }),
+            'yyyyMMddHHmm'
+          )
+        : '0000001010000';
 
-  if (params.endDate !== null) {
-    const stringEndDate = format(params.endDate, 'yyyy-MM-dd');
-    const stringEndDateArray = stringEndDate.split('-');
     query.upper =
-      stringEndDateArray[0] +
-      stringEndDateArray[1] +
-      stringEndDateArray[2] +
-      '2359';
+      params.endDate !== null
+        ? format(
+            set(params.endDate, { hours: 23, minutes: 59 }),
+            'yyyyMMddHHmm'
+          )
+        : '9000012312359';
   }
 
   if (params.searchText.length > 0) {
