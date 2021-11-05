@@ -436,8 +436,6 @@ describe('SearchPageContainer - Tests', () => {
           maxCount: 300,
           query: {
             target: 'Datafile',
-            lower: '0000001010000',
-            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -460,8 +458,6 @@ describe('SearchPageContainer - Tests', () => {
           maxCount: 300,
           query: {
             target: 'Dataset',
-            lower: '0000001010000',
-            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -484,8 +480,6 @@ describe('SearchPageContainer - Tests', () => {
           maxCount: 300,
           query: {
             target: 'Investigation',
-            lower: '0000001010000',
-            upper: '9000012312359',
           },
           sessionId: null,
         },
