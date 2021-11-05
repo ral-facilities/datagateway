@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   KeyboardDatePicker,
@@ -15,6 +15,7 @@ import {
 } from 'datagateway-common';
 import { useLocation } from 'react-router';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { isAfter, isBefore, isValid } from 'date-fns';
 
 interface DatePickerProps {
   initiateSearch: () => void;
@@ -34,9 +35,39 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+// error color received from parent app theme object this requires
+// casting the theme to any so that we can explicitly access properties
+// we know to exist in the received object
+const useInputStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&$error $notchedOutline': {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        borderColor: (theme as any).ukri?.contrast?.red,
+      },
+    },
+    error: {},
+    notchedOutline: {},
+  })
+);
+
+const useHelperTextStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&$error': {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        color: (theme as any).ukri?.contrast?.red,
+      },
+    },
+    error: {},
+  })
+);
+
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { sideLayout, initiateSearch } = props;
   const classes = useStyles();
+  const helperTextClasses = useHelperTextStyles();
+  const inputStyles = useInputStyles();
 
   const [t] = useTranslation();
 
@@ -48,35 +79,55 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const pushStartDate = usePushSearchStartDate();
   const pushEndDate = usePushSearchEndDate();
 
+  const [startDateError, setStartDateError] = useState(null);
+  const [endDateError, setEndDateError] = useState(null);
+
+  //Min/Max valid dates
+  const minDate = startDate || new Date('1984-01-01');
+  const maxDate = endDate || new Date('2100-01-01');
+
   const isValidSearch = (): boolean => {
-    // Check the values for each date field are valid dates
-    const validStartDate = startDate && !isNaN(startDate.getDate());
-    const validEndDate = endDate && !isNaN(endDate.getDate());
-
-    // Two valid dates
-    if (validStartDate && validEndDate) return true;
-
-    // Valid start date, empty end date
-    if (validStartDate && endDate == null) return true;
-
-    // Valid end date, empty start date
-    if (validEndDate && startDate == null) return true;
-
-    if (startDate == null && endDate == null) return true;
-
-    // No valid search
-    return false;
+    return (
+      (startDate === null || checkValidStartDate(startDate)) &&
+      (endDate === null || checkValidEndDate(endDate))
+    );
   };
 
-  const handleChange = (
-    date: MaterialUiPickersDate,
-    dateName: string
-  ): void => {
-    //Only push date when valid (and not every keypress when typing)
-    if (date === null || !isNaN(date.getDate())) {
-      if (dateName === 'startDate') pushStartDate(date);
-      else if (dateName === 'endDate') pushEndDate(date);
+  const checkValidStartDate = (startDate: Date): boolean => {
+    if (!isValid(startDate)) {
+      setStartDateError(t('searchBox.invalid_date_message'));
+      return false;
+    } else if (isAfter(startDate, maxDate)) {
+      setStartDateError(t('searchBox.invalid_date_range_message'));
+      return false;
+    } else {
+      setStartDateError(null);
+      return true;
     }
+  };
+
+  const checkValidEndDate = (endDate: Date): boolean => {
+    if (!isValid(endDate)) {
+      setEndDateError(t('searchBox.invalid_date_message'));
+      return false;
+    } else if (isBefore(endDate, minDate)) {
+      setEndDateError(t('searchBox.invalid_date_message'));
+      return false;
+    } else {
+      setEndDateError(null);
+      return true;
+    }
+  };
+
+  const handleStartDateChange = (startDate: MaterialUiPickersDate): void => {
+    //Only push date when valid (and not every keypress when typing)
+    if (startDate === null || checkValidStartDate(startDate))
+      pushStartDate(startDate);
+  };
+
+  const handleEndDateChange = (endDate: MaterialUiPickersDate): void => {
+    //Only push date when valid (and not every keypress when typing)
+    if (endDate === null || checkValidEndDate(endDate)) pushEndDate(endDate);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent): void => {
@@ -95,12 +146,12 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             allowKeyboardControl
             disableFuture
             inputVariant="outlined"
-            maxDate={endDate || new Date('2100-01-01')}
-            maxDateMessage={t('searchBox.invalid_date_message')}
+            maxDate={maxDate}
+            maxDateMessage={t('searchBox.invalid_date_range_message')}
             format="yyyy-MM-dd"
             value={startDate}
             onChange={(date) => {
-              handleChange(date, 'startDate');
+              handleStartDateChange(date);
             }}
             onKeyDown={handleKeyDown}
             animateYearScrolling
@@ -108,6 +159,14 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
             color="secondary"
             style={sideLayout ? {} : { paddingRight: 6 }}
+            error={startDateError !== null}
+            helperText={startDateError}
+            FormHelperTextProps={{
+              classes: helperTextClasses,
+            }}
+            InputProps={{
+              classes: inputStyles,
+            }}
           />
           {sideLayout ? <br></br> : null}
           <KeyboardDatePicker
@@ -116,18 +175,26 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             allowKeyboardControl
             inputVariant="outlined"
             disableFuture
-            minDate={startDate || new Date('1984-01-01')}
-            minDateMessage={t('searchBox.invalid_date_message')}
+            minDate={minDate}
+            minDateMessage={t('searchBox.invalid_date_range_message')}
             format="yyyy-MM-dd"
             value={endDate}
             onChange={(date) => {
-              handleChange(date, 'endDate');
+              handleEndDateChange(date);
             }}
             onKeyDown={handleKeyDown}
             animateYearScrolling
             placeholder={t('searchBox.end_date')}
             inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
             color="secondary"
+            error={endDateError !== null}
+            helperText={endDateError}
+            FormHelperTextProps={{
+              classes: helperTextClasses,
+            }}
+            InputProps={{
+              classes: inputStyles,
+            }}
           />
         </>
       </MuiPickersUtilsProvider>
