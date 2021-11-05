@@ -83,8 +83,8 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const [endDateError, setEndDateError] = useState(null);
 
   //Min/Max valid dates
-  const minDate = startDate || new Date('1984-01-01');
-  const maxDate = endDate || new Date('2100-01-01');
+  const minDate = startDate || new Date('1984-01-01T00:00:00Z');
+  const maxDate = endDate || new Date('2100-01-01T00:00:00Z');
 
   const isValidSearch = (): boolean => {
     return (
@@ -94,6 +94,8 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   };
 
   const checkValidStartDate = (startDate: Date): boolean => {
+    //Ignore time
+    startDate.setHours(0, 0, 0, 0);
     if (!isValid(startDate)) {
       setStartDateError(t('searchBox.invalid_date_message'));
       return false;
@@ -107,11 +109,13 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   };
 
   const checkValidEndDate = (endDate: Date): boolean => {
+    //Ignore time
+    endDate.setHours(0, 0, 0, 0);
     if (!isValid(endDate)) {
       setEndDateError(t('searchBox.invalid_date_message'));
       return false;
     } else if (isBefore(endDate, minDate)) {
-      setEndDateError(t('searchBox.invalid_date_message'));
+      setEndDateError(t('searchBox.invalid_date_range_message'));
       return false;
     } else {
       setEndDateError(null);
