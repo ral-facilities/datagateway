@@ -17,7 +17,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-
+import { Link as MuiLink } from '@material-ui/core';
 interface ISISStudiesCVProps {
   instrumentId: string;
 }
@@ -99,6 +99,18 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   const information = React.useMemo(
     () => [
       {
+        content: function studyPidFormat(entity: Study) {
+          return (
+            entity?.pid && (
+              <MuiLink
+                href={`https://doi.org/${entity.pid}`}
+                data-test-id="landing-study-card-pid-link"
+              >
+                {entity.pid}
+              </MuiLink>
+            )
+          );
+        },
         icon: PublicIcon,
         label: t('studies.pid'),
         dataKey: 'pid',

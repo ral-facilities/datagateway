@@ -9,6 +9,7 @@ import {
   useDateFilter,
   usePushSort,
   useTextFilter,
+  externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -105,6 +106,18 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         icon: PublicIcon,
         label: t('studies.pid'),
         dataKey: 'pid',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Study;
+          if (investigationData?.studyInvestigations?.[0]?.study) {
+            return externalSiteLink(
+              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
+              investigationData.studyInvestigations[0].study.pid,
+              view
+            );
+          } else {
+            return '';
+          }
+        },
         filterComponent: textFilter,
       },
       {
