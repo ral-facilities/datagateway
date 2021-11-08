@@ -234,11 +234,14 @@ describe('ISIS Studies table component', () => {
 
     const wrapper = createWrapper();
     expect(
-      wrapper.find('[data-test-id="table-study-doi-link"]').first().text()
+      wrapper.find('[data-test-id="isis-study-table-doi-link"]').first().text()
     ).toEqual('doi');
 
     expect(
-      wrapper.find('[data-test-id="table-study-doi-link"]').first().prop('href')
+      wrapper
+        .find('[data-test-id="isis-study-table-doi-link"]')
+        .first()
+        .prop('href')
     ).toEqual('https://doi.org/doi');
   });
 

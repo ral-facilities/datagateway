@@ -164,7 +164,7 @@ const ISISInvestigationsTable = (
             return externalSiteLink(
               `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
               investigationData.studyInvestigations[0].study.pid,
-              view
+              'isis-investigation-table-doi-link'
             );
           } else {
             return '';

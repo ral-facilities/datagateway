@@ -112,7 +112,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
             return externalSiteLink(
               `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
               investigationData.studyInvestigations[0].study.pid,
-              view
+              'isis-study-table-doi-link'
             );
           } else {
             return '';
