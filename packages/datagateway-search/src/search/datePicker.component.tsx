@@ -87,51 +87,51 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const maxDate = endDate || new Date('2100-01-01T00:00:00Z');
 
   const isValidSearch = (): boolean => {
-    return (
-      (startDate === null || checkValidStartDate(startDate)) &&
-      (endDate === null || checkValidEndDate(endDate))
-    );
+    return checkValidStartDate(startDate) && checkValidEndDate(endDate);
   };
 
-  const checkValidStartDate = (startDate: Date): boolean => {
-    //Ignore time
-    startDate.setHours(0, 0, 0, 0);
-    if (!isValid(startDate)) {
-      setStartDateError(t('searchBox.invalid_date_message'));
-      return false;
-    } else if (isAfter(startDate, maxDate)) {
-      setStartDateError(t('searchBox.invalid_date_range_message'));
-      return false;
-    } else {
-      setStartDateError(null);
-      return true;
+  const checkValidStartDate = (startDate: Date | null): boolean => {
+    if (startDate !== null) {
+      //Ignore time
+      startDate.setHours(0, 0, 0, 0);
+      if (!isValid(startDate)) {
+        setStartDateError(t('searchBox.invalid_date_message'));
+        return false;
+      } else if (isAfter(startDate, maxDate)) {
+        setStartDateError(t('searchBox.invalid_date_range_message'));
+        return false;
+      }
     }
+    //Valid if null or if no errors found above
+    setStartDateError(null);
+    return true;
   };
 
-  const checkValidEndDate = (endDate: Date): boolean => {
-    //Ignore time
-    endDate.setHours(0, 0, 0, 0);
-    if (!isValid(endDate)) {
-      setEndDateError(t('searchBox.invalid_date_message'));
-      return false;
-    } else if (isBefore(endDate, minDate)) {
-      setEndDateError(t('searchBox.invalid_date_range_message'));
-      return false;
-    } else {
-      setEndDateError(null);
-      return true;
+  const checkValidEndDate = (endDate: Date | null): boolean => {
+    if (endDate !== null) {
+      //Ignore time
+      endDate.setHours(0, 0, 0, 0);
+      if (!isValid(endDate)) {
+        setEndDateError(t('searchBox.invalid_date_message'));
+        return false;
+      } else if (isBefore(endDate, minDate)) {
+        setEndDateError(t('searchBox.invalid_date_range_message'));
+        return false;
+      }
     }
+    //Valid if null or if no errors found above
+    setStartDateError(null);
+    return true;
   };
 
   const handleStartDateChange = (startDate: MaterialUiPickersDate): void => {
     //Only push date when valid (and not every keypress when typing)
-    if (startDate === null || checkValidStartDate(startDate))
-      pushStartDate(startDate);
+    if (checkValidStartDate(startDate)) pushStartDate(startDate);
   };
 
   const handleEndDateChange = (endDate: MaterialUiPickersDate): void => {
     //Only push date when valid (and not every keypress when typing)
-    if (endDate === null || checkValidEndDate(endDate)) pushEndDate(endDate);
+    if (checkValidEndDate(endDate)) pushEndDate(endDate);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent): void => {
