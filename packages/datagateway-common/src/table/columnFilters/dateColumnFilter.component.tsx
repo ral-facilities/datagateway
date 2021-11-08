@@ -8,6 +8,7 @@ import {
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { FiltersType, DateFilter } from '../../app.types';
 import { usePushFilters } from '../../api';
+import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
 
 export function datesEqual(
   date1: MaterialUiPickersDate,
@@ -58,15 +59,48 @@ export function updateFilter({
   }
 }
 
+const useInputStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&$error $notchedOutline': {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        borderColor: (theme as any).ukri?.contrast?.red,
+      },
+    },
+    error: {},
+    notchedOutline: {},
+  })
+);
+
+const useHelperTextStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&$error': {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        color: (theme as any).ukri?.contrast?.red,
+      },
+    },
+    error: {},
+  })
+);
+
 const DateColumnFilter = (props: {
   label: string;
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
   value: { startDate?: string; endDate?: string } | undefined;
 }): React.ReactElement => {
+  const inputClasses = useInputStyles();
+  const helperTextClasses = useHelperTextStyles();
+
   const startDate = props.value?.startDate
     ? new Date(props.value.startDate)
     : null;
   const endDate = props.value?.endDate ? new Date(props.value.endDate) : null;
+
+  //Obtain a contrast friendly button colour
+  const theme = useTheme();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const buttonColour = (theme as any).ukri?.contrast?.blue;
 
   return (
     <form>
@@ -96,6 +130,14 @@ const DateColumnFilter = (props: {
               onChange: props.onChange,
             });
           }}
+          FormHelperTextProps={{
+            classes: helperTextClasses,
+          }}
+          InputProps={{
+            classes: inputClasses,
+          }}
+          okLabel={<span style={{ color: buttonColour }}>OK</span>}
+          cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
         />
         <KeyboardDatePicker
           style={{ whiteSpace: 'nowrap' }}
@@ -122,6 +164,14 @@ const DateColumnFilter = (props: {
               onChange: props.onChange,
             });
           }}
+          FormHelperTextProps={{
+            classes: helperTextClasses,
+          }}
+          InputProps={{
+            classes: inputClasses,
+          }}
+          okLabel={<span style={{ color: buttonColour }}>OK</span>}
+          cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
         />
       </MuiPickersUtilsProvider>
     </form>

@@ -40,11 +40,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       padding: theme.spacing(1, 0),
     },
-    datePicker: {
-      '& $subtitle1': {
-        color: '#D7D7D7',
-      },
-    },
   })
 );
 
@@ -76,8 +71,8 @@ const useHelperTextStyles = makeStyles((theme: Theme) =>
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { sideLayout, initiateSearch } = props;
   const classes = useStyles();
-  const helperTextClasses = useHelperTextStyles();
   const inputClasses = useInputStyles();
+  const helperTextClasses = useHelperTextStyles();
 
   const [t] = useTranslation();
 
@@ -190,7 +185,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             style={sideLayout ? {} : { paddingRight: 6 }}
             error={startDateError !== null}
             helperText={startDateError}
-            DialogProps={{ className: classes.datePicker }}
             FormHelperTextProps={{
               classes: helperTextClasses,
             }}
@@ -234,7 +228,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             color="secondary"
             error={endDateError !== null}
             helperText={endDateError}
-            DialogProps={{ className: classes.datePicker }}
             FormHelperTextProps={{
               classes: helperTextClasses,
             }}
