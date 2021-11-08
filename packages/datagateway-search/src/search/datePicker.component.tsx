@@ -72,10 +72,16 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const [t] = useTranslation();
 
   const location = useLocation();
-  const { startDate: startDateURL, endDate: endDateURL } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
+  const { startDate: startDateURL, endDate: endDateURL } = React.useMemo(() => {
+    const queryParams = parseSearchToQuery(location.search);
+    //Ensure default value loaded from URL is valid (otherwise it will not format correctly)
+    if (queryParams.startDate && !isValid(queryParams.startDate))
+      queryParams.startDate = null;
+    if (queryParams.endDate && !isValid(queryParams.endDate))
+      queryParams.endDate = null;
+    return queryParams;
+  }, [location.search]);
+
   const pushStartDate = usePushSearchStartDate();
   const pushEndDate = usePushSearchEndDate();
 
