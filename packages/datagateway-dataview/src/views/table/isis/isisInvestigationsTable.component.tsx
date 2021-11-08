@@ -144,6 +144,14 @@ const ISISInvestigationsTable = (
         icon: FingerprintIcon,
         label: t('investigations.name'),
         dataKey: 'name',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          return tableLink(
+            `${urlPrefix}/${investigationData.id}`,
+            investigationData.name,
+            view
+          );
+        },
         filterComponent: textFilter,
       },
       {
