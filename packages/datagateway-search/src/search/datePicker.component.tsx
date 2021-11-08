@@ -72,23 +72,21 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const [t] = useTranslation();
 
   const location = useLocation();
-  const { startDate, endDate } = React.useMemo(
+  const { startDate: startDateURL, endDate: endDateURL } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
   const pushStartDate = usePushSearchStartDate();
   const pushEndDate = usePushSearchEndDate();
 
+  const [startDate, setStartDate] = useState(startDateURL);
+  const [endDate, setEndDate] = useState(endDateURL);
   const [startDateError, setStartDateError] = useState(null);
   const [endDateError, setEndDateError] = useState(null);
 
   //Min/Max valid dates
   const minDate = startDate || new Date('1984-01-01T00:00:00Z');
   const maxDate = endDate || new Date('2100-01-01T00:00:00Z');
-
-  const isValidSearch = (): boolean => {
-    return checkValidStartDate(startDate) && checkValidEndDate(endDate);
-  };
 
   const checkValidStartDate = (startDate: Date | null): boolean => {
     if (startDate !== null) {
@@ -120,16 +118,22 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
       }
     }
     //Valid if null or if no errors found above
-    setStartDateError(null);
+    setEndDateError(null);
     return true;
   };
 
+  const isValidSearch = (): boolean => {
+    return checkValidStartDate(startDate) && checkValidEndDate(endDate);
+  };
+
   const handleStartDateChange = (startDate: MaterialUiPickersDate): void => {
+    setStartDate(startDate);
     //Only push date when valid (and not every keypress when typing)
     if (checkValidStartDate(startDate)) pushStartDate(startDate);
   };
 
   const handleEndDateChange = (endDate: MaterialUiPickersDate): void => {
+    setEndDate(endDate);
     //Only push date when valid (and not every keypress when typing)
     if (checkValidEndDate(endDate)) pushEndDate(endDate);
   };
