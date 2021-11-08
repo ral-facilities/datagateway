@@ -4,7 +4,12 @@ import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import {
+  Theme,
+  createStyles,
+  makeStyles,
+  useTheme,
+} from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
@@ -27,17 +32,22 @@ interface DatePickerStoreProps {
 
 type DatePickerCombinedProps = DatePickerProps & DatePickerStoreProps;
 
+// error color received from parent app theme object this requires
+// casting the theme to any so that we can explicitly access properties
+// we know to exist in the received object
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(1, 0),
     },
+    datePicker: {
+      '& $subtitle1': {
+        color: '#D7D7D7',
+      },
+    },
   })
 );
 
-// error color received from parent app theme object this requires
-// casting the theme to any so that we can explicitly access properties
-// we know to exist in the received object
 const useInputStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -67,7 +77,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { sideLayout, initiateSearch } = props;
   const classes = useStyles();
   const helperTextClasses = useHelperTextStyles();
-  const inputStyles = useInputStyles();
+  const inputClasses = useInputStyles();
 
   const [t] = useTranslation();
 
@@ -150,6 +160,11 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
     }
   };
 
+  //Obtain a contrast friendly button colour
+  const theme = useTheme();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const buttonColour = (theme as any).ukri?.contrast?.blue;
+
   return (
     <div className="tour-search-dates">
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -175,12 +190,28 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             style={sideLayout ? {} : { paddingRight: 6 }}
             error={startDateError !== null}
             helperText={startDateError}
+            DialogProps={{ className: classes.datePicker }}
             FormHelperTextProps={{
               classes: helperTextClasses,
             }}
             InputProps={{
-              classes: inputStyles,
+              classes: inputClasses,
             }}
+            okLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.ok')}
+              </span>
+            }
+            cancelLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.cancel')}
+              </span>
+            }
+            clearLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.clear')}
+              </span>
+            }
           />
           {sideLayout ? <br></br> : null}
           <KeyboardDatePicker
@@ -203,12 +234,28 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             color="secondary"
             error={endDateError !== null}
             helperText={endDateError}
+            DialogProps={{ className: classes.datePicker }}
             FormHelperTextProps={{
               classes: helperTextClasses,
             }}
             InputProps={{
-              classes: inputStyles,
+              classes: inputClasses,
             }}
+            okLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.ok')}
+              </span>
+            }
+            cancelLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.cancel')}
+              </span>
+            }
+            clearLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.clear')}
+              </span>
+            }
           />
         </>
       </MuiPickersUtilsProvider>
