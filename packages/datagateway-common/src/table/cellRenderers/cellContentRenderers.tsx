@@ -80,7 +80,7 @@ export function tableLink(
 
 export function externalSiteLink(
   linkUrl: string,
-  linkText: string,
+  linkText?: string,
   label?: string
 ): React.ReactElement {
   return (
