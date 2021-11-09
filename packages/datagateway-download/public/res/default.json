@@ -1,10 +1,10 @@
 {
   "downloadTab": {
-    "cart_tab": "Selections",
+    "cart_tab": "Selection",
     "downloads_tab": "Downloads",
-    "cart_tab_arialabel": "Selections",
+    "cart_tab_arialabel": "Selection",
     "downloads_tab_arialabel": "Downloads",
-    "download_cart_panel_arialabel": "Download selections panel",
+    "download_cart_panel_arialabel": "Download selection panel",
     "download_status_panel_arialabel": "Download status panel",
     "last_updated_time_arialabel": "Last updated time",
     "refresh_download_status_arialabel": "Refresh download status table",
@@ -75,9 +75,9 @@
     "name": "Name",
     "type": "Type",
     "size": "Size",
-    "remove": "Remove {{name}} from selections",
+    "remove": "Remove {{name}} from selection",
     "remove_all": "Remove All",
-    "download": "Download Selections",
+    "download": "Download Selection",
     "number_of_files": "Number of files",
     "total_size": "Total size"
   }
