@@ -152,11 +152,9 @@ describe('DatePicker component tests', () => {
       startDateInput.instance().value = '2012 01 35';
       startDateInput.simulate('change');
 
-      const keyboardDateInput = wrapper.find('KeyboardDateInput').first();
-      expect(keyboardDateInput.props().helperText).toEqual(
-        'searchBox.invalid_date_message'
+      expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
+        'Invalid Date Format'
       );
-      expect(keyboardDateInput.props().error).toEqual(true);
     });
 
     it('displays error message when a date after the maximum date is entered', () => {
@@ -169,11 +167,9 @@ describe('DatePicker component tests', () => {
       startDateInput.instance().value = '3000 01 01';
       startDateInput.simulate('change');
 
-      const keyboardDateInput = wrapper.find('KeyboardDateInput').first();
-      expect(keyboardDateInput.props().helperText).toEqual(
+      expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
         'searchBox.invalid_date_range_message'
       );
-      expect(keyboardDateInput.props().error).toEqual(true);
     });
 
     it('displays error message when a date after the end date is entered', () => {
@@ -186,11 +182,9 @@ describe('DatePicker component tests', () => {
       startDateInput.instance().value = '2012 01 01';
       startDateInput.simulate('change');
 
-      const keyboardDateInput = wrapper.find('KeyboardDateInput').first();
-      expect(keyboardDateInput.props().helperText).toEqual(
+      expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
         'searchBox.invalid_date_range_message'
       );
-      expect(keyboardDateInput.props().error).toEqual(true);
     });
   });
 
@@ -263,11 +257,9 @@ describe('DatePicker component tests', () => {
       endDateInput.instance().value = '2012 01 35';
       endDateInput.simulate('change');
 
-      const keyboardDateInput = wrapper.find('KeyboardDateInput').at(1);
-      expect(keyboardDateInput.props().helperText).toEqual(
-        'searchBox.invalid_date_message'
+      expect(wrapper.find('.MuiFormHelperText-filled').text()).toEqual(
+        'Invalid Date Format'
       );
-      expect(keyboardDateInput.props().error).toEqual(true);
     });
 
     it('displays error message when a date before the minimum date is entered', () => {
@@ -280,11 +272,9 @@ describe('DatePicker component tests', () => {
       endDateInput.instance().value = '1203 01 01';
       endDateInput.simulate('change');
 
-      const keyboardDateInput = wrapper.find('KeyboardDateInput').at(1);
-      expect(keyboardDateInput.props().helperText).toEqual(
+      expect(wrapper.find('.MuiFormHelperText-filled').last().text()).toEqual(
         'searchBox.invalid_date_range_message'
       );
-      expect(keyboardDateInput.props().error).toEqual(true);
     });
 
     it('displays error message when a date before the start date is entered', () => {
@@ -297,11 +287,9 @@ describe('DatePicker component tests', () => {
       endDateInput.instance().value = '2010 01 01';
       endDateInput.simulate('change');
 
-      const keyboardDateInput = wrapper.find('KeyboardDateInput').at(1);
-      expect(keyboardDateInput.props().helperText).toEqual(
+      expect(wrapper.find('.MuiFormHelperText-filled').last().text()).toEqual(
         'searchBox.invalid_date_range_message'
       );
-      expect(keyboardDateInput.props().error).toEqual(true);
     });
   });
 });

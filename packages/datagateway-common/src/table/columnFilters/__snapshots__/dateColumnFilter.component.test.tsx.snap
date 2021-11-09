@@ -54,9 +54,7 @@ exports[`Date filter component renders correctly 1`] = `
       }
       clearable={true}
       color="secondary"
-      error={false}
       format="yyyy-MM-dd"
-      helperText={null}
       id="test filter from"
       inputProps={
         Object {
@@ -145,9 +143,7 @@ exports[`Date filter component renders correctly 1`] = `
       }
       clearable={true}
       color="secondary"
-      error={false}
       format="yyyy-MM-dd"
-      helperText={null}
       id="test filter to"
       inputProps={
         Object {
@@ -245,9 +241,7 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       }
       clearable={true}
       color="secondary"
-      error={false}
       format="yyyy-MM-dd"
-      helperText={null}
       id="Start Date filter from"
       inputProps={
         Object {
@@ -336,9 +330,7 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       }
       clearable={true}
       color="secondary"
-      error={false}
       format="yyyy-MM-dd"
-      helperText={null}
       id="Start Date filter to"
       inputProps={
         Object {

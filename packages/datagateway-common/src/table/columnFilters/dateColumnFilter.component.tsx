@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
-import { format, isValid, isEqual, isBefore, isAfter } from 'date-fns';
+import { format, isValid, isEqual } from 'date-fns';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -91,85 +91,18 @@ const DateColumnFilter = (props: {
   const inputClasses = useInputStyles();
   const helperTextClasses = useHelperTextStyles();
 
-  const startDate = props.value?.startDate
-    ? new Date(props.value.startDate)
-    : null;
-  const endDate = props.value?.endDate ? new Date(props.value.endDate) : null;
-
-  //Min/Max valid dates
-  const minDate = startDate || new Date('1984-01-01T00:00:00Z');
-  const maxDate = endDate || new Date('2100-01-01T00:00:00Z');
-
-  const [startDateError, setStartDateError] = useState<string | null>(null);
-  const [endDateError, setEndDateError] = useState<string | null>(null);
+  //Need state to change otherwise wont update error messages for an invalid date
+  const [startDate, setStartDate] = useState(
+    props.value?.startDate ? new Date(props.value.startDate) : null
+  );
+  const [endDate, setEndDate] = useState(
+    props.value?.endDate ? new Date(props.value.endDate) : null
+  );
 
   //Obtain a contrast friendly button colour
   const theme = useTheme();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buttonColour = (theme as any).ukri?.contrast?.blue;
-
-  const checkValidStartDate = (startDate: Date | null): boolean => {
-    if (startDate !== null) {
-      //Ignore time
-      startDate.setHours(0, 0, 0, 0);
-      if (!isValid(startDate)) {
-        setStartDateError('Invalid date');
-        return false;
-      } else if (isAfter(startDate, maxDate)) {
-        setStartDateError('Invalid date range');
-        return false;
-      }
-    }
-    //Valid if null or if no errors found above
-    if (startDateError !== null) setStartDateError(null);
-    return true;
-  };
-
-  const checkValidEndDate = (endDate: Date | null): boolean => {
-    if (endDate !== null) {
-      //Ignore time
-      endDate.setHours(0, 0, 0, 0);
-      if (!isValid(endDate)) {
-        setEndDateError('Invalid date');
-        return false;
-      } else if (isBefore(endDate, minDate)) {
-        setEndDateError('Invalid date range');
-        return false;
-      }
-    }
-    //Valid if null or if no errors found above
-    if (endDateError !== null) setEndDateError(null);
-    return true;
-  };
-
-  const handleStartDateChange = (date: MaterialUiPickersDate): void => {
-    checkValidStartDate(date);
-    updateFilter({
-      date,
-      prevDate: startDate,
-      otherDate: endDate,
-      startDateOrEndDateChanged: 'startDate',
-      onChange: props.onChange,
-    });
-  };
-
-  const handleEndDateChange = (date: MaterialUiPickersDate): void => {
-    checkValidEndDate(date);
-    updateFilter({
-      date,
-      prevDate: endDate,
-      otherDate: startDate,
-      startDateOrEndDateChanged: 'endDate',
-      onChange: props.onChange,
-    });
-  };
-
-  //Check for errors when start/end date changes in the props
-  useEffect(() => {
-    checkValidStartDate(startDate);
-    checkValidEndDate(endDate);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.value]);
 
   return (
     <form>
@@ -189,14 +122,19 @@ const DateColumnFilter = (props: {
           placeholder="From..."
           value={startDate}
           views={['year', 'month', 'date']}
-          maxDate={maxDate}
+          maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
           maxDateMessage="Invalid date range"
           color="secondary"
           onChange={(date) => {
-            handleStartDateChange(date);
+            setStartDate(date);
+            updateFilter({
+              date,
+              prevDate: startDate,
+              otherDate: endDate,
+              startDateOrEndDateChanged: 'startDate',
+              onChange: props.onChange,
+            });
           }}
-          error={startDateError !== null}
-          helperText={startDateError}
           FormHelperTextProps={{
             classes: helperTextClasses,
           }}
@@ -222,14 +160,19 @@ const DateColumnFilter = (props: {
           placeholder="To..."
           value={endDate}
           views={['year', 'month', 'date']}
-          minDate={minDate}
+          minDate={startDate || new Date('1984-01-01T00:00:00Z')}
           minDateMessage="Invalid date range"
           color="secondary"
           onChange={(date) => {
-            handleEndDateChange(date);
+            setEndDate(date);
+            updateFilter({
+              date,
+              prevDate: endDate,
+              otherDate: startDate,
+              startDateOrEndDateChanged: 'endDate',
+              onChange: props.onChange,
+            });
           }}
-          error={endDateError !== null}
-          helperText={endDateError}
           FormHelperTextProps={{
             classes: helperTextClasses,
           }}

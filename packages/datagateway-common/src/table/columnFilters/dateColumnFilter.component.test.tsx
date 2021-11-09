@@ -337,7 +337,9 @@ describe('Date filter component', () => {
     const wrapper = mount(<DateColumnFilter {...baseProps} />);
 
     expect(wrapper.find('p.Mui-error')).toHaveLength(2);
-    expect(wrapper.find('p.Mui-error').first().text()).toEqual('Invalid date');
+    expect(wrapper.find('p.Mui-error').first().text()).toEqual(
+      'Invalid Date Format'
+    );
   });
 
   it('displays error for invalid date range', () => {
