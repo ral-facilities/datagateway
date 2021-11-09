@@ -40,39 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// error color received from parent app theme object this requires
-// casting the theme to any so that we can explicitly access properties
-// we know to exist in the received object
-const useInputStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '&$error $notchedOutline': {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        borderColor: (theme as any).ukri?.contrast?.red,
-      },
-    },
-    error: {},
-    notchedOutline: {},
-  })
-);
-
-const useHelperTextStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '&$error': {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        color: (theme as any).ukri?.contrast?.red,
-      },
-    },
-    error: {},
-  })
-);
-
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { sideLayout, initiateSearch } = props;
   const classes = useStyles();
-  const inputClasses = useInputStyles();
-  const helperTextClasses = useHelperTextStyles();
 
   const [t] = useTranslation();
 
@@ -163,12 +133,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
             color="secondary"
             style={sideLayout ? {} : { paddingRight: 6 }}
-            FormHelperTextProps={{
-              classes: helperTextClasses,
-            }}
-            InputProps={{
-              classes: inputClasses,
-            }}
             okLabel={
               <span style={{ color: buttonColour }}>
                 {t('searchBox.date_picker.ok')}
@@ -204,12 +168,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             placeholder={t('searchBox.end_date')}
             inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
             color="secondary"
-            FormHelperTextProps={{
-              classes: helperTextClasses,
-            }}
-            InputProps={{
-              classes: inputClasses,
-            }}
             okLabel={
               <span style={{ color: buttonColour }}>
                 {t('searchBox.date_picker.ok')}

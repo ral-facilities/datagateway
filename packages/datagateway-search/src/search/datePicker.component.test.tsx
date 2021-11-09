@@ -186,6 +186,16 @@ describe('DatePicker component tests', () => {
         'searchBox.invalid_date_range_message'
       );
     });
+
+    it('invalid date in URL is ignored', () => {
+      history.replace('/?searchText=&investigation=false&startDate=2011-14-21');
+
+      const wrapper = createWrapper();
+      const startDateInput = wrapper.find(
+        '[aria-label="searchBox.start_date_arialabel"]'
+      );
+      expect(startDateInput.instance().value).toEqual('');
+    });
   });
 
   describe('End date box', () => {
@@ -290,6 +300,16 @@ describe('DatePicker component tests', () => {
       expect(wrapper.find('.MuiFormHelperText-filled').last().text()).toEqual(
         'searchBox.invalid_date_range_message'
       );
+    });
+
+    it('invalid date in URL is ignored', () => {
+      history.replace('/?searchText=&investigation=false&endDate=2011-14-21');
+
+      const wrapper = createWrapper();
+      const endDateInput = wrapper.find(
+        '[aria-label="searchBox.end_date_arialabel"]'
+      );
+      expect(endDateInput.instance().value).toEqual('');
     });
   });
 });

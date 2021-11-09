@@ -8,7 +8,7 @@ import {
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { FiltersType, DateFilter } from '../../app.types';
 import { usePushFilters } from '../../api';
-import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
+import { useTheme } from '@material-ui/core';
 
 export function datesEqual(
   date1: MaterialUiPickersDate,
@@ -59,38 +59,11 @@ export function updateFilter({
   }
 }
 
-const useInputStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    underline: {
-      '&$error:after': {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        borderBottomColor: (theme as any).ukri?.contrast?.red,
-      },
-    },
-    error: {},
-  })
-);
-
-const useHelperTextStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '&$error': {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        color: (theme as any).ukri?.contrast?.red,
-      },
-    },
-    error: {},
-  })
-);
-
 const DateColumnFilter = (props: {
   label: string;
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
   value: { startDate?: string; endDate?: string } | undefined;
 }): React.ReactElement => {
-  const inputClasses = useInputStyles();
-  const helperTextClasses = useHelperTextStyles();
-
   //Need state to change otherwise wont update error messages for an invalid date
   const [startDate, setStartDate] = useState(
     props.value?.startDate ? new Date(props.value.startDate) : null
@@ -135,12 +108,6 @@ const DateColumnFilter = (props: {
               onChange: props.onChange,
             });
           }}
-          FormHelperTextProps={{
-            classes: helperTextClasses,
-          }}
-          InputProps={{
-            classes: inputClasses,
-          }}
           okLabel={<span style={{ color: buttonColour }}>OK</span>}
           cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
           clearLabel={<span style={{ color: buttonColour }}>Clear</span>}
@@ -172,12 +139,6 @@ const DateColumnFilter = (props: {
               startDateOrEndDateChanged: 'endDate',
               onChange: props.onChange,
             });
-          }}
-          FormHelperTextProps={{
-            classes: helperTextClasses,
-          }}
-          InputProps={{
-            classes: inputClasses,
           }}
           okLabel={<span style={{ color: buttonColour }}>OK</span>}
           cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
