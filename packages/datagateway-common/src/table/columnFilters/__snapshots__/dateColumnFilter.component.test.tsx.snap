@@ -6,6 +6,22 @@ exports[`Date filter component renders correctly 1`] = `
     utils={[Function]}
   >
     <PickerWithState
+      FormHelperTextProps={
+        Object {
+          "classes": Object {
+            "error": "makeStyles-error-4",
+            "root": "makeStyles-root-3",
+          },
+        }
+      }
+      InputProps={
+        Object {
+          "classes": Object {
+            "error": "makeStyles-error-2",
+            "underline": "makeStyles-underline-1",
+          },
+        }
+      }
       KeyboardButtonProps={
         Object {
           "aria-label": "test filter from, date picker",
@@ -14,8 +30,33 @@ exports[`Date filter component renders correctly 1`] = `
       }
       allowKeyboardControl={true}
       aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
       color="secondary"
+      error={false}
       format="yyyy-MM-dd"
+      helperText={null}
       id="test filter from"
       inputProps={
         Object {
@@ -27,6 +68,17 @@ exports[`Date filter component renders correctly 1`] = `
       maxDateMessage="Invalid date range"
       minDate={1900-01-01T00:00:00.000Z}
       minDateMessage="Date should not be before minimal date"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
       onChange={[Function]}
       openTo="date"
       placeholder="From..."
@@ -45,6 +97,22 @@ exports[`Date filter component renders correctly 1`] = `
       }
     />
     <PickerWithState
+      FormHelperTextProps={
+        Object {
+          "classes": Object {
+            "error": "makeStyles-error-4",
+            "root": "makeStyles-root-3",
+          },
+        }
+      }
+      InputProps={
+        Object {
+          "classes": Object {
+            "error": "makeStyles-error-2",
+            "underline": "makeStyles-underline-1",
+          },
+        }
+      }
       KeyboardButtonProps={
         Object {
           "aria-label": "test filter to, date picker",
@@ -53,8 +121,33 @@ exports[`Date filter component renders correctly 1`] = `
       }
       allowKeyboardControl={true}
       aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
       color="secondary"
+      error={false}
       format="yyyy-MM-dd"
+      helperText={null}
       id="test filter to"
       inputProps={
         Object {
@@ -66,6 +159,17 @@ exports[`Date filter component renders correctly 1`] = `
       maxDateMessage="Date should not be after maximal date"
       minDate={1999-01-01T00:00:00.000Z}
       minDateMessage="Invalid date range"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
       onChange={[Function]}
       openTo="date"
       placeholder="To..."
@@ -93,6 +197,22 @@ exports[`Date filter component useTextFilter hook returns a function which can g
     utils={[Function]}
   >
     <PickerWithState
+      FormHelperTextProps={
+        Object {
+          "classes": Object {
+            "error": "makeStyles-error-4",
+            "root": "makeStyles-root-3",
+          },
+        }
+      }
+      InputProps={
+        Object {
+          "classes": Object {
+            "error": "makeStyles-error-2",
+            "underline": "makeStyles-underline-1",
+          },
+        }
+      }
       KeyboardButtonProps={
         Object {
           "aria-label": "Start Date filter from, date picker",
@@ -101,8 +221,33 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       }
       allowKeyboardControl={true}
       aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
       color="secondary"
+      error={false}
       format="yyyy-MM-dd"
+      helperText={null}
       id="Start Date filter from"
       inputProps={
         Object {
@@ -114,6 +259,17 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       maxDateMessage="Invalid date range"
       minDate={1900-01-01T00:00:00.000Z}
       minDateMessage="Date should not be before minimal date"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
       onChange={[Function]}
       openTo="date"
       placeholder="From..."
@@ -132,6 +288,22 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       }
     />
     <PickerWithState
+      FormHelperTextProps={
+        Object {
+          "classes": Object {
+            "error": "makeStyles-error-4",
+            "root": "makeStyles-root-3",
+          },
+        }
+      }
+      InputProps={
+        Object {
+          "classes": Object {
+            "error": "makeStyles-error-2",
+            "underline": "makeStyles-underline-1",
+          },
+        }
+      }
       KeyboardButtonProps={
         Object {
           "aria-label": "Start Date filter to, date picker",
@@ -140,8 +312,33 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       }
       allowKeyboardControl={true}
       aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
       color="secondary"
+      error={false}
       format="yyyy-MM-dd"
+      helperText={null}
       id="Start Date filter to"
       inputProps={
         Object {
@@ -151,8 +348,19 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       invalidDateMessage="Invalid Date Format"
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"
-      minDate={1900-01-01T00:00:00.000Z}
+      minDate={1984-01-01T00:00:00.000Z}
       minDateMessage="Invalid date range"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
       onChange={[Function]}
       openTo="date"
       placeholder="To..."

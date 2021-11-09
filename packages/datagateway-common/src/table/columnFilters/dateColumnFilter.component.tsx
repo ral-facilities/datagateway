@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { format, isValid, isEqual, isBefore, isAfter } from 'date-fns';
 import {
@@ -121,7 +121,7 @@ const DateColumnFilter = (props: {
       }
     }
     //Valid if null or if no errors found above
-    setStartDateError(null);
+    if (startDateError !== null) setStartDateError(null);
     return true;
   };
 
@@ -138,7 +138,7 @@ const DateColumnFilter = (props: {
       }
     }
     //Valid if null or if no errors found above
-    setEndDateError(null);
+    if (endDateError !== null) setEndDateError(null);
     return true;
   };
 
@@ -163,6 +163,13 @@ const DateColumnFilter = (props: {
       onChange: props.onChange,
     });
   };
+
+  //Check for errors when start/end date changes in the props
+  useEffect(() => {
+    checkValidStartDate(startDate);
+    checkValidEndDate(endDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.value]);
 
   return (
     <form>
