@@ -32,9 +32,6 @@ interface DatePickerStoreProps {
 
 type DatePickerCombinedProps = DatePickerProps & DatePickerStoreProps;
 
-// error color received from parent app theme object this requires
-// casting the theme to any so that we can explicitly access properties
-// we know to exist in the received object
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -43,6 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+// error color received from parent app theme object this requires
+// casting the theme to any so that we can explicitly access properties
+// we know to exist in the received object
 const useInputStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
