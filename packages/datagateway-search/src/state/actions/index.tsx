@@ -1,5 +1,9 @@
-import { ThunkResult } from '../app.types';
-import { SettingsLoadedType } from './actions.types';
+import { ActionType, ThunkResult } from '../app.types';
+import {
+  ConfigureSearchableEntitiesPayload,
+  ConfigureSearchableEntitiesType,
+  SettingsLoadedType,
+} from './actions.types';
 import {
   loadUrls,
   loadFacilityName,
@@ -16,6 +20,15 @@ import jsrsasign from 'jsrsasign';
 
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
+});
+
+export const loadSearchableEntitites = (
+  entities: string[]
+): ActionType<ConfigureSearchableEntitiesPayload> => ({
+  type: ConfigureSearchableEntitiesType,
+  payload: {
+    entities: entities,
+  },
 });
 
 export const configureApp = (): ThunkResult<Promise<void>> => {
@@ -58,6 +71,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           throw new Error(
             'One of the URL options (idsUrl, apiUrl, downloadApiUrl, icatUrl) is undefined in settings'
           );
+        }
+
+        if ('searchableEntities' in settings) {
+          dispatch(loadSearchableEntitites(settings['searchableEntities']));
         }
 
         if (Array.isArray(settings['routes']) && settings['routes'].length) {

@@ -76,6 +76,7 @@ describe('SearchPageContainer - Tests', () => {
         currentTab: 'investigation',
       },
       sideLayout: false,
+      searchableEntities: ['investigation', 'dataset', 'datafile'],
       settingsLoaded: true,
     };
 
@@ -107,6 +108,10 @@ describe('SearchPageContainer - Tests', () => {
         return Promise.resolve({ data: [] });
       }
     });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('renders searchPageContainer correctly', () => {
@@ -635,5 +640,72 @@ describe('SearchPageContainer - Tests', () => {
         },
       }
     );
+  });
+
+  it('does not search for non-searchable entities when visiting a direct url', async () => {
+    state.dgsearch.searchableEntities = ['investigation', 'dataset'];
+
+    history.replace('/search/data?searchText=hello&datafiles=true');
+
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Investigation',
+            text: 'hello',
+          },
+          sessionId: null,
+        },
+      }
+    );
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Dataset',
+            text: 'hello',
+          },
+          sessionId: null,
+        },
+      }
+    );
+
+    expect(axios.get).not.toHaveBeenCalledWith(
+      'https://example.com/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Datafile',
+            text: 'hello',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('does not search when there are no searchable entities', async () => {
+    state.dgsearch.searchableEntities = [];
+
+    const wrapper = createWrapper();
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect((axios.get as jest.Mock).mock.calls.length).toBe(0);
   });
 });
