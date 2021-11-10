@@ -1272,6 +1272,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "enabled": true,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -1308,6 +1309,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "enabled": true,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -1336,6 +1338,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
+                    "enabled": true,
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
@@ -2287,6 +2290,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "enabled": true,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -2323,6 +2327,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "enabled": true,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -2351,6 +2356,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
+                    "enabled": true,
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
@@ -4018,6 +4024,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                   }
                                   data={Array []}
                                   detailsPanel={[Function]}
+                                  disableSelectAll={false}
                                   loadMoreRows={[Function]}
                                   loading={false}
                                   onCheck={[Function]}
