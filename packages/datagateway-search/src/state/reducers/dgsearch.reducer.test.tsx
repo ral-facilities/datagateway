@@ -6,7 +6,7 @@ import {
   setInvestigationTab,
   setCurrentTab,
 } from '../actions/actions';
-import { settingsLoaded } from '../actions';
+import { loadSearchableEntitites, settingsLoaded } from '../actions';
 
 describe('dgsearch reducer', () => {
   let state: DGSearchState;
@@ -59,5 +59,20 @@ describe('dgsearch reducer', () => {
     const updatedState = DGSearchReducer(state, setCurrentTab('dataset'));
 
     expect(updatedState.tabs.currentTab).toEqual('dataset');
+  });
+
+  it('should set searchableEntities property when configuring action is sent', () => {
+    expect(state.searchableEntities).toEqual([
+      'investigation',
+      'dataset',
+      'datafile',
+    ]);
+
+    const updatedState = DGSearchReducer(
+      state,
+      loadSearchableEntitites(['dataset'])
+    );
+
+    expect(updatedState.searchableEntities).toEqual(['dataset']);
   });
 });

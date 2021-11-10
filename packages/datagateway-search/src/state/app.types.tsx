@@ -11,6 +11,7 @@ export interface DGSearchState {
   };
   settingsLoaded: boolean;
   sideLayout: boolean;
+  searchableEntities: string[];
 }
 
 export type StateType = {

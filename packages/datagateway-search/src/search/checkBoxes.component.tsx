@@ -31,11 +31,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface CheckBoxStoreProps {
   sideLayout: boolean;
+  searchableEntities: string[];
 }
 
 const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
   const classes = useStyles();
-  const { sideLayout } = props;
+  const { sideLayout, searchableEntities } = props;
+
+  const investigationSearchable = searchableEntities.includes('investigation');
+  const datasetSearchable = searchableEntities.includes('dataset');
+  const datafileSearchable = searchableEntities.includes('datafile');
 
   const location = useLocation();
   const { dataset, datafile, investigation } = React.useMemo(
@@ -43,6 +48,11 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
     [location.search]
   );
   const pushSearchToggles = usePushSearchToggles();
+
+  const searchableEntitiesToggles: boolean[] = [];
+  if (investigationSearchable) searchableEntitiesToggles.push(investigation);
+  if (datasetSearchable) searchableEntitiesToggles.push(dataset);
+  if (datafileSearchable) searchableEntitiesToggles.push(datafile);
 
   const handleChange = (name: string, checked: boolean) => (
     event: React.ChangeEvent<HTMLInputElement>
@@ -57,7 +67,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
     }
   };
 
-  const error = ![investigation, dataset, datafile].includes(true);
+  const error = !searchableEntitiesToggles.includes(true);
 
   const [t] = useTranslation();
 
@@ -79,47 +89,53 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
           >
             {t('searchBox.checkboxes.text')}
           </FormLabel>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={investigation}
-                onChange={handleChange('Investigation', investigation)}
-                value="Investigation"
-                inputProps={{
-                  'aria-label': t(
-                    'searchBox.checkboxes.investigation_arialabel'
-                  ),
-                }}
-              />
-            }
-            label={t('searchBox.checkboxes.investigation')}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={dataset}
-                onChange={handleChange('Dataset', dataset)}
-                value="Dataset"
-                inputProps={{
-                  'aria-label': t('searchBox.checkboxes.dataset_arialabel'),
-                }}
-              />
-            }
-            label={t('searchBox.checkboxes.dataset')}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={datafile}
-                onChange={handleChange('Datafile', datafile)}
-                value="Datafile"
-                inputProps={{
-                  'aria-label': t('searchBox.checkboxes.datafile_arialabel'),
-                }}
-              />
-            }
-            label={t('searchBox.checkboxes.datafile')}
-          />
+          {investigationSearchable && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={investigation}
+                  onChange={handleChange('Investigation', investigation)}
+                  value="Investigation"
+                  inputProps={{
+                    'aria-label': t(
+                      'searchBox.checkboxes.investigation_arialabel'
+                    ),
+                  }}
+                />
+              }
+              label={t('searchBox.checkboxes.investigation')}
+            />
+          )}
+          {datasetSearchable && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={dataset}
+                  onChange={handleChange('Dataset', dataset)}
+                  value="Dataset"
+                  inputProps={{
+                    'aria-label': t('searchBox.checkboxes.dataset_arialabel'),
+                  }}
+                />
+              }
+              label={t('searchBox.checkboxes.dataset')}
+            />
+          )}
+          {datafileSearchable && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={datafile}
+                  onChange={handleChange('Datafile', datafile)}
+                  value="Datafile"
+                  inputProps={{
+                    'aria-label': t('searchBox.checkboxes.datafile_arialabel'),
+                  }}
+                />
+              }
+              label={t('searchBox.checkboxes.datafile')}
+            />
+          )}
         </FormGroup>
       </FormControl>
     </div>
@@ -129,6 +145,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
 const mapStateToProps = (state: StateType): CheckBoxStoreProps => {
   return {
     sideLayout: state.dgsearch.sideLayout,
+    searchableEntities: state.dgsearch.searchableEntities,
   };
 };
 
