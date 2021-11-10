@@ -27,6 +27,7 @@
       "content": "Select the type of search results to view"
     }
   ],
+  "searchableEntities": ["investigation", "dataset", "datafile"],
   "routes": [
     {
       "section": "Test",
