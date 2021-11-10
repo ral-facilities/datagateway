@@ -277,23 +277,35 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const classes = useStyles();
 
   const buttons = React.useMemo(
-    () => [
-      (dataset: Dataset) => (
-        <div className={classes.actionButtons}>
-          <AddToCartButton
-            entityType="dataset"
-            allIds={data?.map((dataset) => dataset.id) ?? []}
-            entityId={dataset.id}
-          />
-          <DownloadButton
-            entityType="dataset"
-            entityId={dataset.id}
-            entityName={dataset.name}
-          />
-        </div>
-      ),
-    ],
-    [classes.actionButtons, data]
+    () =>
+      hierarchy !== 'dls'
+        ? [
+            (dataset: Dataset) => (
+              <div className={classes.actionButtons}>
+                <AddToCartButton
+                  entityType="dataset"
+                  allIds={data?.map((dataset) => dataset.id) ?? []}
+                  entityId={dataset.id}
+                />
+                <DownloadButton
+                  entityType="dataset"
+                  entityId={dataset.id}
+                  entityName={dataset.name}
+                />
+              </div>
+            ),
+          ]
+        : [
+            (dataset: Dataset) => (
+              <AddToCartButton
+                entityType="dataset"
+                allIds={data?.map((dataset) => dataset.id) ?? []}
+                entityId={dataset.id}
+              />
+            ),
+          ],
+
+    [classes.actionButtons, data, hierarchy]
   );
 
   return (

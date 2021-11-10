@@ -1346,6 +1346,18 @@ describe('investigation api functions', () => {
         expect(result.current.data).toEqual([1, 2, 3]);
       });
 
+      it('does not send axios request to fetch ids when set to disabled', async () => {
+        const { result } = renderHook(
+          () => useISISInvestigationIds(1, 2, false, false),
+          {
+            wrapper: createReactQueryWrapper(history),
+          }
+        );
+
+        expect(result.current.isIdle).toBe(true);
+        expect(axios.get).not.toHaveBeenCalled();
+      });
+
       it('sends axios request to fetch ISIS investigation ids and calls handleICATError on failure', async () => {
         (axios.get as jest.Mock).mockRejectedValue({
           message: 'Test error',

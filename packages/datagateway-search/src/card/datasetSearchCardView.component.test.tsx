@@ -304,7 +304,7 @@ describe('Dataset - Card View', () => {
     ).toEqual('Calculating...');
   });
 
-  it('renders DLS link correctly', () => {
+  it("renders DLS link correctly and doesn't allow for download", () => {
     const wrapper = createWrapper('dls');
 
     expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
@@ -313,6 +313,8 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(CardView).find('a').first().text()).toEqual(
       'Dataset test name'
     );
+    expect(wrapper.exists('#add-to-cart-btn-1')).toBe(true);
+    expect(wrapper.exists('#download-btn-1')).toBe(false);
   });
 
   it('renders ISIS link & file sizes correctly', () => {

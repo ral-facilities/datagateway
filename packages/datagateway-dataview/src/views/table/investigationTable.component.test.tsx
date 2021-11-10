@@ -144,7 +144,7 @@ describe('Investigation table component', () => {
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('investigation');
+    expect(useIds).toHaveBeenCalledWith('investigation', undefined, true);
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
     expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
@@ -306,6 +306,16 @@ describe('Investigation table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('investigation', undefined, false);
+    expect(useIds).not.toHaveBeenCalledWith('investigation', undefined, true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
   it('renders details panel correctly', () => {

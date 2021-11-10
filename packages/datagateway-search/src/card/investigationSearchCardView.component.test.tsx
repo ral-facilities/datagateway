@@ -297,13 +297,15 @@ describe('Investigation - Card View', () => {
     ).toEqual('Calculating...');
   });
 
-  it('renders DLS link correctly', () => {
+  it("renders DLS link correctly and doesn't allow for cart selection or download", () => {
     const wrapper = createWrapper('dls');
 
     expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
       '/browse/proposal/Investigation test name/investigation/1/dataset'
     );
     expect(wrapper.find(CardView).find('a').first().text()).toEqual('Test 1');
+    expect(wrapper.exists('#add-to-cart-btn-1')).toBe(false);
+    expect(wrapper.exists('#download-btn-1')).toBe(false);
   });
 
   it('renders ISIS link & file sizes correctly', () => {

@@ -314,23 +314,26 @@ const InvestigationCardView = (
   const classes = useStyles();
 
   const buttons = React.useMemo(
-    () => [
-      (investigation: Investigation) => (
-        <div className={classes.actionButtons}>
-          <AddToCartButton
-            entityType="investigation"
-            allIds={data?.map((investigation) => investigation.id) ?? []}
-            entityId={investigation.id}
-          />
-          <DownloadButton
-            entityType="investigation"
-            entityId={investigation.id}
-            entityName={investigation.name}
-          />
-        </div>
-      ),
-    ],
-    [classes.actionButtons, data]
+    () =>
+      hierarchy !== 'dls'
+        ? [
+            (investigation: Investigation) => (
+              <div className={classes.actionButtons}>
+                <AddToCartButton
+                  entityType="investigation"
+                  allIds={data?.map((investigation) => investigation.id) ?? []}
+                  entityId={investigation.id}
+                />
+                <DownloadButton
+                  entityType="investigation"
+                  entityId={investigation.id}
+                  entityName={investigation.name}
+                />
+              </div>
+            ),
+          ]
+        : [],
+    [classes.actionButtons, data, hierarchy]
   );
 
   const customFilters = React.useMemo(

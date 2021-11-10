@@ -8,6 +8,8 @@ import {
   SettingsLoadedType,
   CurrentTabPayload,
   SetCurrentTabType,
+  ConfigureSelectAllSettingType,
+  ConfigureSelectAllSettingPayload,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
@@ -17,6 +19,7 @@ export const initialState: DGSearchState = {
     investigationTab: false,
     currentTab: 'investigation',
   },
+  selectAllSetting: true,
   settingsLoaded: false,
   sideLayout: false,
 };
@@ -80,12 +83,23 @@ export function handleSetCurrentTab(
   };
 }
 
+export function handleConfigureSelectAllSetting(
+  state: DGSearchState,
+  payload: ConfigureSelectAllSettingPayload
+): DGSearchState {
+  return {
+    ...state,
+    selectAllSetting: payload.settings,
+  };
+}
+
 const DGSearchReducer = createReducer(initialState, {
   [SetDatasetTabType]: handleSetDatasetTab,
   [SetDatafileTabType]: handleSetDatafileTab,
   [SetInvestigationTabType]: handleSetInvestigationTab,
   [SettingsLoadedType]: handleSettingsLoaded,
   [SetCurrentTabType]: handleSetCurrentTab,
+  [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
 });
 
 export default DGSearchReducer;

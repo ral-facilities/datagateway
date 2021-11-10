@@ -481,7 +481,8 @@ export const fetchIds = (
 
 export const useIds = (
   entityType: 'investigation' | 'dataset' | 'datafile',
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  enabled = true
 ): UseQueryResult<number[], Error> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -502,6 +503,7 @@ export const useIds = (
       onError: (error) => {
         handleICATError(error);
       },
+      enabled,
     }
   );
 };

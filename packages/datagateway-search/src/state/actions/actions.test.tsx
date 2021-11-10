@@ -1,5 +1,8 @@
-import { configureApp, settingsLoaded } from '.';
-import { SettingsLoadedType } from './actions.types';
+import { configureApp, loadSelectAllSetting, settingsLoaded } from '.';
+import {
+  ConfigureSelectAllSettingType,
+  SettingsLoadedType,
+} from './actions.types';
 import axios from 'axios';
 import * as log from 'loglevel';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
@@ -32,6 +35,14 @@ describe('Actions', () => {
     expect(action.type).toEqual(SettingsLoadedType);
   });
 
+  it('given JSON loadSelectAllSetting returns a ConfigureSelectAllSettingType with ConfigureSelectAllSettingPayload', () => {
+    const action = loadSelectAllSetting(false);
+    expect(action.type).toEqual(ConfigureSelectAllSettingType);
+    expect(action.payload).toEqual({
+      settings: false,
+    });
+  });
+
   it('settings are loaded and facilityName, loadUrls and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
@@ -42,6 +53,7 @@ describe('Actions', () => {
             apiUrl: 'api',
             downloadApiUrl: 'download-api',
             icatUrl: 'icat',
+            selectAllSetting: false,
             routes: [
               {
                 section: 'section',
@@ -64,7 +76,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(3);
+    expect(actions.length).toEqual(4);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       loadUrls({
@@ -74,6 +86,7 @@ describe('Actions', () => {
         icatUrl: 'icat',
       })
     );
+    expect(actions).toContainEqual(loadSelectAllSetting(false));
 
     expect(actions).toContainEqual(settingsLoaded());
     expect(CustomEvent).toHaveBeenCalledTimes(1);
@@ -104,6 +117,7 @@ describe('Actions', () => {
             idsUrl: 'ids',
             apiUrl: 'api',
             downloadApiUrl: 'download-api',
+            selectAllSetting: false,
             routes: [
               {
                 section: 'section0',
@@ -175,6 +189,7 @@ describe('Actions', () => {
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
           icatUrl: 'icat',
+          selectAllSetting: true,
         },
       })
     );
