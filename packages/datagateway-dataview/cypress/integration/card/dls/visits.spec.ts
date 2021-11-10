@@ -65,17 +65,6 @@ describe('DLS - Visits Cards', () => {
   });
 
   it('should be able to filter by multiple fields', () => {
-    cy.contains('[role="button"]', 'Type ID').click();
-    cy.contains('[role="button"]', 'Type ID')
-      .parent()
-      .contains('[role="button"]', '2')
-      .click()
-      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
-      });
-    cy.contains('[role="button"]', 'Type ID - 2').should('exist');
-    cy.get('#card').contains('42');
-
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Visit ID"]')
       .first()
