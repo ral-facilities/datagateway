@@ -13,11 +13,8 @@ import {
   usePushResults,
   usePushSort,
   useTextFilter,
-  useCustomFilter,
   useDatasetsDatafileCount,
   AddToCartButton,
-  useCustomFilterCount,
-  formatFilterCount,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
@@ -55,37 +52,8 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
   const { data, isLoading: dataLoading } = useDatasetsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('type'),
-    },
-  ]);
-
-  const { data: typeIds } = useCustomFilter('dataset', 'type.id', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
-  const typeIdCounts = useCustomFilterCount('dataset', 'type.id', typeIds, [
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -176,23 +144,6 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [data]
   );
 
-  const customFilters = React.useMemo(
-    () => [
-      {
-        label: t('datasets.type.id'),
-        dataKey: 'type.id',
-        filterItems: typeIds
-          ? typeIds.map((id, i) => ({
-              name: id,
-              count: formatFilterCount(typeIdCounts[i]),
-            }))
-          : [],
-        prefixLabel: true,
-      },
-    ],
-    [t, typeIds, typeIdCounts]
-  );
-
   return (
     <CardView
       data={data ?? []}
@@ -214,7 +165,6 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         <DatasetDetailsPanel rowData={dataset} />
       )}
       buttons={buttons}
-      customFilters={customFilters}
     />
   );
 };

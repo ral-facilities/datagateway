@@ -76,10 +76,6 @@ const ISISDatasetsCardView = (
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
   const { data, isLoading: dataLoading } = useDatasetsPaginated([
     {
@@ -87,10 +83,6 @@ const ISISDatasetsCardView = (
       filterValue: JSON.stringify({
         'investigation.id': { eq: investigationId },
       }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
     },
   ]);
   const sizeQueries = useDatasetSizes(data);

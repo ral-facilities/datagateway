@@ -76,10 +76,6 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
 
   const { fetchNextPage, data } = useDatasetsInfinite([
@@ -88,10 +84,6 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       filterValue: JSON.stringify({
         'investigation.id': { eq: investigationId },
       }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
     },
   ]);
 

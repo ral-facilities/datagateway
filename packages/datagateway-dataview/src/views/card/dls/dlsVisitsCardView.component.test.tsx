@@ -117,10 +117,6 @@ describe('DLS Visits - Card View', () => {
           investigationInstruments: 'instrument',
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('type'),
-      },
     ]);
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(cardData);
   });

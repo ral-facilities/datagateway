@@ -125,10 +125,6 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
 
   const { fetchNextPage, data } = useDatasetsInfinite([
@@ -137,10 +133,6 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
       filterValue: JSON.stringify({
         'investigation.id': { eq: investigationId },
       }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
     },
   ]);
 

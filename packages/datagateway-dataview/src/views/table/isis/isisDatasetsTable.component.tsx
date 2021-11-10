@@ -93,10 +93,6 @@ const ISISDatasetsTable = (
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
 
   const { fetchNextPage, data } = useDatasetsInfinite([
@@ -105,10 +101,6 @@ const ISISDatasetsTable = (
       filterValue: JSON.stringify({
         'investigation.id': { eq: investigationId },
       }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
     },
   ]);
 
