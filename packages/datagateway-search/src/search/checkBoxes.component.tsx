@@ -72,7 +72,11 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         } tour-search-checkbox`}
       >
         <FormGroup row={!sideLayout}>
-          <FormLabel component="legend" className={classes.formLabel}>
+          <FormLabel
+            component="legend"
+            focused={false}
+            className={classes.formLabel}
+          >
             {t('searchBox.checkboxes.text')}
           </FormLabel>
           <FormControlLabel

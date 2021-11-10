@@ -141,6 +141,61 @@ describe('DatePicker component tests', () => {
       startDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
     });
+
+    it('displays error message when an invalid date is entered', () => {
+      history.replace('/?searchText=&investigation=false');
+
+      const wrapper = createWrapper();
+      const startDateInput = wrapper.find(
+        '[aria-label="searchBox.start_date_arialabel"]'
+      );
+      startDateInput.instance().value = '2012 01 35';
+      startDateInput.simulate('change');
+
+      expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
+        'Invalid Date Format'
+      );
+    });
+
+    it('displays error message when a date after the maximum date is entered', () => {
+      history.replace('/?searchText=&investigation=false');
+
+      const wrapper = createWrapper();
+      const startDateInput = wrapper.find(
+        '[aria-label="searchBox.start_date_arialabel"]'
+      );
+      startDateInput.instance().value = '3000 01 01';
+      startDateInput.simulate('change');
+
+      expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
+        'searchBox.invalid_date_range_message'
+      );
+    });
+
+    it('displays error message when a date after the end date is entered', () => {
+      history.replace('/?searchText=&investigation=false&endDate=2011-11-21');
+
+      const wrapper = createWrapper();
+      const startDateInput = wrapper.find(
+        '[aria-label="searchBox.start_date_arialabel"]'
+      );
+      startDateInput.instance().value = '2012 01 01';
+      startDateInput.simulate('change');
+
+      expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
+        'searchBox.invalid_date_range_message'
+      );
+    });
+
+    it('invalid date in URL is ignored', () => {
+      history.replace('/?searchText=&investigation=false&startDate=2011-14-21');
+
+      const wrapper = createWrapper();
+      const startDateInput = wrapper.find(
+        '[aria-label="searchBox.start_date_arialabel"]'
+      );
+      expect(startDateInput.instance().value).toEqual('');
+    });
   });
 
   describe('End date box', () => {
@@ -200,6 +255,61 @@ describe('DatePicker component tests', () => {
       );
       endDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
+    });
+
+    it('displays error message when an invalid date is entered', () => {
+      history.replace('/?searchText=&investigation=false');
+
+      const wrapper = createWrapper();
+      const endDateInput = wrapper.find(
+        '[aria-label="searchBox.end_date_arialabel"]'
+      );
+      endDateInput.instance().value = '2012 01 35';
+      endDateInput.simulate('change');
+
+      expect(wrapper.find('.MuiFormHelperText-filled').text()).toEqual(
+        'Invalid Date Format'
+      );
+    });
+
+    it('displays error message when a date before the minimum date is entered', () => {
+      history.replace('/?searchText=&investigation=false');
+
+      const wrapper = createWrapper();
+      const endDateInput = wrapper.find(
+        '[aria-label="searchBox.end_date_arialabel"]'
+      );
+      endDateInput.instance().value = '1203 01 01';
+      endDateInput.simulate('change');
+
+      expect(wrapper.find('.MuiFormHelperText-filled').last().text()).toEqual(
+        'searchBox.invalid_date_range_message'
+      );
+    });
+
+    it('displays error message when a date before the start date is entered', () => {
+      history.replace('/?searchText=&investigation=false&startDate=2011-11-21');
+
+      const wrapper = createWrapper();
+      const endDateInput = wrapper.find(
+        '[aria-label="searchBox.end_date_arialabel"]'
+      );
+      endDateInput.instance().value = '2010 01 01';
+      endDateInput.simulate('change');
+
+      expect(wrapper.find('.MuiFormHelperText-filled').last().text()).toEqual(
+        'searchBox.invalid_date_range_message'
+      );
+    });
+
+    it('invalid date in URL is ignored', () => {
+      history.replace('/?searchText=&investigation=false&endDate=2011-14-21');
+
+      const wrapper = createWrapper();
+      const endDateInput = wrapper.find(
+        '[aria-label="searchBox.end_date_arialabel"]'
+      );
+      expect(endDateInput.instance().value).toEqual('');
     });
   });
 });

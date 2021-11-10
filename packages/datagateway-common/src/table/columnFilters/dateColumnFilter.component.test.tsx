@@ -322,6 +322,26 @@ describe('Date filter component', () => {
     expect(onChange).toHaveBeenLastCalledWith(null);
   });
 
+  it('displays error for invalid date', () => {
+    const onChange = jest.fn();
+
+    const baseProps = {
+      label: 'test',
+      onChange,
+      value: {
+        startDate: '2019-13-09',
+        endDate: '2019-08-32',
+      },
+    };
+
+    const wrapper = mount(<DateColumnFilter {...baseProps} />);
+
+    expect(wrapper.find('p.Mui-error')).toHaveLength(2);
+    expect(wrapper.find('p.Mui-error').first().text()).toEqual(
+      'Invalid Date Format'
+    );
+  });
+
   it('displays error for invalid date range', () => {
     const onChange = jest.fn();
 

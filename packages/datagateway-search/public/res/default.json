@@ -17,7 +17,12 @@
     "start_date_arialabel": "Start date input",
     "end_date_arialabel": "End date input",
     "search_button_arialabel": "Submit search",
-    "invalid_date_message": "Invalid date range"
+    "invalid_date_range_message": "Invalid date range",
+    "date_picker": {
+      "ok": "OK",
+      "cancel": "Cancel",
+      "clear": "Clear"
+    }
   },
   "searchPageTable": {
     "tabs_arialabel": "Search table",
