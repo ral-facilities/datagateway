@@ -22,6 +22,7 @@ import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 import format from 'date-fns/format';
+import { isValid } from 'date-fns';
 
 export * from './cart';
 export * from './facilityCycles';
@@ -141,7 +142,7 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
   // Loop and add all the query parameters which is in use.
   for (const [q, v] of Object.entries(query)) {
     if (v !== null && q !== 'filters' && q !== 'sort') {
-      if (q === 'startDate' || q === 'endDate') {
+      if ((q === 'startDate' || q === 'endDate') && isValid(v)) {
         queryParams.append(q, format(v, 'yyyy-MM-dd'));
       } else if (
         //Take default value of these as true, so don't put in url if this is the case

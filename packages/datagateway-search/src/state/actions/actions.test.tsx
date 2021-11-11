@@ -1,5 +1,11 @@
-import { configureApp, loadSelectAllSetting, settingsLoaded } from '.';
 import {
+  configureApp,
+  loadSearchableEntitites,
+  loadSelectAllSetting,
+  settingsLoaded,
+} from '.';
+import {
+  ConfigureSearchableEntitiesType,
   ConfigureSelectAllSettingType,
   SettingsLoadedType,
 } from './actions.types';
@@ -43,6 +49,14 @@ describe('Actions', () => {
     });
   });
 
+  it('given JSON loadSearchableEntitites returns a ConfigureSearchableEntitiesType with ConfigureSearchableEntitiesPayload', () => {
+    const action = loadSearchableEntitites(['investigation', 'dataset']);
+    expect(action.type).toEqual(ConfigureSearchableEntitiesType);
+    expect(action.payload).toEqual({
+      entities: ['investigation', 'dataset'],
+    });
+  });
+
   it('settings are loaded and facilityName, loadUrls and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
@@ -54,6 +68,7 @@ describe('Actions', () => {
             downloadApiUrl: 'download-api',
             icatUrl: 'icat',
             selectAllSetting: false,
+            searchableEntities: ['investigation', 'dataset', 'datafile'],
             routes: [
               {
                 section: 'section',
@@ -89,6 +104,9 @@ describe('Actions', () => {
     expect(actions).toContainEqual(loadSelectAllSetting(false));
 
     expect(actions).toContainEqual(settingsLoaded());
+    expect(actions).toContainEqual(
+      loadSearchableEntitites(['investigation', 'dataset', 'datafile'])
+    );
     expect(CustomEvent).toHaveBeenCalledTimes(1);
     expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
       detail: {

@@ -2,6 +2,8 @@ import { ActionType, ThunkResult } from '../app.types';
 import {
   ConfigureSelectAllSettingPayload,
   ConfigureSelectAllSettingType,
+  ConfigureSearchableEntitiesPayload,
+  ConfigureSearchableEntitiesType,
   SettingsLoadedType,
 } from './actions.types';
 import {
@@ -28,6 +30,15 @@ export const loadSelectAllSetting = (
   type: ConfigureSelectAllSettingType,
   payload: {
     settings: selectAllSetting,
+  },
+});
+
+export const loadSearchableEntitites = (
+  entities: string[]
+): ActionType<ConfigureSearchableEntitiesPayload> => ({
+  type: ConfigureSearchableEntitiesType,
+  payload: {
+    entities: entities,
   },
 });
 
@@ -75,6 +86,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if ('selectAllSetting' in settings) {
           dispatch(loadSelectAllSetting(settings['selectAllSetting']));
+        }
+
+        if ('searchableEntities' in settings) {
+          dispatch(loadSearchableEntitites(settings['searchableEntities']));
         }
 
         if (Array.isArray(settings['routes']) && settings['routes'].length) {

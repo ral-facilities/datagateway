@@ -10,6 +10,8 @@ import {
   SetCurrentTabType,
   ConfigureSelectAllSettingType,
   ConfigureSelectAllSettingPayload,
+  ConfigureSearchableEntitiesPayload,
+  ConfigureSearchableEntitiesType,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
@@ -22,6 +24,7 @@ export const initialState: DGSearchState = {
   selectAllSetting: true,
   settingsLoaded: false,
   sideLayout: false,
+  searchableEntities: ['investigation', 'dataset', 'datafile'],
 };
 
 export function handleSettingsLoaded(state: DGSearchState): DGSearchState {
@@ -93,6 +96,16 @@ export function handleConfigureSelectAllSetting(
   };
 }
 
+export function handleConfigureSearchableEntities(
+  state: DGSearchState,
+  payload: ConfigureSearchableEntitiesPayload
+): DGSearchState {
+  return {
+    ...state,
+    searchableEntities: payload.entities,
+  };
+}
+
 const DGSearchReducer = createReducer(initialState, {
   [SetDatasetTabType]: handleSetDatasetTab,
   [SetDatafileTabType]: handleSetDatafileTab,
@@ -100,6 +113,7 @@ const DGSearchReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [SetCurrentTabType]: handleSetCurrentTab,
   [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
+  [ConfigureSearchableEntitiesType]: handleConfigureSearchableEntities,
 });
 
 export default DGSearchReducer;

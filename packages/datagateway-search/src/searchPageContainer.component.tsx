@@ -120,6 +120,7 @@ const ViewButton = (props: {
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
+  searchableEntities: string[];
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
@@ -143,6 +144,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setDatasetTab,
     setInvestigationTab,
     sideLayout,
+    searchableEntities,
     currentTab,
   } = props;
 
@@ -150,14 +152,18 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const {
-    view,
-    dataset,
-    datafile,
-    investigation,
-    startDate,
-    endDate,
-  } = queryParams;
+  const { view, startDate, endDate } = queryParams;
+  //Do not allow these to be searched if they are not searchable (prevents URL
+  //forcing them to be searched)
+  const investigation = searchableEntities.includes('investigation')
+    ? queryParams.investigation
+    : false;
+  const dataset = searchableEntities.includes('dataset')
+    ? queryParams.dataset
+    : false;
+  const datafile = searchableEntities.includes('datafile')
+    ? queryParams.datafile
+    : false;
 
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
@@ -392,6 +398,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   sideLayout: state.dgsearch.sideLayout,
+  searchableEntities: state.dgsearch.searchableEntities,
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,
   investigationTab: state.dgsearch.tabs.investigationTab,

@@ -23,7 +23,7 @@ describe('Download Cart', () => {
     cy.get('#datagateway-download').should('be.visible');
 
     // Ensure we can move away from the table and come back to it.
-    cy.get('[aria-label="Download selections panel"]').should('exist');
+    cy.get('[aria-label="Download selection panel"]').should('exist');
     // Wait for the downloads to be fetched before moving back to the cart.
     cy.get('[aria-label="Downloads"]')
       .should('exist')
@@ -31,8 +31,8 @@ describe('Download Cart', () => {
       .wait('@fetchDownloads');
     cy.get('[aria-label="Download status panel"]').should('exist');
 
-    cy.get('[aria-label="Selections').click().wait('@fetchCart');
-    cy.get('[aria-label="Download selections panel"]').should('exist');
+    cy.get('[aria-label="Selection').click().wait('@fetchCart');
+    cy.get('[aria-label="Download selection panel"]').should('exist');
 
     cy.get('[aria-rowcount=59]', { timeout: 10000 }).should('exist');
   });
@@ -105,7 +105,7 @@ describe('Download Cart', () => {
     cy.contains('Calculating...', { timeout: 20000 }).should('not.exist');
 
     cy.contains(/^DATASET 1$/).should('be.visible');
-    cy.get('[aria-label="Remove DATASET 1 from selections"]').click();
+    cy.get('[aria-label="Remove DATASET 1 from selection"]').click();
     cy.contains(/^DATASET 1$/).should('not.exist');
     cy.get('[aria-rowcount=58]').should('exist');
 
@@ -133,7 +133,7 @@ describe('Download Cart', () => {
 
   it('should be able open and close the download confirmation dialog', () => {
     cy.contains('Calculating...', { timeout: 20000 }).should('not.exist');
-    cy.contains('Download Selections').click();
+    cy.contains('Download Selection').click();
 
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
     cy.get('[aria-label="Close download confirmation dialog"]')

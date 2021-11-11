@@ -206,10 +206,10 @@ describe('SearchPageContainer Component', () => {
       cy.get('[aria-label="selection-alert-text"]')
         .invoke('text')
         .then((text) => {
-          expect(text.trim()).equal('1 item has been added to selections.');
+          expect(text.trim()).equal('1 item has been added to selection.');
         });
 
-      //Check can go to selections
+      //Check can go to selection
       cy.get('[aria-label="selection-alert-link"]').click();
       cy.location().should((loc) => {
         expect(loc.pathname).to.equal('/download');
