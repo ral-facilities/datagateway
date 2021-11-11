@@ -1,6 +1,12 @@
-import { configureApp, loadSearchableEntitites, settingsLoaded } from '.';
+import {
+  configureApp,
+  loadSearchableEntitites,
+  loadSelectAllSetting,
+  settingsLoaded,
+} from '.';
 import {
   ConfigureSearchableEntitiesType,
+  ConfigureSelectAllSettingType,
   SettingsLoadedType,
 } from './actions.types';
 import axios from 'axios';
@@ -35,7 +41,15 @@ describe('Actions', () => {
     expect(action.type).toEqual(SettingsLoadedType);
   });
 
-  it('given JSON loadSelectAllSetting returns a ConfigureSearchableEntitiesType with ConfigureSearchableEntitiesPayload', () => {
+  it('given JSON loadSelectAllSetting returns a ConfigureSelectAllSettingType with ConfigureSelectAllSettingPayload', () => {
+    const action = loadSelectAllSetting(false);
+    expect(action.type).toEqual(ConfigureSelectAllSettingType);
+    expect(action.payload).toEqual({
+      settings: false,
+    });
+  });
+
+  it('given JSON loadSearchableEntitites returns a ConfigureSearchableEntitiesType with ConfigureSearchableEntitiesPayload', () => {
     const action = loadSearchableEntitites(['investigation', 'dataset']);
     expect(action.type).toEqual(ConfigureSearchableEntitiesType);
     expect(action.payload).toEqual({
@@ -53,6 +67,7 @@ describe('Actions', () => {
             apiUrl: 'api',
             downloadApiUrl: 'download-api',
             icatUrl: 'icat',
+            selectAllSetting: false,
             searchableEntities: ['investigation', 'dataset', 'datafile'],
             routes: [
               {
@@ -76,7 +91,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(4);
+    expect(actions.length).toEqual(5);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       loadUrls({
@@ -86,11 +101,13 @@ describe('Actions', () => {
         icatUrl: 'icat',
       })
     );
-
-    expect(actions).toContainEqual(settingsLoaded());
+    expect(actions).toContainEqual(loadSelectAllSetting(false));
     expect(actions).toContainEqual(
       loadSearchableEntitites(['investigation', 'dataset', 'datafile'])
     );
+
+    expect(actions).toContainEqual(settingsLoaded());
+
     expect(CustomEvent).toHaveBeenCalledTimes(1);
     expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
       detail: {
@@ -119,6 +136,7 @@ describe('Actions', () => {
             idsUrl: 'ids',
             apiUrl: 'api',
             downloadApiUrl: 'download-api',
+            selectAllSetting: false,
             routes: [
               {
                 section: 'section0',
@@ -190,6 +208,7 @@ describe('Actions', () => {
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
           icatUrl: 'icat',
+          selectAllSetting: true,
         },
       })
     );

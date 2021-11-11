@@ -214,14 +214,18 @@ describe('ISIS MyData table component', () => {
     expect(useInvestigationSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('investigation', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigationUsers.user.name': { eq: 'testUser' },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'investigation',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigationUsers.user.name': { eq: 'testUser' },
+          }),
+        },
+      ],
+      true
+    );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
     expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
@@ -381,6 +385,24 @@ describe('ISIS MyData table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith(
+      'investigation',
+      expect.anything(),
+      false
+    );
+    expect(useIds).not.toHaveBeenCalledWith(
+      'investigation',
+      expect.anything(),
+      true
+    );
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
   it('renders details panel correctly and it fetches data and can navigate', () => {

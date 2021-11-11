@@ -32,6 +32,8 @@ import {
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import { useSelector } from 'react-redux';
+import { StateType } from '../state/app.types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -97,6 +99,10 @@ const DatafileSearchTable = (
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
+  const selectAllSetting = useSelector(
+    (state: StateType) => state.dgsearch.selectAllSetting
+  );
+
   const { data: luceneData } = useLuceneSearch('Datafile', {
     searchText,
     startDate,
@@ -131,14 +137,18 @@ const DatafileSearchTable = (
       }),
     },
   ]);
-  const { data: allIds } = useIds('datafile', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
+  const { data: allIds } = useIds(
+    'datafile',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'datafile'
@@ -268,12 +278,13 @@ const DatafileSearchTable = (
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'datafile' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -326,6 +337,7 @@ const DatafileSearchTable = (
       sort={sort}
       onSort={pushSort}
       selectedRows={selectedRows}
+      disableSelectAll={!selectAllSetting}
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}

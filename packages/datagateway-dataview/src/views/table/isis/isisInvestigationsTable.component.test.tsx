@@ -173,7 +173,8 @@ describe('ISIS Investigations table component', () => {
     expect(useISISInvestigationIds).toHaveBeenCalledWith(
       parseInt(instrumentId),
       parseInt(instrumentChildId),
-      studyHierarchy
+      studyHierarchy,
+      true
     );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
@@ -336,6 +337,16 @@ describe('ISIS Investigations table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useISISInvestigationIds).toHaveBeenCalledWith(4, 5, false, false);
+    expect(useISISInvestigationIds).not.toHaveBeenCalledWith(4, 5, false, true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
   it('renders details panel correctly and it fetches data and can navigate', () => {

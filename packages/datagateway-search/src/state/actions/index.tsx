@@ -1,5 +1,7 @@
 import { ActionType, ThunkResult } from '../app.types';
 import {
+  ConfigureSelectAllSettingPayload,
+  ConfigureSelectAllSettingType,
   ConfigureSearchableEntitiesPayload,
   ConfigureSearchableEntitiesType,
   SettingsLoadedType,
@@ -20,6 +22,15 @@ import jsrsasign from 'jsrsasign';
 
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
+});
+
+export const loadSelectAllSetting = (
+  selectAllSetting: boolean
+): ActionType<ConfigureSelectAllSettingPayload> => ({
+  type: ConfigureSelectAllSettingType,
+  payload: {
+    settings: selectAllSetting,
+  },
 });
 
 export const loadSearchableEntitites = (
@@ -71,6 +82,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           throw new Error(
             'One of the URL options (idsUrl, apiUrl, downloadApiUrl, icatUrl) is undefined in settings'
           );
+        }
+
+        if ('selectAllSetting' in settings) {
+          dispatch(loadSelectAllSetting(settings['selectAllSetting']));
         }
 
         if ('searchableEntities' in settings) {

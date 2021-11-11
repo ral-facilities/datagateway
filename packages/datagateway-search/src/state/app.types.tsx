@@ -9,6 +9,7 @@ export interface DGSearchState {
     investigationTab: boolean;
     currentTab: string;
   };
+  selectAllSetting: boolean;
   settingsLoaded: boolean;
   sideLayout: boolean;
   searchableEntities: string[];
