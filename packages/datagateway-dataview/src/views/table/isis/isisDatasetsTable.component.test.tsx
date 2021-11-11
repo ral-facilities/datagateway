@@ -129,10 +129,6 @@ describe('ISIS Dataset table component', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsInfinite).toHaveBeenCalledWith([
       {
@@ -140,10 +136,6 @@ describe('ISIS Dataset table component', () => {
         filterValue: JSON.stringify({
           'investigation.id': { eq: investigationId },
         }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
       },
     ]);
     expect(useDatasetSizes).toHaveBeenCalledWith({
