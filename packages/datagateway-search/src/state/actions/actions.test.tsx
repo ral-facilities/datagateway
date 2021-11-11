@@ -91,7 +91,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(4);
+    expect(actions.length).toEqual(5);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       loadUrls({
@@ -102,11 +102,12 @@ describe('Actions', () => {
       })
     );
     expect(actions).toContainEqual(loadSelectAllSetting(false));
-
-    expect(actions).toContainEqual(settingsLoaded());
     expect(actions).toContainEqual(
       loadSearchableEntitites(['investigation', 'dataset', 'datafile'])
     );
+
+    expect(actions).toContainEqual(settingsLoaded());
+
     expect(CustomEvent).toHaveBeenCalledTimes(1);
     expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
       detail: {
