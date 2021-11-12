@@ -268,10 +268,16 @@ const SearchPageCardView = (
       </AppBar>
 
       {currentTab === 'investigation' && (
-        <InvestigationCardView hierarchy={hierarchy} />
+        <TabPanel value={currentTab} index={'investigation'}>
+          <InvestigationCardView hierarchy={hierarchy} />
+        </TabPanel>
       )}
 
-      {currentTab === 'dataset' && <DatasetCardView hierarchy={hierarchy} />}
+      {currentTab === 'dataset' && (
+        <TabPanel value={currentTab} index={'dataset'}>
+          <DatasetCardView hierarchy={hierarchy} />
+        </TabPanel>
+      )}
 
       {currentTab === 'datafile' && (
         <TabPanel value={currentTab} index={'datafile'}>
