@@ -74,7 +74,7 @@ const TextColumnFilter = (props: {
         endAdornment={
           <InputAdornment position="end">
             <Select
-              id="select-filter-type"
+              id={`${label}-select-filter-type`}
               value={type}
               IconComponent={SettingsIcon}
               // Do not render a value

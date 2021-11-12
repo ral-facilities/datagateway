@@ -15,9 +15,9 @@
     "search_button": "Search",
     "search_text_arialabel": "Search text input",
     "start_date_arialabel": "Start date input",
-    "start_date_button_arialabel": "Start date picker button",
+    "start_date_button_arialabel": "Start date picker",
     "end_date_arialabel": "End date input",
-    "end_date_button_arialabel": "End date picker button",
+    "end_date_button_arialabel": "End date picker",
     "search_button_arialabel": "Submit search",
     "invalid_date_range_message": "Invalid date range",
     "date_picker": {
