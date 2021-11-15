@@ -75,7 +75,7 @@ const DateColumnFilter = (props: {
   //Obtain a contrast friendly button colour
   const theme = useTheme();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const buttonColour = (theme as any).ukri?.contrast?.blue;
+  const buttonColour = (theme as any).colours?.blue;
 
   return (
     <form>
