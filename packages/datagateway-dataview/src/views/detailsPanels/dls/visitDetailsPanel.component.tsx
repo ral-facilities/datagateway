@@ -121,7 +121,7 @@ const VisitDetailsPanel = (
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
-              {t('investigations.details.visitId')}
+              {t('investigations.details.visit_id')}
             </Typography>
             <Typography>
               <b>{investigationData.visitId}</b>
