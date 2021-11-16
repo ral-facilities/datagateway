@@ -76,7 +76,7 @@ const useNavBarStyles = makeStyles(
     createStyles({
       openDataPaper: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        backgroundColor: (theme as any).colours.warning,
+        backgroundColor: (theme as any).colours?.warning,
         display: 'flex',
         flexDirection: 'column',
         paddingLeft: 0,
@@ -85,7 +85,7 @@ const useNavBarStyles = makeStyles(
       },
       openDataInfoIcon: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        color: (theme as any).colours.information,
+        color: (theme as any).colours?.information,
       },
     })
 );
