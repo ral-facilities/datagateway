@@ -55,10 +55,6 @@ const ISISMyDataTable = (): React.ReactElement => {
         'investigationUsers.user.name': { eq: username },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({ investigationUsers: 'user' }),
-    },
   ]);
   const { fetchNextPage, data } = useInvestigationsInfinite([
     {
@@ -73,7 +69,6 @@ const ISISMyDataTable = (): React.ReactElement => {
         {
           investigationInstruments: 'instrument',
         },
-        { investigationUsers: 'user' },
         { studyInvestigations: 'study' },
       ]),
     },

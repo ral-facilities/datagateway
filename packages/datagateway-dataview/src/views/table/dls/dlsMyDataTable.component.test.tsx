@@ -126,10 +126,6 @@ describe('DLS MyData table component', () => {
           'investigationUsers.user.name': { eq: 'testUser' },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({ investigationUsers: 'user' }),
-      },
     ]);
     expect(useInvestigationsInfinite).toHaveBeenCalledWith([
       {
@@ -144,7 +140,6 @@ describe('DLS MyData table component', () => {
           {
             investigationInstruments: 'instrument',
           },
-          { investigationUsers: 'user' },
         ]),
       },
     ]);
