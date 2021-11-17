@@ -26,7 +26,7 @@ describe('SearchPageContainer Component', () => {
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
-    // cy.get('[aria-label="container-view-button"]').click();
+
     cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
       'have.length',
       10
@@ -65,6 +65,40 @@ describe('SearchPageContainer Component', () => {
 
     it('should display results correctly', () => {
       cy.get('#container-search-table').should('exist');
+    });
+
+    it('should be able to click a DOI and render the correct webpage (Tableview) ', () => {
+      // DOI
+
+      cy.get('[data-test-id="investigation-search-table-doi-links"]')
+        .first()
+        .then(($doi) => {
+          const doi = $doi.text();
+
+          const url = `https://doi.org/${doi}`;
+
+          cy.get('[data-test-id="investigation-search-table-doi-links"]')
+            .first()
+            .should('have.attr', 'href', url);
+        });
+    });
+
+    it('should be able to click a DOI and render the correct webpage (Cardview) ', () => {
+      // DOI
+
+      cy.get('[aria-label="container-view-button"]').click();
+
+      cy.get('[data-test-id="investigation-search-card-doi-link"]')
+        .first()
+        .then(($doi) => {
+          const doi = $doi.text();
+
+          const url = `https://doi.org/${doi}`;
+
+          cy.get('[data-test-id="investigation-search-card-doi-link"]')
+            .first()
+            .should('have.attr', 'href', url);
+        });
     });
 
     it('should be able to switch between tabs', () => {
