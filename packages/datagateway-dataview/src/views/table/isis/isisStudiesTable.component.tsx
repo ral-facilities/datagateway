@@ -114,8 +114,6 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
               investigationData.pid,
               'isis-study-table-doi-link'
             );
-          } else {
-            return '';
           }
         },
         filterComponent: textFilter,
