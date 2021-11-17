@@ -39,7 +39,7 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
 
   return !(selectedIds && selectedIds.includes(entityId)) ? (
     <Button
-      id={`add-to-cart-btn-${entityId}`}
+      id={`add-to-cart-btn-${entityType}-${entityId}`}
       variant="contained"
       color="primary"
       startIcon={<AddCircleOutlineOutlined />}
