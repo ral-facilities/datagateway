@@ -7,8 +7,8 @@ import {
   Box,
   Typography,
   useMediaQuery,
+  Divider,
 } from '@material-ui/core';
-import { DragIndicator } from '@material-ui/icons';
 import Draggable from 'react-draggable';
 
 const DataHeader = React.memo(
@@ -100,12 +100,22 @@ const DataHeader = React.memo(
             window.dispatchEvent(event);
           }}
         >
-          <DragIndicator
-            fontSize="small"
+          <div
             style={{
+              marginLeft: 18,
+              paddingLeft: '4px',
+              paddingRight: '4px',
               cursor: 'col-resize',
             }}
-          />
+          >
+            <Divider
+              orientation="vertical"
+              flexItem
+              style={{
+                height: '100%',
+              }}
+            />
+          </div>
         </Draggable>
       </TableCell>
     );
