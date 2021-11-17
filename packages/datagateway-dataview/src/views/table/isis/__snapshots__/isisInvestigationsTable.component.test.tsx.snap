@@ -270,6 +270,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <WithStyles(ForwardRef(Link))
+            data-test-id="investigation-details-panel-pid-link"
             href="https://doi.org/study pid"
           >
             study pid
