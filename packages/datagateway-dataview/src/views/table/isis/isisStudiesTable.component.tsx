@@ -108,10 +108,10 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         dataKey: 'pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Study;
-          if (investigationData?.studyInvestigations?.[0]?.study) {
+          if (investigationData?.pid) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
-              investigationData.studyInvestigations[0].study.pid,
+              `https://doi.org/${investigationData.pid}`,
+              investigationData.pid,
               'isis-study-table-doi-link'
             );
           } else {

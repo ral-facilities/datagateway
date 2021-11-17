@@ -26,11 +26,22 @@ describe('Investigations Cards', () => {
     cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
   });
 
-  it('should be able to click a DOI render the correct webpage ', () => {
+  it('should be able to click a DOI and parent DOI link and render the correct webpage ', () => {
     cy.get('#card')
-      .contains('0-449-78690-0')
-      .should('have.attr', 'href', 'https://doi.org/0-449-78690-0');
+      .get('[data-test-id="investigation-card-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('#card')
+          .get('[data-test-id="investigation-card-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
   });
+
   it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Title')
       .click()

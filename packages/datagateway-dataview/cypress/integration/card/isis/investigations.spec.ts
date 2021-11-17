@@ -96,27 +96,80 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('#card').should('not.exist');
   });
 
+  it('should be able to click a DOI and parent DOI link and render the correct webpage ', () => {
+    cy.get('#card')
+      .get('[data-test-id="isis-investigations-card-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('#card')
+          .get('[data-test-id="isis-investigations-card-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   it('should be able to expand "More Information"', () => {
     cy.get('#card').contains('More Information').click({ force: true });
+
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('INVESTIGATION 16');
+
+    // Study PID
+
     cy.get('#card')
-      .contains('1-314-79096-X')
-      .should('have.attr', 'href', 'https://doi.org/1-314-79096-X');
+      .get('[data-test-id="investigation-details-panel-pid-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('#card')
+          .get('[data-test-id="investigation-details-panel-pid-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+
+    // DOI
+
+    cy.get('#card')
+      .get('[data-test-id="investigation-details-panel-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('#card')
+          .get('[data-test-id="investigation-details-panel-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+
     cy.get('#investigation-users-tab').click({ force: true });
+
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('Corey Cook');
     cy.get('#investigation-samples-tab').click({ force: true });
+
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('SAMPLE 16');
+
     cy.get('#investigation-publications-tab').click({ force: true });
+
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('Fish page on factor nature everybody action.');
+
     cy.get('#investigation-datasets-tab').click({ force: true });
+
     cy.location('pathname').should(
       'eq',
       '/browse/instrument/1/facilityCycle/16/investigation/16/dataset'
