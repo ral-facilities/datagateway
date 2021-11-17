@@ -50,7 +50,7 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
     </Button>
   ) : (
     <Button
-      id={`remove-from-cart-btn-${entityId}`}
+      id={`remove-from-cart-btn-${entityType}-${entityId}`}
       variant="contained"
       color="secondary"
       startIcon={<RemoveCircleOutlineOutlined />}
