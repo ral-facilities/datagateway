@@ -336,7 +336,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12}>
+        <Grid item container xs={12} id="investigation-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Typography
@@ -549,7 +549,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 )}
                 <div className={classes.actionButtons}>
                   <AddToCartButton
-                    entityType="investigation"
+                    entityType="dataset"
                     allIds={[dataset.id]}
                     entityId={dataset.id}
                   />

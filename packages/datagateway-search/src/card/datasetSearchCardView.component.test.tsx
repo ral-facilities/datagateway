@@ -313,8 +313,8 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(CardView).find('a').first().text()).toEqual(
       'Dataset test name'
     );
-    expect(wrapper.exists('#add-to-cart-btn-1')).toBe(true);
-    expect(wrapper.exists('#download-btn-1')).toBe(false);
+    expect(wrapper.exists('#add-to-cart-btn-dataset-1')).toBe(true);
+    expect(wrapper.exists('#download-btn-dataset-1')).toBe(false);
   });
 
   it('renders ISIS link & file sizes correctly', () => {
