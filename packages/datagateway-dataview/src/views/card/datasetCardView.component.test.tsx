@@ -104,10 +104,6 @@ describe('Dataset - Card View', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsPaginated).toHaveBeenCalledWith([
       {
@@ -115,10 +111,6 @@ describe('Dataset - Card View', () => {
         filterValue: JSON.stringify({
           'investigation.id': { eq: investigationId },
         }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
       },
     ]);
   });

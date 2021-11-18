@@ -47,10 +47,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
   const { isLoading: dataLoading, data } = useDatasetsPaginated([
     {
@@ -58,10 +54,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       filterValue: JSON.stringify({
         'investigation.id': { eq: investigationId },
       }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
     },
   ]);
 

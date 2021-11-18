@@ -22,11 +22,11 @@
     {
       "target": "#plugin-link--download",
       "content":
-        "DataGateway Download allows you to view and manage items in the current download selections as well see previous downloads"
+        "DataGateway Download allows you to view and manage items in the current download selection as well see previous downloads"
     },
     {
       "target": ".tour-download-cart-tab",
-      "content": "Show the items currently in the selections for download"
+      "content": "Show the items currently in the selection for download"
     },
     {
       "target": ".tour-download-downloads-tab",

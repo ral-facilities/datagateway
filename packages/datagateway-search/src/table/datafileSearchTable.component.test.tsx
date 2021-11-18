@@ -217,14 +217,18 @@ describe('Datafile search table component', () => {
         }),
       },
     ]);
-    expect(useIds).toHaveBeenCalledWith('datafile', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'datafile',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      true
+    );
 
     expect(useAddToCart).toHaveBeenCalledWith('datafile');
     expect(useRemoveFromCart).toHaveBeenCalledWith('datafile');
@@ -373,6 +377,20 @@ describe('Datafile search table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgsearch.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('datafile', expect.anything(), false);
+    expect(useIds).not.toHaveBeenCalledWith(
+      'datafile',
+      expect.anything(),
+      true
+    );
+    expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
   });
 
   it('renders details panel correctly', () => {

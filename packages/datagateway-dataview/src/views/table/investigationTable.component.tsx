@@ -118,7 +118,7 @@ const InvestigationTable = (): React.ReactElement => {
       }),
     },
   ]);
-  const { data: allIds } = useIds('investigation');
+  const { data: allIds } = useIds('investigation', undefined, selectAllSetting);
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'investigation'
@@ -128,22 +128,23 @@ const InvestigationTable = (): React.ReactElement => {
     isLoading: removeFromCartLoading,
   } = useRemoveFromCart('investigation');
 
+  const aggregatedData: Investigation[] = React.useMemo(
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    [data]
+  );
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'investigation' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
-  );
-
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
+    [cartItems, selectAllSetting, allIds]
   );
 
   const textFilter = useTextFilter(filters);

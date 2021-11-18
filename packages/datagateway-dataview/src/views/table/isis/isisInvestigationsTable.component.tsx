@@ -69,7 +69,8 @@ const ISISInvestigationsTable = (
   const { data: allIds } = useISISInvestigationIds(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
-    studyHierarchy
+    studyHierarchy,
+    selectAllSetting
   );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
@@ -85,12 +86,13 @@ const ISISInvestigationsTable = (
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'investigation' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   const aggregatedData: Investigation[] = React.useMemo(

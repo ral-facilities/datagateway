@@ -140,18 +140,22 @@ describe('ISIS datafiles table component', () => {
         }),
       },
     ]);
-    expect(useIds).toHaveBeenCalledWith('datafile', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'datafile',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'dataset.investigation.id': { eq: investigationId },
+          }),
+        },
+      ],
+      true
+    );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('datafile');
     expect(useRemoveFromCart).toHaveBeenCalledWith('datafile');
@@ -300,6 +304,20 @@ describe('ISIS datafiles table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('datafile', expect.anything(), false);
+    expect(useIds).not.toHaveBeenCalledWith(
+      'datafile',
+      expect.anything(),
+      true
+    );
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
   it('renders actions correctly', () => {

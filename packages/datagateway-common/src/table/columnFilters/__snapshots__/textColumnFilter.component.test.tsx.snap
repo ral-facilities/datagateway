@@ -25,7 +25,7 @@ exports[`Text filter component renders correctly 1`] = `
               "aria-label": "include or exclude",
             }
           }
-          id="select-filter-type"
+          id="test-select-filter-type"
           onChange={[Function]}
           renderValue={[Function]}
           value="include"
@@ -84,7 +84,7 @@ exports[`Text filter component useTextFilter hook returns a function which can g
               "aria-label": "include or exclude",
             }
           }
-          id="select-filter-type"
+          id="Name-select-filter-type"
           onChange={[Function]}
           renderValue={[Function]}
           value="include"

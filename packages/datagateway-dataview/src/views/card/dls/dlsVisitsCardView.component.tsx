@@ -7,7 +7,6 @@ import {
   tableLink,
   parseSearchToQuery,
   useDateFilter,
-  useCustomFilter,
   useInvestigationCount,
   useInvestigationsPaginated,
   usePushFilters,
@@ -18,8 +17,6 @@ import {
   useInvestigationsDatasetCount,
   nestedValue,
   ArrowTooltip,
-  useCustomFilterCount,
-  formatFilterCount,
 } from 'datagateway-common';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import {
@@ -73,29 +70,8 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         investigationInstruments: 'instrument',
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('type'),
-    },
   ]);
   const countQueries = useInvestigationsDatasetCount(data);
-  const { data: typeIds } = useCustomFilter('investigation', 'type.id', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({ name: { eq: proposalName } }),
-    },
-  ]);
-  const typeIdCounts = useCustomFilterCount(
-    'investigation',
-    'type.id',
-    typeIds,
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({ name: { eq: proposalName } }),
-      },
-    ]
-  );
 
   const title = React.useMemo(
     () => ({
@@ -168,23 +144,6 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     [countQueries, data, dateFilter, t, textFilter]
   );
 
-  const customFilters = React.useMemo(
-    () => [
-      {
-        label: t('investigations.type.id'),
-        dataKey: 'type.id',
-        filterItems: typeIds
-          ? typeIds.map((id, i) => ({
-              name: id,
-              count: formatFilterCount(typeIdCounts[i]),
-            }))
-          : [],
-        prefixLabel: true,
-      },
-    ],
-    [t, typeIds, typeIdCounts]
-  );
-
   return (
     <CardView
       data={data ?? []}
@@ -205,7 +164,6 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
       moreInformation={(investigation: Investigation) => (
         <VisitDetailsPanel rowData={investigation} />
       )}
-      customFilters={customFilters}
     />
   );
 };

@@ -138,6 +138,29 @@ describe('generic api functions', () => {
       });
     });
 
+    it('parses query string with invalid search parameters successfully', () => {
+      const query =
+        'view=table&searchText=testText&datafile=false&startDate=2021-10-34&endDate=2021-14-25';
+
+      //Use JSON.stringify so wont fail due to startDate/endDate not being the same instance
+      expect(JSON.stringify(parseSearchToQuery(query))).toEqual(
+        JSON.stringify({
+          view: 'table',
+          search: null,
+          page: null,
+          results: null,
+          filters: {},
+          sort: {},
+          searchText: 'testText',
+          dataset: true,
+          datafile: false,
+          investigation: true,
+          startDate: new Date(NaN),
+          endDate: new Date(NaN),
+        })
+      );
+    });
+
     it('logs errors if filter or search params are wrong', () => {
       console.error = jest.fn();
 
@@ -195,6 +218,29 @@ describe('generic api functions', () => {
 
       const params = new URLSearchParams(
         '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
+      );
+
+      expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
+    });
+
+    it('parses query object with invalid search parameters successfully', () => {
+      const query: QueryParams = {
+        view: 'table',
+        search: null,
+        page: null,
+        results: null,
+        filters: {},
+        sort: {},
+        searchText: 'testText',
+        dataset: true,
+        datafile: false,
+        investigation: true,
+        startDate: new Date('2021-10-34T00:00:00Z'),
+        endDate: new Date('2021-14-25T00:00:00Z'),
+      };
+
+      const params = new URLSearchParams(
+        '?view=table&searchText=testText&datafile=false&startDate=Invalid+Date&endDate=Invalid+Date'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -507,6 +553,18 @@ describe('generic api functions', () => {
         params.toString()
       );
       expect(result.current.data).toEqual([1, 2, 3]);
+    });
+
+    it('does not send axios request to fetch ids when set to disabled', async () => {
+      const { result } = renderHook(
+        () => useIds('investigation', undefined, false),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      expect(result.current.isIdle).toBe(true);
+      expect(axios.get).not.toHaveBeenCalled();
     });
 
     it('sends axios request to fetch ids and calls handleICATError on failure', async () => {

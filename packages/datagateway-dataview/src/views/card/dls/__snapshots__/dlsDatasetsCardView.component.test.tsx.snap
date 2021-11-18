@@ -5,14 +5,6 @@ Object {
   "buttons": Array [
     [Function],
   ],
-  "customFilters": Array [
-    Object {
-      "dataKey": "type.id",
-      "filterItems": Array [],
-      "label": "datasets.type.id",
-      "prefixLabel": true,
-    },
-  ],
   "data": Array [
     Object {
       "createTime": "2019-07-23",

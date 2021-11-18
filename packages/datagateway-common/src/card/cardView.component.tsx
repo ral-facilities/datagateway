@@ -678,7 +678,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         <Grid item xs={12} md={9}>
           {/* Selected filters array */}
           {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
-            <div className={classes.selectedChips}>
+            <ul className={classes.selectedChips}>
               {selectedFilters.map((filter, filterIndex) => (
                 <li key={filterIndex}>
                   {filter.items.map((item, itemIndex) => (
@@ -694,7 +694,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   ))}
                 </li>
               ))}
-            </div>
+            </ul>
           )}
 
           {/* List of cards */}

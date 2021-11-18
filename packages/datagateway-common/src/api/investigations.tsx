@@ -772,7 +772,8 @@ const fetchAllISISInvestigationIds = (
 export const useISISInvestigationIds = (
   instrumentId: number,
   instrumentChildId: number,
-  studyHierarchy: boolean
+  studyHierarchy: boolean,
+  enabled = true
 ): UseQueryResult<number[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -818,6 +819,7 @@ export const useISISInvestigationIds = (
       onError: (error) => {
         handleICATError(error);
       },
+      enabled,
     }
   );
 };

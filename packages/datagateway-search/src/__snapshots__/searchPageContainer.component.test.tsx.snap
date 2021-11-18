@@ -1310,6 +1310,13 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
             datafileTab={true}
             datasetTab={true}
             investigationTab={true}
+            searchableEntities={
+              Array [
+                "investigation",
+                "dataset",
+                "datafile",
+              ]
+            }
             setDatafileTab={[Function]}
             setDatasetTab={[Function]}
             setInvestigationTab={[Function]}

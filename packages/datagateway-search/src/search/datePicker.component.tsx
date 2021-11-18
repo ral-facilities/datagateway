@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import {
+  Theme,
+  createStyles,
+  makeStyles,
+  useTheme,
+} from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +20,7 @@ import {
 } from 'datagateway-common';
 import { useLocation } from 'react-router';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { isValid } from 'date-fns';
 
 interface DatePickerProps {
   initiateSearch: () => void;
@@ -41,12 +47,21 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const [t] = useTranslation();
 
   const location = useLocation();
-  const { startDate, endDate } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
+  const { startDate: startDateURL, endDate: endDateURL } = React.useMemo(() => {
+    const queryParams = parseSearchToQuery(location.search);
+    //Ensure default value loaded from URL is valid (otherwise it will not format correctly)
+    if (queryParams.startDate && !isValid(queryParams.startDate))
+      queryParams.startDate = null;
+    if (queryParams.endDate && !isValid(queryParams.endDate))
+      queryParams.endDate = null;
+    return queryParams;
+  }, [location.search]);
+
   const pushStartDate = usePushSearchStartDate();
   const pushEndDate = usePushSearchEndDate();
+
+  const [startDate, setStartDate] = useState(startDateURL);
+  const [endDate, setEndDate] = useState(endDateURL);
 
   const isValidSearch = (): boolean => {
     // Check the values for each date field are valid dates
@@ -70,12 +85,17 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
 
   const handleChange = (
     date: MaterialUiPickersDate,
-    dateName: string
+    dateName: 'startDate' | 'endDate'
   ): void => {
     //Only push date when valid (and not every keypress when typing)
-    if (date === null || !isNaN(date.getDate())) {
-      if (dateName === 'startDate') pushStartDate(date);
-      else if (dateName === 'endDate') pushEndDate(date);
+    const valid = date === null || !isNaN(date.getDate());
+
+    if (dateName === 'startDate') {
+      setStartDate(date);
+      if (valid) pushStartDate(date);
+    } else if (dateName === 'endDate') {
+      setEndDate(date);
+      if (valid) pushEndDate(date);
     }
   };
 
@@ -84,6 +104,11 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
       initiateSearch();
     }
   };
+
+  //Obtain a contrast friendly button colour
+  const theme = useTheme();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const buttonColour = (theme as any).ukri?.contrast?.blue;
 
   return (
     <div className="tour-search-dates">
@@ -95,8 +120,8 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             allowKeyboardControl
             disableFuture
             inputVariant="outlined"
-            maxDate={endDate || new Date('2100-01-01')}
-            maxDateMessage={t('searchBox.invalid_date_message')}
+            maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
+            maxDateMessage={t('searchBox.invalid_date_range_message')}
             format="yyyy-MM-dd"
             value={startDate}
             onChange={(date) => {
@@ -106,8 +131,26 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             animateYearScrolling
             placeholder={t('searchBox.start_date')}
             inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
+            KeyboardButtonProps={{
+              'aria-label': t('searchBox.start_date_button_arialabel'),
+            }}
             color="secondary"
             style={sideLayout ? {} : { paddingRight: 6 }}
+            okLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.ok')}
+              </span>
+            }
+            cancelLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.cancel')}
+              </span>
+            }
+            clearLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.clear')}
+              </span>
+            }
           />
           {sideLayout ? <br></br> : null}
           <KeyboardDatePicker
@@ -116,8 +159,8 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             allowKeyboardControl
             inputVariant="outlined"
             disableFuture
-            minDate={startDate || new Date('1984-01-01')}
-            minDateMessage={t('searchBox.invalid_date_message')}
+            minDate={startDate || new Date('1984-01-01T00:00:00Z')}
+            minDateMessage={t('searchBox.invalid_date_range_message')}
             format="yyyy-MM-dd"
             value={endDate}
             onChange={(date) => {
@@ -127,7 +170,25 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             animateYearScrolling
             placeholder={t('searchBox.end_date')}
             inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
+            KeyboardButtonProps={{
+              'aria-label': t('searchBox.end_date_button_arialabel'),
+            }}
             color="secondary"
+            okLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.ok')}
+              </span>
+            }
+            cancelLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.cancel')}
+              </span>
+            }
+            clearLabel={
+              <span style={{ color: buttonColour }}>
+                {t('searchBox.date_picker.clear')}
+              </span>
+            }
           />
         </>
       </MuiPickersUtilsProvider>
