@@ -33,7 +33,7 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useInvestigationCount: jest.fn(),
     useInvestigationsInfinite: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
+    useInvestigationSizes: jest.fn(),
     useIds: jest.fn(),
     useCart: jest.fn(),
     useAddToCart: jest.fn(),
