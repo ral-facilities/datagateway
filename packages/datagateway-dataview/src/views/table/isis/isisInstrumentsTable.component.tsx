@@ -66,6 +66,7 @@ const ISISInstrumentsTable = (
           );
         },
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
     ];
   }, [t, textFilter, view, studyHierarchy]);

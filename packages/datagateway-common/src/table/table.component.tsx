@@ -77,6 +77,7 @@ export interface ColumnType {
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
+  defaultSort?: Order;
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
 }
 
@@ -393,6 +394,7 @@ const VirtualizedTable = React.memo(
                       icon,
                       filterComponent,
                       disableSort,
+                      defaultSort,
                     }) => {
                       return (
                         <Column
@@ -414,6 +416,7 @@ const VirtualizedTable = React.memo(
                               labelString={label}
                               filterComponent={filterComponent}
                               resizeColumn={resizeColumn}
+                              defaultSort={defaultSort}
                             />
                           )}
                           className={clsx(classes.flexContainer, className)}
