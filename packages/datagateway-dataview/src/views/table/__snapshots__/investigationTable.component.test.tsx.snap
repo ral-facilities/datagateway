@@ -72,7 +72,7 @@ Object {
     },
     Object {
       "cellContentRenderer": [Function],
-      "dataKey": "datasetCount",
+      "dataKey": "size",
       "disableSort": true,
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -82,7 +82,7 @@ Object {
           "render": [Function],
         },
       },
-      "label": "investigations.dataset_count",
+      "label": "investigations.size",
     },
     Object {
       "cellContentRenderer": [Function],

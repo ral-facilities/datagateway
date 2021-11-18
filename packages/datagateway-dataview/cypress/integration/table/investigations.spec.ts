@@ -148,6 +148,9 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-rowcount="7"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
+
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('10.54 GB');
     });
 
     it('date between', () => {

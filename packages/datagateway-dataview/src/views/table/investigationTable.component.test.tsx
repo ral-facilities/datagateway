@@ -9,7 +9,7 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useInvestigationsInfinite,
-  useInvestigationsDatasetCount,
+  useInvestigationSizes,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -106,7 +106,7 @@ describe('Investigation table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
+    (useInvestigationSizes as jest.Mock).mockReturnValue({ data: 1 });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
     });
@@ -141,7 +141,7 @@ describe('Investigation table component', () => {
         }),
       },
     ]);
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
+    expect(useInvestigationSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
     expect(useIds).toHaveBeenCalledWith('investigation', undefined, true);
