@@ -39,15 +39,15 @@ describe('ISIS - Study Landing', () => {
     );
   });
 
-  it.only('should be able to click a DOI and Study PID and render the correct webpage ', () => {
+  it('should have the correct urls for the DOI link and Study PID', () => {
     // Study PID
 
     cy.get('[data-test-id="landing-study-pid-link"]')
       .first()
-      .then(($doi) => {
-        const doi = $doi.text();
+      .then(($pid) => {
+        const pid = $pid.text();
 
-        const url = `https://doi.org/${doi}`;
+        const url = `https://doi.org/${pid}`;
 
         cy.get('[data-test-id="landing-study-pid-link"]')
           .first()

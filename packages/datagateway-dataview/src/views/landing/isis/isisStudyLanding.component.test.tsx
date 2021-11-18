@@ -284,7 +284,7 @@ describe('ISIS Study Landing page', () => {
     ).toEqual('doi 1');
   });
 
-  it('displays EXperiment DOI and renders the expected link', () => {
+  it('displays Experiment DOI (PID) and renders the expected link', () => {
     (useStudy as jest.Mock).mockReturnValue({
       data: [
         {

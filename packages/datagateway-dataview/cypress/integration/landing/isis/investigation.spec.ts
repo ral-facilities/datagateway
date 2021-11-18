@@ -18,7 +18,7 @@ describe('ISIS - Investigation Landing', () => {
     );
   });
 
-  it('should be able to click a DOI and parent DOI and render the correct webpage ', () => {
+  it('should have the correct urls for the DOI link and parent DOI link', () => {
     // DOI
 
     cy.get('[data-test-id="isis-investigation-landing-doi-link"]')

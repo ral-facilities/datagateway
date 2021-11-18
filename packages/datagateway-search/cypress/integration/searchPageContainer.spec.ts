@@ -67,23 +67,23 @@ describe('SearchPageContainer Component', () => {
       cy.get('#container-search-table').should('exist');
     });
 
-    it('should be able to click a DOI and render the correct webpage (Tableview) ', () => {
+    it('should have the correct url for the DOI link (Tableview) ', () => {
       // DOI
 
-      cy.get('[data-test-id="investigation-search-table-doi-links"]')
+      cy.get('[data-test-id="investigation-search-table-doi-link"]')
         .first()
         .then(($doi) => {
           const doi = $doi.text();
 
           const url = `https://doi.org/${doi}`;
 
-          cy.get('[data-test-id="investigation-search-table-doi-links"]')
+          cy.get('[data-test-id="investigation-search-table-doi-link"]')
             .first()
             .should('have.attr', 'href', url);
         });
     });
 
-    it('should be able to click a DOI and render the correct webpage (Cardview) ', () => {
+    it('should have the correct url for the DOI link (Cardview) ', () => {
       // DOI
 
       cy.get('[aria-label="container-view-button"]').click();

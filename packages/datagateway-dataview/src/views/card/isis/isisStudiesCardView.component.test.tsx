@@ -125,7 +125,7 @@ describe('ISIS Studies - Card View', () => {
     ]);
   });
 
-  it('displays Experiment DOI and renders the expected Link ', () => {
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
       wrapper

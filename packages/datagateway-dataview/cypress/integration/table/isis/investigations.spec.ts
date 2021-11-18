@@ -17,7 +17,7 @@ describe('ISIS - Investigations Table', () => {
     );
   });
 
-  it('should have the correct webpage as the DOI link ', () => {
+  it('should have the correct url for the DOI link', () => {
     cy.get('[data-test-id="isis-investigation-table-doi-link"]')
       .first()
       .then(($doi) => {
@@ -215,10 +215,10 @@ describe('ISIS - Investigations Table', () => {
 
       cy.get('[data-test-id="investigation-details-panel-pid-link"]')
         .first()
-        .then(($doi) => {
-          const doi = $doi.text();
+        .then(($pid) => {
+          const pid = $pid.text();
 
-          const url = `https://doi.org/${doi}`;
+          const url = `https://doi.org/${pid}`;
 
           cy.get('[data-test-id="investigation-details-panel-pid-link"]')
             .first()

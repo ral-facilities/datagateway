@@ -96,7 +96,7 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('#card').should('not.exist');
   });
 
-  it('should be able to click a DOI and parent DOI link and render the correct webpage ', () => {
+  it('should have the correct url for the DOI link', () => {
     cy.get('#card')
       .get('[data-test-id="isis-investigations-card-doi-link"]')
       .first()
@@ -124,10 +124,10 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('#card')
       .get('[data-test-id="investigation-details-panel-pid-link"]')
       .first()
-      .then(($doi) => {
-        const doi = $doi.text();
+      .then(($pid) => {
+        const pid = $pid.text();
 
-        const url = `https://doi.org/${doi}`;
+        const url = `https://doi.org/${pid}`;
 
         cy.get('#card')
           .get('[data-test-id="investigation-details-panel-pid-link"]')

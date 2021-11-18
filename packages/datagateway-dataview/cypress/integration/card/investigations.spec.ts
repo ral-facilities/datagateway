@@ -26,7 +26,7 @@ describe('Investigations Cards', () => {
     cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
   });
 
-  it('should be able to click a DOI and parent DOI link and render the correct webpage ', () => {
+  it('should have the correct url for the DOI link', () => {
     cy.get('#card')
       .get('[data-test-id="investigation-card-doi-link"]')
       .first()

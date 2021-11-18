@@ -205,7 +205,7 @@ describe('ISIS Studies table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('displays Experiment DOI and renders the expected Link ', () => {
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
     rowData = [
       {
         ...rowData[0],

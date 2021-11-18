@@ -28,7 +28,7 @@ describe('Investigations Table', () => {
     );
   });
 
-  it('should be able to click a Study PID link and render the correct webpage ', () => {
+  it('should have the correct url for the DOI link', () => {
     cy.get('[data-test-id="investigation-table-doi-link"]')
       .first()
       .then(($doi) => {
