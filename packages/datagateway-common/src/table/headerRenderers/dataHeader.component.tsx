@@ -42,19 +42,15 @@ const DataHeader = React.memo(
       filterComponent,
     } = props;
 
-    //Apply default sort on page load
+    const currSortDirection = sort[dataKey];
+
+    //Apply default sort on page load (but only if not already defined in URL params)
     React.useEffect(() => {
-      const defaultSortProvided = defaultSort !== undefined;
-      if (defaultSortProvided)
-        onSort(
-          dataKey,
-          defaultSort !== undefined ? defaultSort : null,
-          defaultSortProvided ? 'replace' : 'push'
-        );
+      if (defaultSort !== undefined && currSortDirection === undefined)
+        onSort(dataKey, defaultSort, 'replace');
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const currSortDirection = sort[dataKey];
     let nextSortDirection: Order | null = null;
     switch (currSortDirection) {
       case 'asc':

@@ -3,6 +3,7 @@ import { Title, Link as LinkIcon } from '@material-ui/icons';
 import {
   CardView,
   Instrument,
+  Order,
   parseSearchToQuery,
   tableLink,
   useInstrumentCount,
@@ -59,6 +60,7 @@ const ISISInstrumentsCardView = (
           view
         ),
       filterComponent: textFilter,
+      defaultSort: 'asc' as Order,
     };
   }, [t, textFilter, view, studyHierarchy]);
 

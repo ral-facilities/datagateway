@@ -74,6 +74,7 @@ export interface CardViewDetails {
   // Filter and sort options.
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
   disableSort?: boolean;
+  defaultSort?: Order;
   noTooltip?: boolean;
 }
 
@@ -245,6 +246,28 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     !title.disableSort ||
     (description ? !description.disableSort : false) ||
     (information ? information.some((i) => !i.disableSort) : false);
+
+  //Apply default sort on page load (but only if not already defined in URL params)
+  React.useEffect(() => {
+    if (title.defaultSort !== undefined && sort[title.dataKey] === undefined)
+      onSort(title.dataKey, title.defaultSort, 'replace');
+    if (
+      description &&
+      description.defaultSort !== undefined &&
+      sort[description.dataKey] === undefined
+    )
+      onSort(description.dataKey, description.defaultSort, 'replace');
+    if (information) {
+      information.forEach((element: CardViewDetails) => {
+        if (
+          element.defaultSort !== undefined &&
+          sort[element.dataKey] === undefined
+        )
+          onSort(element.dataKey, element.defaultSort, 'replace');
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Get sort information from title, description and information lists.
   React.useEffect(() => {
