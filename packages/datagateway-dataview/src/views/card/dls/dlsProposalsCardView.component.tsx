@@ -14,6 +14,7 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 const DLSProposalsCardView = (): React.ReactElement => {
   const [t] = useTranslation();
@@ -46,7 +47,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
     },
   ]);
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.title'),
       dataKey: 'title',
@@ -57,11 +58,12 @@ const DLSProposalsCardView = (): React.ReactElement => {
           view
         ),
       filterComponent: textFilter,
+      defaultSort: 'asc',
     }),
     [t, textFilter, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.name'),
       dataKey: 'name',

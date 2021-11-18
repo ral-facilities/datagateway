@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,7 +92,7 @@ const ISISDatasetsCardView = (
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       // Provide label for filter component.
       label: t('datasets.name'),
@@ -104,7 +105,7 @@ const ISISDatasetsCardView = (
     [t, textFilter, urlPrefix, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('datasets.details.description'),
       dataKey: 'description',
@@ -113,7 +114,7 @@ const ISISDatasetsCardView = (
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: Save,
@@ -131,6 +132,7 @@ const ISISDatasetsCardView = (
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,

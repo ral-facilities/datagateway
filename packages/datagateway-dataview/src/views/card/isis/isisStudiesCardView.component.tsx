@@ -17,6 +17,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface ISISStudiesCVProps {
   instrumentId: string;
@@ -84,7 +85,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     };
   }, [t, textFilter, instrumentId, view]);
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('studies.title'),
       dataKey: 'studyInvestigations.investigation.title',
@@ -96,7 +97,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: PublicIcon,
@@ -111,6 +112,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         content: (study: Study) =>
           study.studyInvestigations?.[0]?.investigation?.startDate ?? '',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,

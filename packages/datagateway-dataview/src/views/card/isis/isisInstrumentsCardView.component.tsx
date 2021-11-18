@@ -3,7 +3,6 @@ import { Title, Link as LinkIcon } from '@material-ui/icons';
 import {
   CardView,
   Instrument,
-  Order,
   parseSearchToQuery,
   tableLink,
   useInstrumentCount,
@@ -14,6 +13,7 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -47,7 +47,7 @@ const ISISInstrumentsCardView = (
   } = useInstrumentCount();
   const { isLoading: dataLoading, data } = useInstrumentsPaginated();
 
-  const title = React.useMemo(() => {
+  const title: CardViewDetails = React.useMemo(() => {
     const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
     const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
     return {
@@ -60,11 +60,11 @@ const ISISInstrumentsCardView = (
           view
         ),
       filterComponent: textFilter,
-      defaultSort: 'asc' as Order,
+      defaultSort: 'asc',
     };
   }, [t, textFilter, view, studyHierarchy]);
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('instruments.description'),
       dataKey: 'description',
@@ -73,7 +73,7 @@ const ISISInstrumentsCardView = (
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: Title,

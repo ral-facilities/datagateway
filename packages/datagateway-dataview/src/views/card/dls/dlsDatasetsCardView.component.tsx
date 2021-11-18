@@ -21,6 +21,7 @@ import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface DLSDatasetsCVProps {
   proposalName: string;
@@ -64,7 +65,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
 
   const datafileCountQueries = useDatasetsDatafileCount(data);
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       // Provide label for filter component.
       label: t('datasets.name'),
@@ -81,7 +82,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [investigationId, proposalName, t, textFilter, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('datasets.details.description'),
       dataKey: 'description',
@@ -90,7 +91,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: ConfirmationNumberIcon,
@@ -108,6 +109,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,

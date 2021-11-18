@@ -16,6 +16,7 @@ import {
 import { CalendarToday } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface ISISFacilityCyclesCVProps {
   instrumentId: string;
@@ -48,7 +49,7 @@ const ISISFacilityCyclesCardView = (
     parseInt(instrumentId)
   );
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       label: t('facilitycycles.name'),
       dataKey: 'name',
@@ -59,11 +60,12 @@ const ISISFacilityCyclesCardView = (
           view
         ),
       filterComponent: textFilter,
+      defaultSort: 'asc',
     }),
     [t, textFilter, instrumentId, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('facilitycycles.description'),
       dataKey: 'description',
@@ -72,13 +74,14 @@ const ISISFacilityCyclesCardView = (
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: CalendarToday,
         label: t('facilitycycles.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,

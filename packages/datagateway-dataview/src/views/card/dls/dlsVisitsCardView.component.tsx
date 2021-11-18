@@ -27,6 +27,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface DLSVisitsCVProps {
   proposalName: string;
@@ -88,7 +89,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     [proposalName, t, textFilter, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.details.summary'),
       dataKey: 'summary',
@@ -97,7 +98,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: Assessment,
@@ -133,6 +134,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
