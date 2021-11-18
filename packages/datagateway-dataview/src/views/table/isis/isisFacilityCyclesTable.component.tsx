@@ -4,7 +4,7 @@ import {
   parseSearchToQuery,
   useFacilityCycleCount,
   useFacilityCyclesInfinite,
-  usePushSort,
+  useSort,
   useTextFilter,
   useDateFilter,
   Table,
@@ -48,7 +48,7 @@ const ISISFacilityCyclesTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const pushSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

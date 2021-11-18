@@ -6,7 +6,7 @@ import {
   useInvestigationsInfinite,
   useInvestigationCount,
   parseSearchToQuery,
-  usePushSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -43,7 +43,7 @@ const DLSProposalsTable = (): React.ReactElement => {
   );
 
   const textFilter = useTextFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -89,7 +89,7 @@ const DLSProposalsTable = (): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       columns={columns}
     />
   );

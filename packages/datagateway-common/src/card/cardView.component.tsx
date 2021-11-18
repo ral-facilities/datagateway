@@ -21,7 +21,14 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
 import ArrowTooltip from '../arrowtooltip.component';
-import { Entity, Filter, Order, SortType, FiltersType } from '../app.types';
+import {
+  Entity,
+  Filter,
+  Order,
+  SortType,
+  FiltersType,
+  UpdateMethod,
+} from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
@@ -95,7 +102,11 @@ export interface CardViewProps {
   onPageChange: (page: number) => void;
   onFilter: (filter: string, data: Filter | null) => void;
   onResultsChange: (page: number) => void;
-  onSort: (sort: string, order: Order | null) => void;
+  onSort: (
+    sort: string,
+    order: Order | null,
+    defaultSort: UpdateMethod
+  ) => void;
 
   // Props to get title, description of the card
   // represented by data.
@@ -559,7 +570,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             key={i}
                             button
                             onClick={() => {
-                              onSort(s.dataKey, nextSortDirection(s.dataKey));
+                              onSort(
+                                s.dataKey,
+                                nextSortDirection(s.dataKey),
+                                'push'
+                              );
                               if (page !== 1) {
                                 onPageChange(1);
                               }

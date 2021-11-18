@@ -1,5 +1,5 @@
 import React from 'react';
-import { Order } from '../../app.types';
+import { Order, UpdateMethod } from '../../app.types';
 import { TableHeaderProps } from 'react-virtualized';
 import {
   TableCell,
@@ -16,7 +16,11 @@ const DataHeader = React.memo(
     props: TableHeaderProps & {
       className: string;
       sort: { [column: string]: Order };
-      onSort: (column: string, order: Order | null) => void;
+      onSort: (
+        column: string,
+        order: Order | null,
+        defaultSort: UpdateMethod
+      ) => void;
       resizeColumn: (dataKey: string, deltaX: number) => void;
       labelString: string;
       icon?: React.ComponentType<unknown>;
@@ -40,8 +44,13 @@ const DataHeader = React.memo(
 
     //Apply default sort on page load
     React.useEffect(() => {
-      if (defaultSort !== undefined)
-        onSort(dataKey, defaultSort === undefined ? null : defaultSort);
+      const defaultSortProvided = defaultSort !== undefined;
+      if (defaultSortProvided)
+        onSort(
+          dataKey,
+          defaultSort !== undefined ? defaultSort : null,
+          defaultSortProvided ? 'replace' : 'push'
+        );
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -63,7 +72,7 @@ const DataHeader = React.memo(
         className={'tour-dataview-sort'}
         active={dataKey in sort}
         direction={currSortDirection}
-        onClick={() => onSort(dataKey, nextSortDirection)}
+        onClick={() => onSort(dataKey, nextSortDirection, 'push')}
       >
         <Typography
           noWrap

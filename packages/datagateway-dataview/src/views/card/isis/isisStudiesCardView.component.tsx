@@ -8,7 +8,7 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useStudiesPaginated,
   useStudyCount,
   useTextFilter,
@@ -35,7 +35,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
@@ -130,7 +130,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

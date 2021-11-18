@@ -14,7 +14,7 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  usePushSort,
+  useSort,
   useIds,
   useCart,
   useAddToCart,
@@ -53,7 +53,7 @@ const ISISDatafilesTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const { data: allIds } = useIds(
     'datafile',
@@ -169,7 +169,7 @@ const ISISDatafilesTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

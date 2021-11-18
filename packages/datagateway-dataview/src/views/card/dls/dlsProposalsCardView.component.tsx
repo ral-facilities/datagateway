@@ -9,7 +9,7 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +25,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
   );
 
   const textFilter = useTextFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
@@ -76,7 +76,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
