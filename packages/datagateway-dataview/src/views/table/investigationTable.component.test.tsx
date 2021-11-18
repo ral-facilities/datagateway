@@ -72,7 +72,6 @@ describe('Investigation table component', () => {
         name: 'Test 1',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
         investigationInstruments: [
           {
             id: 3,

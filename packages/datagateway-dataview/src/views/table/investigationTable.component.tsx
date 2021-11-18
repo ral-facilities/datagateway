@@ -156,7 +156,7 @@ const InvestigationTable = (): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const sizeQueries = useInvestigationSizes(aggregatedData);
+  const sizeQueries = useInvestigationSizes(data);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
