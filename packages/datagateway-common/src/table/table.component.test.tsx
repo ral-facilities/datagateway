@@ -1,6 +1,6 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
-import Table from './table.component';
+import Table, { ColumnType } from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { TableCellProps } from 'react-virtualized';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
@@ -48,7 +48,7 @@ describe('Table component', () => {
           return formatBytes(cellProps.cellData);
         },
       },
-    ],
+    ] as ColumnType[],
   };
 
   beforeEach(() => {
@@ -57,6 +57,7 @@ describe('Table component', () => {
 
   afterEach(() => {
     mount.cleanUp();
+    onSort.mockClear();
   });
 
   it('renders data columns correctly', () => {
@@ -112,7 +113,22 @@ describe('Table component', () => {
       .first()
       .simulate('click');
 
-    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc');
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'push');
+  });
+
+  it('calls onSort function when defaultSort has been specified', () => {
+    const sortedTableProps = {
+      ...tableProps,
+      columns: [
+        { ...tableProps.columns[0], defaultSort: 'asc' },
+        { ...tableProps.columns[1], defaultSort: 'desc' },
+      ],
+    };
+    const wrapper = mount(<Table {...sortedTableProps} />);
+    wrapper.update();
+
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('TEST2', 'desc', 'replace');
   });
 
   it('renders select column correctly, with both allIds defined and undefined', () => {
