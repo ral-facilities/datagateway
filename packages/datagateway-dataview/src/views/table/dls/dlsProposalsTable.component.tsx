@@ -65,6 +65,7 @@ const DLSProposalsTable = (): React.ReactElement => {
           );
         },
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
       {
         icon: TitleIcon,

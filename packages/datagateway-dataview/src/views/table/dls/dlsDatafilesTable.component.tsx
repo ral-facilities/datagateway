@@ -136,6 +136,7 @@ const DLSDatafilesTable = (
           return formatBytes(cellProps.cellData);
         },
         filterComponent: textFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,

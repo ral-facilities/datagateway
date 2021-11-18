@@ -141,6 +141,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -155,7 +156,6 @@ const DLSMyDataTable = (): React.ReactElement => {
 
   React.useEffect(() => {
     // Sort and filter by startDate upon load.
-    if (!('startDate' in sort)) handleSort('startDate', 'desc', 'push');
     if (!('startDate' in filters))
       pushFilters('startDate', {
         endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,

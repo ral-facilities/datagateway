@@ -141,6 +141,7 @@ const ISISInvestigationsTable = (
           );
         },
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
       {
         icon: FingerprintIcon,
@@ -194,6 +195,7 @@ const ISISInvestigationsTable = (
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,

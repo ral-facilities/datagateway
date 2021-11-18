@@ -143,6 +143,7 @@ const ISISDatafilesTable = (
         label: t('datafiles.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
     ],
     [t, dateFilter, textFilter]

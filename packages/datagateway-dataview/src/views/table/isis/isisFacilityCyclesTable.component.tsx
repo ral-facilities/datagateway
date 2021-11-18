@@ -68,12 +68,14 @@ const ISISFacilityCyclesTable = (
             view
           ),
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
       {
         icon: CalendarTodayIcon,
         label: t('facilitycycles.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,

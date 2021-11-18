@@ -115,6 +115,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
           (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
             ?.startDate ?? '',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
