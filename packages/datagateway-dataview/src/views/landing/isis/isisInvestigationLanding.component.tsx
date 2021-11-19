@@ -213,7 +213,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           entity?.doi && (
             <MuiLink
               href={`https://doi.org/${entity.doi}`}
-              data-test-id="isis-investigation-landing-doi-link"
+              data-testid="isis-investigation-landing-doi-link"
             >
               {entity.doi}
             </MuiLink>

@@ -189,14 +189,14 @@ describe('ISIS Investigations - Card View', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-test-id="isis-investigations-card-doi-link"]')
+        .find('[data-testid="isis-investigations-card-doi-link"]')
         .first()
         .text()
     ).toEqual('study pid');
 
     expect(
       wrapper
-        .find('[data-test-id="isis-investigations-card-doi-link"]')
+        .find('[data-testid="isis-investigations-card-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/study pid');

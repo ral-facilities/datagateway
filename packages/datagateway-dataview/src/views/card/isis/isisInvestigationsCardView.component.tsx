@@ -129,7 +129,7 @@ const ISISInvestigationsCardView = (
             entity?.studyInvestigations?.[0]?.study.pid && (
               <MuiLink
                 href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
-                data-test-id="isis-investigations-card-doi-link"
+                data-testid="isis-investigations-card-doi-link"
               >
                 {entity.studyInvestigations[0].study.pid}
               </MuiLink>
