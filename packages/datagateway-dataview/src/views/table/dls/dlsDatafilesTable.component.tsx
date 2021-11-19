@@ -136,13 +136,13 @@ const DLSDatafilesTable = (
           return formatBytes(cellProps.cellData);
         },
         filterComponent: textFilter,
-        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
         label: t('datafiles.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
     ],
     [t, dateFilter, textFilter]
