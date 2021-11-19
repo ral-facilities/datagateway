@@ -76,20 +76,18 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
       .first()
-      .type('cut')
+      .type('again')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('[data-testid="card"]').contains(
-      'He represent address cut environmental special size.'
-    );
+    cy.get('[data-testid="card"]').contains('Again bad simply low summer.');
+    // check that size is correct after filtering
+    cy.get('[data-testid="card"]').contains('10.93 GB');
 
     cy.get('input[id="Start Date filter from"]')
       .type('2004-01-01')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
-    cy.get('[data-testid="card"]').contains(
-      'He represent address cut environmental special size.'
-    );
+    cy.get('[data-testid="card"]').contains('Again bad simply low summer.');
     cy.get('input[id="Start Date filter to"]')
       .type('2004-01-02')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });

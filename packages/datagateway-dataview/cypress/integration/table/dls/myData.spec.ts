@@ -162,9 +162,12 @@ describe('DLS - MyData Table', () => {
 
       it('text', () => {
         cy.get('[aria-rowcount="4"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('invalid');
+        cy.get('input[id="Title-filter"]').type('night');
 
-        cy.get('[aria-rowcount="0"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains(
+          'INVESTIGATION 165'
+        );
       });
 
       it('date between', () => {
@@ -189,21 +192,19 @@ describe('DLS - MyData Table', () => {
 
         cy.get('[aria-rowcount="4"]').should('exist');
 
-        cy.get('input[id="Start Date filter from"]').type('2000-04-04');
+        cy.get('input[id="Start Date filter from"]').type('2006-04-04');
 
-        cy.get('[aria-rowcount="0"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
       });
 
       it('multiple columns', () => {
-        cy.get('[aria-label="Filter by Instrument')
-          .first()
-          .type('Start state detail.');
+        cy.get('[aria-label="Filter by DOI"]').first().type('69');
 
-        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowcount="3"]').should('exist');
 
-        cy.get('[aria-label="Filter by Title"]').first().type('invalid');
+        cy.get('[aria-label="Filter by Title"]').first().type('us');
 
-        cy.get('[aria-rowcount="0"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
       });
     });
 

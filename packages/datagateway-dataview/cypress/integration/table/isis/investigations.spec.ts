@@ -150,6 +150,8 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
         'INVESTIGATION 97'
       );
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('10.93 GB');
     });
 
     it('date between', () => {

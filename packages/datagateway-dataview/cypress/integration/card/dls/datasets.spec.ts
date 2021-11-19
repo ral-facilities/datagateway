@@ -58,7 +58,7 @@ describe('DLS - Datasets Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('DATASET 1');
+    cy.get('[data-testid="card"]').first().contains('DATASET 1');
 
     cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
       timeout: 10000,
@@ -74,7 +74,7 @@ describe('DLS - Datasets Cards', () => {
       .first()
       .type('241')
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
-    cy.get('[data-testid="card"]').contains('DATASET 241');
+    cy.get('[data-testid="card"]').first().contains('DATASET 241');
 
     cy.get('input[id="Create Time filter from"]')
       .type('2019-01-01')
@@ -92,6 +92,23 @@ describe('DLS - Datasets Cards', () => {
       date.toISOString().slice(0, 10)
     );
     cy.get('[data-testid="card"]').should('not.exist');
+  });
+
+  it('should display correct datafile count after filtering', () => {
+    cy.visit('/browse/proposal/INVESTIGATION%202/investigation/2/dataset').wait(
+      ['@getDatasetsCount', '@getDatasetsOrder'],
+      {
+        timeout: 10000,
+      }
+    );
+    cy.get('[aria-label="advanced-filters-link"]').click();
+
+    cy.get('[aria-label="Filter by Name"]')
+      .first()
+      .type('DATASET 242')
+      .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
+
+    cy.get('[data-testid="card"]').first().contains('55');
   });
 
   it('should be able to expand "More Information"', () => {

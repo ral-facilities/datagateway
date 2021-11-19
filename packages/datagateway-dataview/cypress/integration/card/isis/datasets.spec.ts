@@ -76,6 +76,8 @@ describe('ISIS - Datasets Cards', () => {
       .type('337')
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
     cy.get('[data-testid="card"]').contains('DATASET 337');
+    // check that size is correct after filtering
+    cy.get('[data-testid="card"]').contains('5.15 GB');
 
     cy.get('input[id="Create Time filter from"]')
       .type('2019-01-01')
