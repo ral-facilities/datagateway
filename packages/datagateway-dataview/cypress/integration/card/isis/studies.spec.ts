@@ -16,7 +16,10 @@ describe('ISIS - Studies Cards', () => {
   });
 
   it('should be able to click a study to see its landing page', () => {
-    cy.get('[data-testid="card"]').contains('STUDY 4').click({ force: true });
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('STUDY 4')
+      .click({ force: true });
     cy.location('pathname').should(
       'eq',
       '/browseStudyHierarchy/instrument/1/study/4'
@@ -31,7 +34,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('STUDY 325');
+    cy.get('[data-testid="card"]').first().contains('STUDY 325');
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -40,7 +43,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('[data-testid="card"]').contains('STUDY 494');
+    cy.get('[data-testid="card"]').first().contains('STUDY 494');
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -49,7 +52,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('STUDY 4');
+    cy.get('[data-testid="card"]').first().contains('STUDY 4');
   });
 
   it('should be able to sort by multiple fields', () => {
@@ -60,7 +63,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('STUDY 325');
+    cy.get('[data-testid="card"]').first().contains('STUDY 325');
 
     cy.contains('[role="button"]', 'End Date')
       .click()
@@ -69,7 +72,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('STUDY 325');
+    cy.get('[data-testid="card"]').first().contains('STUDY 325');
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -81,7 +84,7 @@ describe('ISIS - Studies Cards', () => {
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });
-    cy.get('[data-testid="card"]').contains('STUDY 11');
+    cy.get('[data-testid="card"]').first().contains('STUDY 11');
 
     cy.get('[aria-label="Filter by Title"]')
       .first()
@@ -89,6 +92,6 @@ describe('ISIS - Studies Cards', () => {
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });
-    cy.get('[data-testid="card"]').contains('STUDY 341');
+    cy.get('[data-testid="card"]').first().contains('STUDY 341');
   });
 });

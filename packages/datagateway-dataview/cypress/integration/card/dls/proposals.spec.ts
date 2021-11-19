@@ -21,6 +21,7 @@ describe('DLS - Proposals Cards', () => {
 
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
+      .first()
       .contains('Including spend increase ability music skill former.')
       .click({ force: true });
     cy.location('pathname').should(
@@ -35,23 +36,23 @@ describe('DLS - Proposals Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('About quickly both stop.');
+    cy.get('[data-testid="card"]').first().contains('About quickly both stop.');
 
     cy.contains('[role="button"]', 'Title').click();
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('[data-testid="card"]').contains(
-      'Yourself smile either I pass significant.'
-    );
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Yourself smile either I pass significant.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains(
-      'Including spend increase ability music skill former.'
-    );
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Including spend increase ability music skill former.');
   });
 
   it('should be able to sort by multiple fields', () => {
@@ -60,14 +61,14 @@ describe('DLS - Proposals Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('INVESTIGATION 1');
+    cy.get('[data-testid="card"]').first().contains('INVESTIGATION 1');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('INVESTIGATION 1');
+    cy.get('[data-testid="card"]').first().contains('INVESTIGATION 1');
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -78,9 +79,9 @@ describe('DLS - Proposals Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('[data-testid="card"]').contains(
-      'Energy place money bad authority.'
-    );
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Energy place money bad authority.');
 
     cy.get('[aria-label="Filter by Name"]')
       .first()
@@ -88,6 +89,6 @@ describe('DLS - Proposals Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('[data-testid="card"]').contains('INVESTIGATION 192');
+    cy.get('[data-testid="card"]').first().contains('INVESTIGATION 192');
   });
 });

@@ -20,7 +20,10 @@ describe('DLS - Visits Cards', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('[data-testid="card"]').contains('42').click({ force: true });
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('42')
+      .click({ force: true });
     cy.location('pathname').should(
       'eq',
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
@@ -33,19 +36,19 @@ describe('DLS - Visits Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('42');
+    cy.get('[data-testid="card"]').first().contains('42');
 
     cy.contains('[role="button"]', 'Visit ID')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('[data-testid="card"]').contains('42');
+    cy.get('[data-testid="card"]').first().contains('42');
 
     cy.contains('[role="button"]', 'Visit ID').click();
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('42');
+    cy.get('[data-testid="card"]').first().contains('42');
   });
 
   it('should be able to sort by multiple fields', () => {
@@ -54,14 +57,14 @@ describe('DLS - Visits Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('42');
+    cy.get('[data-testid="card"]').first().contains('42');
 
     cy.contains('[role="button"]', 'Visit ID')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').contains('42');
+    cy.get('[data-testid="card"]').first().contains('42');
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -72,7 +75,7 @@ describe('DLS - Visits Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('[data-testid="card"]').contains('42');
+    cy.get('[data-testid="card"]').first().contains('42');
 
     cy.get('input[id="Start Date filter from"]')
       .type('2019-01-01')
@@ -96,25 +99,31 @@ describe('DLS - Visits Cards', () => {
 
   it('should be able to expand "More Information"', () => {
     cy.get('[data-testid="card"]')
+      .first()
       .contains('More Information')
       .click({ force: true });
     cy.get('[data-testid="card"]')
+      .first()
       .get('[aria-label="card-more-information"]')
       .contains('INVESTIGATION 1');
     cy.get('#calculate-size-btn').click({ force: true });
     cy.get('[data-testid="card"]')
+      .first()
       .get('[aria-label="card-more-information"]')
       .contains('10.25 GB', { timeout: 10000 });
     cy.get('#visit-users-tab').click({ force: true });
     cy.get('[data-testid="card"]')
+      .first()
       .get('[aria-label="card-more-information"]')
       .contains('Andrea Clayton');
     cy.get('#visit-samples-tab').click({ force: true });
     cy.get('[data-testid="card"]')
+      .first()
       .get('[aria-label="card-more-information"]')
       .contains('SAMPLE 1');
     cy.get('#visit-publications-tab').click({ force: true });
     cy.get('[data-testid="card"]')
+      .first()
       .get('[aria-label="card-more-information"]')
       .contains('Eat interest seem black easy various.');
   });

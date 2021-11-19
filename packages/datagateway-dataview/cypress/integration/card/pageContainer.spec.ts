@@ -132,37 +132,37 @@ describe('PageContainer Component', () => {
 
   it('should be able to change page', () => {
     cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
-    cy.get('[data-testid="card"]').contains(
-      'Guy maintain us process official people suffer.'
-    );
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Guy maintain us process official people suffer.');
 
     cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('[data-testid="card"]').contains(
-      'Yourself smile either I pass significant.'
-    );
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Yourself smile either I pass significant.');
 
     cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('[data-testid="card"]').contains(
-      'Window former upon writer help step account.'
-    );
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Window former upon writer help step account.');
 
     cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('[data-testid="card"]').contains(
-      'Someone statement Republican plan watch.'
-    );
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Someone statement Republican plan watch.');
 
     cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('[data-testid="card"]').contains(
-      'Including spend increase ability music skill former.'
-    );
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Including spend increase ability music skill former.');
   });
 
   it('should load the homepage if navigating to home', () => {
