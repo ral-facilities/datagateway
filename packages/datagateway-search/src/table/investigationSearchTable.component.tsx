@@ -23,7 +23,7 @@ import {
   useIds,
   useInvestigationCount,
   useInvestigationsInfinite,
-  usePushSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
   useInvestigationsDatasetCount,
@@ -180,7 +180,7 @@ const InvestigationSearchTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -368,7 +368,7 @@ const InvestigationSearchTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       detailsPanel={InvestigationDetailsPanel}
       columns={columns}
       {...(hierarchy !== 'dls' && {
