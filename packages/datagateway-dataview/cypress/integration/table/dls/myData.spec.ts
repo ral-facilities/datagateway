@@ -165,9 +165,7 @@ describe('DLS - MyData Table', () => {
         cy.get('input[id="Title-filter"]').type('night');
 
         cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains(
-          'INVESTIGATION 165'
-        );
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('56');
       });
 
       it('date between', () => {
@@ -198,13 +196,13 @@ describe('DLS - MyData Table', () => {
       });
 
       it('multiple columns', () => {
-        cy.get('[aria-label="Filter by DOI"]').first().type('69');
+        cy.get('input[id="Start Date filter from"]').first().type('2003-04-04');
 
         cy.get('[aria-rowcount="3"]').should('exist');
 
         cy.get('[aria-label="Filter by Title"]').first().type('us');
 
-        cy.get('[aria-rowcount="2"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
       });
     });
 
