@@ -15,6 +15,7 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "name",
+      "defaultSort": "asc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -28,6 +29,7 @@ Object {
     },
     Object {
       "dataKey": "startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -64,7 +66,9 @@ Object {
   ],
   "loadMoreRows": [Function],
   "onSort": [Function],
-  "sort": Object {},
+  "sort": Object {
+    "startDate": "desc",
+  },
   "totalRowCount": 1,
 }
 `;

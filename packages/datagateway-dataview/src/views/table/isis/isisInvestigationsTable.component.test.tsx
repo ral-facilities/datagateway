@@ -49,6 +49,7 @@ describe('ISIS Investigations table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
+  let replaceSpy: jest.SpyInstance;
 
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
@@ -102,6 +103,7 @@ describe('ISIS Investigations table component', () => {
       },
     ];
     history = createMemoryHistory();
+    replaceSpy = jest.spyOn(history, 'replace');
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -183,7 +185,7 @@ describe('ISIS Investigations table component', () => {
 
   it('calls useISISInvestigationsInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useISISInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
+    (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -256,6 +258,19 @@ describe('ISIS Investigations table component', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"title":"asc"}')}`,
+    });
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    });
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -272,7 +287,7 @@ describe('ISIS Investigations table component', () => {
 
   it('calls addToCart mutate function on unchecked checkbox click', () => {
     const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValueOnce({
+    (useAddToCart as jest.Mock).mockReturnValue({
       mutate: addToCart,
       loading: false,
     });
@@ -284,7 +299,7 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('calls removeFromCart mutate function on checked checkbox click', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
+    (useCart as jest.Mock).mockReturnValue({
       data: [
         {
           entityId: 1,
@@ -297,7 +312,7 @@ describe('ISIS Investigations table component', () => {
     });
 
     const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValueOnce({
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
       mutate: removeFromCart,
       loading: false,
     });
