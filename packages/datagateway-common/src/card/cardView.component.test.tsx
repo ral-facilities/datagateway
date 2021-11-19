@@ -119,7 +119,9 @@ describe('Card View', () => {
       ],
     };
     const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find('#card').at(0).find(Chip).text()).toEqual('1');
+    expect(
+      wrapper.find('[data-testid="card"]').at(0).find(Chip).text()
+    ).toEqual('1');
 
     // Open custom filters
     const typePanel = wrapper.find(Accordion).first();
@@ -199,7 +201,9 @@ describe('Card View', () => {
       filters: { 'type.id': { value: 'abc', type: 'include' } },
     };
     const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find('#card').at(0).find(Chip).text()).toEqual('1');
+    expect(
+      wrapper.find('[data-testid="card"]').at(0).find(Chip).text()
+    ).toEqual('1');
 
     // Open custom filters
     const typePanel = wrapper.find(Accordion).first();

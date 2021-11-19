@@ -16,7 +16,7 @@ describe('ISIS - Investigations Cards', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .contains('He represent address cut environmental special size.')
       .click({ force: true });
     cy.location('pathname').should(
@@ -31,14 +31,14 @@ describe('ISIS - Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Again bad simply low summer.');
+    cy.get('[data-testid="card"]').contains('Again bad simply low summer.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains(
+    cy.get('[data-testid="card"]').contains(
       'He represent address cut environmental special size.'
     );
 
@@ -47,7 +47,7 @@ describe('ISIS - Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains(
+    cy.get('[data-testid="card"]').contains(
       'He represent address cut environmental special size.'
     );
   });
@@ -58,7 +58,7 @@ describe('ISIS - Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains(
+    cy.get('[data-testid="card"]').contains(
       'He represent address cut environmental special size.'
     );
 
@@ -67,7 +67,7 @@ describe('ISIS - Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains(
+    cy.get('[data-testid="card"]').contains(
       'He represent address cut environmental special size.'
     );
   });
@@ -80,40 +80,42 @@ describe('ISIS - Investigations Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains(
+    cy.get('[data-testid="card"]').contains(
       'He represent address cut environmental special size.'
     );
 
     cy.get('input[id="Start Date filter from"]')
       .type('2004-01-01')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
-    cy.get('#card').contains(
+    cy.get('[data-testid="card"]').contains(
       'He represent address cut environmental special size.'
     );
     cy.get('input[id="Start Date filter to"]')
       .type('2004-01-02')
       .wait(['@getInvestigationsCount'], { timeout: 10000 });
-    cy.get('#card').should('not.exist');
+    cy.get('[data-testid="card"]').should('not.exist');
   });
 
   it('should be able to expand "More Information"', () => {
-    cy.get('#card').contains('More Information').click({ force: true });
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
+      .contains('More Information')
+      .click({ force: true });
+    cy.get('[data-testid="card"]')
       .get('[aria-label="card-more-information"]')
       .contains('INVESTIGATION 16');
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .contains('1-314-79096-X')
       .should('have.attr', 'href', 'https://doi.org/1-314-79096-X');
     cy.get('#investigation-users-tab').click({ force: true });
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .get('[aria-label="card-more-information"]')
       .contains('Corey Cook');
     cy.get('#investigation-samples-tab').click({ force: true });
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .get('[aria-label="card-more-information"]')
       .contains('SAMPLE 16');
     cy.get('#investigation-publications-tab').click({ force: true });
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .get('[aria-label="card-more-information"]')
       .contains('Fish page on factor nature everybody action.');
     cy.get('#investigation-datasets-tab').click({ force: true });

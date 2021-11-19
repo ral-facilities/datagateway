@@ -170,29 +170,35 @@ describe('SearchPageContainer Component', () => {
       cy.get('[aria-label="container-view-button"]').click();
 
       cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
-      cy.get('#card').contains(
+      cy.get('[data-testid="card"]').contains(
         'Guy maintain us process official people suffer.'
       );
 
       cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('#card').contains('Yourself smile either I pass significant.');
+      cy.get('[data-testid="card"]').contains(
+        'Yourself smile either I pass significant.'
+      );
 
       cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('#card').contains('Window former upon writer help step account.');
+      cy.get('[data-testid="card"]').contains(
+        'Window former upon writer help step account.'
+      );
 
       cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('#card').contains('Someone statement Republican plan watch.');
+      cy.get('[data-testid="card"]').contains(
+        'Someone statement Republican plan watch.'
+      );
 
       cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('#card').contains(
+      cy.get('[data-testid="card"]').contains(
         'Including spend increase ability music skill former.'
       );
     });

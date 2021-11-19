@@ -16,7 +16,7 @@ describe('ISIS - Instruments Cards', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .contains('Season identify professor happen third.')
       .click({ force: true });
     cy.location('pathname').should('eq', '/browse/instrument/1/facilityCycle');
@@ -30,21 +30,25 @@ describe('ISIS - Instruments Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Air it quickly everybody have image left.');
+    cy.get('[data-testid="card"]').contains(
+      'Air it quickly everybody have image left.'
+    );
 
     cy.contains('[role="button"]', 'Name')
       .click()
       .wait('@getInstrumentsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains('With piece reason late model.');
+    cy.get('[data-testid="card"]').contains('With piece reason late model.');
 
     cy.contains('[role="button"]', 'Name')
       .click()
       .wait('@getInstrumentsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Season identify professor happen third.');
+    cy.get('[data-testid="card"]').contains(
+      'Season identify professor happen third.'
+    );
   });
 
   it('should be able to sort by multiple fields', () => {
@@ -53,14 +57,14 @@ describe('ISIS - Instruments Cards', () => {
       .wait('@getInstrumentsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Near must surface law how full.');
+    cy.get('[data-testid="card"]').contains('Near must surface law how full.');
 
     cy.contains('[role="button"]', 'Type')
       .click()
       .wait('@getInstrumentsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('4');
+    cy.get('[data-testid="card"]').contains('4');
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -71,7 +75,7 @@ describe('ISIS - Instruments Cards', () => {
       .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('Near must surface law how full.');
+    cy.get('[data-testid="card"]').contains('Near must surface law how full.');
 
     cy.get('[aria-label="Filter by Type"]')
       .first()
@@ -79,16 +83,18 @@ describe('ISIS - Instruments Cards', () => {
       .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('4');
+    cy.get('[data-testid="card"]').contains('4');
   });
 
   it('should be able to expand "More Information"', () => {
-    cy.get('#card').contains('More Information').click({ force: true });
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
+      .contains('More Information')
+      .click({ force: true });
+    cy.get('[data-testid="card"]')
       .get('[aria-label="card-more-information"]')
       .contains('Season identify professor happen third.');
     cy.get('#instrument-users-tab').click({ force: true });
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .get('[aria-label="card-more-information"]')
       .contains('Marcus Dixon');
   });

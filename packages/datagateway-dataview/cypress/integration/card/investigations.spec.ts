@@ -20,14 +20,14 @@ describe('Investigations Cards', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .contains('Including spend increase ability music skill former.')
       .click({ force: true });
     cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
   });
 
   it('should be able to click a DOI render the correct webpage ', () => {
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .contains('0-449-78690-0')
       .should('have.attr', 'href', 'https://doi.org/0-449-78690-0');
   });
@@ -37,14 +37,14 @@ describe('Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Her know fine according');
+    cy.get('[data-testid="card"]').contains('Her know fine according');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains(
+    cy.get('[data-testid="card"]').contains(
       'Bed son everybody despite international central project'
     );
 
@@ -53,7 +53,7 @@ describe('Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains(
+    cy.get('[data-testid="card"]').contains(
       'Including spend increase ability music skill former.'
     );
   });
@@ -64,14 +64,14 @@ describe('Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Decide visit list professional.');
+    cy.get('[data-testid="card"]').contains('Decide visit list professional.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('Decide visit list professional.');
+    cy.get('[data-testid="card"]').contains('Decide visit list professional.');
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -84,7 +84,7 @@ describe('Investigations Cards', () => {
         timeout: 30000,
       });
     cy.contains('[role="button"]', 'Type ID - 1').should('exist');
-    cy.get('#card').contains('Day purpose item create.');
+    cy.get('[data-testid="card"]').contains('Day purpose item create.');
 
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
@@ -93,7 +93,9 @@ describe('Investigations Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('Show fly image herself yard challenge by.');
+    cy.get('[data-testid="card"]').contains(
+      'Show fly image herself yard challenge by.'
+    );
 
     cy.get('input[id="Start Date filter from"]')
       .type('2017-01-01')
@@ -116,6 +118,8 @@ describe('Investigations Cards', () => {
       'have.value',
       date.toISOString().slice(0, 10)
     );
-    cy.get('#card').contains('That factor class price success none.');
+    cy.get('[data-testid="card"]').contains(
+      'That factor class price success none.'
+    );
   });
 });
