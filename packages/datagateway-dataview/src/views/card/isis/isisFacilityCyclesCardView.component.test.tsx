@@ -36,6 +36,7 @@ describe('ISIS Facility Cycles - Card View', () => {
   let state: StateType;
   let cardData: FacilityCycle[];
   let history: History;
+  let replaceSpy: jest.SpyInstance;
 
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
@@ -67,6 +68,7 @@ describe('ISIS Facility Cycles - Card View', () => {
       },
     ];
     history = createMemoryHistory();
+    replaceSpy = jest.spyOn(history, 'replace');
 
     (useFacilityCycleCount as jest.Mock).mockReturnValue({
       data: 1,
@@ -144,6 +146,19 @@ describe('ISIS Facility Cycles - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
+    });
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    });
   });
 
   it('updates sort query params on sort', () => {

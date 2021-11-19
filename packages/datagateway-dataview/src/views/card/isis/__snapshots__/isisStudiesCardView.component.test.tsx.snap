@@ -35,6 +35,7 @@ Object {
     Object {
       "content": [Function],
       "dataKey": "studyInvestigations.investigation.startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -69,7 +70,9 @@ Object {
   "onSort": [Function],
   "page": null,
   "results": null,
-  "sort": Object {},
+  "sort": Object {
+    "studyInvestigations.investigation.startDate": "desc",
+  },
   "title": Object {
     "content": [Function],
     "dataKey": "name",
