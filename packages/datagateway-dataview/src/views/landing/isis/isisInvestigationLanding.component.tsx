@@ -224,11 +224,17 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => {
-        const studyInvestigation = entity.studyInvestigations;
-        return studyInvestigation
-          ? studyInvestigation[0]?.study?.pid
-          : undefined;
+      content: function parentDoiFormat(entity: Investigation) {
+        return (
+          entity?.studyInvestigations?.[0]?.study.pid && (
+            <MuiLink
+              href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
+              data-test-id="isis-investigations-landing-parent-doi-link"
+            >
+              {entity.studyInvestigations[0].study.pid}
+            </MuiLink>
+          )
+        );
       },
       label: t('investigations.parent_doi'),
       icon: <Public className={classes.shortInfoIcon} />,
@@ -336,7 +342,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12}>
+        <Grid item container xs={12} id="investigation-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Typography
@@ -549,7 +555,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 )}
                 <div className={classes.actionButtons}>
                   <AddToCartButton
-                    entityType="investigation"
+                    entityType="dataset"
                     allIds={[dataset.id]}
                     entityId={dataset.id}
                   />

@@ -39,6 +39,36 @@ describe('ISIS - Study Landing', () => {
     );
   });
 
+  it('should have the correct urls for the DOI link and Study PID', () => {
+    // Study PID
+
+    cy.get('[data-test-id="landing-study-pid-link"]')
+      .first()
+      .then(($pid) => {
+        const pid = $pid.text();
+
+        const url = `https://doi.org/${pid}`;
+
+        cy.get('[data-test-id="landing-study-pid-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+
+    // Parent DOI
+
+    cy.get('[data-test-id="landing-study-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('[data-test-id="landing-study-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   it('should load correctly when investigation missing', () => {
     cy.intercept('/studies', [
       {

@@ -307,7 +307,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const shortInfo = [
     {
-      content: (entity: Study) => entity.pid,
+      content: function studyPidFormat(entity: Study) {
+        return (
+          entity?.pid && (
+            <MuiLink
+              href={`https://doi.org/${entity.pid}`}
+              data-test-id="landing-study-pid-link"
+            >
+              {entity.pid}
+            </MuiLink>
+          )
+        );
+      },
       label: t('studies.pid'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -377,7 +388,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12}>
+        <Grid item container xs={12} id="study-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Typography
