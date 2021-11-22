@@ -6,6 +6,7 @@ describe('Add/remove from cart functionality', () => {
     cy.intercept('/investigations/').as('getInvestigation');
     cy.intercept('/instruments/1').as('getInstrument');
     cy.intercept('/facilitycycles/16').as('getFacilityCycle');
+    cy.intercept('/datafiles?order=').as('getDatafilesOrder');
   });
 
   describe('should be able to select datafiles', () => {
@@ -242,6 +243,11 @@ describe('Add/remove from cart functionality', () => {
         cy.visit(
           '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/1/datafile'
         ).wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
+
+        //Revert the default sort
+        cy.contains('[role="button"]', 'Create Time')
+          .click()
+          .wait('@getDatafilesOrder', { timeout: 10000 });
       });
 
       it('individually', () => {
