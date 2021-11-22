@@ -27,6 +27,22 @@ describe('ISIS - Studies Cards', () => {
     );
   });
 
+  it('should have the correct url for the PID link', () => {
+    cy.get('#card')
+      .get('[data-test-id="landing-study-card-pid-link"]')
+      .first()
+      .then(($pid) => {
+        const pid = $pid.text();
+
+        const url = `https://doi.org/${pid}`;
+
+        cy.get('#card')
+          .get('[data-test-id="landing-study-card-pid-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   describe('should be able to sort by', () => {
     beforeEach(() => {
       //Revert the default sort

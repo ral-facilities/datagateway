@@ -31,27 +31,80 @@ describe('ISIS - Investigations Cards', () => {
     );
   });
 
+  it('should have the correct url for the DOI link', () => {
+    cy.get('#card')
+      .get('[data-test-id="isis-investigations-card-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('#card')
+          .get('[data-test-id="isis-investigations-card-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   it('should be able to expand "More Information"', () => {
     cy.get('#card').contains('More Information').click({ force: true });
+
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('INVESTIGATION 97');
+
+    // Study PID
+
     cy.get('#card')
-      .contains('1-896651-96-8')
-      .should('have.attr', 'href', 'https://doi.org/1-896651-96-8');
+      .get('[data-test-id="investigation-details-panel-pid-link"]')
+      .first()
+      .then(($pid) => {
+        const pid = $pid.text();
+
+        const url = `https://doi.org/${pid}`;
+
+        cy.get('#card')
+          .get('[data-test-id="investigation-details-panel-pid-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+
+    // DOI
+
+    cy.get('#card')
+      .get('[data-test-id="investigation-details-panel-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('#card')
+          .get('[data-test-id="investigation-details-panel-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+
     cy.get('#investigation-users-tab').click({ force: true });
+
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('Noah Jones');
     cy.get('#investigation-samples-tab').click({ force: true });
+
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('SAMPLE 97');
+
     cy.get('#investigation-publications-tab').click({ force: true });
+
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('Safe tough case newspaper.');
+
     cy.get('#investigation-datasets-tab').click({ force: true });
+
     cy.location('pathname').should(
       'eq',
       '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'

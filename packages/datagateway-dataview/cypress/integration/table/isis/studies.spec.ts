@@ -21,6 +21,20 @@ describe('ISIS - Studies Table', () => {
     );
   });
 
+  it('should have the correct url for the DOI link', () => {
+    cy.get('[data-test-id="isis-study-table-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('[data-test-id="isis-study-table-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   // Not enough data in facility cycles to load.
   it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');

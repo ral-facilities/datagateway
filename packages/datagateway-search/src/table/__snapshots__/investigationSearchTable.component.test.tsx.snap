@@ -348,7 +348,7 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
 
 exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 4`] = `
 <WithStyles(ForwardRef(Link))
-  data-test-id="table-study-doi-link"
+  data-test-id="investigation-search-table-doi-link"
   href="https://doi.org/doi 1"
 >
   <ForwardRef(Link)
@@ -362,14 +362,14 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
         "underlineNone": "MuiLink-underlineNone",
       }
     }
-    data-test-id="table-study-doi-link"
+    data-test-id="investigation-search-table-doi-link"
     href="https://doi.org/doi 1"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
       color="primary"
       component="a"
-      data-test-id="table-study-doi-link"
+      data-test-id="investigation-search-table-doi-link"
       href="https://doi.org/doi 1"
       onBlur={[Function]}
       onFocus={[Function]}
@@ -413,7 +413,7 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
         }
         color="primary"
         component="a"
-        data-test-id="table-study-doi-link"
+        data-test-id="investigation-search-table-doi-link"
         href="https://doi.org/doi 1"
         onBlur={[Function]}
         onFocus={[Function]}
@@ -421,7 +421,7 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
       >
         <a
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-          data-test-id="table-study-doi-link"
+          data-test-id="investigation-search-table-doi-link"
           href="https://doi.org/doi 1"
           onBlur={[Function]}
           onFocus={[Function]}

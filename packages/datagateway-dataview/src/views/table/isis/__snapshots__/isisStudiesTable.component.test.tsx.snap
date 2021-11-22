@@ -41,6 +41,7 @@ Object {
       "label": "studies.title",
     },
     Object {
+      "cellContentRenderer": [Function],
       "dataKey": "pid",
       "filterComponent": [Function],
       "icon": Object {

@@ -18,12 +18,34 @@ describe('ISIS - Investigation Landing', () => {
     );
   });
 
-  it('should be able to click a DOI render the correct webpage ', () => {
-    cy.contains('0-16-038549-0').should(
-      'have.attr',
-      'href',
-      'https://doi.org/0-16-038549-0'
-    );
+  it('should have the correct urls for the DOI link and parent DOI link', () => {
+    // DOI
+
+    cy.get('[data-test-id="isis-investigation-landing-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('[data-test-id="isis-investigation-landing-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+
+    // Parent DOI
+
+    cy.get('[data-test-id="isis-investigations-landing-parent-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('[data-test-id="isis-investigations-landing-parent-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
   });
 
   it('should be able to click a specific dataset', () => {

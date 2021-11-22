@@ -196,7 +196,7 @@ const InvestigationTable = (): React.ReactElement => {
           return externalSiteLink(
             `https://doi.org/${investigationData.doi}`,
             investigationData.doi,
-            view
+            'investigation-table-doi-link'
           );
         },
         filterComponent: textFilter,

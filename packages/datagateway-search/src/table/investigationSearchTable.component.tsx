@@ -295,7 +295,8 @@ const InvestigationSearchTable = (
           const investigationData = cellProps.rowData as Investigation;
           return externalSiteLink(
             `https://doi.org/${investigationData.doi}`,
-            investigationData.doi
+            investigationData.doi,
+            'investigation-search-table-doi-link'
           );
         },
         filterComponent: textFilter,

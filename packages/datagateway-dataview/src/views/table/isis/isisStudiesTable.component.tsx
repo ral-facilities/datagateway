@@ -9,6 +9,7 @@ import {
   useDateFilter,
   useSort,
   useTextFilter,
+  externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -105,6 +106,16 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         icon: PublicIcon,
         label: t('studies.pid'),
         dataKey: 'pid',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const studyData = cellProps.rowData as Study;
+          if (studyData?.pid) {
+            return externalSiteLink(
+              `https://doi.org/${studyData.pid}`,
+              studyData.pid,
+              'isis-study-table-doi-link'
+            );
+          }
+        },
         filterComponent: textFilter,
       },
       {
