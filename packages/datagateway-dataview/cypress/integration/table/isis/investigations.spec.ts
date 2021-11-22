@@ -17,6 +17,20 @@ describe('ISIS - Investigations Table', () => {
     );
   });
 
+  it('should have the correct url for the DOI link', () => {
+    cy.get('[data-test-id="isis-investigation-table-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('[data-test-id="isis-investigation-table-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   // Not enough investigations to test scrolling.
   it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
@@ -197,11 +211,33 @@ describe('ISIS - Investigations Table', () => {
     it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('1-314-79096-X').should(
-        'have.attr',
-        'href',
-        'https://doi.org/1-314-79096-X'
-      );
+      // Study PID
+
+      cy.get('[data-test-id="investigation-details-panel-pid-link"]')
+        .first()
+        .then(($pid) => {
+          const pid = $pid.text();
+
+          const url = `https://doi.org/${pid}`;
+
+          cy.get('[data-test-id="investigation-details-panel-pid-link"]')
+            .first()
+            .should('have.attr', 'href', url);
+        });
+
+      // DOI
+
+      cy.get('[data-test-id="investigation-details-panel-doi-link"]')
+        .first()
+        .then(($doi) => {
+          const doi = $doi.text();
+
+          const url = `https://doi.org/${doi}`;
+
+          cy.get('[data-test-id="investigation-details-panel-doi-link"]')
+            .first()
+            .should('have.attr', 'href', url);
+        });
 
       cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');

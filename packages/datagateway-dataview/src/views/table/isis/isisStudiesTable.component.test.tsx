@@ -205,6 +205,46 @@ describe('ISIS Studies table component', () => {
     ).toMatchSnapshot();
   });
 
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
+    rowData = [
+      {
+        ...rowData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...rowData[0],
+            },
+            investigation: {
+              id: 3,
+              name: 'Test',
+              title: 'Test investigation',
+              visitId: '3',
+              startDate: '2021-08-19',
+              endDate: '2021-08-20',
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-test-id="isis-study-table-doi-link"]').first().text()
+    ).toEqual('doi');
+
+    expect(
+      wrapper
+        .find('[data-test-id="isis-study-table-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi');
+  });
+
   it('displays information from investigation when investigation present', () => {
     rowData = [
       {

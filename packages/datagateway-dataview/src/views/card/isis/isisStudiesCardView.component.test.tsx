@@ -125,6 +125,23 @@ describe('ISIS Studies - Card View', () => {
     ]);
   });
 
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-test-id="landing-study-card-pid-link"]')
+        .first()
+        .text()
+    ).toEqual('doi');
+
+    expect(
+      wrapper
+        .find('[data-test-id="landing-study-card-pid-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi');
+  });
+
   it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
 

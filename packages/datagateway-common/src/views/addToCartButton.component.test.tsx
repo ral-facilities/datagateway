@@ -90,7 +90,7 @@ describe('Generic add to cart button', () => {
       entityType,
     });
 
-    wrapper.find('#add-to-cart-btn-1').first().simulate('click');
+    wrapper.find('#add-to-cart-btn-investigation-1').first().simulate('click');
 
     expect(useAddToCart).toHaveBeenCalledWith(entityType);
   });
@@ -115,7 +115,10 @@ describe('Generic add to cart button', () => {
       entityType,
     });
 
-    wrapper.find('#remove-from-cart-btn-1').first().simulate('click');
+    wrapper
+      .find('#remove-from-cart-btn-investigation-1')
+      .first()
+      .simulate('click');
     expect(useRemoveFromCart).toHaveBeenCalledWith(entityType);
   });
 });
