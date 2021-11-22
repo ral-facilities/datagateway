@@ -224,11 +224,17 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => {
-        const studyInvestigation = entity.studyInvestigations;
-        return studyInvestigation
-          ? studyInvestigation[0]?.study?.pid
-          : undefined;
+      content: function parentDoiFormat(entity: Investigation) {
+        return (
+          entity?.studyInvestigations?.[0]?.study.pid && (
+            <MuiLink
+              href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
+              data-test-id="isis-investigations-landing-parent-doi-link"
+            >
+              {entity.studyInvestigations[0].study.pid}
+            </MuiLink>
+          )
+        );
       },
       label: t('investigations.parent_doi'),
       icon: <Public className={classes.shortInfoIcon} />,
