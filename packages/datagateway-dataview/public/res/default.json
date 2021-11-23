@@ -210,10 +210,13 @@
     "howLabel": "How it works...",
     "exploreLabel": "1. Explore",
     "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
+    "exploreLink": "/browse/investigation",
     "discoverLabel": "2. Discover",
     "discoverDescription": "Search for the experimental data according to different criteria.",
+    "discoverLink": "/search",
     "downloadLabel": "3. Download",
-    "downloadDescription": "Retrieve the experimental data using a variety of download methods."
+    "downloadDescription": "Retrieve the experimental data using a variety of download methods.",
+    "downloadLink": "/download"
   },
   "selec_alert": {
     "added": "{{count}} item has been added to selections.",
