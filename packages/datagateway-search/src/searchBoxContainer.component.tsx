@@ -58,7 +58,9 @@ const SearchBoxContainer = (
         </Grid>
       </Grid>
 
-      <Typography>{t('searchBox.limited_results_message')}</Typography>
+      <Typography style={{ margin: '10px' }}>
+        {t('searchBox.limited_results_message')}
+      </Typography>
     </Grid>
   );
 };
