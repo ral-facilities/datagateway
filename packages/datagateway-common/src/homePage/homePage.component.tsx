@@ -42,7 +42,8 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
     },
     howItWorksGridItemTitle: {
-      color: '#F26300',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      color: (theme as any).colours?.orange,
       fontWeight: 'bold',
       paddingBottom: 10,
     },
