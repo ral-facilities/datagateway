@@ -71,6 +71,9 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       </Styled(MuiBox)>
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Typography))>
+    searchBox.limited_results_message
+  </WithStyles(ForwardRef(Typography))>
 </div>
 `;
 
