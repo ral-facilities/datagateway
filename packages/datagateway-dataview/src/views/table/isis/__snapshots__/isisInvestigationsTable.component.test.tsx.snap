@@ -730,6 +730,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
 exports[`ISIS Investigations table component renders title, name and DOI as links in StudyHierarchy 3`] = `
 <WithStyles(ForwardRef(Link))
   data-testid="isis-investigation-table-doi-link"
+  href="https://doi.org/study pid"
 >
   <ForwardRef(Link)
     classes={
