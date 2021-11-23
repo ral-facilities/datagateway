@@ -1,14 +1,9 @@
-describe('App', () => {
-  it('should load correctly', () => {
-    cy.visit('/');
-    cy.title().should('equal', 'DataGateway DataView');
-
-    cy.get('#datagateway-dataview').should('be.visible');
+describe('DataGateway HomePage', () => {
+  beforeEach(() => {
+    cy.visit('/datagateway');
   });
 
   it('should be able to use links on homepage to navigate', () => {
-    cy.visit('/datagateway');
-
     //Headings
     cy.contains('1. Explore').click();
     cy.url().should('include', '/browse/investigation');
