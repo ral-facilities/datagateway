@@ -348,7 +348,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   </Grid>
                 </Grid>
                 <Grid container justify="center" id="container-search-table">
-                  <Paper
+                  <div
                     style={{
                       // Only use height for the paper component if the view is table.
                       ...(view === 'table' ? { height: containerHeight } : {}),
@@ -374,7 +374,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         hierarchy={match.params.hierarchy}
                       />
                     )}
-                  </Paper>
+                  </div>
                 </Grid>
               </div>
             )}
