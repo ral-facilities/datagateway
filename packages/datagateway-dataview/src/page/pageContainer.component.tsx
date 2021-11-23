@@ -25,7 +25,6 @@ import {
   readSciGatewayToken,
   ArrowTooltip,
   SelectionAlert,
-  selectionAlertColor,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -68,6 +67,25 @@ const usePaperStyles = makeStyles(
         marginLeft: 'auto',
         marginRight: 'auto',
         maxWidth: '960px',
+      },
+    })
+);
+
+const useNavBarStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      openDataPaper: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        backgroundColor: (theme as any).colours?.warning,
+        display: 'flex',
+        flexDirection: 'column',
+        paddingLeft: 0,
+        paddingRight: 20,
+        justifyContent: 'center',
+      },
+      openDataInfoIcon: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        color: (theme as any).colours?.information,
       },
     })
 );
@@ -173,6 +191,7 @@ const NavBar = React.memo(
     loggedInAnonymously: boolean;
   }): React.ReactElement => {
     const [t] = useTranslation();
+    const classes = useNavBarStyles();
 
     return (
       <Sticky>
@@ -193,17 +212,7 @@ const NavBar = React.memo(
 
           {props.loggedInAnonymously ? (
             <Grid item>
-              <Paper
-                square
-                style={{
-                  backgroundColor: selectionAlertColor,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  paddingLeft: 0,
-                  paddingRight: 20,
-                  justifyContent: 'center',
-                }}
-              >
+              <Paper square className={classes.openDataPaper}>
                 <Grid
                   container
                   direction="row"
@@ -233,7 +242,7 @@ const NavBar = React.memo(
                         disableRipple
                         style={{ backgroundColor: 'transparent' }}
                       >
-                        <InfoIcon color="primary" />
+                        <InfoIcon className={classes.openDataInfoIcon} />
                       </IconButton>
                     </ArrowTooltip>
                   </Grid>

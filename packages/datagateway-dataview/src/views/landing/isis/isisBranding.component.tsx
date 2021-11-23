@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         '&:active': {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          color: (theme as any).ukri?.deep?.red,
+          color: (theme as any).colours?.red,
         },
       },
     },

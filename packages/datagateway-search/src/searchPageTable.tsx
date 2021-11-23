@@ -27,7 +27,7 @@ const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
     badge: {
       backgroundColor: '#fff',
-      color: theme.palette.primary.main,
+      color: '#000000',
       fontSize: 'inherit',
       lineHeight: 'inherit',
       top: '0.875em',
