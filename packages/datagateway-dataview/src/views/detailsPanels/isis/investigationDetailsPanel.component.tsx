@@ -13,7 +13,6 @@ import {
   Divider,
   Tabs,
   Tab,
-  Link,
   Link as MuiLink,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -155,11 +154,12 @@ const InvestigationDetailsPanel = (
                       {t('investigations.details.pid')}
                     </Typography>
                     <Typography>
-                      <Link
+                      <MuiLink
                         href={`https://doi.org/${studyInvestigation.study.pid}`}
+                        data-test-id="investigation-details-panel-pid-link"
                       >
                         {studyInvestigation.study.pid}
-                      </Link>
+                      </MuiLink>
                     </Typography>
                   </Grid>
                 );

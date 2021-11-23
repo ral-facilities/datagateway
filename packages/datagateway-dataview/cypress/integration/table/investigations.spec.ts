@@ -28,6 +28,20 @@ describe('Investigations Table', () => {
     );
   });
 
+  it('should have the correct url for the DOI link', () => {
+    cy.get('[data-test-id="investigation-table-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('[data-test-id="investigation-table-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   it('should be able to resize a column', () => {
     let columnWidth = 0;
 

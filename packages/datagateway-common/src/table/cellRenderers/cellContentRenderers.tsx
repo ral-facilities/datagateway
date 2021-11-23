@@ -81,10 +81,10 @@ export function tableLink(
 export function externalSiteLink(
   linkUrl: string,
   linkText?: string,
-  view?: ViewsType
+  label?: string
 ): React.ReactElement {
   return (
-    <Link href={linkUrl} data-testid="table-study-doi-link">
+    <Link href={linkUrl} data-testid={label}>
       {linkText}
     </Link>
   );

@@ -143,6 +143,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
+          ref: v1.0.1
 
       # DataGateway API file setup
       - name: Create log file
@@ -293,6 +294,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
+          ref: v1.0.1
 
       # DataGateway API file setup
       - name: Create log file
@@ -425,6 +427,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
+          ref: v1.0.1
 
       # DataGateway API file setup
       - name: Create log file

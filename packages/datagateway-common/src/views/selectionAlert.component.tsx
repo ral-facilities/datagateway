@@ -19,12 +19,15 @@ type SelectionAlertProps = {
   marginSide?: string;
 };
 
-export const selectionAlertColor = '#FFA500';
-const selectionAlertColorDark = darken(selectionAlertColor, 0.2);
-
 const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
-  (theme: Theme) =>
-    createStyles({
+  (theme: Theme) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const selectionAlertColor = (theme as any).colours?.warning;
+    //Only have conditional as test will fail when null and the above comes from SciGateway
+    const selectionAlertColorDark = selectionAlertColor
+      ? darken(selectionAlertColor, 0.2)
+      : 'orange';
+    return createStyles({
       root: {
         backgroundColor: selectionAlertColor,
         color: 'black',
@@ -73,7 +76,8 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
         alignItems: 'center',
         flex: '1',
       },
-    })
+    });
+  }
 );
 
 const SelectionAlert = React.memo(

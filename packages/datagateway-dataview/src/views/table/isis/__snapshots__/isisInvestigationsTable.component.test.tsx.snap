@@ -269,6 +269,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <WithStyles(ForwardRef(Link))
+            data-test-id="investigation-details-panel-pid-link"
             href="https://doi.org/study pid"
           >
             study pid
@@ -485,7 +486,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
 
 exports[`ISIS Investigations table component renders title, name and DOI as links 3`] = `
 <WithStyles(ForwardRef(Link))
-  data-testid="table-study-doi-link"
+  data-testid="isis-investigation-table-doi-link"
   href="https://doi.org/study pid"
 >
   <ForwardRef(Link)
@@ -499,14 +500,14 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         "underlineNone": "MuiLink-underlineNone",
       }
     }
-    data-testid="table-study-doi-link"
+    data-testid="isis-investigation-table-doi-link"
     href="https://doi.org/study pid"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
       color="primary"
       component="a"
-      data-testid="table-study-doi-link"
+      data-testid="isis-investigation-table-doi-link"
       href="https://doi.org/study pid"
       onBlur={[Function]}
       onFocus={[Function]}
@@ -550,7 +551,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         }
         color="primary"
         component="a"
-        data-testid="table-study-doi-link"
+        data-testid="isis-investigation-table-doi-link"
         href="https://doi.org/study pid"
         onBlur={[Function]}
         onFocus={[Function]}
@@ -558,7 +559,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       >
         <a
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-          data-testid="table-study-doi-link"
+          data-testid="isis-investigation-table-doi-link"
           href="https://doi.org/study pid"
           onBlur={[Function]}
           onFocus={[Function]}
@@ -728,8 +729,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
 
 exports[`ISIS Investigations table component renders title, name and DOI as links in StudyHierarchy 3`] = `
 <WithStyles(ForwardRef(Link))
-  data-testid="table-study-doi-link"
-  href="https://doi.org/study pid"
+  data-testid="isis-investigation-table-doi-link"
 >
   <ForwardRef(Link)
     classes={
@@ -742,14 +742,14 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         "underlineNone": "MuiLink-underlineNone",
       }
     }
-    data-testid="table-study-doi-link"
+    data-testid="isis-investigation-table-doi-link"
     href="https://doi.org/study pid"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
       color="primary"
       component="a"
-      data-testid="table-study-doi-link"
+      data-testid="isis-investigation-table-doi-link"
       href="https://doi.org/study pid"
       onBlur={[Function]}
       onFocus={[Function]}
@@ -793,7 +793,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         }
         color="primary"
         component="a"
-        data-testid="table-study-doi-link"
+        data-testid="isis-investigation-table-doi-link"
         href="https://doi.org/study pid"
         onBlur={[Function]}
         onFocus={[Function]}
@@ -801,7 +801,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       >
         <a
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-          data-testid="table-study-doi-link"
+          data-testid="isis-investigation-table-doi-link"
           href="https://doi.org/study pid"
           onBlur={[Function]}
           onFocus={[Function]}
