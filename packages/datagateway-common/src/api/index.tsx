@@ -119,7 +119,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     results: results ? Number(results) : null,
     filters: parsedFilters,
     sort: parsedSort,
-    searchText: searchText ? searchText : null,
+    searchText: searchText,
     dataset: dataset !== null ? dataset === 'true' : true,
     datafile: datafile !== null ? datafile === 'true' : true,
     investigation: investigation !== null ? investigation === 'true' : true,
