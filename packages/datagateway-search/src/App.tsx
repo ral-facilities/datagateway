@@ -6,7 +6,9 @@ import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import {
   DGCommonMiddleware,
   DGThemeProvider,
+  MicroFrontendId,
   Preloader,
+  SignOutType,
 } from 'datagateway-common';
 import {
   createBrowserHistory,
@@ -107,6 +109,13 @@ const queryClient = new QueryClient({
       staleTime: 300000,
     },
   },
+});
+
+document.addEventListener(MicroFrontendId, (e) => {
+  const action = (e as CustomEvent).detail;
+  if (action.type === SignOutType) {
+    queryClient.clear();
+  }
 });
 
 class App extends React.Component<unknown, { hasError: boolean }> {
