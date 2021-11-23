@@ -104,7 +104,7 @@ describe('ISIS - Investigations Cards', () => {
   it('should have the correct url for the DOI link', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .get('[data-test-id="isis-investigations-card-doi-link"]')
+      .get('[data-testid="isis-investigations-card-doi-link"]')
       .first()
       .then(($doi) => {
         const doi = $doi.text();
@@ -113,7 +113,7 @@ describe('ISIS - Investigations Cards', () => {
 
         cy.get('[data-testid="card"]')
           .first()
-          .get('[data-test-id="isis-investigations-card-doi-link"]')
+          .get('[data-testid="isis-investigations-card-doi-link"]')
           .first()
           .should('have.attr', 'href', url);
       });
@@ -134,7 +134,7 @@ describe('ISIS - Investigations Cards', () => {
 
     cy.get('[data-testid="card"]')
       .first()
-      .get('[data-test-id="investigation-details-panel-pid-link"]')
+      .get('[data-testid="investigation-details-panel-pid-link"]')
       .first()
       .then(($pid) => {
         const pid = $pid.text();
@@ -143,7 +143,7 @@ describe('ISIS - Investigations Cards', () => {
 
         cy.get('[data-testid="card"]')
           .first()
-          .get('[data-test-id="investigation-details-panel-pid-link"]')
+          .get('[data-testid="investigation-details-panel-pid-link"]')
           .first()
           .should('have.attr', 'href', url);
       });
@@ -152,7 +152,7 @@ describe('ISIS - Investigations Cards', () => {
 
     cy.get('[data-testid="card"]')
       .first()
-      .get('[data-test-id="investigation-details-panel-doi-link"]')
+      .get('[data-testid="investigation-details-panel-doi-link"]')
       .first()
       .then(($doi) => {
         const doi = $doi.text();
@@ -161,7 +161,7 @@ describe('ISIS - Investigations Cards', () => {
 
         cy.get('[data-testid="card"]')
           .first()
-          .get('[data-test-id="investigation-details-panel-doi-link"]')
+          .get('[data-testid="investigation-details-panel-doi-link"]')
           .first()
           .should('have.attr', 'href', url);
       });

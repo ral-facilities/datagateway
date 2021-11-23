@@ -70,14 +70,14 @@ describe('SearchPageContainer Component', () => {
     it('should have the correct url for the DOI link (Tableview) ', () => {
       // DOI
 
-      cy.get('[data-test-id="investigation-search-table-doi-link"]')
+      cy.get('[data-testid="investigation-search-table-doi-link"]')
         .first()
         .then(($doi) => {
           const doi = $doi.text();
 
           const url = `https://doi.org/${doi}`;
 
-          cy.get('[data-test-id="investigation-search-table-doi-link"]')
+          cy.get('[data-testid="investigation-search-table-doi-link"]')
             .first()
             .should('have.attr', 'href', url);
         });
@@ -88,14 +88,14 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('[aria-label="container-view-button"]').click();
 
-      cy.get('[data-test-id="investigation-search-card-doi-link"]')
+      cy.get('[data-testid="investigation-search-card-doi-link"]')
         .first()
         .then(($doi) => {
           const doi = $doi.text();
 
           const url = `https://doi.org/${doi}`;
 
-          cy.get('[data-test-id="investigation-search-card-doi-link"]')
+          cy.get('[data-testid="investigation-search-card-doi-link"]')
             .first()
             .should('have.attr', 'href', url);
         });

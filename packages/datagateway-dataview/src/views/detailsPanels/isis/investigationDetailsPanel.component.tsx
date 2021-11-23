@@ -156,7 +156,7 @@ const InvestigationDetailsPanel = (
                     <Typography>
                       <MuiLink
                         href={`https://doi.org/${studyInvestigation.study.pid}`}
-                        data-test-id="investigation-details-panel-pid-link"
+                        data-testid="investigation-details-panel-pid-link"
                       >
                         {studyInvestigation.study.pid}
                       </MuiLink>

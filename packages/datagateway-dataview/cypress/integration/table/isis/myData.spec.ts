@@ -32,14 +32,14 @@ describe('ISIS - MyData Table', () => {
     });
 
     it('should have the correct url for the DOI link', () => {
-      cy.get('[data-test-id="isis-mydata-table-doi-link"]')
+      cy.get('[data-testid="isis-mydata-table-doi-link"]')
         .first()
         .then(($doi) => {
           const doi = $doi.text();
 
           const url = `https://doi.org/${doi}`;
 
-          cy.get('[data-test-id="isis-mydata-table-doi-link"]')
+          cy.get('[data-testid="isis-mydata-table-doi-link"]')
             .first()
             .should('have.attr', 'href', url);
         });
@@ -246,28 +246,28 @@ describe('ISIS - MyData Table', () => {
 
         // Study PID
 
-        cy.get('[data-test-id="investigation-details-panel-pid-link"]')
+        cy.get('[data-testid="investigation-details-panel-pid-link"]')
           .first()
           .then(($pid) => {
             const pid = $pid.text();
 
             const url = `https://doi.org/${pid}`;
 
-            cy.get('[data-test-id="investigation-details-panel-pid-link"]')
+            cy.get('[data-testid="investigation-details-panel-pid-link"]')
               .first()
               .should('have.attr', 'href', url);
           });
 
         // DOI
 
-        cy.get('[data-test-id="investigation-details-panel-doi-link"]')
+        cy.get('[data-testid="investigation-details-panel-doi-link"]')
           .first()
           .then(($doi) => {
             const doi = $doi.text();
 
             const url = `https://doi.org/${doi}`;
 
-            cy.get('[data-test-id="investigation-details-panel-doi-link"]')
+            cy.get('[data-testid="investigation-details-panel-doi-link"]')
               .first()
               .should('have.attr', 'href', url);
           });
