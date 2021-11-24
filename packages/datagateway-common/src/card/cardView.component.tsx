@@ -106,7 +106,7 @@ export interface CardViewProps {
   onSort: (
     sort: string,
     order: Order | null,
-    defaultSort: UpdateMethod
+    updateMethod: UpdateMethod
   ) => void;
 
   // Props to get title, description of the card

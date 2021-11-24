@@ -100,7 +100,7 @@ interface VirtualizedTableProps {
   onSort: (
     column: string,
     order: Order | null,
-    defaultSort: UpdateMethod
+    updateMethod: UpdateMethod
   ) => void;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
