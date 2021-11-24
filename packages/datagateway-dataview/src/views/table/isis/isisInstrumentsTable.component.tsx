@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 import TitleIcon from '@material-ui/icons/Title';
+import DescriptionIcon from '@material-ui/icons/Description';
 import { useLocation } from 'react-router-dom';
 
 interface ISISInstrumentsTableProps {
@@ -65,6 +66,18 @@ const ISISInstrumentsTable = (
             view
           );
         },
+        filterComponent: textFilter,
+      },
+      {
+        icon: DescriptionIcon,
+        label: t('instruments.description'),
+        dataKey: 'description',
+        filterComponent: textFilter,
+      },
+      {
+        icon: TitleIcon,
+        label: t('instruments.type'),
+        dataKey: 'type',
         filterComponent: textFilter,
       },
     ];

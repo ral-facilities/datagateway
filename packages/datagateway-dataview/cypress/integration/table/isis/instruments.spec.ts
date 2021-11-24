@@ -75,6 +75,27 @@ describe('ISIS - Instruments Table', () => {
         'Exist board space brother section. Fast purpose right power away health south. Me ground more a kind last.'
       );
     });
+
+    it.only('description', () => {
+      cy.get('[aria-label="Filter by Description"]').first().type('space');
+
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Near must surface law how full. Magazine soldier usually wish affect. Oil order catch work everybody nor. Become magazine concern fish throw turn us police. Draw manager long different include.'
+      );
+    });
+
+    it.only('type', () => {
+      cy.get('[aria-label="Filter by Type"]').first().type('4');
+
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Near must surface law how full. Magazine soldier usually wish affect. Oil order catch work everybody nor. Become magazine concern fish throw turn us police. Draw manager long different include.'
+      );
+      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
+        'Success position hour town like various need. Admit fight see somebody other new you. Ten skin simply indeed. Offer box off. Beyond forward usually. Alone have avoid to base much free.'
+      );
+    });
   });
 
   describe('should be able to view details', () => {
