@@ -111,8 +111,8 @@ describe('ISIS Studies table component', () => {
       {
         filterType: 'where',
         filterValue: JSON.stringify({
-          'studyInvestigations.investigation.endDate': {
-            lte: '2018-10-27 00:00:00',
+          'studyInvestigations.investigation.releaseDate': {
+            lt: '2021-10-27 00:00:00',
           },
         }),
       },
@@ -130,7 +130,7 @@ describe('ISIS Studies table component', () => {
         filterType: 'where',
         filterValue: JSON.stringify({
           'studyInvestigations.investigation.endDate': {
-            lte: '2018-10-27 00:00:00',
+            lte: '2021-10-27 00:00:00',
           },
         }),
       },

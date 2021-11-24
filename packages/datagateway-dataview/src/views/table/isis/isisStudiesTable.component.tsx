@@ -19,7 +19,7 @@ import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import TitleIcon from '@material-ui/icons/Title';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useLocation } from 'react-router';
-import { format, sub, set } from 'date-fns';
+import { format, set } from 'date-fns';
 
 interface ISISStudiesTableProps {
   instrumentId: string;
@@ -38,7 +38,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
 
   const unembargoDate = format(
     // set s and ms to 0 to escape recursive loop of fetching data every time they change
-    sub(set(new Date(), { seconds: 0, milliseconds: 0 }), { years: 3 }),
+    set(new Date(), { seconds: 0, milliseconds: 0 }),
     'yyyy-MM-dd HH:mm:ss'
   );
 
@@ -54,9 +54,9 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        // TODO: check exactly how ISIS does this
-        'studyInvestigations.investigation.endDate': {
-          lte: unembargoDate,
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
         },
       }),
     },
@@ -73,9 +73,9 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        // TODO: check exactly how ISIS does this
-        'studyInvestigations.investigation.endDate': {
-          lte: unembargoDate,
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
         },
       }),
     },

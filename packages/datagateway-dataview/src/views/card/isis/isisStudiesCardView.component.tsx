@@ -17,7 +17,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import { format, sub, set } from 'date-fns';
+import { format, set } from 'date-fns';
 
 interface ISISStudiesCVProps {
   instrumentId: string;
@@ -43,7 +43,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
 
   const unembargoDate = format(
     // set s and ms to 0 to escape recursive loop of fetching data every time they change
-    sub(set(new Date(), { seconds: 0, milliseconds: 0 }), { years: 3 }),
+    set(new Date(), { seconds: 0, milliseconds: 0 }),
     'yyyy-MM-dd HH:mm:ss'
   );
 
@@ -59,9 +59,9 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        // TODO: check exactly how ISIS does this
-        'studyInvestigations.investigation.endDate': {
-          lte: unembargoDate,
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
         },
       }),
     },
@@ -78,9 +78,9 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        // TODO: check exactly how ISIS does this
-        'studyInvestigations.investigation.endDate': {
-          lte: unembargoDate,
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
         },
       }),
     },
