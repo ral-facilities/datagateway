@@ -68,7 +68,6 @@ const ISISFacilityCyclesTable = (
             view
           ),
         filterComponent: textFilter,
-        defaultSort: 'asc',
       },
       {
         icon: CalendarTodayIcon,

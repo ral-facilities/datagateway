@@ -15,24 +15,21 @@ describe('ISIS - FacilityCycles Cards', () => {
     cy.get('#datagateway-dataview').should('be.visible');
 
     //Default sort
-    cy.contains('[role="button"]', 'asc').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('#card').contains('2000 cycle 2').click({ force: true });
+    cy.get('#card').contains('2019 cycle 4').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/1/investigation'
+      '/browse/instrument/1/facilityCycle/79/investigation'
     );
   });
 
   describe('should be able to sort by', () => {
     beforeEach(() => {
       //Revert the default sort
-      cy.contains('[role="button"]', 'Name').click().click();
       cy.contains('[role="button"]', 'Start Date')
         .click()
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
@@ -77,7 +74,6 @@ describe('ISIS - FacilityCycles Cards', () => {
   describe('should be able to filter by', () => {
     beforeEach(() => {
       //Revert the default sort
-      cy.contains('[role="button"]', 'Name').click().click();
       cy.contains('[role="button"]', 'Start Date')
         .click()
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });

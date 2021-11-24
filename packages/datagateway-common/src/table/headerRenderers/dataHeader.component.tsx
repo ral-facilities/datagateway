@@ -45,6 +45,7 @@ const DataHeader = React.memo(
     const currSortDirection = sort[dataKey];
 
     //Apply default sort on page load (but only if not already defined in URL params)
+    //This will apply them in the order of the column definitions given to a table
     React.useEffect(() => {
       if (defaultSort !== undefined && currSortDirection === undefined)
         onSort(dataKey, defaultSort, 'replace');

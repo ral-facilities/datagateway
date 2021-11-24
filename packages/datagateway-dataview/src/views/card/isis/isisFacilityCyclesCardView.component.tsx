@@ -60,7 +60,6 @@ const ISISFacilityCyclesCardView = (
           view
         ),
       filterComponent: textFilter,
-      defaultSort: 'asc',
     }),
     [t, textFilter, instrumentId, view]
   );

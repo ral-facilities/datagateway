@@ -15,7 +15,6 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "name",
-      "defaultSort": "asc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),

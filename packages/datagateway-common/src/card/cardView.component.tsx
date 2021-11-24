@@ -248,6 +248,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     (information ? information.some((i) => !i.disableSort) : false);
 
   //Apply default sort on page load (but only if not already defined in URL params)
+  //This will apply them in the order of title, description and information, wherever
+  //defaultSort has been provided
   React.useEffect(() => {
     if (title.defaultSort !== undefined && sort[title.dataKey] === undefined)
       onSort(title.dataKey, title.defaultSort, 'replace');

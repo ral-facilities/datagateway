@@ -154,9 +154,6 @@ describe('ISIS Facility Cycles - Card View', () => {
 
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
-    });
-    expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
   });
