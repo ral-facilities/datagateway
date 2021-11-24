@@ -9,8 +9,6 @@ describe('ISIS - Investigations Table', () => {
     cy.get('#datagateway-dataview').should('be.visible');
 
     //Default sort
-    cy.get('[aria-sort="ascending"]').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
     cy.get('[aria-sort="descending"]').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionDesc').should('exist');
   });
@@ -111,7 +109,6 @@ describe('ISIS - Investigations Table', () => {
   describe('should be able to sort by', () => {
     beforeEach(() => {
       //Revert the default sort
-      cy.contains('[role="button"]', 'Title').click().click();
       cy.contains('[role="button"]', 'Start Date').click();
     });
 
@@ -214,7 +211,6 @@ describe('ISIS - Investigations Table', () => {
   describe('should be able to view details', () => {
     beforeEach(() => {
       //Revert the default sort
-      cy.contains('[role="button"]', 'Title').click().click();
       cy.contains('[role="button"]', 'Start Date').click();
 
       // Check that we have received the size from the API as this will produce

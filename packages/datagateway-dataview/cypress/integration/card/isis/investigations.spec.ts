@@ -15,8 +15,6 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('#datagateway-dataview').should('be.visible');
 
     //Default sort
-    cy.contains('[role="button"]', 'asc').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
@@ -114,7 +112,6 @@ describe('ISIS - Investigations Cards', () => {
   describe('should be able to sort by', () => {
     beforeEach(() => {
       //Revert the default sort
-      cy.contains('[role="button"]', 'Title').click().click();
       cy.contains('[role="button"]', 'Start Date')
         .click()
         .wait('@getInvestigationsOrder', { timeout: 10000 });
@@ -171,7 +168,6 @@ describe('ISIS - Investigations Cards', () => {
   describe('should be able to filter by', () => {
     beforeEach(() => {
       //Revert the default sort
-      cy.contains('[role="button"]', 'Title').click().click();
       cy.contains('[role="button"]', 'Start Date')
         .click()
         .wait('@getInvestigationsOrder', { timeout: 10000 });

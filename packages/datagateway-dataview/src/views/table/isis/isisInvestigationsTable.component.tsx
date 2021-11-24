@@ -141,7 +141,6 @@ const ISISInvestigationsTable = (
           );
         },
         filterComponent: textFilter,
-        defaultSort: 'asc',
       },
       {
         icon: FingerprintIcon,

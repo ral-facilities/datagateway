@@ -103,7 +103,6 @@ const ISISInvestigationsCardView = (
           view
         ),
       filterComponent: textFilter,
-      defaultSort: 'asc',
     }),
     [t, textFilter, urlPrefix, view]
   );

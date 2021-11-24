@@ -210,9 +210,6 @@ describe('ISIS Investigations - Card View', () => {
 
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?sort=${encodeURIComponent('{"title":"asc"}')}`,
-    });
-    expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
   });
