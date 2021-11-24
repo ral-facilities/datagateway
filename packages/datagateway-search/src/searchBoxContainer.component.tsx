@@ -7,6 +7,7 @@ import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
 import { useTranslation } from 'react-i18next';
+import AdvancedHelpDialogue from './search/advancedHelpDialogue';
 
 interface SearchBoxContainerProps {
   searchText: string;
@@ -41,6 +42,12 @@ const SearchBoxContainer = (
       <Grid item style={{ display: 'flex' }}>
         <Box px={2} m="auto">
           <SearchButton initiateSearch={initiateSearch} />
+        </Box>
+      </Grid>
+
+      <Grid item style={{ display: 'flex' }}>
+        <Box px={2} m="auto">
+          <AdvancedHelpDialogue />
         </Box>
       </Grid>
 
