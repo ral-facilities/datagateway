@@ -29,9 +29,12 @@ const useStyles = makeStyles((theme: Theme) => {
     paper: {
       margin: theme.spacing(2),
       padding: theme.spacing(2),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      backgroundColor: (theme as any).colours?.paper,
     },
     dialogueBackground: {
-      backgroundColor: theme.palette.grey[200],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      backgroundColor: (theme as any).colours?.background,
     },
   });
 });
@@ -101,27 +104,37 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
         <Paper className={classes.paper}>
           <DialogHeading>Using logic operators</DialogHeading>
           <DialogContent>
-            Use <b>AND</b> to search for records containing more than one phrase
-            e.g. &#39;neutron <b>AND</b> scattering&#39;.
+            Find all data containing &#39;neutron&#39; and &#39;scattering&#39;
+            with &#39;neutron <b>AND</b> scattering&#39;.
           </DialogContent>
           <DialogContent>
-            Use <b>OR</b> to search for records containing either one phrase or
-            another e.g. &#39;neutron <b>OR</b> scattering&#39;.
+            Find all data containing either neutron or scattering with
+            &#39;neutron <b>OR</b> scattering&#39;
           </DialogContent>
           <DialogContent>
-            Use <b>NOT</b> to exclude records containing a word or phrase e.g.
-            &#39;scattering <b>NOT</b> elastic&#39;.
+            Find all data that contains the phrase &#39;scattering&#39; but
+            exclude those containing &#39;elastic&#39; with &#39;scattering{' '}
+            <b>NOT</b> elastic&#39;.
           </DialogContent>
           <DialogContent>
-            Use brackets around a phrases to construct more complicated searches
+            Use brackets around phrases to construct more complicated searches
             e.g. &#39;scattering <b>NOT</b> (elastic <b>OR</b> neutron)&#39;.
           </DialogContent>
         </Paper>
         <Paper className={classes.paper}>
           <DialogHeading>Wildcards</DialogHeading>
           <DialogContent>
+            Use wildcards to take the place of one or more characters in a
+            phrase.
+          </DialogContent>
+          <DialogContent>
             {
-              "Use wildcards to take the place of one or more characters in a phrase. A question mark '?' for example can be used to search for a phrase with one or more character missing e.g. 'te?t' will return results containing 'test' or 'text'. Similarly the asterix '*' can be used to replace zero or more characters e.g. 'test*' will return results containing either 'test' or 'tests'."
+              "A question mark '?' can be used to search for a phrase with one or more character missing e.g. 'te?t' will return results containing 'test' or 'text'."
+            }
+          </DialogContent>
+          <DialogContent>
+            {
+              "An asterix '*' can be used to replace zero or more characters e.g. 'test*' will return results containing either 'test' or 'tests'."
             }
           </DialogContent>
         </Paper>
