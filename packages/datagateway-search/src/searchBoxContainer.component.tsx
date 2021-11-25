@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { Grid, Box } from '@material-ui/core';
+import { Grid, Box, Typography } from '@material-ui/core';
 
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
+import { useTranslation } from 'react-i18next';
 
 interface SearchBoxContainerProps {
   searchText: string;
@@ -17,6 +18,7 @@ const SearchBoxContainer = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
   const { searchText, initiateSearch, onSearchTextChange } = props;
+  const [t] = useTranslation();
 
   return (
     <Grid
@@ -55,6 +57,10 @@ const SearchBoxContainer = (
           </Box>
         </Grid>
       </Grid>
+
+      <Typography style={{ margin: '10px' }}>
+        {t('searchBox.limited_results_message')}
+      </Typography>
     </Grid>
   );
 };
