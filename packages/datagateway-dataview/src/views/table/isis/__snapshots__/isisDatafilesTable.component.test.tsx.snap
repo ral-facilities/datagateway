@@ -59,6 +59,7 @@ Object {
     },
     Object {
       "dataKey": "modTime",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -89,7 +90,9 @@ Object {
   "onSort": [Function],
   "onUncheck": [MockFunction],
   "selectedRows": Array [],
-  "sort": Object {},
+  "sort": Object {
+    "modTime": "desc",
+  },
   "totalRowCount": 0,
 }
 `;

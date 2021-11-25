@@ -100,6 +100,7 @@ Object {
     },
     Object {
       "dataKey": "startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -214,7 +215,7 @@ exports[`ISIS MyData table component renders details panel correctly and it fetc
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-445"
+      className="makeStyles-root-482"
       container={true}
       direction="column"
     >
@@ -230,7 +231,7 @@ exports[`ISIS MyData table component renders details panel correctly and it fetc
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-446"
+          className="makeStyles-divider-483"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

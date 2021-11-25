@@ -145,6 +145,16 @@ describe('ISIS Instruments - Card View', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
+    );
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -153,7 +163,7 @@ describe('ISIS Instruments - Card View', () => {
     button.simulate('click');
 
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
+      `?sort=${encodeURIComponent('{"fullName":"desc"}')}`
     );
   });
 

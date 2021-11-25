@@ -1,11 +1,12 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
 import DataHeader from './dataHeader.component';
 import TextColumnFilter from '../columnFilters/textColumnFilter.component';
 import { TableSortLabel } from '@material-ui/core';
 
 describe('Data column header component', () => {
   let shallow;
+  let mount;
   const onSort = jest.fn();
   const resizeColumn = jest.fn();
   const dataHeaderProps = {
@@ -30,6 +31,12 @@ describe('Data column header component', () => {
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
+    mount = createMount();
+  });
+
+  afterEach(() => {
+    onSort.mockClear();
+    resizeColumn.mockClear();
   });
 
   it('renders correctly without sort or filter', () => {
@@ -69,7 +76,7 @@ describe('Data column header component', () => {
       const label = wrapper.find(TableSortLabel);
 
       label.simulate('click');
-      expect(onSort).toHaveBeenCalledWith('test', 'asc');
+      expect(onSort).toHaveBeenCalledWith('test', 'asc', 'push');
     });
 
     it('sets desc order', () => {
@@ -80,7 +87,7 @@ describe('Data column header component', () => {
       const label = wrapper.find(TableSortLabel);
 
       label.simulate('click');
-      expect(onSort).toHaveBeenCalledWith('test', 'desc');
+      expect(onSort).toHaveBeenCalledWith('test', 'desc', 'push');
     });
 
     it('sets null order', () => {
@@ -91,7 +98,27 @@ describe('Data column header component', () => {
       const label = wrapper.find(TableSortLabel);
 
       label.simulate('click');
-      expect(onSort).toHaveBeenCalledWith('test', null);
+      expect(onSort).toHaveBeenCalledWith('test', null, 'push');
+    });
+  });
+
+  describe('calls the onSort method when default sort is specified', () => {
+    it('sets asc order', () => {
+      const wrapper = mount(
+        <DataHeader {...dataHeaderProps} defaultSort="asc" />
+      );
+      wrapper.update();
+
+      expect(onSort).toHaveBeenCalledWith('test', 'asc', 'replace');
+    });
+
+    it('sets desc order', () => {
+      const wrapper = mount(
+        <DataHeader {...dataHeaderProps} defaultSort="desc" />
+      );
+      wrapper.update();
+
+      expect(onSort).toHaveBeenCalledWith('test', 'desc', 'replace');
     });
   });
 

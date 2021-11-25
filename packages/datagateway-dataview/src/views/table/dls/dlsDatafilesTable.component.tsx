@@ -13,7 +13,7 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  usePushSort,
+  useSort,
   useIds,
   useCart,
   useAddToCart,
@@ -51,7 +51,7 @@ const DLSDatafilesTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const { data: allIds } = useIds(
     'datafile',
@@ -142,6 +142,7 @@ const DLSDatafilesTable = (
         label: t('datafiles.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
     ],
     [t, dateFilter, textFilter]
@@ -168,7 +169,7 @@ const DLSDatafilesTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

@@ -142,6 +142,18 @@ describe('ISIS Studies - Card View', () => {
     ).toEqual('https://doi.org/doi');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent(
+        '{"studyInvestigations.investigation.startDate":"desc"}'
+      )}`
+    );
+  });
+
   it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
 

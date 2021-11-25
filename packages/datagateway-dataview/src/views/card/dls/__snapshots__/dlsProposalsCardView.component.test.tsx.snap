@@ -24,10 +24,13 @@ Object {
   "onSort": [Function],
   "page": null,
   "results": null,
-  "sort": Object {},
+  "sort": Object {
+    "title": "asc",
+  },
   "title": Object {
     "content": [Function],
     "dataKey": "title",
+    "defaultSort": "asc",
     "filterComponent": [Function],
     "label": "investigations.title",
   },
