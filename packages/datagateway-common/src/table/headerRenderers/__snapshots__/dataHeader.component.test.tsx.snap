@@ -74,14 +74,26 @@ exports[`Data column header component renders correctly with filter but no sort 
     scale={1}
     transform={null}
   >
-    <Memo(ForwardRef(DragIndicatorIcon))
-      fontSize="small"
+    <div
       style={
         Object {
           "cursor": "col-resize",
+          "marginLeft": 18,
+          "paddingLeft": "4px",
+          "paddingRight": "4px",
         }
       }
-    />
+    >
+      <WithStyles(ForwardRef(Divider))
+        flexItem={true}
+        orientation="vertical"
+        style={
+          Object {
+            "height": "100%",
+          }
+        }
+      />
+    </div>
   </Draggable>
 </div>
 `;
@@ -166,14 +178,26 @@ exports[`Data column header component renders correctly with sort and filter 1`]
     scale={1}
     transform={null}
   >
-    <Memo(ForwardRef(DragIndicatorIcon))
-      fontSize="small"
+    <div
       style={
         Object {
           "cursor": "col-resize",
+          "marginLeft": 18,
+          "paddingLeft": "4px",
+          "paddingRight": "4px",
         }
       }
-    />
+    >
+      <WithStyles(ForwardRef(Divider))
+        flexItem={true}
+        orientation="vertical"
+        style={
+          Object {
+            "height": "100%",
+          }
+        }
+      />
+    </div>
   </Draggable>
 </div>
 `;
@@ -254,14 +278,26 @@ exports[`Data column header component renders correctly with sort but no filter 
     scale={1}
     transform={null}
   >
-    <Memo(ForwardRef(DragIndicatorIcon))
-      fontSize="small"
+    <div
       style={
         Object {
           "cursor": "col-resize",
+          "marginLeft": 18,
+          "paddingLeft": "4px",
+          "paddingRight": "4px",
         }
       }
-    />
+    >
+      <WithStyles(ForwardRef(Divider))
+        flexItem={true}
+        orientation="vertical"
+        style={
+          Object {
+            "height": "100%",
+          }
+        }
+      />
+    </div>
   </Draggable>
 </div>
 `;
@@ -336,14 +372,26 @@ exports[`Data column header component renders correctly without sort or filter 1
     scale={1}
     transform={null}
   >
-    <Memo(ForwardRef(DragIndicatorIcon))
-      fontSize="small"
+    <div
       style={
         Object {
           "cursor": "col-resize",
+          "marginLeft": 18,
+          "paddingLeft": "4px",
+          "paddingRight": "4px",
         }
       }
-    />
+    >
+      <WithStyles(ForwardRef(Divider))
+        flexItem={true}
+        orientation="vertical"
+        style={
+          Object {
+            "height": "100%",
+          }
+        }
+      />
+    </div>
   </Draggable>
 </div>
 `;
