@@ -62,11 +62,13 @@ const styles = (theme: Theme): StyleRules =>
       flex: 1,
       overflow: 'hidden',
       height: rowHeight,
+      padding: 0,
     },
     headerTableCell: {
       flex: 1,
       height: headerHeight,
       justifyContent: 'space-between',
+      padding: 0,
     },
   });
 
