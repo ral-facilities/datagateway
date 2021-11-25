@@ -13,12 +13,17 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import { Link, Paper } from '@material-ui/core';
+import { Trans, useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
     root: {
       margin: 0,
       padding: theme.spacing(2),
+    },
+    advancedButton: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      color: (theme as any).colours?.blue,
     },
     closeButton: {
       position: 'absolute',
@@ -54,6 +59,7 @@ const DialogHeading = withStyles((theme: Theme) => ({
 const AdvancedHelpDialogue = (): React.ReactElement => {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
+  const [t] = useTranslation();
 
   const handleClickOpen = (): void => {
     setOpen(true);
@@ -65,8 +71,13 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
 
   return (
     <div>
-      <Button variant="text" color="primary" onClick={handleClickOpen}>
-        Advanced
+      <Button
+        variant="text"
+        className={classes.advancedButton}
+        aria-label={t('advanced_search_help.advanced_button_arialabel')}
+        onClick={handleClickOpen}
+      >
+        {t('advanced_search_help.advanced_button')}
       </Button>
       <Dialog
         onClose={handleClose}
@@ -81,7 +92,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
         >
           <Typography variant="h6">Advanced Search Tips</Typography>
           <IconButton
-            aria-label="close"
+            aria-label={t('advanced_search_help.close_button_arialabel')}
             className={classes.closeButton}
             onClick={handleClose}
           >
@@ -89,61 +100,43 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
           </IconButton>
         </MuiDialogTitle>
         <Typography className={classes.root} gutterBottom>
-          {
-            "When you search for a word e.g. 'calibration', we will search for any records containing this word. But, sometimes you may wish to be more specific. Here we show you how."
-          }
+          {t('advanced_search_help.description')}
         </Typography>
         <Paper className={classes.paper}>
-          <DialogHeading>Search by an exact phrase</DialogHeading>
+          <DialogHeading>
+            {t('advanced_search_help.exact_phrase_title')}
+          </DialogHeading>
           <DialogContent>
-            {
-              'Use quotation marks around a phrase to search for a precise sequence of words e.g. "neutron scattering".'
-            }
+            {t('advanced_search_help.exact_phrase_description')}
           </DialogContent>
         </Paper>
         <Paper className={classes.paper}>
-          <DialogHeading>Using logic operators</DialogHeading>
+          <DialogHeading>
+            {t('advanced_search_help.logic_operators_title')}
+          </DialogHeading>
           <DialogContent>
-            Find all data containing &#39;neutron&#39; and &#39;scattering&#39;
-            with &#39;neutron <b>AND</b> scattering&#39;.
-          </DialogContent>
-          <DialogContent>
-            Find all data containing either neutron or scattering with
-            &#39;neutron <b>OR</b> scattering&#39;
-          </DialogContent>
-          <DialogContent>
-            Find all data that contains the phrase &#39;scattering&#39; but
-            exclude those containing &#39;elastic&#39; with &#39;scattering{' '}
-            <b>NOT</b> elastic&#39;.
-          </DialogContent>
-          <DialogContent>
-            Use brackets around phrases to construct more complicated searches
-            e.g. &#39;scattering <b>NOT</b> (elastic <b>OR</b> neutron)&#39;.
+            <Trans
+              t={t}
+              i18nKey="advanced_search_help.logic_operators_description"
+            />
           </DialogContent>
         </Paper>
         <Paper className={classes.paper}>
-          <DialogHeading>Wildcards</DialogHeading>
+          <DialogHeading>
+            {t('advanced_search_help.wildcards_title')}
+          </DialogHeading>
           <DialogContent>
-            Use wildcards to take the place of one or more characters in a
-            phrase.
-          </DialogContent>
-          <DialogContent>
-            {
-              "A question mark '?' can be used to search for a phrase with one or more character missing e.g. 'te?t' will return results containing 'test' or 'text'."
-            }
-          </DialogContent>
-          <DialogContent>
-            {
-              "An asterix '*' can be used to replace zero or more characters e.g. 'test*' will return results containing either 'test' or 'tests'."
-            }
+            <Trans t={t} i18nKey="advanced_search_help.wildcards_description" />
           </DialogContent>
         </Paper>
         <Typography className={classes.root} gutterBottom>
-          Further information on searching can be found{' '}
-          <Link href="https://lucene.apache.org/core/4_10_2/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">
-            here
-          </Link>
-          .
+          <Trans t={t} i18nKey="advanced_search_help.footer">
+            Further information on searching can be found{' '}
+            <Link href="https://lucene.apache.org/core/4_10_2/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">
+              here
+            </Link>
+            .
+          </Trans>
         </Typography>
       </Dialog>
     </div>

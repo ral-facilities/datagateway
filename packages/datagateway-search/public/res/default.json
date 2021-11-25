@@ -102,5 +102,19 @@
   "advanced_filters": {
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters"
+  },
+  "advanced_search_help": {
+    "advanced_button": "Advanced",
+    "advanced_button_arialabel": "Advanced",
+    "close_button_arialabel": "Close",
+    "title": "Advanced Search Tips",
+    "description": "When you search for a word e.g. 'calibration', we will search for any records containing this word. But, sometimes you may wish to be more specific. Here we show you how.",
+    "exact_phrase_title": "Search by an exact phrase",
+    "exact_phrase_description": "Use quotation marks around a phrase to search for a precise sequence of words e.g. \"neutron scattering\".",
+    "logic_operators_title": "Using logic operators",
+    "logic_operators_description": "Find all data containing 'neutron' and 'scattering' with 'neutron <strong>AND</strong> scattering'.<br><br>Find all data containing either neutron or scattering with 'neutron <strong>OR</strong> scattering'.<br><br>Find all data that contains the phrase 'scattering' but exclude those containing 'elastic' with 'scattering <strong>NOT</strong> elastic'.<br><br>Use brackets around phrases to construct more complicated searches e.g. 'scattering <strong>NOT</strong> (elastic <strong>OR</strong> neutron)'.",
+    "wildcards_title": "Using wildcards",
+    "wildcards_description": "Use wildcards to take the place of one or more characters in a phrase.<br><br>A question mark '?' can be used to search for a phrase with one or more character missing e.g. 'te?t' will return results containing 'test' or 'text'.<br><br>An asterix '*' can be used to replace zero or more characters e.g. '*ium' will return results containing words like 'sodium' and 'vanadium'.",
+    "footer": "Further information on searching can be found <2>here</2>."
   }
 }
