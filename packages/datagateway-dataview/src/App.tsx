@@ -9,7 +9,7 @@ import {
   listenToMessages,
   MicroFrontendId,
   Preloader,
-  SignOutType,
+  BroadcastSignOutType,
 } from 'datagateway-common';
 import {
   createBrowserHistory,
@@ -122,7 +122,7 @@ const queryClient = new QueryClient({
 
 document.addEventListener(MicroFrontendId, (e) => {
   const action = (e as CustomEvent).detail;
-  if (action.type === SignOutType) {
+  if (action.type === BroadcastSignOutType) {
     queryClient.clear();
   }
 });
