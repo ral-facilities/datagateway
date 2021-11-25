@@ -8,7 +8,7 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useUpdateView,
 } from './index';
 import {
@@ -303,17 +303,31 @@ describe('generic api functions', () => {
       jest.resetModules();
     });
 
-    describe('usePushSort', () => {
-      it('returns callback that when called pushes a new sort to the url query', () => {
-        const { result } = renderHook(() => usePushSort(), {
+    describe('useSort', () => {
+      it('returns callback that can push a new sort to the url query', () => {
+        const { result } = renderHook(() => useSort(), {
           wrapper,
         });
 
         act(() => {
-          result.current('name', 'asc');
+          result.current('name', 'asc', 'push');
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
+        });
+      });
+
+      it('returns callback that can replace the sort with a new one in the url query', () => {
+        const { result } = renderHook(() => useSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', 'asc', 'replace');
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
           search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
         });
       });
@@ -326,12 +340,12 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => usePushSort(), {
+        const { result } = renderHook(() => useSort(), {
           wrapper,
         });
 
         act(() => {
-          result.current('name', null);
+          result.current('name', null, 'push');
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
@@ -409,7 +423,7 @@ describe('generic api functions', () => {
     });
 
     describe('useUpdateView', () => {
-      it('returns callback that when called pushes a new page to the url query', () => {
+      it('returns callback that when called pushes a new view to the url query', () => {
         const { result } = renderHook(() => useUpdateView('push'), {
           wrapper,
         });
@@ -421,7 +435,7 @@ describe('generic api functions', () => {
         expect(pushSpy).toHaveBeenCalledWith('?view=table');
       });
 
-      it('returns callback that when called replaces the current page with a new one in the url query', () => {
+      it('returns callback that when called replaces the current view with a new one in the url query', () => {
         const { result } = renderHook(() => useUpdateView('replace'), {
           wrapper,
         });

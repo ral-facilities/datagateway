@@ -14,6 +14,10 @@ describe('DLS - Datafiles Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should not load incorrect URL', () => {
@@ -96,6 +100,13 @@ describe('DLS - Datafiles Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait('@datafilesOrder', { timeout: 10000 });
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
@@ -169,6 +180,13 @@ describe('DLS - Datafiles Table', () => {
   });
 
   describe('should be able to filter by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait('@datafilesOrder', { timeout: 10000 });
+    });
+
     it('text', () => {
       cy.get('[aria-label="Filter by Location"]').first().type('rise');
 
@@ -226,6 +244,13 @@ describe('DLS - Datafiles Table', () => {
   });
 
   describe('should be able to view details', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait('@datafilesOrder', { timeout: 10000 });
+    });
+
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
