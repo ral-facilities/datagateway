@@ -104,29 +104,83 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
         </Typography>
         <Paper className={classes.paper}>
           <DialogHeading>
-            {t('advanced_search_help.exact_phrase_title')}
-          </DialogHeading>
-          <DialogContent>
-            {t('advanced_search_help.exact_phrase_description')}
-          </DialogContent>
-        </Paper>
-        <Paper className={classes.paper}>
-          <DialogHeading>
-            {t('advanced_search_help.logic_operators_title')}
+            {t('advanced_search_help.exact_phrase.title')}
           </DialogHeading>
           <DialogContent>
             <Trans
               t={t}
-              i18nKey="advanced_search_help.logic_operators_description"
-            />
+              i18nKey="advanced_search_help.exact_phrase.description"
+            >
+              Use quotation marks around a phrase to search for a precise
+              sequence of words e.g.{' '}
+              <Link href={t('advanced_search_help.exact_phrase.link1')}>
+                &quot;neutron scattering&quot;
+              </Link>
+              .
+            </Trans>
           </DialogContent>
         </Paper>
         <Paper className={classes.paper}>
           <DialogHeading>
-            {t('advanced_search_help.wildcards_title')}
+            {t('advanced_search_help.logic_operators.title')}
           </DialogHeading>
           <DialogContent>
-            <Trans t={t} i18nKey="advanced_search_help.wildcards_description" />
+            <Trans
+              t={t}
+              i18nKey="advanced_search_help.logic_operators.description"
+            >
+              Find all data containing &#39;neutron&#39; and
+              &#39;scattering&#39; with &#39;
+              <Link href={t('advanced_search_help.logic_operators.link1')}>
+                neutron AND scattering
+              </Link>
+              &#39;. Find all data containing either neutron or scattering with
+              &#39;{' '}
+              <Link href={t('advanced_search_help.logic_operators.link2')}>
+                neutron OR scattering
+              </Link>
+              &#39;. Find all data that contains the phrase &#39;scattering&#39;
+              but exclude those containing &#39;elastic&#39; with &#39;{' '}
+              <Link href={t('advanced_search_help.logic_operators.link3')}>
+                scattering NOT elastic
+              </Link>
+              &#39;. Use brackets around phrases to construct more complicated
+              searches e.g. &#39;{' '}
+              <Link href={t('advanced_search_help.logic_operators.link4')}>
+                scattering NOT (elastic OR neutron)
+              </Link>
+              &#39;.
+            </Trans>
+          </DialogContent>
+        </Paper>
+        <Paper className={classes.paper}>
+          <DialogHeading>
+            {t('advanced_search_help.wildcards.title')}
+          </DialogHeading>
+          <DialogContent>
+            <Trans t={t} i18nKey="advanced_search_help.wildcards.description">
+              Use wildcards to take the place of one or more characters in a
+              phrase. A question mark &#39;?&#39; can be used to search for a
+              phrase with one or more character missing e.g. &#39;{' '}
+              <Link href={t('advanced_search_help.wildcards.link1')}>te?t</Link>
+              &#39; will return results containing &#39;test&#39; or
+              &#39;text&#39;. An asterix &#39;*&#39; can be used to replace zero
+              or more characters e.g. &#39;
+              <Link href={t('advanced_search_help.wildcards.link2')}>*ium</Link>
+              &#39; will return results containing words like &#39;sodium&#39;
+              and &#39;vanadium&#39;.
+            </Trans>
+          </DialogContent>
+        </Paper>
+        <Paper className={classes.paper}>
+          <DialogHeading>
+            {t('advanced_search_help.limited_search_results.title')}
+          </DialogHeading>
+          <DialogContent>
+            <Trans
+              t={t}
+              i18nKey="advanced_search_help.limited_search_results.description"
+            />
           </DialogContent>
         </Paper>
         <Typography className={classes.root} gutterBottom>

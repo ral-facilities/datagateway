@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Grid, Box, Typography } from '@material-ui/core';
+import { Grid, Box, Typography, Link } from '@material-ui/core';
 
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import AdvancedHelpDialogue from './search/advancedHelpDialogue';
 
 interface SearchBoxContainerProps {
@@ -51,7 +51,28 @@ const SearchBoxContainer = (
         </Box>
       </Grid>
 
-      <Grid container item justify="center" style={{ paddingBottom: 8 }}>
+      <Grid container item justify="center" style={{ padding: 0, margin: 0 }}>
+        <Typography style={{ fontSize: '14px', padding: 0, margin: 0 }}>
+          <Trans t={t} i18nKey="searchBox.search_textbox_label">
+            e.g. title has
+            <Link href={t('searchBox.search_textbox_label_link1')}>
+              &quot;instrument calibration&quot;
+            </Link>
+            , or{' '}
+            <Link href={t('searchBox.search_textbox_label_link2')}>
+              neutron AND scattering
+            </Link>
+            .
+          </Trans>
+        </Typography>
+      </Grid>
+
+      <Grid
+        container
+        item
+        justify="center"
+        style={{ paddingBottom: 8, paddingTop: 8 }}
+      >
         <Grid item style={{ display: 'flex' }}>
           <Box m="auto">
             <CheckboxesGroup />
