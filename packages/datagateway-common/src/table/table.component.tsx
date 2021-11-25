@@ -19,7 +19,7 @@ import {
   TableRowRenderer,
 } from 'react-virtualized';
 import clsx from 'clsx';
-import { Entity, Order, ICATEntity } from '../app.types';
+import { Entity, Order, ICATEntity, UpdateMethod } from '../app.types';
 import ExpandCell from './cellRenderers/expandCell.component';
 import DataCell from './cellRenderers/dataCell.component';
 import ActionCell from './cellRenderers/actionCell.component';
@@ -79,6 +79,7 @@ export interface ColumnType {
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
+  defaultSort?: Order;
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
 }
 
@@ -98,7 +99,11 @@ interface VirtualizedTableProps {
   loadMoreRows?: (offsetParams: IndexRange) => Promise<unknown>;
   totalRowCount?: number;
   sort: { [column: string]: Order };
-  onSort: (column: string, order: Order | null) => void;
+  onSort: (
+    column: string,
+    order: Order | null,
+    updateMethod: UpdateMethod
+  ) => void;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
   actionsWidth?: number;
@@ -395,6 +400,7 @@ const VirtualizedTable = React.memo(
                       icon,
                       filterComponent,
                       disableSort,
+                      defaultSort,
                     }) => {
                       return (
                         <Column
@@ -416,6 +422,7 @@ const VirtualizedTable = React.memo(
                               labelString={label}
                               filterComponent={filterComponent}
                               resizeColumn={resizeColumn}
+                              defaultSort={defaultSort}
                             />
                           )}
                           className={clsx(classes.flexContainer, className)}

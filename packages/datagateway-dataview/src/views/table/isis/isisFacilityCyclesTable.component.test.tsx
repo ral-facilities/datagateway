@@ -34,6 +34,7 @@ describe('ISIS FacilityCycles table component', () => {
   let state: StateType;
   let rowData: FacilityCycle[];
   let history: History;
+  let replaceSpy: jest.SpyInstance;
 
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
@@ -60,6 +61,7 @@ describe('ISIS FacilityCycles table component', () => {
       },
     ];
     history = createMemoryHistory();
+    replaceSpy = jest.spyOn(history, 'replace');
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -100,7 +102,7 @@ describe('ISIS FacilityCycles table component', () => {
 
   it('calls useFacilityCyclesInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useFacilityCyclesInfinite as jest.Mock).mockReturnValueOnce({
+    (useFacilityCyclesInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -158,6 +160,16 @@ describe('ISIS FacilityCycles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    });
   });
 
   it('updates sort query params on sort', () => {

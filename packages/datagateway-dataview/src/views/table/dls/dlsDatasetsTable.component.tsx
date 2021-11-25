@@ -13,7 +13,7 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  usePushSort,
+  useSort,
   useIds,
   useCart,
   useAddToCart,
@@ -50,7 +50,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const { data: allIds } = useIds(
     'dataset',
@@ -130,6 +130,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -171,7 +172,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

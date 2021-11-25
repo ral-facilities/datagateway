@@ -314,7 +314,7 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 1"]').should('be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo(0, 350);
-        cy.get('[aria-label="select row 9"]').should('not.be.checked');
+        cy.get('[aria-label="select row 14"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
@@ -457,7 +457,7 @@ describe('Add/remove from cart functionality', () => {
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .first()
-          .type('e')
+          .type('ge')
           .wait(['@getDatafiles', '@getDatafiles']);
 
         cy.get('[aria-label="select all rows"]').check();
@@ -468,7 +468,7 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
         cy.get(
-          `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+          `[aria-label="select row ${Math.floor(Math.random() * 6)}"]`
         ).should('be.checked');
 
         cy.get('[aria-label="Filter by Location"]').first().clear();
@@ -480,13 +480,13 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'true');
 
-        cy.get('[aria-label="select row 0"]').should('be.checked');
-        cy.get('[aria-label="select row 1"]').should('be.checked');
-        cy.get('[aria-label="select row 20"]').should('not.be.checked');
+        cy.get('[aria-label="select row 4"]').should('be.checked');
+        cy.get('[aria-label="select row 10"]').should('be.checked');
+        cy.get('[aria-label="select row 0"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get('[aria-label="select row 44"]').should('not.be.checked');
+        cy.get('[aria-label="select row 53"]').should('not.be.checked');
         cy.get('[aria-label="select row 54"]').should('be.checked');
       });
 

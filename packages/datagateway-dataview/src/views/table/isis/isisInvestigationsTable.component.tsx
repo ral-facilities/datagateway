@@ -13,7 +13,7 @@ import {
   useCart,
   useDateFilter,
   useInvestigationSizes,
-  usePushSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
   TableActionProps,
@@ -102,7 +102,7 @@ const ISISInvestigationsTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -194,6 +194,7 @@ const ISISInvestigationsTable = (
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -213,7 +214,7 @@ const ISISInvestigationsTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
