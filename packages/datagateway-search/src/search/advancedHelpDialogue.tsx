@@ -44,13 +44,13 @@ const useStyles = makeStyles((theme: Theme) => {
   });
 });
 
-const DialogContent = withStyles((theme: Theme) => ({
+const DialogueContent = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(2),
   },
 }))(MuiDialogContent);
 
-const DialogHeading = withStyles((theme: Theme) => ({
+const DialogueHeading = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(2),
   },
@@ -103,10 +103,10 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
           {t('advanced_search_help.description')}
         </Typography>
         <Paper className={classes.paper}>
-          <DialogHeading>
+          <DialogueHeading>
             {t('advanced_search_help.exact_phrase.title')}
-          </DialogHeading>
-          <DialogContent>
+          </DialogueHeading>
+          <DialogueContent>
             <Trans
               t={t}
               i18nKey="advanced_search_help.exact_phrase.description"
@@ -118,13 +118,13 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               </Link>
               .
             </Trans>
-          </DialogContent>
+          </DialogueContent>
         </Paper>
         <Paper className={classes.paper}>
-          <DialogHeading>
+          <DialogueHeading>
             {t('advanced_search_help.logic_operators.title')}
-          </DialogHeading>
-          <DialogContent>
+          </DialogueHeading>
+          <DialogueContent>
             <Trans
               t={t}
               i18nKey="advanced_search_help.logic_operators.description"
@@ -151,13 +151,13 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               </Link>
               &#39;.
             </Trans>
-          </DialogContent>
+          </DialogueContent>
         </Paper>
         <Paper className={classes.paper}>
-          <DialogHeading>
+          <DialogueHeading>
             {t('advanced_search_help.wildcards.title')}
-          </DialogHeading>
-          <DialogContent>
+          </DialogueHeading>
+          <DialogueContent>
             <Trans t={t} i18nKey="advanced_search_help.wildcards.description">
               Use wildcards to take the place of one or more characters in a
               phrase. A question mark &#39;?&#39; can be used to search for a
@@ -170,18 +170,23 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               &#39; will return results containing words like &#39;sodium&#39;
               and &#39;vanadium&#39;.
             </Trans>
-          </DialogContent>
+          </DialogueContent>
         </Paper>
         <Paper className={classes.paper}>
-          <DialogHeading>
+          <DialogueHeading>
             {t('advanced_search_help.limited_search_results.title')}
-          </DialogHeading>
-          <DialogContent>
+          </DialogueHeading>
+          <DialogueContent>
             <Trans
               t={t}
               i18nKey="advanced_search_help.limited_search_results.description"
-            />
-          </DialogContent>
+            >
+              Due to technical and performance reasons, only the top 300 results
+              will be displayed for each entity type i.e. Investigation, Dataset
+              or Datafile. If you find your search gives 300 results, try using
+              a more specific query to find what you are looking for.
+            </Trans>
+          </DialogueContent>
         </Paper>
         <Typography className={classes.root} gutterBottom>
           <Trans t={t} i18nKey="advanced_search_help.footer">

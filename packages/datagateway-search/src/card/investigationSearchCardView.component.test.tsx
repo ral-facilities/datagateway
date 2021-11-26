@@ -354,6 +354,7 @@ describe('Investigation - Card View', () => {
         .prop('href')
     ).toEqual('https://doi.org/doi 1');
   });
+
   it('does not render ISIS link when instrumentId cannot be found', () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
