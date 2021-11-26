@@ -188,10 +188,6 @@ describe('ISIS MyData table component', () => {
           'investigationUsers.user.name': { eq: 'testUser' },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({ investigationUsers: 'user' }),
-      },
     ]);
     expect(useInvestigationsInfinite).toHaveBeenCalledWith([
       {
@@ -206,7 +202,6 @@ describe('ISIS MyData table component', () => {
           {
             investigationInstruments: 'instrument',
           },
-          { investigationUsers: 'user' },
           { studyInvestigations: 'study' },
         ]),
       },
