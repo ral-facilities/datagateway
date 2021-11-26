@@ -24,22 +24,30 @@ describe('SearchBoxContainer Component', () => {
 
   it('should display an error when an invalid start date is entered', () => {
     cy.get('[aria-label="Start date input"]').type('2009-13-01');
-    cy.get('.MuiFormHelperText-root').contains('Invalid Date Format');
+    cy.get('.MuiFormHelperText-root').contains(
+      'Please enter the date in the format yyyy-MM-dd.'
+    );
 
     cy.get('[aria-label="Start date input"]').clear();
     cy.get('.MuiFormHelperText-root').should('not.exist');
     cy.get('[aria-label="Start date input"]').type('2009-02-30');
-    cy.get('.MuiFormHelperText-root').contains('Invalid Date Format');
+    cy.get('.MuiFormHelperText-root').contains(
+      'Please enter the date in the format yyyy-MM-dd.'
+    );
   });
 
   it('should display an error when an invalid end date is entered', () => {
     cy.get('[aria-label="End date input"]').type('2009-13-01');
-    cy.get('.MuiFormHelperText-root').contains('Invalid Date Format');
+    cy.get('.MuiFormHelperText-root').contains(
+      'Please enter the date in the format yyyy-MM-dd.'
+    );
 
     cy.get('[aria-label="End date input"]').clear();
     cy.get('.MuiFormHelperText-root').should('not.exist');
     cy.get('[aria-label="End date input"]').type('2009-02-30');
-    cy.get('.MuiFormHelperText-root').contains('Invalid Date Format');
+    cy.get('.MuiFormHelperText-root').contains(
+      'Please enter the date in the format yyyy-MM-dd.'
+    );
   });
 
   it('should display an error when the entered end date is before the start date', () => {
