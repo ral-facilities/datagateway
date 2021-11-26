@@ -277,6 +277,8 @@ export type Filter = string[] | TextFilter | DateFilter;
 
 export type Order = 'asc' | 'desc';
 
+export type UpdateMethod = 'push' | 'replace';
+
 export interface FiltersType {
   [column: string]: Filter;
 }

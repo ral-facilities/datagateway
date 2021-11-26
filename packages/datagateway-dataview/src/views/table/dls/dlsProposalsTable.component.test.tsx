@@ -120,7 +120,7 @@ describe('DLS Proposals table component', () => {
 
   it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -157,6 +157,16 @@ describe('DLS Proposals table component', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+    );
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -167,7 +177,7 @@ describe('DLS Proposals table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?sort=${encodeURIComponent('{"title":"desc"}')}`
     );
   });
 

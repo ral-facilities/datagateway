@@ -11,7 +11,7 @@ import {
   useInvestigationsDatasetCount,
   useInvestigationsInfinite,
   usePushFilters,
-  usePushSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -43,10 +43,6 @@ const DLSMyDataTable = (): React.ReactElement => {
         'investigationUsers.user.name': { eq: username },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({ investigationUsers: 'user' }),
-    },
   ]);
   const { fetchNextPage, data } = useInvestigationsInfinite([
     {
@@ -61,7 +57,6 @@ const DLSMyDataTable = (): React.ReactElement => {
         {
           investigationInstruments: 'instrument',
         },
-        { investigationUsers: 'user' },
       ]),
     },
   ]);
@@ -75,7 +70,7 @@ const DLSMyDataTable = (): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
 
   const loadMoreRows = React.useCallback(
@@ -141,6 +136,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -155,7 +151,6 @@ const DLSMyDataTable = (): React.ReactElement => {
 
   React.useEffect(() => {
     // Sort and filter by startDate upon load.
-    if (!('startDate' in sort)) pushSort('startDate', 'desc');
     if (!('startDate' in filters))
       pushFilters('startDate', {
         endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
@@ -170,7 +165,7 @@ const DLSMyDataTable = (): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       detailsPanel={VisitDetailsPanel}
       columns={columns}
     />

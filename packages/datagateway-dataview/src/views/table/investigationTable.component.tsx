@@ -21,7 +21,7 @@ import {
   useAddToCart,
   useRemoveFromCart,
   parseSearchToQuery,
-  usePushSort,
+  useSort,
   useTextFilter,
   useDateFilter,
   DetailsPanelProps,
@@ -149,7 +149,7 @@ const InvestigationTable = (): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -259,7 +259,7 @@ const InvestigationTable = (): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

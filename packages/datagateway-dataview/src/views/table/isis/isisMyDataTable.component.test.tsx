@@ -188,10 +188,6 @@ describe('ISIS MyData table component', () => {
           'investigationUsers.user.name': { eq: 'testUser' },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({ investigationUsers: 'user' }),
-      },
     ]);
     expect(useInvestigationsInfinite).toHaveBeenCalledWith([
       {
@@ -206,7 +202,6 @@ describe('ISIS MyData table component', () => {
           {
             investigationInstruments: 'instrument',
           },
-          { investigationUsers: 'user' },
           { studyInvestigations: 'study' },
         ]),
       },
@@ -267,7 +262,7 @@ describe('ISIS MyData table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -277,7 +272,7 @@ describe('ISIS MyData table component', () => {
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(history.length).toBe(4);
+    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -290,7 +285,7 @@ describe('ISIS MyData table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"startDate":{"startDate":"2019-08-06"}}'
@@ -300,8 +295,18 @@ describe('ISIS MyData table component', () => {
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(history.length).toBe(4);
+    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+    );
   });
 
   it('updates sort query params on sort', () => {
@@ -312,7 +317,7 @@ describe('ISIS MyData table component', () => {
       .first()
       .simulate('click');
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );

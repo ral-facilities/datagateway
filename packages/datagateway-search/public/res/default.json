@@ -24,7 +24,8 @@
       "ok": "OK",
       "cancel": "Cancel",
       "clear": "Clear"
-    }
+    },
+    "limited_results_message": "Please note: Only the top 300 results will be displayed for each entity type i.e. Investigation, Dataset or Datafile."
   },
   "searchPageTable": {
     "tabs_arialabel": "Search table",

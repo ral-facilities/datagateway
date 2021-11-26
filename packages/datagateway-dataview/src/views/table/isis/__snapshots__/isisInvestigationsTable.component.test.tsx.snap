@@ -89,6 +89,7 @@ Object {
     },
     Object {
       "dataKey": "startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -153,7 +154,9 @@ Object {
   "onSort": [Function],
   "onUncheck": [MockFunction],
   "selectedRows": Array [],
-  "sort": Object {},
+  "sort": Object {
+    "startDate": "desc",
+  },
   "totalRowCount": 0,
 }
 `;
@@ -193,7 +196,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-409"
+      className="makeStyles-root-443"
       container={true}
       direction="column"
     >
@@ -209,7 +212,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-410"
+          className="makeStyles-divider-444"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

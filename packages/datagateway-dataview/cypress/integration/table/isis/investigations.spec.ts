@@ -7,13 +7,17 @@ describe('ISIS - Investigations Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('exist');
   });
 
   it('should be able to click an investigation to see its landing page', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/16'
+      '/browse/instrument/1/facilityCycle/16/investigation/97'
     );
   });
 
@@ -103,6 +107,11 @@ describe('ISIS - Investigations Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Title').click();
 
@@ -203,6 +212,9 @@ describe('ISIS - Investigations Table', () => {
 
   describe('should be able to view details', () => {
     beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent the click.
       cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '10.2 GB').should(

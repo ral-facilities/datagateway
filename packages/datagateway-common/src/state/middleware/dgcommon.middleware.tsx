@@ -5,6 +5,7 @@ import {
   RequestPluginRerenderType,
   CustomFrontendMessageType,
   SendThemeOptionsType,
+  BroadcastSignOutType,
 } from '../actions/actions.types';
 import axios from 'axios';
 import { MicroFrontendId } from '../../app.types';
@@ -34,6 +35,7 @@ export const listenToMessages = (dispatch: Dispatch): void => {
         case RequestPluginRerenderType:
         case RegisterRouteType:
         case SendThemeOptionsType:
+        case BroadcastSignOutType:
           break;
         default:
           // log and ignore

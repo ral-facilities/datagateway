@@ -20,7 +20,7 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
   ArrowTooltip,
   AddToCartButton,
@@ -31,6 +31,7 @@ import { useTranslation } from 'react-i18next';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,7 +68,7 @@ const ISISInvestigationsCardView = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
@@ -91,7 +92,7 @@ const ISISInvestigationsCardView = (
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.title'),
       dataKey: 'title',
@@ -106,7 +107,7 @@ const ISISInvestigationsCardView = (
     [t, textFilter, urlPrefix, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.details.summary'),
       dataKey: 'summary',
@@ -115,7 +116,7 @@ const ISISInvestigationsCardView = (
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: Fingerprint,
@@ -175,6 +176,7 @@ const ISISInvestigationsCardView = (
         label: t('investigations.details.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
@@ -229,7 +231,7 @@ const ISISInvestigationsCardView = (
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

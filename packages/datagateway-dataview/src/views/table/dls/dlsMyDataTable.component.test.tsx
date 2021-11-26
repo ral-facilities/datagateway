@@ -126,10 +126,6 @@ describe('DLS MyData table component', () => {
           'investigationUsers.user.name': { eq: 'testUser' },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({ investigationUsers: 'user' }),
-      },
     ]);
     expect(useInvestigationsInfinite).toHaveBeenCalledWith([
       {
@@ -144,7 +140,6 @@ describe('DLS MyData table component', () => {
           {
             investigationInstruments: 'instrument',
           },
-          { investigationUsers: 'user' },
         ]),
       },
     ]);
@@ -156,8 +151,8 @@ describe('DLS MyData table component', () => {
   it('sorts by startDate desc and filters startDate to be before the current date on load', () => {
     createWrapper();
 
-    expect(history.length).toBe(3);
-    expect(history.entries[1].search).toBe(
+    expect(history.length).toBe(2);
+    expect(history.entries[0].search).toBe(
       `?sort=${encodeURIComponent(JSON.stringify({ startDate: 'desc' }))}`
     );
     expect(history.location.search).toBe(

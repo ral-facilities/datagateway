@@ -10,6 +10,7 @@ import {
   QueryParams,
   ViewsType,
   Entity,
+  UpdateMethod,
 } from '../app.types';
 import {
   useQueries,
@@ -119,7 +120,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     results: results ? Number(results) : null,
     filters: parsedFilters,
     sort: parsedSort,
-    searchText: searchText ? searchText : null,
+    searchText: searchText,
     dataset: dataset !== null ? dataset === 'true' : true,
     datafile: datafile !== null ? datafile === 'true' : true,
     investigation: investigation !== null ? investigation === 'true' : true,
@@ -243,13 +244,19 @@ export const getApiParams = (props: {
   return searchParams;
 };
 
-export const usePushSort = (): ((
+export const useSort = (): ((
   sortKey: string,
-  order: Order | null
+  order: Order | null,
+  updateMethod: UpdateMethod
 ) => void) => {
-  const { push } = useHistory();
+  const { push, replace } = useHistory();
+
   return React.useCallback(
-    (sortKey: string, order: Order | null): void => {
+    (
+      sortKey: string,
+      order: Order | null,
+      updateMethod: UpdateMethod
+    ): void => {
       let query = parseSearchToQuery(window.location.search);
       if (order !== null) {
         query = {
@@ -269,9 +276,11 @@ export const usePushSort = (): ((
           },
         };
       }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
+      (updateMethod === 'push' ? push : replace)({
+        search: `?${parseQueryToSearch(query).toString()}`,
+      });
     },
-    [push]
+    [push, replace]
   );
 };
 
@@ -339,7 +348,7 @@ export const usePushResults = (): ((results: number) => void) => {
 };
 
 export const useUpdateView = (
-  updateMethod: 'push' | 'replace'
+  updateMethod: UpdateMethod
 ): ((view: ViewsType) => void) => {
   const { push, replace } = useHistory();
   const functionToUse = updateMethod === 'push' ? push : replace;

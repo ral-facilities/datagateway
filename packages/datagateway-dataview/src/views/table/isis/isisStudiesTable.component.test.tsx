@@ -124,7 +124,7 @@ describe('ISIS Studies table component', () => {
 
   it('calls useStudiesInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useStudiesInfinite as jest.Mock).mockReturnValueOnce({
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -181,6 +181,18 @@ describe('ISIS Studies table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent(
+        '{"studyInvestigations.investigation.startDate":"desc"}'
+      )}`
+    );
   });
 
   it('updates sort query params on sort', () => {

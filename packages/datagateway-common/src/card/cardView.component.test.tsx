@@ -288,7 +288,7 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc');
+    expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc', 'push');
     updatedProps = {
       ...updatedProps,
       sort: { title: 'asc' },
@@ -297,7 +297,7 @@ describe('Card View', () => {
 
     // Click to sort descending
     button.simulate('click');
-    expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc');
+    expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc', 'push');
     updatedProps = {
       ...updatedProps,
       sort: { title: 'desc' },
@@ -306,7 +306,29 @@ describe('Card View', () => {
 
     // Click to clear sorting
     button.simulate('click');
-    expect(onSort).toHaveBeenNthCalledWith(3, 'title', null);
+    expect(onSort).toHaveBeenNthCalledWith(3, 'title', null, 'push');
+  });
+
+  it('default sort applied correctly', () => {
+    const updatedProps: CardViewProps = {
+      ...props,
+      title: { ...props.title, defaultSort: 'asc' },
+      description: { dataKey: 'name', label: 'Name', defaultSort: 'desc' },
+      information: [
+        { dataKey: 'visitId' },
+        {
+          dataKey: 'test',
+          label: 'Name',
+          defaultSort: 'asc',
+        },
+      ],
+    };
+    const wrapper = createWrapper(updatedProps);
+    wrapper.update();
+
+    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('name', 'desc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('test', 'asc', 'replace');
   });
 
   it('can sort by description with label', () => {
@@ -322,7 +344,7 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(onSort).toHaveBeenCalledWith('name', 'asc');
+    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
   });
 
   it('can sort by description without label', () => {
@@ -338,7 +360,7 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(onSort).toHaveBeenCalledWith('name', 'asc');
+    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
   });
 
   it('page changed when sort applied', () => {
@@ -349,7 +371,7 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(onSort).toHaveBeenCalledWith('title', 'asc');
+    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'push');
     expect(onPageChange).toHaveBeenCalledWith(1);
   });
 
@@ -386,7 +408,7 @@ describe('Card View', () => {
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('visitId');
     button.simulate('click');
-    expect(onSort).toHaveBeenCalledWith('visitId', 'asc');
+    expect(onSort).toHaveBeenCalledWith('visitId', 'asc', 'push');
   });
 
   it('information displays with content that has no tooltip', () => {
