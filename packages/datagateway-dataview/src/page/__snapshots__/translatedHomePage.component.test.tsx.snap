@@ -41,17 +41,22 @@ exports[`HomePage translated homepage renders correctly 1`] = `
         md={4}
         sm={12}
       >
-        <WithStyles(ForwardRef(Typography))
+        <WithStyles(ForwardRef(Link))
           className="HomePage-howItWorksGridItemTitle-5"
+          href="homePage.exploreLink"
           variant="h5"
         >
           homePage.exploreLabel
-        </WithStyles(ForwardRef(Typography))>
-        <img
-          alt="homePage.exploreLabel"
-          className="HomePage-howItWorksGridItemImage-6"
-          src="testexplore.jpg"
-        />
+        </WithStyles(ForwardRef(Link))>
+        <WithStyles(ForwardRef(Link))
+          href="homePage.exploreLink"
+        >
+          <img
+            alt="homePage.exploreLabel"
+            className="HomePage-howItWorksGridItemImage-6"
+            src="testexplore.jpg"
+          />
+        </WithStyles(ForwardRef(Link))>
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7"
           variant="body1"
@@ -65,17 +70,22 @@ exports[`HomePage translated homepage renders correctly 1`] = `
         md={4}
         sm={12}
       >
-        <WithStyles(ForwardRef(Typography))
+        <WithStyles(ForwardRef(Link))
           className="HomePage-howItWorksGridItemTitle-5"
+          href="homePage.discoverLink"
           variant="h5"
         >
           homePage.discoverLabel
-        </WithStyles(ForwardRef(Typography))>
-        <img
-          alt="homePage.discoverLabel"
-          className="HomePage-howItWorksGridItemImage-6"
-          src="testdiscover.jpg"
-        />
+        </WithStyles(ForwardRef(Link))>
+        <WithStyles(ForwardRef(Link))
+          href="homePage.discoverLink"
+        >
+          <img
+            alt="homePage.discoverLabel"
+            className="HomePage-howItWorksGridItemImage-6"
+            src="testdiscover.jpg"
+          />
+        </WithStyles(ForwardRef(Link))>
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7"
           variant="body1"
@@ -89,17 +99,22 @@ exports[`HomePage translated homepage renders correctly 1`] = `
         md={4}
         sm={12}
       >
-        <WithStyles(ForwardRef(Typography))
+        <WithStyles(ForwardRef(Link))
           className="HomePage-howItWorksGridItemTitle-5"
+          href="homePage.downloadLink"
           variant="h5"
         >
           homePage.downloadLabel
-        </WithStyles(ForwardRef(Typography))>
-        <img
-          alt="homePage.downloadLabel"
-          className="HomePage-howItWorksGridItemImage-6"
-          src="testdownload.jpg"
-        />
+        </WithStyles(ForwardRef(Link))>
+        <WithStyles(ForwardRef(Link))
+          href="homePage.downloadLink"
+        >
+          <img
+            alt="homePage.downloadLabel"
+            className="HomePage-howItWorksGridItemImage-6"
+            src="testdownload.jpg"
+          />
+        </WithStyles(ForwardRef(Link))>
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7"
           variant="body1"
