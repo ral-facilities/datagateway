@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Search Button component tests renders correctly 1`] = `
+exports[`Advanced help dialogue component tests renders correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Button))
     aria-label="advanced_search_help.advanced_button_arialabel"
@@ -79,6 +79,7 @@ exports[`Search Button component tests renders correctly 1`] = `
         >
           Find all data containing 'neutron' and 'scattering' with '
           <WithStyles(ForwardRef(Link))
+            data-testid="advanced-help-link"
             href="advanced_search_help.logic_operators.link1"
           >
             neutron AND scattering

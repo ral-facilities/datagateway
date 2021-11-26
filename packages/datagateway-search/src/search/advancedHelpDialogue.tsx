@@ -131,7 +131,10 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
             >
               Find all data containing &#39;neutron&#39; and
               &#39;scattering&#39; with &#39;
-              <Link href={t('advanced_search_help.logic_operators.link1')}>
+              <Link
+                data-testid="advanced-help-link"
+                href={t('advanced_search_help.logic_operators.link1')}
+              >
                 neutron AND scattering
               </Link>
               &#39;. Find all data containing either neutron or scattering with

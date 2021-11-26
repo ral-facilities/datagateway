@@ -108,7 +108,7 @@
   },
   "advanced_search_help": {
     "advanced_button": "Advanced",
-    "advanced_button_arialabel": "Advanced",
+    "advanced_button_arialabel": "Advanced help",
     "close_button_arialabel": "Close",
     "title": "Advanced Search Tips",
     "description": "When you search for a word e.g. 'calibration', we will search for any records containing this word. But, sometimes you may wish to be more specific. Here we show you how.",
