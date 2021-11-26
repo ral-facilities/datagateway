@@ -104,7 +104,7 @@ describe('ISIS Instruments table component', () => {
 
   it('calls useInstrumentsInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useInstrumentsInfinite as jest.Mock).mockReturnValueOnce({
+    (useInstrumentsInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -141,6 +141,16 @@ describe('ISIS Instruments table component', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
+    );
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -151,7 +161,7 @@ describe('ISIS Instruments table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
+      `?sort=${encodeURIComponent('{"fullName":"desc"}')}`
     );
   });
 

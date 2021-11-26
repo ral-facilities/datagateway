@@ -162,6 +162,16 @@ describe('DLS Datasets - Card View', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 

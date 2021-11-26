@@ -21,7 +21,7 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  usePushSort,
+  useSort,
   useIds,
   useCart,
   useAddToCart,
@@ -99,7 +99,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const { data: allIds } = useIds(
     'dataset',
@@ -214,7 +214,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

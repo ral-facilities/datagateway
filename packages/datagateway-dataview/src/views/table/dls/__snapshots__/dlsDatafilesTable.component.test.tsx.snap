@@ -57,6 +57,7 @@ Object {
     },
     Object {
       "dataKey": "createTime",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -87,7 +88,9 @@ Object {
   "onSort": [Function],
   "onUncheck": [MockFunction],
   "selectedRows": Array [],
-  "sort": Object {},
+  "sort": Object {
+    "createTime": "desc",
+  },
   "totalRowCount": 0,
 }
 `;
