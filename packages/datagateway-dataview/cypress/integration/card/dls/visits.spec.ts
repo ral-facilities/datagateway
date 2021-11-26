@@ -65,7 +65,7 @@ describe('DLS - Visits Cards', () => {
       .contains('Eat interest seem black easy various.');
   });
 
-  describe('should be able to filter by', () => {
+  describe('should be able to sort by', () => {
     beforeEach(() => {
       //Revert the default sort
       cy.contains('[role="button"]', 'Start Date')
@@ -146,7 +146,7 @@ describe('DLS - Visits Cards', () => {
         'have.value',
         date.toISOString().slice(0, 10)
       );
-      cy.get('[data-testid="card"]').first().should('not.exist');
+      cy.get('[data-testid="card"]').should('not.exist');
     });
   });
 });
