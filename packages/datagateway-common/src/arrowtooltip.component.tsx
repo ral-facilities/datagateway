@@ -14,7 +14,6 @@ const useStylesArrow = makeStyles((theme: Theme) =>
     },
   })
 );
-
 export const getTooltipText = (node: React.ReactNode): string => {
   if (typeof node === 'string') return node;
   if (typeof node === 'number' || typeof node === 'boolean')
@@ -43,6 +42,23 @@ const ArrowTooltip = (
 
   const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
   const [isTooltipVisible, setTooltipVisible] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleKeyDown = React.useCallback((e) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const onClose = (): void => {
+    window.removeEventListener('keydown', handleKeyDown);
+    setOpen(false);
+  };
+
+  const onOpen = (): void => {
+    window.addEventListener('keydown', handleKeyDown);
+    setOpen(true);
+  };
 
   useEffect(() => {
     function updateTooltip(): void {
@@ -114,6 +130,9 @@ const ArrowTooltip = (
       {...tooltipProps}
       disableHoverListener={shouldDisableHoverListener}
       arrow={true}
+      onOpen={onOpen}
+      onClose={onClose}
+      open={open}
     />
   );
 };

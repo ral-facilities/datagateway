@@ -254,6 +254,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
+                                          onClose={[Function]}
+                                          onOpen={[Function]}
+                                          open={false}
                                           title="breadcrumbs.home"
                                         >
                                           <ForwardRef(Tooltip)
@@ -274,6 +277,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
+                                            onClose={[Function]}
+                                            onOpen={[Function]}
+                                            open={false}
                                             title="breadcrumbs.home"
                                           >
                                             <div
@@ -402,6 +408,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
+                                          onClose={[Function]}
+                                          onOpen={[Function]}
+                                          open={false}
                                           title="breadcrumbs.investigation {count:100}"
                                         >
                                           <ForwardRef(Tooltip)
@@ -422,6 +431,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
+                                            onClose={[Function]}
+                                            onOpen={[Function]}
+                                            open={false}
                                             title="breadcrumbs.investigation {count:100}"
                                           >
                                             <div
@@ -658,6 +670,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
+                                          onClose={[Function]}
+                                          onOpen={[Function]}
+                                          open={false}
                                           title="Test 1"
                                         >
                                           <ForwardRef(Tooltip)
@@ -678,6 +693,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
+                                            onClose={[Function]}
+                                            onOpen={[Function]}
+                                            open={false}
                                             title="Test 1"
                                           >
                                             <div
@@ -913,6 +931,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
+                                          onClose={[Function]}
+                                          onOpen={[Function]}
+                                          open={false}
                                           title="INVESTIGATION 1"
                                         >
                                           <ForwardRef(Tooltip)
@@ -933,6 +954,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
+                                            onClose={[Function]}
+                                            onOpen={[Function]}
+                                            open={false}
                                             title="INVESTIGATION 1"
                                           >
                                             <div
@@ -1061,6 +1085,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
+                                          onClose={[Function]}
+                                          onOpen={[Function]}
+                                          open={false}
                                           title="breadcrumbs.datafile {count:100}"
                                         >
                                           <ForwardRef(Tooltip)
@@ -1081,6 +1108,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
+                                            onClose={[Function]}
+                                            onOpen={[Function]}
+                                            open={false}
                                             title="breadcrumbs.datafile {count:100}"
                                           >
                                             <div

@@ -54,6 +54,7 @@ describe('ArrowTooltip component', () => {
         )
       ).toBe('Test');
     });
+
     it('returns concatted nested values for any react node lists', () => {
       expect(
         getTooltipText(
@@ -104,6 +105,11 @@ describe('ArrowTooltip component', () => {
     // Enable with negative percentageWidth, then overide with negative maxEnabledHeight
     const wrapper = createWrapper(-1, -1);
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
+  });
+
+  it('check tooltip is disable when it is closed', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(Tooltip).props().open).toEqual(false);
   });
 
   it('tooltip unchanged when offsetHeight < maxEnabledHeight', () => {
