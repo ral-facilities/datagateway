@@ -279,14 +279,14 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-test-id="investigation-search-table-doi-link"]')
+        .find('[data-testid="investigation-search-table-doi-link"]')
         .first()
         .text()
     ).toEqual('doi 1');
 
     expect(
       wrapper
-        .find('[data-test-id="investigation-search-table-doi-link"]')
+        .find('[data-testid="investigation-search-table-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi 1');

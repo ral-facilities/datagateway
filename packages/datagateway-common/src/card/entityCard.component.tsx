@@ -277,7 +277,7 @@ const EntityCard = React.memo(
     const [t] = useTranslation();
 
     return (
-      <Card id="card" className={classes.root}>
+      <Card data-testid="card" className={classes.root}>
         {/* TODO: Check width and sizing of having image on card under different circumstances */}
         {/* We allow for additional width when having an image in the card (see card styles). */}
         {image && (
