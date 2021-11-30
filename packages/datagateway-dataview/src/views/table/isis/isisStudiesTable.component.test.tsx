@@ -246,12 +246,12 @@ describe('ISIS Studies table component', () => {
 
     const wrapper = createWrapper();
     expect(
-      wrapper.find('[data-test-id="isis-study-table-doi-link"]').first().text()
+      wrapper.find('[data-testid="isis-study-table-doi-link"]').first().text()
     ).toEqual('doi');
 
     expect(
       wrapper
-        .find('[data-test-id="isis-study-table-doi-link"]')
+        .find('[data-testid="isis-study-table-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi');

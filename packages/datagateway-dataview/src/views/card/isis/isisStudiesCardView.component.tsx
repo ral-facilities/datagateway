@@ -106,7 +106,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
             entity?.pid && (
               <MuiLink
                 href={`https://doi.org/${entity.pid}`}
-                data-test-id="landing-study-card-pid-link"
+                data-testid="landing-study-card-pid-link"
               >
                 {entity.pid}
               </MuiLink>

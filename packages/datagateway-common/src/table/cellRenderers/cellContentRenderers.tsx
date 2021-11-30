@@ -84,7 +84,7 @@ export function externalSiteLink(
   label?: string
 ): React.ReactElement {
   return (
-    <Link href={linkUrl} data-test-id={label}>
+    <Link href={linkUrl} data-testid={label}>
       {linkText}
     </Link>
   );

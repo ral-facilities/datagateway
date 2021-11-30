@@ -21,28 +21,28 @@ describe('ISIS - Investigation Landing', () => {
   it('should have the correct urls for the DOI link and parent DOI link', () => {
     // DOI
 
-    cy.get('[data-test-id="isis-investigation-landing-doi-link"]')
+    cy.get('[data-testid="isis-investigation-landing-doi-link"]')
       .first()
       .then(($doi) => {
         const doi = $doi.text();
 
         const url = `https://doi.org/${doi}`;
 
-        cy.get('[data-test-id="isis-investigation-landing-doi-link"]')
+        cy.get('[data-testid="isis-investigation-landing-doi-link"]')
           .first()
           .should('have.attr', 'href', url);
       });
 
     // Parent DOI
 
-    cy.get('[data-test-id="isis-investigations-landing-parent-doi-link"]')
+    cy.get('[data-testid="isis-investigations-landing-parent-doi-link"]')
       .first()
       .then(($doi) => {
         const doi = $doi.text();
 
         const url = `https://doi.org/${doi}`;
 
-        cy.get('[data-test-id="isis-investigations-landing-parent-doi-link"]')
+        cy.get('[data-testid="isis-investigations-landing-parent-doi-link"]')
           .first()
           .should('have.attr', 'href', url);
       });

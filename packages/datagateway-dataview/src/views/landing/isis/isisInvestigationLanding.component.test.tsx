@@ -368,14 +368,14 @@ describe('ISIS Investigation Landing page', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-test-id="isis-investigation-landing-doi-link"]')
+        .find('[data-testid="isis-investigation-landing-doi-link"]')
         .first()
         .text()
     ).toEqual('doi 1');
 
     expect(
       wrapper
-        .find('[data-test-id="isis-investigation-landing-doi-link"]')
+        .find('[data-testid="isis-investigation-landing-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi 1');
@@ -385,14 +385,14 @@ describe('ISIS Investigation Landing page', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-test-id="isis-investigations-landing-parent-doi-link"]')
+        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
         .first()
         .text()
     ).toEqual('study pid');
 
     expect(
       wrapper
-        .find('[data-test-id="isis-investigations-landing-parent-doi-link"]')
+        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/study pid');

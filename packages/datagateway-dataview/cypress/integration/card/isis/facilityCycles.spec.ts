@@ -20,7 +20,10 @@ describe('ISIS - FacilityCycles Cards', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('#card').contains('2019 cycle 4').click({ force: true });
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('2019 cycle 4')
+      .click({ force: true });
     cy.location('pathname').should(
       'eq',
       '/browse/instrument/1/facilityCycle/79/investigation'
@@ -41,17 +44,17 @@ describe('ISIS - FacilityCycles Cards', () => {
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('#card').contains('2000 cycle 2');
+      cy.get('[data-testid="card"]').first().contains('2000 cycle 2');
 
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('#card').contains('2019 cycle ');
+      cy.get('[data-testid="card"]').first().contains('2019 cycle ');
 
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('#card').contains('2000 cycle 2');
+      cy.get('[data-testid="card"]').first().contains('2000 cycle 2');
     });
 
     it('multiple fields', () => {
@@ -60,14 +63,14 @@ describe('ISIS - FacilityCycles Cards', () => {
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('#card').contains('2000 cycle 2');
+      cy.get('[data-testid="card"]').first().contains('2000 cycle 2');
 
       cy.contains('[role="button"]', 'End Date')
         .click()
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('#card').contains('2000 cycle 2');
+      cy.get('[data-testid="card"]').first().contains('2000 cycle 2');
     });
   });
 
@@ -87,7 +90,7 @@ describe('ISIS - FacilityCycles Cards', () => {
         .wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {
           timeout: 10000,
         });
-      cy.get('#card').contains('2004 cycle 1');
+      cy.get('[data-testid="card"]').first().contains('2004 cycle 1');
 
       cy.get('input[id="Start Date filter from"]')
         .type('2019-01-01')
@@ -106,7 +109,7 @@ describe('ISIS - FacilityCycles Cards', () => {
         'have.value',
         date.toISOString().slice(0, 10)
       );
-      cy.get('#card').contains('2019 cycle 4');
+      cy.get('[data-testid="card"]').first().contains('2019 cycle 4');
     });
   });
 });
