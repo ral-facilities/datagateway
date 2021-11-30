@@ -7,7 +7,9 @@ import {
   DGCommonMiddleware,
   DGThemeProvider,
   listenToMessages,
+  MicroFrontendId,
   Preloader,
+  BroadcastSignOutType,
 } from 'datagateway-common';
 import {
   createBrowserHistory,
@@ -113,9 +115,16 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: true,
-      staleTime: 5000,
+      staleTime: 300000,
     },
   },
+});
+
+document.addEventListener(MicroFrontendId, (e) => {
+  const action = (e as CustomEvent).detail;
+  if (action.type === BroadcastSignOutType) {
+    queryClient.clear();
+  }
 });
 
 class App extends React.Component<unknown, { hasError: boolean }> {
