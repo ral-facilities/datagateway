@@ -55,7 +55,8 @@ const DLSProposalsCardView = (): React.ReactElement => {
         tableLink(
           `/browse/proposal/${investigation.name}/investigation`,
           investigation.title,
-          view
+          view,
+          'dls-proposal-card-title'
         ),
       filterComponent: textFilter,
       defaultSort: 'asc',

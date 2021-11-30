@@ -48,7 +48,7 @@ describe('Investigations Cards', () => {
   it('should disable the hover tool tip by pressing escape', () => {
     // The hover tool tip has a enter delay of 500ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('#card')
+    cy.get('[data-testid="card"]')
       .get('[data-testid="investigation-card-title"]')
       .first()
       .trigger('mouseover', { force: true })

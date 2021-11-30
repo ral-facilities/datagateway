@@ -34,6 +34,7 @@ import {
   Mark,
   AddToCartButton,
   DownloadButton,
+  ArrowTooltip,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -215,7 +216,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               href={`https://doi.org/${entity.doi}`}
               data-testid="isis-investigation-landing-doi-link"
             >
-              {entity.doi}
+              <ArrowTooltip title={entity.doi}>
+                <Typography> {entity.doi} </Typography>
+              </ArrowTooltip>
             </MuiLink>
           )
         );
@@ -231,7 +234,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
               data-testid="isis-investigations-landing-parent-doi-link"
             >
-              {entity.studyInvestigations[0].study.pid}
+              <ArrowTooltip title={entity.studyInvestigations[0].study.pid}>
+                <Typography>
+                  {entity.studyInvestigations[0].study.pid}
+                </Typography>
+              </ArrowTooltip>
             </MuiLink>
           )
         );
@@ -299,7 +306,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               href={`https://doi.org/${entity.doi}`}
               aria-label="landing-study-doi-link"
             >
-              {entity.doi}
+              <ArrowTooltip title={entity.doi}>
+                <Typography> {entity.doi} </Typography>
+              </ArrowTooltip>
             </MuiLink>
           )
         );

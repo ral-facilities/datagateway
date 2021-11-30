@@ -19,6 +19,7 @@ import {
   useDatasetSizes,
   AddToCartButton,
   DownloadButton,
+  ArrowTooltip,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -113,7 +114,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               href={`https://doi.org/${entity.doi}`}
               data-testid="isis-dataset-landing-doi-link"
             >
-              {entity.doi}
+              <ArrowTooltip title={entity.doi}>
+                <Typography> {entity.doi} </Typography>
+              </ArrowTooltip>
             </MuiLink>
           )
         );

@@ -87,4 +87,28 @@ describe('ISIS - Study Landing', () => {
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
   });
+
+  it('should load correctly when investigation missing', () => {
+    cy.intercept('/studies', [
+      {
+        id: 101224979,
+        pid: '10.5286/ISIS.E.RB1810842',
+        studyInvestigations: [
+          {
+            createId: 'uows/1050072',
+            createTime: '2019-02-07 15:27:19.790000+00:00',
+            id: 101224981,
+          },
+        ],
+      },
+    ]);
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="landing-study-pid-link"]')
+      .first()
+      .trigger('mouseover')
+      .wait(700);
+
+    cy.get('body').type('{esc}');
+  });
 });

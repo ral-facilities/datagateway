@@ -30,6 +30,18 @@ describe('ISIS - Investigations Cards', () => {
     );
   });
 
+  it.only('should disable the hover tool tip by pressing escape', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="isis-investigations-card-title"]')
+      .first()
+      .trigger('mouseover', { force: true })
+      .wait(700);
+
+    cy.get('body').type('{esc}');
+  });
+
   it('should have the correct url for the DOI link', () => {
     cy.get('[data-testid="card"]')
       .first()

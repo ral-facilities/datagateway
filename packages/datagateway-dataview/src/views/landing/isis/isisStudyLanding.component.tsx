@@ -27,6 +27,7 @@ import {
   Mark,
   ViewsType,
   AddToCartButton,
+  ArrowTooltip,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -118,7 +119,9 @@ const LinkedInvestigation = (
               href={`https://doi.org/${entity.doi}`}
               data-testid="landing-study-doi-link"
             >
-              {entity.doi}
+              <ArrowTooltip title={entity.doi}>
+                <Typography> {entity.doi} </Typography>
+              </ArrowTooltip>
             </MuiLink>
           )
         );
@@ -314,7 +317,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               href={`https://doi.org/${entity.pid}`}
               data-testid="landing-study-pid-link"
             >
-              {entity.pid}
+              <ArrowTooltip title={entity.pid}>
+                <Typography> {entity.pid} </Typography>
+              </ArrowTooltip>
             </MuiLink>
           )
         );

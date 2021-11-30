@@ -74,10 +74,15 @@ export function investigationLink(
 export function tableLink(
   linkUrl: string,
   linkText: string,
-  view?: ViewsType
+  view?: ViewsType,
+  testid?: string
 ): React.ReactElement {
   return (
-    <Link component={RouterLink} to={appendView(linkUrl, view)}>
+    <Link
+      component={RouterLink}
+      to={appendView(linkUrl, view)}
+      data-testid={testid}
+    >
       {linkText}
     </Link>
   );
@@ -86,10 +91,10 @@ export function tableLink(
 export function externalSiteLink(
   linkUrl: string,
   linkText?: string,
-  label?: string
+  testid?: string
 ): React.ReactElement {
   return (
-    <Link href={linkUrl} data-testid={label}>
+    <Link href={linkUrl} data-testid={testid}>
       {linkText}
     </Link>
   );
