@@ -56,11 +56,16 @@ export function datasetLink(
 export function investigationLink(
   investigationId: number,
   investigationTitle: string,
-  view?: ViewsType
+  view?: ViewsType,
+  testid?: string
 ): React.ReactElement {
   const link = `/browse/investigation/${investigationId}/dataset`;
   return (
-    <Link component={RouterLink} to={appendView(link, view)}>
+    <Link
+      component={RouterLink}
+      to={appendView(link, view)}
+      data-testid={testid}
+    >
       {investigationTitle}
     </Link>
   );

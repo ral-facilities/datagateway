@@ -42,6 +42,18 @@ describe('Investigations Cards', () => {
       });
   });
 
+  it('should disable the hover tool tip by pressing escape', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('#card')
+      .get('[data-testid="investigation-card-title"]')
+      .first()
+      .trigger('mouseover', { force: true })
+      .wait(700);
+
+    cy.get('body').type('{esc}');
+  });
+
   it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Title')
       .click()
