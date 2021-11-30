@@ -1,0 +1,175 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Advanced help dialogue component tests renders correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Button))
+    aria-label="advanced_search_help.advanced_button_arialabel"
+    className="makeStyles-advancedButton-2"
+    onClick={[Function]}
+    variant="text"
+  >
+    advanced_search_help.advanced_button
+  </WithStyles(ForwardRef(Button))>
+  <WithStyles(ForwardRef(Dialog))
+    PaperProps={
+      Object {
+        "className": "makeStyles-dialogueBackground-5",
+      }
+    }
+    aria-labelledby="advanced-search-dialog-title"
+    onClose={[Function]}
+    open={false}
+  >
+    <WithStyles(ForwardRef(DialogTitle))
+      className="makeStyles-root-1"
+      disableTypography={true}
+      id="advanced-search-dialog-title"
+    >
+      <WithStyles(ForwardRef(Typography))
+        variant="h6"
+      >
+        Advanced Search Tips
+      </WithStyles(ForwardRef(Typography))>
+      <WithStyles(ForwardRef(IconButton))
+        aria-label="advanced_search_help.close_button_arialabel"
+        className="makeStyles-closeButton-3"
+        onClick={[Function]}
+      >
+        <Memo(ForwardRef(CloseIcon)) />
+      </WithStyles(ForwardRef(IconButton))>
+    </WithStyles(ForwardRef(DialogTitle))>
+    <WithStyles(ForwardRef(Typography))
+      className="makeStyles-root-1"
+      gutterBottom={true}
+    >
+      advanced_search_help.description
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Paper))
+      className="makeStyles-paper-4"
+    >
+      <WithStyles(WithStyles(ForwardRef(DialogTitle)))>
+        advanced_search_help.exact_phrase.title
+      </WithStyles(WithStyles(ForwardRef(DialogTitle)))>
+      <WithStyles(WithStyles(ForwardRef(DialogContent)))>
+        <Trans
+          i18nKey="advanced_search_help.exact_phrase.description"
+          t={[Function]}
+        >
+          Use quotation marks around a phrase to search for a precise sequence of words e.g.
+           
+          <WithStyles(ForwardRef(Link))
+            href="advanced_search_help.exact_phrase.link1"
+          >
+            "neutron scattering"
+          </WithStyles(ForwardRef(Link))>
+          .
+        </Trans>
+      </WithStyles(WithStyles(ForwardRef(DialogContent)))>
+    </WithStyles(ForwardRef(Paper))>
+    <WithStyles(ForwardRef(Paper))
+      className="makeStyles-paper-4"
+    >
+      <WithStyles(WithStyles(ForwardRef(DialogTitle)))>
+        advanced_search_help.logic_operators.title
+      </WithStyles(WithStyles(ForwardRef(DialogTitle)))>
+      <WithStyles(WithStyles(ForwardRef(DialogContent)))>
+        <Trans
+          i18nKey="advanced_search_help.logic_operators.description"
+          t={[Function]}
+        >
+          Find all data containing 'neutron' and 'scattering' with '
+          <WithStyles(ForwardRef(Link))
+            data-testid="advanced-help-link"
+            href="advanced_search_help.logic_operators.link1"
+          >
+            neutron AND scattering
+          </WithStyles(ForwardRef(Link))>
+          '. Find all data containing either neutron or scattering with '
+           
+          <WithStyles(ForwardRef(Link))
+            href="advanced_search_help.logic_operators.link2"
+          >
+            neutron OR scattering
+          </WithStyles(ForwardRef(Link))>
+          '. Find all data that contains the phrase 'scattering' but exclude those containing 'elastic' with '
+           
+          <WithStyles(ForwardRef(Link))
+            href="advanced_search_help.logic_operators.link3"
+          >
+            scattering NOT elastic
+          </WithStyles(ForwardRef(Link))>
+          '. Use brackets around phrases to construct more complicated searches e.g. '
+           
+          <WithStyles(ForwardRef(Link))
+            href="advanced_search_help.logic_operators.link4"
+          >
+            scattering NOT (elastic OR neutron)
+          </WithStyles(ForwardRef(Link))>
+          '.
+        </Trans>
+      </WithStyles(WithStyles(ForwardRef(DialogContent)))>
+    </WithStyles(ForwardRef(Paper))>
+    <WithStyles(ForwardRef(Paper))
+      className="makeStyles-paper-4"
+    >
+      <WithStyles(WithStyles(ForwardRef(DialogTitle)))>
+        advanced_search_help.wildcards.title
+      </WithStyles(WithStyles(ForwardRef(DialogTitle)))>
+      <WithStyles(WithStyles(ForwardRef(DialogContent)))>
+        <Trans
+          i18nKey="advanced_search_help.wildcards.description"
+          t={[Function]}
+        >
+          Use wildcards to take the place of one or more characters in a phrase. A question mark '?' can be used to search for a phrase with one or more character missing e.g. '
+           
+          <WithStyles(ForwardRef(Link))
+            href="advanced_search_help.wildcards.link1"
+          >
+            te?t
+          </WithStyles(ForwardRef(Link))>
+          ' will return results containing 'test' or 'text'. An asterix '*' can be used to replace zero or more characters e.g. '
+          <WithStyles(ForwardRef(Link))
+            href="advanced_search_help.wildcards.link2"
+          >
+            *ium
+          </WithStyles(ForwardRef(Link))>
+          ' will return results containing words like 'sodium' and 'vanadium'.
+        </Trans>
+      </WithStyles(WithStyles(ForwardRef(DialogContent)))>
+    </WithStyles(ForwardRef(Paper))>
+    <WithStyles(ForwardRef(Paper))
+      className="makeStyles-paper-4"
+    >
+      <WithStyles(WithStyles(ForwardRef(DialogTitle)))>
+        advanced_search_help.limited_search_results.title
+      </WithStyles(WithStyles(ForwardRef(DialogTitle)))>
+      <WithStyles(WithStyles(ForwardRef(DialogContent)))>
+        <Trans
+          i18nKey="advanced_search_help.limited_search_results.description"
+          t={[Function]}
+        >
+          Due to technical and performance reasons, only the top 300 results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. If you find your search gives 300 results, try using a more specific query to find what you are looking for.
+        </Trans>
+      </WithStyles(WithStyles(ForwardRef(DialogContent)))>
+    </WithStyles(ForwardRef(Paper))>
+    <WithStyles(ForwardRef(Typography))
+      className="makeStyles-root-1"
+      gutterBottom={true}
+    >
+      <Trans
+        i18nKey="advanced_search_help.footer"
+        t={[Function]}
+      >
+        Further information on searching can be found
+         
+        <WithStyles(ForwardRef(Link))
+          href="https://lucene.apache.org/core/4_10_2/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description"
+        >
+          here
+        </WithStyles(ForwardRef(Link))>
+        .
+      </Trans>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Dialog))>
+</div>
+`;
