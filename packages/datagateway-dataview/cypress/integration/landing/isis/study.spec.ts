@@ -88,7 +88,7 @@ describe('ISIS - Study Landing', () => {
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
   });
 
-  it('should load correctly when investigation missing', () => {
+  it('should disable the hover tool tip by pressing escape', () => {
     cy.intercept('/studies', [
       {
         id: 101224979,

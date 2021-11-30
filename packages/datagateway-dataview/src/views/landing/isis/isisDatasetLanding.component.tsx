@@ -115,7 +115,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               data-testid="isis-dataset-landing-doi-link"
             >
               <ArrowTooltip title={entity.doi}>
-                <Typography> {entity.doi} </Typography>
+                <Typography>{entity.doi}</Typography>
               </ArrowTooltip>
             </MuiLink>
           )

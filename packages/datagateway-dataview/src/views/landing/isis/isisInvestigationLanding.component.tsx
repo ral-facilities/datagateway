@@ -217,7 +217,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               data-testid="isis-investigation-landing-doi-link"
             >
               <ArrowTooltip title={entity.doi}>
-                <Typography> {entity.doi} </Typography>
+                <Typography>{entity.doi}</Typography>
               </ArrowTooltip>
             </MuiLink>
           )
@@ -307,7 +307,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               aria-label="landing-study-doi-link"
             >
               <ArrowTooltip title={entity.doi}>
-                <Typography> {entity.doi} </Typography>
+                <Typography>{entity.doi}</Typography>
               </ArrowTooltip>
             </MuiLink>
           )
