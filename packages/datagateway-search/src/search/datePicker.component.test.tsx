@@ -153,7 +153,7 @@ describe('DatePicker component tests', () => {
       startDateInput.simulate('change');
 
       expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
-        'Invalid Date Format'
+        'searchBox.invalid_date_message'
       );
     });
 
@@ -268,7 +268,7 @@ describe('DatePicker component tests', () => {
       endDateInput.simulate('change');
 
       expect(wrapper.find('.MuiFormHelperText-filled').text()).toEqual(
-        'Invalid Date Format'
+        'searchBox.invalid_date_message'
       );
     });
 

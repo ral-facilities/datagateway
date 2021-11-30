@@ -85,6 +85,7 @@ const DateColumnFilter = (props: {
           allowKeyboardControl
           style={{ whiteSpace: 'nowrap' }}
           inputProps={{ 'aria-label': `${props.label} filter` }}
+          invalidDateMessage="Please enter the date in the format yyyy-MM-dd."
           KeyboardButtonProps={{
             size: 'small',
             'aria-label': `${props.label} filter from, date picker`,
@@ -117,6 +118,7 @@ const DateColumnFilter = (props: {
           allowKeyboardControl
           style={{ whiteSpace: 'nowrap' }}
           inputProps={{ 'aria-label': `${props.label} filter` }}
+          invalidDateMessage="Please enter the date in the format yyyy-MM-dd."
           KeyboardButtonProps={{
             size: 'small',
             'aria-label': `${props.label} filter to, date picker`,
