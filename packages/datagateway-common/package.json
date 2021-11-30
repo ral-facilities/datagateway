@@ -11,7 +11,7 @@
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@types/lodash.debounce": "^4.0.6",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.9.1",
     "date-fns": "^2.17.0",
