@@ -184,6 +184,8 @@ describe('ISIS - Datasets Table', () => {
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
         '2001-09-30 04:00:59'
       );
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('5.15 GB');
     });
 
     it('date between', () => {

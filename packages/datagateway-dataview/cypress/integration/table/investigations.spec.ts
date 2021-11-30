@@ -29,14 +29,14 @@ describe('Investigations Table', () => {
   });
 
   it('should have the correct url for the DOI link', () => {
-    cy.get('[data-test-id="investigation-table-doi-link"]')
+    cy.get('[data-testid="investigation-table-doi-link"]')
       .first()
       .then(($doi) => {
         const doi = $doi.text();
 
         const url = `https://doi.org/${doi}`;
 
-        cy.get('[data-test-id="investigation-table-doi-link"]')
+        cy.get('[data-testid="investigation-table-doi-link"]')
           .first()
           .should('have.attr', 'href', url);
       });
@@ -162,6 +162,9 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-rowcount="7"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
+
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('10.54 GB');
     });
 
     it('date between', () => {

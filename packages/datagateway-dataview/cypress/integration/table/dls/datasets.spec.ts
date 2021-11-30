@@ -291,4 +291,22 @@ describe('DLS - Datasets Table', () => {
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });
+
+  it('should display correct datafile count after filtering', () => {
+    cy.visit('/browse/proposal/INVESTIGATION%202/investigation/2/dataset').wait(
+      ['@investigationsFindOne', '@datasetsCount', '@datasets'],
+      {
+        timeout: 10000,
+      }
+    );
+
+    cy.get('[aria-label="Filter by Name"]')
+      .first()
+      .type('DATASET 242')
+      .wait(['@datasetsCount', '@datasets'], {
+        timeout: 10000,
+      });
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('55');
+  });
 });

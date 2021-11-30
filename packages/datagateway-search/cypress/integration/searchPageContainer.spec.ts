@@ -70,14 +70,14 @@ describe('SearchPageContainer Component', () => {
     it('should have the correct url for the DOI link (Tableview) ', () => {
       // DOI
 
-      cy.get('[data-test-id="investigation-search-table-doi-link"]')
+      cy.get('[data-testid="investigation-search-table-doi-link"]')
         .first()
         .then(($doi) => {
           const doi = $doi.text();
 
           const url = `https://doi.org/${doi}`;
 
-          cy.get('[data-test-id="investigation-search-table-doi-link"]')
+          cy.get('[data-testid="investigation-search-table-doi-link"]')
             .first()
             .should('have.attr', 'href', url);
         });
@@ -88,14 +88,14 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('[aria-label="container-view-button"]').click();
 
-      cy.get('[data-test-id="investigation-search-card-doi-link"]')
+      cy.get('[data-testid="investigation-search-card-doi-link"]')
         .first()
         .then(($doi) => {
           const doi = $doi.text();
 
           const url = `https://doi.org/${doi}`;
 
-          cy.get('[data-test-id="investigation-search-card-doi-link"]')
+          cy.get('[data-testid="investigation-search-card-doi-link"]')
             .first()
             .should('have.attr', 'href', url);
         });
@@ -204,31 +204,37 @@ describe('SearchPageContainer Component', () => {
       cy.get('[aria-label="container-view-button"]').click();
 
       cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
-      cy.get('#card').contains(
-        'Guy maintain us process official people suffer.'
-      );
+      cy.get('[data-testid="card"]')
+        .first()
+        .contains('Guy maintain us process official people suffer.');
 
       cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('#card').contains('Yourself smile either I pass significant.');
+      cy.get('[data-testid="card"]')
+        .first()
+        .contains('Yourself smile either I pass significant.');
 
       cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('#card').contains('Window former upon writer help step account.');
+      cy.get('[data-testid="card"]')
+        .first()
+        .contains('Window former upon writer help step account.');
 
       cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('#card').contains('Someone statement Republican plan watch.');
+      cy.get('[data-testid="card"]')
+        .first()
+        .contains('Someone statement Republican plan watch.');
 
       cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('#card').contains(
-        'Including spend increase ability music skill former.'
-      );
+      cy.get('[data-testid="card"]')
+        .first()
+        .contains('Including spend increase ability music skill former.');
     });
 
     it('should display selection alert banner correctly', () => {
