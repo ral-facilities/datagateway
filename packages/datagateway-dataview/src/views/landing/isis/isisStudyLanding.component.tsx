@@ -28,6 +28,7 @@ import {
   ViewsType,
   AddToCartButton,
   ArrowTooltip,
+  getTooltipText,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -119,9 +120,7 @@ const LinkedInvestigation = (
               href={`https://doi.org/${entity.doi}`}
               data-testid="landing-study-doi-link"
             >
-              <ArrowTooltip title={entity.doi}>
-                <Typography>{entity.doi}</Typography>
-              </ArrowTooltip>
+              {entity.doi}
             </MuiLink>
           )
         );
@@ -317,9 +316,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               href={`https://doi.org/${entity.pid}`}
               data-testid="landing-study-pid-link"
             >
-              <ArrowTooltip title={entity.pid}>
-                <Typography>{entity.pid}</Typography>
-              </ArrowTooltip>
+              {entity.pid}
             </MuiLink>
           )
         );
@@ -511,10 +508,16 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   <div className={classes.shortInfoRow} key={i}>
                     <Typography className={classes.shortInfoLabel}>
                       {field.icon}
-                      {field.label}:
+                      {field.label}
                     </Typography>
                     <Typography className={classes.shortInfoValue}>
-                      {field.content(data[0] as Study)}
+                      <ArrowTooltip
+                        title={getTooltipText(field.content(data[0] as Study))}
+                      >
+                        <Typography>
+                          {field.content(data[0] as Study)}
+                        </Typography>
+                      </ArrowTooltip>
                     </Typography>
                   </div>
                 )

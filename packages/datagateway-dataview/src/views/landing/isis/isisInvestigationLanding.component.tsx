@@ -35,6 +35,7 @@ import {
   AddToCartButton,
   DownloadButton,
   ArrowTooltip,
+  getTooltipText,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -216,9 +217,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               href={`https://doi.org/${entity.doi}`}
               data-testid="isis-investigation-landing-doi-link"
             >
-              <ArrowTooltip title={entity.doi}>
-                <Typography>{entity.doi}</Typography>
-              </ArrowTooltip>
+              {entity.doi}
             </MuiLink>
           )
         );
@@ -234,11 +233,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
               data-testid="isis-investigations-landing-parent-doi-link"
             >
-              <ArrowTooltip title={entity.studyInvestigations[0].study.pid}>
-                <Typography>
-                  {entity.studyInvestigations[0].study.pid}
-                </Typography>
-              </ArrowTooltip>
+              {entity.studyInvestigations[0].study.pid}
             </MuiLink>
           )
         );
@@ -306,9 +301,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               href={`https://doi.org/${entity.doi}`}
               aria-label="landing-study-doi-link"
             >
-              <ArrowTooltip title={entity.doi}>
-                <Typography>{entity.doi}</Typography>
-              </ArrowTooltip>
+              {entity.doi}
             </MuiLink>
           )
         );
@@ -518,7 +511,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {field.label}:
                     </Typography>
                     <Typography className={classes.shortInfoValue}>
-                      {field.content(data[0] as Investigation)}
+                      <ArrowTooltip
+                        title={getTooltipText(
+                          field.content(data[0] as Investigation)
+                        )}
+                      >
+                        <Typography>
+                          {field.content(data[0] as Investigation)}
+                        </Typography>
+                      </ArrowTooltip>
                     </Typography>
                   </div>
                 )
