@@ -1,62 +1,105 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ISIS Studies table component renders correctly 1`] = `
-<WithStyles(VirtualizedTable)
-  columns={
-    Array [
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "study.name",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "studies.name",
-      },
-      Object {
-        "dataKey": "investigation.title",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.title",
-      },
-      Object {
-        "dataKey": "study.pid",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "studies.pid",
-      },
-      Object {
-        "dataKey": "investigation.startDate",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.start_date",
-      },
-      Object {
-        "dataKey": "investigation.endDate",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.end_date",
-      },
-    ]
-  }
-  data={
-    Array [
-      Object {
-        "id": 1,
-        "study": Object {
-          "createTime": "2000-01-01",
-          "id": 1,
-          "modTime": "2000-01-01",
-          "name": "Test 1",
-          "pid": "doi",
+Object {
+  "classes": Object {
+    "flexContainer": "VirtualizedTable-flexContainer-2",
+    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
+    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "table": "VirtualizedTable-table-1",
+    "tableCell": "VirtualizedTable-tableCell-6",
+    "tableRow": "VirtualizedTable-tableRow-4",
+    "tableRowHover": "VirtualizedTable-tableRowHover-5",
+  },
+  "columns": Array [
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "name",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
         },
       },
-    ]
-  }
-  loadMoreRows={[Function]}
-  loading={false}
-  onSort={[Function]}
-  sort={Object {}}
-  totalRowCount={0}
-/>
+      "label": "studies.name",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "studyInvestigations.investigation.title",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "studies.title",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "pid",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "studies.pid",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "studyInvestigations.investigation.startDate",
+      "defaultSort": "desc",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "studies.start_date",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "studyInvestigations.investigation.endDate",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "studies.end_date",
+    },
+  ],
+  "data": Array [
+    Object {
+      "createTime": "2000-01-01",
+      "id": 1,
+      "modTime": "2000-01-01",
+      "name": "Test 1",
+      "pid": "doi",
+    },
+  ],
+  "loadMoreRows": [Function],
+  "onSort": [Function],
+  "sort": Object {
+    "studyInvestigations.investigation.startDate": "desc",
+  },
+  "totalRowCount": 1,
+}
 `;
 
 exports[`ISIS Studies table component renders studies name as a link 1`] = `

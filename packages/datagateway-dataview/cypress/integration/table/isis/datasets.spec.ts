@@ -13,6 +13,10 @@ describe('ISIS - Datasets Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should not load incorrect URL', () => {
@@ -100,6 +104,13 @@ describe('ISIS - Datasets Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait('@datasetsOrder', { timeout: 10000 });
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
@@ -134,9 +145,7 @@ describe('ISIS - Datasets Table', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
         .wait('@datasetsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasetsOrder', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -169,21 +178,20 @@ describe('ISIS - Datasets Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .first()
-        .type('DATASET 337');
+      cy.get('[aria-label="Filter by Name"]').first().type('DATASET 337');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
         '2001-09-30 04:00:59'
       );
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('5.15 GB');
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time date filter from"]').type('2005-06-12');
+      cy.get('input[id="Create Time filter from"]').type('2005-06-12');
 
-      cy.get('[aria-label="Create Time date filter to"]')
+      cy.get('button[aria-label="Create Time filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -195,7 +203,7 @@ describe('ISIS - Datasets Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Create Time date filter to"]').should(
+      cy.get('input[id="Create Time filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -206,12 +214,11 @@ describe('ISIS - Datasets Table', () => {
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
-        .find('input')
         .first()
         .type('337')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter to"]')
+      cy.get('input[id="Create Time filter to"]')
         .type('2007-06-23')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
@@ -220,16 +227,15 @@ describe('ISIS - Datasets Table', () => {
     });
   });
 
-  // TODO: Data mismatch issue (#782)
-  describe.skip('should be able to view details', () => {
+  describe('should be able to view details', () => {
     beforeEach(() => {
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '4.79 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '5.78 GB').should(
         'exist'
       );
 
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '6.07 GB').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '5.15 GB').should(
         'exist'
       );
     });

@@ -8,6 +8,8 @@ import {
   TextColumnFilter,
   TableActionProps,
   DateColumnFilter,
+  DateFilter,
+  TextFilter,
 } from 'datagateway-common';
 import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
@@ -119,6 +121,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           setFilters(restOfFilters);
         }
       }}
+      value={filters[dataKey] as TextFilter}
     />
   );
 
@@ -139,6 +142,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           setFilters(restOfFilters);
         }
       }}
+      value={filters[dataKey] as TextFilter}
     />
   );
 
@@ -153,6 +157,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           setFilters(restOfFilters);
         }
       }}
+      value={filters[dataKey] as DateFilter}
     />
   );
 
@@ -307,7 +312,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       }) as string
                     }
                     enterDelay={500}
-                    // Disable tooltip for access methods that are not http/https.
+                    // Disable tooltip for access methods that are not http(s).
                     disableHoverListener={isDownloadable}
                   >
                     <div>
@@ -345,7 +350,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                           )}
                           key="non-downloadable"
                           size="small"
-                          // Set the button to be disabled if the transport type is not "https" (cover http?).
+                          // Set the button to be disabled if the transport type is not http(s).
                           disabled={!isDownloadable}
                         >
                           <GetApp />

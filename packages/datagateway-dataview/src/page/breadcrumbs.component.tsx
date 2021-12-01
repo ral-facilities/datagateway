@@ -12,6 +12,7 @@ import axios from 'axios';
 import {
   ArrowTooltip,
   EntityTypes,
+  parseSearchToQuery,
   readSciGatewayToken,
   ViewsType,
 } from 'datagateway-common';
@@ -193,7 +194,7 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
       '& span': {
         display: 'block',
         whiteSpace: 'nowrap',
-        // TODO: Remove use of "vw" here
+        // TODO: Remove use of "vw" here?
         maxWidth: '20vw',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
@@ -345,6 +346,7 @@ class PageBreadcrumbs extends React.Component<
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
           let requestEntityUrl;
           // TODO: check this is sufficient for pluralising API entity names...
+          //       (move to a separate function to be used elsewhere if needed?)
           const pluralisedApiEntity =
             apiEntity.charAt(apiEntity.length - 1) === 'y'
               ? `${apiEntity.slice(0, apiEntity.length - 1)}ies`
@@ -523,7 +525,7 @@ const mapStateToProps = (state: StateType): PageBreadcrumbsStateProps => ({
   apiUrl: state.dgcommon.urls.apiUrl,
   location: state.router.location.pathname,
   breadcrumbSettings: state.dgdataview.breadcrumbSettings,
-  view: state.dgcommon.query.view,
+  view: parseSearchToQuery(state.router.location.search).view,
 });
 
 export const TranslatedBreadcrumbs = withTranslation()(PageBreadcrumbs);

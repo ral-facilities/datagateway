@@ -2,55 +2,6 @@ import React, { useEffect } from 'react';
 import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-const arrowGenerator = (
-  color: string
-): Record<string, Record<string, string | number | Record<string, string>>> => {
-  return {
-    '&[x-placement*="bottom"] $arrow': {
-      top: 0,
-      left: 0,
-      marginTop: '-0.95em',
-      width: '2em',
-      height: '1em',
-      '&::before': {
-        borderWidth: '0 1em 1em 1em',
-        borderColor: `transparent transparent ${color} transparent`,
-      },
-    },
-    '&[x-placement*="top"] $arrow': {
-      bottom: 0,
-      left: 0,
-      marginBottom: '-0.95em',
-      width: '2em',
-      height: '1em',
-      '&::before': {
-        borderWidth: '1em 1em 0 1em',
-        borderColor: `${color} transparent transparent transparent`,
-      },
-    },
-    '&[x-placement*="right"] $arrow': {
-      left: 0,
-      marginLeft: '-0.95em',
-      height: '2em',
-      width: '1em',
-      '&::before': {
-        borderWidth: '1em 1em 1em 0',
-        borderColor: `transparent ${color} transparent transparent`,
-      },
-    },
-    '&[x-placement*="left"] $arrow': {
-      right: 0,
-      marginRight: '-0.95em',
-      height: '2em',
-      width: '1em',
-      '&::before': {
-        borderWidth: '1em 0 1em 1em',
-        borderColor: `transparent transparent transparent ${color}`,
-      },
-    },
-  };
-};
-
 const useStylesArrow = makeStyles((theme: Theme) =>
   createStyles({
     tooltip: {
@@ -58,32 +9,37 @@ const useStylesArrow = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.common.black,
       fontSize: '0.875rem',
     },
-    popper: arrowGenerator(theme.palette.common.black),
     arrow: {
-      position: 'absolute',
-      fontSize: 6,
-      '&::before': {
-        content: '""',
-        margin: 'auto',
-        display: 'block',
-        width: 0,
-        height: 0,
-        borderStyle: 'solid',
-      },
+      color: theme.palette.common.black,
     },
   })
 );
+
+export const getTooltipText = (node: React.ReactNode): string => {
+  if (typeof node === 'string') return node;
+  if (typeof node === 'number' || typeof node === 'boolean')
+    return node.toString();
+  if (node instanceof Array) return node.map(getTooltipText).join('');
+  if (typeof node === 'object' && node && 'props' in node)
+    return getTooltipText(node.props.children);
+  return '';
+};
 
 const ArrowTooltip = (
   props: TooltipProps & {
     percentageWidth?: number;
     maxEnabledHeight?: number;
+    disableHoverListener?: boolean;
   }
 ): React.ReactElement => {
-  const { percentageWidth, maxEnabledHeight, ...tooltipProps } = props;
+  const {
+    percentageWidth,
+    maxEnabledHeight,
+    disableHoverListener,
+    ...tooltipProps
+  } = props;
 
-  const { arrow, ...classes } = useStylesArrow();
-  const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
+  const { ...classes } = useStylesArrow();
 
   const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
   const [isTooltipVisible, setTooltipVisible] = React.useState(false);
@@ -132,33 +88,32 @@ const ArrowTooltip = (
       }
     }
     window.addEventListener('resize', updateTooltip);
+    window.addEventListener('columnResize', updateTooltip);
     updateTooltip();
-    return () => window.removeEventListener('resize', updateTooltip);
-  }, [tooltipElement, setTooltipVisible, percentageWidth, maxEnabledHeight]);
+    return () => {
+      window.removeEventListener('resize', updateTooltip);
+      window.removeEventListener('columnResize', updateTooltip);
+    };
+  }, [
+    tooltipElement,
+    setTooltipVisible,
+    percentageWidth,
+    maxEnabledHeight,
+    disableHoverListener,
+  ]);
+
+  let shouldDisableHoverListener = !isTooltipVisible;
+  //Allow disableHoverListener to be overidden
+  if (disableHoverListener !== undefined)
+    shouldDisableHoverListener = disableHoverListener;
 
   return (
     <Tooltip
       ref={tooltipElement}
       classes={classes}
-      PopperProps={{
-        popperOptions: {
-          modifiers: {
-            arrow: {
-              enabled: Boolean(arrowRef),
-              element: arrowRef,
-            },
-          },
-        },
-      }}
       {...tooltipProps}
-      title={
-        <React.Fragment>
-          {tooltipProps.title}
-          <span className={arrow} ref={setArrowRef} />
-        </React.Fragment>
-      }
-      // TODO: This shouldn't really be calculated inside and should still be possible to be overriden by a prop.
-      disableHoverListener={!isTooltipVisible}
+      disableHoverListener={shouldDisableHoverListener}
+      arrow={true}
     />
   );
 };

@@ -19,6 +19,10 @@ describe('DLS - Visits Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should be able to click an investigation to see its datasets', () => {
@@ -97,6 +101,11 @@ describe('DLS - Visits Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Visit ID').click();
 
@@ -144,19 +153,16 @@ describe('DLS - Visits Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Visit ID"]')
-        .find('input')
-        .first()
-        .type('42');
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('42');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2000-04-03');
+      cy.get('input[id="Start Date filter from"]').type('2000-04-03');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('button[aria-label="Start Date filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -168,7 +174,7 @@ describe('DLS - Visits Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('input[id="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -178,15 +184,9 @@ describe('DLS - Visits Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Visit ID"]')
-        .find('input')
-        .first()
-        .type('42');
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('42');
 
-      cy.get('[aria-label="Filter by Instrument')
-        .find('input')
-        .first()
-        .type('INSTRUMENT 8');
+      cy.get('[aria-label="Filter by Instrument').first().type('INSTRUMENT 8');
 
       cy.get('[aria-rowcount="1"').should('exist');
     });
@@ -200,8 +200,7 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    // TODO: Data mismatch issue (#782)
-    it.skip('and then calculate file size', () => {
+    it('and then calculate file size', () => {
       // We need to wait for counts to finish, otherwise cypress
       // might interact with the details panel too quickly and
       // it re-renders during the test.
@@ -213,7 +212,7 @@ describe('DLS - Visits Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('10.8 GB', { timeout: 10000 }).should('be.visible');
+      cy.contains('10.25 GB', { timeout: 10000 }).should('be.visible');
     });
 
     // TODO: Since we only have one investigation, we cannot test

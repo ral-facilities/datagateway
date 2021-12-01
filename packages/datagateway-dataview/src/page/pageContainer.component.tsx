@@ -13,31 +13,36 @@ import {
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
+import InfoIcon from '@material-ui/icons/Info';
 import { StyleRules } from '@material-ui/core/styles';
 import {
   DownloadCartItem,
-  fetchDownloadCart,
-  loadURLQuery,
-  pushPageView,
-  saveView,
   Sticky,
-  QueryParams,
   ViewsType,
+  useCart,
+  parseSearchToQuery,
+  useUpdateView,
+  readSciGatewayToken,
+  ArrowTooltip,
+  SelectionAlert,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { Switch as SwitchRouting, Route } from 'react-router';
-import { push } from 'connected-react-router';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../state/app.types';
+import {
+  Switch as SwitchRouting,
+  Route,
+  useLocation,
+  useHistory,
+  useRouteMatch,
+} from 'react-router-dom';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
+import RoleSelector from '../views/roleSelector.component';
+import { useIsFetching, useQueryClient } from 'react-query';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -62,6 +67,25 @@ const usePaperStyles = makeStyles(
         marginLeft: 'auto',
         marginRight: 'auto',
         maxWidth: '960px',
+      },
+    })
+);
+
+const useNavBarStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      openDataPaper: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        backgroundColor: (theme as any).colours?.warning,
+        display: 'flex',
+        flexDirection: 'column',
+        paddingLeft: 0,
+        paddingRight: 20,
+        justifyContent: 'center',
+      },
+      openDataInfoIcon: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        color: (theme as any).colours?.information,
       },
     })
 );
@@ -137,41 +161,103 @@ export const paths = {
   },
 };
 
-export const NavBar = (props: {
-  entityCount: number;
-  cartItems: DownloadCartItem[];
-  navigateToSearch: () => Action;
-  navigateToDownload: () => Action;
-}): React.ReactElement => {
-  const [t] = useTranslation();
+const togglePaths = Object.values(paths.toggle).concat(
+  Object.values(paths.studyHierarchy.toggle)
+);
 
-  return (
-    <Sticky>
-      <StyledGrid container>
-        {/* Hold the breadcrumbs at top left of the page. */}
-        <Grid
-          className="tour-dataview-breadcrumbs"
-          item
-          xs
-          aria-label="container-breadcrumbs"
-        >
-          {/* don't show breadcrumbs on /my-data - only on browse */}
-          <Route
-            path={[paths.root, paths.studyHierarchy.root]}
-            component={PageBreadcrumbs}
-          />
-        </Grid>
+// ISIS base paths - required for linking to correct search view
+const isisPaths = [
+  paths.myData.isis,
+  paths.toggle.isisInstrument,
+  paths.studyHierarchy.root,
+];
 
-        {/* The table entity count has a size of 2 (or 3 for xs screens); the
+// DLS base paths - required for linking to correct search view
+const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
+
+const BlackTextTypography = withStyles({
+  root: {
+    color: '#000000',
+    fontSize: '16px',
+  },
+})(Typography);
+
+const NavBar = React.memo(
+  (props: {
+    entityCount: number;
+    cartItems: DownloadCartItem[];
+    navigateToSearch: () => void;
+    navigateToDownload: () => void;
+    loggedInAnonymously: boolean;
+  }): React.ReactElement => {
+    const [t] = useTranslation();
+    const classes = useNavBarStyles();
+
+    return (
+      <Sticky>
+        <StyledGrid container>
+          {/* Hold the breadcrumbs at top left of the page. */}
+          <Grid
+            className="tour-dataview-breadcrumbs"
+            item
+            xs
+            aria-label="page-breadcrumbs"
+          >
+            {/* don't show breadcrumbs on /my-data - only on browse */}
+            <Route
+              path={[paths.root, paths.studyHierarchy.root]}
+              component={PageBreadcrumbs}
+            />
+          </Grid>
+
+          {props.loggedInAnonymously ? (
+            <Grid item>
+              <Paper square className={classes.openDataPaper}>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                  aria-label="open-data-warning"
+                >
+                  <Grid item>
+                    <ArrowTooltip
+                      interactive
+                      title={
+                        <h4>
+                          {t('app.open_data_warning.tooltip')}
+                          <br />
+                          <br />
+                          <a
+                            href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
+                            style={{ color: '#6793FF' }}
+                          >
+                            {t('app.open_data_warning.tooltip_link')}
+                          </a>
+                        </h4>
+                      }
+                      disableHoverListener={false}
+                    >
+                      <IconButton
+                        disableRipple
+                        style={{ backgroundColor: 'transparent' }}
+                      >
+                        <InfoIcon className={classes.openDataInfoIcon} />
+                      </IconButton>
+                    </ArrowTooltip>
+                  </Grid>
+                  <Grid item>
+                    <BlackTextTypography variant="h6">
+                      <b>{t('app.open_data_warning.message')}</b>
+                    </BlackTextTypography>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+          ) : null}
+
+          {/* The table entity count has a size of 2 (or 3 for xs screens); the
             breadcrumbs will take the remainder of the space. */}
-        <Grid
-          className="tour-dataview-results"
-          style={{ textAlign: 'center' }}
-          item
-          sm={2}
-          xs={3}
-          aria-label="container-view-count"
-        >
           <Route
             exact
             path={Object.values(paths.myData).concat(
@@ -182,72 +268,82 @@ export const NavBar = (props: {
             )}
             render={() => {
               return (
-                <Paper
-                  square
-                  style={{
-                    backgroundColor: 'inherit',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
+                <Grid
+                  className="tour-dataview-results"
+                  style={{ textAlign: 'center' }}
+                  item
+                  sm={2}
+                  xs={3}
+                  aria-label="view-count"
                 >
-                  <Typography variant="h6" component="h3">
-                    <b>{t('app.results')}:</b> {props.entityCount}
-                  </Typography>
-                </Paper>
+                  <Paper
+                    square
+                    style={{
+                      backgroundColor: 'inherit',
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Typography variant="h6" component="h3">
+                      <b>{t('app.results')}:</b> {props.entityCount}
+                    </Typography>
+                  </Paper>
+                </Grid>
               );
             }}
           />
-        </Grid>
-        <Paper
-          square
-          style={{
-            backgroundColor: 'inherit',
-            display: 'flex',
-            paddingLeft: 6,
-            paddingRight: 6,
-          }}
-        >
-          <IconButton
-            className="tour-dataview-search-icon"
-            onClick={props.navigateToSearch}
-            aria-label="container-view-search"
-            style={{ margin: 'auto' }}
+          <Paper
+            square
+            style={{
+              backgroundColor: 'inherit',
+              display: 'flex',
+              paddingLeft: 6,
+              paddingRight: 6,
+            }}
           >
-            <SearchIcon />
-          </IconButton>
-        </Paper>
-        <Paper
-          square
-          style={{
-            backgroundColor: 'inherit',
-            display: 'flex',
-            paddingLeft: 6,
-            paddingRight: 6,
-          }}
-        >
-          <IconButton
-            className="tour-dataview-cart-icon"
-            onClick={props.navigateToDownload}
-            aria-label="container-view-cart"
-            style={{ margin: 'auto' }}
-          >
-            <Badge
-              badgeContent={
-                props.cartItems.length > 0 ? props.cartItems.length : null
-              }
-              color="primary"
-              aria-label="container-view-cart-badge"
+            <IconButton
+              className="tour-dataview-search-icon"
+              onClick={props.navigateToSearch}
+              aria-label="view-search"
+              style={{ margin: 'auto' }}
             >
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-        </Paper>
-      </StyledGrid>
-    </Sticky>
-  );
-};
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+          <Paper
+            square
+            style={{
+              backgroundColor: 'inherit',
+              display: 'flex',
+              paddingLeft: 6,
+              paddingRight: 6,
+            }}
+          >
+            <IconButton
+              className="tour-dataview-cart-icon"
+              onClick={props.navigateToDownload}
+              aria-label="view-cart"
+              style={{ margin: 'auto' }}
+            >
+              <Badge
+                badgeContent={
+                  props.cartItems.length > 0 ? props.cartItems.length : null
+                }
+                color="primary"
+                aria-label="view-cart-badge"
+              >
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+          </Paper>
+        </StyledGrid>
+      </Sticky>
+    );
+  }
+);
+NavBar.displayName = 'NavBar';
 
 const viewButtonStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -269,7 +365,9 @@ const ViewButton = (props: {
     <div className={classes.root}>
       <Button
         className="tour-dataview-view-button"
-        aria-label="container-view-button"
+        aria-label={`page-view ${
+          props.viewCards ? t('app.view_table') : t('app.view_cards')
+        }`}
         variant="contained"
         color="primary"
         size="small"
@@ -282,315 +380,324 @@ const ViewButton = (props: {
   );
 };
 
-const ViewRouting = (props: {
+const StyledRouting = (props: {
+  viewStyle: ViewsType;
   view: ViewsType;
-  loadedCount: boolean;
-  totalDataCount: number;
   location: LocationType;
+  displayFilterMessage: boolean;
+  loggedInAnonymously: boolean;
 }): React.ReactElement => {
-  const { view, loadedCount, totalDataCount, location } = props;
-  const paperClasses = usePaperStyles();
+  const {
+    view,
+    location,
+    viewStyle,
+    displayFilterMessage,
+    loggedInAnonymously,
+  } = props;
   const [t] = useTranslation();
-  const displayFilterMessage = loadedCount && totalDataCount === 0;
+  const paperClasses = usePaperStyles();
   const tableClassName = displayFilterMessage
     ? paperClasses.tablePaperMessage
     : paperClasses.tablePaper;
+  return (
+    <div>
+      {viewStyle !== 'card' && displayFilterMessage && (
+        <Paper className={paperClasses.noResultsPaper}>
+          <Typography
+            align="center"
+            variant="h6"
+            component="h6"
+            aria-label="filter-message"
+          >
+            {t('loading.filter_message')}
+          </Typography>
+        </Paper>
+      )}
+      <Paper
+        square
+        className={
+          viewStyle === 'card' ? paperClasses.cardPaper : tableClassName
+        }
+      >
+        <PageRouting
+          loggedInAnonymously={loggedInAnonymously}
+          view={view}
+          location={location}
+        />
+      </Paper>
+    </div>
+  );
+};
+
+const ViewRouting = React.memo(
+  (props: {
+    view: ViewsType;
+    loadedCount: boolean;
+    totalDataCount: number;
+    location: LocationType;
+    loggedInAnonymously: boolean;
+  }): React.ReactElement => {
+    const {
+      view,
+      loadedCount,
+      totalDataCount,
+      location,
+      loggedInAnonymously,
+    } = props;
+    const displayFilterMessage = loadedCount && totalDataCount === 0;
+
+    return (
+      <SwitchRouting>
+        {/* For "landing" paths, don't use a containing Paper */}
+        <Route
+          exact
+          path={Object.values(paths.landing).concat(
+            Object.values(paths.studyHierarchy.landing)
+          )}
+          render={() => (
+            <PageRouting
+              loggedInAnonymously={loggedInAnonymously}
+              view={view}
+              location={location}
+            />
+          )}
+        />
+        {/* For "toggle" paths, check state for the current view to determine styling */}
+        <Route exact path={togglePaths}>
+          <StyledRouting
+            viewStyle={view}
+            view={view}
+            location={location}
+            loggedInAnonymously={loggedInAnonymously}
+            displayFilterMessage={displayFilterMessage}
+          />
+        </Route>
+
+        {/* Otherwise, use the paper styling for tables*/}
+        <Route>
+          <StyledRouting
+            viewStyle={'table'}
+            view={view}
+            location={location}
+            loggedInAnonymously={loggedInAnonymously}
+            displayFilterMessage={displayFilterMessage}
+          />
+        </Route>
+      </SwitchRouting>
+    );
+  }
+);
+ViewRouting.displayName = 'ViewRouting';
+
+const storeDataView = (view: NonNullable<ViewsType>): void => {
+  localStorage.setItem('dataView', view);
+};
+
+const getView = (): string => {
+  // We store the view into localStorage so the user can
+  // return to the view they were on the next time they open the page.
+  const savedView = localStorage.getItem('dataView');
+
+  // We set to 'table' initially if there is none present.
+  if (!savedView) storeDataView('table');
+  else return savedView;
+  return 'table';
+};
+
+const getPathMatch = (pathname: string): boolean => {
+  const res = togglePaths.some((p) => {
+    // Look for the character set where the parameter for ID would be
+    // replaced with the regex to catch any character between the forward slashes.
+    const match = pathname.match(p.replace(/(:[^./]*)/g, '(.)+'));
+    return match && pathname === match[0];
+  });
+  return res;
+};
+
+const getToggle = (pathname: string, view: ViewsType): boolean => {
+  return getPathMatch(pathname)
+    ? view
+      ? view === 'card'
+        ? true
+        : false
+      : getView() === 'card'
+      ? true
+      : false
+    : false;
+};
+
+const PageContainer: React.FC = () => {
+  const location = useLocation();
+  const { push } = useHistory();
+  const prevLocationRef = React.useRef(location);
+  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const [totalDataCount, setTotalDataCount] = React.useState(0);
+
+  // exclude size and count queries from showing the linear progress bar for performance
+  const isFetchingNum = useIsFetching({
+    predicate: (query) =>
+      !query.queryHash.includes('Size') &&
+      !query.queryHash.includes('DatasetCount') &&
+      !query.queryHash.includes('DatafileCount'),
+  });
+  const loading = isFetchingNum > 0;
+
+  const queryClient = useQueryClient();
+
+  // we need to run this hook every render to ensure we have the
+  // most up to date value from the query cache as otherwise
+  // the count can fall behind
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => {
+    const count =
+      queryClient.getQueryData<number>('count', {
+        exact: false,
+        active: true,
+      }) ?? 0;
+    if (count !== totalDataCount) setTotalDataCount(count);
+  });
+
+  const isCountFetchingNum = useIsFetching('count', {
+    exact: false,
+  });
+  const loadedCount = isCountFetchingNum === 0;
+
+  const { data: cartItems } = useCart();
+
+  const pushView = useUpdateView('push');
+  const replaceView = useUpdateView('replace');
+
+  const handleButtonChange = React.useCallback((): void => {
+    const nextView = view !== 'card' ? 'card' : 'table';
+
+    // Set the view in local storage.
+    storeDataView(nextView);
+
+    // push the view to query parameters.
+    pushView(nextView);
+  }, [pushView, view]);
+
+  const navigateToDownload = React.useCallback(() => push('/download'), [push]);
+
+  const isisRouteMatch = useRouteMatch(isisPaths);
+  const dlsRouteMatch = useRouteMatch(dlsPaths);
+  const isISISRoute = isisRouteMatch !== null;
+  const isDLSRoute = dlsRouteMatch !== null;
+
+  const navigateToSearch = React.useCallback(() => {
+    if (isISISRoute) {
+      return push('/search/isis');
+    } else if (isDLSRoute) {
+      return push('/search/dls');
+    } else {
+      return push('/search/data');
+    }
+  }, [push, isISISRoute, isDLSRoute]);
+
+  React.useEffect(() => {
+    prevLocationRef.current = location;
+  });
+  const prevLocation = prevLocationRef.current;
+  const prevView = React.useMemo(
+    () => parseSearchToQuery(prevLocation.search).view,
+    [prevLocation]
+  );
+
+  React.useEffect(() => {
+    // If the view query parameter was not found and the previously
+    // stored view is in localstorage, update our current query with the view.
+    if (getToggle(location.pathname, view) && !view) {
+      //Replace rather than push here to ensure going back doesn't just go to the same
+      //page without the query which would execute this code again
+      replaceView('card');
+    }
+  }, [location.pathname, view, prevView, prevLocation.pathname, replaceView]);
+
+  //Determine whether logged in anonymously (assume this if username is null)
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously = username === null || username === 'anon/anon';
 
   return (
-    <SwitchRouting>
-      {/* For "landing" paths, don't use a containing Paper */}
-      <Route
-        exact
-        path={Object.values(paths.landing).concat(
-          Object.values(paths.studyHierarchy.landing)
-        )}
-        render={() => <PageRouting view={props.view} location={location} />}
-      />
-      {/* For "toggle" paths, check state for the current view */}
-      <Route
-        exact
-        path={Object.values(paths.toggle).concat(
-          Object.values(paths.studyHierarchy.toggle)
-        )}
-        render={() => (
-          <div>
-            {view !== 'card' && displayFilterMessage && (
-              <Paper className={paperClasses.noResultsPaper}>
-                <Typography
-                  align="center"
-                  variant="h6"
-                  component="h6"
-                  aria-label="filter-message"
-                >
-                  {t('loading.filter_message')}
-                </Typography>
-              </Paper>
-            )}
-            <Paper
-              square
-              className={
-                view === 'card' ? paperClasses.cardPaper : tableClassName
-              }
-            >
-              <PageRouting view={view} location={location} />
-            </Paper>
-          </div>
-        )}
-      />
-      {/* Otherwise, use the paper styling for tables*/}
+    <SwitchRouting location={location}>
+      {/* Load the homepage */}
+      <Route exact path={paths.homepage} component={TranslatedHomePage} />
       <Route
         render={() => (
-          <div>
-            {displayFilterMessage && (
-              <Paper className={paperClasses.noResultsPaper}>
-                <Typography
-                  align="center"
-                  variant="h6"
-                  component="h6"
-                  aria-label="filter-message"
-                >
-                  {t('loading.filter_message')}
-                </Typography>
-              </Paper>
-            )}
-            <Paper square className={tableClassName}>
-              <PageRouting view={view} location={location} />
-            </Paper>
-          </div>
+          // Load the standard dataview pageContainer
+          <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
+            <NavBar
+              entityCount={totalDataCount ?? 0}
+              cartItems={cartItems ?? []}
+              navigateToSearch={navigateToSearch}
+              navigateToDownload={navigateToDownload}
+              loggedInAnonymously={loggedInAnonymously}
+            />
+
+            <StyledGrid container>
+              <Grid
+                item
+                xs={12}
+                style={{ marginTop: '10px', marginBottom: '10px' }}
+              >
+                <StyledGrid container>
+                  {/* Toggle between the table and card view */}
+                  <Grid item xs={'auto'}>
+                    <Route
+                      exact
+                      path={togglePaths}
+                      render={() => (
+                        <ViewButton
+                          viewCards={view === 'card'}
+                          handleButtonChange={handleButtonChange}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path={Object.values(paths.myData)}
+                      render={() => <RoleSelector />}
+                    />
+                  </Grid>
+                  <Grid item xs={true}>
+                    <SelectionAlert
+                      selectedItems={cartItems ?? []}
+                      navigateToSelections={navigateToDownload}
+                      marginSide={'8px'}
+                    />
+                  </Grid>
+                </StyledGrid>
+              </Grid>
+
+              {/* Show loading progress if data is still being loaded */}
+              {loading && (
+                <Grid item xs={12}>
+                  <LinearProgress color="secondary" />
+                </Grid>
+              )}
+
+              {/* Hold the view for remainder of the page */}
+              <Grid
+                className="tour-dataview-data"
+                item
+                xs={12}
+                aria-label="page-view"
+              >
+                <ViewRouting
+                  view={view}
+                  location={location}
+                  loadedCount={loadedCount}
+                  loggedInAnonymously={loggedInAnonymously}
+                  totalDataCount={totalDataCount ?? 0}
+                />
+              </Grid>
+            </StyledGrid>
+          </Paper>
         )}
       />
     </SwitchRouting>
   );
 };
 
-interface PageContainerDispatchProps {
-  loadQuery: (pathChanged: boolean) => Promise<void>;
-  pushView: (view: ViewsType, path: string) => Promise<void>;
-  saveView: (view: ViewsType) => Promise<void>;
-  fetchDownloadCart: () => Promise<void>;
-  navigateToDownload: () => Action;
-  navigateToSearch: () => Action;
-}
-
-interface PageContainerStateProps {
-  entityCount: number;
-  location: LocationType;
-  query: QueryParams;
-  savedView: ViewsType;
-  loading: boolean;
-  loadedCount: boolean;
-  totalDataCount: number;
-  cartItems: DownloadCartItem[];
-}
-
-type PageContainerCombinedProps = PageContainerStateProps &
-  PageContainerDispatchProps;
-
-interface PageContainerState {
-  paths: string[];
-  viewCards: boolean;
-  modifiedLocation: LocationType;
-}
-
-class PageContainer extends React.Component<
-  PageContainerCombinedProps,
-  PageContainerState
-> {
-  public constructor(props: PageContainerCombinedProps) {
-    super(props);
-
-    // Load the current URL query parameters.
-    this.props.loadQuery(true);
-
-    // Allow for query parameter to override the
-    // toggle state in the localStorage.
-    this.state = {
-      paths: Object.values(paths.toggle).concat(
-        Object.values(paths.studyHierarchy.toggle)
-      ),
-      viewCards: this.getToggle(),
-      modifiedLocation: props.location,
-    };
-  }
-
-  public componentDidMount(): void {
-    // Fetch the download cart on mount, ensuring dataview element is present.
-    if (document.getElementById('datagateway-dataview')) {
-      this.props.fetchDownloadCart();
-    }
-  }
-
-  public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
-    // Ensure if the location changes, then we update the query parameters.
-    // Use a dummy URL for the routing until we've updated the query to prevent
-    // sending requests for the old query on the new entity or vice versa.
-    if (prevProps.location.pathname !== this.props.location.pathname) {
-      this.setState({
-        ...this.state,
-        modifiedLocation: { ...this.props.location, pathname: '/' },
-      });
-      this.props.loadQuery(true);
-    } else if (prevProps.location.search !== this.props.location.search) {
-      this.props.loadQuery(false);
-    }
-
-    if (prevProps.query !== this.props.query) {
-      this.setState({ ...this.state, modifiedLocation: this.props.location });
-    }
-
-    // If the view query parameter was not found and the previously
-    // stored view is in localstorage, update our current query with the view.
-    if (this.getToggle() && !this.props.query.view)
-      this.props.pushView('card', this.props.location.pathname);
-
-    // Keep the query parameter for view and the state in sync, by getting the latest update.
-    if (prevProps.query.view !== this.props.query.view) {
-      this.setState({
-        ...this.state,
-        viewCards: this.getToggle(),
-      });
-    }
-  }
-
-  public getPathMatch = (): boolean => {
-    const res = Object.values(paths.toggle)
-      .concat(Object.values(paths.studyHierarchy.toggle))
-      .some((p) => {
-        // Look for the character set where the parameter for ID would be
-        // replaced with the regex to catch any character between the forward slashes.
-        const match = this.props.location.pathname.match(
-          p.replace(/(:[^./]*)/g, '(.)+')
-        );
-        return match && this.props.location.pathname === match[0];
-      });
-    return res;
-  };
-
-  public getToggle = (): boolean => {
-    return this.getPathMatch()
-      ? this.props.query.view
-        ? this.props.query.view === 'card'
-          ? true
-          : false
-        : this.getView() === 'card'
-        ? true
-        : false
-      : false;
-  };
-
-  public storeDataView = (view: ViewsType): void => {
-    if (view) localStorage.setItem('dataView', view);
-  };
-
-  public getView = (): string => {
-    // We store the view into localStorage so the user can
-    // return to the view they were on the next time they open the page.
-    const savedView = localStorage.getItem('dataView');
-
-    // We set to 'table' initially if there is none present.
-    if (!savedView) this.storeDataView('table');
-    else return savedView;
-    return 'table';
-  };
-
-  public handleButtonChange = (): void => {
-    const nextView = !this.state.viewCards ? 'card' : 'table';
-
-    // Save the current view information to state and restore the previous view information.
-    this.props.saveView(nextView);
-
-    // Set the view in local storage.
-    this.storeDataView(nextView);
-
-    // Add the view and push the final query parameters.
-    this.props.pushView(nextView, this.props.location.pathname);
-
-    // Set the state with the toggled card option and the saved query.
-    this.setState({
-      ...this.state,
-      viewCards: !this.state.viewCards,
-    });
-  };
-
-  public render(): React.ReactElement {
-    return (
-      <SwitchRouting location={this.props.location}>
-        {/* Load the homepage */}
-        <Route exact path={paths.homepage} component={TranslatedHomePage} />
-        <Route
-          render={() => (
-            // Load the standard dataview pageContainer
-            <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
-              <NavBar
-                entityCount={this.props.entityCount}
-                cartItems={this.props.cartItems}
-                navigateToSearch={this.props.navigateToSearch}
-                navigateToDownload={this.props.navigateToDownload}
-              />
-
-              <StyledGrid container>
-                {/* Toggle between the table and card view */}
-                <Grid item xs={12}>
-                  <Route
-                    exact
-                    path={this.state.paths}
-                    render={() => (
-                      <ViewButton
-                        viewCards={this.state.viewCards}
-                        handleButtonChange={this.handleButtonChange}
-                      />
-                    )}
-                  />
-                </Grid>
-
-                {/* Show loading progress if data is still being loaded */}
-                {this.props.loading && (
-                  <Grid item xs={12}>
-                    <LinearProgress color="secondary" />
-                  </Grid>
-                )}
-
-                {/* Hold the view for remainder of the page */}
-                <Grid item xs={12} aria-label="container-view">
-                  {document.getElementById('datagateway-dataview') && (
-                    <ViewRouting
-                      view={this.props.query.view}
-                      loadedCount={this.props.loadedCount}
-                      totalDataCount={this.props.totalDataCount}
-                      location={this.state.modifiedLocation}
-                    />
-                  )}
-                </Grid>
-              </StyledGrid>
-            </Paper>
-          )}
-        />
-      </SwitchRouting>
-    );
-  }
-}
-
-const mapStateToProps = (state: StateType): PageContainerStateProps => ({
-  entityCount: state.dgcommon.totalDataCount,
-  location: state.router.location,
-  query: state.dgcommon.query,
-  savedView: state.dgcommon.savedQuery.view,
-  loading: state.dgcommon.loading,
-  loadedCount: state.dgcommon.loadedCount,
-  totalDataCount: state.dgcommon.totalDataCount,
-  cartItems: state.dgcommon.cartItems,
-});
-
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): PageContainerDispatchProps => ({
-  loadQuery: (pathChanged: boolean) => dispatch(loadURLQuery(pathChanged)),
-  pushView: (view: ViewsType, path: string) =>
-    dispatch(pushPageView(view, path)),
-  saveView: (view: ViewsType) => dispatch(saveView(view)),
-  fetchDownloadCart: () => dispatch(fetchDownloadCart()),
-  navigateToDownload: () => dispatch(push('/download')),
-  navigateToSearch: () => dispatch(push('/search/data')),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);
+export default PageContainer;

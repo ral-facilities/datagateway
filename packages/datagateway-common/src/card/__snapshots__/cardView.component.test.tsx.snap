@@ -16,7 +16,7 @@ exports[`Card View renders correctly 1`] = `
   >
     <WithStyles(ForwardRef(Grid))
       alignItems="center"
-      className="makeStyles-paginationGrid-6"
+      className="makeStyles-paginationGrid-5"
       container={true}
       direction="row"
       item={true}
@@ -27,6 +27,7 @@ exports[`Card View renders correctly 1`] = `
         item={true}
       >
         <WithStyles(ForwardRef(Pagination))
+          aria-label="pagination"
           color="secondary"
           count={0}
           hideNextButton={true}
@@ -86,6 +87,7 @@ exports[`Card View renders correctly 1`] = `
             </Styled(MuiBox)>
             <Styled(MuiBox)>
               <WithStyles(ForwardRef(List))
+                aria-label="sort-by-list"
                 component="nav"
               />
             </Styled(MuiBox)>
@@ -108,14 +110,84 @@ exports[`Card View renders correctly 1`] = `
       >
         <WithStyles(ForwardRef(ListItem))
           alignItems="flex-start"
-          className="makeStyles-root-1"
           key="0"
         >
           <EntityCard
+            entity={
+              Object {
+                "facility": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "id": 1,
+                "name": "Test 1",
+                "title": "Test 1",
+                "type": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "visitId": "1",
+              }
+            }
             title={
               Object {
-                "content": undefined,
-                "label": "Test 1",
+                "dataKey": "title",
+              }
+            }
+          />
+        </WithStyles(ForwardRef(ListItem))>
+        <WithStyles(ForwardRef(ListItem))
+          alignItems="flex-start"
+          key="1"
+        >
+          <EntityCard
+            entity={
+              Object {
+                "facility": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "id": 2,
+                "name": "Test 2",
+                "title": "Test 2",
+                "type": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "visitId": "2",
+              }
+            }
+            title={
+              Object {
+                "dataKey": "title",
+              }
+            }
+          />
+        </WithStyles(ForwardRef(ListItem))>
+        <WithStyles(ForwardRef(ListItem))
+          alignItems="flex-start"
+          key="2"
+        >
+          <EntityCard
+            entity={
+              Object {
+                "facility": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "id": 3,
+                "name": "Test 3",
+                "title": "Test 3",
+                "type": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "visitId": "3",
+              }
+            }
+            title={
+              Object {
+                "dataKey": "title",
               }
             }
           />
@@ -133,6 +205,7 @@ exports[`Card View renders correctly 1`] = `
     xs={true}
   >
     <WithStyles(ForwardRef(Pagination))
+      aria-label="pagination"
       color="secondary"
       count={0}
       hideNextButton={true}

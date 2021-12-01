@@ -1,147 +1,95 @@
 import React from 'react';
-import { IndexRange } from 'react-virtualized';
 import {
   CardView,
-  Entity,
-  fetchInvestigationCount,
-  fetchInvestigations,
   Investigation,
   tableLink,
-  pushPageFilter,
-  Filter,
-  TextColumnFilter,
-  TextFilter,
-  pushPageNum,
-  pushQuery,
+  parseSearchToQuery,
+  useInvestigationCount,
+  useInvestigationsPaginated,
+  usePushFilters,
+  usePushPage,
+  usePushResults,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
-import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
-interface DLSProposalsCVDispatchProps {
-  fetchData: (offsetParams: IndexRange) => Promise<void>;
-  fetchCount: () => Promise<void>;
-  pushPage: (page: number) => Promise<void>;
-  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushQuery: (query: QueryParams) => Promise<void>;
-}
-
-interface DLSProposalsCVStateProps {
-  data: Entity[];
-  totalDataCount: number;
-  loadedData: boolean;
-  loadedCount: boolean;
-  query: QueryParams;
-}
-
-type DLSProposalsCVCombinedProps = DLSProposalsCVDispatchProps &
-  DLSProposalsCVStateProps;
-
-const DLSProposalsCardView = (
-  props: DLSProposalsCVCombinedProps
-): React.ReactElement => {
-  const {
-    data,
-    totalDataCount,
-    query,
-    loadedData,
-    loadedCount,
-    fetchData,
-    fetchCount,
-    pushPage,
-    pushFilters,
-    pushQuery,
-  } = props;
-
-  const filters = query.filters;
+const DLSProposalsCardView = (): React.ReactElement => {
   const [t] = useTranslation();
+  const location = useLocation();
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
+  const { filters, view, sort, page, results } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  const textFilter = useTextFilter(filters);
+  const handleSort = useSort();
+  const pushFilters = usePushFilters();
+  const pushPage = usePushPage();
+  const pushResults = usePushResults();
+
+  const {
+    data: totalDataCount,
+    isLoading: countLoading,
+  } = useInvestigationCount([
+    {
+      filterType: 'distinct',
+      filterValue: JSON.stringify(['name', 'title']),
+    },
+  ]);
+  const { isLoading: dataLoading, data } = useInvestigationsPaginated([
+    {
+      filterType: 'distinct',
+      filterValue: JSON.stringify(['name', 'title']),
+    },
+  ]);
+
+  const title: CardViewDetails = React.useMemo(
+    () => ({
+      label: t('investigations.title'),
+      dataKey: 'title',
+      content: (investigation: Investigation) =>
+        tableLink(
+          `/browse/proposal/${investigation.name}/investigation`,
+          investigation.title,
+          view
+        ),
+      filterComponent: textFilter,
+      defaultSort: 'asc',
+    }),
+    [t, textFilter, view]
+  );
+
+  const description: CardViewDetails = React.useMemo(
+    () => ({
+      label: t('investigations.name'),
+      dataKey: 'name',
+      filterComponent: textFilter,
+    }),
+    [t, textFilter]
   );
 
   return (
     <CardView
-      data={data}
-      totalDataCount={totalDataCount}
-      query={query}
-      loadData={fetchData}
-      loadCount={fetchCount}
+      data={data ?? []}
+      totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      pushQuery={pushQuery}
-      loadedData={loadedData}
-      loadedCount={loadedCount}
-      title={{
-        label: t('investigations.title'),
-        dataKey: 'title',
-        content: (investigation: Investigation) =>
-          tableLink(
-            `/browse/proposal/${investigation.name}/investigation`,
-            investigation.title,
-            query.view
-          ),
-        filterComponent: textFilter,
-      }}
-      description={{
-        label: t('investigations.name'),
-        dataKey: 'name',
-        filterComponent: textFilter,
-      }}
+      onSort={handleSort}
+      onResultsChange={pushResults}
+      loadedData={!dataLoading}
+      loadedCount={!countLoading}
+      filters={filters}
+      sort={sort}
+      page={page}
+      results={results}
+      title={title}
+      description={description}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DLSProposalsCVDispatchProps => ({
-  fetchData: (offsetParams: IndexRange) =>
-    dispatch(
-      fetchInvestigations({
-        offsetParams,
-        additionalFilters: [
-          {
-            filterType: 'distinct',
-            filterValue: JSON.stringify(['name', 'title']),
-          },
-        ],
-      })
-    ),
-  fetchCount: () =>
-    dispatch(
-      fetchInvestigationCount([
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify(['name', 'title']),
-        },
-      ])
-    ),
-
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
-  pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
-});
-
-const mapStateToProps = (state: StateType): DLSProposalsCVStateProps => {
-  return {
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
-    loadedData: state.dgcommon.loadedData,
-    loadedCount: state.dgcommon.loadedCount,
-    query: state.dgcommon.query,
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DLSProposalsCardView);
+export default DLSProposalsCardView;

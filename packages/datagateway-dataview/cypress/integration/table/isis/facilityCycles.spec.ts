@@ -7,13 +7,17 @@ describe('ISIS - FacilityCycles Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should be able to click a facility cycle to see its investigations', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/1/investigation'
+      '/browse/instrument/1/facilityCycle/79/investigation'
     );
   });
 
@@ -40,7 +44,7 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('[role="columnheader"]').eq(1).as('startDateColumn');
 
     // Filtering results to remove vertical scroll bar affecting width calculations
-    cy.get('[aria-label="Filter by Name"]').find('input').first().type('2004');
+    cy.get('[aria-label="Filter by Name"]').first().type('2004');
 
     cy.get('@titleColumn').should(($column) => {
       let { width } = $column[0].getBoundingClientRect();
@@ -90,15 +94,19 @@ describe('ISIS - FacilityCycles Table', () => {
     });
   });
 
-  // TODO: Data mismatch issue (#782)
-  describe.skip('should be able to sort by', () => {
+  describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2000-04-02 00:00:00+01:00'
+        '2000-04-02 00:00:00+00:00'
       );
     });
 
@@ -113,7 +121,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2019-08-04 00:00:00+01:00'
+        '2019-08-04 00:00:00+00:00'
       );
     });
 
@@ -131,7 +139,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2000-04-02 00:00:00+01:00'
+        '2000-04-02 00:00:00+00:00'
       );
     });
 
@@ -140,28 +148,25 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2000-04-02 00:00:00+01:00'
+        '2000-04-02 00:00:00+00:00'
       );
     });
   });
 
   describe('should be able to filter by', () => {
-    it.skip('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .first()
-        .type('2010');
+    it('text', () => {
+      cy.get('[aria-label="Filter by Name"]').first().type('2010');
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        '2010-08-04 00:00:00+01:00'
+        '2010-06-03 00:00:00+00:00'
       );
     });
 
-    it.skip('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2010-04-02');
+    it('date between', () => {
+      cy.get('input[id="Start Date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('button[aria-label="Start Date filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -173,21 +178,21 @@ describe('ISIS - FacilityCycles Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('input[id="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
 
       cy.get('[aria-rowcount="19"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2010-06-03 00:00:00+01:00'
+        '2019-08-04 00:00:00+00:00'
       );
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').first().type('3');
+      cy.get('[aria-label="Filter by Name"]').first().type('3');
 
-      cy.get('[aria-label="Start Date date filter from"]').type('2019-06-03');
+      cy.get('input[id="Start Date filter from"]').type('2019-06-03');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

@@ -1,29 +1,19 @@
 import {
-  DateColumnFilter,
-  DateFilter,
-  Entity,
-  fetchFacilityCycleCount,
-  fetchFacilityCycles,
-  Filter,
-  FiltersType,
-  Order,
-  pushPageFilter,
-  pushPageSort,
-  SortType,
+  ColumnType,
+  FacilityCycle,
+  parseSearchToQuery,
+  useFacilityCycleCount,
+  useFacilityCyclesInfinite,
+  useSort,
+  useTextFilter,
+  useDateFilter,
   Table,
   tableLink,
-  TextColumnFilter,
-  ViewsType,
-  TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
-
+import { useLocation } from 'react-router-dom';
 import TitleIcon from '@material-ui/icons/Title';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
@@ -31,145 +21,81 @@ interface ISISFacilityCyclesTableProps {
   instrumentId: string;
 }
 
-interface ISISFacilityCyclesTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
-  data: Entity[];
-  totalDataCount: number;
-  loading: boolean;
-  error: string | null;
-  selectAllSetting: boolean;
-}
-
-interface ISISFacilityCyclesTableDispatchProps {
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (instrumentId: number, offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (instrumentId: number) => Promise<void>;
-}
-
-type ISISFacilityCyclesTableCombinedProps = ISISFacilityCyclesTableProps &
-  ISISFacilityCyclesTableStoreProps &
-  ISISFacilityCyclesTableDispatchProps;
-
 const ISISFacilityCyclesTable = (
-  props: ISISFacilityCyclesTableCombinedProps
+  props: ISISFacilityCyclesTableProps
 ): React.ReactElement => {
-  const {
-    data,
-    totalDataCount,
-    fetchData,
-    fetchCount,
-    sort,
-    pushSort,
-    filters,
-    pushFilters,
-    view,
-    instrumentId,
-    loading,
-    selectAllSetting,
-  } = props;
+  const { instrumentId } = props;
 
+  const location = useLocation();
   const [t] = useTranslation();
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
+  const { filters, view, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
   );
 
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      value={filters[dataKey] as DateFilter}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
+  const { data: totalDataCount } = useFacilityCycleCount(
+    parseInt(instrumentId)
+  );
+  const { fetchNextPage, data } = useFacilityCyclesInfinite(
+    parseInt(instrumentId)
   );
 
-  React.useEffect(() => {
-    fetchCount(parseInt(instrumentId));
-  }, [fetchCount, instrumentId, filters]);
+  const aggregatedData: FacilityCycle[] = React.useMemo(
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    [data]
+  );
 
-  React.useEffect(() => {
-    fetchData(parseInt(instrumentId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, instrumentId, sort, filters]);
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const pushSort = useSort();
+
+  const loadMoreRows = React.useCallback(
+    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    [fetchNextPage]
+  );
+
+  const columns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        icon: TitleIcon,
+        label: t('facilitycycles.name'),
+        dataKey: 'name',
+        cellContentRenderer: (cellProps: TableCellProps) =>
+          tableLink(
+            `/browse/instrument/${instrumentId}/facilityCycle/${cellProps.rowData.id}/investigation`,
+            cellProps.rowData.name,
+            view
+          ),
+        filterComponent: textFilter,
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('facilitycycles.start_date'),
+        dataKey: 'startDate',
+        filterComponent: dateFilter,
+        defaultSort: 'desc',
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('facilitycycles.end_date'),
+        dataKey: 'endDate',
+        filterComponent: dateFilter,
+      },
+    ],
+    [t, textFilter, dateFilter, instrumentId, view]
+  );
 
   return (
     <Table
-      loading={loading}
-      data={data}
-      loadMoreRows={(params) => fetchData(parseInt(instrumentId), params)}
-      totalRowCount={totalDataCount}
+      data={aggregatedData}
+      loadMoreRows={loadMoreRows}
+      totalRowCount={totalDataCount ?? 0}
       sort={sort}
       onSort={pushSort}
-      disableSelectAll={!selectAllSetting}
-      columns={[
-        {
-          icon: <TitleIcon />,
-          label: t('facilitycycles.name'),
-          dataKey: 'name',
-          cellContentRenderer: (cellProps: TableCellProps) =>
-            tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${cellProps.rowData.id}/investigation`,
-              cellProps.rowData.name,
-              view
-            ),
-          filterComponent: textFilter,
-        },
-        {
-          icon: <CalendarTodayIcon />,
-          label: t('facilitycycles.start_date'),
-          dataKey: 'startDate',
-          filterComponent: dateFilter,
-        },
-        {
-          icon: <CalendarTodayIcon />,
-          label: t('facilitycycles.end_date'),
-          dataKey: 'endDate',
-          filterComponent: dateFilter,
-        },
-      ]}
+      columns={columns}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): ISISFacilityCyclesTableDispatchProps => ({
-  fetchData: (instrumentId: number, offsetParams: IndexRange) =>
-    dispatch(fetchFacilityCycles(instrumentId, offsetParams)),
-  fetchCount: (instrumentId: number) =>
-    dispatch(fetchFacilityCycleCount(instrumentId)),
-
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
-});
-
-const mapStateToProps = (
-  state: StateType
-): ISISFacilityCyclesTableStoreProps => {
-  return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
-    error: state.dgcommon.error,
-    selectAllSetting: state.dgdataview.selectAllSetting,
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ISISFacilityCyclesTable);
+export default ISISFacilityCyclesTable;

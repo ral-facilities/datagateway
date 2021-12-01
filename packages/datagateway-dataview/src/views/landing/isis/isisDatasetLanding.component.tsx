@@ -3,6 +3,7 @@ import {
   Divider,
   Grid,
   makeStyles,
+  Link as MuiLink,
   Paper,
   Tab,
   Tabs,
@@ -10,23 +11,18 @@ import {
   Typography,
 } from '@material-ui/core';
 import { CalendarToday, CheckCircle, Public, Save } from '@material-ui/icons';
-import { push } from 'connected-react-router';
 import {
   Dataset,
-  Entity,
-  fetchDatasetDetails,
-  fetchDatasets,
-  formatBytes,
-  ViewsType,
+  formatCountOrSize,
+  parseSearchToQuery,
+  useDatasetDetails,
+  useDatasetSizes,
+  AddToCartButton,
+  DownloadButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
-import AddToCartButton from '../../addToCartButton.component';
-import DownloadButton from '../../downloadButton.component';
+import { useHistory, useLocation } from 'react-router';
 import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -76,17 +72,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface LandingPageDispatchProps {
-  fetchDetails: (datasetId: number) => Promise<void>;
-  fetchData: (datasetId: number) => Promise<void>;
-  viewDatafiles: (urlPrefix: string, view: ViewsType) => Action;
-}
-
-interface LandingPageStateProps {
-  data: Entity[];
-  view: ViewsType;
-}
-
 interface LandingPageProps {
   instrumentId: string;
   instrumentChildId: string;
@@ -95,19 +80,15 @@ interface LandingPageProps {
   studyHierarchy: boolean;
 }
 
-type LandingPageCombinedProps = LandingPageDispatchProps &
-  LandingPageStateProps &
-  LandingPageProps;
-
-const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
+const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
+  const { push } = useHistory();
+  const location = useLocation();
+  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
   const [value, setValue] = React.useState<'details'>('details');
   const {
-    fetchDetails,
-    fetchData,
-    viewDatafiles,
-    data,
-    view,
     instrumentId,
     instrumentChildId,
     investigationId,
@@ -120,24 +101,30 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
   const classes = useStyles();
 
-  React.useEffect(() => {
-    fetchData(parseInt(datasetId));
-  }, [fetchData, datasetId]);
-
-  React.useEffect(() => {
-    if (data[0] && !data[0]?.type) {
-      fetchDetails(data[0].id);
-    }
-  }, [fetchDetails, data]);
+  const { data } = useDatasetDetails(parseInt(datasetId));
+  const sizeQueries = useDatasetSizes(data ? [data] : []);
 
   const shortInfo = [
     {
-      content: (entity: Dataset) => entity.doi,
+      content: function doiFormat(entity: Dataset) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              data-testid="isis-dataset-landing-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('datasets.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Dataset) => formatBytes(entity.size),
+      content: (entity: Dataset) => {
+        return formatCountOrSize(sizeQueries[0], true);
+      },
       label: t('datasets.size'),
       icon: <Save className={classes.shortInfoIcon} />,
     },
@@ -180,13 +167,19 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               <Tab
                 id="dataset-datafiles-tab"
                 label={t('datasets.details.datafiles')}
-                onClick={() => viewDatafiles(urlPrefix, view)}
+                onClick={() =>
+                  push(
+                    view
+                      ? `${urlPrefix}/datafile?view=${view}`
+                      : `${urlPrefix}/datafile`
+                  )
+                }
               />
             </Tabs>
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12}>
+        <Grid item container xs={12} id="dataset-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Typography
@@ -195,10 +188,10 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               variant="h6"
               aria-label="landing-dataset-name"
             >
-              {data[0]?.name}
+              {data?.name}
             </Typography>
             <Typography aria-label="landing-dataset-description">
-              {data[0]?.description}
+              {data?.description}
             </Typography>
             <Typography
               className={classes.subHeading}
@@ -209,7 +202,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               {t('datasets.location')}
             </Typography>
             <Typography aria-label="landing-dataset-description">
-              {data[0]?.location}
+              {data?.location}
             </Typography>
             <Typography
               className={classes.subHeading}
@@ -217,10 +210,10 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               variant="h6"
               aria-label="landing-dataset-type"
             >
-              {data[0]?.type?.name}
+              {data?.type?.name}
             </Typography>
             <Typography aria-label="landing-dataset-description">
-              {data[0]?.type?.description}
+              {data?.type?.description}
             </Typography>
           </Grid>
           <Divider orientation="vertical" />
@@ -228,15 +221,15 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
           <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
             {shortInfo.map(
               (field, i) =>
-                data[0] &&
-                field.content(data[0] as Dataset) && (
+                data &&
+                field.content(data as Dataset) && (
                   <div className={classes.shortInfoRow} key={i}>
                     <Typography className={classes.shortInfoLabel}>
                       {field.icon}
                       {field.label}:
                     </Typography>
                     <Typography className={classes.shortInfoValue}>
-                      {field.content(data[0] as Dataset)}
+                      {field.content(data as Dataset)}
                     </Typography>
                   </div>
                 )
@@ -251,7 +244,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               <DownloadButton
                 entityType="dataset"
                 entityId={parseInt(datasetId)}
-                entityName={data[0]?.name}
+                entityName={data?.name ?? ''}
               />
             </div>
           </Grid>
@@ -261,37 +254,4 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): LandingPageDispatchProps => ({
-  fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
-  fetchData: (datasetId: number) =>
-    dispatch(
-      fetchDatasets({
-        getSize: true,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              id: { eq: datasetId },
-            }),
-          },
-        ],
-      })
-    ),
-  viewDatafiles: (urlPrefix: string, view: ViewsType) => {
-    const url = view
-      ? `${urlPrefix}/datafile?view=${view}`
-      : `${urlPrefix}/datafile`;
-    return dispatch(push(url));
-  },
-});
-
-const mapStateToProps = (state: StateType): LandingPageStateProps => {
-  return {
-    data: state.dgcommon.data,
-    view: state.dgcommon.query.view,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
+export default LandingPage;

@@ -154,121 +154,149 @@ exports[`Dataset table component renders Dataset title as a link 1`] = `
 `;
 
 exports[`Dataset table component renders correctly 1`] = `
-<WithStyles(VirtualizedTable)
-  allIds={
-    Array [
-      1,
-    ]
-  }
-  columns={
-    Array [
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "name",
-        "filterComponent": [Function],
-        "label": "datasets.name",
-      },
-      Object {
-        "dataKey": "datafileCount",
-        "disableSort": true,
-        "label": "datasets.datafile_count",
-      },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "investigation.title",
-        "filterComponent": [Function],
-        "label": "datasets.investigation",
-      },
-      Object {
-        "dataKey": "createTime",
-        "filterComponent": [Function],
-        "label": "datasets.create_time",
-      },
-      Object {
-        "dataKey": "modTime",
-        "filterComponent": [Function],
-        "label": "datasets.modified_time",
-      },
-    ]
-  }
-  data={
-    Array [
-      Object {
-        "createTime": "2019-07-23",
-        "endDate": "2019-07-25",
-        "id": 1,
-        "investigation": Object {
-          "doi": "doi 1",
-          "endDate": "2019-06-11",
-          "facility": Object {
-            "id": 7,
-            "name": "facility name",
-          },
-          "id": 2,
-          "investigationInstruments": Array [
-            Object {
-              "id": 3,
-              "instrument": Object {
-                "id": 4,
-                "name": "LARMOR",
-              },
-            },
-          ],
-          "name": "Investigation test name",
-          "size": 1,
-          "startDate": "2019-06-10",
-          "studyInvestigations": Array [
-            Object {
-              "id": 5,
-              "study": Object {
-                "createTime": "2019-06-10",
-                "id": 6,
-                "modTime": "2019-06-10",
-                "name": "study name",
-                "pid": "study pid",
-              },
-            },
-          ],
-          "summary": "foo bar",
-          "title": "Investigation test title",
-          "visitId": "1",
+Object {
+  "allIds": Array [
+    1,
+  ],
+  "classes": Object {
+    "flexContainer": "VirtualizedTable-flexContainer-2",
+    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
+    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "table": "VirtualizedTable-table-1",
+    "tableCell": "VirtualizedTable-tableCell-6",
+    "tableRow": "VirtualizedTable-tableRow-4",
+    "tableRowHover": "VirtualizedTable-tableRowHover-5",
+  },
+  "columns": Array [
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "name",
+      "filterComponent": [Function],
+      "label": "datasets.name",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "datafileCount",
+      "disableSort": true,
+      "label": "datasets.datafile_count",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "investigation.title",
+      "filterComponent": [Function],
+      "label": "datasets.investigation",
+    },
+    Object {
+      "dataKey": "createTime",
+      "filterComponent": [Function],
+      "label": "datasets.create_time",
+    },
+    Object {
+      "dataKey": "modTime",
+      "filterComponent": [Function],
+      "label": "datasets.modified_time",
+    },
+  ],
+  "data": Array [
+    Object {
+      "createTime": "2019-07-23",
+      "endDate": "2019-07-25",
+      "id": 1,
+      "investigation": Object {
+        "doi": "doi 1",
+        "endDate": "2019-06-11",
+        "facility": Object {
+          "id": 7,
+          "name": "facility name",
         },
-        "modTime": "2019-07-23",
-        "name": "Dataset test name",
+        "id": 2,
+        "investigationInstruments": Array [
+          Object {
+            "id": 3,
+            "instrument": Object {
+              "id": 4,
+              "name": "LARMOR",
+            },
+          },
+        ],
+        "name": "Investigation test name",
         "size": 1,
-        "startDate": "2019-07-24",
+        "startDate": "2019-06-10",
+        "studyInvestigations": Array [
+          Object {
+            "id": 5,
+            "investigation": Object {
+              "id": 2,
+              "name": "Investigation test name",
+              "title": "Investigation test title",
+              "visitId": "1",
+            },
+            "study": Object {
+              "createTime": "2019-06-10",
+              "id": 6,
+              "modTime": "2019-06-10",
+              "name": "study name",
+              "pid": "study pid",
+            },
+          },
+        ],
+        "summary": "foo bar",
+        "title": "Investigation test title",
+        "visitId": "1",
       },
-    ]
-  }
-  detailsPanel={[Function]}
-  loadMoreRows={[Function]}
-  loading={false}
-  onCheck={[Function]}
-  onSort={[Function]}
-  onUncheck={[Function]}
-  selectedRows={Array []}
-  sort={Object {}}
-  totalRowCount={0}
-/>
+      "modTime": "2019-07-23",
+      "name": "Dataset test name",
+      "size": 1,
+      "startDate": "2019-07-24",
+    },
+  ],
+  "detailsPanel": [Function],
+  "disableSelectAll": false,
+  "loadMoreRows": [Function],
+  "loading": false,
+  "onCheck": [MockFunction],
+  "onSort": [Function],
+  "onUncheck": [MockFunction],
+  "selectedRows": Array [],
+  "sort": Object {},
+  "totalRowCount": 0,
+}
 `;
 
 exports[`Dataset table component renders details panel correctly 1`] = `
-<div>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      datasets.name
-      :
-    </b>
-     
-    Dataset test name
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
+<WithStyles(ForwardRef(Grid))
+  className="makeStyles-root-281"
+  container={true}
+  direction="column"
+  id="details-panel"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="h6"
+    >
+      <b>
+        Dataset test name
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Divider))
+      className="makeStyles-divider-282"
+    />
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
       datasets.description
-      :
-    </b>
-     
-    Dataset test name
-  </WithStyles(ForwardRef(Typography))>
-</div>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b />
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+</WithStyles(ForwardRef(Grid))>
 `;

@@ -7,6 +7,7 @@ import {
   datasetLink,
   investigationLink,
   tableLink,
+  formatCountOrSize,
 } from './cellContentRenderers';
 
 describe('Cell content renderers', () => {
@@ -35,6 +36,43 @@ describe('Cell content renderers', () => {
 
     it('handles undefined correctly', () => {
       expect(formatBytes(undefined)).toEqual('Unknown');
+    });
+  });
+
+  describe('formatCountOrSize', () => {
+    it('Returns calculating if query is fetching', () => {
+      expect(formatCountOrSize({ isFetching: true })).toEqual('Calculating...');
+    });
+
+    it('Returns unknown if query result is undefined', () => {
+      expect(formatCountOrSize({ isFetching: false, data: undefined })).toEqual(
+        'Unknown'
+      );
+      expect(formatCountOrSize({ isFetching: false })).toEqual('Unknown');
+      expect(formatCountOrSize({})).toEqual('Unknown');
+      expect(formatCountOrSize(undefined)).toEqual('Unknown');
+    });
+
+    it('Returns data if query is successful', () => {
+      expect(
+        formatCountOrSize({ isFetching: false, isSuccess: true, data: 1 })
+      ).toEqual('1');
+      expect(formatCountOrSize({ data: 1, isSuccess: true })).toEqual('1');
+    });
+
+    it('Returns data formatted in bytes when byte flag is set', () => {
+      expect(
+        formatCountOrSize({ isFetching: false, isSuccess: true, data: 1 }, true)
+      ).toEqual('1 B');
+      expect(formatCountOrSize({ data: 10000, isSuccess: true }, true)).toEqual(
+        '9.77 KB'
+      );
+    });
+
+    it('Returns data if query is successful and result is zero', () => {
+      expect(
+        formatCountOrSize({ isFetching: false, isSuccess: true, data: 0 })
+      ).toEqual('0');
     });
   });
 

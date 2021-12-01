@@ -3,18 +3,22 @@ import { createMount } from '@material-ui/core/test-utils';
 import { ReactWrapper } from 'enzyme';
 import { ArrowTooltip } from '.';
 import { Tooltip } from '@material-ui/core';
+import { getTooltipText } from './arrowtooltip.component';
+import { act } from 'react-dom/test-utils';
 
 describe('ArrowTooltip component', () => {
   let mount;
   const createWrapper = (
     percentageWidth?: number,
-    maxEnabledHeight?: number
+    maxEnabledHeight?: number,
+    disableHoverListener?: boolean
   ): ReactWrapper => {
     return mount(
       <ArrowTooltip
         title={'test'}
         percentageWidth={percentageWidth}
         maxEnabledHeight={maxEnabledHeight}
+        disableHoverListener={disableHoverListener}
       >
         <div />
       </ArrowTooltip>
@@ -23,6 +27,43 @@ describe('ArrowTooltip component', () => {
 
   beforeEach(() => {
     mount = createMount({});
+  });
+
+  describe('getTooltipText', () => {
+    it('returns empty string for anything null-ish', () => {
+      expect(getTooltipText(undefined)).toBe('');
+      expect(getTooltipText(null)).toBe('');
+      expect(getTooltipText({})).toBe('');
+    });
+
+    it('returns value for any primitives', () => {
+      expect(getTooltipText(1)).toBe('1');
+      expect(getTooltipText(false)).toBe('false');
+      expect(getTooltipText('test')).toBe('test');
+    });
+
+    it('returns nested value for any react nodes', () => {
+      expect(getTooltipText(<b>{'Test'}</b>)).toBe('Test');
+      expect(
+        getTooltipText(
+          <div>
+            <b>
+              <i>{'Test'}</i>
+            </b>
+          </div>
+        )
+      ).toBe('Test');
+    });
+    it('returns concatted nested values for any react node lists', () => {
+      expect(
+        getTooltipText(
+          <React.Fragment>
+            <b>{'Test'}</b>
+            <b>{1}</b>
+          </React.Fragment>
+        )
+      ).toBe('Test1');
+    });
   });
 
   // Note that disableHoverListener has the opposite value to isTooltipVisible
@@ -80,5 +121,67 @@ describe('ArrowTooltip component', () => {
 
     const wrapper = createWrapper(undefined, undefined);
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(false);
+  });
+
+  it('tooltip disabled when offsetWidth >= scrollWidth', () => {
+    // Mock the value of scrollWidth
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', {
+      configurable: true,
+      value: 0,
+    });
+
+    const wrapper = createWrapper(undefined, undefined);
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
+  });
+
+  it('tooltip disabled when disableHoverListener = false', () => {
+    // From 'tooltip disabled when offsetHeight >= maxEnabledHeight' this is a case that should enable the
+    // hover listener, but force it to be disabled
+    const wrapper = createWrapper(-1, -1, false);
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(false);
+  });
+
+  it('tooltip enabled when disableHoverListener = true', () => {
+    // From 'tooltip unchanged when offsetHeight < maxEnabledHeight' this is a case that should disable the
+    // hover listener, but force it to be enabled
+    const wrapper = createWrapper(-1, 1, true);
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
+  });
+
+  it('tooltip recalculates when resize or columnResize actions sent', () => {
+    // Mock the value of scrollWidth
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', {
+      configurable: true,
+      value: 0,
+    });
+    const wrapper = createWrapper();
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
+
+    // Mock the value of scrollWidth
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', {
+      configurable: true,
+      value: 1,
+    });
+
+    act(() => {
+      window.dispatchEvent(new Event('resize'));
+      // need to use setProps to force enzyme to rerender
+      wrapper.setProps({});
+    });
+
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(false);
+
+    // Mock the value of scrollWidth
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', {
+      configurable: true,
+      value: 0,
+    });
+
+    act(() => {
+      window.dispatchEvent(new Event('columnResize'));
+      wrapper.setProps({});
+    });
+
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
   });
 });

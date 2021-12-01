@@ -17,24 +17,20 @@ import {
   Public,
   Storage,
 } from '@material-ui/icons';
-import { push } from 'connected-react-router';
 import {
-  Entity,
-  fetchStudies,
   Investigation,
   InvestigationUser,
-  StudyInvestigation,
+  parseSearchToQuery,
+  Study,
   tableLink,
-  ViewsType,
+  useStudy,
   Mark,
+  ViewsType,
+  AddToCartButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
-import AddToCartButton from '../../addToCartButton.component';
+import { useHistory, useLocation } from 'react-router';
 import Branding from './isisBranding.component';
 import Button from '@material-ui/core/Button';
 
@@ -94,30 +90,16 @@ interface FormattedUser {
   fullName: string;
 }
 
-interface LandingPageDispatchProps {
-  fetchStudyData: (studyId: number) => Promise<void>;
-  viewAllInvestigations: (urlPrefix: string, view: ViewsType) => Action;
-}
-
-interface LandingPageStateProps {
-  data: Entity[];
-  view: ViewsType;
-}
-
 interface LandingPageProps {
   instrumentId: string;
   studyId: string;
 }
 
 interface LinkedInvestigationProps {
-  studyInvestigation: StudyInvestigation;
+  investigation: Investigation;
   urlPrefix: string;
   view: ViewsType;
 }
-
-type LandingPageCombinedProps = LandingPageDispatchProps &
-  LandingPageStateProps &
-  LandingPageProps;
 
 const LinkedInvestigation = (
   props: LinkedInvestigationProps
@@ -125,11 +107,22 @@ const LinkedInvestigation = (
   const [t] = useTranslation();
   const classes = useStyles();
 
-  const investigation = props.studyInvestigation.investigation as Investigation;
+  const investigation = props.investigation;
 
   const shortInvestigationInfo = [
     {
-      content: (entity: Investigation) => entity.doi,
+      content: function doiFormat(entity: Investigation) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              data-testid="landing-study-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('investigations.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -183,32 +176,36 @@ const LinkedInvestigation = (
   );
 };
 
-const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
+const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
+  const { push } = useHistory();
+  const location = useLocation();
+  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+
   const [value, setValue] = React.useState<'details'>('details');
   const citationRef = React.useRef<HTMLElement>(null);
   const [copiedCitation, setCopiedCitation] = React.useState(false);
-  const {
-    fetchStudyData,
-    viewAllInvestigations,
-    data,
-    view,
-    instrumentId,
-    studyId,
-  } = props;
+  const { instrumentId, studyId } = props;
 
   const pathRoot = 'browseStudyHierarchy';
   const instrumentChild = 'study';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyId}`;
   const classes = useStyles();
 
-  const pid = React.useMemo(() => data[0]?.study?.pid, [data]);
-  const title = React.useMemo(() => data[0]?.investigation?.title, [data]);
+  const { data } = useStudy(parseInt(studyId));
+
+  const pid = React.useMemo(() => data?.[0]?.pid, [data]);
+  const title = React.useMemo(
+    () => data?.[0]?.studyInvestigations?.[0]?.investigation?.title,
+    [data]
+  );
   const summary = React.useMemo(
     () =>
-      data[0]?.investigation?.summary &&
-      data[0]?.investigation?.summary !== 'null'
-        ? data[0].investigation.summary
+      data?.[0]?.studyInvestigations?.[0]?.investigation?.summary &&
+      data[0].studyInvestigations[0].investigation.summary !== 'null'
+        ? data[0].studyInvestigations[0].investigation.summary
         : 'Description not provided',
     [data]
   );
@@ -218,8 +215,10 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
 
-    if (data[0]?.investigation?.investigationUsers) {
-      const investigationUsers = data[0].investigation
+    if (
+      data?.[0]?.studyInvestigations?.[0]?.investigation?.investigationUsers
+    ) {
+      const investigationUsers = data[0].studyInvestigations[0].investigation
         .investigationUsers as InvestigationUser[];
       investigationUsers.forEach((user) => {
         // Only keep users where we have their fullName
@@ -247,10 +246,6 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
   }, [data]);
-
-  React.useEffect(() => {
-    fetchStudyData(parseInt(studyId));
-  }, [fetchStudyData, studyId]);
 
   React.useEffect(() => {
     const scriptId = `study-${studyId}`;
@@ -312,17 +307,28 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
 
   const shortInfo = [
     {
-      content: (entity: StudyInvestigation) => entity.study?.pid,
+      content: function studyPidFormat(entity: Study) {
+        return (
+          entity?.pid && (
+            <MuiLink
+              href={`https://doi.org/${entity.pid}`}
+              data-testid="landing-study-pid-link"
+            >
+              {entity.pid}
+            </MuiLink>
+          )
+        );
+      },
       label: t('studies.pid'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: StudyInvestigation) => entity.study?.name,
+      content: (entity: Study) => entity.name,
       label: t('studies.name'),
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
-      content: function distributionFormat(entity: StudyInvestigation) {
+      content: function distributionFormat(entity: Study) {
         return (
           <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
             {t('doi_constants.distribution.format')}
@@ -333,14 +339,17 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
       icon: <Storage className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: StudyInvestigation) =>
-        entity.study?.startDate?.slice(0, 10),
+      content: (entity: Study) =>
+        entity?.studyInvestigations?.[0]?.investigation?.startDate?.slice(
+          0,
+          10
+        ),
       label: t('studies.start_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: StudyInvestigation) =>
-        entity.study?.endDate?.slice(0, 10),
+      content: (entity: Study) =>
+        entity?.studyInvestigations?.[0]?.investigation?.endDate?.slice(0, 10),
       label: t('studies.end_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
@@ -367,13 +376,19 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               <Tab
                 id="study-investigations-tab"
                 label={t('studies.details.investigations')}
-                onClick={() => viewAllInvestigations(urlPrefix, view)}
+                onClick={() =>
+                  push(
+                    view
+                      ? `${urlPrefix}/investigation?view=${view}`
+                      : `${urlPrefix}/investigation`
+                  )
+                }
               />
             </Tabs>
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12}>
+        <Grid item container xs={12} id="study-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Typography
@@ -435,15 +450,17 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                   `${formattedUsers[0].fullName} et al; `}
                 {formattedUsers.length === 1 &&
                   `${formattedUsers[0].fullName}; `}
-                {data[0]?.study?.startDate &&
-                  `${data[0].study.startDate.slice(0, 4)}: `}
+                {`${data?.[0]?.studyInvestigations?.[0]?.investigation?.startDate?.slice(
+                  0,
+                  4
+                )}: `}
                 {title && `${title}, `}
                 {t('doi_constants.publisher.name')}
                 {pid && ', '}
                 {pid && (
-                  <a
+                  <MuiLink
                     href={`https://doi.org/${pid}`}
-                  >{`https://doi.org/${pid}`}</a>
+                  >{`https://doi.org/${pid}`}</MuiLink>
                 )}
               </i>
             </Typography>
@@ -484,28 +501,26 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
           <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
             {shortInfo.map(
               (field, i) =>
-                data[0] &&
-                field.content(data[0] as StudyInvestigation) && (
+                data?.[0] &&
+                field.content(data[0] as Study) && (
                   <div className={classes.shortInfoRow} key={i}>
                     <Typography className={classes.shortInfoLabel}>
                       {field.icon}
                       {field.label}:
                     </Typography>
                     <Typography className={classes.shortInfoValue}>
-                      {field.content(data[0] as StudyInvestigation)}
+                      {field.content(data[0] as Study)}
                     </Typography>
                   </div>
                 )
             )}
             {/* Parts */}
-            {data.map((studyInvestigation, i) => (
+            {data?.map((study, i) => (
               <div key={i} className={classes.shortInfoPart}>
                 <Divider />
-                {studyInvestigation.investigation && (
+                {study?.studyInvestigations?.[0]?.investigation && (
                   <LinkedInvestigation
-                    studyInvestigation={
-                      studyInvestigation as StudyInvestigation
-                    }
+                    investigation={study.studyInvestigations[0].investigation}
                     urlPrefix={urlPrefix}
                     view={view}
                   />
@@ -519,47 +534,4 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): LandingPageDispatchProps => ({
-  fetchStudyData: (studyId: number) =>
-    dispatch(
-      fetchStudies({
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'study.id': { eq: studyId },
-            }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify([
-              'study',
-              {
-                investigation: [
-                  { investigationUsers: 'user' },
-                  { investigationInstruments: 'instrument' },
-                ],
-              },
-            ]),
-          },
-        ],
-      })
-    ),
-  viewAllInvestigations: (urlPrefix: string, view: ViewsType) => {
-    const url = view
-      ? `${urlPrefix}/investigation?view=${view}`
-      : `${urlPrefix}/investigation`;
-    return dispatch(push(url));
-  },
-});
-
-const mapStateToProps = (state: StateType): LandingPageStateProps => {
-  return {
-    data: state.dgcommon.data,
-    view: state.dgcommon.query.view,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
+export default LandingPage;

@@ -11,23 +11,26 @@
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@types/lodash.debounce": "^4.0.6",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.9.1",
     "date-fns": "^2.17.0",
     "hex-to-rgba": "^2.0.1",
+    "history": "^4.10.1",
     "i18next": "^20.3.5",
     "lodash.debounce": "^4.0.8",
     "loglevel": "^1.7.1",
     "react-draggable": "^4.4.3",
     "react-i18next": "^11.11.4",
+    "react-query": "^3.18.1",
     "react-redux": "^7.1.0",
     "react-router": "^5.0.1",
     "react-scripts": "4.0.3",
     "react-virtualized": "^9.22.3",
     "redux": "^4.1.1",
     "redux-mock-store": "^1.5.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "use-deep-compare-effect": "^1.6.1"
   },
   "peerDependencies": {
     "@material-ui/core": ">=  4.0.0 < 5",
@@ -39,6 +42,7 @@
   "devDependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
+    "@testing-library/react-hooks": "^7.0.1",
     "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.4",
     "@types/node": "^14.14.31",
@@ -66,6 +70,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.0.1",
+    "react-test-renderer": "16.13.1",
     "tslib": "^2.3.0",
     "typescript": "4.2.2"
   },
@@ -110,7 +115,8 @@
       "src/**/*.{tsx,ts,js,jsx}",
       "!src/index.tsx",
       "!src/serviceWorker.ts",
-      "!src/setupTests.js"
-    ]
+      "!src/setupTests.tsx"
+    ],
+    "resetMocks": false
   }
 }

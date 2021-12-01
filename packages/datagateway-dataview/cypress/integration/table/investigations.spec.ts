@@ -20,6 +20,28 @@ describe('Investigations Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
+  it('should be able to click a DOI render the correct webpage ', () => {
+    cy.contains('0-449-78690-0').should(
+      'have.attr',
+      'href',
+      'https://doi.org/0-449-78690-0'
+    );
+  });
+
+  it('should have the correct url for the DOI link', () => {
+    cy.get('[data-testid="investigation-table-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('[data-testid="investigation-table-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   it('should be able to resize a column', () => {
     let columnWidth = 0;
 
@@ -136,19 +158,19 @@ describe('Investigations Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').first().type('dog');
 
       cy.get('[aria-rowcount="7"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
+
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('10.54 GB');
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2019-01-01');
+      cy.get('input[id="Start Date filter from"]').type('2019-01-01');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('button[aria-label="Start Date filter to, date picker"]')
         .parent()
         .find('button')
         .click();
@@ -160,7 +182,7 @@ describe('Investigations Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('input[id="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
@@ -172,15 +194,9 @@ describe('Investigations Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .first()
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').first().type('dog');
 
-      cy.get('[aria-label="Filter by Visit ID"]')
-        .find('input')
-        .first()
-        .type('9');
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('9');
 
       cy.get('[aria-rowcount="2"]').should('exist');
     });

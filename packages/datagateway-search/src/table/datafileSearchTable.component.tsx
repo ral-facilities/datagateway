@@ -1,98 +1,176 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import {
+  createStyles,
+  Divider,
+  Grid,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import {
   Table,
   formatBytes,
-  TextColumnFilter,
-  DateColumnFilter,
-  Order,
-  Filter,
   Datafile,
-  Entity,
-  DownloadCartItem,
-  fetchDatafiles,
-  downloadDatafile,
-  fetchDatafileCount,
-  addToCart,
-  removeFromCart,
-  fetchAllIds,
-  sortTable,
-  filterTable,
-  clearTable,
   tableLink,
-  handleICATError,
-  readSciGatewayToken,
   FacilityCycle,
+  ColumnType,
+  Dataset,
+  DetailsPanelProps,
+  parseSearchToQuery,
+  useAddToCart,
+  useAllFacilityCycles,
+  useCart,
+  useDatafileCount,
+  useDatafilesInfinite,
+  useDateFilter,
+  useIds,
+  useLuceneSearch,
+  useSort,
+  useRemoveFromCart,
+  useTextFilter,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
-import { connect } from 'react-redux';
-import { StateType } from '../state/app.types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action, AnyAction } from 'redux';
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
+import { useLocation } from 'react-router';
+import { useSelector } from 'react-redux';
+import { StateType } from '../state/app.types';
 
-interface DatafileSearchTableStoreProps {
-  sort: {
-    [column: string]: Order;
-  };
-  filters: {
-    [column: string]: Filter;
-  };
-  data: Entity[];
-  totalDataCount: number;
-  loading: boolean;
-  error: string | null;
-  cartItems: DownloadCartItem[];
-  allIds: number[];
-  luceneData: number[];
-  requestReceived: boolean;
-  apiUrl: string;
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
+
+export const DatafileDetailsPanel = (
+  props: DetailsPanelProps
+): React.ReactElement => {
+  const classes = useStyles();
+  const [t] = useTranslation();
+  const datafileData = props.rowData as Datafile;
+  return (
+    <Grid
+      id="details-panel"
+      container
+      className={classes.root}
+      direction="column"
+    >
+      <Grid item xs>
+        <Typography variant="h6">
+          <b>{datafileData.name}</b>
+        </Typography>
+        <Divider className={classes.divider} />
+      </Grid>
+      <Grid item xs>
+        <Typography variant="overline">{t('datafiles.size')}</Typography>
+        <Typography>
+          <b>{formatBytes(datafileData.fileSize)}</b>
+        </Typography>
+      </Grid>
+      <Grid item xs>
+        <Typography variant="overline">{t('datafiles.location')}</Typography>
+        <Typography>
+          <b>{datafileData.location}</b>
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
+interface DatafileSearchTableProps {
+  hierarchy: string;
 }
-
-interface DatafileSearchTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (luceneData: number[], offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (luceneData: number[]) => Promise<void>;
-  downloadData: (datafileId: number, filename: string) => Promise<void>;
-  addToCart: (entityIds: number[]) => Promise<void>;
-  removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchAllIds: (luceneData: number[]) => Promise<void>;
-  clearTable: () => Action;
-}
-
-type DatafileSearchTableCombinedProps = DatafileSearchTableStoreProps &
-  DatafileSearchTableDispatchProps & { hierarchy: string };
 
 const DatafileSearchTable = (
-  props: DatafileSearchTableCombinedProps
+  props: DatafileSearchTableProps
 ): React.ReactElement => {
-  const {
-    data,
-    totalDataCount,
-    fetchData,
-    fetchCount,
-    sort,
-    sortTable,
-    filters,
-    filterTable,
-    // downloadData,
-    cartItems,
-    addToCart,
-    removeFromCart,
-    clearTable,
-    allIds,
-    luceneData,
-    fetchAllIds,
-    loading,
-    hierarchy,
-    apiUrl,
-  } = props;
+  const { hierarchy } = props;
 
-  const [facilityCycles, setFacilityCycles] = React.useState([]);
+  const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
+  const location = useLocation();
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
+
+  const selectAllSetting = useSelector(
+    (state: StateType) => state.dgsearch.selectAllSetting
+  );
+
+  const { data: luceneData } = useLuceneSearch('Datafile', {
+    searchText,
+    startDate,
+    endDate,
+  });
   const [t] = useTranslation();
+
+  const { filters, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  const { data: totalDataCount } = useDatafileCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: luceneData || [] },
+      }),
+    },
+  ]);
+  const { fetchNextPage, data } = useDatafilesInfinite([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: luceneData || [] },
+      }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({
+        dataset: { investigation: { investigationInstruments: 'instrument' } },
+      }),
+    },
+  ]);
+  const { data: allIds } = useIds(
+    'datafile',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
+  const { data: cartItems } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
+    'datafile'
+  );
+  const {
+    mutate: removeFromCart,
+    isLoading: removeFromCartLoading,
+  } = useRemoveFromCart('datafile');
+
+  const aggregatedData: Dataset[] = React.useMemo(
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    [data]
+  );
+
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const handleSort = useSort();
+
+  const loadMoreRows = React.useCallback(
+    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    [fetchNextPage]
+  );
 
   const dlsLink = (
     datafileData: Datafile,
@@ -131,10 +209,10 @@ const DatafileSearchTable = (
       }
 
       if (
-        facilityCycles.length &&
+        facilityCycles?.length &&
         datafileData.dataset?.investigation?.startDate
       ) {
-        const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
+        const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
           (facilityCycle: FacilityCycle) =>
             datafileData.dataset?.investigation?.startDate &&
             facilityCycle.startDate &&
@@ -198,211 +276,75 @@ const DatafileSearchTable = (
   const selectedRows = React.useMemo(
     () =>
       cartItems
-        .filter(
+        ?.filter(
           (cartItem) =>
             cartItem.entityType === 'datafile' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        filterTable(dataKey, value ? value : null)
-      }
-    />
-  );
-
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
-      }
-    />
-  );
-
-  const fetchFacilityCycles = React.useCallback(() => {
-    axios
-      .get(`${apiUrl}/facilitycycles`, {
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+  const columns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        label: t('datafiles.name'),
+        dataKey: 'name',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const datafileData = cellProps.rowData as Datafile;
+          return hierarchyLink(datafileData);
         },
-      })
-      .then((response) => {
-        setFacilityCycles(response.data);
-      })
-      .catch((error) => {
-        handleICATError(error);
-      });
-  }, [apiUrl]);
-
-  React.useEffect(() => {
-    if (hierarchy === 'isis') fetchFacilityCycles();
-  }, [fetchFacilityCycles, hierarchy]);
-
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable, luceneData]);
-
-  React.useEffect(() => {
-    fetchCount(luceneData);
-    fetchAllIds(luceneData);
-  }, [fetchCount, fetchData, fetchAllIds, filters, luceneData]);
-
-  React.useEffect(() => {
-    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
+        filterComponent: textFilter,
+      },
+      {
+        label: t('datafiles.location'),
+        dataKey: 'location',
+        filterComponent: textFilter,
+      },
+      {
+        label: t('datafiles.size'),
+        dataKey: 'fileSize',
+        cellContentRenderer: (cellProps) => {
+          return formatBytes(cellProps.cellData);
+        },
+      },
+      {
+        label: t('datafiles.dataset'),
+        dataKey: 'dataset.name',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const datafileData = cellProps.rowData as Datafile;
+          return hierarchyLink(datafileData, 'dataset');
+        },
+        filterComponent: textFilter,
+      },
+      {
+        label: t('datafiles.modified_time'),
+        dataKey: 'modTime',
+        filterComponent: dateFilter,
+      },
+    ],
+    [t, textFilter, dateFilter, hierarchyLink]
+  );
 
   return (
     <Table
-      loading={loading}
-      data={data}
-      loadMoreRows={(params) => fetchData(luceneData, params)}
-      totalRowCount={totalDataCount}
+      loading={addToCartLoading || removeFromCartLoading}
+      data={aggregatedData}
+      loadMoreRows={loadMoreRows}
+      totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={sortTable}
+      onSort={handleSort}
       selectedRows={selectedRows}
+      disableSelectAll={!selectAllSetting}
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      detailsPanel={({ rowData }) => {
-        const datafileData = rowData as Datafile;
-        return (
-          <div>
-            <Typography>
-              <b>{t('datafiles.name')}:</b> {datafileData.name}
-            </Typography>
-            <Typography>
-              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.fileSize)}
-            </Typography>
-            <Typography>
-              <b>{t('datafiles.location')}:</b> {datafileData.location}
-            </Typography>
-          </div>
-        );
-      }}
-      columns={[
-        {
-          label: t('datafiles.name'),
-          dataKey: 'name',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const datafileData = cellProps.rowData as Datafile;
-            return hierarchyLink(datafileData);
-          },
-          filterComponent: textFilter,
-        },
-        {
-          label: t('datafiles.location'),
-          dataKey: 'location',
-          filterComponent: textFilter,
-        },
-        {
-          label: t('datafiles.size'),
-          dataKey: 'fileSize',
-          cellContentRenderer: (cellProps) => {
-            return formatBytes(cellProps.cellData);
-          },
-        },
-        {
-          label: t('datafiles.dataset'),
-          dataKey: 'dataset.name',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const datafileData = cellProps.rowData as Datafile;
-            return hierarchyLink(datafileData, 'dataset');
-          },
-          filterComponent: textFilter,
-        },
-        {
-          label: t('datafiles.modified_time'),
-          dataKey: 'modTime',
-          filterComponent: dateFilter,
-        },
-      ]}
+      detailsPanel={DatafileDetailsPanel}
+      columns={columns}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DatafileSearchTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
-  fetchData: (luceneData: number[], offsetParams?: IndexRange) =>
-    dispatch(
-      fetchDatafiles({
-        offsetParams,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              id: { in: luceneData },
-            }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify({
-              dataset: {
-                investigation: { investigationInstruments: 'instrument' },
-              },
-            }),
-          },
-        ],
-      })
-    ),
-  fetchCount: (luceneData: number[]) =>
-    dispatch(
-      fetchDatafileCount([
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { in: luceneData },
-          }),
-        },
-      ])
-    ),
-  downloadData: (datafileId: number, filename: string) =>
-    dispatch(downloadDatafile(datafileId, filename)),
-  addToCart: (entityIds: number[]) =>
-    dispatch(addToCart('datafile', entityIds)),
-  removeFromCart: (entityIds: number[]) =>
-    dispatch(removeFromCart('datafile', entityIds)),
-  fetchAllIds: (luceneData: number[]) =>
-    dispatch(
-      fetchAllIds('datafile', [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { in: luceneData },
-          }),
-        },
-      ])
-    ),
-  clearTable: () => dispatch(clearTable()),
-});
-
-const mapStateToProps = (state: StateType): DatafileSearchTableStoreProps => {
-  return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    data: state.dgcommon.data,
-    luceneData: state.dgsearch.searchData.datafile,
-    totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
-    error: state.dgcommon.error,
-    cartItems: state.dgcommon.cartItems,
-    allIds: state.dgcommon.allIds,
-    requestReceived: state.dgsearch.requestReceived,
-    apiUrl: state.dgcommon.urls.apiUrl,
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DatafileSearchTable);
+export default DatafileSearchTable;

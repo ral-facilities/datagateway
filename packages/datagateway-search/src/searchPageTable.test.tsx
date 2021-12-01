@@ -5,33 +5,58 @@ import { MemoryRouter } from 'react-router';
 
 import SearchPageTable from './searchPageTable';
 
-import { mount as enzymeMount, shallow as enzymeShallow } from 'enzyme';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { mount as enzymeMount, ReactWrapper } from 'enzyme';
+import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 import { setCurrentTab } from './state/actions/actions';
 import axios from 'axios';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { Store } from 'redux';
+import InvestigationSearchTable from './table/investigationSearchTable.component';
+
+jest.mock('datagateway-common', () => ({
+  ...jest.requireActual('datagateway-common'),
+  __esModule: true,
+  // mock table to opt out of rendering them in these tests as there's no need
+  Table: jest.fn(() => 'MockedTable'),
+}));
 
 describe('SearchPageTable', () => {
   let mount: typeof enzymeMount;
-  let shallow: typeof enzymeShallow;
   let state: StateType;
+  const mockStore = configureStore([thunk]);
+
+  const createWrapper = (store: Store = mockStore(state)): ReactWrapper => {
+    return mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
+        >
+          <QueryClientProvider client={new QueryClient()}>
+            <SearchPageTable />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
     mount = createMount();
-    shallow = createShallow({ untilSelector: 'Paper' });
 
     state = JSON.parse(
       JSON.stringify({ dgsearch: initialState, dgcommon: dGCommonInitialState })
     );
 
-    state.dgsearch.requestReceived = true;
-
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
+    (axios.get as jest.Mock).mockImplementation((url) => {
+      if (url.includes('count')) {
+        return Promise.resolve({ data: 0 });
+      } else {
+        return Promise.resolve({ data: [] });
+      }
+    });
   });
 
   it('renders correctly when request received', () => {
@@ -43,18 +68,17 @@ describe('SearchPageTable', () => {
         investigationTab: true,
         currentTab: 'investigation',
       },
-      searchData: {
-        investigation: Array(1),
-        dataset: Array(10),
-        datafile: Array(100),
-      },
     };
-    const mockStore = configureStore([thunk]);
-    const wrapper = shallow(
-      <Provider store={mockStore(state)}>
-        <SearchPageTable store={mockStore(state)} />
-      </Provider>
-    );
+    (axios.get as jest.Mock).mockImplementation((url) => {
+      if (url.includes('count')) {
+        return Promise.resolve({ data: 1 });
+      } else {
+        return Promise.resolve({ data: Array(1) });
+      }
+    });
+
+    const testStore = mockStore(state);
+    const wrapper = createWrapper(testStore);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -69,19 +93,12 @@ describe('SearchPageTable', () => {
       },
     };
 
-    const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchPageTable />
-        </MemoryRouter>
-      </Provider>
+    const wrapper = createWrapper(testStore);
+    expect(testStore.getState().dgsearch.tabs.currentTab).toEqual(
+      'investigation'
     );
-
-    expect(testStore.getActions()).toContainEqual(
-      setCurrentTab('investigation')
-    );
+    expect(wrapper.exists(InvestigationSearchTable)).toBeTruthy();
   });
 
   it('defaults to dataset tab when investigation tab is hidden', () => {
@@ -102,15 +119,8 @@ describe('SearchPageTable', () => {
 
     // Mock to prevent error logging
     const spy = jest.spyOn(console, 'error').mockImplementation();
-    const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchPageTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    createWrapper(testStore);
     spy.mockRestore();
 
     expect(testStore.getActions()).toHaveLength(1);
@@ -135,15 +145,8 @@ describe('SearchPageTable', () => {
 
     // Mock to prevent error logging
     const spy = jest.spyOn(console, 'error').mockImplementation();
-    const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchPageTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    createWrapper(testStore);
     spy.mockRestore();
 
     expect(testStore.getActions()).toHaveLength(1);
@@ -160,19 +163,13 @@ describe('SearchPageTable', () => {
         currentTab: 'investigation',
       },
     };
-    const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchPageTable />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper(testStore);
 
-    expect(testStore.getActions()).toContainEqual(
-      setCurrentTab('investigation')
+    expect(testStore.getState().dgsearch.tabs.currentTab).toEqual(
+      'investigation'
     );
+    expect(wrapper.exists(InvestigationSearchTable)).toBeTruthy();
 
     wrapper
       .find('[aria-controls="simple-tabpanel-dataset"]')
@@ -180,5 +177,134 @@ describe('SearchPageTable', () => {
       .simulate('click');
 
     expect(testStore.getActions()).toContainEqual(setCurrentTab('dataset'));
+  });
+
+  it('sets the current tab based on selected tabs', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: false,
+        currentTab: 'investigation',
+      },
+    };
+    let testStore = mockStore(state);
+    createWrapper(testStore);
+
+    expect(testStore.getActions()).toContainEqual(setCurrentTab('dataset'));
+
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: true,
+        investigationTab: false,
+        currentTab: 'investigation',
+      },
+    };
+
+    testStore = mockStore(state);
+    createWrapper(testStore);
+
+    expect(testStore.getActions()).toContainEqual(setCurrentTab('datafile'));
+
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: true,
+        investigationTab: true,
+        currentTab: 'dataset',
+      },
+    };
+
+    testStore = mockStore(state);
+    createWrapper(testStore);
+
+    expect(testStore.getActions()).toContainEqual(
+      setCurrentTab('investigation')
+    );
+
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: true,
+        investigationTab: false,
+        currentTab: 'dataset',
+      },
+    };
+
+    testStore = mockStore(state);
+    createWrapper(testStore);
+
+    expect(testStore.getActions()).toContainEqual(setCurrentTab('datafile'));
+
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: false,
+        investigationTab: true,
+        currentTab: 'datafile',
+      },
+    };
+
+    testStore = mockStore(state);
+    createWrapper(testStore);
+
+    expect(testStore.getActions()).toContainEqual(
+      setCurrentTab('investigation')
+    );
+
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: false,
+        investigationTab: false,
+        currentTab: 'datafile',
+      },
+    };
+
+    testStore = mockStore(state);
+    createWrapper(testStore);
+
+    expect(testStore.getActions()).toContainEqual(setCurrentTab('dataset'));
+  });
+
+  it('currentTab reverts to investigation if no tabs are selected', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: false,
+        investigationTab: false,
+        currentTab: 'dataset',
+      },
+    };
+    let testStore = mockStore(state);
+    createWrapper(testStore);
+
+    expect(testStore.getActions()).toContainEqual(
+      setCurrentTab('investigation')
+    );
+
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: false,
+        investigationTab: false,
+        currentTab: 'datafile',
+      },
+    };
+    testStore = mockStore(state);
+    createWrapper(testStore);
+
+    expect(testStore.getActions()).toContainEqual(
+      setCurrentTab('investigation')
+    );
   });
 });

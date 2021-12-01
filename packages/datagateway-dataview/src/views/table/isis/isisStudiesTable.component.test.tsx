@@ -1,31 +1,66 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import ISISStudiesTable from './isisStudiesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
+
 import { StateType } from '../../../state/app.types';
 import {
-  fetchStudiesRequest,
-  filterTable,
-  sortTable,
-  fetchStudyCountRequest,
+  Study,
   dGCommonInitialState,
-  fetchAllIdsRequest,
+  useStudyCount,
+  useStudiesInfinite,
 } from 'datagateway-common';
+import { ReactWrapper } from 'enzyme';
+import configureStore from 'redux-mock-store';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
-import axios from 'axios';
+import { Router } from 'react-router';
+import { createMemoryHistory, History } from 'history';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useStudyCount: jest.fn(),
+    useStudiesInfinite: jest.fn(),
+  };
+});
 
 describe('ISIS Studies table component', () => {
-  let shallow;
   let mount;
   let mockStore;
   let state: StateType;
+  let rowData: Study[];
+  let history: History;
+
+  const createWrapper = (): ReactWrapper => {
+    const store = mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISStudiesTable instrumentId="1" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'ISISStudiesTable' });
     mount = createMount();
+    rowData = [
+      {
+        id: 1,
+        pid: 'doi',
+        name: 'Test 1',
+        modTime: '2000-01-01',
+        createTime: '2000-01-01',
+      },
+    ];
+    history = createMemoryHistory();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -34,161 +69,247 @@ describe('ISIS Studies table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    state.dgcommon.data = [
-      {
-        id: 1,
-        study: {
-          id: 1,
-          pid: 'doi',
-          name: 'Test 1',
-          modTime: '2000-01-01',
-          createTime: '2000-01-01',
-        },
-      },
-    ];
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
-    global.Date.now = jest.fn(() => 1);
+    (useStudyCount as jest.Mock).mockReturnValue({
+      data: 1,
+      isLoading: false,
+    });
+
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <ISISStudiesTable store={mockStore(state)} instrumentId="1" />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
   });
 
-  it('sends fetchAllIds action on load', () => {
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudiesTable instrumentId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(testStore.getActions()[0]).toEqual(fetchAllIdsRequest(1));
+  it('calls the correct data fetching hooks on load', () => {
+    const instrumentId = '1';
+    createWrapper();
+    expect(useStudyCount).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+            eq: instrumentId,
+          },
+        }),
+      },
+    ]);
+    expect(useStudiesInfinite).toHaveBeenCalledWith([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+            eq: instrumentId,
+          },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          studyInvestigations: 'investigation',
+        }),
+      },
+    ]);
   });
 
-  it('sends fetchStudyCount and fetchStudies requests when allIds fetched', () => {
-    let testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudiesTable instrumentId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-    testStore = mockStore({
-      ...state,
-      dgcommon: { ...state.dgcommon, allIds: [1] },
+  it('calls useStudiesInfinite when loadMoreRows is called', () => {
+    const fetchNextPage = jest.fn();
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage,
     });
-    wrapper.setProps({ store: testStore });
-    expect(testStore.getActions().length).toEqual(3);
-    expect(testStore.getActions()[1]).toEqual(fetchStudyCountRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchStudiesRequest(1));
+    const wrapper = createWrapper();
+
+    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
+      startIndex: 50,
+      stopIndex: 74,
+    });
+
+    expect(fetchNextPage).toHaveBeenCalledWith({
+      pageParam: { startIndex: 50, stopIndex: 74 },
+    });
   });
 
-  it('sends fetchStudies action when loadMoreRows is called', () => {
-    const testStore = mockStore(state);
-    const wrapper = shallow(
-      <ISISStudiesTable instrumentId="1" store={testStore} />
-    );
-
-    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
-
-    expect(testStore.getActions()[0]).toEqual(fetchStudiesRequest(1));
-  });
-
-  it('sends filterTable action on text filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudiesTable instrumentId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates filter query params on text filter', () => {
+    const wrapper = createWrapper();
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by studies.name"] input')
+      .find('[aria-label="Filter by studies.name"]')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(
-      filterTable('study.name', { value: 'test', type: 'include' })
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"name":{"value":"test","type":"include"}}'
+      )}`
     );
-
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(filterTable('study.name', null));
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
   });
 
-  it('sends filterTable action on date filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudiesTable instrumentId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates filter query params on date filter', () => {
+    const wrapper = createWrapper();
 
-    const filterInput = wrapper.find(
-      '[aria-label="investigations.end_date date filter to"]'
-    );
+    const filterInput = wrapper.find('input[id="studies.end_date filter to"]');
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(
-      filterTable('investigation.endDate', { endDate: '2019-08-06' })
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"studyInvestigations.investigation.endDate":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(
-      filterTable('investigation.endDate', null)
+    expect(history.length).toBe(3);
+    expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent(
+        '{"studyInvestigations.investigation.startDate":"desc"}'
+      )}`
     );
   });
 
-  it('sends sortTable action on sort', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudiesTable instrumentId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('updates sort query params on sort', () => {
+    const wrapper = createWrapper();
 
     wrapper
       .find('[role="columnheader"] span[role="button"]')
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('study.name', 'asc'));
+    expect(history.length).toBe(2);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+    );
   });
 
   it('renders studies name as a link', () => {
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <ISISStudiesTable instrumentId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
 
     expect(
       wrapper.find('[aria-colindex=1]').find('p').children()
     ).toMatchSnapshot();
+  });
+
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
+    rowData = [
+      {
+        ...rowData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...rowData[0],
+            },
+            investigation: {
+              id: 3,
+              name: 'Test',
+              title: 'Test investigation',
+              visitId: '3',
+              startDate: '2021-08-19',
+              endDate: '2021-08-20',
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testid="isis-study-table-doi-link"]').first().text()
+    ).toEqual('doi');
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-study-table-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi');
+  });
+
+  it('displays information from investigation when investigation present', () => {
+    rowData = [
+      {
+        ...rowData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...rowData[0],
+            },
+            investigation: {
+              id: 3,
+              name: 'Test',
+              title: 'Test investigation',
+              visitId: '3',
+              startDate: '2021-08-19',
+              endDate: '2021-08-20',
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+
+    const wrapper = createWrapper();
+
+    expect(wrapper.find('[aria-colindex=2]').find('p').first().text()).toBe(
+      'Test investigation'
+    );
+  });
+
+  it('renders fine when investigation is undefined', () => {
+    rowData = [
+      {
+        ...rowData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...rowData[0],
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+
+    expect(() => createWrapper()).not.toThrowError();
   });
 });

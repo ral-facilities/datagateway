@@ -1,6 +1,6 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
-import Table from './table.component';
+import Table, { ColumnType } from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { TableCellProps } from 'react-virtualized';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
@@ -32,7 +32,13 @@ describe('Table component', () => {
           label: string,
           dataKey: string
         ): React.ReactElement {
-          return <TextColumnFilter label={label} onChange={jest.fn()} />;
+          return (
+            <TextColumnFilter
+              label={label}
+              onChange={jest.fn()}
+              value={undefined}
+            />
+          );
         },
       },
       {
@@ -42,7 +48,7 @@ describe('Table component', () => {
           return formatBytes(cellProps.cellData);
         },
       },
-    ],
+    ] as ColumnType[],
   };
 
   beforeEach(() => {
@@ -51,6 +57,7 @@ describe('Table component', () => {
 
   afterEach(() => {
     mount.cleanUp();
+    onSort.mockClear();
   });
 
   it('renders data columns correctly', () => {
@@ -96,6 +103,32 @@ describe('Table component', () => {
         .find('p')
         .text()
     ).toEqual('2 B');
+  });
+
+  it('calls onSort function when sort label clicked', () => {
+    const wrapper = mount(<Table {...tableProps} />);
+
+    wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .first()
+      .simulate('click');
+
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'push');
+  });
+
+  it('calls onSort function when defaultSort has been specified', () => {
+    const sortedTableProps = {
+      ...tableProps,
+      columns: [
+        { ...tableProps.columns[0], defaultSort: 'asc' },
+        { ...tableProps.columns[1], defaultSort: 'desc' },
+      ],
+    };
+    const wrapper = mount(<Table {...sortedTableProps} />);
+    wrapper.update();
+
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('TEST2', 'desc', 'replace');
   });
 
   it('renders select column correctly, with both allIds defined and undefined', () => {
@@ -146,7 +179,10 @@ describe('Table component', () => {
     );
 
     ReactTestUtils.act(() => {
-      wrapper.find('DataHeader').at(0).prop('resizeColumn')(50);
+      wrapper.find('DataHeader').at(0).prop('resizeColumn')(
+        wrapper.find('DataHeader').at(0).prop('dataKey'),
+        50
+      );
     });
 
     wrapper.update();
@@ -181,7 +217,10 @@ describe('Table component', () => {
     );
 
     ReactTestUtils.act(() => {
-      wrapper.find('DataHeader').at(0).prop('resizeColumn')(40);
+      wrapper.find('DataHeader').at(0).prop('resizeColumn')(
+        wrapper.find('DataHeader').at(0).prop('dataKey'),
+        40
+      );
     });
 
     wrapper.update();

@@ -1,11 +1,19 @@
 import { Link } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import React from 'react';
+import { Investigation } from '../app.types';
 import EntityCard from './entityCard.component';
 
 describe('Card', () => {
   let shallow;
   let mount;
+  const entity: Investigation = {
+    id: 1,
+    title: 'Title',
+    name: 'Name',
+    summary: 'Test Description',
+    visitId: '2',
+  };
 
   beforeEach(() => {
     shallow = createShallow();
@@ -17,7 +25,9 @@ describe('Card', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<EntityCard title={{ label: 'Title' }} />);
+    const wrapper = shallow(
+      <EntityCard entity={entity} title={{ dataKey: 'title' }} />
+    );
     expect(wrapper.find('[aria-label="card-title"]').text()).toEqual('Title');
     expect(wrapper).toMatchSnapshot();
   });
@@ -25,7 +35,8 @@ describe('Card', () => {
   it('renders with an image', () => {
     const wrapper = shallow(
       <EntityCard
-        title={{ label: 'Title' }}
+        entity={entity}
+        title={{ dataKey: 'title' }}
         image={{ url: 'test-url', title: 'Card Image' }}
       />
     );
@@ -36,16 +47,30 @@ describe('Card', () => {
 
   it('renders custom title content', () => {
     const wrapper = shallow(
-      <EntityCard title={{ label: 'Title', content: <div>Test Title</div> }} />
+      <EntityCard
+        entity={entity}
+        title={{
+          dataKey: 'title',
+          label: 'Title',
+          content: function Content() {
+            return <div>Test Title</div>;
+          },
+        }}
+      />
     );
     expect(wrapper.find('[aria-label="card-title"]').text()).toEqual(
       'Test Title'
     );
+    expect(wrapper.find('ArrowTooltip').prop('title')).toEqual('Test Title');
   });
 
   it('renders with a description', () => {
     const wrapper = shallow(
-      <EntityCard title={{ label: 'Title' }} description={'Test Description'} />
+      <EntityCard
+        entity={entity}
+        title={{ dataKey: 'title' }}
+        description={{ dataKey: 'summary' }}
+      />
     );
     expect(wrapper.find('[aria-label="card-description"]').text()).toEqual(
       'Test Description'
@@ -59,10 +84,17 @@ describe('Card', () => {
       value: 101,
     });
 
+    const modifiedEntity = { ...entity };
     const descText =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate semper commodo. Vivamus sed sapien a dolor aliquam commodo vulputate at est. Maecenas sed lobortis justo, congue lobortis urna. Quisque in pharetra justo. Maecenas nunc quam, rutrum non nisl sit amet, mattis condimentum massa. Donec ut commodo urna, vel rutrum sapien. Integer fermentum quam quis commodo lobortis. Duis cursus, turpis a feugiat malesuada, dui tellus condimentum lorem, sed sagittis magna quam in arcu. Integer ex velit, cursus ut sagittis sit amet, pulvinar nec dolor. Curabitur sagittis tincidunt arcu id vestibulum. Aliquam auctor, ante eget consectetur accumsan, massa odio ornare sapien, ut porttitor lorem nulla et urna. Nam sapien erat, rutrum pretium dolor vel, maximus mattis velit. In non ex lobortis, sollicitudin nulla eget, aliquam neque.';
+    modifiedEntity.summary = descText;
+
     const wrapper = mount(
-      <EntityCard title={{ label: 'Title' }} description={descText} />
+      <EntityCard
+        entity={modifiedEntity}
+        title={{ dataKey: 'title' }}
+        description={{ dataKey: 'summary' }}
+      />
     );
     expect(
       wrapper.find('[aria-label="card-description"]').first().text()
@@ -84,10 +116,17 @@ describe('Card', () => {
       value: 0,
     });
 
+    const modifiedEntity = { ...entity };
     const descText =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate semper commodo. Vivamus sed sapien a dolor aliquam commodo vulputate at est. Maecenas sed lobortis justo, congue lobortis urna. Quisque in pharetra justo. Maecenas nunc quam, rutrum non nisl sit amet, mattis condimentum massa. Donec ut commodo urna, vel rutrum sapien. Integer fermentum quam quis commodo lobortis. Duis cursus, turpis a feugiat malesuada, dui tellus condimentum lorem, sed sagittis magna quam in arcu. Integer ex velit, cursus ut sagittis sit amet, pulvinar nec dolor. Curabitur sagittis tincidunt arcu id vestibulum. Aliquam auctor, ante eget consectetur accumsan, massa odio ornare sapien, ut porttitor lorem nulla et urna. Nam sapien erat, rutrum pretium dolor vel, maximus mattis velit. In non ex lobortis, sollicitudin nulla eget, aliquam neque.';
+    modifiedEntity.summary = descText;
+
     const wrapper = mount(
-      <EntityCard title={{ label: 'Title' }} description={descText} />
+      <EntityCard
+        entity={modifiedEntity}
+        title={{ dataKey: 'title' }}
+        description={{ dataKey: 'summary' }}
+      />
     );
     expect(
       wrapper.find('[aria-label="card-description"]').first().text()
@@ -100,35 +139,49 @@ describe('Card', () => {
   it('render with information', () => {
     const wrapper = shallow(
       <EntityCard
-        title={{ label: 'Title' }}
+        entity={entity}
+        title={{ dataKey: 'title' }}
         information={[
           {
-            label: 'VISIT ID',
-            content: '1',
-            icon: <strong>ICON - </strong>,
+            dataKey: 'visitId',
+            content: function Test() {
+              return <b>{'1'}</b>;
+            },
+            icon: function Icon() {
+              return <strong>ICON - </strong>;
+            },
           },
         ]}
       />
     );
-    expect(wrapper.exists("[aria-label='card-info-VISIT ID']")).toBe(true);
-    expect(wrapper.find("[aria-label='card-info-VISIT ID']").text()).toEqual(
-      'ICON - VISIT ID:'
+    expect(wrapper.exists("[aria-label='card-info-visitId']")).toBe(true);
+    expect(wrapper.find("[aria-label='card-info-visitId']").text()).toEqual(
+      '<Icon />visitId:'
     );
-    expect(wrapper.exists("[aria-label='card-info-data-VISIT ID']")).toBe(true);
+    expect(wrapper.exists("[aria-label='card-info-data-visitId']")).toBe(true);
     expect(
-      wrapper.find("[aria-label='card-info-data-VISIT ID']").text()
+      wrapper.find("[aria-label='card-info-data-visitId']").find('b').text()
+    ).toEqual('1');
+    expect(
+      wrapper
+        .find("[aria-label='card-info-data-visitId']")
+        .find('ArrowTooltip')
+        .prop('title')
     ).toEqual('1');
   });
 
   it('renders with buttons', () => {
     const wrapper = shallow(
       <EntityCard
-        title={{ label: 'Title' }}
+        entity={entity}
+        title={{ dataKey: 'title', label: 'Title' }}
         buttons={[
-          // eslint-disable-next-line react/jsx-key
-          <button>Test Button One</button>,
-          // eslint-disable-next-line react/jsx-key
-          <button>Test Button Two</button>,
+          function Button1() {
+            return <button>Test Button One</button>;
+          },
+          function Button2() {
+            return <button>Test Button Two</button>;
+          },
         ]}
       />
     );
@@ -144,8 +197,9 @@ describe('Card', () => {
   it('renders with more information', () => {
     const wrapper = mount(
       <EntityCard
-        title={{ label: 'Title' }}
-        moreInformation={<div>Test Information</div>}
+        entity={entity}
+        title={{ dataKey: 'title' }}
+        moreInformation={() => <div>Test Information</div>}
       />
     );
 
@@ -165,15 +219,22 @@ describe('Card', () => {
 
   it('renders with tags', () => {
     const wrapper = shallow(
-      <EntityCard title={{ label: 'Title' }} tags={['Tag One', 'Tag Two']} />
+      <EntityCard
+        entity={entity}
+        title={{ dataKey: 'title', label: 'Title' }}
+        customFilters={[
+          { dataKey: 'name', label: 'Name', filterItems: [] },
+          { dataKey: 'visitId', label: 'Visit ID', filterItems: [] },
+        ]}
+      />
     );
 
     expect(wrapper.exists('[aria-label="card-tags"]')).toBe(true);
-    expect(
-      wrapper.find('[aria-label="card-tag-Tag One"]').prop('label')
-    ).toEqual('Tag One');
-    expect(
-      wrapper.find('[aria-label="card-tag-Tag Two"]').prop('label')
-    ).toEqual('Tag Two');
+    expect(wrapper.find('[aria-label="card-tag-Name"]').prop('label')).toEqual(
+      'Name'
+    );
+    expect(wrapper.find('[aria-label="card-tag-2"]').prop('label')).toEqual(
+      '2'
+    );
   });
 });

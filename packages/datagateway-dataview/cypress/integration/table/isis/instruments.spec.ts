@@ -7,11 +7,15 @@ describe('ISIS - Instruments Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
   });
 
   it('should be able to click an instrument to see its facilityCycle', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
-    cy.location('pathname').should('eq', '/browse/instrument/1/facilityCycle');
+    cy.location('pathname').should('eq', '/browse/instrument/11/facilityCycle');
   });
 
   // Not enough data in instruments to scroll down and load more rows.
@@ -22,6 +26,11 @@ describe('ISIS - Instruments Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Name').click().click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name').click();
 
@@ -68,10 +77,7 @@ describe('ISIS - Instruments Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .first()
-        .type('space');
+      cy.get('[aria-label="Filter by Name"]').first().type('space');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
@@ -81,6 +87,11 @@ describe('ISIS - Instruments Table', () => {
   });
 
   describe('should be able to view details', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Name').click().click();
+    });
+
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 

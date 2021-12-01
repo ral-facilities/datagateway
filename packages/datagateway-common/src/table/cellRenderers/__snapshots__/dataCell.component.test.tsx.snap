@@ -14,6 +14,11 @@ exports[`Data cell component renders correctly 1`] = `
 >
   <ArrowTooltip
     enterDelay={500}
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
     title="non nested property"
   >
     <WithStyles(ForwardRef(Typography))
@@ -23,6 +28,26 @@ exports[`Data cell component renders correctly 1`] = `
       non nested property
     </WithStyles(ForwardRef(Typography))>
   </ArrowTooltip>
+  <div
+    style={
+      Object {
+        "height": "100%",
+        "marginLeft": 18,
+        "paddingLeft": "4px",
+        "paddingRight": "4px",
+      }
+    }
+  >
+    <WithStyles(ForwardRef(Divider))
+      flexItem={true}
+      orientation="vertical"
+      style={
+        Object {
+          "height": "100%",
+        }
+      }
+    />
+  </div>
 </div>
 `;
 
@@ -40,6 +65,11 @@ exports[`Data cell component renders nested cell data correctly 1`] = `
 >
   <ArrowTooltip
     enterDelay={500}
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
     title="nested property"
   >
     <WithStyles(ForwardRef(Typography))
@@ -49,6 +79,26 @@ exports[`Data cell component renders nested cell data correctly 1`] = `
       nested property
     </WithStyles(ForwardRef(Typography))>
   </ArrowTooltip>
+  <div
+    style={
+      Object {
+        "height": "100%",
+        "marginLeft": 18,
+        "paddingLeft": "4px",
+        "paddingRight": "4px",
+      }
+    }
+  >
+    <WithStyles(ForwardRef(Divider))
+      flexItem={true}
+      orientation="vertical"
+      style={
+        Object {
+          "height": "100%",
+        }
+      }
+    />
+  </div>
 </div>
 `;
 
@@ -66,14 +116,41 @@ exports[`Data cell component renders provided cell data correctly 1`] = `
 >
   <ArrowTooltip
     enterDelay={500}
-    title="non nested property"
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+    title="provided test"
   >
     <WithStyles(ForwardRef(Typography))
       noWrap={true}
       variant="body2"
     >
-      provided test
+      <b>
+        provided test
+      </b>
     </WithStyles(ForwardRef(Typography))>
   </ArrowTooltip>
+  <div
+    style={
+      Object {
+        "height": "100%",
+        "marginLeft": 18,
+        "paddingLeft": "4px",
+        "paddingRight": "4px",
+      }
+    }
+  >
+    <WithStyles(ForwardRef(Divider))
+      flexItem={true}
+      orientation="vertical"
+      style={
+        Object {
+          "height": "100%",
+        }
+      }
+    />
+  </div>
 </div>
 `;

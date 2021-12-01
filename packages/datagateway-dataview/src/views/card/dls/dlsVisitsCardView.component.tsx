@@ -1,35 +1,23 @@
 import React from 'react';
 
-import { IndexRange } from 'react-virtualized';
-import {
-  StateType,
-  FilterDataType,
-  QueryParams,
-} from 'datagateway-common/lib/state/app.types';
 import {
   CardView,
-  Entity,
-  fetchInvestigations,
-  fetchInvestigationCount,
-  fetchInvestigationDetails,
+  formatCountOrSize,
   Investigation,
   tableLink,
-  fetchFilter,
-  fetchInvestigationSize,
-  Filter,
-  pushPageFilter,
-  DateFilter,
-  DateColumnFilter,
-  TextColumnFilter,
-  TextFilter,
-  pushPageNum,
-  pushQuery,
+  parseSearchToQuery,
+  useDateFilter,
+  useInvestigationCount,
+  useInvestigationsPaginated,
+  usePushFilters,
+  usePushPage,
+  usePushResults,
+  useSort,
+  useTextFilter,
+  useInvestigationsDatasetCount,
   nestedValue,
   ArrowTooltip,
 } from 'datagateway-common';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { connect } from 'react-redux';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import {
   Assessment,
@@ -37,244 +25,149 @@ import {
   ConfirmationNumber,
 } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface DLSVisitsCVProps {
   proposalName: string;
 }
 
-interface DLSVisitsCVDispatchProps {
-  fetchData: (proposalName: string, offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (proposalName: string) => Promise<void>;
-  fetchDetails: (investigationId: number) => Promise<void>;
-  fetchSize: (investigationId: number) => Promise<void>;
-  fetchTypeFilter: (proposalName: string) => Promise<void>;
-  pushPage: (page: number) => Promise<void>;
-  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushQuery: (query: QueryParams) => Promise<void>;
-}
+const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
+  const { proposalName } = props;
 
-interface DLSVisitsCVStateProps {
-  data: Entity[];
-  totalDatCount: number;
-  query: QueryParams;
-  filterData: FilterDataType;
-  loadedData: boolean;
-  loadedCount: boolean;
-}
-
-type DLSVisitsCVCombinedProps = DLSVisitsCVProps &
-  DLSVisitsCVDispatchProps &
-  DLSVisitsCVStateProps;
-
-const DLSVisitsCardView = (
-  props: DLSVisitsCVCombinedProps
-): React.ReactElement => {
-  const {
-    data,
-    totalDatCount,
-    query,
-    filterData,
-    proposalName,
-    loadedData,
-    loadedCount,
-    fetchData,
-    fetchCount,
-    fetchTypeFilter,
-    fetchDetails,
-    fetchSize,
-    pushPage,
-    pushFilters,
-    pushQuery,
-  } = props;
-
-  const filters = query.filters;
   const [t] = useTranslation();
+  const location = useLocation();
 
-  React.useEffect(() => {
-    fetchTypeFilter(proposalName);
-  }, [proposalName, fetchTypeFilter]);
-
-  const typeFilteredItems = React.useMemo(
-    () => ('type.id' in filterData ? filterData['type.id'] : []),
-    [filterData]
+  const { filters, view, sort, page, results } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
   );
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const handleSort = useSort();
+  const pushFilters = usePushFilters();
+  const pushPage = usePushPage();
+  const pushResults = usePushResults();
 
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      value={filters[dataKey] as DateFilter}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
-
-  const loadCount = React.useCallback(() => fetchCount(proposalName), [
-    fetchCount,
-    proposalName,
+  const {
+    data: totalDataCount,
+    isLoading: countLoading,
+  } = useInvestigationCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({ name: { eq: proposalName } }),
+    },
   ]);
-  const loadData = React.useCallback(
-    (params) => fetchData(proposalName, params),
-    [fetchData, proposalName]
+  const { isLoading: dataLoading, data } = useInvestigationsPaginated([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({ name: { eq: proposalName } }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({
+        investigationInstruments: 'instrument',
+      }),
+    },
+  ]);
+  const countQueries = useInvestigationsDatasetCount(data);
+
+  const title = React.useMemo(
+    () => ({
+      label: t('investigations.visit_id'),
+      dataKey: 'visitId',
+      content: (investigation: Investigation) =>
+        tableLink(
+          `/browse/proposal/${proposalName}/investigation/${investigation.id}/dataset`,
+          investigation.visitId,
+          view
+        ),
+      filterComponent: textFilter,
+    }),
+    [proposalName, t, textFilter, view]
+  );
+
+  const description: CardViewDetails = React.useMemo(
+    () => ({
+      label: t('investigations.details.summary'),
+      dataKey: 'summary',
+      filterComponent: textFilter,
+    }),
+    [t, textFilter]
+  );
+
+  const information: CardViewDetails[] = React.useMemo(
+    () => [
+      {
+        icon: Assessment,
+        label: t('investigations.instrument'),
+        dataKey: 'investigationInstruments.instrument.name',
+        content: function Content(investigation: Investigation) {
+          const instrument = nestedValue(
+            investigation,
+            'investigationInstruments[0].instrument.name'
+          );
+          return (
+            <ArrowTooltip title={instrument}>
+              <Typography>{instrument}</Typography>
+            </ArrowTooltip>
+          );
+        },
+        noTooltip: true,
+        filterComponent: textFilter,
+      },
+      {
+        icon: ConfirmationNumber,
+        label: t('investigations.dataset_count'),
+        dataKey: 'datasetCount',
+        content: (investigation: Investigation): string => {
+          const index = data?.findIndex((item) => item.id === investigation.id);
+          if (typeof index === 'undefined') return 'Unknown';
+          return formatCountOrSize(countQueries[index]);
+        },
+        disableSort: true,
+      },
+      {
+        icon: CalendarToday,
+        label: t('investigations.start_date'),
+        dataKey: 'startDate',
+        filterComponent: dateFilter,
+        defaultSort: 'desc',
+      },
+      {
+        icon: CalendarToday,
+        label: t('investigations.end_date'),
+        dataKey: 'endDate',
+        filterComponent: dateFilter,
+      },
+    ],
+    [countQueries, data, dateFilter, t, textFilter]
   );
 
   return (
     <CardView
-      data={data}
-      totalDataCount={totalDatCount}
-      query={query}
-      loadData={loadData}
-      loadCount={loadCount}
+      data={data ?? []}
+      totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      pushQuery={pushQuery}
-      loadedData={loadedData}
-      loadedCount={loadedCount}
-      title={{
-        label: t('investigations.visit_id'),
-        dataKey: 'visitId',
-        content: (investigation: Investigation) =>
-          tableLink(
-            `/browse/proposal/${proposalName}/investigation/${investigation.id}/dataset`,
-            investigation.visitId,
-            query.view
-          ),
-        filterComponent: textFilter,
-      }}
-      description={{
-        label: t('investigations.details.summary'),
-        dataKey: 'summary',
-        filterComponent: textFilter,
-      }}
-      information={[
-        {
-          icon: <Assessment />,
-          label: t('investigations.instrument'),
-          dataKey: 'investigationInstruments.instrument.name',
-          content: (investigation: Investigation) => {
-            const instrument = nestedValue(
-              investigation,
-              'investigationInstruments[0].instrument.name'
-            );
-            return function Content(): React.ReactNode {
-              return (
-                <ArrowTooltip title={instrument}>
-                  <Typography>{instrument}</Typography>
-                </ArrowTooltip>
-              );
-            };
-          },
-          noTooltip: true,
-          filterComponent: textFilter,
-        },
-        {
-          icon: <ConfirmationNumber />,
-          label: t('investigations.dataset_count'),
-          dataKey: 'datasetCount',
-          disableSort: true,
-        },
-        {
-          icon: <CalendarToday />,
-          label: t('investigations.start_date'),
-          dataKey: 'startDate',
-          filterComponent: dateFilter,
-        },
-        {
-          icon: <CalendarToday />,
-          label: t('investigations.end_date'),
-          dataKey: 'endDate',
-          filterComponent: dateFilter,
-        },
-      ]}
+      onSort={handleSort}
+      onResultsChange={pushResults}
+      loadedData={!dataLoading}
+      loadedCount={!countLoading}
+      filters={filters}
+      sort={sort}
+      page={page}
+      results={results}
+      title={title}
+      description={description}
+      information={information}
       moreInformation={(investigation: Investigation) => (
-        <VisitDetailsPanel
-          rowData={investigation}
-          fetchDetails={fetchDetails}
-          fetchSize={fetchSize}
-        />
+        <VisitDetailsPanel rowData={investigation} />
       )}
-      customFilters={[
-        {
-          label: t('investigations.type.id'),
-          dataKey: 'type.id',
-          filterItems: typeFilteredItems,
-        },
-      ]}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DLSVisitsCVDispatchProps => ({
-  fetchData: (proposalName: string, offsetParams: IndexRange) =>
-    dispatch(
-      fetchInvestigations({
-        offsetParams,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({ name: { eq: proposalName } }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify({
-              investigationInstruments: 'instrument',
-            }),
-          },
-        ],
-        getDatasetCount: true,
-      })
-    ),
-  fetchCount: (proposalName: string) =>
-    dispatch(
-      fetchInvestigationCount([
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({ name: { eq: proposalName } }),
-        },
-      ])
-    ),
-  fetchDetails: (investigationId: number) =>
-    dispatch(fetchInvestigationDetails(investigationId)),
-  fetchSize: (investigationId: number) =>
-    dispatch(fetchInvestigationSize(investigationId)),
-  fetchTypeFilter: (proposalName: string) =>
-    dispatch(
-      fetchFilter('investigation', 'type.id', [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({ name: { eq: proposalName } }),
-        },
-      ])
-    ),
-
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
-  pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
-});
-
-const mapStateToProps = (state: StateType): DLSVisitsCVStateProps => {
-  return {
-    data: state.dgcommon.data,
-    totalDatCount: state.dgcommon.totalDataCount,
-    filterData: state.dgcommon.filterData,
-    query: state.dgcommon.query,
-    loadedData: state.dgcommon.loadedData,
-    loadedCount: state.dgcommon.loadedCount,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DLSVisitsCardView);
+export default DLSVisitsCardView;

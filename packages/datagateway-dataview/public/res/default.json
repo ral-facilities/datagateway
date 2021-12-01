@@ -3,7 +3,13 @@
     "results": "Results",
     "view_table": "Display as table",
     "view_cards": "Display as cards",
-    "max_results": "Max Results"
+    "max_results": "Max Results",
+    "error": "Something went wrong...",
+    "open_data_warning": {
+      "message": "Open data",
+      "tooltip": "Only open data is displayed when browsing anonymously. Please login to see embargoed data.",
+      "tooltip_link": "Click here to learn more about our data policy."
+    }
   },
   "breadcrumbs": {
     "home": "Home",
@@ -21,7 +27,7 @@
     "type": "Type",
     "url": "URL",
     "details": {
-      "tabs_label": "Instrument Details Tabs",
+      "tabs_label": "Instrument Details",
       "label": "Instrument Details",
       "name": "Name",
       "description": "Description",
@@ -41,7 +47,7 @@
   },
   "studies": {
     "name": "Name",
-    "description": "Description",
+    "title": "Title",
     "pid": "DOI",
     "end_date": "End Date",
     "start_date": "Start Date",
@@ -68,7 +74,7 @@
     "dataset_count": "Dataset Count",
     "release_date": "Public Release",
     "details": {
-      "tabs_label": "Investigation Details Tabs",
+      "tabs_label": "Investigation Details",
       "label": "Investigation Details",
       "title": "Title",
       "name": "Name",
@@ -121,7 +127,7 @@
       "id": "Type ID"
     },
     "details": {
-      "tabs_label": "Dataset Details Tabs",
+      "tabs_label": "Dataset Details",
       "label": "Dataset Details",
       "name": "Name",
       "description": "Description",
@@ -136,8 +142,7 @@
         "description": "Description",
         "id": "Type ID"
       }
-    },
-    "download": "Download"
+    }
   },
   "datafiles": {
     "name": "Name",
@@ -147,7 +152,7 @@
     "location": "Location",
     "size": "Size",
     "details": {
-      "tabs_label": "Datafile Details Tabs",
+      "tabs_label": "Datafile Details",
       "label": "Datafile Details",
       "name": "Name",
       "description": "Description",
@@ -156,21 +161,21 @@
       "parameters": {
         "label": "Datafile Parameters"
       }
-    },
-    "download": "Download"
+    }
   },
   "my_data_table": {
-    "login_warning_msg": "You need to be logged in to be able to see your own data."
+    "role_selector": "Select role",
+    "all_roles": "All"
   },
   "loading": {
     "verifying": "Verifying URL",
     "oops": "Oops!",
-    "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
+    "message": "We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "buttons": {
-    "add_to_cart": "Add to cart",
-    "remove_from_cart": "Remove from cart",
+    "add_to_cart": "Add to selections",
+    "remove_from_cart": "Remove from selections",
     "download": "Download"
   },
   "advanced_filters": {
@@ -180,9 +185,14 @@
       "title": ["Title", "Name", "Type"],
       "fingerprint": ["Visit ID", "Name"],
       "public": ["DOI"],
-      "confirmation_number": ["Dataset Count"," Datafile Count"],
+      "confirmation_number": ["Dataset Count", " Datafile Count"],
       "assessment": ["Instrument", "Beamline"],
-      "calendar_today": ["Start Date", "End Date", "Create Time", "Modified Time"],
+      "calendar_today": [
+        "Start Date",
+        "End Date",
+        "Create Time",
+        "Modified Time"
+      ],
       "explore": ["Location"],
       "save": ["Size"],
       "description": ["Description", "Summary"],
@@ -196,13 +206,24 @@
   },
   "homePage": {
     "title": "DataGateway",
+    "logoLabel": "DataGateway Logo",
     "howLabel": "How it works...",
     "exploreLabel": "1. Explore",
     "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
+    "exploreLink": "/browse/investigation",
     "discoverLabel": "2. Discover",
     "discoverDescription": "Search for the experimental data according to different criteria.",
+    "discoverLink": "/search",
     "downloadLabel": "3. Download",
-    "downloadDescription": "Retrieve the experimental data using a variety of download methods."
+    "downloadDescription": "Retrieve the experimental data using a variety of download methods.",
+    "downloadLink": "/download"
+  },
+  "selec_alert": {
+    "added": "{{count}} item has been added to selections.",
+    "added_plural": "{{count}} items have been added to selections.",
+    "removed": "{{count}} item has been removed from selections.",
+    "removed_plural": "{{count}} items have been removed from selections.",
+    "link": "Go to selections."
   },
   "doi_constants": {
     "keywords": [

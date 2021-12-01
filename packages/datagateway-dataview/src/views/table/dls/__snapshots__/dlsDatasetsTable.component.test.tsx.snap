@@ -154,175 +154,96 @@ exports[`DLS Dataset table component renders Dataset title as a link 1`] = `
 `;
 
 exports[`DLS Dataset table component renders correctly 1`] = `
-<WithStyles(VirtualizedTable)
-  allIds={
-    Array [
-      1,
-    ]
-  }
-  columns={
-    Array [
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "name",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datasets.name",
-      },
-      Object {
-        "dataKey": "datafileCount",
-        "disableSort": true,
-        "icon": <Memo />,
-        "label": "datasets.datafile_count",
-      },
-      Object {
-        "dataKey": "createTime",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datasets.create_time",
-      },
-      Object {
-        "dataKey": "modTime",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datasets.modified_time",
-      },
-    ]
-  }
-  data={
-    Array [
-      Object {
-        "createTime": "2019-07-23",
-        "id": 1,
-        "modTime": "2019-07-23",
-        "name": "Test 1",
-        "size": 1,
-      },
-    ]
-  }
-  detailsPanel={[Function]}
-  disableSelectAll={false}
-  loadMoreRows={[Function]}
-  loading={false}
-  onCheck={[Function]}
-  onSort={[Function]}
-  onUncheck={[Function]}
-  selectedRows={Array []}
-  sort={Object {}}
-  totalRowCount={0}
-/>
-`;
-
-exports[`DLS Dataset table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
-<div
-  id="details-panel"
-  style={
+Object {
+  "allIds": Array [
+    1,
+  ],
+  "classes": Object {
+    "flexContainer": "VirtualizedTable-flexContainer-2",
+    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
+    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "table": "VirtualizedTable-table-1",
+    "tableCell": "VirtualizedTable-tableCell-6",
+    "tableRow": "VirtualizedTable-tableRow-4",
+    "tableRowHover": "VirtualizedTable-tableRowHover-5",
+  },
+  "columns": Array [
     Object {
-      "minWidth": 0,
-    }
-  }
->
-  <WithStyles(ForwardRef(Tabs))
-    aria-label="datasets.details.tabs_label"
-    onChange={[Function]}
-    scrollButtons="auto"
-    value="details"
-    variant="scrollable"
-  >
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="dataset-details-panel"
-      id="dataset-details-tab"
-      label="datasets.details.label"
-      value="details"
-    />
-  </WithStyles(ForwardRef(Tabs))>
-  <div
-    aria-labelledby="dataset-details-tab"
-    hidden={false}
-    id="dataset-details-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-209"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="h6"
-        >
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-210"
-        />
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datasets.details.description
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            datasets.details.description not provided
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datasets.details.start_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            datasets.details.start_date not provided
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datasets.details.end_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            datasets.details.end_date not provided
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datasets.details.size
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            1 B
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-</div>
+      "cellContentRenderer": [Function],
+      "dataKey": "name",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "datasets.name",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "datafileCount",
+      "disableSort": true,
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "datasets.datafile_count",
+    },
+    Object {
+      "dataKey": "createTime",
+      "defaultSort": "desc",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "datasets.create_time",
+    },
+    Object {
+      "dataKey": "modTime",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "datasets.modified_time",
+    },
+  ],
+  "data": Array [
+    Object {
+      "createTime": "2019-07-23",
+      "id": 1,
+      "modTime": "2019-07-23",
+      "name": "Test 1",
+      "size": 1,
+    },
+  ],
+  "detailsPanel": [Function],
+  "disableSelectAll": false,
+  "loadMoreRows": [Function],
+  "loading": false,
+  "onCheck": [MockFunction],
+  "onSort": [Function],
+  "onUncheck": [MockFunction],
+  "selectedRows": Array [],
+  "sort": Object {
+    "createTime": "desc",
+  },
+  "totalRowCount": 0,
+}
 `;

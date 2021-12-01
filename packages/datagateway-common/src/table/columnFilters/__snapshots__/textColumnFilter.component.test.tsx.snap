@@ -3,7 +3,7 @@
 exports[`Text filter component renders correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Input))
-    aria-label="Filter by test"
+    aria-hidden={true}
     color="secondary"
     endAdornment={
       <WithStyles(ForwardRef(InputAdornment))
@@ -20,7 +20,12 @@ exports[`Text filter component renders correctly 1`] = `
               },
             }
           }
-          id="select-filter-type"
+          SelectDisplayProps={
+            Object {
+              "aria-label": "include or exclude",
+            }
+          }
+          id="test-select-filter-type"
           onChange={[Function]}
           renderValue={[Function]}
           value="include"
@@ -41,9 +46,73 @@ exports[`Text filter component renders correctly 1`] = `
       </WithStyles(ForwardRef(InputAdornment))>
     }
     fullWidth={true}
-    id="test filter"
+    id="test-filter"
+    inputProps={
+      Object {
+        "aria-label": "Filter by test",
+      }
+    }
     onChange={[Function]}
-    placeholder="Include..."
+    placeholder="Include"
+    value="test value"
+  />
+</div>
+`;
+
+exports[`Text filter component useTextFilter hook returns a function which can generate a working text filter 1`] = `
+<div>
+  <WithStyles(ForwardRef(Input))
+    aria-hidden={true}
+    color="secondary"
+    endAdornment={
+      <WithStyles(ForwardRef(InputAdornment))
+        position="end"
+      >
+        <WithStyles(ForwardRef(Select))
+          IconComponent={
+            Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            }
+          }
+          SelectDisplayProps={
+            Object {
+              "aria-label": "include or exclude",
+            }
+          }
+          id="Name-select-filter-type"
+          onChange={[Function]}
+          renderValue={[Function]}
+          value="include"
+        >
+          <WithStyles(ForwardRef(MenuItem))
+            id="select-filter-type-include"
+            value="include"
+          >
+            Include
+          </WithStyles(ForwardRef(MenuItem))>
+          <WithStyles(ForwardRef(MenuItem))
+            id="select-filter-type-exclude"
+            value="exclude"
+          >
+            Exclude
+          </WithStyles(ForwardRef(MenuItem))>
+        </WithStyles(ForwardRef(Select))>
+      </WithStyles(ForwardRef(InputAdornment))>
+    }
+    fullWidth={true}
+    id="Name-filter"
+    inputProps={
+      Object {
+        "aria-label": "Filter by Name",
+      }
+    }
+    onChange={[Function]}
+    placeholder="Include"
     value=""
   />
 </div>

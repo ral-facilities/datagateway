@@ -23,6 +23,10 @@ describe('DLS - Datasets Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should not load incorrect URL', () => {
@@ -37,7 +41,7 @@ describe('DLS - Datasets Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/1/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/241/datafile'
     );
   });
 
@@ -109,6 +113,11 @@ describe('DLS - Datasets Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Create Time').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
@@ -143,9 +152,7 @@ describe('DLS - Datasets Table', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
         .wait('@datasets', { timeout: 10000 });
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -160,12 +167,11 @@ describe('DLS - Datasets Table', () => {
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
-        .find('input')
         .first()
         .type('1')
         .wait('@datasets', { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter from"]')
+      cy.get('input[id="Create Time filter from"]')
         .type('2006-11-21')
         .wait('@datasets', { timeout: 10000 });
 
@@ -176,10 +182,7 @@ describe('DLS - Datasets Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .first()
-        .type('DATASET 1');
+      cy.get('[aria-label="Filter by Name"]').first().type('DATASET 1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -188,8 +191,8 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time date filter from"]').type('2002-01-01');
-      cy.get('[aria-label="Create Time date filter to"]').type('2006-01-01');
+      cy.get('input[id="Create Time filter from"]').type('2002-01-01');
+      cy.get('input[id="Create Time filter to"]').type('2006-01-01');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
@@ -197,12 +200,11 @@ describe('DLS - Datasets Table', () => {
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
-        .find('input')
         .first()
         .type('1')
         .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter from"]')
+      cy.get('input[id="Create Time filter from"]')
         .type('2006-11-21')
         .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
 
@@ -212,6 +214,11 @@ describe('DLS - Datasets Table', () => {
   });
 
   describe('should be able to view details', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Create Time').click();
+    });
+
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
@@ -239,8 +246,7 @@ describe('DLS - Datasets Table', () => {
         .should('be.visible');
     });
 
-    // TODO: Data mismatch issue (#782)
-    it.skip('and then calculate file size', () => {
+    it('and then calculate file size', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
       cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '55').should(
@@ -255,7 +261,7 @@ describe('DLS - Datasets Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('5.36 GB', { timeout: 10000 }).should('be.visible');
+      cy.contains('4.24 GB', { timeout: 10000 }).should('be.visible');
     });
 
     it('and view the dataset type panel', () => {
@@ -284,5 +290,23 @@ describe('DLS - Datasets Table', () => {
       cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
+  });
+
+  it('should display correct datafile count after filtering', () => {
+    cy.visit('/browse/proposal/INVESTIGATION%202/investigation/2/dataset').wait(
+      ['@investigationsFindOne', '@datasetsCount', '@datasets'],
+      {
+        timeout: 10000,
+      }
+    );
+
+    cy.get('[aria-label="Filter by Name"]')
+      .first()
+      .type('DATASET 242')
+      .wait(['@datasetsCount', '@datasets'], {
+        timeout: 10000,
+      });
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('55');
   });
 });

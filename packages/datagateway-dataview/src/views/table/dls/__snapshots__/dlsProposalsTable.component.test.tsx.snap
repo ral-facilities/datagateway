@@ -1,56 +1,76 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DLS Proposals table component renders correctly 1`] = `
-<WithStyles(VirtualizedTable)
-  columns={
-    Array [
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "title",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.title",
+Object {
+  "classes": Object {
+    "flexContainer": "VirtualizedTable-flexContainer-2",
+    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
+    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "table": "VirtualizedTable-table-1",
+    "tableCell": "VirtualizedTable-tableCell-6",
+    "tableRow": "VirtualizedTable-tableRow-4",
+    "tableRowHover": "VirtualizedTable-tableRowHover-5",
+  },
+  "columns": Array [
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "title",
+      "defaultSort": "asc",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "name",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "investigations.name",
+      "label": "investigations.title",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "name",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-    ]
-  }
-  data={
-    Array [
-      Object {
-        "doi": "doi 1",
-        "endDate": "2019-06-11",
-        "id": 1,
-        "investigationInstruments": Array [
-          Object {
-            "id": 1,
-            "instrument": Object {
-              "id": 3,
-              "name": "LARMOR",
-            },
+      "label": "investigations.name",
+    },
+  ],
+  "data": Array [
+    Object {
+      "doi": "doi 1",
+      "endDate": "2019-06-11",
+      "id": 1,
+      "investigationInstruments": Array [
+        Object {
+          "id": 1,
+          "instrument": Object {
+            "id": 3,
+            "name": "LARMOR",
           },
-        ],
-        "name": "Test 1",
-        "size": 1,
-        "startDate": "2019-06-10",
-        "summary": "foo bar",
-        "title": "Test 1",
-        "visitId": "1",
-      },
-    ]
-  }
-  disableSelectAll={false}
-  loadMoreRows={[Function]}
-  loading={false}
-  onSort={[Function]}
-  sort={Object {}}
-  totalRowCount={0}
-/>
+        },
+      ],
+      "name": "Test 1",
+      "size": 1,
+      "startDate": "2019-06-10",
+      "summary": "foo bar",
+      "title": "Test 1",
+      "visitId": "1",
+    },
+  ],
+  "loadMoreRows": [Function],
+  "onSort": [Function],
+  "sort": Object {
+    "title": "asc",
+  },
+  "totalRowCount": 1,
+}
 `;
 
 exports[`DLS Proposals table component renders title and name as links 1`] = `

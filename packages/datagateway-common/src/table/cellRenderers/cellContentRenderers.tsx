@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@material-ui/core';
-import { ViewsType } from '../../state/app.types';
+import { ViewsType } from '../../app.types';
+import { UseQueryResult } from 'react-query';
 
 export function formatBytes(bytes: number | undefined): string {
   if (bytes === -1) return 'Loading...';
@@ -13,6 +14,25 @@ export function formatBytes(bytes: number | undefined): string {
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
 
   return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+/**
+ * A helper function to format the result of count and size queries
+ *
+ * @param query The count or size query to extract data from
+ * @param formatAsBytes Whether to format the data as bytes, default is false
+ * @returns a string with either Calculating, Unknown or the formatted data
+ */
+export function formatCountOrSize(
+  query: UseQueryResult<number, Error>,
+  formatAsBytes = false
+): string {
+  if (query?.isFetching) return 'Calculating...';
+  if (query?.isSuccess) {
+    if (formatAsBytes) return formatBytes(query.data);
+    return query.data.toString();
+  }
+  return 'Unknown';
 }
 
 // NOTE: Allow the link to specify the view to keep the same view when navigating.
@@ -53,6 +73,18 @@ export function tableLink(
 ): React.ReactElement {
   return (
     <Link component={RouterLink} to={appendView(linkUrl, view)}>
+      {linkText}
+    </Link>
+  );
+}
+
+export function externalSiteLink(
+  linkUrl: string,
+  linkText?: string,
+  label?: string
+): React.ReactElement {
+  return (
+    <Link href={linkUrl} data-testid={label}>
       {linkText}
     </Link>
   );

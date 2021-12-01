@@ -1,5 +1,9 @@
 import React from 'react';
-import { Entity, Investigation } from 'datagateway-common';
+import {
+  Entity,
+  Investigation,
+  useInvestigationDetails,
+} from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -9,10 +13,9 @@ import {
   Divider,
   Tabs,
   Tab,
-  Link,
+  Link as MuiLink,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { Action } from 'redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,15 +30,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface InvestigationDetailsPanelProps {
   rowData: Entity;
-  fetchDetails: (investigationId: number) => Promise<void>;
   detailsPanelResize?: () => void;
-  viewDatasets?: (id: number) => Action;
+  viewDatasets?: (id: number) => void;
 }
 
 const InvestigationDetailsPanel = (
   props: InvestigationDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, fetchDetails, viewDatasets, detailsPanelResize } = props;
+  const { rowData, viewDatasets, detailsPanelResize } = props;
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
@@ -44,23 +46,11 @@ const InvestigationDetailsPanel = (
 
   const classes = useStyles();
 
-  const investigationData = rowData as Investigation;
-
-  React.useEffect(() => {
-    if (
-      !investigationData.investigationUsers ||
-      !investigationData.samples ||
-      !investigationData.publications
-    ) {
-      fetchDetails(investigationData.id);
-    }
-  }, [
-    investigationData.investigationUsers,
-    investigationData.samples,
-    investigationData.publications,
-    investigationData.id,
-    fetchDetails,
-  ]);
+  const { data } = useInvestigationDetails(rowData.id);
+  const investigationData: Investigation = {
+    ...data,
+    ...(rowData as Investigation),
+  };
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();
@@ -164,11 +154,12 @@ const InvestigationDetailsPanel = (
                       {t('investigations.details.pid')}
                     </Typography>
                     <Typography>
-                      <Link
+                      <MuiLink
                         href={`https://doi.org/${studyInvestigation.study.pid}`}
+                        data-testid="investigation-details-panel-pid-link"
                       >
                         {studyInvestigation.study.pid}
-                      </Link>
+                      </MuiLink>
                     </Typography>
                   </Grid>
                 );
@@ -181,11 +172,16 @@ const InvestigationDetailsPanel = (
               {t('investigations.details.doi')}
             </Typography>
             <Typography>
-              <b>
-                {investigationData.doi && investigationData.doi !== 'null'
-                  ? investigationData.doi
-                  : `${t('investigations.details.doi')} not provided`}
-              </b>
+              {investigationData.doi && investigationData.doi !== 'null' ? (
+                <MuiLink
+                  href={`https://doi.org/${investigationData.doi}`}
+                  data-testid="investigation-details-panel-doi-link"
+                >
+                  {investigationData.doi}
+                </MuiLink>
+              ) : (
+                <b>{`${t('investigations.details.doi')} not provided`}</b>
+              )}
             </Typography>
           </Grid>
           <Grid item xs>

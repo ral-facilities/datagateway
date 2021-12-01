@@ -4,10 +4,11 @@ import {
   Filter,
   FiltersType,
   Order,
+  QueryParams,
   SortType,
+  ViewsType,
   MicroFrontendId,
 } from '../../app.types';
-import { QueryParams, ViewsType } from '../app.types';
 
 // parent app actions
 export const CustomFrontendMessageType = `${MicroFrontendId}:api`;
@@ -16,6 +17,7 @@ export const InvalidateTokenType = `${CustomFrontendMessageType}:invalidate_toke
 export const RegisterRouteType = `${CustomFrontendMessageType}:register_route`;
 export const RequestPluginRerenderType = `${CustomFrontendMessageType}:plugin_rerender`;
 export const SendThemeOptionsType = `${CustomFrontendMessageType}:send_themeoptions`;
+export const BroadcastSignOutType = `${CustomFrontendMessageType}:signout`;
 
 // internal actions
 export const ConfigureFacilityNameType =
@@ -24,6 +26,10 @@ export const ConfigureURLsType = 'datagateway_common:configure_urls';
 
 export const SortTableType = 'datagateway_common:sort_table';
 export const FilterTableType = 'datagateway_common:filter_table';
+export const SortUpdateType = 'datagateway_common:sort_update';
+export const FilterUpdateType = 'datagateway_common:filter_update';
+export const PageUpdateType = 'datagateway_common:page_update';
+export const ResultsUpdateType = 'datagateway_common:results_update';
 
 export const UpdateFiltersType = 'datagateway_common:update_filters';
 export const UpdateSortType = 'datagateway_common:update_sort';
@@ -218,12 +224,6 @@ export const FetchAllIdsFailureType =
 export const FetchAllIdsSuccessType =
   'datagateway_common:fetch_all_ids_success';
 
-export const FetchLuceneIdsRequestType =
-  'datagateway_common:fetch_lucene_ids_request';
-export const FetchLuceneIdsFailureType =
-  'datagateway_common:fetch_lucene_ids_failure';
-export const FetchLuceneIdsSuccessType =
-  'datagateway_common:fetch_lucene_ids_success';
 export const FetchFilterRequestType = 'datagateway_common:fetch_filter_request';
 export const FetchFilterFailureType = 'datagateway_common:fetch_filter_failure';
 export const FetchFilterSuccessType = 'datagateway_common:fetch_filter_success';

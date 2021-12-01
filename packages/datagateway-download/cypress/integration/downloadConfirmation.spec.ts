@@ -9,7 +9,6 @@ describe('Download Confirmation', () => {
     // Manually override the time, so we know what date/time to expect for downloads.
     cy.clock(Date.UTC(2020, 0, 1, 1, 1, 1), ['Date']);
 
-    
     cy.intercept('GET', '**/ids/isTwoLevel').as('fetchIsTwoLevel');
     cy.intercept('GET', '**/topcat/user/cart/**').as('fetchCart');
     cy.login();
@@ -24,7 +23,7 @@ describe('Download Confirmation', () => {
     });
 
     // Open the confirmation dialog and confirm it is present.
-    cy.contains('Download Cart').click();
+    cy.contains('Download Selection').click();
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
   });
 
@@ -42,9 +41,10 @@ describe('Download Confirmation', () => {
 
     // Shows the estimated download times in the table.
     cy.get('#download-table').should('exist');
-    cy.contains('#download-table-one', '23 hours, 19 minutes, 46 seconds').should(
-      'exist'
-    );
+    cy.contains(
+      '#download-table-one',
+      '23 hours, 19 minutes, 46 seconds'
+    ).should('exist');
     cy.contains('#download-table-thirty', '46 minutes, 39 seconds').should(
       'exist'
     );
@@ -86,11 +86,9 @@ describe('Download Confirmation', () => {
   });
 
   it('should not be able to submit a download request with a disabled access method (Globus)', () => {
-    cy.get('#confirm-access-method').should('exist').click();
-
-    cy.contains('#confirm-access-method-globus', 'Globus')
-      .should('exist')
-      .click();
+    // Select the "Globus" option.
+    cy.get('#confirm-access-method').should('exist');
+    cy.get('#confirm-access-method').select('Globus');
 
     // Ensure the globus access method has the disabled message.
     cy.contains(

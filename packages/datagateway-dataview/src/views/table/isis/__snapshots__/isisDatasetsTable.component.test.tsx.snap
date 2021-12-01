@@ -1,69 +1,101 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ISIS Dataset table component renders correctly 1`] = `
-<WithStyles(VirtualizedTable)
-  actions={
-    Array [
-      [Function],
-    ]
-  }
-  allIds={
-    Array [
-      1,
-    ]
-  }
-  columns={
-    Array [
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "name",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datasets.name",
+Object {
+  "actions": Array [
+    [Function],
+  ],
+  "allIds": Array [
+    1,
+  ],
+  "classes": Object {
+    "flexContainer": "VirtualizedTable-flexContainer-2",
+    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
+    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "table": "VirtualizedTable-table-1",
+    "tableCell": "VirtualizedTable-tableCell-6",
+    "tableRow": "VirtualizedTable-tableRow-4",
+    "tableRowHover": "VirtualizedTable-tableRowHover-5",
+  },
+  "columns": Array [
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "name",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "cellContentRenderer": [Function],
-        "dataKey": "size",
-        "disableSort": true,
-        "icon": <Memo />,
-        "label": "datasets.size",
+      "label": "datasets.name",
+    },
+    Object {
+      "cellContentRenderer": [Function],
+      "dataKey": "size",
+      "disableSort": true,
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "dataKey": "createTime",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datasets.create_time",
+      "label": "datasets.size",
+    },
+    Object {
+      "dataKey": "createTime",
+      "defaultSort": "desc",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-      Object {
-        "dataKey": "modTime",
-        "filterComponent": [Function],
-        "icon": <Memo />,
-        "label": "datasets.modified_time",
+      "label": "datasets.create_time",
+    },
+    Object {
+      "dataKey": "modTime",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
       },
-    ]
-  }
-  data={
-    Array [
-      Object {
-        "createTime": "2019-07-23",
-        "id": 1,
-        "modTime": "2019-07-23",
-        "name": "Test 1",
-        "size": 1,
-      },
-    ]
-  }
-  detailsPanel={[Function]}
-  disableSelectAll={false}
-  loadMoreRows={[Function]}
-  loading={false}
-  onCheck={[Function]}
-  onSort={[Function]}
-  onUncheck={[Function]}
-  selectedRows={Array []}
-  sort={Object {}}
-  totalRowCount={0}
-/>
+      "label": "datasets.modified_time",
+    },
+  ],
+  "data": Array [
+    Object {
+      "createTime": "2019-07-23",
+      "id": 1,
+      "modTime": "2019-07-23",
+      "name": "Test 1",
+      "size": 1,
+    },
+  ],
+  "detailsPanel": [Function],
+  "disableSelectAll": false,
+  "loadMoreRows": [Function],
+  "loading": false,
+  "onCheck": [MockFunction],
+  "onSort": [Function],
+  "onUncheck": [MockFunction],
+  "selectedRows": Array [],
+  "sort": Object {
+    "createTime": "desc",
+  },
+  "totalRowCount": 0,
+}
 `;
 
 exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
@@ -370,78 +402,4 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
     </WithStyles(ForwardRef(Typography))>
   </ForwardRef(Link)>
 </WithStyles(ForwardRef(Link))>
-`;
-
-exports[`ISIS Dataset table component renders details panel correctly and it sends actions 1`] = `
-<div
-  id="details-panel"
-  style={
-    Object {
-      "minWidth": 0,
-    }
-  }
->
-  <WithStyles(ForwardRef(Tabs))
-    aria-label="datasets.details.tabs_label"
-    onChange={[Function]}
-    scrollButtons="auto"
-    value="details"
-    variant="scrollable"
-  >
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="dataset-details-panel"
-      id="dataset-details-tab"
-      label="datasets.details.label"
-      value="details"
-    />
-    <WithStyles(ForwardRef(Tab))
-      id="dataset-datafiles-tab"
-      label="datasets.details.datafiles"
-      onClick={[Function]}
-    />
-  </WithStyles(ForwardRef(Tabs))>
-  <div
-    aria-labelledby="dataset-details-tab"
-    hidden={false}
-    id="dataset-details-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-209"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="h6"
-        >
-          <b>
-            Test 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-210"
-        />
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          datasets.details.description
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            datasets.details.description not provided
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-</div>
 `;

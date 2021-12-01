@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { format, isValid, isEqual } from 'date-fns';
 import {
@@ -6,6 +6,9 @@ import {
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { FiltersType, DateFilter } from '../../app.types';
+import { usePushFilters } from '../../api';
+import { useTheme } from '@material-ui/core';
 
 export function datesEqual(
   date1: MaterialUiPickersDate,
@@ -59,32 +62,45 @@ export function updateFilter({
 const DateColumnFilter = (props: {
   label: string;
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
-  value?: { startDate?: string; endDate?: string };
+  value: { startDate?: string; endDate?: string } | undefined;
 }): React.ReactElement => {
-  const [startDate, setStartDate] = React.useState<MaterialUiPickersDate>(
-    props.value && props.value.startDate
-      ? new Date(props.value.startDate)
-      : null
+  //Need state to change otherwise wont update error messages for an invalid date
+  const [startDate, setStartDate] = useState(
+    props.value?.startDate ? new Date(props.value.startDate) : null
   );
-  const [endDate, setEndDate] = React.useState<MaterialUiPickersDate>(
-    props.value && props.value.endDate ? new Date(props.value.endDate) : null
+  const [endDate, setEndDate] = useState(
+    props.value?.endDate ? new Date(props.value.endDate) : null
   );
+
+  //Obtain a contrast friendly button colour
+  const theme = useTheme();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const buttonColour = (theme as any).colours?.blue;
 
   return (
     <form>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           clearable
-          inputProps={{ 'aria-label': `${props.label} date filter from` }}
-          KeyboardButtonProps={{ size: 'small' }}
+          allowKeyboardControl
+          style={{ whiteSpace: 'nowrap' }}
+          inputProps={{ 'aria-label': `${props.label} filter` }}
+          invalidDateMessage="Please enter the date in the format yyyy-MM-dd."
+          KeyboardButtonProps={{
+            size: 'small',
+            'aria-label': `${props.label} filter from, date picker`,
+          }}
+          id={props.label + ' filter from'}
+          aria-hidden="true"
           format="yyyy-MM-dd"
-          placeholder="From... (yyyy-MM-dd)"
+          placeholder="From..."
           value={startDate}
           views={['year', 'month', 'date']}
-          maxDate={endDate || new Date('2100-01-01')}
+          maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
           maxDateMessage="Invalid date range"
           color="secondary"
           onChange={(date) => {
+            setStartDate(date);
             updateFilter({
               date,
               prevDate: startDate,
@@ -92,21 +108,32 @@ const DateColumnFilter = (props: {
               startDateOrEndDateChanged: 'startDate',
               onChange: props.onChange,
             });
-            setStartDate(date);
           }}
+          okLabel={<span style={{ color: buttonColour }}>OK</span>}
+          cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
+          clearLabel={<span style={{ color: buttonColour }}>Clear</span>}
         />
         <KeyboardDatePicker
           clearable
-          inputProps={{ 'aria-label': `${props.label} date filter to` }}
-          KeyboardButtonProps={{ size: 'small' }}
-          placeholder="To...     (yyyy-MM-dd)"
+          allowKeyboardControl
+          style={{ whiteSpace: 'nowrap' }}
+          inputProps={{ 'aria-label': `${props.label} filter` }}
+          invalidDateMessage="Please enter the date in the format yyyy-MM-dd."
+          KeyboardButtonProps={{
+            size: 'small',
+            'aria-label': `${props.label} filter to, date picker`,
+          }}
+          id={props.label + ' filter to'}
+          aria-hidden="true"
           format="yyyy-MM-dd"
+          placeholder="To..."
           value={endDate}
           views={['year', 'month', 'date']}
-          minDate={startDate || new Date('1900-01-01')}
+          minDate={startDate || new Date('1984-01-01T00:00:00Z')}
           minDateMessage="Invalid date range"
           color="secondary"
           onChange={(date) => {
+            setEndDate(date);
             updateFilter({
               date,
               prevDate: endDate,
@@ -114,8 +141,10 @@ const DateColumnFilter = (props: {
               startDateOrEndDateChanged: 'endDate',
               onChange: props.onChange,
             });
-            setEndDate(date);
           }}
+          okLabel={<span style={{ color: buttonColour }}>OK</span>}
+          cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
+          clearLabel={<span style={{ color: buttonColour }}>Clear</span>}
         />
       </MuiPickersUtilsProvider>
     </form>
@@ -123,3 +152,21 @@ const DateColumnFilter = (props: {
 };
 
 export default DateColumnFilter;
+
+export const useDateFilter = (
+  filters: FiltersType
+): ((label: string, dataKey: string) => React.ReactElement) => {
+  const pushFilters = usePushFilters();
+  return React.useMemo(() => {
+    const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+      <DateColumnFilter
+        label={label}
+        value={filters[dataKey] as DateFilter}
+        onChange={(value: { startDate?: string; endDate?: string } | null) =>
+          pushFilters(dataKey, value ? value : null)
+        }
+      />
+    );
+    return dateFilter;
+  }, [filters, pushFilters]);
+};

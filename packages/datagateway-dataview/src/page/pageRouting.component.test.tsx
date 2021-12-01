@@ -1,12 +1,11 @@
 import React from 'react';
 import { ReactWrapper } from 'enzyme';
-
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 
 import { createMount } from '@material-ui/core/test-utils';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import PageRouting from './pageRouting.component';
 import { Provider } from 'react-redux';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
@@ -50,13 +49,16 @@ import ISISDatasetLanding from '../views/landing/isis/isisDatasetLanding.compone
 
 import {
   checkInstrumentAndFacilityCycleId,
-  checkInstrumentAndStudyId,
+  checkInstrumentId,
+  checkStudyId,
   checkInvestigationId,
   checkProposalName,
 } from './idCheckFunctions';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { createMemoryHistory, History } from 'history';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
@@ -113,42 +115,64 @@ const DLSRoutes = {
 describe('PageTable', () => {
   let mount;
   let state: StateType;
+  let history: History;
 
-  const createTableWrapper = (path: string): ReactWrapper => {
+  const createTableWrapper = (
+    path: string,
+    loggedInAnonymously?: boolean
+  ): ReactWrapper => {
     const mockStore = configureStore([thunk]);
+    const client = new QueryClient();
+    history.push(path);
     return mount(
       <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
-          <PageRouting view="table" />
-        </MemoryRouter>
+        <Router history={history}>
+          <QueryClientProvider client={client}>
+            <PageRouting
+              loggedInAnonymously={
+                loggedInAnonymously === undefined ? false : loggedInAnonymously
+              }
+              view="table"
+            />
+          </QueryClientProvider>
+        </Router>
       </Provider>
     );
   };
 
   const createCardWrapper = (path: string): ReactWrapper => {
     const mockStore = configureStore([thunk]);
+    const client = new QueryClient();
+    history.push(path);
     return mount(
       <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
-          <PageRouting view="card" />
-        </MemoryRouter>
+        <Router history={history}>
+          <QueryClientProvider client={client}>
+            <PageRouting view="card" />
+          </QueryClientProvider>
+        </Router>
       </Provider>
     );
   };
 
   const createLandingWrapper = (path: string): ReactWrapper => {
     const mockStore = configureStore([thunk]);
+    const client = new QueryClient();
+    history.push(path);
     return mount(
       <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
-          <PageRouting view={null} />
-        </MemoryRouter>
+        <Router history={history}>
+          <QueryClientProvider client={client}>
+            <PageRouting view={null} />
+          </QueryClientProvider>
+        </Router>
       </Provider>
     );
   };
 
   beforeEach(() => {
     mount = createMount();
+    history = createMemoryHistory();
 
     state = JSON.parse(
       JSON.stringify({
@@ -157,15 +181,20 @@ describe('PageTable', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
-    );
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (url.includes('count')) {
+        return Promise.resolve({ data: 0 });
+      } else {
+        return Promise.resolve({ data: [] });
+      }
+    });
     (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
-    (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+    (checkInstrumentId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
+    (checkStudyId as jest.Mock).mockImplementation(() => Promise.resolve(true));
     (checkInvestigationId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
@@ -175,11 +204,7 @@ describe('PageTable', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockRestore();
-    (checkInstrumentAndFacilityCycleId as jest.Mock).mockRestore();
-    (checkInstrumentAndStudyId as jest.Mock).mockRestore();
-    (checkInvestigationId as jest.Mock).mockRestore();
-    (checkProposalName as jest.Mock).mockRestore();
+    jest.resetAllMocks();
   });
 
   describe('Generic', () => {
@@ -237,8 +262,15 @@ describe('PageTable', () => {
 
   describe('ISIS', () => {
     it('renders ISISMyDataTable for ISIS my data route', () => {
-      const wrapper = createTableWrapper(ISISRoutes['mydata']);
+      const wrapper = createTableWrapper(ISISRoutes['mydata'], false);
       expect(wrapper.exists(ISISMyDataTable)).toBe(true);
+    });
+
+    it('redirects to login page when not signed in (ISISMyDataTable) ', () => {
+      const wrapper = createTableWrapper(ISISRoutes['mydata'], true);
+      expect(wrapper.exists(ISISMyDataTable)).toBe(false);
+      expect(history.length).toBe(2);
+      expect(history.location.pathname).toBe('/login');
     });
 
     it('renders ISISInstrumentsTable for ISIS instruments route', () => {
@@ -420,6 +452,20 @@ describe('PageTable', () => {
       expect(wrapper.exists(ISISStudyLanding)).toBe(true);
     });
 
+    it('does not render ISISStudyLanding for incorrect ISIS study route for studyHierarchy', async () => {
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      const wrapper = createLandingWrapper(
+        ISISStudyHierarchyRoutes['landing']['study']
+      );
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISStudyLanding)).toBe(false);
+    });
+
     it('renders ISISInvestigationsTable for ISIS investigations route in Study Hierarchy', () => {
       const wrapper = createTableWrapper(
         ISISStudyHierarchyRoutes['investigations']
@@ -444,7 +490,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetsTable for incorrect ISIS datasets route in Study Hierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       const wrapper = createTableWrapper(ISISStudyHierarchyRoutes['datasets']);
@@ -467,7 +516,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISInvestigationLanding for incorrect ISIS investigation route for studyHierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       const wrapper = createLandingWrapper(
@@ -490,7 +542,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetsCardView for incorrect ISIS datasets route in Study Hierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       const wrapper = createCardWrapper(ISISStudyHierarchyRoutes['datasets']);
@@ -513,7 +568,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetLanding for incorrect ISIS dataset route for studyHierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       const wrapper = createLandingWrapper(
@@ -536,7 +594,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatafilesTable for incorrect ISIS datafiles route in Study Hierarchy', async () => {
-      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       (checkInvestigationId as jest.Mock).mockImplementation(() =>
@@ -553,8 +614,15 @@ describe('PageTable', () => {
 
   describe('DLS', () => {
     it('renders DLSMyDataTable for DLS my data route', () => {
-      const wrapper = createTableWrapper(DLSRoutes['mydata']);
+      const wrapper = createTableWrapper(DLSRoutes['mydata'], false);
       expect(wrapper.exists(DLSMyDataTable)).toBe(true);
+    });
+
+    it('redirects to login page when not signed in (DLSMyDataTable) ', () => {
+      const wrapper = createTableWrapper(DLSRoutes['mydata'], true);
+      expect(wrapper.exists(DLSMyDataTable)).toBe(false);
+      expect(history.length).toBe(2);
+      expect(history.location.pathname).toBe('/login');
     });
 
     it('renders DLSProposalTable for DLS proposal route', () => {

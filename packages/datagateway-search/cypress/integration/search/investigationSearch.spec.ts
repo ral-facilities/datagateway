@@ -27,7 +27,7 @@ describe('Investigation search tab', () => {
     cy.get('[aria-label="Dataset checkbox"]').click();
     cy.get('[aria-label="Datafile checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
@@ -44,7 +44,7 @@ describe('Investigation search tab', () => {
       .find('#filled-search')
       .type('dog');
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
@@ -78,13 +78,13 @@ describe('Investigation search tab', () => {
       .find('#filled-search')
       .type('knowledge media');
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Investigation')
       .contains('19')
       .click();
@@ -98,9 +98,9 @@ describe('Investigation search tab', () => {
     cy.get('[aria-label="Start date input"]').type('2001-01-01');
     cy.get('[aria-label="End date input"]').type('2001-12-31');
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search"]').click();
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Investigation')
       .contains('12')
       .click();
@@ -113,7 +113,7 @@ describe('Investigation search tab', () => {
   it('should be hidden if investigation checkbox is unchecked', () => {
     cy.get('[aria-label="Investigation checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@datasets', '@datasets', '@datasetsCount'], {
         timeout: 10000,
@@ -121,7 +121,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Investigation')
       .should('not.exist');
   });
@@ -131,7 +131,7 @@ describe('Investigation search tab', () => {
       .find('#filled-search')
       .type('dog');
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigationsCount'], {
         timeout: 10000,

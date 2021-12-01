@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Datafile details panel component renders correctly 1`] = `
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "createTime": "2019-06-11",
+    "id": 1,
+    "location": "/test/location",
+    "modTime": "2019-06-10",
+    "name": "Test 1",
+  },
+}
+`;

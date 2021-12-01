@@ -1,5 +1,11 @@
 import React from 'react';
-import { Entity, Investigation, formatBytes } from 'datagateway-common';
+import {
+  Entity,
+  Investigation,
+  formatBytes,
+  useInvestigationDetails,
+  useInvestigationSize,
+} from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -26,15 +32,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface VisitDetailsPanelProps {
   rowData: Entity;
-  fetchDetails: (investigationId: number) => Promise<void>;
   detailsPanelResize?: () => void;
-  fetchSize: (datasetId: number) => Promise<void>;
 }
 
 const VisitDetailsPanel = (
   props: VisitDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize, fetchDetails, fetchSize } = props;
+  const { rowData, detailsPanelResize } = props;
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
@@ -42,23 +46,13 @@ const VisitDetailsPanel = (
 
   const classes = useStyles();
 
-  const investigationData = rowData as Investigation;
-
-  React.useEffect(() => {
-    if (
-      !investigationData.investigationUsers ||
-      !investigationData.samples ||
-      !investigationData.publications
-    ) {
-      fetchDetails(investigationData.id);
-    }
-  }, [
-    investigationData.investigationUsers,
-    investigationData.samples,
-    investigationData.publications,
-    investigationData.id,
-    fetchDetails,
-  ]);
+  const { data } = useInvestigationDetails(rowData.id);
+  const { data: size, refetch: fetchSize } = useInvestigationSize(rowData.id);
+  const investigationData: Investigation = {
+    ...data,
+    ...(rowData as Investigation),
+    size,
+  };
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();
@@ -127,7 +121,7 @@ const VisitDetailsPanel = (
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
-              {t('investigations.details.visitId')}
+              {t('investigations.details.visit_id')}
             </Typography>
             <Typography>
               <b>{investigationData.visitId}</b>
@@ -183,7 +177,7 @@ const VisitDetailsPanel = (
                 ) : (
                   <Button
                     onClick={() => {
-                      fetchSize(investigationData.id);
+                      fetchSize();
                     }}
                     variant="outlined"
                     color="secondary"

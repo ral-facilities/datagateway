@@ -1,39 +1,23 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import { Action, AnyAction } from 'redux';
-import { connect } from 'react-redux';
-import { submitSearchText } from '../state/actions/actions';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../state/app.types';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import { useTranslation } from 'react-i18next';
 
 interface SearchTextProps {
-  initiateSearch: () => Promise<void>;
-}
-
-interface SearchTextStoreProps {
   searchText: string;
+  initiateSearch: () => void;
+  onChange: (searchText: string) => void;
 }
 
-interface SearchTextDispatchProps {
-  submitSearchText: (searchText: string) => Action;
-}
-
-type SearchTextCombinedProps = SearchTextProps &
-  SearchTextStoreProps &
-  SearchTextDispatchProps;
-
-const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
-  const { searchText, submitSearchText, initiateSearch } = props;
-
-  const sendSearchText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const searchText = event.target.value;
-    submitSearchText(searchText);
-  };
+const SearchTextBox = (props: SearchTextProps): React.ReactElement => {
+  const { searchText, initiateSearch, onChange } = props;
 
   const [t] = useTranslation();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    onChange(e.target.value);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter') initiateSearch();
@@ -42,12 +26,13 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
   return (
     <div>
       <TextField
+        className="tour-search-textfield"
         id="filled-search"
         label={t('searchBox.search_text')}
         type="search"
         margin="normal"
         value={searchText}
-        onChange={sendSearchText}
+        onChange={handleChange}
         onKeyDown={handleKeyDown}
         fullWidth
         variant="outlined"
@@ -65,17 +50,4 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): SearchTextDispatchProps => ({
-  submitSearchText: (searchText: string) =>
-    dispatch(submitSearchText(searchText)),
-});
-
-const mapStateToProps = (state: StateType): SearchTextStoreProps => {
-  return {
-    searchText: state.dgsearch.searchText,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchTextBox);
+export default SearchTextBox;

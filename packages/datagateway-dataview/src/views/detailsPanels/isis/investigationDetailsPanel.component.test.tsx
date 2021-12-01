@@ -1,18 +1,38 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import InvestigationsDetailsPanel from './investigationDetailsPanel.component';
-import { Investigation } from 'datagateway-common';
+import { createMount } from '@material-ui/core/test-utils';
+import InvestigationDetailsPanel from './investigationDetailsPanel.component';
+import { Investigation, useInvestigationDetails } from 'datagateway-common';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useInvestigationDetails: jest.fn(),
+  };
+});
 
 describe('Investigation details panel component', () => {
-  let shallow;
   let mount;
   let rowData: Investigation;
   const detailsPanelResize = jest.fn();
-  const fetchDetails = jest.fn();
   const viewDatasets = jest.fn();
 
+  const createWrapper = (): ReactWrapper => {
+    return mount(
+      <QueryClientProvider client={new QueryClient()}>
+        <InvestigationDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+        />
+      </QueryClientProvider>
+    );
+  };
+
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     rowData = {
       id: 1,
@@ -43,25 +63,20 @@ describe('Investigation details panel component', () => {
       startDate: '2019-06-10',
       endDate: '2019-06-11',
     };
+
+    (useInvestigationDetails as jest.Mock).mockReturnValue({
+      data: rowData,
+    });
   });
 
   afterEach(() => {
     mount.cleanUp();
-    detailsPanelResize.mockClear();
-    fetchDetails.mockClear();
-    viewDatasets.mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        viewDatasets={viewDatasets}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('renders user, sample and publication tabs when present in the data', () => {
@@ -99,15 +114,13 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    const wrapper = shallow(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        viewDatasets={viewDatasets}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('calls useInvestigationDetails hook on load', () => {
+    createWrapper();
+    expect(useInvestigationDetails).toHaveBeenCalledWith(rowData.id);
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
@@ -118,14 +131,7 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    const wrapper = mount(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        viewDatasets={viewDatasets}
-      />
-    );
+    const wrapper = createWrapper();
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
@@ -146,10 +152,9 @@ describe('Investigation details panel component', () => {
     ];
 
     const wrapper = mount(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        fetchDetails={fetchDetails}
-      />
+      <QueryClientProvider client={new QueryClient()}>
+        <InvestigationDetailsPanel rowData={rowData} />
+      </QueryClientProvider>
     );
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
@@ -162,58 +167,20 @@ describe('Investigation details panel component', () => {
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
   });
 
-  it('calls fetchDetails on load if investigationUsers, samples or publications are missing', () => {
-    mount(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        viewDatasets={viewDatasets}
-      />
-    );
-
-    expect(fetchDetails).toHaveBeenCalledTimes(1);
-    expect(fetchDetails).toHaveBeenCalledWith(1);
-    fetchDetails.mockClear();
-
-    rowData.investigationUsers = [];
-    mount(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        viewDatasets={viewDatasets}
-      />
-    );
-
-    expect(fetchDetails).toHaveBeenCalledTimes(1);
-    expect(fetchDetails).toHaveBeenCalledWith(1);
-    fetchDetails.mockClear();
-
-    rowData.samples = [];
-    mount(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        viewDatasets={viewDatasets}
-      />
-    );
-
-    expect(fetchDetails).toHaveBeenCalledTimes(1);
-    expect(fetchDetails).toHaveBeenCalledWith(1);
-    fetchDetails.mockClear();
-
-    rowData.publications = [];
-    mount(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        viewDatasets={viewDatasets}
-      />
-    );
-    expect(fetchDetails).not.toHaveBeenCalled();
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="investigation-details-panel-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+    expect(
+      wrapper
+        .find('[data-testid="investigation-details-panel-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
   });
 
   it('gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users', () => {
@@ -230,31 +197,57 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    const wrapper = shallow(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        viewDatasets={viewDatasets}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+    (useInvestigationDetails as jest.Mock).mockReturnValueOnce({
+      data: rowData,
+    });
+
+    const wrapper = createWrapper();
+    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
   });
 
-  it('push new address when clicking dataset tab', () => {
+  it('calls dataset view if view datasets tab clicked', () => {
     const wrapper = mount(
-      <InvestigationsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-        viewDatasets={viewDatasets}
-      />
+      <QueryClientProvider client={new QueryClient()}>
+        <InvestigationDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatasets={viewDatasets}
+        />
+      </QueryClientProvider>
     );
 
-    expect(viewDatasets).toHaveBeenCalledTimes(0);
-
+    expect(viewDatasets).not.toHaveBeenCalled();
     wrapper.find('#investigation-datasets-tab').hostNodes().simulate('click');
+    expect(viewDatasets).toHaveBeenCalled();
+  });
 
-    expect(viewDatasets).toHaveBeenCalledTimes(1);
+  it('Shows "No <field> provided" incase of a null field', () => {
+    const { summary, doi, startDate, endDate, ...amendedRowData } = rowData;
+
+    (useInvestigationDetails as jest.Mock).mockReturnValueOnce({
+      data: amendedRowData,
+    });
+
+    const wrapper = mount(
+      <QueryClientProvider client={new QueryClient()}>
+        <InvestigationDetailsPanel
+          rowData={amendedRowData}
+          detailsPanelResize={detailsPanelResize}
+        />
+      </QueryClientProvider>
+    );
+
+    expect(wrapper.html()).toContain(
+      '<b>investigations.details.summary not provided</b>'
+    );
+    expect(wrapper.html()).toContain(
+      '<b>investigations.details.doi not provided</b>'
+    );
+    expect(wrapper.html()).toContain(
+      '<b>investigations.details.start_date not provided</b>'
+    );
+    expect(wrapper.html()).toContain(
+      '<b>investigations.details.end_date not provided</b>'
+    );
   });
 });

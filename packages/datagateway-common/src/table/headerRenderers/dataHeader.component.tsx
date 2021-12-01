@@ -1,5 +1,5 @@
 import React from 'react';
-import { Order } from '../../app.types';
+import { Order, UpdateMethod } from '../../app.types';
 import { TableHeaderProps } from 'react-virtualized';
 import {
   TableCell,
@@ -7,96 +7,135 @@ import {
   Box,
   Typography,
   useMediaQuery,
+  Divider,
 } from '@material-ui/core';
-import { DragIndicator } from '@material-ui/icons';
 import Draggable from 'react-draggable';
 
-const DataHeader = (
-  props: TableHeaderProps & {
-    className: string;
-    sort: { [column: string]: Order };
-    onSort: (column: string, order: Order | null) => void;
-    resizeColumn: (deltaX: number) => void;
-    icon?: JSX.Element;
-    filterComponent?: React.ReactElement;
-  }
-): React.ReactElement => {
-  const {
-    className,
-    dataKey,
-    sort,
-    onSort,
-    label,
-    disableSort,
-    resizeColumn,
-    icon,
-    filterComponent,
-  } = props;
+const DataHeader = React.memo(
+  (
+    props: TableHeaderProps & {
+      className: string;
+      sort: { [column: string]: Order };
+      onSort: (
+        column: string,
+        order: Order | null,
+        defaultSort: UpdateMethod
+      ) => void;
+      resizeColumn: (dataKey: string, deltaX: number) => void;
+      labelString: string;
+      icon?: React.ComponentType<unknown>;
+      filterComponent?: (label: string, dataKey: string) => React.ReactElement;
+      defaultSort?: Order;
+    }
+  ): React.ReactElement => {
+    const {
+      className,
+      dataKey,
+      sort,
+      onSort,
+      label,
+      labelString,
+      disableSort,
+      defaultSort,
+      resizeColumn,
+      icon: Icon,
+      filterComponent,
+    } = props;
 
-  const currSortDirection = sort[dataKey];
-  let nextSortDirection: Order | null = null;
-  switch (currSortDirection) {
-    case 'asc':
-      nextSortDirection = 'desc';
-      break;
-    case 'desc':
-      nextSortDirection = null;
-      break;
-    case undefined:
-      nextSortDirection = 'asc';
-  }
+    const currSortDirection = sort[dataKey];
 
-  const inner = !disableSort ? (
-    <TableSortLabel
-      active={dataKey in sort}
-      direction={currSortDirection}
-      onClick={() => onSort(dataKey, nextSortDirection)}
-    >
+    //Apply default sort on page load (but only if not already defined in URL params)
+    //This will apply them in the order of the column definitions given to a table
+    React.useEffect(() => {
+      if (defaultSort !== undefined && currSortDirection === undefined)
+        onSort(dataKey, defaultSort, 'replace');
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    let nextSortDirection: Order | null = null;
+    switch (currSortDirection) {
+      case 'asc':
+        nextSortDirection = 'desc';
+        break;
+      case 'desc':
+        nextSortDirection = null;
+        break;
+      case undefined:
+        nextSortDirection = 'asc';
+    }
+
+    const inner = !disableSort ? (
+      <TableSortLabel
+        className={'tour-dataview-sort'}
+        active={dataKey in sort}
+        direction={currSortDirection}
+        onClick={() => onSort(dataKey, nextSortDirection, 'push')}
+      >
+        <Typography
+          noWrap
+          style={{ fontSize: 'inherit', lineHeight: 'inherit' }}
+        >
+          {label}
+        </Typography>
+      </TableSortLabel>
+    ) : (
       <Typography noWrap style={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
         {label}
       </Typography>
-    </TableSortLabel>
-  ) : (
-    <Typography noWrap style={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
-      {label}
-    </Typography>
-  );
+    );
 
-  const smWindow = !useMediaQuery('(min-width: 960px)');
-  return (
-    <TableCell
-      size="small"
-      component="div"
-      className={className}
-      variant="head"
-      sortDirection={currSortDirection}
-      style={smWindow ? { paddingLeft: 8, paddingRight: 8 } : {}}
-    >
-      <div
-        style={{
-          overflow: 'hidden',
-          flex: 1,
-        }}
+    const smWindow = !useMediaQuery('(min-width: 960px)');
+
+    return (
+      <TableCell
+        size="small"
+        component="div"
+        className={className}
+        variant="head"
+        sortDirection={currSortDirection}
+        style={smWindow ? { paddingLeft: 8, paddingRight: 8 } : {}}
       >
-        <Box display="flex">
-          <Box marginRight={1}>{icon}</Box>
-          <Box>{inner}</Box>
-        </Box>
-        {filterComponent}
-      </div>
-      <Draggable
-        axis="none"
-        onDrag={(event, { deltaX }) => resizeColumn(deltaX)}
-      >
-        <DragIndicator
-          fontSize="small"
+        <div
           style={{
-            cursor: 'col-resize',
+            overflow: 'hidden',
+            flex: 1,
           }}
-        />
-      </Draggable>
-    </TableCell>
-  );
-};
+        >
+          <Box display="flex">
+            <Box marginRight={1}>{Icon && <Icon />}</Box>
+            <Box>{inner}</Box>
+          </Box>
+          {filterComponent?.(labelString, dataKey)}
+        </div>
+        <Draggable
+          axis="none"
+          onDrag={(event, { deltaX }) => resizeColumn(dataKey, deltaX)}
+          onStop={() => {
+            const event = new Event('columnResize');
+            window.dispatchEvent(event);
+          }}
+        >
+          <div
+            style={{
+              marginLeft: 18,
+              paddingLeft: '4px',
+              paddingRight: '4px',
+              cursor: 'col-resize',
+            }}
+          >
+            <Divider
+              orientation="vertical"
+              flexItem
+              style={{
+                height: '100%',
+              }}
+            />
+          </div>
+        </Draggable>
+      </TableCell>
+    );
+  }
+);
+DataHeader.displayName = 'DataHeader';
 
 export default DataHeader;

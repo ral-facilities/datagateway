@@ -51,7 +51,11 @@ interface AdvancedFilterProps {
   information?: CardViewDetails[];
 }
 
-const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
+// need to export unmemoised version for use in tests as useState and React.memo don't work
+// with enzyme shallow mounting: see enzyme issue #2196
+export const UnmemoisedAdvancedFilter = (
+  props: AdvancedFilterProps
+): React.ReactElement => {
   const [t] = useTranslation();
   const classes = useAdvancedFilterStyles();
 
@@ -189,6 +193,8 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
       {/* Advanced filters link */}
       <div className={classes.link}>
         <Link
+          component="button"
+          variant="body1"
           aria-label="advanced-filters-link"
           onClick={() => setAdvSearchCollapsed((prev) => !prev)}
         >
@@ -200,5 +206,7 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
     </div>
   );
 };
+
+const AdvancedFilter = React.memo(UnmemoisedAdvancedFilter);
 
 export default AdvancedFilter;

@@ -32,6 +32,11 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'true');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal('1 item has been added to selections.');
+          });
       });
 
       it('and unselect them individually', () => {
@@ -43,6 +48,13 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '1 item has been removed from selections.'
+            );
+          });
       });
 
       it('by all items', () => {
@@ -64,11 +76,17 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '55 items have been added to selections.'
+            );
+          });
       });
 
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
-          .find('input')
           .first()
           .type('e')
           .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
@@ -84,11 +102,7 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="Filter by Location"]')
-          .find('input')
-          .first()
-          .clear()
-          .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
+        cy.get('[aria-label="Filter by Location"]').first().clear();
 
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
@@ -148,6 +162,14 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
+
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '55 items have been removed from selections.'
+            );
+          });
       });
 
       it('by shift clicking', () => {
@@ -165,6 +187,12 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 3"]').should('be.checked');
         cy.get('[aria-label="select row 2"]').should('be.checked');
         cy.get('[aria-label="select row 1"]').should('be.checked');
+
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal('5 items have been added to selections.');
+          });
       });
 
       it('and unselect by shift clicking', () => {
@@ -189,6 +217,23 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="select row 1"]').should('be.checked');
         cy.get('[aria-label="select row 0"]').should('be.checked');
+
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '4 items have been removed from selections.'
+            );
+          });
+      });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
       });
     });
 
@@ -241,7 +286,6 @@ describe('Add/remove from cart functionality', () => {
 
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
-          .find('input')
           .first()
           .type('e')
           .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
@@ -257,11 +301,7 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="Filter by Location"]')
-          .find('input')
-          .first()
-          .clear()
-          .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
+        cy.get('[aria-label="Filter by Location"]').first().clear();
 
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
@@ -274,7 +314,7 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 1"]').should('be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo(0, 350);
-        cy.get('[aria-label="select row 9"]').should('not.be.checked');
+        cy.get('[aria-label="select row 14"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
@@ -356,6 +396,15 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 1"]').should('be.checked');
         cy.get('[aria-label="select row 0"]').should('be.checked');
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
 
     describe('in ISIS table', () => {
@@ -407,9 +456,8 @@ describe('Add/remove from cart functionality', () => {
 
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
-          .find('input')
           .first()
-          .type('e')
+          .type('ge')
           .wait(['@getDatafiles', '@getDatafiles']);
 
         cy.get('[aria-label="select all rows"]').check();
@@ -420,14 +468,11 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
         cy.get(
-          `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+          `[aria-label="select row ${Math.floor(Math.random() * 6)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="Filter by Location"]')
-          .find('input')
-          .first()
-          .clear()
-          .wait(['@getDatafiles', '@getDatafiles']);
+        cy.get('[aria-label="Filter by Location"]').first().clear();
+
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
         );
@@ -435,13 +480,13 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'true');
 
-        cy.get('[aria-label="select row 0"]').should('be.checked');
-        cy.get('[aria-label="select row 1"]').should('be.checked');
-        cy.get('[aria-label="select row 20"]').should('not.be.checked');
+        cy.get('[aria-label="select row 4"]').should('be.checked');
+        cy.get('[aria-label="select row 10"]').should('be.checked');
+        cy.get('[aria-label="select row 0"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get('[aria-label="select row 44"]').should('not.be.checked');
+        cy.get('[aria-label="select row 53"]').should('not.be.checked');
         cy.get('[aria-label="select row 54"]').should('be.checked');
       });
 
@@ -523,6 +568,15 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 1"]').should('be.checked');
         cy.get('[aria-label="select row 0"]').should('be.checked');
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
   });
 
@@ -548,6 +602,11 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'true');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal('1 item has been added to selections.');
+          });
       });
 
       it('and unselect them individually', () => {
@@ -560,6 +619,13 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '1 item has been removed from selections.'
+            );
+          });
       });
 
       it('by all items', () => {
@@ -573,6 +639,11 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal('2 items have been added to selections.');
+          });
       });
 
       it('and unselect all items', () => {
@@ -591,6 +662,22 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
         cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '2 items have been removed from selections.'
+            );
+          });
+      });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
       });
     });
 
@@ -652,6 +739,15 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
         cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
 
     describe('in ISIS table', () => {
@@ -712,6 +808,15 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
         cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
   });
 
@@ -736,6 +841,11 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'true');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal('1 item has been added to selections.');
+          });
       });
 
       it('and unselect them individually', () => {
@@ -747,6 +857,13 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '1 item has been removed from selections.'
+            );
+          });
       });
 
       it('by all items', () => {
@@ -770,11 +887,17 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '239 items have been added to selections.'
+            );
+          });
       });
 
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Visit ID"]')
-          .find('input')
           .first()
           .type('4')
           .wait(['@getInvestigations', '@getInvestigations']);
@@ -790,11 +913,8 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
 
-        cy.get('[aria-label="Filter by Visit ID"]')
-          .find('input')
-          .first()
-          .clear()
-          .wait(['@getInvestigations', '@getInvestigations']);
+        cy.get('[aria-label="Filter by Visit ID"]').first().clear();
+
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'not.be.checked'
         );
@@ -850,6 +970,14 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
+
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '239 items have been removed from selections.'
+            );
+          });
       });
 
       it('by shift clicking', () => {
@@ -867,6 +995,12 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 3"]').should('be.checked');
         cy.get('[aria-label="select row 2"]').should('be.checked');
         cy.get('[aria-label="select row 1"]').should('be.checked');
+
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal('5 items have been added to selections.');
+          });
       });
 
       it('and unselect by shift clicking', () => {
@@ -891,6 +1025,23 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="select row 1"]').should('be.checked');
         cy.get('[aria-label="select row 0"]').should('be.checked');
+
+        cy.get('[aria-label="selection-alert-text"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).equal(
+              '4 items have been removed from selections.'
+            );
+          });
+      });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
       });
     });
 
@@ -956,6 +1107,15 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
         cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
       });
+
+      it('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
+      });
     });
 
     describe('in ISIS my data table', () => {
@@ -1017,6 +1177,15 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
         cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
+      });
+
+      it.skip('and navigate to selections using banner', () => {
+        cy.get('[aria-label="select row 0"]').check();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="selection-alert-link"]').click();
+        cy.location().should((loc) => {
+          expect(loc.pathname).to.equal('/download');
+        });
       });
     });
   });

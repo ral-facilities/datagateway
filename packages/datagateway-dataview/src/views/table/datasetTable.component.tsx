@@ -1,4 +1,7 @@
 import React from 'react';
+import TitleIcon from '@material-ui/icons/Title';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import {
   Typography,
   Grid,
@@ -9,37 +12,28 @@ import {
 } from '@material-ui/core';
 import {
   Table,
-  TextColumnFilter,
-  TextFilter,
-  DateColumnFilter,
   datasetLink,
-  Order,
-  Filter,
   Dataset,
-  Entity,
-  DownloadCartItem,
-  fetchDatasets,
-  addToCart,
-  removeFromCart,
-  fetchDatasetCount,
-  fetchAllIds,
-  pushPageFilter,
-  pushPageSort,
-  DateFilter,
-  SortType,
-  FiltersType,
-  ViewsType,
+  formatCountOrSize,
+  useDatasetCount,
+  useDatasetsInfinite,
+  parseSearchToQuery,
+  useTextFilter,
+  useDateFilter,
+  ColumnType,
+  useSort,
+  useIds,
+  useCart,
+  useAddToCart,
+  useRemoveFromCart,
+  DetailsPanelProps,
+  useDatasetsDatafileCount,
 } from 'datagateway-common';
-import { AnyAction } from 'redux';
-import { StateType } from '../../state/app.types';
-import { ThunkDispatch } from 'redux-thunk';
-import { connect } from 'react-redux';
-import { IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-
-import TitleIcon from '@material-ui/icons/Title';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { useLocation } from 'react-router';
+import { useSelector } from 'react-redux';
+import { StateType } from '../../state/app.types';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,256 +46,184 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+export const DatasetDetailsPanel = (
+  props: DetailsPanelProps
+): React.ReactElement => {
+  const classes = useStyles();
+  const [t] = useTranslation();
+  const datasetData = props.rowData as Dataset;
+  return (
+    <Grid
+      id="details-panel"
+      container
+      className={classes.root}
+      direction="column"
+    >
+      <Grid item xs>
+        <Typography variant="h6">
+          <b>{datasetData.name}</b>
+        </Typography>
+        <Divider className={classes.divider} />
+      </Grid>
+      <Grid item xs>
+        <Typography variant="overline">
+          {t('datasets.details.description')}
+        </Typography>
+        <Typography>
+          <b>{datasetData.name}</b>
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
 interface DatasetTableProps {
   investigationId: string;
 }
 
-interface DatasetTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
-  data: Entity[];
-  totalDataCount: number;
-  loading: boolean;
-  error: string | null;
-  cartItems: DownloadCartItem[];
-  allIds: number[];
-  selectAllSetting: boolean;
-}
-
-interface DatasetTableDispatchProps {
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (
-    investigationId: number,
-    offsetParams: IndexRange
-  ) => Promise<void>;
-  fetchCount: (datasetId: number) => Promise<void>;
-  addToCart: (entityIds: number[]) => Promise<void>;
-  removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchAllIds: () => Promise<void>;
-}
-
-type DatasetTableCombinedProps = DatasetTableProps &
-  DatasetTableStoreProps &
-  DatasetTableDispatchProps;
-
-const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
-  const {
-    data,
-    totalDataCount,
-    fetchData,
-    fetchCount,
-    sort,
-    pushSort,
-    filters,
-    pushFilters,
-    view,
-    investigationId,
-    cartItems,
-    addToCart,
-    removeFromCart,
-    allIds,
-    fetchAllIds,
-    loading,
-    selectAllSetting,
-  } = props;
+const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
+  const { investigationId } = props;
 
   const [t] = useTranslation();
 
-  const classes = useStyles();
+  const location = useLocation();
+
+  const selectAllSetting = useSelector(
+    (state: StateType) => state.dgdataview.selectAllSetting
+  );
+
+  const { filters, sort, view } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const handleSort = useSort();
+
+  const { data: allIds } = useIds(
+    'dataset',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: parseInt(investigationId) },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
+  const { data: cartItems } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
+    'dataset'
+  );
+  const {
+    mutate: removeFromCart,
+    isLoading: removeFromCartLoading,
+  } = useRemoveFromCart('dataset');
+
+  const { data: totalDataCount } = useDatasetCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigation.id': { eq: investigationId },
+      }),
+    },
+  ]);
+
+  const { fetchNextPage, data } = useDatasetsInfinite([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigation.id': { eq: investigationId },
+      }),
+    },
+  ]);
+
+  const loadMoreRows = React.useCallback(
+    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    [fetchNextPage]
+  );
+
+  const datafileCountQueries = useDatasetsDatafileCount(data);
+
+  const aggregatedData: Dataset[] = React.useMemo(
+    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    [data]
+  );
+
+  const columns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        icon: TitleIcon,
+        label: t('datasets.name'),
+        dataKey: 'name',
+        cellContentRenderer: (cellProps) => {
+          const datasetData = cellProps.rowData as Dataset;
+          return datasetLink(
+            investigationId,
+            datasetData.id,
+            datasetData.name,
+            view
+          );
+        },
+        filterComponent: textFilter,
+      },
+      {
+        icon: ConfirmationNumberIcon,
+        label: t('datasets.datafile_count'),
+        dataKey: 'datafileCount',
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatCountOrSize(datafileCountQueries[cellProps.rowIndex]),
+        disableSort: true,
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('datasets.create_time'),
+        dataKey: 'createTime',
+        filterComponent: dateFilter,
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('datasets.modified_time'),
+        dataKey: 'modTime',
+        filterComponent: dateFilter,
+      },
+    ],
+    [t, textFilter, dateFilter, investigationId, view, datafileCountQueries]
+  );
 
   const selectedRows = React.useMemo(
     () =>
       cartItems
-        .filter(
+        ?.filter(
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
-  );
-
-  React.useEffect(() => {
-    fetchCount(parseInt(investigationId));
-    fetchAllIds();
-  }, [fetchCount, fetchAllIds, filters, investigationId]);
-
-  React.useEffect(() => {
-    fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters, investigationId]);
-
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
-
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      value={filters[dataKey] as DateFilter}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
+    [cartItems, selectAllSetting, allIds]
   );
 
   return (
     <Table
-      loading={loading}
-      data={data}
-      loadMoreRows={(params) => fetchData(parseInt(investigationId), params)}
-      totalRowCount={totalDataCount}
+      loading={addToCartLoading || removeFromCartLoading}
+      data={aggregatedData}
+      loadMoreRows={loadMoreRows}
+      totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
-      detailsPanel={({ rowData }) => {
-        const datasetData = rowData as Dataset;
-        return (
-          <Grid
-            id="details-panel"
-            container
-            className={classes.root}
-            direction="column"
-          >
-            <Grid item xs>
-              <Typography variant="h6">
-                <b>{datasetData.name}</b>
-              </Typography>
-              <Divider className={classes.divider} />
-            </Grid>
-            <Grid item xs>
-              <Typography variant="overline">
-                {t('datasets.details.description')}
-              </Typography>
-              <Typography>
-                <b>{datasetData.name}</b>
-              </Typography>
-            </Grid>
-          </Grid>
-        );
-      }}
-      columns={[
-        {
-          icon: <TitleIcon />,
-          label: t('datasets.name'),
-          dataKey: 'name',
-          cellContentRenderer: (cellProps) => {
-            const datasetData = cellProps.rowData as Dataset;
-            return datasetLink(
-              investigationId,
-              datasetData.id,
-              datasetData.name,
-              view
-            );
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: <ConfirmationNumberIcon />,
-          label: t('datasets.datafile_count'),
-          dataKey: 'datafileCount',
-          disableSort: true,
-        },
-        {
-          icon: <CalendarTodayIcon />,
-          label: t('datasets.create_time'),
-          dataKey: 'createTime',
-          filterComponent: dateFilter,
-        },
-        {
-          icon: <CalendarTodayIcon />,
-          label: t('datasets.modified_time'),
-          dataKey: 'modTime',
-          filterComponent: dateFilter,
-        },
-      ]}
+      detailsPanel={DatasetDetailsPanel}
+      columns={columns}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>,
-  ownProps: DatasetTableProps
-): DatasetTableDispatchProps => ({
-  fetchData: (investigationId: number, offsetParams: IndexRange) =>
-    dispatch(
-      fetchDatasets({
-        offsetParams,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'investigation.id': { eq: investigationId },
-            }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify('investigation'),
-          },
-        ],
-      })
-    ),
-  fetchCount: (investigationId: number) =>
-    dispatch(
-      fetchDatasetCount([
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigation.id': { eq: investigationId },
-          }),
-        },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify('investigation'),
-        },
-      ])
-    ),
-
-  addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
-  removeFromCart: (entityIds: number[]) =>
-    dispatch(removeFromCart('dataset', entityIds)),
-  fetchAllIds: () =>
-    dispatch(
-      fetchAllIds('dataset', [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigation.id': { eq: parseInt(ownProps.investigationId) },
-          }),
-        },
-      ])
-    ),
-
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
-});
-
-const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
-  return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
-    error: state.dgcommon.error,
-    cartItems: state.dgcommon.cartItems,
-    allIds: state.dgcommon.allIds,
-    selectAllSetting: state.dgdataview.selectAllSetting,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DatasetTable);
+export default DatasetTable;

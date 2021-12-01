@@ -27,7 +27,7 @@ describe('Dataset search tab', () => {
     cy.get('[aria-label="Investigation checkbox"]').click();
     cy.get('[aria-label="Datafile checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@datasets', '@datasets', '@datasetsCount'], {
         timeout: 10000,
@@ -44,13 +44,13 @@ describe('Dataset search tab', () => {
       .find('#filled-search')
       .type('police');
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 15000,
       });
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .contains('10')
       .click()
@@ -82,9 +82,9 @@ describe('Dataset search tab', () => {
     cy.get('[aria-label="Start date input"]').type('2003-01-01');
     cy.get('[aria-label="End date input"]').type('2004-01-01');
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search"]').click();
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .contains('4')
       .click();
@@ -97,7 +97,7 @@ describe('Dataset search tab', () => {
   it('should be hidden if dataset checkbox is unchecked', () => {
     cy.get('[aria-label="Dataset checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]')
+    cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
@@ -105,7 +105,7 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .should('not.exist');
   });
@@ -117,9 +117,9 @@ describe('Dataset search tab', () => {
     cy.get('[aria-label="Start date input"]').type('2003-01-01');
     cy.get('[aria-label="End date input"]').type('2004-01-01');
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search"]').click();
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .contains('1')
       .click();
@@ -134,9 +134,9 @@ describe('Dataset search tab', () => {
     cy.get('[aria-label="Start date input"]').type('2003-01-01');
     cy.get('[aria-label="End date input"]').type('2004-01-01');
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search"]').click();
 
-    cy.get('[aria-label="Search table tabs"]')
+    cy.get('[aria-label="Search table"]')
       .contains('Dataset')
       .contains('1')
       .click();

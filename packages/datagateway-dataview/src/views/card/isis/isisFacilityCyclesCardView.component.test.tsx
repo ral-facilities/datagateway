@@ -1,182 +1,179 @@
 import { Link, ListItemText } from '@material-ui/core';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
-import { push } from 'connected-react-router';
+import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
   dGCommonInitialState,
-  filterTable,
-  updatePage,
-  updateQueryParams,
+  useFacilityCycleCount,
+  useFacilityCyclesPaginated,
+  FacilityCycle,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import { initialState } from '../../../state/reducers/dgdataview.reducer';
-import axios from 'axios';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISFacilityCyclesCardView from './isisFacilityCyclesCardView.component';
+import { createMemoryHistory, History } from 'history';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useFacilityCycleCount: jest.fn(),
+    useFacilityCyclesPaginated: jest.fn(),
+  };
+});
 
 describe('ISIS Facility Cycles - Card View', () => {
   let mount;
-  let shallow;
   let mockStore;
-  let store;
   let state: StateType;
+  let cardData: FacilityCycle[];
+  let history: History;
+  let replaceSpy: jest.SpyInstance;
 
   const createWrapper = (): ReactWrapper => {
-    store = mockStore(state);
+    const store = mockStore(state);
     return mount(
       <Provider store={store}>
-        <MemoryRouter>
-          <ISISFacilityCyclesCardView instrumentId="1" />
-        </MemoryRouter>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISFacilityCyclesCardView instrumentId="1" />
+          </QueryClientProvider>
+        </Router>
       </Provider>
     );
   };
 
   beforeEach(() => {
     mount = createMount();
-    shallow = createShallow();
     mockStore = configureStore([thunk]);
-    state = {
-      dgcommon: {
-        ...dGCommonInitialState,
-        loadedCount: true,
-        loadedData: true,
-        totalDataCount: 1,
-        data: [
-          {
-            id: 1,
-            name: 'Test 1',
-          },
-        ],
-        allIds: [1],
-      },
-      dgdataview: initialState,
-      router: {
-        action: 'POP',
-        location: {
-          hash: '',
-          key: '',
-          pathname: '/',
-          search: '',
-          state: {},
-        },
-      },
-    };
-
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: dGCommonInitialState,
+        dgdataview: dgDataViewInitialState,
+      })
     );
-    global.Date.now = jest.fn(() => 1);
+
+    cardData = [
+      {
+        id: 1,
+        name: 'Test 1',
+      },
+    ];
+    history = createMemoryHistory();
+    replaceSpy = jest.spyOn(history, 'replace');
+
+    (useFacilityCycleCount as jest.Mock).mockReturnValue({
+      data: 1,
+      isLoading: false,
+    });
+    (useFacilityCyclesPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+      isLoading: false,
+    });
+
     // Prevent error logging
     window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <ISISFacilityCyclesCardView store={mockStore(state)} instrumentId="1" />
-    );
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('CardView').props()).toMatchSnapshot();
   });
 
-  it('pushFilters dispatched by date filter', () => {
-    const wrapper = createWrapper();
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(
-      filterTable('endDate', { endDate: '2019-08-06', startDate: undefined })
+  it('calls the correct data fetching hooks on load', () => {
+    const instrumentId = '1';
+    createWrapper();
+    expect(useFacilityCycleCount).toHaveBeenCalledWith(parseInt(instrumentId));
+    expect(useFacilityCyclesPaginated).toHaveBeenCalledWith(
+      parseInt(instrumentId)
     );
-    expect(store.getActions()[3]).toEqual(push('?'));
-
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
-    expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('endDate', null));
-    expect(store.getActions()[5]).toEqual(push('?'));
   });
 
-  it('pushFilters dispatched by text filter', () => {
+  it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
+
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
       .find('input')
       .first()
       .simulate('change', { target: { value: 'test' } });
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(
-      filterTable('name', { value: 'test', type: 'include' })
+
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"name":{"value":"test","type":"include"}}'
+      )}`
     );
-    expect(store.getActions()[3]).toEqual(push('?'));
 
     advancedFilter
       .find('input')
       .first()
       .simulate('change', { target: { value: '' } });
-    expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('name', null));
-    expect(store.getActions()[5]).toEqual(push('?'));
+
+    expect(history.location.search).toBe('?');
   });
 
-  it('pushSort dispatched when sort button clicked', () => {
+  it('updates filter query params on date filter', () => {
     const wrapper = createWrapper();
+
+    const advancedFilter = wrapper.find(AdvancedFilter);
+    advancedFilter.find(Link).simulate('click');
+    advancedFilter
+      .find('input')
+      .last()
+      .simulate('change', { target: { value: '2019-08-06' } });
+
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
+    );
+
+    advancedFilter
+      .find('input')
+      .last()
+      .simulate('change', { target: { value: '' } });
+
+    expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    });
+  });
+
+  it('updates sort query params on sort', () => {
+    const wrapper = createWrapper();
+
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('facilitycycles.name');
     button.simulate('click');
 
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(
-      updateQueryParams({
-        ...dGCommonInitialState.query,
-        sort: { name: 'asc' },
-        page: 1,
-      })
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
-    expect(store.getActions()[3]).toEqual(push('?'));
   });
 
-  it('pushPage dispatched when page number is no longer valid', () => {
-    const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        totalDataCount: 1,
-        query: {
-          view: null,
-          search: null,
-          page: 2,
-          results: null,
-          filters: {},
-          sort: {},
-        },
-      },
-    });
-    wrapper.setProps({ store: store });
+  it('renders fine with incomplete data', () => {
+    (useFacilityCycleCount as jest.Mock).mockReturnValueOnce({});
+    (useFacilityCyclesPaginated as jest.Mock).mockReturnValueOnce({});
 
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(updatePage(1));
-    expect(store.getActions()[2]).toEqual(push('?page=2'));
+    expect(() => createWrapper()).not.toThrowError();
   });
-
-  // TODO: Can't trigger onChange for the Select element.
-  // Had a similar issue in DG download with the new version of M-UI.
-  it.todo('pushResults dispatched onChange');
 });

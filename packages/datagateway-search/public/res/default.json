@@ -1,6 +1,9 @@
 {
   "searchBox": {
-    "search_text": "Search Text",
+    "search_text": "Search for title, name, instrument",
+    "search_textbox_label": "e.g. title has <1>\"instrument calibration\"</1>, or <4>neutron AND scattering</4>.",
+    "search_textbox_label_link1": "?searchText=\"instrument+calibration\"",
+    "search_textbox_label_link2": "?searchText=neutron+AND+scattering",
     "start_date": "Start Date",
     "end_date": "End Date",
     "checkboxes": {
@@ -15,14 +18,26 @@
     "search_button": "Search",
     "search_text_arialabel": "Search text input",
     "start_date_arialabel": "Start date input",
+    "start_date_button_arialabel": "Start date picker",
     "end_date_arialabel": "End date input",
-    "search_button_arialabel": "Submit search button",
-    "invalid_date_message": "Invalid date range"
+    "end_date_button_arialabel": "End date picker",
+    "search_button_arialabel": "Submit search",
+    "invalid_date_message": "Please enter the date in the format yyyy-MM-dd.",
+    "invalid_date_range_message": "Invalid date range",
+    "date_picker": {
+      "ok": "OK",
+      "cancel": "Cancel",
+      "clear": "Clear"
+    },
+    "limited_results_message": "Please note: Only the top 300 results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. Click 'Advanced' to learn more."
   },
   "searchPageTable": {
-    "tabs_arialabel": "Search table tabs",
+    "tabs_arialabel": "Search table",
     "header": "Search",
     "text": "Fill out form to the left and then click search."
+  },
+  "searchPageCardView": {
+    "tabs_arialabel": "Search table"
   },
   "tabs": {
     "investigation": "Investigation",
@@ -37,15 +52,32 @@
     "visit_id": "Visit ID",
     "name": "Name",
     "doi": "DOI",
-    "dataset_count": "Dataset Count"
+    "dataset_count": "Dataset Count",
+    "size": "Size",
+    "details": {
+      "name": "Name",
+      "summary": "Summary",
+      "start_date": "Start Date",
+      "end_date": "End Date"
+    },
+    "facility": {
+      "id": "Facility ID"
+    },
+    "type": {
+      "id": "Type ID"
+    }
   },
   "datasets": {
     "name": "Name",
     "create_time": "Create Time",
     "modified_time": "Modified Time",
     "datafile_count": "Datafile Count",
+    "size": "Size",
     "description": "Description",
-    "investigation": "Investigation"
+    "investigation": "Investigation",
+    "details": {
+      "description": "Description"
+    }
   },
   "datafiles": {
     "name": "Name",
@@ -54,7 +86,56 @@
     "size": "Size",
     "dataset": "Dataset"
   },
+  "buttons": {
+    "add_to_cart": "Add to selection",
+    "remove_from_cart": "Remove from selection",
+    "download": "Download"
+  },
+  "selec_alert" : {
+    "added": "{{count}} item has been added to selection.",
+    "added_plural" : "{{count}} items have been added to selection.",
+    "removed" : "{{count}} item has been removed from selection.",
+    "removed_plural" : "{{count}} items have been removed from selection.",
+    "link" : "Go to selection."
+  },
   "app": {
-    "error": "Something went wrong..."
+    "error": "Something went wrong...",    
+    "view_table": "Display as table",
+    "view_cards": "Display as cards"
+  },
+  "advanced_filters": {
+    "show": "Show Advanced Filters",
+    "hide": "Hide Advanced Filters"
+  },
+  "advanced_search_help": {
+    "advanced_button": "Advanced",
+    "advanced_button_arialabel": "Advanced help",
+    "close_button_arialabel": "Close",
+    "title": "Advanced Search Tips",
+    "description": "When you search for a word e.g. 'calibration', we will search for any records containing this word. But, sometimes you may wish to be more specific. Here we show you how.",
+    "exact_phrase": {
+      "title": "Search by an exact phrase",
+      "description": "Use quotation marks around a phrase to search for a precise sequence of words e.g. <2>\"neutron scattering\"<2>.",
+      "link1": "?searchText=\"neutron+scattering\""
+    },
+    "logic_operators": {
+      "title": "Using logic operators",
+      "description": "Find all data containing 'neutron' and 'scattering' with <1>'neutron <strong>AND</strong> scattering'</1>.<br><br>Find all data containing either neutron or scattering with '<4>neutron <strong>OR</strong> scattering</4>'.<br><br>Find all data that contains the phrase 'scattering' but exclude those containing 'elastic' with '<7>scattering <strong>NOT</strong> elastic</7>'.<br><br>Use brackets around phrases to construct more complicated searches e.g. '<10>scattering <strong>NOT</strong> (elastic <strong>OR</strong> neutron)</10>'.",
+      "link1": "?searchText=neutron+AND+scattering",
+      "link2": "?searchText=neutron+OR+scattering",
+      "link3": "?searchText=scattering+NOT+elastic",
+      "link4": "?searchText=scattering+NOT+%28elastic+OR+neutron%29"
+    },
+    "wildcards": {
+      "title": "Using wildcards",
+      "description": "Use wildcards to take the place of one or more characters in a phrase.<br><br>A question mark '?' can be used to search for a phrase with one or more character missing e.g. '<2>te?t</2>' will return results containing 'test' or 'text'.<br><br>An asterix '*' can be used to replace zero or more characters e.g. '<4>*ium</4>' will return results containing words like 'sodium' and 'vanadium'.",
+      "link1": "?searchText=te%3Ft",
+      "link2": "?searchText=*ium"
+    },
+    "limited_search_results": {
+      "title": "Limited results",
+      "description": "Due to technical and performance reasons, only the top 300 results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. If you find your search gives 300 results, try using a more specific query to find what you are looking for."
+    },
+    "footer": "Further information on searching can be found <2>here</2>."
   }
 }

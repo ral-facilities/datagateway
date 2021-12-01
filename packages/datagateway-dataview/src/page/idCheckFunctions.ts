@@ -94,20 +94,28 @@ export const checkInstrumentAndFacilityCycleId = memoize(
   (...args) => JSON.stringify(args)
 );
 
-const unmemoizedCheckInstrumentAndStudyId = (
-  instrumentId: number,
+const unmemoizedCheckStudyId = (
   studyId: number,
   investigationId: number
 ): Promise<boolean> => {
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      id: { eq: investigationId },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({
+      'studyInvestigations.study.id': {
+        eq: studyId,
+      },
+    })
+  );
   return axios
     .get(`${apiUrl}/investigations/`, {
-      params: {
-        where: {
-          id: { eq: investigationId },
-          'investigationInstruments.instrument.id': { eq: instrumentId },
-          'studyInvestigations.study.id': { eq: studyId },
-        },
-      },
+      params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
@@ -121,8 +129,47 @@ const unmemoizedCheckInstrumentAndStudyId = (
     });
 };
 
-export const checkInstrumentAndStudyId = memoize(
-  unmemoizedCheckInstrumentAndStudyId,
+export const checkStudyId = memoize(unmemoizedCheckStudyId, (...args) =>
+  JSON.stringify(args)
+);
+
+const unmemoizedCheckInstrumentId = (
+  instrumentId: number,
+  studyId: number
+): Promise<boolean> => {
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      id: { eq: studyId },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({
+      'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+        eq: instrumentId,
+      },
+    })
+  );
+  return axios
+    .get(`${apiUrl}/studies/`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response: AxiosResponse<Investigation[]>) => {
+      return response.data.length > 0;
+    })
+    .catch((error) => {
+      handleICATError(error);
+      return false;
+    });
+};
+
+export const checkInstrumentId = memoize(
+  unmemoizedCheckInstrumentId,
   (...args) => JSON.stringify(args)
 );
 

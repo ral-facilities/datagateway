@@ -134,14 +134,12 @@ const DownloadTabs: React.FC = () => {
             xs={12}
             aria-label={t('downloadTab.last_updated_time_arialabel')}
           >
-            <Typography
+            <div
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 float: 'right',
               }}
-              variant="subtitle1"
-              component="h3"
             >
               {/* Show refresh icon and re-populate the download status table. */}
               {!refreshDownloads ? (
@@ -160,16 +158,18 @@ const DownloadTabs: React.FC = () => {
                 <CircularProgress size={20} />
               )}
 
-              {!refreshDownloads ? (
-                <p style={{ paddingLeft: '10px ' }}>
-                  <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
-                </p>
-              ) : (
-                <p style={{ paddingLeft: '20px ' }}>
-                  <i>{t('downloadTab.refreshing_downloads')}</i>
-                </p>
-              )}
-            </Typography>
+              <Typography variant="subtitle1" component="h3">
+                {!refreshDownloads ? (
+                  <p style={{ paddingLeft: '10px ' }}>
+                    <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
+                  </p>
+                ) : (
+                  <p style={{ paddingLeft: '20px ' }}>
+                    <i>{t('downloadTab.refreshing_downloads')}</i>
+                  </p>
+                )}
+              </Typography>
+            </div>
           </Grid>
 
           <Grid item xs>

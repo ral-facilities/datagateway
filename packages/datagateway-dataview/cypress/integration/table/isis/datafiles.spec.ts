@@ -30,6 +30,10 @@ describe('ISIS - Datafiles Table', () => {
     it('should load correctly', () => {
       cy.title().should('equal', 'DataGateway DataView');
       cy.get('#datagateway-dataview').should('be.visible');
+
+      //Default sort
+      cy.get('[aria-sort="descending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
     });
 
     it('should not load incorrect URL', () => {
@@ -48,6 +52,13 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     describe('should be able to sort by', () => {
+      beforeEach(() => {
+        //Revert the default sort
+        cy.contains('[role="button"]', 'Modified Time')
+          .click()
+          .wait('@datafilesOrder', { timeout: 10000 });
+      });
+
       it('ascending order', () => {
         cy.contains('[role="button"]', 'Location')
           .click()
@@ -98,10 +109,7 @@ describe('ISIS - Datafiles Table', () => {
 
     describe('should be able to filter by', () => {
       it('text', () => {
-        cy.get('[aria-label="Filter by Location"]')
-          .find('input')
-          .first()
-          .type('star');
+        cy.get('[aria-label="Filter by Location"]').first().type('star');
 
         cy.get('[aria-rowcount="1"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
@@ -110,11 +118,9 @@ describe('ISIS - Datafiles Table', () => {
       });
 
       it('date between', () => {
-        cy.get('[aria-label="Modified Time date filter from"]').type(
-          '2018-08-12'
-        );
+        cy.get('input[id="Modified Time filter from"]').type('2018-08-12');
 
-        cy.get('[aria-label="Modified Time date filter to"]')
+        cy.get('button[aria-label="Modified Time filter to, date picker"]')
           .parent()
           .find('button')
           .click();
@@ -126,7 +132,7 @@ describe('ISIS - Datafiles Table', () => {
         const date = new Date();
         date.setDate(1);
 
-        cy.get('[aria-label="Modified Time date filter to"]').should(
+        cy.get('input[id="Modified Time filter to"]').should(
           'have.value',
           date.toISOString().slice(0, 10)
         );
@@ -139,13 +145,11 @@ describe('ISIS - Datafiles Table', () => {
 
       it('multiple columns', () => {
         cy.get('[aria-label="Filter by Name"]')
-          .find('input')
           .first()
           .type('5')
           .wait('@datafilesOrder', { timeout: 10000 });
 
         cy.get('[aria-label="Filter by Location"]')
-          .find('input')
           .first()
           .type('.png')
           .wait('@datafilesOrder', { timeout: 10000 });
@@ -158,6 +162,13 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     describe('should be able to view details', () => {
+      beforeEach(() => {
+        //Revert the default sort
+        cy.contains('[role="button"]', 'Modified Time')
+          .click()
+          .wait('@datafilesOrder', { timeout: 10000 });
+      });
+
       it('when no other row is showing details', () => {
         cy.get('[aria-label="Show details"]').first().click();
 

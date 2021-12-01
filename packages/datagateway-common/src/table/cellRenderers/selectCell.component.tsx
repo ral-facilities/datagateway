@@ -18,64 +18,70 @@ type SelectCellProps = TableCellProps & {
   loading: boolean;
 };
 
-const SelectCell = (props: SelectCellProps): React.ReactElement => {
-  const {
-    className,
-    selectedRows,
-    data,
-    onCheck,
-    onUncheck,
-    lastChecked,
-    setLastChecked,
-    rowData,
-    rowIndex,
-    loading,
-  } = props;
+const SelectCell = React.memo(
+  (props: SelectCellProps): React.ReactElement => {
+    const {
+      className,
+      selectedRows,
+      data,
+      onCheck,
+      onUncheck,
+      lastChecked,
+      setLastChecked,
+      rowData,
+      rowIndex,
+      loading,
+    } = props;
 
-  return (
-    <TableCell
-      size="small"
-      padding="checkbox"
-      component="div"
-      className={className}
-      variant="body"
-    >
-      <Checkbox
-        checked={selectedRows.includes(rowData.id)}
-        inputProps={{
-          'aria-label': `select row ${rowIndex}`,
-        }}
-        disabled={loading}
-        icon={<CheckBoxOutlineBlank fontSize="small" />}
-        checkedIcon={<CheckBoxIcon fontSize="small" />}
+    return (
+      <TableCell
         size="small"
-        onClick={(event) => {
-          if (event.shiftKey) {
-            const shiftClickedRows = Array(Math.abs(rowIndex - lastChecked) + 1)
-              .fill(Math.min(rowIndex, lastChecked))
-              .map((value, index) => {
-                const icatEntity = data[value + index] as ICATEntity;
-                return icatEntity.id;
-              });
+        padding="checkbox"
+        component="div"
+        className={className}
+        variant="body"
+      >
+        <Checkbox
+          className={`tour-dataview-checkbox-${rowIndex}`}
+          checked={selectedRows.includes(rowData.id)}
+          inputProps={{
+            'aria-label': `select row ${rowIndex}`,
+          }}
+          disabled={loading}
+          icon={<CheckBoxOutlineBlank fontSize="small" />}
+          checkedIcon={<CheckBoxIcon fontSize="small" />}
+          size="small"
+          onClick={(event) => {
+            if (event.shiftKey) {
+              const shiftClickedRows = Array(
+                Math.abs(rowIndex - lastChecked) + 1
+              )
+                .fill(Math.min(rowIndex, lastChecked))
+                .map((value, index) => {
+                  const icatEntity = data[value + index] as ICATEntity;
+                  return icatEntity.id;
+                });
 
-            if (selectedRows.includes(rowData.id)) {
-              onUncheck(shiftClickedRows);
+              if (selectedRows.includes(rowData.id)) {
+                onUncheck(shiftClickedRows);
+              } else {
+                onCheck(shiftClickedRows);
+              }
             } else {
-              onCheck(shiftClickedRows);
+              const id = rowData.id;
+              if (selectedRows.includes(id)) {
+                onUncheck([id]);
+              } else {
+                onCheck([id]);
+              }
             }
-          } else {
-            const id = rowData.id;
-            if (selectedRows.includes(id)) {
-              onUncheck([id]);
-            } else {
-              onCheck([id]);
-            }
-          }
-          setLastChecked(rowIndex);
-        }}
-      />
-    </TableCell>
-  );
-};
+            setLastChecked(rowIndex);
+          }}
+        />
+      </TableCell>
+    );
+  }
+);
+SelectCell.displayName = 'SelectCell';
 
 export default SelectCell;

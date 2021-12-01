@@ -1,159 +1,164 @@
 import { Link, ListItemText } from '@material-ui/core';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
-import { push } from 'connected-react-router';
+import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
   dGCommonInitialState,
-  filterTable,
-  updatePage,
-  updateQueryParams,
+  useInvestigationCount,
+  useInvestigationsPaginated,
+  Investigation,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import { initialState } from '../../../state/reducers/dgdataview.reducer';
-import axios from 'axios';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSProposalsCardView from './dlsProposalsCardView.component';
+import { createMemoryHistory, History } from 'history';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    useInvestigationCount: jest.fn(),
+    useInvestigationsPaginated: jest.fn(),
+  };
+});
 
 describe('DLS Proposals - Card View', () => {
   let mount;
-  let shallow;
   let mockStore;
-  let store;
   let state: StateType;
+  let cardData: Investigation[];
+  let history: History;
 
   const createWrapper = (): ReactWrapper => {
-    store = mockStore(state);
+    const store = mockStore(state);
     return mount(
       <Provider store={store}>
-        <MemoryRouter>
-          <DLSProposalsCardView />
-        </MemoryRouter>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSProposalsCardView />
+          </QueryClientProvider>
+        </Router>
       </Provider>
     );
   };
 
   beforeEach(() => {
     mount = createMount();
-    shallow = createShallow();
-    mockStore = configureStore([thunk]);
-    state = {
-      dgcommon: {
-        ...dGCommonInitialState,
-        loadedCount: true,
-        loadedData: true,
-        totalDataCount: 1,
-        data: [
-          {
-            id: 1,
-            title: 'Test 1',
-            name: 'Test 1',
-            visitId: '1',
-          },
-        ],
-        allIds: [1],
+    cardData = [
+      {
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        visitId: '1',
       },
-      dgdataview: initialState,
-      router: {
-        action: 'POP',
-        location: {
-          hash: '',
-          key: '',
-          pathname: '/',
-          search: '',
-          state: {},
-        },
-      },
-    };
+    ];
+    history = createMemoryHistory();
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    mockStore = configureStore([thunk]);
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: dGCommonInitialState,
+        dgdataview: dgDataViewInitialState,
+      })
     );
-    global.Date.now = jest.fn(() => 1);
+
+    (useInvestigationCount as jest.Mock).mockReturnValue({
+      data: 1,
+      isLoading: false,
+    });
+    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
+      data: cardData,
+      isLoading: false,
+    });
+
     // Prevent error logging
     window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
     mount.cleanUp();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DLSProposalsCardView store={mockStore(state)} />);
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+    expect(wrapper.find('CardView').props()).toMatchSnapshot();
   });
 
-  it('pushFilters dispatched by text filter', () => {
+  it('calls the correct data fetching hooks on load', () => {
+    createWrapper();
+    expect(useInvestigationCount).toHaveBeenCalledWith([
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['name', 'title']),
+      },
+    ]);
+    expect(useInvestigationsPaginated).toHaveBeenCalledWith([
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['name', 'title']),
+      },
+    ]);
+  });
+
+  it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
+
     const advancedFilter = wrapper.find(AdvancedFilter);
     advancedFilter.find(Link).simulate('click');
     advancedFilter
       .find('input')
       .first()
       .simulate('change', { target: { value: 'test' } });
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(
-      filterTable('title', { value: 'test', type: 'include' })
+
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent(
+        '{"title":{"value":"test","type":"include"}}'
+      )}`
     );
-    expect(store.getActions()[3]).toEqual(push('?'));
 
     advancedFilter
       .find('input')
       .first()
       .simulate('change', { target: { value: '' } });
-    expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('title', null));
-    expect(store.getActions()[5]).toEqual(push('?'));
+
+    expect(history.location.search).toBe('?');
   });
 
-  it('pushSort dispatched when sort button clicked', () => {
+  it('uses default sort', () => {
     const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+    );
+  });
+
+  it('updates sort query params on sort', () => {
+    const wrapper = createWrapper();
+
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('investigations.title');
     button.simulate('click');
 
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(
-      updateQueryParams({
-        ...dGCommonInitialState.query,
-        sort: { title: 'asc' },
-        page: 1,
-      })
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"title":"desc"}')}`
     );
-    expect(store.getActions()[3]).toEqual(push('?'));
   });
 
-  it('pushPage dispatched when page number is no longer valid', () => {
-    const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        totalDataCount: 1,
-        query: {
-          view: null,
-          search: null,
-          page: 2,
-          results: null,
-          filters: {},
-          sort: {},
-        },
-      },
-    });
-    wrapper.setProps({ store: store });
+  it('renders fine with incomplete data', () => {
+    (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
+    (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
 
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(updatePage(1));
-    expect(store.getActions()[2]).toEqual(push('?page=2'));
+    expect(() => createWrapper()).not.toThrowError();
   });
-
-  // TODO: Can't trigger onChange for the Select element.
-  // Had a similar issue in DG download with the new version of M-UI.
-  it.todo('pushResults dispatched onChange');
 });
