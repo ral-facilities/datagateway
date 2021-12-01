@@ -25,6 +25,17 @@ describe('ISIS - Instruments Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
+  it('should disable the hover tool tip by pressing escape', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="isis-instrument-table-name"]')
+      .eq(2)
+      .trigger('mouseover', { force: true })
+      .wait(700);
+
+    cy.get('body').type('{esc}');
+  });
+
   describe('should be able to sort by', () => {
     beforeEach(() => {
       //Revert the default sort

@@ -34,6 +34,17 @@ describe('DLS - MyData Table', () => {
       );
     });
 
+    it('should disable the hover tool tip by pressing escape', () => {
+      // The hover tool tip has a enter delay of 500ms.
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.get('[data-testid="dls-mydata-table-name"]')
+        .first()
+        .trigger('mouseover', { force: true })
+        .wait(700);
+
+      cy.get('body').type('{esc}');
+    });
+
     it('should be able to resize a column', () => {
       let columnWidth = 0;
 

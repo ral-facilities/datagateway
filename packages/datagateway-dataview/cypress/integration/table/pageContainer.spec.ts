@@ -19,6 +19,17 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="open-data-warning"]').should('exist');
   });
 
+  it('should disable the hover tool tip by pressing escape (open data warning)', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="open-data-warning"]')
+      .first()
+      .trigger('mouseover')
+      .wait(700);
+
+    cy.get('body').type('{esc}');
+  });
+
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
 

@@ -222,6 +222,7 @@ const NavBar = React.memo(
                 >
                   <Grid item>
                     <ArrowTooltip
+                      data-testid="open-data-warning"
                       interactive
                       title={
                         <h4>
