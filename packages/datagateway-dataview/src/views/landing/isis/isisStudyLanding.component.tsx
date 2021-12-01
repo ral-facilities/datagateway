@@ -508,7 +508,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   <div className={classes.shortInfoRow} key={i}>
                     <Typography className={classes.shortInfoLabel}>
                       {field.icon}
-                      {field.label}
+                      {field.label}:
                     </Typography>
                     <Typography className={classes.shortInfoValue}>
                       <ArrowTooltip
