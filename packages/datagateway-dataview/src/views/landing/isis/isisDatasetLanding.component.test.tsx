@@ -129,14 +129,14 @@ describe('ISIS Dataset Landing page', () => {
 
     expect(
       wrapper
-        .find('[data-test-id="isis-dataset-landing-doi-link"]')
+        .find('[data-testid="isis-dataset-landing-doi-link"]')
         .first()
         .text()
     ).toEqual('doi 1');
 
     expect(
       wrapper
-        .find('[data-test-id="isis-dataset-landing-doi-link"]')
+        .find('[data-testid="isis-dataset-landing-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi 1');

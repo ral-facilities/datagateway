@@ -45,7 +45,7 @@ exports[`Date filter component renders correctly 1`] = `
           "aria-label": "test filter",
         }
       }
-      invalidDateMessage="Invalid Date Format"
+      invalidDateMessage="Please enter the date in the format yyyy-MM-dd."
       maxDate={2000-01-01T00:00:00.000Z}
       maxDateMessage="Invalid date range"
       minDate={1900-01-01T00:00:00.000Z}
@@ -118,7 +118,7 @@ exports[`Date filter component renders correctly 1`] = `
           "aria-label": "test filter",
         }
       }
-      invalidDateMessage="Invalid Date Format"
+      invalidDateMessage="Please enter the date in the format yyyy-MM-dd."
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"
       minDate={1999-01-01T00:00:00.000Z}
@@ -200,7 +200,7 @@ exports[`Date filter component useTextFilter hook returns a function which can g
           "aria-label": "Start Date filter",
         }
       }
-      invalidDateMessage="Invalid Date Format"
+      invalidDateMessage="Please enter the date in the format yyyy-MM-dd."
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Invalid date range"
       minDate={1900-01-01T00:00:00.000Z}
@@ -273,7 +273,7 @@ exports[`Date filter component useTextFilter hook returns a function which can g
           "aria-label": "Start Date filter",
         }
       }
-      invalidDateMessage="Invalid Date Format"
+      invalidDateMessage="Please enter the date in the format yyyy-MM-dd."
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"
       minDate={1984-01-01T00:00:00.000Z}

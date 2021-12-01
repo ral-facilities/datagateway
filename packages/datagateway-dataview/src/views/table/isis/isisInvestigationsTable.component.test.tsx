@@ -205,14 +205,14 @@ describe('ISIS Investigations table component', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-test-id="isis-investigation-table-doi-link"]')
+        .find('[data-testid="isis-investigation-table-doi-link"]')
         .first()
         .text()
     ).toEqual('study pid');
 
     expect(
       wrapper
-        .find('[data-test-id="isis-investigation-table-doi-link"]')
+        .find('[data-testid="isis-investigation-table-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/study pid');
