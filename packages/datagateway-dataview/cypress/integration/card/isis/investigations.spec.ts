@@ -30,7 +30,7 @@ describe('ISIS - Investigations Cards', () => {
     );
   });
 
-  it.only('should disable the hover tool tip by pressing escape', () => {
+  it('should disable the hover tool tip by pressing escape', () => {
     // The hover tool tip has a enter delay of 500ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="card"]')
