@@ -367,6 +367,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
       "render": [Function],
     }
   }
+  data-testid="isis-mydata-table-title"
   to="/browse/instrument/3/facilityCycle/8/investigation/1"
 >
   <ForwardRef(Link)
@@ -394,6 +395,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
         "render": [Function],
       }
     }
+    data-testid="isis-mydata-table-title"
     to="/browse/instrument/3/facilityCycle/8/investigation/1"
   >
     <WithStyles(ForwardRef(Typography))
@@ -413,6 +415,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
           "render": [Function],
         }
       }
+      data-testid="isis-mydata-table-title"
       onBlur={[Function]}
       onFocus={[Function]}
       to="/browse/instrument/3/facilityCycle/8/investigation/1"
@@ -469,6 +472,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
             "render": [Function],
           }
         }
+        data-testid="isis-mydata-table-title"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browse/instrument/3/facilityCycle/8/investigation/1"
@@ -476,12 +480,14 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          data-testid="isis-mydata-table-title"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/instrument/3/facilityCycle/8/investigation/1"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="isis-mydata-table-title"
             href="/browse/instrument/3/facilityCycle/8/investigation/1"
             navigate={[Function]}
             onBlur={[Function]}
@@ -489,6 +495,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="isis-mydata-table-title"
               href="/browse/instrument/3/facilityCycle/8/investigation/1"
               onBlur={[Function]}
               onClick={[Function]}
