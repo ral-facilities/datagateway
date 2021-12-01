@@ -48,34 +48,6 @@ describe('ISIS - Dataset Landing', () => {
     cy.get('body').type('{esc}');
   });
 
-  it('should disable the hover tool tip by pressing escape', () => {
-    cy.intercept(
-      '/datasets?where=%7B%22id%22%3A%7B%22eq%22%3A337%7D%7D&include=%22type%22',
-      [
-        {
-          id: 16,
-          name: 'Test 1',
-          description: 'test',
-          modTime: '2019-06-10',
-          createTime: '2019-06-10',
-          doi: '10.5286/ISIS.E.RB1810842',
-          startDate: '2019-06-10',
-          endDate: '2019-06-11',
-          complete: true,
-        },
-      ]
-    );
-
-    // The hover tool tip has a enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="isis-dataset-landing-doi-link"]')
-      .first()
-      .trigger('mouseover')
-      .wait(700);
-
-    cy.get('body').type('{esc}');
-  });
-
   it('should have the correct url for the DOI link', () => {
     // DOI
 
