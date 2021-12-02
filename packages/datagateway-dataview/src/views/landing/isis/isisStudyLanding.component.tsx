@@ -495,7 +495,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {t('studies.details.copied_citation')}
               </Button>
             )}
-            {pid !== undefined && <CitationFormatter doi={pid} />}
+            {pid && <CitationFormatter doi={pid} />}
           </Grid>
 
           <Divider orientation="vertical" />
