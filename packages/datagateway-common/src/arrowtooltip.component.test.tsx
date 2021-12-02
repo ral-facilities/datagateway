@@ -109,44 +109,6 @@ describe('ArrowTooltip component', () => {
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
   });
 
-  it('Check if the tooltip is false when onClose is invoked', () => {
-    const wrapper = createWrapper(undefined, undefined, undefined, true);
-    act(() => {
-      wrapper.find(Tooltip)?.invoke('onClose')();
-    });
-    wrapper.update();
-
-    expect(wrapper.find(Tooltip).props().open).toEqual(false);
-  });
-
-  it('Check if the tooltip is true when onOpen is invoked and check when escape is press the tooltip is False', () => {
-    let handleKeydown;
-    const spyUseCallback = jest
-      .spyOn(React, 'useCallback')
-      .mockImplementation((f) => {
-        handleKeydown = f;
-        return f;
-      });
-    const wrapper = createWrapper(undefined, undefined, undefined, false);
-
-    act(() => {
-      wrapper.find(Tooltip)?.invoke('onOpen')();
-    });
-    wrapper.update();
-    expect(wrapper.find(Tooltip).props().open).toEqual(true);
-
-    act(() => {
-      const e = new KeyboardEvent('keydown', { key: 'Escape' });
-      handleKeydown(e);
-    });
-
-    wrapper.update();
-
-    expect(wrapper.find(Tooltip).props().open).toEqual(false);
-
-    spyUseCallback.mockRestore();
-  });
-
   it('tooltip unchanged when offsetHeight < maxEnabledHeight', () => {
     // Enable with negative percentageWidth, don't overide with maxEnabledHeight
     const wrapper = createWrapper(-1, 1);
@@ -224,5 +186,43 @@ describe('ArrowTooltip component', () => {
     });
 
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
+  });
+
+  it('Check if the tooltip is false when onClose is invoked', () => {
+    const wrapper = createWrapper(undefined, undefined, undefined, true);
+    act(() => {
+      wrapper.find(Tooltip)?.invoke('onClose')();
+    });
+    wrapper.update();
+
+    expect(wrapper.find(Tooltip).props().open).toEqual(false);
+  });
+
+  it('Check if the tooltip is true when onOpen is invoked and check when escape is press the tooltip is False', () => {
+    let handleKeydown;
+    const spyUseCallback = jest
+      .spyOn(React, 'useCallback')
+      .mockImplementation((f) => {
+        handleKeydown = f;
+        return f;
+      });
+    const wrapper = createWrapper(undefined, undefined, undefined, false);
+
+    act(() => {
+      wrapper.find(Tooltip)?.invoke('onOpen')();
+    });
+    wrapper.update();
+    expect(wrapper.find(Tooltip).props().open).toEqual(true);
+
+    act(() => {
+      const e = new KeyboardEvent('keydown', { key: 'Escape' });
+      handleKeydown(e);
+    });
+
+    wrapper.update();
+
+    expect(wrapper.find(Tooltip).props().open).toEqual(false);
+
+    spyUseCallback.mockRestore();
   });
 });
