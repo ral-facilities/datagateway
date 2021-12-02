@@ -58,7 +58,17 @@
       "publisher": "Publisher",
       "format": "Data Format",
       "citation_label": "Data Citation",
-      "citation_format": "The recommended format for citing this data in a research publication is [author]; [date]: [title], [publisher], [doi]:"
+      "citation_format": "The recommended format for citing this data in a research publication is [author]; [date]: [title], [publisher], [doi]:",
+      "copy_citation" : "Copy citation",
+      "copied_citation" : "Copied citation",
+      "copy_citation_arialabel" : "Copy citation button",
+      "citation_formatter": {
+        "label": "Data Citation Formatter",
+        "details": "You can also select your preferred format for citation here:",
+        "select_format": "Select a format",
+        "locale": "en-GB",
+        "formats": ["chicago-author-date", "bibtex", "ieee", "ieee-with-url"]
+      }
     }
   },
   "investigations": {

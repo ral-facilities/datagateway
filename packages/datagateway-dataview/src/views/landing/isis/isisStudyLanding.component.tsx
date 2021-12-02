@@ -4,9 +4,7 @@ import {
   Grid,
   Link as MuiLink,
   makeStyles,
-  MenuItem,
   Paper,
-  Select,
   Tab,
   Tabs,
   Theme,
@@ -35,7 +33,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import Branding from './isisBranding.component';
 import Button from '@material-ui/core/Button';
-import axios from 'axios';
+import CitationFormatter from '../../citationFormatter.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -176,115 +174,6 @@ const LinkedInvestigation = (
         />
       </div>
     </div>
-  );
-};
-
-const fetchCitation = (
-  doi: string,
-  format: string,
-  locale: string
-): Promise<string> => {
-  const params = new URLSearchParams({
-    style: format,
-    locale: locale,
-  });
-  //Documentation found here: https://support.datacite.org/docs/datacite-content-resolver
-  return axios
-    .get<string>(`https://data.crosscite.org/text/x-bibliography/${doi}`, {
-      params,
-    })
-    .then((response) => {
-      return response.data;
-    });
-};
-
-interface CitationFormatterProps {
-  doi: string;
-}
-
-const CitationFormatter = (
-  props: CitationFormatterProps
-): React.ReactElement => {
-  const { doi } = props;
-
-  const [t] = useTranslation();
-  const classes = useStyles();
-  const [citation, setCitation] = React.useState('');
-  const [copiedCitation, setCopiedCitation] = React.useState(false);
-
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
-    console.log('Change');
-
-    /* Notes:
-      - locale 'en-GB' returns plain text whereas 'gb' gives the formatted text */
-    const citationPromise = fetchCitation(
-      doi,
-      event.target.value as string,
-      'en-GB'
-    );
-    Promise.resolve(citationPromise).then((value) => setCitation(value));
-  };
-
-  const citationFormats: string[] = [
-    'apa',
-    'chicago-author-date',
-    'bibtex',
-    'ieee',
-    'ieee-with-url',
-  ];
-
-  return (
-    <React.Fragment>
-      <Typography
-        className={classes.subHeading}
-        component="h6"
-        variant="h6"
-        aria-label="landing-study-citation-label"
-      >
-        {t('studies.details.citation_label')}
-      </Typography>
-      <Typography aria-label="landing-study-citation_format">
-        {t('studies.details.citation_format')}
-      </Typography>
-      <Typography aria-label="landing-study-citation">
-        <i>{citation}</i>
-      </Typography>
-      <Select onChange={handleChange}>
-        {citationFormats.map((format) => (
-          <MenuItem key={format} value={format}>
-            {format}
-          </MenuItem>
-        ))}
-      </Select>
-      {!copiedCitation ? (
-        <Button
-          id="landing-study-copy-citation"
-          aria-label="landing-study-copy-citation"
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={() => {
-            if (citation !== '') {
-              navigator.clipboard.writeText(citation);
-              setCopiedCitation(true);
-              setTimeout(() => setCopiedCitation(false), 1750);
-            }
-          }}
-        >
-          Copy citation
-        </Button>
-      ) : (
-        <Button
-          id="landing-study-copied-citation"
-          variant="contained"
-          color="primary"
-          size="small"
-          startIcon={<Mark size={20} visible={true} />}
-        >
-          Copied citation
-        </Button>
-      )}
-    </React.Fragment>
   );
 };
 
@@ -578,8 +467,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             </Typography>
             {!copiedCitation ? (
               <Button
-                id="landing-study-copy-citation"
-                aria-label="landing-study-copy-citation"
+                id="landing-study-formatter-copy-citation"
+                aria-label={t('studies.details.copy_citation_arialabel')}
                 variant="contained"
                 color="primary"
                 size="small"
@@ -593,22 +482,20 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   }
                 }}
               >
-                Copy citation
+                {t('studies.details.copy_citation')}
               </Button>
             ) : (
               <Button
-                id="landing-study-copied-citation"
+                id="landing-study-formatter-copied-citation"
                 variant="contained"
                 color="primary"
                 size="small"
                 startIcon={<Mark size={20} visible={true} />}
               >
-                Copied citation
+                {t('studies.details.copied_citation')}
               </Button>
             )}
-            {pid !== undefined && (
-              <CitationFormatter doi={'10.5286/ISIS.E.RB2000238-1'} />
-            )}
+            {pid !== undefined && <CitationFormatter doi={pid} />}
           </Grid>
 
           <Divider orientation="vertical" />
