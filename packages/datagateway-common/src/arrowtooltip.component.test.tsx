@@ -8,10 +8,12 @@ import { act } from 'react-dom/test-utils';
 
 describe('ArrowTooltip component', () => {
   let mount;
+
   const createWrapper = (
     percentageWidth?: number,
     maxEnabledHeight?: number,
-    disableHoverListener?: boolean
+    disableHoverListener?: boolean,
+    open?: boolean
   ): ReactWrapper => {
     return mount(
       <ArrowTooltip
@@ -19,8 +21,9 @@ describe('ArrowTooltip component', () => {
         percentageWidth={percentageWidth}
         maxEnabledHeight={maxEnabledHeight}
         disableHoverListener={disableHoverListener}
+        open={open}
       >
-        <div />
+        <div data-testid="arrowtooltip-test" />
       </ArrowTooltip>
     );
   };
@@ -94,7 +97,6 @@ describe('ArrowTooltip component', () => {
       .mockImplementationOnce(
         () => React.useState(true) as [unknown, React.Dispatch<unknown>]
       );
-
     const wrapper = createWrapper(1, undefined);
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
 
@@ -107,9 +109,19 @@ describe('ArrowTooltip component', () => {
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
   });
 
-  it('check tooltip is disable when it is closed', () => {
-    const wrapper = createWrapper();
+  it('Check if the tooltip is false when onClose is invoked', () => {
+    const wrapper = createWrapper(undefined, undefined, undefined, true);
+    act(() => wrapper.find(Tooltip)?.invoke('onClose')());
+    wrapper.update();
     expect(wrapper.find(Tooltip).props().open).toEqual(false);
+  });
+
+  it('Check if the tooltip is true when onOpen is invoked', () => {
+    const wrapper = createWrapper(undefined, undefined, undefined, false);
+
+    act(() => wrapper.find(Tooltip)?.invoke('onOpen')());
+    wrapper.update();
+    expect(wrapper.find(Tooltip).props().open).toEqual(true);
   });
 
   it('tooltip unchanged when offsetHeight < maxEnabledHeight', () => {
@@ -127,6 +139,7 @@ describe('ArrowTooltip component', () => {
 
     const wrapper = createWrapper(undefined, undefined);
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(false);
+    console.log(wrapper.debug());
   });
 
   it('tooltip disabled when offsetWidth >= scrollWidth', () => {
