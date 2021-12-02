@@ -1,5 +1,7 @@
 import {
   createStyles,
+  FormControl,
+  FormHelperText,
   makeStyles,
   MenuItem,
   Select,
@@ -8,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { Mark } from 'datagateway-common';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 
@@ -56,6 +58,7 @@ const CitationFormatter = (
   const classes = useStyles();
   const [citation, setCitation] = React.useState('');
   const [copiedCitation, setCopiedCitation] = React.useState(false);
+  const [error, setError] = React.useState(false);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
     /* Notes:
@@ -65,7 +68,14 @@ const CitationFormatter = (
       event.target.value as string,
       t('studies.details.citation_formatter.locale')
     );
-    Promise.resolve(citationPromise).then((value) => setCitation(value));
+    Promise.resolve(citationPromise)
+      .then((value) => {
+        setError(false);
+        setCitation(value);
+      })
+      .catch((error) => {
+        setError(true);
+      });
   };
 
   //Information on available formats can be found here: https://citationstyles.org/developers/
@@ -80,22 +90,31 @@ const CitationFormatter = (
         {t('studies.details.citation_formatter.label')}
       </Typography>
       <Typography>{t('studies.details.citation_formatter.details')}</Typography>
-      <Select
-        className={classes.formatSelect}
-        defaultValue="none"
-        onChange={handleChange}
-      >
-        <MenuItem value="none" disabled>
-          {t('studies.details.citation_formatter.select_format')}
-        </MenuItem>
-        {citationFormats.map((format) => (
-          <MenuItem key={format} value={format}>
-            {format}
+      <FormControl error={error}>
+        <Select
+          className={classes.formatSelect}
+          defaultValue="none"
+          onChange={handleChange}
+        >
+          <MenuItem value="none" disabled>
+            {t('studies.details.citation_formatter.select_format')}
           </MenuItem>
-        ))}
-      </Select>
+          {citationFormats.map((format) => (
+            <MenuItem key={format} value={format}>
+              {format}
+            </MenuItem>
+          ))}
+        </Select>
+        {error && (
+          <FormHelperText>
+            {t('studies.details.citation_formatter.error')}
+          </FormHelperText>
+        )}
+      </FormControl>
       <Typography>
-        <i>{citation}</i>
+        <i>
+          <Trans>{citation}</Trans>
+        </i>
       </Typography>
       {!copiedCitation ? (
         <Button
