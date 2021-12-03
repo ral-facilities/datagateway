@@ -25,9 +25,19 @@ describe('PageContainer Component', () => {
     cy.get('[data-testid="open-data-warning"]')
       .first()
       .trigger('mouseover')
-      .wait(700);
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
 
     cy.get('body').type('{esc}');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="open-data-warning"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
   });
 
   it('should load correctly', () => {
