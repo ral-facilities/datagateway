@@ -1,4 +1,5 @@
 import {
+  Box,
   createStyles,
   FormControl,
   FormHelperText,
@@ -79,13 +80,17 @@ const CitationFormatter = (
   };
 
   //Information on available formats can be found here: https://citationstyles.org/developers/
-  const citationFormats: string[] = t(
+  let citationFormats: string[] = t(
     'studies.details.citation_formatter.formats',
     { returnObjects: true }
   );
+  //When testing can't easily mock i18next data, but citationFormats.map will fail if
+  //given a string, so replace the formats here
+  if (!Array.isArray(citationFormats))
+    citationFormats = ['format1', 'format2', 'format3'];
 
   return (
-    <React.Fragment>
+    <Box>
       <Typography className={classes.subHeading} component="h6" variant="h6">
         {t('studies.details.citation_formatter.label')}
       </Typography>
@@ -106,36 +111,34 @@ const CitationFormatter = (
           ))}
         </Select>
         {error && (
-          <FormHelperText>
+          <FormHelperText data-testid="citation-formatter-error-message">
             {t('studies.details.citation_formatter.error')}
           </FormHelperText>
         )}
       </FormControl>
       <Typography>
-        <i>
+        <i data-testid="citation-formatter-citation">
           <Trans>{citation}</Trans>
         </i>
       </Typography>
       {!copiedCitation ? (
         <Button
-          id="landing-study-copy-citation"
+          id="citation-formatter-copy-citation"
           aria-label={t('studies.details.copy_citation_arialabel')}
           variant="contained"
           color="primary"
           size="small"
           onClick={() => {
-            if (citation !== '') {
-              navigator.clipboard.writeText(citation);
-              setCopiedCitation(true);
-              setTimeout(() => setCopiedCitation(false), 1750);
-            }
+            navigator.clipboard.writeText(citation);
+            setCopiedCitation(true);
+            setTimeout(() => setCopiedCitation(false), 1750);
           }}
         >
           {t('studies.details.copy_citation')}
         </Button>
       ) : (
         <Button
-          id="landing-study-copied-citation"
+          id="citation-formatter-copied-citation"
           variant="contained"
           color="primary"
           size="small"
@@ -144,7 +147,7 @@ const CitationFormatter = (
           {t('studies.details.copied_citation')}
         </Button>
       )}
-    </React.Fragment>
+    </Box>
   );
 };
 

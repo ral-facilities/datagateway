@@ -467,7 +467,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             </Typography>
             {!copiedCitation ? (
               <Button
-                id="landing-study-formatter-copy-citation"
+                id="landing-study-copy-citation"
                 aria-label={t('studies.details.copy_citation_arialabel')}
                 variant="contained"
                 color="primary"
@@ -486,7 +486,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               </Button>
             ) : (
               <Button
-                id="landing-study-formatter-copied-citation"
+                id="landing-study-copied-citation"
                 variant="contained"
                 color="primary"
                 size="small"
@@ -495,7 +495,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {t('studies.details.copied_citation')}
               </Button>
             )}
-            {pid && <CitationFormatter doi={pid} />}
+            {pid && <CitationFormatter doi={'pid'} />}
           </Grid>
 
           <Divider orientation="vertical" />

@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Citation formatter component tests renders correctly 1`] = `
+<div
+  className="MuiBox-root MuiBox-root-3"
+>
+  <WithStyles(ForwardRef(Typography))
+    className="makeStyles-subHeading-1"
+    component="h6"
+    variant="h6"
+  >
+    studies.details.citation_formatter.label
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    studies.details.citation_formatter.details
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(FormControl))
+    error={false}
+  >
+    <WithStyles(ForwardRef(Select))
+      className="makeStyles-formatSelect-2"
+      defaultValue="none"
+      onChange={[Function]}
+    >
+      <WithStyles(ForwardRef(MenuItem))
+        disabled={true}
+        value="none"
+      >
+        studies.details.citation_formatter.select_format
+      </WithStyles(ForwardRef(MenuItem))>
+      <WithStyles(ForwardRef(MenuItem))
+        key="format1"
+        value="format1"
+      >
+        format1
+      </WithStyles(ForwardRef(MenuItem))>
+      <WithStyles(ForwardRef(MenuItem))
+        key="format2"
+        value="format2"
+      >
+        format2
+      </WithStyles(ForwardRef(MenuItem))>
+      <WithStyles(ForwardRef(MenuItem))
+        key="format3"
+        value="format3"
+      >
+        format3
+      </WithStyles(ForwardRef(MenuItem))>
+    </WithStyles(ForwardRef(Select))>
+  </WithStyles(ForwardRef(FormControl))>
+  <WithStyles(ForwardRef(Typography))>
+    <i
+      data-testid="citation-formatter-citation"
+    >
+      <Trans />
+    </i>
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Button))
+    aria-label="studies.details.copy_citation_arialabel"
+    color="primary"
+    id="citation-formatter-copy-citation"
+    onClick={[Function]}
+    size="small"
+    variant="contained"
+  >
+    studies.details.copy_citation
+  </WithStyles(ForwardRef(Button))>
+</div>
+`;

@@ -353,7 +353,7 @@ describe('ISIS Study Landing page', () => {
 
     expect(
       wrapper.find('#landing-study-copied-citation').first().text()
-    ).toEqual('Copied citation');
+    ).toEqual('studies.details.copied_citation');
   });
 
   it('renders structured data correctly', () => {
