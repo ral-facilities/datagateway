@@ -114,7 +114,7 @@
     "eslint": "^7.5.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-config-react-app": "^6.0.0",
-    "eslint-plugin-cypress": "^2.11.3",
+    "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-flowtype": "^5.9.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jsx-a11y": "^6.3.1",
