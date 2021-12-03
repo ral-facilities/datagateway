@@ -23,7 +23,7 @@ describe('ArrowTooltip component', () => {
         disableHoverListener={disableHoverListener}
         open={open}
       >
-        <div data-testid="arrowtooltip-test" />
+        <div />
       </ArrowTooltip>
     );
   };
@@ -139,6 +139,7 @@ describe('ArrowTooltip component', () => {
       .mockImplementationOnce(
         () => React.useState(true) as [unknown, React.Dispatch<unknown>]
       );
+
     const wrapper = createWrapper(1, undefined);
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
 

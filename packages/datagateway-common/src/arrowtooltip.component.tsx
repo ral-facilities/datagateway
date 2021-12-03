@@ -14,6 +14,7 @@ const useStylesArrow = makeStyles((theme: Theme) =>
     },
   })
 );
+
 export const getTooltipText = (node: React.ReactNode): string => {
   if (typeof node === 'string') return node;
   if (typeof node === 'number' || typeof node === 'boolean')
