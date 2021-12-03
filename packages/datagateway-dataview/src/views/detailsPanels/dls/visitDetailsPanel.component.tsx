@@ -230,12 +230,12 @@ const VisitDetailsPanel = (
           hidden={value !== 'samples'}
         >
           <Grid container className={classes.root} direction="column">
+            <Typography variant="overline">
+              {t('investigations.details.samples.name')}
+            </Typography>
             {investigationData.samples.map((sample) => {
               return (
                 <Grid key={sample.id} item xs>
-                  <Typography variant="overline">
-                    {t('investigations.details.samples.name')}
-                  </Typography>
                   <Typography>
                     <b>{sample.name}</b>
                   </Typography>
