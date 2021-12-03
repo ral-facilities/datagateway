@@ -1,6 +1,6 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import AdvancedHelpDialogue from './advancedHelpDialogue';
+import AdvancedHelpDialogue from './advancedHelpDialogue.component';
 
 describe('Advanced help dialogue component tests', () => {
   let shallow;

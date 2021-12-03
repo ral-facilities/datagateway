@@ -21,7 +21,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('should be able to click a specific investigation', () => {
-    cy.get('[aria-label="landing-study-part-label"')
+    cy.get('[data-testid="landing-study-part-label"')
       .children()
       .first()
       .click({ force: true });

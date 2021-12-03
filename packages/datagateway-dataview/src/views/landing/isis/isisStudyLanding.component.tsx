@@ -147,7 +147,7 @@ const LinkedInvestigation = (
         component="h6"
         variant="h6"
         align="center"
-        aria-label="landing-study-part-label"
+        data-testid="landing-study-part-label"
       >
         {tableLink(
           `${props.urlPrefix}/investigation/${investigation.id}`,
@@ -396,11 +396,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               className={classes.subHeading}
               component="h5"
               variant="h5"
-              aria-label="landing-investigation-title"
+              data-testid="landing-investigation-title"
             >
               {title}
             </Typography>
-            <Typography aria-label="landing-study-description">
+            <Typography data-testid="landing-study-description">
               {summary}
             </Typography>
 
@@ -410,12 +410,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   className={classes.subHeading}
                   component="h6"
                   variant="h6"
-                  aria-label="landing-study-users-label"
+                  data-testid="landing-study-users-label"
                 >
                   {t('studies.details.users')}
                 </Typography>
                 {formattedUsers.map((user, i) => (
-                  <Typography aria-label={`landing-study-user-${i}`} key={i}>
+                  <Typography data-testid={`landing-study-user-${i}`} key={i}>
                     <b>{user.role}:</b> {user.fullName}
                   </Typography>
                 ))}
@@ -426,11 +426,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               className={classes.subHeading}
               component="h6"
               variant="h6"
-              aria-label="landing-study-publisher-label"
+              data-testid="landing-study-publisher-label"
             >
               {t('studies.details.publisher')}
             </Typography>
-            <Typography aria-label="landing-study-publisher">
+            <Typography data-testid="landing-study-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
 
@@ -438,14 +438,14 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               className={classes.subHeading}
               component="h6"
               variant="h6"
-              aria-label="landing-study-citation-label"
+              data-testid="landing-study-citation-label"
             >
               {t('studies.details.citation_label')}
             </Typography>
-            <Typography aria-label="landing-study-citation_format">
+            <Typography data-testid="landing-study-citation_format">
               {t('studies.details.citation_format')}
             </Typography>
-            <Typography aria-label="landing-study-citation">
+            <Typography data-testid="landing-study-citation">
               <i ref={citationRef}>
                 {formattedUsers.length > 1 &&
                   `${formattedUsers[0].fullName} et al; `}

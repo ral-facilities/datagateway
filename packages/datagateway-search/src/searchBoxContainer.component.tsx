@@ -7,7 +7,7 @@ import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
 import { Trans, useTranslation } from 'react-i18next';
-import AdvancedHelpDialogue from './search/advancedHelpDialogue';
+import AdvancedHelpDialogue from './search/advancedHelpDialogue.component';
 
 interface SearchBoxContainerProps {
   searchText: string;
