@@ -130,13 +130,13 @@ const InstrumentDetailsPanel = (
           hidden={value !== 'users'}
         >
           <Grid container className={classes.root} direction="column">
+            <Typography variant="overline">
+              {t('instruments.details.instrument_scientists.name')}
+            </Typography>
             {instrumentData.instrumentScientists.map((instrumentScientist) => {
               if (instrumentScientist.user) {
                 return (
                   <Grid key={instrumentScientist.user.id} item xs>
-                    <Typography variant="overline">
-                      {t('instruments.details.instrument_scientists.name')}
-                    </Typography>
                     <Typography>
                       <b>
                         {instrumentScientist.user.fullName ||
