@@ -32,8 +32,8 @@ describe('PageContainer Component', () => {
   it('should disable the hover tool tip by pressing escape (open data warning)', () => {
     // The hover tool tip has a enter delay of 500ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="open-data-warning"]')
-      .first()
+    cy.get('[data-testid="arrow-tooltip-component-false"]')
+      .eq(2)
       .trigger('mouseover')
       .wait(700)
       .get('[data-testid="arrow-tooltip-component-true"]')
@@ -42,11 +42,12 @@ describe('PageContainer Component', () => {
     cy.get('body').type('{esc}');
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="open-data-warning"]')
+    cy.get('[data-testid="arrow-tooltip-component-false"]')
+      .eq(2)
       .wait(700)
       .first()
       .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
+      .eq(2)
       .should('exist');
   });
 
