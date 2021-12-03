@@ -273,12 +273,12 @@ const InvestigationDetailsPanel = (
           hidden={value !== 'publications'}
         >
           <Grid container className={classes.root} direction="column">
+            <Typography variant="overline">
+              {t('investigations.details.publications.reference')}
+            </Typography>
             {investigationData.publications.map((publication) => {
               return (
                 <Grid key={publication.id} item xs>
-                  <Typography variant="overline">
-                    {t('investigations.details.publications.reference')}
-                  </Typography>
                   <Typography>
                     <b>{publication.fullReference}</b>
                   </Typography>
