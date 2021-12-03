@@ -134,6 +134,7 @@ const ArrowTooltip = (
       onOpen={onOpen}
       onClose={onClose}
       open={open}
+      data-testid={`arrow-tooltip-component-${open}`}
     />
   );
 };
