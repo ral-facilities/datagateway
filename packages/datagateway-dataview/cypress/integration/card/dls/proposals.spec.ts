@@ -41,9 +41,20 @@ describe('DLS - Proposals Cards', () => {
       .get('[data-testid="dls-proposal-card-title"]')
       .first()
       .trigger('mouseover', { force: true })
-      .wait(700);
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
 
     cy.get('body').type('{esc}');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="dls-proposal-card-title"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
   });
 
   describe('should be able to sort by', () => {

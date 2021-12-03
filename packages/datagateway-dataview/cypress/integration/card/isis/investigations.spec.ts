@@ -37,9 +37,20 @@ describe('ISIS - Investigations Cards', () => {
       .get('[data-testid="isis-investigations-card-title"]')
       .first()
       .trigger('mouseover', { force: true })
-      .wait(700);
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
 
     cy.get('body').type('{esc}');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="isis-investigations-card-title"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
   });
 
   it('should have the correct url for the DOI link', () => {

@@ -37,9 +37,20 @@ describe('ISIS - Studies Cards', () => {
       .get('[data-testid="landing-study-card-pid-link"]')
       .first()
       .trigger('mouseover')
-      .wait(700);
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
 
     cy.get('body').type('{esc}');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="landing-study-card-pid-link"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
   });
 
   it('should have the correct url for the PID link', () => {
