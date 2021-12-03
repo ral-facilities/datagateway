@@ -16,8 +16,11 @@ exports[`Citation formatter component tests renders correctly 1`] = `
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(FormControl))
     error={false}
+    id="citation-formatter"
   >
     <WithStyles(ForwardRef(Select))
+      aria-describedby="citation-formatter-error-message"
+      aria-label="studies.details.citation_formatter.select_arialabel"
       className="makeStyles-formatSelect-2"
       defaultValue="none"
       onChange={[Function]}

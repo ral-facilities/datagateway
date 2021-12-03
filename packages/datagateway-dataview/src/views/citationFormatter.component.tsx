@@ -95,11 +95,13 @@ const CitationFormatter = (
         {t('studies.details.citation_formatter.label')}
       </Typography>
       <Typography>{t('studies.details.citation_formatter.details')}</Typography>
-      <FormControl error={error}>
+      <FormControl id="citation-formatter" error={error}>
         <Select
           className={classes.formatSelect}
           defaultValue="none"
           onChange={handleChange}
+          aria-label={t('studies.details.citation_formatter.select_arialabel')}
+          aria-describedby="citation-formatter-error-message"
         >
           <MenuItem value="none" disabled>
             {t('studies.details.citation_formatter.select_format')}
@@ -111,7 +113,7 @@ const CitationFormatter = (
           ))}
         </Select>
         {error && (
-          <FormHelperText data-testid="citation-formatter-error-message">
+          <FormHelperText id="citation-formatter-error-message">
             {t('studies.details.citation_formatter.error')}
           </FormHelperText>
         )}

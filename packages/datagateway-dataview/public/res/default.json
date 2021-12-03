@@ -66,9 +66,10 @@
         "label": "Data Citation Formatter",
         "details": "You can also select your preferred citation format here:",
         "select_format": "Select a format",
+        "select_arialabel": "Citation format drop down list",
         "error": "An error has occurred while fetching the citation.",
         "locale": "en-GB",
-        "formats": ["chicago-author-date", "bibtex", "ieee", "ieee-with-url"]
+        "formats": ["bibtex", "chicago-author-date", "ieee", "ieee-with-url", "science"]
       }
     }
   },

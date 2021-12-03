@@ -4,6 +4,7 @@ import CitationFormatter from './citationFormatter.component';
 import axios from 'axios';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
+import { ReactWrapper } from 'enzyme';
 
 describe('Citation formatter component tests', () => {
   let shallow;
@@ -35,16 +36,12 @@ describe('Citation formatter component tests', () => {
       data: 'This is a test',
     });
 
-    act(() => {
-      wrapper
-        .find('input')
-        .first()
-        .simulate('change', { target: { value: 'format2' } });
-    });
-    await flushPromises();
-    act(() => {
-      wrapper.update();
-    });
+    wrapper
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: 'format2' } });
+    await act(async () => flushPromises());
+    wrapper.update();
 
     const params = new URLSearchParams({
       style: 'format2',
@@ -67,22 +64,21 @@ describe('Citation formatter component tests', () => {
   });
 
   it('copies data citation to clipboard', async () => {
-    const wrapper = createWrapper();
+    let wrapper;
+    act(() => {
+      wrapper = createWrapper();
+    });
 
     (axios.get as jest.Mock).mockResolvedValue({
       data: 'This is a test',
     });
 
-    act(() => {
-      wrapper
-        .find('input')
-        .first()
-        .simulate('change', { target: { value: 'format2' } });
-    });
-    await flushPromises();
-    act(() => {
-      wrapper.update();
-    });
+    wrapper
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: 'format2' } });
+    await act(async () => flushPromises());
+    wrapper.update();
 
     // Mock the clipboard object
     const testWriteText = jest.fn();
@@ -112,16 +108,12 @@ describe('Citation formatter component tests', () => {
       message: 'error',
     });
 
-    act(() => {
-      wrapper
-        .find('input')
-        .first()
-        .simulate('change', { target: { value: 'format2' } });
-    });
-    await flushPromises();
-    act(() => {
-      wrapper.update();
-    });
+    wrapper
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: 'format2' } });
+    await act(async () => flushPromises());
+    wrapper.update();
 
     const params = new URLSearchParams({
       style: 'format2',
@@ -139,10 +131,7 @@ describe('Citation formatter component tests', () => {
     );
 
     expect(
-      wrapper
-        .find('[data-testid="citation-formatter-error-message"]')
-        .first()
-        .text()
+      wrapper.find('#citation-formatter-error-message').first().text()
     ).toEqual('studies.details.citation_formatter.error');
   });
 });
