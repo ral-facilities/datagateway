@@ -21,7 +21,6 @@ export const TranslatedHomePage = React.memo(
     return (
       <TranslatedHomePage
         title={t('homePage.title')}
-        logoLabel={t('homePage.logoLabel')}
         howLabel={t('homePage.howLabel')}
         exploreLabel={t('homePage.exploreLabel')}
         exploreDescription={t('homePage.exploreDescription')}
