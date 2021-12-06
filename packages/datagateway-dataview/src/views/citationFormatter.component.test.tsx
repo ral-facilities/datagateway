@@ -61,6 +61,9 @@ describe('Citation formatter component tests', () => {
     expect(
       wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual('This is a test');
+    expect(
+      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
+    ).toEqual(false);
   });
 
   it('copies data citation to clipboard', async () => {
@@ -133,5 +136,9 @@ describe('Citation formatter component tests', () => {
     expect(
       wrapper.find('#citation-formatter-error-message').first().text()
     ).toEqual('studies.details.citation_formatter.error');
+
+    expect(
+      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
+    ).toEqual(true);
   });
 });

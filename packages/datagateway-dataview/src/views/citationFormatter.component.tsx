@@ -130,6 +130,7 @@ const CitationFormatter = (
           variant="contained"
           color="primary"
           size="small"
+          disabled={citation === ''}
           onClick={() => {
             navigator.clipboard.writeText(citation);
             setCopiedCitation(true);
