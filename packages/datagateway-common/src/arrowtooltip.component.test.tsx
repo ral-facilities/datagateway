@@ -88,7 +88,7 @@ describe('ArrowTooltip component', () => {
     spyCreateRef.mockRestore();
   });
 
-  it('Check if the tooltip is false when onClose is invoked', () => {
+  it('check if the tooltip is false when onClose is invoked', () => {
     const wrapper = createWrapper(undefined, undefined, undefined, true);
     act(() => {
       wrapper.find(Tooltip)?.invoke('onClose')();
@@ -98,7 +98,7 @@ describe('ArrowTooltip component', () => {
     expect(wrapper.find(Tooltip).props().open).toEqual(false);
   });
 
-  it('Check if the tooltip is true when onOpen is invoked and check when escape is press the tooltip is false', () => {
+  it('check if the tooltip is true when onOpen is invoked and check when escape is press the tooltip is false', () => {
     let handleKeydown;
     const spyUseCallback = jest
       .spyOn(React, 'useCallback')
