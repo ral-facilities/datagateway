@@ -8,19 +8,16 @@ import {
 import {
   CardView,
   formatCountOrSize,
-  formatFilterCount,
   Investigation,
   parseSearchToQuery,
   useDateFilter,
-  useCustomFilter,
-  useCustomFilterCount,
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
   useAllFacilityCycles,
   tableLink,
@@ -137,7 +134,7 @@ const InvestigationCardView = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
@@ -173,19 +170,6 @@ const InvestigationCardView = (
       }),
     },
   ]);
-  const { data: typeIds } = useCustomFilter('investigation', 'type.id');
-  const { data: facilityIds } = useCustomFilter('investigation', 'facility.id');
-
-  const typeIdCounts = useCustomFilterCount(
-    'investigation',
-    'type.id',
-    typeIds
-  );
-  const facilityIdCounts = useCustomFilterCount(
-    'investigation',
-    'facility.id',
-    facilityIds
-  );
 
   // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
   // the correct calculation queries for each facility
@@ -226,7 +210,7 @@ const InvestigationCardView = (
             entity?.doi && (
               <MuiLink
                 href={`https://doi.org/${entity.doi}`}
-                data-test-id="investigation-search-card-doi-link"
+                data-testid="investigation-search-card-doi-link"
               >
                 {entity.doi}
               </MuiLink>
@@ -336,41 +320,13 @@ const InvestigationCardView = (
     [classes.actionButtons, data, hierarchy]
   );
 
-  const customFilters = React.useMemo(
-    () => [
-      {
-        label: t('investigations.type.id'),
-        dataKey: 'type.id',
-        filterItems: typeIds
-          ? typeIds.map((id, i) => ({
-              name: id,
-              count: formatFilterCount(typeIdCounts[i]),
-            }))
-          : [],
-        prefixLabel: true,
-      },
-      {
-        label: t('investigations.facility.id'),
-        dataKey: 'facility.id',
-        filterItems: facilityIds
-          ? facilityIds.map((id, i) => ({
-              name: id,
-              count: formatFilterCount(facilityIdCounts[i]),
-            }))
-          : [],
-        prefixLabel: true,
-      },
-    ],
-    [facilityIds, t, typeIds, typeIdCounts, facilityIdCounts]
-  );
-
   return (
     <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
@@ -382,9 +338,6 @@ const InvestigationCardView = (
       description={description}
       information={information}
       buttons={buttons}
-      // If was a specific dataKey on the custom filter request,
-      // use that over the filterKey here.
-      customFilters={customFilters}
     />
   );
 };

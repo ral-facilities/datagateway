@@ -7,7 +7,7 @@ import {
   ColumnType,
   Study,
   useDateFilter,
-  usePushSort,
+  useSort,
   useTextFilter,
   externalSiteLink,
 } from 'datagateway-common';
@@ -70,7 +70,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -126,6 +126,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
           (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
             ?.startDate ?? '',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -145,7 +146,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       columns={columns}
     />
   );

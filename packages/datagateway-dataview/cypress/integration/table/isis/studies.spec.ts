@@ -7,25 +7,29 @@ describe('ISIS - Studies Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should be able to click a facility cycle to see its landing page', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/4'
+      '/browseStudyHierarchy/instrument/1/study/494'
     );
   });
 
   it('should have the correct url for the DOI link', () => {
-    cy.get('[data-test-id="isis-study-table-doi-link"]')
+    cy.get('[data-testid="isis-study-table-doi-link"]')
       .first()
       .then(($doi) => {
         const doi = $doi.text();
 
         const url = `https://doi.org/${doi}`;
 
-        cy.get('[data-test-id="isis-study-table-doi-link"]')
+        cy.get('[data-testid="isis-study-table-doi-link"]')
           .first()
           .should('have.attr', 'href', url);
       });
@@ -98,6 +102,11 @@ describe('ISIS - Studies Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name').click();
 
@@ -152,6 +161,11 @@ describe('ISIS - Studies Table', () => {
   });
 
   describe('should be able to filter by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+    });
+
     it('text', () => {
       cy.get('[aria-label="Filter by Name"]').first().type('3');
 

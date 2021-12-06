@@ -36,12 +36,69 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
     </Styled(MuiBox)>
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
+    item={true}
+    style={
+      Object {
+        "display": "flex",
+      }
+    }
+  >
+    <Styled(MuiBox)
+      m="auto"
+      px={2}
+    >
+      <AdvancedHelpDialogue />
+    </Styled(MuiBox)>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    container={true}
+    item={true}
+    justify="center"
+    style={
+      Object {
+        "margin": 0,
+        "padding": 0,
+      }
+    }
+  >
+    <WithStyles(ForwardRef(Typography))
+      style={
+        Object {
+          "fontSize": "14px",
+          "margin": 0,
+          "padding": 0,
+        }
+      }
+    >
+      <Trans
+        i18nKey="searchBox.search_textbox_label"
+        t={[Function]}
+      >
+        e.g. title has
+        <WithStyles(ForwardRef(Link))
+          href="searchBox.search_textbox_label_link1"
+        >
+          "instrument calibration"
+        </WithStyles(ForwardRef(Link))>
+        , or
+         
+        <WithStyles(ForwardRef(Link))
+          href="searchBox.search_textbox_label_link2"
+        >
+          neutron AND scattering
+        </WithStyles(ForwardRef(Link))>
+        .
+      </Trans>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
     container={true}
     item={true}
     justify="center"
     style={
       Object {
         "paddingBottom": 8,
+        "paddingTop": 8,
       }
     }
   >
@@ -71,6 +128,15 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       </Styled(MuiBox)>
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Typography))
+    style={
+      Object {
+        "margin": "10px",
+      }
+    }
+  >
+    searchBox.limited_results_message
+  </WithStyles(ForwardRef(Typography))>
 </div>
 `;
 

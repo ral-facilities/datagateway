@@ -124,7 +124,7 @@ describe('ISIS Studies table component', () => {
 
   it('calls useStudiesInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useStudiesInfinite as jest.Mock).mockReturnValueOnce({
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -183,6 +183,18 @@ describe('ISIS Studies table component', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent(
+        '{"studyInvestigations.investigation.startDate":"desc"}'
+      )}`
+    );
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -234,12 +246,12 @@ describe('ISIS Studies table component', () => {
 
     const wrapper = createWrapper();
     expect(
-      wrapper.find('[data-test-id="isis-study-table-doi-link"]').first().text()
+      wrapper.find('[data-testid="isis-study-table-doi-link"]').first().text()
     ).toEqual('doi');
 
     expect(
       wrapper
-        .find('[data-test-id="isis-study-table-doi-link"]')
+        .find('[data-testid="isis-study-table-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi');

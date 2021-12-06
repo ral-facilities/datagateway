@@ -270,7 +270,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   React.useEffect(() => {
     //Start search automatically if URL has been supplied with parameters (other than just the checkbox states)
-    if (queryParams.searchText || queryParams.startDate || queryParams.endDate)
+    if (
+      queryParams.searchText !== null ||
+      queryParams.startDate ||
+      queryParams.endDate
+    )
       initiateSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -348,13 +352,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   </Grid>
                 </Grid>
                 <Grid container justify="center" id="container-search-table">
-                  <div
+                  <Paper
                     style={{
                       // Only use height for the paper component if the view is table.
                       ...(view === 'table' ? { height: containerHeight } : {}),
                       minHeight: 326,
                       width: '98vw',
                       minWidth: 584,
+                      backgroundColor: '#00000000',
                     }}
                   >
                     {/* Show loading progress if data is still being loaded */}
@@ -374,7 +379,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         hierarchy={match.params.hierarchy}
                       />
                     )}
-                  </div>
+                  </Paper>
                 </Grid>
               </div>
             )}

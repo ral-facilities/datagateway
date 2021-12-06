@@ -116,7 +116,7 @@ const LinkedInvestigation = (
           entity?.doi && (
             <MuiLink
               href={`https://doi.org/${entity.doi}`}
-              data-test-id="landing-study-doi-link"
+              data-testid="landing-study-doi-link"
             >
               {entity.doi}
             </MuiLink>
@@ -312,7 +312,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           entity?.pid && (
             <MuiLink
               href={`https://doi.org/${entity.pid}`}
-              data-test-id="landing-study-pid-link"
+              data-testid="landing-study-pid-link"
             >
               {entity.pid}
             </MuiLink>

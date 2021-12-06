@@ -15,7 +15,7 @@ import {
   useInvestigationCount,
   useInvestigationsInfinite,
   useInvestigationSizes,
-  usePushSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
 } from 'datagateway-common';
@@ -55,10 +55,6 @@ const ISISMyDataTable = (): React.ReactElement => {
         'investigationUsers.user.name': { eq: username },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({ investigationUsers: 'user' }),
-    },
   ]);
   const { fetchNextPage, data } = useInvestigationsInfinite([
     {
@@ -73,7 +69,6 @@ const ISISMyDataTable = (): React.ReactElement => {
         {
           investigationInstruments: 'instrument',
         },
-        { investigationUsers: 'user' },
         { studyInvestigations: 'study' },
       ]),
     },
@@ -121,7 +116,7 @@ const ISISMyDataTable = (): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -129,13 +124,6 @@ const ISISMyDataTable = (): React.ReactElement => {
   );
 
   const sizeQueries = useInvestigationSizes(data);
-
-  React.useEffect(() => {
-    // Sort and filter by startDate upon load.
-    if (!('startDate' in sort)) pushSort('startDate', 'desc');
-    // we only want this to run on mount so ignore warning
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const urlPrefix = React.useCallback(
     (investigationData: Investigation): string => {
@@ -268,6 +256,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -286,7 +275,7 @@ const ISISMyDataTable = (): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

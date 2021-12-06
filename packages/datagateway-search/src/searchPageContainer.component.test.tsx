@@ -642,6 +642,26 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
+  it('initiates search when visiting a direct url with empty search text', async () => {
+    history.replace('/search/data?searchText=');
+
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Datafile',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
   it('does not search for non-searchable entities when visiting a direct url', async () => {
     state.dgsearch.searchableEntities = ['investigation', 'dataset'];
 

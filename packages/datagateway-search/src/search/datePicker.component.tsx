@@ -120,6 +120,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             allowKeyboardControl
             disableFuture
             inputVariant="outlined"
+            invalidDateMessage={t('searchBox.invalid_date_message')}
             maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
             maxDateMessage={t('searchBox.invalid_date_range_message')}
             format="yyyy-MM-dd"
@@ -157,8 +158,9 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             clearable
             className={classes.root}
             allowKeyboardControl
-            inputVariant="outlined"
             disableFuture
+            inputVariant="outlined"
+            invalidDateMessage={t('searchBox.invalid_date_message')}
             minDate={startDate || new Date('1984-01-01T00:00:00Z')}
             minDateMessage={t('searchBox.invalid_date_range_message')}
             format="yyyy-MM-dd"

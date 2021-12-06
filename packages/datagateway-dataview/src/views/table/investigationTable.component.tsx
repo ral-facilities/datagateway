@@ -21,11 +21,11 @@ import {
   useAddToCart,
   useRemoveFromCart,
   parseSearchToQuery,
-  usePushSort,
+  useSort,
   useTextFilter,
   useDateFilter,
-  useInvestigationsDatasetCount,
   DetailsPanelProps,
+  useInvestigationSizes,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ import { useLocation } from 'react-router-dom';
 import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
@@ -149,14 +149,14 @@ const InvestigationTable = (): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
     [fetchNextPage]
   );
 
-  const datasetCountQueries = useInvestigationsDatasetCount(data);
+  const sizeQueries = useInvestigationSizes(data);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -203,11 +203,11 @@ const InvestigationTable = (): React.ReactElement => {
       },
 
       {
-        icon: ConfirmationNumberIcon,
-        label: t('investigations.dataset_count'),
-        dataKey: 'datasetCount',
+        icon: SaveIcon,
+        label: t('investigations.size'),
+        dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(datasetCountQueries[cellProps.rowIndex]),
+          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
         disableSort: true,
       },
       {
@@ -249,7 +249,7 @@ const InvestigationTable = (): React.ReactElement => {
         },
       },
     ],
-    [t, textFilter, dateFilter, view, datasetCountQueries]
+    [t, textFilter, dateFilter, view, sizeQueries]
   );
 
   return (
@@ -259,7 +259,7 @@ const InvestigationTable = (): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

@@ -6,7 +6,7 @@ import {
   tableLink,
   useInstrumentCount,
   useInstrumentsInfinite,
-  usePushSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -43,7 +43,7 @@ const ISISInstrumentsTable = (
   );
 
   const textFilter = useTextFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -67,6 +67,7 @@ const ISISInstrumentsTable = (
           );
         },
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
       {
         icon: DescriptionIcon,
@@ -89,7 +90,7 @@ const ISISInstrumentsTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       detailsPanel={InstrumentDetailsPanel}
       columns={columns}
     />

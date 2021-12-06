@@ -57,6 +57,7 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "studyInvestigations.investigation.startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -94,7 +95,9 @@ Object {
   ],
   "loadMoreRows": [Function],
   "onSort": [Function],
-  "sort": Object {},
+  "sort": Object {
+    "studyInvestigations.investigation.startDate": "desc",
+  },
   "totalRowCount": 1,
 }
 `;

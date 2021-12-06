@@ -9,6 +9,10 @@ describe('DLS - Proposals Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
   });
 
   it('should be able to click a proposal to see its investigations', () => {
@@ -16,7 +20,7 @@ describe('DLS - Proposals Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation'
+      '/browse/proposal/INVESTIGATION%2030/investigation'
     );
   });
 
@@ -91,6 +95,9 @@ describe('DLS - Proposals Table', () => {
   describe('should be able to sort by', () => {
     beforeEach(() => {
       cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
+
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Title').click().click();
     });
 
     it('ascending order', () => {

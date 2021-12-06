@@ -19,6 +19,10 @@ describe('DLS - MyData Table', () => {
     it('should load correctly', () => {
       cy.title().should('equal', 'DataGateway DataView');
       cy.get('#datagateway-dataview').should('be.visible');
+
+      //Default sort
+      cy.get('[aria-sort="descending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
     });
 
     it('should be able to click an investigation to see its datasets', () => {
@@ -90,8 +94,12 @@ describe('DLS - MyData Table', () => {
     });
 
     describe('should be able to sort by', () => {
-      it('ascending order', () => {
+      beforeEach(() => {
+        //Revert the default sort
         cy.contains('[role="button"]', 'Start Date').click();
+      });
+
+      it('ascending order', () => {
         cy.contains('[role="button"]', 'Title').click();
 
         cy.get('[aria-sort="ascending"]').should('exist');
@@ -102,7 +110,6 @@ describe('DLS - MyData Table', () => {
       });
 
       it('descending order', () => {
-        cy.contains('[role="button"]', 'Start Date').click();
         cy.contains('[role="button"]', 'Title').click();
         cy.contains('[role="button"]', 'Title').click();
         cy.get('[aria-sort="descending"]').should('exist');
@@ -117,8 +124,6 @@ describe('DLS - MyData Table', () => {
       });
 
       it('no order', () => {
-        cy.contains('[role="button"]', 'Start Date').click();
-
         cy.get('[aria-sort="ascending"]').should('not.exist');
         cy.get('[aria-sort="descending"]').should('not.exist');
         cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
@@ -133,7 +138,6 @@ describe('DLS - MyData Table', () => {
       });
 
       it('multiple columns', () => {
-        cy.contains('[role="button"]', 'Start Date').click();
         cy.contains('[role="button"]', 'Title').click();
         cy.contains('[role="button"]', 'Instrument').click();
 
@@ -162,9 +166,10 @@ describe('DLS - MyData Table', () => {
 
       it('text', () => {
         cy.get('[aria-rowcount="4"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('invalid');
+        cy.get('input[id="Title-filter"]').type('night');
 
-        cy.get('[aria-rowcount="0"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('56');
       });
 
       it('date between', () => {
@@ -189,21 +194,19 @@ describe('DLS - MyData Table', () => {
 
         cy.get('[aria-rowcount="4"]').should('exist');
 
-        cy.get('input[id="Start Date filter from"]').type('2000-04-04');
+        cy.get('input[id="Start Date filter from"]').type('2006-04-04');
 
-        cy.get('[aria-rowcount="0"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
       });
 
       it('multiple columns', () => {
-        cy.get('[aria-label="Filter by Instrument')
-          .first()
-          .type('Start state detail.');
+        cy.get('input[id="Start Date filter from"]').first().type('2003-04-04');
+
+        cy.get('[aria-rowcount="3"]').should('exist');
+
+        cy.get('[aria-label="Filter by Title"]').first().type('us');
 
         cy.get('[aria-rowcount="1"]').should('exist');
-
-        cy.get('[aria-label="Filter by Title"]').first().type('invalid');
-
-        cy.get('[aria-rowcount="0"]').should('exist');
       });
     });
 

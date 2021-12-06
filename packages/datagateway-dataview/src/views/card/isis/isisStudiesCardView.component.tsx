@@ -8,7 +8,7 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useStudiesPaginated,
   useStudyCount,
   useTextFilter,
@@ -18,6 +18,8 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { Link as MuiLink } from '@material-ui/core';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
+
 interface ISISStudiesCVProps {
   instrumentId: string;
 }
@@ -35,7 +37,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
@@ -84,7 +86,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     };
   }, [t, textFilter, instrumentId, view]);
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('studies.title'),
       dataKey: 'studyInvestigations.investigation.title',
@@ -96,7 +98,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         content: function studyPidFormat(entity: Study) {
@@ -104,7 +106,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
             entity?.pid && (
               <MuiLink
                 href={`https://doi.org/${entity.pid}`}
-                data-test-id="landing-study-card-pid-link"
+                data-testid="landing-study-card-pid-link"
               >
                 {entity.pid}
               </MuiLink>
@@ -123,6 +125,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         content: (study: Study) =>
           study.studyInvestigations?.[0]?.investigation?.startDate ?? '',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -142,7 +145,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

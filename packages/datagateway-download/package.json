@@ -10,12 +10,12 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/single-spa-react": "^3.0.1",
-    "axios": "^0.21.1",
+    "axios": "^0.24.0",
     "datagateway-common": "0.1.0",
     "date-fns": "^2.17.0",
-    "date-fns-tz": "^1.1.4",
+    "date-fns-tz": "^1.1.6",
     "i18next": "^20.3.5",
-    "i18next-browser-languagedetector": "^6.0.0",
+    "i18next-browser-languagedetector": "^6.1.2",
     "i18next-http-backend": "^1.1.1",
     "lodash.chunk": "^4.2.0",
     "loglevel": "^1.7.1",
@@ -47,7 +47,7 @@
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-flowtype": "^5.9.0",
-    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.24.0",
@@ -56,7 +56,7 @@
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
     "serve": "^11.3.2",
-    "start-server-and-test": "^1.12.0"
+    "start-server-and-test": "^1.14.0"
   },
   "scripts": {
     "start": "craco start",
