@@ -28,19 +28,6 @@ Object {
       "label": "instruments.name",
     },
     Object {
-      "dataKey": "description",
-      "filterComponent": [Function],
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "instruments.description",
-    },
-    Object {
       "dataKey": "type",
       "filterComponent": [Function],
       "icon": Object {
