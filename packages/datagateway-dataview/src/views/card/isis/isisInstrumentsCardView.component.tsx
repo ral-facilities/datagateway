@@ -57,7 +57,8 @@ const ISISInstrumentsCardView = (
         tableLink(
           `/${pathRoot}/instrument/${instrument.id}/${instrumentChild}`,
           instrument.fullName || instrument.name,
-          view
+          view,
+          'isis-instrument-card-name'
         ),
       filterComponent: textFilter,
       defaultSort: 'asc',

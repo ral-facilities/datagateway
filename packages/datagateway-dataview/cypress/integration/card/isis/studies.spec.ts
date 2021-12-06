@@ -30,6 +30,29 @@ describe('ISIS - Studies Cards', () => {
     );
   });
 
+  it('should disable the hover tool tip by pressing escape', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="landing-study-card-pid-link"]')
+      .first()
+      .trigger('mouseover')
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
+
+    cy.get('body').type('{esc}');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="landing-study-card-pid-link"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
+  });
+
   it('should have the correct url for the PID link', () => {
     cy.get('[data-testid="card"]')
       .first()

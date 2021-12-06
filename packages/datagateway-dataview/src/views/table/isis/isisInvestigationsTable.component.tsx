@@ -137,7 +137,8 @@ const ISISInvestigationsTable = (
           return tableLink(
             `${urlPrefix}/${investigationData.id}`,
             investigationData.title,
-            view
+            view,
+            'isis-investigations-table-title'
           );
         },
         filterComponent: textFilter,

@@ -169,7 +169,8 @@ const InvestigationTable = (): React.ReactElement => {
           return investigationLink(
             investigationData.id,
             investigationData.title,
-            view
+            view,
+            'investigation-table-title'
           );
         },
         filterComponent: textFilter,

@@ -348,6 +348,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       "render": [Function],
     }
   }
+  data-testid="isis-investigations-table-title"
   to="/browse/instrument/4/facilityCycle/5/investigation/1"
 >
   <ForwardRef(Link)
@@ -375,6 +376,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         "render": [Function],
       }
     }
+    data-testid="isis-investigations-table-title"
     to="/browse/instrument/4/facilityCycle/5/investigation/1"
   >
     <WithStyles(ForwardRef(Typography))
@@ -394,6 +396,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
           "render": [Function],
         }
       }
+      data-testid="isis-investigations-table-title"
       onBlur={[Function]}
       onFocus={[Function]}
       to="/browse/instrument/4/facilityCycle/5/investigation/1"
@@ -450,6 +453,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
             "render": [Function],
           }
         }
+        data-testid="isis-investigations-table-title"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browse/instrument/4/facilityCycle/5/investigation/1"
@@ -457,12 +461,14 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          data-testid="isis-investigations-table-title"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/instrument/4/facilityCycle/5/investigation/1"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="isis-investigations-table-title"
             href="/browse/instrument/4/facilityCycle/5/investigation/1"
             navigate={[Function]}
             onBlur={[Function]}
@@ -470,6 +476,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="isis-investigations-table-title"
               href="/browse/instrument/4/facilityCycle/5/investigation/1"
               onBlur={[Function]}
               onClick={[Function]}
@@ -591,6 +598,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       "render": [Function],
     }
   }
+  data-testid="isis-investigations-table-title"
   to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
 >
   <ForwardRef(Link)
@@ -618,6 +626,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         "render": [Function],
       }
     }
+    data-testid="isis-investigations-table-title"
     to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
   >
     <WithStyles(ForwardRef(Typography))
@@ -637,6 +646,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
           "render": [Function],
         }
       }
+      data-testid="isis-investigations-table-title"
       onBlur={[Function]}
       onFocus={[Function]}
       to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
@@ -693,6 +703,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
             "render": [Function],
           }
         }
+        data-testid="isis-investigations-table-title"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
@@ -700,12 +711,14 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          data-testid="isis-investigations-table-title"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="isis-investigations-table-title"
             href="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
             navigate={[Function]}
             onBlur={[Function]}
@@ -713,6 +726,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="isis-investigations-table-title"
               href="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
               onBlur={[Function]}
               onClick={[Function]}

@@ -27,6 +27,29 @@ describe('ISIS - Instruments Cards', () => {
     cy.location('pathname').should('eq', '/browse/instrument/11/facilityCycle');
   });
 
+  it('should disable the hover tool tip by pressing escape', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="isis-instrument-card-name"]')
+      .first()
+      .trigger('mouseover', { force: true })
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
+
+    cy.get('body').type('{esc}');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="isis-instrument-card-name"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
+  });
+
   it('should be able to expand "More Information"', () => {
     cy.get('[data-testid="card"]')
       .first()

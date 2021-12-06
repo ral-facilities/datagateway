@@ -61,7 +61,8 @@ const DLSProposalsTable = (): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${investigationData.name}/investigation`,
             investigationData.title,
-            view
+            view,
+            'dls-proposals-table-title'
           );
         },
         filterComponent: textFilter,

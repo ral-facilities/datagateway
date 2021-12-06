@@ -62,7 +62,8 @@ const ISISInstrumentsTable = (
           return tableLink(
             `/${pathRoot}/instrument/${instrumentData.id}/${instrumentChild}`,
             instrumentData.fullName || instrumentData.name,
-            view
+            view,
+            'isis-instrument-table-name'
           );
         },
         filterComponent: textFilter,
