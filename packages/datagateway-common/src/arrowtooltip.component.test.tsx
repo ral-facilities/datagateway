@@ -8,10 +8,12 @@ import { act } from 'react-dom/test-utils';
 
 describe('ArrowTooltip component', () => {
   let mount;
+
   const createWrapper = (
     percentageWidth?: number,
     maxEnabledHeight?: number,
-    disableHoverListener?: boolean
+    disableHoverListener?: boolean,
+    open?: boolean
   ): ReactWrapper => {
     return mount(
       <ArrowTooltip
@@ -19,6 +21,7 @@ describe('ArrowTooltip component', () => {
         percentageWidth={percentageWidth}
         maxEnabledHeight={maxEnabledHeight}
         disableHoverListener={disableHoverListener}
+        open={open}
       >
         <div />
       </ArrowTooltip>
@@ -27,6 +30,10 @@ describe('ArrowTooltip component', () => {
 
   beforeEach(() => {
     mount = createMount({});
+  });
+
+  afterEach(() => {
+    mount.cleanUp();
   });
 
   describe('getTooltipText', () => {
@@ -54,6 +61,7 @@ describe('ArrowTooltip component', () => {
         )
       ).toBe('Test');
     });
+
     it('returns concatted nested values for any react node lists', () => {
       expect(
         getTooltipText(
@@ -78,6 +86,44 @@ describe('ArrowTooltip component', () => {
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
 
     spyCreateRef.mockRestore();
+  });
+
+  it('check if the tooltip is false when onClose is invoked', () => {
+    const wrapper = createWrapper(undefined, undefined, undefined, true);
+    act(() => {
+      wrapper.find(Tooltip)?.invoke('onClose')();
+    });
+    wrapper.update();
+
+    expect(wrapper.find(Tooltip).props().open).toEqual(false);
+  });
+
+  it('check if the tooltip is true when onOpen is invoked and check when escape is press the tooltip is false', () => {
+    let handleKeydown;
+    const spyUseCallback = jest
+      .spyOn(React, 'useCallback')
+      .mockImplementation((f) => {
+        handleKeydown = f;
+        return f;
+      });
+    const wrapper = createWrapper(undefined, undefined, undefined, false);
+
+    act(() => {
+      wrapper.find(Tooltip)?.invoke('onOpen')();
+    });
+    wrapper.update();
+    expect(wrapper.find(Tooltip).props().open).toEqual(true);
+
+    act(() => {
+      const e = new KeyboardEvent('keydown', { key: 'Escape' });
+      handleKeydown(e);
+    });
+
+    wrapper.update();
+
+    expect(wrapper.find(Tooltip).props().open).toEqual(false);
+
+    spyUseCallback.mockRestore();
   });
 
   it('tooltip enabled when offsetWidth/windowWidth >= percentageWidth', () => {

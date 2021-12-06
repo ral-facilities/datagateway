@@ -19,6 +19,8 @@ import {
   useDatasetSizes,
   AddToCartButton,
   DownloadButton,
+  ArrowTooltip,
+  getTooltipText,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -229,7 +231,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {field.label}:
                     </Typography>
                     <Typography className={classes.shortInfoValue}>
-                      {field.content(data as Dataset)}
+                      <ArrowTooltip
+                        title={getTooltipText(field.content(data as Dataset))}
+                      >
+                        <Typography>
+                          {field.content(data as Dataset)}
+                        </Typography>
+                      </ArrowTooltip>
                     </Typography>
                   </div>
                 )

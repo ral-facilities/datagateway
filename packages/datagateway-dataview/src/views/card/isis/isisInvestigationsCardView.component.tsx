@@ -100,7 +100,8 @@ const ISISInvestigationsCardView = (
         tableLink(
           `${urlPrefix}/${investigation.id}`,
           investigation.title,
-          view
+          view,
+          'isis-investigations-card-title'
         ),
       filterComponent: textFilter,
     }),

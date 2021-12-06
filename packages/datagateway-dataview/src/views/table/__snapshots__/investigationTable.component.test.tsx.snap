@@ -246,6 +246,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
       "render": [Function],
     }
   }
+  data-testid="investigation-table-title"
   to="/browse/investigation/1/dataset"
 >
   <ForwardRef(Link)
@@ -273,6 +274,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
         "render": [Function],
       }
     }
+    data-testid="investigation-table-title"
     to="/browse/investigation/1/dataset"
   >
     <WithStyles(ForwardRef(Typography))
@@ -292,6 +294,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
           "render": [Function],
         }
       }
+      data-testid="investigation-table-title"
       onBlur={[Function]}
       onFocus={[Function]}
       to="/browse/investigation/1/dataset"
@@ -348,6 +351,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
             "render": [Function],
           }
         }
+        data-testid="investigation-table-title"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browse/investigation/1/dataset"
@@ -355,12 +359,14 @@ exports[`Investigation table component renders investigation title as a link 1`]
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          data-testid="investigation-table-title"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/investigation/1/dataset"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="investigation-table-title"
             href="/browse/investigation/1/dataset"
             navigate={[Function]}
             onBlur={[Function]}
@@ -368,6 +374,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="investigation-table-title"
               href="/browse/investigation/1/dataset"
               onBlur={[Function]}
               onClick={[Function]}

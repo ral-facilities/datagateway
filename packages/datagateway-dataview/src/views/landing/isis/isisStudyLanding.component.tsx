@@ -27,6 +27,8 @@ import {
   Mark,
   ViewsType,
   AddToCartButton,
+  ArrowTooltip,
+  getTooltipText,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -511,7 +513,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {field.label}:
                     </Typography>
                     <Typography className={classes.shortInfoValue}>
-                      {field.content(data[0] as Study)}
+                      <ArrowTooltip
+                        title={getTooltipText(field.content(data[0] as Study))}
+                      >
+                        <Typography>
+                          {field.content(data[0] as Study)}
+                        </Typography>
+                      </ArrowTooltip>
                     </Typography>
                   </div>
                 )
