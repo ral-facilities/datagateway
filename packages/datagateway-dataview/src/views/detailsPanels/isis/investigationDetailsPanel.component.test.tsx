@@ -118,6 +118,16 @@ describe('Investigation details panel component', () => {
     expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
   });
 
+  it('renders publication tab and text " NO publications" when no data is prsent', () => {
+    rowData.publications = [];
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="visit-details-panel-no-publications"]')
+        .exists()
+    ).toBeTruthy();
+  });
+
   it('calls useInvestigationDetails hook on load', () => {
     createWrapper();
     expect(useInvestigationDetails).toHaveBeenCalledWith(rowData.id);

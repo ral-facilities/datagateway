@@ -273,18 +273,24 @@ const InvestigationDetailsPanel = (
           hidden={value !== 'publications'}
         >
           <Grid container className={classes.root} direction="column">
-            {investigationData.publications.map((publication) => {
-              return (
-                <Grid key={publication.id} item xs>
-                  <Typography variant="overline">
-                    {t('investigations.details.publications.reference')}
-                  </Typography>
-                  <Typography>
-                    <b>{publication.fullReference}</b>
-                  </Typography>
-                </Grid>
-              );
-            })}
+            {investigationData.publications.length > 0 ? (
+              investigationData.publications.map((publication) => {
+                return (
+                  <Grid key={publication.id} item xs>
+                    <Typography variant="overline">
+                      {t('investigations.details.publications.reference')}
+                    </Typography>
+                    <Typography>
+                      <b>{publication.fullReference}</b>
+                    </Typography>
+                  </Grid>
+                );
+              })
+            ) : (
+              <Typography data-testid="visit-details-panel-no-publications">
+                {t('investigations.details.publications.no_publications')}
+              </Typography>
+            )}
           </Grid>
         </div>
       )}
