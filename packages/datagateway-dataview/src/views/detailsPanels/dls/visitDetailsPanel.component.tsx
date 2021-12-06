@@ -231,7 +231,9 @@ const VisitDetailsPanel = (
         >
           <Grid container className={classes.root} direction="column">
             <Typography variant="overline">
-              {t('investigations.details.samples.name')}
+              {investigationData.samples.length <= 1
+                ? t('investigations.details.samples.name')
+                : t('investigations.details.samples.name') + 's'}
             </Typography>
             {investigationData.samples.map((sample) => {
               return (
@@ -254,7 +256,9 @@ const VisitDetailsPanel = (
         >
           <Grid container className={classes.root} direction="column">
             <Typography variant="overline">
-              {t('investigations.details.publications.reference')}
+              {investigationData.publications.length <= 1
+                ? t('investigations.details.publications.reference')
+                : t('investigations.details.publications.reference') + 's'}
             </Typography>
             {investigationData.publications.map((publication) => {
               return (

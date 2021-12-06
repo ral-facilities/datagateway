@@ -131,7 +131,9 @@ const InstrumentDetailsPanel = (
         >
           <Grid container className={classes.root} direction="column">
             <Typography variant="overline">
-              {t('instruments.details.instrument_scientists.name')}
+              {instrumentData.instrumentScientists.length <= 1
+                ? t('instruments.details.instrument_scientists.name')
+                : t('instruments.details.instrument_scientists.name') + 's'}
             </Typography>
             {instrumentData.instrumentScientists.map((instrumentScientist) => {
               if (instrumentScientist.user) {
