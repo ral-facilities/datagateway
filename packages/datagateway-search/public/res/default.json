@@ -1,7 +1,7 @@
 {
   "searchBox": {
     "search_text": "Search for title, name, instrument",
-    "search_textbox_label": "e.g. title has <1>\"instrument calibration\"</1>, or <4>neutron AND scattering</4>.",
+    "search_textbox_label": "e.g. <1>\"instrument calibration\"</1>, or <4>neutron AND scattering</4>.",
     "search_textbox_label_link1": "?searchText=\"instrument+calibration\"",
     "search_textbox_label_link2": "?searchText=neutron+AND+scattering",
     "start_date": "Start Date",
@@ -99,13 +99,40 @@
     "link" : "Go to selection."
   },
   "app": {
-    "error": "Something went wrong...",    
+    "results": "Results",
     "view_table": "Display as table",
-    "view_cards": "Display as cards"
+    "view_cards": "Display as cards",
+    "max_results": "Max Results",
+    "error": "Something went wrong..."
+  },
+  "loading": {
+    "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",
-    "hide": "Hide Advanced Filters"
+    "hide": "Hide Advanced Filters",
+    "icons": {
+      "title": ["Title", "Name", "Type"],
+      "fingerprint": ["Visit ID", "Name"],
+      "public": ["DOI"],
+      "confirmation_number": ["Dataset Count", " Datafile Count"],
+      "assessment": ["Instrument", "Beamline"],
+      "calendar_today": [
+        "Start Date",
+        "End Date",
+        "Create Time",
+        "Modified Time"
+      ],
+      "explore": ["Location"],
+      "save": ["Size"],
+      "description": ["Description", "Summary"],
+      "link": ["URL"]
+    }
+  },
+  "entity_card": {
+    "no_description": "No description available",
+    "show_more": "Show more",
+    "show_less": "Show less"
   },
   "advanced_search_help": {
     "advanced_button": "Advanced",
