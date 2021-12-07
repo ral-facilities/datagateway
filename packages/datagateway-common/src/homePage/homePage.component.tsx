@@ -9,8 +9,12 @@ import {
   Link,
   Box,
   Paper,
+  Button,
+  Avatar,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
+import SearchIcon from '@material-ui/icons/Search';
+import DownloadIcon from '@material-ui/icons/GetApp';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -31,7 +35,7 @@ const styles = (theme: Theme): StyleRules =>
       fontWeight: 'lighter',
       textAlign: 'center',
     },
-    paperBox: {
+    contentBox: {
       transform: 'translate(0px, -20px)',
       marginLeft: '10%',
       marginRight: '10%',
@@ -39,16 +43,39 @@ const styles = (theme: Theme): StyleRules =>
     paper: {
       borderRadius: '4px',
       marginBottom: theme.spacing(2),
-      height: '300px',
+    },
+    bluePaper: {
+      borderRadius: '4px',
+      marginBottom: theme.spacing(2),
+      backgroundColor: '#003088',
     },
     paperHeading: {
       fontWeight: 'bold',
       color: theme.palette.text.primary,
-      paddingBottom: 20,
     },
     paperCaption: {
       textAlign: 'left',
       color: theme.palette.secondary.main,
+    },
+    bluePaperHeading: {
+      fontWeight: 'bold',
+      color: theme.palette.text.primary,
+    },
+    bluePaperCaption: {
+      textAlign: 'left',
+      color: theme.palette.secondary.main,
+    },
+    paperContent: {
+      padding: theme.spacing(2),
+    },
+    avatar: {
+      backgroundColor: '#1E5DF8',
+      color: '#FFFFFF',
+      width: '70px',
+      height: '70px',
+    },
+    avatarIcon: {
+      transform: 'scale(1.75)',
     },
     howItWorks: {
       display: 'flex',
@@ -168,30 +195,35 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
           </div>
         </div>
       </div>
-      <Box className={props.classes.paperBox}>
+      <Box className={props.classes.contentBox}>
         <Paper className={props.classes.paper} elevation={1}>
           <Grid container style={{ height: '100%' }}>
             <Grid item xs={6}>
-              <Typography variant="h4" className={props.classes.paperHeading}>
-                Browse, explore and visualise experimental data
-              </Typography>
-              <Typography
-                variant="body1"
-                className={props.classes.paperCaption}
-              >
-                Large scale facilities, such as synchrotrons, neutron and muon
-                sources, lasers and accelerators, generate vast amounts of data
-                that need to be managed in an efficient way, supporting data
-                ingestion for long-term storage and archival, as well as data
-                analysis and data publication workflows.
-              </Typography>
-              <Typography
-                variant="body1"
-                className={props.classes.paperCaption}
-              >
-                DataGateway focuses on providing data discovery and data access
-                functionality to the data.
-              </Typography>
+              <Box className={props.classes.paperContent}>
+                <Typography variant="h4" className={props.classes.paperHeading}>
+                  Browse, explore and visualise experimental data
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={props.classes.paperCaption}
+                >
+                  Large scale facilities, such as synchrotrons, neutron and muon
+                  sources, lasers and accelerators, generate vast amounts of
+                  data that need to be managed in an efficient way, supporting
+                  data ingestion for long-term storage and archival, as well as
+                  data analysis and data publication workflows.
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={props.classes.paperCaption}
+                >
+                  DataGateway focuses on providing data discovery and data
+                  access functionality to the data.
+                </Typography>
+                <Button color="primary" variant="contained">
+                  Browse data
+                </Button>
+              </Box>
             </Grid>
             <Grid item xs={6}>
               <div
@@ -202,6 +234,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                   backgroundSize: 'cover',
                   width: '100%',
                   height: '100%',
+                  borderRadius: '4px',
                 }}
               >
                 <div
@@ -209,6 +242,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                     backgroundImage: `url(${props.decal2Image})`,
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'top left',
+                    backgroundSize: 'auto 100%',
                     height: '100%',
                   }}
                 ></div>
@@ -217,46 +251,70 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
           </Grid>
         </Paper>
         <Grid container spacing={2}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Paper className={props.classes.paper} elevation={1}>
-              <Typography variant="h4" className={props.classes.paperHeading}>
-                Discover
-              </Typography>
-              <Typography
-                variant="body1"
-                className={props.classes.paperCaption}
-              >
-                Search for the experimental data according to different
-                criteria.
-              </Typography>
+              <Box className={props.classes.paperContent}>
+                <Avatar className={props.classes.avatar}>
+                  <SearchIcon className={props.classes.avatarIcon} />
+                </Avatar>
+                <Typography variant="h4" className={props.classes.paperHeading}>
+                  Discover
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={props.classes.paperCaption}
+                >
+                  Search for the experimental data according to different
+                  criteria.
+                </Typography>
+                <Button color="primary" variant="contained">
+                  Search data
+                </Button>
+              </Box>
             </Paper>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Paper className={props.classes.paper} elevation={1}>
-              <Typography variant="h4" className={props.classes.paperHeading}>
-                Download
-              </Typography>
-              <Typography
-                variant="body1"
-                className={props.classes.paperCaption}
-              >
-                Retrieve the experimental data using a variety of download
-                methods.
-              </Typography>
+              <Box className={props.classes.paperContent}>
+                <Avatar className={props.classes.avatar}>
+                  <DownloadIcon className={props.classes.avatarIcon} />
+                </Avatar>
+                <Typography variant="h4" className={props.classes.paperHeading}>
+                  Download
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={props.classes.paperCaption}
+                >
+                  Retrieve the experimental data using a variety of download
+                  methods.
+                </Typography>
+                <Button color="primary" variant="contained">
+                  Download data
+                </Button>
+              </Box>
             </Paper>
           </Grid>
-          <Grid item xs={4}>
-            <Paper className={props.classes.paper} elevation={1}>
-              <Typography variant="h4" className={props.classes.paperHeading}>
-                ISIS Neutron and Muon Source
-              </Typography>
-              <Typography
-                variant="body1"
-                className={props.classes.paperCaption}
-              >
-                World-leading centre for research giving unique insights into
-                the properties of materials on the atomic scale.
-              </Typography>
+          <Grid item xs={12} sm={4}>
+            <Paper className={props.classes.bluePaper} elevation={1}>
+              <Box className={props.classes.paperContent}>
+                <Typography
+                  variant="h4"
+                  className={props.classes.bluePaperHeading}
+                >
+                  ISIS Neutron and Muon Source
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={props.classes.bluePaperCaption}
+                >
+                  World-leading centre for research giving unique insights into
+                  the properties of materials on the atomic scale.
+                </Typography>
+                <Button color="primary" variant="contained">
+                  Read more
+                </Button>
+              </Box>
             </Paper>
           </Grid>
         </Grid>
