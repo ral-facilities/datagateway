@@ -118,6 +118,38 @@ describe('Investigation details panel component', () => {
     expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
   });
 
+  it('checks if multiple samples result in change of title to plural version', () => {
+    rowData.samples = [
+      {
+        id: 7,
+        name: 'Test sample',
+      },
+      {
+        id: 8,
+        name: 'Test sample 1',
+      },
+    ];
+
+    const wrapper = createWrapper();
+    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('checks if multiple publications result in change of title to plural version', () => {
+    rowData.publications = [
+      {
+        id: 8,
+        fullReference: 'Test publication',
+      },
+      {
+        id: 9,
+        fullReference: 'Test publication 1',
+      },
+    ];
+
+    const wrapper = createWrapper();
+    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+  });
+
   it('calls useInvestigationDetails hook on load', () => {
     createWrapper();
     expect(useInvestigationDetails).toHaveBeenCalledWith(rowData.id);
