@@ -82,6 +82,8 @@ export interface HomePageProps {
   downloadLink: string;
   logo: string;
   backgroundImage: string;
+  greenSwirl1Image: string;
+  decal1Image: string;
   exploreImage: string;
   discoverImage: string;
   downloadImage: string;
@@ -101,24 +103,47 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
             height: 250,
           }}
         >
-          <Box style={{ paddingTop: '45px' }}>
-            <Typography variant="h2" className={props.classes.backgroundTitle}>
-              <Box fontWeight="bold" display="inline">
-                Data discovery
-              </Box>{' '}
-              and{' '}
-              <Box fontWeight="bold" display="inline">
-                access
-              </Box>{' '}
-            </Typography>
-            <Typography variant="h2" className={props.classes.backgroundTitle}>
-              for{' '}
-              <Box fontWeight="bold" display="inline">
-                large-scale
-              </Box>{' '}
-              science facilities
-            </Typography>
-          </Box>
+          <div
+            style={{
+              backgroundImage: `url(${props.greenSwirl1Image}), url(${props.decal1Image})`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'top left, top right',
+              width: '100%',
+              height: 250,
+            }}
+          >
+            <Box
+              style={{
+                position: 'relative',
+                left: '50%',
+                top: '45px',
+                transform: 'translate(-50%)',
+              }}
+            >
+              <Typography
+                variant="h2"
+                className={props.classes.backgroundTitle}
+              >
+                <Box fontWeight="bold" display="inline">
+                  Data discovery
+                </Box>{' '}
+                and{' '}
+                <Box fontWeight="bold" display="inline">
+                  access
+                </Box>{' '}
+              </Typography>
+              <Typography
+                variant="h2"
+                className={props.classes.backgroundTitle}
+              >
+                for{' '}
+                <Box fontWeight="bold" display="inline">
+                  large-scale
+                </Box>{' '}
+                science facilities
+              </Typography>
+            </Box>
+          </div>
         </div>
       </div>
       <div className={props.classes.howItWorks}>
