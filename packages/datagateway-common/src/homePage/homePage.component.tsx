@@ -8,6 +8,7 @@ import {
   createStyles,
   Link,
   Box,
+  Paper,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 
@@ -29,6 +30,25 @@ const styles = (theme: Theme): StyleRules =>
       fontSize: '48px',
       fontWeight: 'lighter',
       textAlign: 'center',
+    },
+    paperBox: {
+      transform: 'translate(0px, -20px)',
+      marginLeft: '10%',
+      marginRight: '10%',
+    },
+    paper: {
+      borderRadius: '4px',
+      marginBottom: theme.spacing(2),
+      height: '300px',
+    },
+    paperHeading: {
+      fontWeight: 'bold',
+      color: theme.palette.text.primary,
+      paddingBottom: 20,
+    },
+    paperCaption: {
+      textAlign: 'left',
+      color: theme.palette.secondary.main,
     },
     howItWorks: {
       display: 'flex',
@@ -84,6 +104,8 @@ export interface HomePageProps {
   backgroundImage: string;
   greenSwirl1Image: string;
   decal1Image: string;
+  decal2Image: string;
+  facilityImage: string;
   exploreImage: string;
   discoverImage: string;
   downloadImage: string;
@@ -146,6 +168,100 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
           </div>
         </div>
       </div>
+      <Box className={props.classes.paperBox}>
+        <Paper className={props.classes.paper} elevation={1}>
+          <Grid container style={{ height: '100%' }}>
+            <Grid item xs={6}>
+              <Typography variant="h4" className={props.classes.paperHeading}>
+                Browse, explore and visualise experimental data
+              </Typography>
+              <Typography
+                variant="body1"
+                className={props.classes.paperCaption}
+              >
+                Large scale facilities, such as synchrotrons, neutron and muon
+                sources, lasers and accelerators, generate vast amounts of data
+                that need to be managed in an efficient way, supporting data
+                ingestion for long-term storage and archival, as well as data
+                analysis and data publication workflows.
+              </Typography>
+              <Typography
+                variant="body1"
+                className={props.classes.paperCaption}
+              >
+                DataGateway focuses on providing data discovery and data access
+                functionality to the data.
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <div
+                style={{
+                  backgroundImage: `url(${props.facilityImage})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'bottom right',
+                  backgroundSize: 'cover',
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                <div
+                  style={{
+                    backgroundImage: `url(${props.decal2Image})`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'top left',
+                    height: '100%',
+                  }}
+                ></div>
+              </div>
+            </Grid>
+          </Grid>
+        </Paper>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <Paper className={props.classes.paper} elevation={1}>
+              <Typography variant="h4" className={props.classes.paperHeading}>
+                Discover
+              </Typography>
+              <Typography
+                variant="body1"
+                className={props.classes.paperCaption}
+              >
+                Search for the experimental data according to different
+                criteria.
+              </Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={4}>
+            <Paper className={props.classes.paper} elevation={1}>
+              <Typography variant="h4" className={props.classes.paperHeading}>
+                Download
+              </Typography>
+              <Typography
+                variant="body1"
+                className={props.classes.paperCaption}
+              >
+                Retrieve the experimental data using a variety of download
+                methods.
+              </Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={4}>
+            <Paper className={props.classes.paper} elevation={1}>
+              <Typography variant="h4" className={props.classes.paperHeading}>
+                ISIS Neutron and Muon Source
+              </Typography>
+              <Typography
+                variant="body1"
+                className={props.classes.paperCaption}
+              >
+                World-leading centre for research giving unique insights into
+                the properties of materials on the atomic scale.
+              </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Box>
+
       <div className={props.classes.howItWorks}>
         <Typography variant="h4" className={props.classes.howItWorksTitle}>
           {props.howLabel}
