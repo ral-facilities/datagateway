@@ -69,6 +69,12 @@ const ISISInstrumentsTable = (
         filterComponent: textFilter,
         defaultSort: 'asc',
       },
+      {
+        icon: TitleIcon,
+        label: t('instruments.type'),
+        dataKey: 'type',
+        filterComponent: textFilter,
+      },
     ];
   }, [t, textFilter, view, studyHierarchy]);
 
