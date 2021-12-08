@@ -14,6 +14,7 @@ import {
 import { StyleRules } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import DownloadIcon from '@material-ui/icons/GetApp';
+import { Trans, useTranslation } from 'react-i18next';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -55,7 +56,7 @@ const styles = (theme: Theme): StyleRules =>
       color: theme.palette.text.primary,
       marginBottom: theme.spacing(2),
     },
-    paperCaption: {
+    paperDescription: {
       textAlign: 'left',
       color: theme.palette.secondary.main,
       marginBottom: theme.spacing(2),
@@ -65,7 +66,7 @@ const styles = (theme: Theme): StyleRules =>
       color: theme.palette.text.primary,
       marginBottom: theme.spacing(2),
     },
-    bluePaperCaption: {
+    bluePaperDescription: {
       textAlign: 'left',
       color: theme.palette.secondary.main,
       marginBottom: theme.spacing(2),
@@ -78,6 +79,7 @@ const styles = (theme: Theme): StyleRules =>
       color: '#FFFFFF',
       width: '60px',
       height: '60px',
+      marginBottom: theme.spacing(2),
     },
     avatarIcon: {
       transform: 'scale(1.75)',
@@ -91,17 +93,6 @@ const styles = (theme: Theme): StyleRules =>
   });
 
 export interface HomePageProps {
-  title: string;
-  howLabel: string;
-  exploreLabel: string;
-  exploreDescription: string;
-  exploreLink: string;
-  discoverLabel: string;
-  discoverDescription: string;
-  discoverLink: string;
-  downloadLabel: string;
-  downloadDescription: string;
-  downloadLink: string;
   logo: string;
   backgroundImage: string;
   greenSwirl1Image: string;
@@ -117,6 +108,8 @@ export interface HomePageProps {
 type CombinedHomePageProps = HomePageProps & WithStyles<typeof styles>;
 
 const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
+  const [t] = useTranslation();
+
   return (
     <div id="dg-homepage">
       <div className={props.classes.backgroundImage}>
@@ -149,23 +142,18 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                 variant="h2"
                 className={props.classes.backgroundTitle}
               >
-                <Box fontWeight="bold" display="inline">
-                  Data discovery
-                </Box>{' '}
-                and{' '}
-                <Box fontWeight="bold" display="inline">
-                  access
-                </Box>{' '}
+                <Trans i18nKey="homePage.title_line1">
+                  <strong>Data discovery</strong> and <strong>access</strong>
+                </Trans>
               </Typography>
               <Typography
                 variant="h2"
                 className={props.classes.backgroundTitle}
               >
-                for{' '}
-                <Box fontWeight="bold" display="inline">
-                  large-scale
-                </Box>{' '}
-                science facilities
+                <Trans i18nKey="homePage.title_line2">
+                  for <strong>large-scale</strong>
+                  science facilities
+                </Trans>
               </Typography>
             </Box>
           </div>
@@ -184,28 +172,31 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                 boxSizing="border-box"
               >
                 <Typography variant="h4" className={props.classes.paperHeading}>
-                  Browse, explore and visualise experimental data
+                  {t('homePage.browse.title')}
                 </Typography>
                 <Typography
                   variant="body1"
-                  className={props.classes.paperCaption}
+                  className={props.classes.paperDescription}
                 >
-                  Large scale facilities, such as synchrotrons, neutron and muon
-                  sources, lasers and accelerators, generate vast amounts of
-                  data that need to be managed in an efficient way, supporting
-                  data ingestion for long-term storage and archival, as well as
-                  data analysis and data publication workflows.
+                  {t('homePage.browse.description1')}
                 </Typography>
                 <Typography
                   variant="body1"
-                  className={props.classes.paperCaption}
+                  className={props.classes.paperDescription}
                 >
-                  DataGateway focuses on providing data discovery and data
-                  access functionality to the data.
+                  <Trans i18nKey="homePage.browse.description2">
+                    <strong>DataGateway</strong> focuses on providing data
+                    discovery and data access functionality to the data.
+                  </Trans>
                 </Typography>
                 <Box marginTop="auto">
-                  <Button color="primary" variant="contained">
-                    Browse data
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    href={t('homePage.browse.link')}
+                    aria-label={t('homePage.browse.button_arialabel')}
+                  >
+                    {t('homePage.browse.button')}
                   </Button>
                 </Box>
               </Box>
@@ -250,18 +241,22 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                   <SearchIcon className={props.classes.avatarIcon} />
                 </Avatar>
                 <Typography variant="h4" className={props.classes.paperHeading}>
-                  Discover
+                  {t('homePage.discover.title')}
                 </Typography>
                 <Typography
                   variant="body1"
-                  className={props.classes.paperCaption}
+                  className={props.classes.paperDescription}
                 >
-                  Search for the experimental data according to different
-                  criteria.
+                  {t('homePage.discover.description')}
                 </Typography>
                 <Box marginTop="auto">
-                  <Button color="primary" variant="contained">
-                    Search data
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    href={t('homePage.discover.link')}
+                    aria-label={t('homePage.discover.button_arialabel')}
+                  >
+                    {t('homePage.discover.button')}
                   </Button>
                 </Box>
               </Box>
@@ -281,18 +276,22 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                   <DownloadIcon className={props.classes.avatarIcon} />
                 </Avatar>
                 <Typography variant="h4" className={props.classes.paperHeading}>
-                  Download
+                  {t('homePage.download.title')}
                 </Typography>
                 <Typography
                   variant="body1"
-                  className={props.classes.paperCaption}
+                  className={props.classes.paperDescription}
                 >
-                  Retrieve the experimental data using a variety of download
-                  methods.
+                  {t('homePage.download.description')}
                 </Typography>
                 <Box marginTop="auto">
-                  <Button color="primary" variant="contained">
-                    Download data
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    href={t('homePage.download.link')}
+                    aria-label={t('homePage.download.button_arialabel')}
+                  >
+                    {t('homePage.download.button')}
                   </Button>
                 </Box>
               </Box>
@@ -321,18 +320,22 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                     variant="h4"
                     className={props.classes.bluePaperHeading}
                   >
-                    ISIS Neutron and Muon Source
+                    {t('homePage.facility.title')}
                   </Typography>
                   <Typography
                     variant="body1"
-                    className={props.classes.bluePaperCaption}
+                    className={props.classes.bluePaperDescription}
                   >
-                    World-leading centre for research giving unique insights
-                    into the properties of materials on the atomic scale.
+                    {t('homePage.facility.description')}
                   </Typography>
                   <Box marginTop="auto">
-                    <Button color="primary" variant="contained">
-                      Read more
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      href={t('homePage.facility.link')}
+                      aria-label={t('homePage.facility.button_arialabel')}
+                    >
+                      {t('homePage.facility.button')}
                     </Button>
                   </Box>
                 </Box>

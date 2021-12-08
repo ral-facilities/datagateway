@@ -1,6 +1,5 @@
 import React from 'react';
 import { HomePage } from 'datagateway-common';
-import { useTranslation } from 'react-i18next';
 import DGLogo from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import BackgroundImage from 'datagateway-common/src/images/background.jpg';
 import GreenSwirl1Image from 'datagateway-common/src/images/green-swirl1.png';
@@ -21,21 +20,9 @@ export interface TranslatedHomePageStateProps {
 export const TranslatedHomePage = React.memo(
   (props: TranslatedHomePageStateProps): React.ReactElement => {
     const TranslatedHomePage = HomePage;
-    const [t] = useTranslation();
 
     return (
       <TranslatedHomePage
-        title={t('homePage.title')}
-        howLabel={t('homePage.howLabel')}
-        exploreLabel={t('homePage.exploreLabel')}
-        exploreDescription={t('homePage.exploreDescription')}
-        exploreLink={t('homePage.exploreLink')}
-        discoverLabel={t('homePage.discoverLabel')}
-        discoverDescription={t('homePage.discoverDescription')}
-        discoverLink={t('homePage.discoverLink')}
-        downloadLabel={t('homePage.downloadLabel')}
-        downloadDescription={t('homePage.downloadDescription')}
-        downloadLink={t('homePage.downloadLink')}
         logo={props.pluginHost + DGLogo}
         backgroundImage={props.pluginHost + BackgroundImage}
         greenSwirl1Image={props.pluginHost + GreenSwirl1Image}
