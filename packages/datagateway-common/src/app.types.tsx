@@ -227,6 +227,7 @@ export interface SubmitCart {
 
 export type DownloadCartTableItem = DownloadCartItem & {
   size: number;
+  fileCount: number;
   [key: string]: string | number | DownloadCartItem[];
 };
 
@@ -276,6 +277,8 @@ export type Filter = string[] | TextFilter | DateFilter;
 
 export type Order = 'asc' | 'desc';
 
+export type UpdateMethod = 'push' | 'replace';
+
 export interface FiltersType {
   [column: string]: Filter;
 }
@@ -298,4 +301,10 @@ export interface QueryParams {
   search: string | null;
   page: number | null;
   results: number | null;
+  searchText: string | null;
+  dataset: boolean;
+  datafile: boolean;
+  investigation: boolean;
+  startDate: Date | null;
+  endDate: Date | null;
 }

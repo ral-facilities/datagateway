@@ -70,6 +70,7 @@ Object {
     },
     Object {
       "dataKey": "startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),

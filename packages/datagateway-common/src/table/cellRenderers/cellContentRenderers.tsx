@@ -77,3 +77,15 @@ export function tableLink(
     </Link>
   );
 }
+
+export function externalSiteLink(
+  linkUrl: string,
+  linkText?: string,
+  label?: string
+): React.ReactElement {
+  return (
+    <Link href={linkUrl} data-testid={label}>
+      {linkText}
+    </Link>
+  );
+}

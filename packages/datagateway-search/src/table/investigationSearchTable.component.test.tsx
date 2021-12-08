@@ -209,9 +209,9 @@ describe('Investigation Search Table component', () => {
 
     expect(useCart).toHaveBeenCalled();
     expect(useLuceneSearch).toHaveBeenCalledWith('Investigation', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: '',
+      startDate: null,
+      endDate: null,
     });
 
     expect(useInvestigationCount).toHaveBeenCalledWith([
@@ -236,14 +236,18 @@ describe('Investigation Search Table component', () => {
         }),
       },
     ]);
-    expect(useIds).toHaveBeenCalledWith('investigation', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'investigation',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      true
+    );
 
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
     expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
@@ -269,6 +273,23 @@ describe('Investigation Search Table component', () => {
     expect(fetchNextPage).toHaveBeenCalledWith({
       pageParam: { startIndex: 50, stopIndex: 74 },
     });
+  });
+
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="investigation-search-table-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-search-table-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
   });
 
   it('updates filter query params on text filter', () => {
@@ -398,6 +419,24 @@ describe('Investigation Search Table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgsearch.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith(
+      'investigation',
+      expect.anything(),
+      false
+    );
+    expect(useIds).not.toHaveBeenCalledWith(
+      'investigation',
+      expect.anything(),
+      true
+    );
+    expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
+  });
+
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <InvestigationDetailsPanel
@@ -438,6 +477,7 @@ describe('Investigation Search Table component', () => {
         name: 'test',
         title: 'test',
         visitId: '1',
+        doi: 'Test 1',
         investigationInstruments: [],
       },
     ];
@@ -465,13 +505,14 @@ describe('Investigation Search Table component', () => {
     expect(wrapper.find('[aria-colindex=7]').text()).toEqual('Calculating...');
   });
 
-  it('renders DLS link correctly', () => {
+  it("renders DLS link correctly and doesn't allow for cart selection", () => {
     const wrapper = createWrapper('dls');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+    expect(wrapper.find('[aria-colindex=2]').find('a').prop('href')).toEqual(
       '/browse/proposal/Test 1/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=2]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-label="select row 0"]')).toHaveLength(0);
   });
 
   it('renders ISIS link & file sizes correctly', () => {

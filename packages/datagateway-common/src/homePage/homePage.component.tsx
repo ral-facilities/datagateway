@@ -6,6 +6,7 @@ import {
   WithStyles,
   Grid,
   createStyles,
+  Link,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 
@@ -42,7 +43,8 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
     },
     howItWorksGridItemTitle: {
-      color: '#FF6900',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      color: (theme as any).colours?.orange,
       fontWeight: 'bold',
       paddingBottom: 10,
     },
@@ -64,10 +66,13 @@ export interface HomePageProps {
   howLabel: string;
   exploreLabel: string;
   exploreDescription: string;
+  exploreLink: string;
   discoverLabel: string;
   discoverDescription: string;
+  discoverLink: string;
   downloadLabel: string;
   downloadDescription: string;
+  downloadLink: string;
   logo: string;
   backgroundImage: string;
   exploreImage: string;
@@ -103,17 +108,20 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
             md={4}
             className={props.classes.howItWorksGridItem}
           >
-            <Typography
+            <Link
               variant="h5"
               className={props.classes.howItWorksGridItemTitle}
+              href={props.exploreLink}
             >
               {props.exploreLabel}
-            </Typography>
-            <img
-              src={props.exploreImage}
-              alt={props.exploreLabel}
-              className={props.classes.howItWorksGridItemImage}
-            />
+            </Link>
+            <Link href={props.exploreLink}>
+              <img
+                src={props.exploreImage}
+                alt={props.exploreLabel}
+                className={props.classes.howItWorksGridItemImage}
+              />
+            </Link>
             <Typography
               variant="body1"
               className={props.classes.howItWorksGridItemCaption}
@@ -127,17 +135,20 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
             md={4}
             className={props.classes.howItWorksGridItem}
           >
-            <Typography
+            <Link
               variant="h5"
               className={props.classes.howItWorksGridItemTitle}
+              href={props.discoverLink}
             >
               {props.discoverLabel}
-            </Typography>
-            <img
-              src={props.discoverImage}
-              alt={props.discoverLabel}
-              className={props.classes.howItWorksGridItemImage}
-            />
+            </Link>
+            <Link href={props.discoverLink}>
+              <img
+                src={props.discoverImage}
+                alt={props.discoverLabel}
+                className={props.classes.howItWorksGridItemImage}
+              />
+            </Link>
             <Typography
               variant="body1"
               className={props.classes.howItWorksGridItemCaption}
@@ -151,17 +162,20 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
             md={4}
             className={props.classes.howItWorksGridItem}
           >
-            <Typography
+            <Link
               variant="h5"
               className={props.classes.howItWorksGridItemTitle}
+              href={props.downloadLink}
             >
               {props.downloadLabel}
-            </Typography>
-            <img
-              src={props.downloadImage}
-              alt={props.downloadLabel}
-              className={props.classes.howItWorksGridItemImage}
-            />
+            </Link>
+            <Link href={props.downloadLink}>
+              <img
+                src={props.downloadImage}
+                alt={props.downloadLabel}
+                className={props.classes.howItWorksGridItemImage}
+              />
+            </Link>
             <Typography
               variant="body1"
               className={props.classes.howItWorksGridItemCaption}

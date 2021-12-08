@@ -18,16 +18,16 @@ import { useTranslation } from 'react-i18next';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
-import { useLuceneSearch } from 'datagateway-common';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { parseSearchToQuery, useLuceneSearch } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
+import { useLocation } from 'react-router-dom';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
     badge: {
       backgroundColor: '#fff',
-      color: theme.palette.primary.main,
+      color: '#000000',
       fontSize: 'inherit',
       lineHeight: 'inherit',
       top: '0.875em',
@@ -40,9 +40,6 @@ interface SearchCardViewProps {
 }
 
 interface SearchCardViewStoreProps {
-  searchText: string;
-  startDate: MaterialUiPickersDate;
-  endDate: MaterialUiPickersDate;
   datasetTab: boolean;
   datafileTab: boolean;
   investigationTab: boolean;
@@ -91,9 +88,6 @@ const SearchPageCardView = (
     SearchCardViewDispatchProps
 ): React.ReactElement => {
   const {
-    searchText,
-    startDate,
-    endDate,
     investigationTab,
     datasetTab,
     datafileTab,
@@ -103,6 +97,13 @@ const SearchPageCardView = (
     hierarchy,
   } = props;
   const [t] = useTranslation();
+
+  const location = useLocation();
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: investigation } = useLuceneSearch('Investigation', {
     searchText,
@@ -267,10 +268,16 @@ const SearchPageCardView = (
       </AppBar>
 
       {currentTab === 'investigation' && (
-        <InvestigationCardView hierarchy={hierarchy} />
+        <TabPanel value={currentTab} index={'investigation'}>
+          <InvestigationCardView hierarchy={hierarchy} />
+        </TabPanel>
       )}
 
-      {currentTab === 'dataset' && <DatasetCardView hierarchy={hierarchy} />}
+      {currentTab === 'dataset' && (
+        <TabPanel value={currentTab} index={'dataset'}>
+          <DatasetCardView hierarchy={hierarchy} />
+        </TabPanel>
+      )}
 
       {currentTab === 'datafile' && (
         <TabPanel value={currentTab} index={'datafile'}>
@@ -292,9 +299,6 @@ const SearchPageCardView = (
 
 const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
   return {
-    searchText: state.dgsearch.searchText,
-    startDate: state.dgsearch.selectDate.startDate,
-    endDate: state.dgsearch.selectDate.endDate,
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,

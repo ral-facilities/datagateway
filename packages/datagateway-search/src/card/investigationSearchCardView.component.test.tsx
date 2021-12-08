@@ -74,6 +74,7 @@ describe('Investigation - Card View', () => {
         endDate: '2019-07-25',
         title: 'Test 1',
         visitId: '1',
+        doi: 'doi 1',
         investigationInstruments: [
           {
             id: 3,
@@ -179,9 +180,9 @@ describe('Investigation - Card View', () => {
     createWrapper();
 
     expect(useLuceneSearch).toHaveBeenCalledWith('Investigation', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: '',
+      startDate: null,
+      endDate: null,
     });
 
     expect(useInvestigationCount).toHaveBeenCalledWith([
@@ -296,13 +297,15 @@ describe('Investigation - Card View', () => {
     ).toEqual('Calculating...');
   });
 
-  it('renders DLS link correctly', () => {
+  it("renders DLS link correctly and doesn't allow for cart selection or download", () => {
     const wrapper = createWrapper('dls');
 
     expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
       '/browse/proposal/Investigation test name/investigation/1/dataset'
     );
     expect(wrapper.find(CardView).find('a').first().text()).toEqual('Test 1');
+    expect(wrapper.exists('#add-to-cart-btn-1')).toBe(false);
+    expect(wrapper.exists('#download-btn-1')).toBe(false);
   });
 
   it('renders ISIS link & file sizes correctly', () => {
@@ -335,6 +338,23 @@ describe('Investigation - Card View', () => {
     ).toEqual('1 B');
   });
 
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="investigation-search-card-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-search-card-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
+  });
+
   it('does not render ISIS link when instrumentId cannot be found', () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
@@ -354,7 +374,7 @@ describe('Investigation - Card View', () => {
     });
     const wrapper = createWrapper('isis');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');
@@ -369,7 +389,7 @@ describe('Investigation - Card View', () => {
 
     const wrapper = createWrapper('data');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');
@@ -384,7 +404,7 @@ describe('Investigation - Card View', () => {
 
     const wrapper = createWrapper('dls');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');
@@ -409,7 +429,7 @@ describe('Investigation - Card View', () => {
 
     const wrapper = createWrapper('isis');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');

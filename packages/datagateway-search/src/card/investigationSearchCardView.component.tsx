@@ -8,19 +8,16 @@ import {
 import {
   CardView,
   formatCountOrSize,
-  formatFilterCount,
   Investigation,
   parseSearchToQuery,
   useDateFilter,
-  useCustomFilter,
-  useCustomFilterCount,
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
   useAllFacilityCycles,
   tableLink,
@@ -35,13 +32,30 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { StateType } from '../state/app.types';
-import { useSelector } from 'react-redux';
-import { Typography } from '@material-ui/core';
+import {
+  Typography,
+  Link as MuiLink,
+  makeStyles,
+  createStyles,
+  Theme,
+} from '@material-ui/core';
 
 interface InvestigationCardProps {
   hierarchy: string;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    actionButtons: {
+      display: 'flex',
+      flexDirection: 'column',
+      '& button': {
+        marginTop: theme.spacing(1),
+        margin: 'auto',
+      },
+    },
+  })
+);
 
 const InvestigationCardView = (
   props: InvestigationCardProps
@@ -51,10 +65,11 @@ const InvestigationCardView = (
   const [t] = useTranslation();
   const location = useLocation();
 
-  const { filters, sort, page, results } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { filters, sort, page, results, startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
@@ -119,20 +134,11 @@ const InvestigationCardView = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const searchText = useSelector(
-    (state: StateType) => state.dgsearch.searchText
-  );
-  const startDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.startDate
-  );
-  const endDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.endDate
-  );
   const { data: luceneData } = useLuceneSearch('Investigation', {
     searchText,
     startDate,
@@ -164,19 +170,6 @@ const InvestigationCardView = (
       }),
     },
   ]);
-  const { data: typeIds } = useCustomFilter('investigation', 'type.id');
-  const { data: facilityIds } = useCustomFilter('investigation', 'facility.id');
-
-  const typeIdCounts = useCustomFilterCount(
-    'investigation',
-    'type.id',
-    typeIds
-  );
-  const facilityIdCounts = useCustomFilterCount(
-    'investigation',
-    'facility.id',
-    facilityIds
-  );
 
   // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
   // the correct calculation queries for each facility
@@ -212,6 +205,18 @@ const InvestigationCardView = (
   const information = React.useMemo(
     () => [
       {
+        content: function doiFormat(entity: Investigation) {
+          return (
+            entity?.doi && (
+              <MuiLink
+                href={`https://doi.org/${entity.doi}`}
+                data-testid="investigation-search-card-doi-link"
+              >
+                {entity.doi}
+              </MuiLink>
+            )
+          );
+        },
         icon: Public,
         label: t('investigations.doi'),
         dataKey: 'doi',
@@ -290,53 +295,29 @@ const InvestigationCardView = (
     ]
   );
 
-  const buttons = React.useMemo(
-    () => [
-      (investigation: Investigation) => (
-        <div>
-          <AddToCartButton
-            entityType="investigation"
-            allIds={data?.map((investigation) => investigation.id) ?? []}
-            entityId={investigation.id}
-          />
-          <DownloadButton
-            entityType="investigation"
-            entityId={investigation.id}
-            entityName={investigation.name}
-            variant="outlined"
-          />
-        </div>
-      ),
-    ],
-    [data]
-  );
+  const classes = useStyles();
 
-  const customFilters = React.useMemo(
-    () => [
-      {
-        label: t('investigations.type.id'),
-        dataKey: 'type.id',
-        filterItems: typeIds
-          ? typeIds.map((id, i) => ({
-              name: id,
-              count: formatFilterCount(typeIdCounts[i]),
-            }))
-          : [],
-        prefixLabel: true,
-      },
-      {
-        label: t('investigations.facility.id'),
-        dataKey: 'facility.id',
-        filterItems: facilityIds
-          ? facilityIds.map((id, i) => ({
-              name: id,
-              count: formatFilterCount(facilityIdCounts[i]),
-            }))
-          : [],
-        prefixLabel: true,
-      },
-    ],
-    [facilityIds, t, typeIds, typeIdCounts, facilityIdCounts]
+  const buttons = React.useMemo(
+    () =>
+      hierarchy !== 'dls'
+        ? [
+            (investigation: Investigation) => (
+              <div className={classes.actionButtons}>
+                <AddToCartButton
+                  entityType="investigation"
+                  allIds={data?.map((investigation) => investigation.id) ?? []}
+                  entityId={investigation.id}
+                />
+                <DownloadButton
+                  entityType="investigation"
+                  entityId={investigation.id}
+                  entityName={investigation.name}
+                />
+              </div>
+            ),
+          ]
+        : [],
+    [classes.actionButtons, data, hierarchy]
   );
 
   return (
@@ -345,7 +326,7 @@ const InvestigationCardView = (
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
@@ -357,9 +338,6 @@ const InvestigationCardView = (
       description={description}
       information={information}
       buttons={buttons}
-      // If was a specific dataKey on the custom filter request,
-      // use that over the filterKey here.
-      customFilters={customFilters}
     />
   );
 };

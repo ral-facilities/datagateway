@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ArrowTooltip from '../arrowtooltip.component';
+import ArrowTooltip, { getTooltipText } from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import hexToRbga from 'hex-to-rgba';
@@ -225,7 +225,7 @@ const EntityCard = React.memo(
         ...details,
         // If we use custom content we can choose to not show a tooltip.
         content: !details.noTooltip ? (
-          <ArrowTooltip title={nestedValue(entity, details.dataKey)}>
+          <ArrowTooltip title={getTooltipText(details.content)}>
             <Typography>{details.content}</Typography>
           </ArrowTooltip>
         ) : (
@@ -277,7 +277,7 @@ const EntityCard = React.memo(
     const [t] = useTranslation();
 
     return (
-      <Card id="card" className={classes.root}>
+      <Card data-testid="card" className={classes.root}>
         {/* TODO: Check width and sizing of having image on card under different circumstances */}
         {/* We allow for additional width when having an image in the card (see card styles). */}
         {image && (
@@ -307,7 +307,9 @@ const EntityCard = React.memo(
             */}
               <div aria-label="main-content" ref={mainContentRef}>
                 <ArrowTooltip
-                  title={title.label}
+                  title={
+                    title.content ? getTooltipText(title.content) : title.label
+                  }
                   enterDelay={500}
                   percentageWidth={30}
                   maxEnabledHeight={32}

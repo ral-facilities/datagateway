@@ -274,6 +274,13 @@ export const useInvestigationSizes = (
   >([]);
 
   const countAppliedRef = React.useRef(0);
+
+  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
+  // back to 0 so we can restart the process
+  React.useEffect(() => {
+    countAppliedRef.current = 0;
+  }, [data]);
+
   // need to use useDeepCompareEffect here because the array returned by useQueries
   // is different every time this hook runs
   useDeepCompareEffect(() => {
@@ -346,6 +353,13 @@ export const useInvestigationsDatasetCount = (
   >([]);
 
   const countAppliedRef = React.useRef(0);
+
+  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
+  // back to 0 so we can restart the process
+  React.useEffect(() => {
+    countAppliedRef.current = 0;
+  }, [data]);
+
   // need to use useDeepCompareEffect here because the array returned by useQueries
   // is different every time this hook runs
   useDeepCompareEffect(() => {
@@ -772,7 +786,8 @@ const fetchAllISISInvestigationIds = (
 export const useISISInvestigationIds = (
   instrumentId: number,
   instrumentChildId: number,
-  studyHierarchy: boolean
+  studyHierarchy: boolean,
+  enabled = true
 ): UseQueryResult<number[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -818,6 +833,7 @@ export const useISISInvestigationIds = (
       onError: (error) => {
         handleICATError(error);
       },
+      enabled,
     }
   );
 };

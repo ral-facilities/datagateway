@@ -14,7 +14,7 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  usePushSort,
+  useSort,
   useIds,
   useCart,
   useAddToCart,
@@ -67,16 +67,20 @@ const ISISDatasetsTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
-  const { data: allIds } = useIds('dataset', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: parseInt(investigationId) },
-      }),
-    },
-  ]);
+  const { data: allIds } = useIds(
+    'dataset',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: parseInt(investigationId) },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'dataset'
@@ -93,10 +97,6 @@ const ISISDatasetsTable = (
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
 
   const { fetchNextPage, data } = useDatasetsInfinite([
@@ -105,10 +105,6 @@ const ISISDatasetsTable = (
       filterValue: JSON.stringify({
         'investigation.id': { eq: investigationId },
       }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
     },
   ]);
 
@@ -151,6 +147,7 @@ const ISISDatasetsTable = (
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -167,12 +164,13 @@ const ISISDatasetsTable = (
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'dataset' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   const detailsPanel = React.useCallback(
@@ -193,7 +191,7 @@ const ISISDatasetsTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

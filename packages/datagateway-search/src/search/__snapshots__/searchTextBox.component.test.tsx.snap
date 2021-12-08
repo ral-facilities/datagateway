@@ -22,7 +22,7 @@ exports[`Search text box component tests renders correctly 1`] = `
     onChange={[Function]}
     onKeyDown={[Function]}
     type="search"
-    value=""
+    value="test"
     variant="outlined"
   />
 </div>

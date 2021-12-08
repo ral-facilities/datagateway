@@ -21,6 +21,10 @@ describe('ISIS - MyData Table', () => {
     it('should load correctly', () => {
       cy.title().should('equal', 'DataGateway DataView');
       cy.get('#datagateway-dataview').should('be.visible');
+
+      //Default sort
+      cy.get('[aria-sort="descending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('exist');
     });
 
     it('should be able to click an investigation to see its landing page', () => {
@@ -29,6 +33,20 @@ describe('ISIS - MyData Table', () => {
         'eq',
         '/browse/instrument/10/facilityCycle/50/investigation/131'
       );
+    });
+
+    it('should have the correct url for the DOI link', () => {
+      cy.get('[data-testid="isis-mydata-table-doi-link"]')
+        .first()
+        .then(($doi) => {
+          const doi = $doi.text();
+
+          const url = `https://doi.org/${doi}`;
+
+          cy.get('[data-testid="isis-mydata-table-doi-link"]')
+            .first()
+            .should('have.attr', 'href', url);
+        });
     });
 
     // Not enough investigations to test scrolling.
@@ -99,9 +117,13 @@ describe('ISIS - MyData Table', () => {
     });
 
     describe('should be able to sort by', () => {
-      it('ascending order', () => {
+      beforeEach(() => {
+        //Revert the default sort
         cy.contains('[role="button"]', 'Start Date').click();
-        cy.contains('[role="button"]', 'Title').click();
+      });
+
+      it('ascending order', () => {
+        cy.contains('[role="button"]', 'Title').first().click();
 
         cy.get('[aria-sort="ascending"]').should('exist');
         cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -111,7 +133,6 @@ describe('ISIS - MyData Table', () => {
       });
 
       it('descending order', () => {
-        cy.contains('[role="button"]', 'Start Date').click();
         cy.contains('[role="button"]', 'Title').click();
         cy.contains('[role="button"]', 'Title').click();
         cy.get('[aria-sort="descending"]').should('exist');
@@ -126,8 +147,6 @@ describe('ISIS - MyData Table', () => {
       });
 
       it('no order', () => {
-        cy.contains('[role="button"]', 'Start Date').click();
-
         cy.get('[aria-sort="ascending"]').should('not.exist');
         cy.get('[aria-sort="descending"]').should('not.exist');
         cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
@@ -142,7 +161,6 @@ describe('ISIS - MyData Table', () => {
       });
 
       it('multiple columns', () => {
-        cy.contains('[role="button"]', 'Start Date').click();
         cy.contains('[role="button"]', 'Title').click();
         cy.contains('[role="button"]', 'Instrument').click();
 
@@ -153,11 +171,33 @@ describe('ISIS - MyData Table', () => {
     });
 
     describe('should be able to filter by', () => {
+      it('role', () => {
+        cy.get('[aria-rowcount="4"]').should('exist');
+
+        cy.get('#role-selector').click();
+        cy.get('[role="listbox"]')
+          .find('[role="option"]')
+          .should('have.length', 3);
+        cy.get('[role="option"][data-value="PI"]').click();
+
+        cy.get('[aria-rowcount="3"]').should('exist');
+
+        // check that size is correct after filtering
+        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('12.02 GB');
+
+        cy.get('#role-selector').click();
+        cy.get('[role="option"]').first().click();
+        cy.get('[aria-rowcount="4"]').should('exist');
+      });
+
       it('text', () => {
         cy.get('[aria-rowcount="4"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('invalid');
+        cy.get('input[id="Title-filter"]').type('night');
 
-        cy.get('[aria-rowcount="0"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains(
+          'INVESTIGATION 165'
+        );
       });
 
       it('date between', () => {
@@ -181,19 +221,17 @@ describe('ISIS - MyData Table', () => {
         );
 
         cy.get('input[id="Start Date filter from"]').type('2006-08-05');
-        cy.get('[aria-rowcount="0"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
       });
 
       it('multiple columns', () => {
-        cy.get('[aria-label="Filter by Instrument"]')
-          .first()
-          .type('Experience ready course option.');
+        cy.get('[aria-label="Filter by DOI"]').first().type('69');
 
-        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('[aria-rowcount="3"]').should('exist');
 
-        cy.get('[aria-label="Filter by Title"]').first().type('invalid');
+        cy.get('[aria-label="Filter by Title"]').first().type('us');
 
-        cy.get('[aria-rowcount="0"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
       });
     });
 
@@ -209,6 +247,34 @@ describe('ISIS - MyData Table', () => {
 
       it('when no other row is showing details', () => {
         cy.get('[aria-label="Show details"]').first().click();
+
+        // Study PID
+
+        cy.get('[data-testid="investigation-details-panel-pid-link"]')
+          .first()
+          .then(($pid) => {
+            const pid = $pid.text();
+
+            const url = `https://doi.org/${pid}`;
+
+            cy.get('[data-testid="investigation-details-panel-pid-link"]')
+              .first()
+              .should('have.attr', 'href', url);
+          });
+
+        // DOI
+
+        cy.get('[data-testid="investigation-details-panel-doi-link"]')
+          .first()
+          .then(($doi) => {
+            const doi = $doi.text();
+
+            const url = `https://doi.org/${doi}`;
+
+            cy.get('[data-testid="investigation-details-panel-doi-link"]')
+              .first()
+              .should('have.attr', 'href', url);
+          });
 
         cy.get('#details-panel').should('be.visible');
         cy.get('[aria-label="Hide details"]').should('exist');

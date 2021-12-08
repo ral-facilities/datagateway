@@ -21,7 +21,14 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
 import ArrowTooltip from '../arrowtooltip.component';
-import { Entity, Filter, Order, SortType, FiltersType } from '../app.types';
+import {
+  Entity,
+  Filter,
+  Order,
+  SortType,
+  FiltersType,
+  UpdateMethod,
+} from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
@@ -67,6 +74,7 @@ export interface CardViewDetails {
   // Filter and sort options.
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
   disableSort?: boolean;
+  defaultSort?: Order;
   noTooltip?: boolean;
 }
 
@@ -95,7 +103,11 @@ export interface CardViewProps {
   onPageChange: (page: number) => void;
   onFilter: (filter: string, data: Filter | null) => void;
   onResultsChange: (page: number) => void;
-  onSort: (sort: string, order: Order | null) => void;
+  onSort: (
+    sort: string,
+    order: Order | null,
+    updateMethod: UpdateMethod
+  ) => void;
 
   // Props to get title, description of the card
   // represented by data.
@@ -234,6 +246,30 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     !title.disableSort ||
     (description ? !description.disableSort : false) ||
     (information ? information.some((i) => !i.disableSort) : false);
+
+  //Apply default sort on page load (but only if not already defined in URL params)
+  //This will apply them in the order of title, description and information, wherever
+  //defaultSort has been provided
+  React.useEffect(() => {
+    if (title.defaultSort !== undefined && sort[title.dataKey] === undefined)
+      onSort(title.dataKey, title.defaultSort, 'replace');
+    if (
+      description &&
+      description.defaultSort !== undefined &&
+      sort[description.dataKey] === undefined
+    )
+      onSort(description.dataKey, description.defaultSort, 'replace');
+    if (information) {
+      information.forEach((element: CardViewDetails) => {
+        if (
+          element.defaultSort !== undefined &&
+          sort[element.dataKey] === undefined
+        )
+          onSort(element.dataKey, element.defaultSort, 'replace');
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Get sort information from title, description and information lists.
   React.useEffect(() => {
@@ -559,7 +595,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             key={i}
                             button
                             onClick={() => {
-                              onSort(s.dataKey, nextSortDirection(s.dataKey));
+                              onSort(
+                                s.dataKey,
+                                nextSortDirection(s.dataKey),
+                                'push'
+                              );
                               if (page !== 1) {
                                 onPageChange(1);
                               }
@@ -678,7 +718,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         <Grid item xs={12} md={9}>
           {/* Selected filters array */}
           {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
-            <div className={classes.selectedChips}>
+            <ul className={classes.selectedChips}>
               {selectedFilters.map((filter, filterIndex) => (
                 <li key={filterIndex}>
                   {filter.items.map((item, itemIndex) => (
@@ -694,7 +734,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   ))}
                 </li>
               ))}
-            </div>
+            </ul>
           )}
 
           {/* List of cards */}

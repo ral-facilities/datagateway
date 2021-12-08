@@ -129,10 +129,6 @@ describe('ISIS Dataset table component', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsInfinite).toHaveBeenCalledWith([
       {
@@ -141,22 +137,22 @@ describe('ISIS Dataset table component', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('dataset', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: parseInt(investigationId) },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'dataset',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigation.id': { eq: parseInt(investigationId) },
+          }),
+        },
+      ],
+      true
+    );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('dataset');
     expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
@@ -222,6 +218,16 @@ describe('ISIS Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
   });
 
   it('updates sort query params on sort', () => {
@@ -305,6 +311,16 @@ describe('ISIS Dataset table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('dataset', expect.anything(), false);
+    expect(useIds).not.toHaveBeenCalledWith('dataset', expect.anything(), true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
   it('renders dataset name as a link', () => {

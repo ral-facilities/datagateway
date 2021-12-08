@@ -19,7 +19,7 @@ import {
   TableRowRenderer,
 } from 'react-virtualized';
 import clsx from 'clsx';
-import { Entity, Order, ICATEntity } from '../app.types';
+import { Entity, Order, ICATEntity, UpdateMethod } from '../app.types';
 import ExpandCell from './cellRenderers/expandCell.component';
 import DataCell from './cellRenderers/dataCell.component';
 import ActionCell from './cellRenderers/actionCell.component';
@@ -29,7 +29,7 @@ import SelectCell from './cellRenderers/selectCell.component';
 import SelectHeader from './headerRenderers/selectHeader.component';
 
 const rowHeight = 30;
-const headerHeight = 140;
+const headerHeight = 148;
 const selectColumnWidth = 40;
 const detailsColumnWidth = 40;
 const actionsColumnDefaultWidth = 70;
@@ -62,11 +62,13 @@ const styles = (theme: Theme): StyleRules =>
       flex: 1,
       overflow: 'hidden',
       height: rowHeight,
+      padding: 0,
     },
     headerTableCell: {
       flex: 1,
       height: headerHeight,
       justifyContent: 'space-between',
+      padding: 0,
     },
   });
 
@@ -77,6 +79,7 @@ export interface ColumnType {
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
+  defaultSort?: Order;
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
 }
 
@@ -96,7 +99,11 @@ interface VirtualizedTableProps {
   loadMoreRows?: (offsetParams: IndexRange) => Promise<unknown>;
   totalRowCount?: number;
   sort: { [column: string]: Order };
-  onSort: (column: string, order: Order | null) => void;
+  onSort: (
+    column: string,
+    order: Order | null,
+    updateMethod: UpdateMethod
+  ) => void;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
   actionsWidth?: number;
@@ -393,6 +400,7 @@ const VirtualizedTable = React.memo(
                       icon,
                       filterComponent,
                       disableSort,
+                      defaultSort,
                     }) => {
                       return (
                         <Column
@@ -414,6 +422,7 @@ const VirtualizedTable = React.memo(
                               labelString={label}
                               filterComponent={filterComponent}
                               resizeColumn={resizeColumn}
+                              defaultSort={defaultSort}
                             />
                           )}
                           className={clsx(classes.flexContainer, className)}

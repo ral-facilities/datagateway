@@ -1,18 +1,16 @@
 import DGSearchReducer, { initialState } from './dgsearch.reducer';
 import { DGSearchState } from '../app.types';
 import {
-  submitSearchText,
-  toggleDataset,
-  toggleDatafile,
-  toggleInvestigation,
   setDatasetTab,
   setDatafileTab,
   setInvestigationTab,
-  selectStartDate,
-  selectEndDate,
   setCurrentTab,
 } from '../actions/actions';
-import { settingsLoaded } from '../actions';
+import {
+  loadSearchableEntitites,
+  loadSelectAllSetting,
+  settingsLoaded,
+} from '../actions';
 
 describe('dgsearch reducer', () => {
   let state: DGSearchState;
@@ -33,38 +31,6 @@ describe('dgsearch reducer', () => {
     const updatedState = DGSearchReducer(state, { type: 'irrelevant action' });
 
     expect(updatedState).toBe(state);
-  });
-
-  it('should set search text property when handle submit text action is sent', () => {
-    expect(state.searchText).toEqual('');
-
-    const updatedState = DGSearchReducer(state, submitSearchText('this'));
-
-    expect(updatedState.searchText).toEqual('this');
-  });
-
-  it('should set checkbox property when toggle dataset action is sent', () => {
-    expect(state.checkBox.dataset).toEqual(true);
-
-    const updatedState = DGSearchReducer(state, toggleDataset(false));
-
-    expect(updatedState.checkBox.dataset).toEqual(false);
-  });
-
-  it('should set checkbox property when toggle datafile action is sent', () => {
-    expect(state.checkBox.datafile).toEqual(true);
-
-    const updatedState = DGSearchReducer(state, toggleDatafile(false));
-
-    expect(updatedState.checkBox.datafile).toEqual(false);
-  });
-
-  it('should set checkbox property when toggle investigation action is sent', () => {
-    expect(state.checkBox.investigation).toEqual(true);
-
-    const updatedState = DGSearchReducer(state, toggleInvestigation(false));
-
-    expect(updatedState.checkBox.investigation).toEqual(false);
   });
 
   it('should set tabs property when set dataset tab action is sent', () => {
@@ -99,25 +65,26 @@ describe('dgsearch reducer', () => {
     expect(updatedState.tabs.currentTab).toEqual('dataset');
   });
 
-  it('should set start date property when select start date action is sent', () => {
-    expect(state.selectDate.startDate).toEqual(null);
+  it('should set selectAllSetting when configuring action is sent', () => {
+    expect(state.selectAllSetting).toEqual(true);
 
-    const updatedState = DGSearchReducer(
-      state,
-      selectStartDate(new Date('2012-01-01'))
-    );
+    const updatedState = DGSearchReducer(state, loadSelectAllSetting(false));
 
-    expect(updatedState.selectDate.startDate).toEqual(new Date('2012-01-01'));
+    expect(updatedState.selectAllSetting).toEqual(false);
   });
 
-  it('should set end date property when select end date action is sent', () => {
-    expect(state.selectDate.endDate).toEqual(null);
+  it('should set searchableEntities property when configuring action is sent', () => {
+    expect(state.searchableEntities).toEqual([
+      'investigation',
+      'dataset',
+      'datafile',
+    ]);
 
     const updatedState = DGSearchReducer(
       state,
-      selectEndDate(new Date('2013-11-11'))
+      loadSearchableEntitites(['dataset'])
     );
 
-    expect(updatedState.selectDate.endDate).toEqual(new Date('2013-11-11'));
+    expect(updatedState.searchableEntities).toEqual(['dataset']);
   });
 });

@@ -125,10 +125,6 @@ describe('Dataset table component', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsInfinite).toHaveBeenCalledWith([
       {
@@ -137,22 +133,22 @@ describe('Dataset table component', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('dataset', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: parseInt(investigationId) },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'dataset',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigation.id': { eq: parseInt(investigationId) },
+          }),
+        },
+      ],
+      true
+    );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('dataset');
     expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
@@ -301,6 +297,16 @@ describe('Dataset table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('dataset', expect.anything(), false);
+    expect(useIds).not.toHaveBeenCalledWith('dataset', expect.anything(), true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
   it('renders details panel correctly', () => {

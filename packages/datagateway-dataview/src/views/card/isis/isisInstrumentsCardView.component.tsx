@@ -10,9 +10,10 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -35,7 +36,7 @@ const ISISInstrumentsCardView = (
   );
 
   const textFilter = useTextFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
@@ -46,7 +47,7 @@ const ISISInstrumentsCardView = (
   } = useInstrumentCount();
   const { isLoading: dataLoading, data } = useInstrumentsPaginated();
 
-  const title = React.useMemo(() => {
+  const title: CardViewDetails = React.useMemo(() => {
     const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
     const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
     return {
@@ -59,10 +60,11 @@ const ISISInstrumentsCardView = (
           view
         ),
       filterComponent: textFilter,
+      defaultSort: 'asc',
     };
   }, [t, textFilter, view, studyHierarchy]);
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('instruments.description'),
       dataKey: 'description',
@@ -71,7 +73,7 @@ const ISISInstrumentsCardView = (
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: Title,
@@ -102,7 +104,7 @@ const ISISInstrumentsCardView = (
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

@@ -41,6 +41,7 @@ describe('ISIS Investigations - Card View', () => {
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
+  let replaceSpy: jest.SpyInstance;
 
   const createWrapper = (studyHierarchy = false): ReactWrapper => {
     const store = mockStore(state);
@@ -67,9 +68,13 @@ describe('ISIS Investigations - Card View', () => {
         title: 'Test 1',
         name: 'Test 1',
         visitId: '1',
+        studyInvestigations: [
+          { id: 1, study: { id: 1, pid: 'study pid' }, name: 'study 1' },
+        ],
       },
     ];
     history = createMemoryHistory();
+    replaceSpy = jest.spyOn(history, 'replace');
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -180,6 +185,33 @@ describe('ISIS Investigations - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+  });
+
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigations-card-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('study pid');
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigations-card-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/study pid');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    });
   });
 
   it('updates sort query params on sort', () => {

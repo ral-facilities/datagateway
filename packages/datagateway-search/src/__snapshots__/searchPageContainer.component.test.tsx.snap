@@ -620,6 +620,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "staleTime": 0,
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -646,6 +647,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "staleTime": 0,
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -664,6 +666,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "queryFn": [Function],
                     "queryHash": "[\\"cart\\"]",
                     "queryKey": "cart",
+                    "staleTime": 0,
                   },
                   "queryHash": "[\\"cart\\"]",
                   "queryKey": "cart",
@@ -751,6 +754,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "staleTime": 0,
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -777,6 +781,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "staleTime": 0,
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -795,6 +800,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "queryFn": [Function],
                     "queryHash": "[\\"cart\\"]",
                     "queryKey": "cart",
+                    "staleTime": 0,
                   },
                   "queryHash": "[\\"cart\\"]",
                   "queryKey": "cart",
@@ -1307,19 +1313,20 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
         <Connect(SearchPageContainer)>
           <SearchPageContainer
             currentTab="investigation"
-            datafile={true}
             datafileTab={true}
-            dataset={false}
             datasetTab={true}
-            endDate={null}
-            investigation={false}
             investigationTab={true}
-            searchText=""
+            searchableEntities={
+              Array [
+                "investigation",
+                "dataset",
+                "datafile",
+              ]
+            }
             setDatafileTab={[Function]}
             setDatasetTab={[Function]}
             setInvestigationTab={[Function]}
             sideLayout={false}
-            startDate={null}
           >
             <Switch>
               <Route

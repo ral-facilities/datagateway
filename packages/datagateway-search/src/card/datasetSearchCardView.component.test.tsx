@@ -185,9 +185,9 @@ describe('Dataset - Card View', () => {
     createWrapper();
 
     expect(useLuceneSearch).toHaveBeenCalledWith('Dataset', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: '',
+      startDate: null,
+      endDate: null,
     });
 
     expect(useDatasetCount).toHaveBeenCalledWith([
@@ -304,7 +304,7 @@ describe('Dataset - Card View', () => {
     ).toEqual('Calculating...');
   });
 
-  it('renders DLS link correctly', () => {
+  it("renders DLS link correctly and doesn't allow for download", () => {
     const wrapper = createWrapper('dls');
 
     expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
@@ -313,6 +313,8 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(CardView).find('a').first().text()).toEqual(
       'Dataset test name'
     );
+    expect(wrapper.exists('#add-to-cart-btn-dataset-1')).toBe(true);
+    expect(wrapper.exists('#download-btn-dataset-1')).toBe(false);
   });
 
   it('renders ISIS link & file sizes correctly', () => {

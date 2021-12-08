@@ -11,19 +11,17 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
-  useCustomFilter,
   useDatasetsDatafileCount,
   AddToCartButton,
-  useCustomFilterCount,
-  formatFilterCount,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface DLSDatasetsCVProps {
   proposalName: string;
@@ -43,7 +41,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
@@ -55,37 +53,8 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
   const { data, isLoading: dataLoading } = useDatasetsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('type'),
-    },
-  ]);
-
-  const { data: typeIds } = useCustomFilter('dataset', 'type.id', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
-  const typeIdCounts = useCustomFilterCount('dataset', 'type.id', typeIds, [
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -96,7 +65,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
 
   const datafileCountQueries = useDatasetsDatafileCount(data);
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       // Provide label for filter component.
       label: t('datasets.name'),
@@ -113,7 +82,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [investigationId, proposalName, t, textFilter, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('datasets.details.description'),
       dataKey: 'description',
@@ -122,7 +91,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: ConfirmationNumberIcon,
@@ -140,6 +109,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
@@ -176,30 +146,13 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [data]
   );
 
-  const customFilters = React.useMemo(
-    () => [
-      {
-        label: t('datasets.type.id'),
-        dataKey: 'type.id',
-        filterItems: typeIds
-          ? typeIds.map((id, i) => ({
-              name: id,
-              count: formatFilterCount(typeIdCounts[i]),
-            }))
-          : [],
-        prefixLabel: true,
-      },
-    ],
-    [t, typeIds, typeIdCounts]
-  );
-
   return (
     <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
@@ -214,7 +167,6 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         <DatasetDetailsPanel rowData={dataset} />
       )}
       buttons={buttons}
-      customFilters={customFilters}
     />
   );
 };

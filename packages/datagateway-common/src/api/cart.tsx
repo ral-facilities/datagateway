@@ -86,6 +86,7 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
       onError: (error) => {
         handleICATError(error);
       },
+      staleTime: 0,
     }
   );
 };

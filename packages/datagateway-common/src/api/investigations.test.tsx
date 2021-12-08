@@ -157,7 +157,7 @@ describe('investigation api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(20));
@@ -241,7 +241,7 @@ describe('investigation api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(0));
@@ -733,7 +733,7 @@ describe('investigation api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('distinct', JSON.stringify(['name', 'title']));
@@ -847,7 +847,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(20));
@@ -891,7 +891,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(20));
@@ -987,7 +987,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(0));
@@ -1059,7 +1059,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(0));
@@ -1177,7 +1177,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
 
@@ -1210,7 +1210,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append(
@@ -1283,7 +1283,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
 
@@ -1317,7 +1317,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append(
@@ -1344,6 +1344,18 @@ describe('investigation api functions', () => {
           (axios.get as jest.Mock).mock.calls[0][1].params.toString()
         ).toBe(params.toString());
         expect(result.current.data).toEqual([1, 2, 3]);
+      });
+
+      it('does not send axios request to fetch ids when set to disabled', async () => {
+        const { result } = renderHook(
+          () => useISISInvestigationIds(1, 2, false, false),
+          {
+            wrapper: createReactQueryWrapper(history),
+          }
+        );
+
+        expect(result.current.isIdle).toBe(true);
+        expect(axios.get).not.toHaveBeenCalled();
       });
 
       it('sends axios request to fetch ISIS investigation ids and calls handleICATError on failure', async () => {

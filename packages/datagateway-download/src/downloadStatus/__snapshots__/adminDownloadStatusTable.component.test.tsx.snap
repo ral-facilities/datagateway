@@ -145,7 +145,7 @@ exports[`Admin Download Status Table renders correctly 1`] = `
               loading={true}
               onSort={[Function]}
               sort={Object {}}
-              totalRowCount={-1}
+              totalRowCount={9007199254740991}
             />
           </WithStyles(ForwardRef(Paper))>
         </WithStyles(ForwardRef(Grid))>

@@ -165,62 +165,39 @@
     }
   },
   "my_data_table": {
-    "login_warning_msg": "You need to be logged in to be able to see your own data."
+    "role_selector": "Select role",
+    "all_roles": "All"
   },
   "loading": {
     "verifying": "Verifying URL",
     "oops": "Oops!",
-    "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
+    "message": "We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "buttons": {
-    "add_to_cart": "Add to cart",
-    "remove_from_cart": "Remove from cart",
+    "add_to_cart": "Add to selections",
+    "remove_from_cart": "Remove from selections",
     "download": "Download"
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters",
     "icons": {
-      "title": [
-        "Title",
-        "Name",
-        "Type"
-      ],
-      "fingerprint": [
-        "Visit ID",
-        "Name"
-      ],
-      "public": [
-        "DOI"
-      ],
-      "confirmation_number": [
-        "Dataset Count",
-        " Datafile Count"
-      ],
-      "assessment": [
-        "Instrument",
-        "Beamline"
-      ],
+      "title": ["Title", "Name", "Type"],
+      "fingerprint": ["Visit ID", "Name"],
+      "public": ["DOI"],
+      "confirmation_number": ["Dataset Count", " Datafile Count"],
+      "assessment": ["Instrument", "Beamline"],
       "calendar_today": [
         "Start Date",
         "End Date",
         "Create Time",
         "Modified Time"
       ],
-      "explore": [
-        "Location"
-      ],
-      "save": [
-        "Size"
-      ],
-      "description": [
-        "Description",
-        "Summary"
-      ],
-      "link": [
-        "URL"
-      ]
+      "explore": ["Location"],
+      "save": ["Size"],
+      "description": ["Description", "Summary"],
+      "link": ["URL"]
     }
   },
   "entity_card": {
@@ -234,10 +211,13 @@
     "howLabel": "How it works...",
     "exploreLabel": "1. Explore",
     "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
+    "exploreLink": "/browse/investigation",
     "discoverLabel": "2. Discover",
     "discoverDescription": "Search for the experimental data according to different criteria.",
+    "discoverLink": "/search",
     "downloadLabel": "3. Download",
-    "downloadDescription": "Retrieve the experimental data using a variety of download methods."
+    "downloadDescription": "Retrieve the experimental data using a variety of download methods.",
+    "downloadLink": "/download"
   },
   "selec_alert": {
     "added": "{{count}} item has been added to selections.",

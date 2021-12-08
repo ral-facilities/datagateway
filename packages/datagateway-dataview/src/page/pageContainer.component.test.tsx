@@ -140,8 +140,17 @@ describe('PageContainer - Tests', () => {
 
     wrapper.find('[aria-label="view-search"]').first().simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/search/data');
+
+    history.push('/browse/instrument');
+    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+
+    expect(history.location.pathname).toBe('/search/isis');
+
+    history.push('/browse/proposal');
+    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+
+    expect(history.location.pathname).toBe('/search/dls');
   });
 
   it('opens download plugin when Download Cart clicked', () => {
@@ -204,6 +213,14 @@ describe('PageContainer - Tests', () => {
     expect(
       wrapper.find('[aria-label="page-view app.view_table"]').first().text()
     ).toEqual('app.view_table');
+  });
+
+  it('displays role selector when on My Data route', () => {
+    history.replace(paths.myData.root);
+
+    const wrapper = createWrapper();
+
+    expect(wrapper.find('#role-selector').exists()).toBeTruthy();
   });
 
   it('display filter warning on toggle table', () => {

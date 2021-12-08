@@ -146,6 +146,32 @@ describe('ISIS Studies - Card View', () => {
     ]);
   });
 
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testid="landing-study-card-pid-link"]').first().text()
+    ).toEqual('doi');
+
+    expect(
+      wrapper
+        .find('[data-testid="landing-study-card-pid-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent(
+        '{"studyInvestigations.investigation.startDate":"desc"}'
+      )}`
+    );
+  });
+
   it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
 

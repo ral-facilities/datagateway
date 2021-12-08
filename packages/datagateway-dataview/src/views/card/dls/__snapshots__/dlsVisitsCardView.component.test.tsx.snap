@@ -2,14 +2,6 @@
 
 exports[`DLS Visits - Card View renders correctly 1`] = `
 Object {
-  "customFilters": Array [
-    Object {
-      "dataKey": "type.id",
-      "filterItems": Array [],
-      "label": "investigations.type.id",
-      "prefixLabel": true,
-    },
-  ],
   "data": Array [
     Object {
       "id": 1,
@@ -56,6 +48,7 @@ Object {
     },
     Object {
       "dataKey": "startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -90,7 +83,9 @@ Object {
   "onSort": [Function],
   "page": null,
   "results": null,
-  "sort": Object {},
+  "sort": Object {
+    "startDate": "desc",
+  },
   "title": Object {
     "content": [Function],
     "dataKey": "visitId",

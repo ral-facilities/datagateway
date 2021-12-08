@@ -7,8 +7,9 @@ import {
   ColumnType,
   Study,
   useDateFilter,
-  usePushSort,
+  useSort,
   useTextFilter,
+  externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -94,7 +95,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -130,6 +131,16 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         icon: PublicIcon,
         label: t('studies.pid'),
         dataKey: 'pid',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const studyData = cellProps.rowData as Study;
+          if (studyData?.pid) {
+            return externalSiteLink(
+              `https://doi.org/${studyData.pid}`,
+              studyData.pid,
+              'isis-study-table-doi-link'
+            );
+          }
+        },
         filterComponent: textFilter,
       },
       {
@@ -140,6 +151,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
           (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
             ?.startDate ?? '',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -159,7 +171,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       columns={columns}
     />
   );

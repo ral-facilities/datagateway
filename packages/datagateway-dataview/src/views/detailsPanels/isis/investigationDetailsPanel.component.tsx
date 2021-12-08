@@ -13,7 +13,7 @@ import {
   Divider,
   Tabs,
   Tab,
-  Link,
+  Link as MuiLink,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
@@ -154,11 +154,12 @@ const InvestigationDetailsPanel = (
                       {t('investigations.details.pid')}
                     </Typography>
                     <Typography>
-                      <Link
+                      <MuiLink
                         href={`https://doi.org/${studyInvestigation.study.pid}`}
+                        data-testid="investigation-details-panel-pid-link"
                       >
                         {studyInvestigation.study.pid}
-                      </Link>
+                      </MuiLink>
                     </Typography>
                   </Grid>
                 );
@@ -171,11 +172,16 @@ const InvestigationDetailsPanel = (
               {t('investigations.details.doi')}
             </Typography>
             <Typography>
-              <b>
-                {investigationData.doi && investigationData.doi !== 'null'
-                  ? investigationData.doi
-                  : `${t('investigations.details.doi')} not provided`}
-              </b>
+              {investigationData.doi && investigationData.doi !== 'null' ? (
+                <MuiLink
+                  href={`https://doi.org/${investigationData.doi}`}
+                  data-testid="investigation-details-panel-doi-link"
+                >
+                  {investigationData.doi}
+                </MuiLink>
+              ) : (
+                <b>{`${t('investigations.details.doi')} not provided`}</b>
+              )}
             </Typography>
           </Grid>
           <Grid item xs>

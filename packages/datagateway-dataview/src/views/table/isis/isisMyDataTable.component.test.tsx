@@ -2,7 +2,6 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
   Investigation,
-  NotificationType,
   readSciGatewayToken,
   Table,
   useAddToCart,
@@ -189,10 +188,6 @@ describe('ISIS MyData table component', () => {
           'investigationUsers.user.name': { eq: 'testUser' },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({ investigationUsers: 'user' }),
-      },
     ]);
     expect(useInvestigationsInfinite).toHaveBeenCalledWith([
       {
@@ -207,7 +202,6 @@ describe('ISIS MyData table component', () => {
           {
             investigationInstruments: 'instrument',
           },
-          { investigationUsers: 'user' },
           { studyInvestigations: 'study' },
         ]),
       },
@@ -215,7 +209,18 @@ describe('ISIS MyData table component', () => {
     expect(useInvestigationSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('investigation');
+    expect(useIds).toHaveBeenCalledWith(
+      'investigation',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigationUsers.user.name': { eq: 'testUser' },
+          }),
+        },
+      ],
+      true
+    );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
     expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
@@ -257,7 +262,7 @@ describe('ISIS MyData table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -267,7 +272,7 @@ describe('ISIS MyData table component', () => {
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(history.length).toBe(4);
+    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -280,7 +285,7 @@ describe('ISIS MyData table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"startDate":{"startDate":"2019-08-06"}}'
@@ -290,8 +295,18 @@ describe('ISIS MyData table component', () => {
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(history.length).toBe(4);
+    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+    );
   });
 
   it('updates sort query params on sort', () => {
@@ -302,7 +317,7 @@ describe('ISIS MyData table component', () => {
       .first()
       .simulate('click');
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
@@ -377,6 +392,24 @@ describe('ISIS MyData table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith(
+      'investigation',
+      expect.anything(),
+      false
+    );
+    expect(useIds).not.toHaveBeenCalledWith(
+      'investigation',
+      expect.anything(),
+      true
+    );
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+  });
+
   it('renders details panel correctly and it fetches data and can navigate', () => {
     const wrapper = createWrapper();
 
@@ -400,6 +433,19 @@ describe('ISIS MyData table component', () => {
     expect(history.location.pathname).toBe(
       '/browse/instrument/3/facilityCycle/8/investigation/1/dataset'
     );
+  });
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testid="isis-mydata-table-doi-link"]').first().text()
+    ).toEqual('study pid');
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-mydata-table-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/study pid');
   });
 
   it('renders details panel without datasets link if no facility cycles', () => {
@@ -493,27 +539,5 @@ describe('ISIS MyData table component', () => {
     expect(wrapper.find('[aria-colindex=4]').find('p').text()).toEqual('');
 
     expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
-  });
-
-  it('sends a notification to SciGateway if user is not logged in', () => {
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [] },
-      fetchNextPage: jest.fn(),
-    });
-    (readSciGatewayToken as jest.Mock).mockReturnValue({
-      username: null,
-    });
-    localStorage.setItem('autoLogin', 'true');
-
-    createWrapper();
-
-    expect(events.length).toBe(1);
-    expect(events[0].detail).toEqual({
-      type: NotificationType,
-      payload: {
-        severity: 'warning',
-        message: 'my_data_table.login_warning_msg',
-      },
-    });
   });
 });

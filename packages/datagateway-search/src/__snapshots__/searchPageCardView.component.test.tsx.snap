@@ -1202,340 +1202,6 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "status": "loading",
                   },
                 },
-                Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
-                        "queryKey": Array [
-                          "investigation",
-                          "type.id",
-                          undefined,
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
-                        "queryKey": Array [
-                          "investigation",
-                          "type.id",
-                          undefined,
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
-                    "queryKey": Array [
-                      "investigation",
-                      "type.id",
-                      undefined,
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
-                  "queryKey": Array [
-                    "investigation",
-                    "type.id",
-                    undefined,
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
-                        "queryKey": Array [
-                          "investigation",
-                          "facility.id",
-                          undefined,
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
-                        "queryKey": Array [
-                          "investigation",
-                          "facility.id",
-                          undefined,
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
-                    "queryKey": Array [
-                      "investigation",
-                      "facility.id",
-                      undefined,
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
-                  "queryKey": Array [
-                    "investigation",
-                    "facility.id",
-                    undefined,
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
               ],
               "queriesMap": Object {
                 "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
@@ -1864,340 +1530,6 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "isInvalidated": false,
                     "isPaused": false,
                     "status": "idle",
-                  },
-                },
-                "[\\"investigation\\",\\"facility.id\\",null]": Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
-                        "queryKey": Array [
-                          "investigation",
-                          "facility.id",
-                          undefined,
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
-                        "queryKey": Array [
-                          "investigation",
-                          "facility.id",
-                          undefined,
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
-                    "queryKey": Array [
-                      "investigation",
-                      "facility.id",
-                      undefined,
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",\\"facility.id\\",null]",
-                  "queryKey": Array [
-                    "investigation",
-                    "facility.id",
-                    undefined,
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                "[\\"investigation\\",\\"type.id\\",null]": Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
-                        "queryKey": Array [
-                          "investigation",
-                          "type.id",
-                          undefined,
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
-                        "queryKey": Array [
-                          "investigation",
-                          "type.id",
-                          undefined,
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
-                    "queryKey": Array [
-                      "investigation",
-                      "type.id",
-                      undefined,
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",\\"type.id\\",null]",
-                  "queryKey": Array [
-                    "investigation",
-                    "type.id",
-                    undefined,
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
                   },
                 },
                 "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]": Query {
@@ -3017,11 +2349,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
             currentTab="investigation"
             datafileTab={true}
             datasetTab={true}
-            endDate={null}
             investigationTab={true}
-            searchText=""
             setCurrentTab={[Function]}
-            startDate={null}
           >
             <div>
               <WithStyles(ForwardRef(AppBar))
@@ -3882,159 +3211,174 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                   </WithStyles(ForwardRef(Paper))>
                 </ForwardRef(AppBar)>
               </WithStyles(ForwardRef(AppBar))>
-              <InvestigationCardView>
-                <mockConstructor
-                  buttons={
-                    Array [
-                      [Function],
-                    ]
-                  }
-                  customFilters={
-                    Array [
-                      Object {
-                        "dataKey": "type.id",
-                        "filterItems": Array [],
-                        "label": "investigations.type.id",
-                        "prefixLabel": true,
-                      },
-                      Object {
-                        "dataKey": "facility.id",
-                        "filterItems": Array [],
-                        "label": "investigations.facility.id",
-                        "prefixLabel": true,
-                      },
-                    ]
-                  }
-                  data={Array []}
-                  description={
-                    Object {
-                      "dataKey": "summary",
-                      "filterComponent": [Function],
-                      "label": "investigations.details.summary",
-                    }
-                  }
-                  filters={Object {}}
-                  information={
-                    Array [
-                      Object {
-                        "dataKey": "doi",
-                        "filterComponent": [Function],
-                        "icon": Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        },
-                        "label": "investigations.doi",
-                      },
-                      Object {
-                        "dataKey": "visitId",
-                        "filterComponent": [Function],
-                        "icon": Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        },
-                        "label": "investigations.visit_id",
-                      },
-                      Object {
-                        "dataKey": "name",
-                        "disableSort": true,
-                        "filterComponent": [Function],
-                        "icon": Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        },
-                        "label": "investigations.details.name",
-                      },
-                      Object {
-                        "content": [Function],
-                        "dataKey": "datasetCount",
-                        "disableSort": true,
-                        "icon": Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        },
-                        "label": "investigations.dataset_count",
-                      },
-                      Object {
-                        "content": [Function],
-                        "dataKey": "investigationInstruments.instrument.name",
-                        "filterComponent": [Function],
-                        "icon": Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        },
-                        "label": "investigations.instrument",
-                        "noTooltip": true,
-                      },
-                      Object {
-                        "dataKey": "startDate",
-                        "filterComponent": [Function],
-                        "icon": Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        },
-                        "label": "investigations.details.start_date",
-                      },
-                      Object {
-                        "dataKey": "endDate",
-                        "filterComponent": [Function],
-                        "icon": Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        },
-                        "label": "investigations.details.end_date",
-                      },
-                    ]
-                  }
-                  loadedCount={false}
-                  loadedData={false}
-                  onFilter={[Function]}
-                  onPageChange={[Function]}
-                  onResultsChange={[Function]}
-                  onSort={[Function]}
-                  page={null}
-                  results={null}
-                  sort={Object {}}
-                  title={
-                    Object {
-                      "content": [Function],
-                      "dataKey": "title",
-                      "filterComponent": [Function],
-                      "label": "investigations.title",
-                    }
-                  }
-                  totalDataCount={0}
+              <TabPanel
+                index="investigation"
+                value="investigation"
+              >
+                <Styled(MuiBox)
+                  aria-labelledby="simple-tab-investigation"
+                  border={0}
+                  component="div"
+                  hidden={false}
+                  id="simple-tabpanel-investigation"
+                  role="tabpanel"
                 >
-                  MockedCardView
-                </mockConstructor>
-              </InvestigationCardView>
+                  <div
+                    aria-labelledby="simple-tab-investigation"
+                    className="MuiBox-root MuiBox-root-6"
+                    hidden={false}
+                    id="simple-tabpanel-investigation"
+                    role="tabpanel"
+                  >
+                    <Styled(MuiBox)
+                      p={3}
+                    >
+                      <div
+                        className="MuiBox-root MuiBox-root-7"
+                      >
+                        <InvestigationCardView>
+                          <mockConstructor
+                            buttons={
+                              Array [
+                                [Function],
+                              ]
+                            }
+                            data={Array []}
+                            description={
+                              Object {
+                                "dataKey": "summary",
+                                "filterComponent": [Function],
+                                "label": "investigations.details.summary",
+                              }
+                            }
+                            filters={Object {}}
+                            information={
+                              Array [
+                                Object {
+                                  "content": [Function],
+                                  "dataKey": "doi",
+                                  "filterComponent": [Function],
+                                  "icon": Object {
+                                    "$$typeof": Symbol(react.memo),
+                                    "compare": null,
+                                    "type": Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "render": [Function],
+                                    },
+                                  },
+                                  "label": "investigations.doi",
+                                },
+                                Object {
+                                  "dataKey": "visitId",
+                                  "filterComponent": [Function],
+                                  "icon": Object {
+                                    "$$typeof": Symbol(react.memo),
+                                    "compare": null,
+                                    "type": Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "render": [Function],
+                                    },
+                                  },
+                                  "label": "investigations.visit_id",
+                                },
+                                Object {
+                                  "dataKey": "name",
+                                  "disableSort": true,
+                                  "filterComponent": [Function],
+                                  "icon": Object {
+                                    "$$typeof": Symbol(react.memo),
+                                    "compare": null,
+                                    "type": Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "render": [Function],
+                                    },
+                                  },
+                                  "label": "investigations.details.name",
+                                },
+                                Object {
+                                  "content": [Function],
+                                  "dataKey": "datasetCount",
+                                  "disableSort": true,
+                                  "icon": Object {
+                                    "$$typeof": Symbol(react.memo),
+                                    "compare": null,
+                                    "type": Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "render": [Function],
+                                    },
+                                  },
+                                  "label": "investigations.dataset_count",
+                                },
+                                Object {
+                                  "content": [Function],
+                                  "dataKey": "investigationInstruments.instrument.name",
+                                  "filterComponent": [Function],
+                                  "icon": Object {
+                                    "$$typeof": Symbol(react.memo),
+                                    "compare": null,
+                                    "type": Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "render": [Function],
+                                    },
+                                  },
+                                  "label": "investigations.instrument",
+                                  "noTooltip": true,
+                                },
+                                Object {
+                                  "dataKey": "startDate",
+                                  "filterComponent": [Function],
+                                  "icon": Object {
+                                    "$$typeof": Symbol(react.memo),
+                                    "compare": null,
+                                    "type": Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "render": [Function],
+                                    },
+                                  },
+                                  "label": "investigations.details.start_date",
+                                },
+                                Object {
+                                  "dataKey": "endDate",
+                                  "filterComponent": [Function],
+                                  "icon": Object {
+                                    "$$typeof": Symbol(react.memo),
+                                    "compare": null,
+                                    "type": Object {
+                                      "$$typeof": Symbol(react.forward_ref),
+                                      "render": [Function],
+                                    },
+                                  },
+                                  "label": "investigations.details.end_date",
+                                },
+                              ]
+                            }
+                            loadedCount={false}
+                            loadedData={false}
+                            onFilter={[Function]}
+                            onPageChange={[Function]}
+                            onResultsChange={[Function]}
+                            onSort={[Function]}
+                            page={null}
+                            results={null}
+                            sort={Object {}}
+                            title={
+                              Object {
+                                "content": [Function],
+                                "dataKey": "title",
+                                "filterComponent": [Function],
+                                "label": "investigations.title",
+                              }
+                            }
+                            totalDataCount={0}
+                          >
+                            MockedCardView
+                          </mockConstructor>
+                        </InvestigationCardView>
+                      </div>
+                    </Styled(MuiBox)>
+                  </div>
+                </Styled(MuiBox)>
+              </TabPanel>
             </div>
           </SearchPageCardView>
         </Connect(SearchPageCardView)>

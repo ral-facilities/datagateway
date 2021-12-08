@@ -32,6 +32,7 @@ Object {
       "label": "investigations.name",
     },
     Object {
+      "cellContentRenderer": [Function],
       "dataKey": "doi",
       "filterComponent": [Function],
       "label": "investigations.doi",
@@ -106,6 +107,7 @@ Object {
     },
   ],
   "detailsPanel": [Function],
+  "disableSelectAll": false,
   "loadMoreRows": [Function],
   "loading": false,
   "onCheck": [MockFunction],
@@ -119,7 +121,7 @@ Object {
 
 exports[`Investigation Search Table component renders details panel correctly 1`] = `
 <WithStyles(ForwardRef(Grid))
-  className="makeStyles-root-343"
+  className="makeStyles-root-408"
   container={true}
   direction="column"
   id="details-panel"
@@ -136,7 +138,7 @@ exports[`Investigation Search Table component renders details panel correctly 1`
       </b>
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Divider))
-      className="makeStyles-divider-344"
+      className="makeStyles-divider-409"
     />
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
@@ -344,4 +346,90 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
 
 exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 3`] = `"Test 1"`;
 
-exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 4`] = `"doi 1"`;
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 4`] = `
+<WithStyles(ForwardRef(Link))
+  data-testid="investigation-search-table-doi-link"
+  href="https://doi.org/doi 1"
+>
+  <ForwardRef(Link)
+    classes={
+      Object {
+        "button": "MuiLink-button",
+        "focusVisible": "Mui-focusVisible",
+        "root": "MuiLink-root",
+        "underlineAlways": "MuiLink-underlineAlways",
+        "underlineHover": "MuiLink-underlineHover",
+        "underlineNone": "MuiLink-underlineNone",
+      }
+    }
+    data-testid="investigation-search-table-doi-link"
+    href="https://doi.org/doi 1"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="MuiLink-root MuiLink-underlineHover"
+      color="primary"
+      component="a"
+      data-testid="investigation-search-table-doi-link"
+      href="https://doi.org/doi 1"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      variant="inherit"
+    >
+      <ForwardRef(Typography)
+        className="MuiLink-root MuiLink-underlineHover"
+        classes={
+          Object {
+            "alignCenter": "MuiTypography-alignCenter",
+            "alignJustify": "MuiTypography-alignJustify",
+            "alignLeft": "MuiTypography-alignLeft",
+            "alignRight": "MuiTypography-alignRight",
+            "body1": "MuiTypography-body1",
+            "body2": "MuiTypography-body2",
+            "button": "MuiTypography-button",
+            "caption": "MuiTypography-caption",
+            "colorError": "MuiTypography-colorError",
+            "colorInherit": "MuiTypography-colorInherit",
+            "colorPrimary": "MuiTypography-colorPrimary",
+            "colorSecondary": "MuiTypography-colorSecondary",
+            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+            "displayBlock": "MuiTypography-displayBlock",
+            "displayInline": "MuiTypography-displayInline",
+            "gutterBottom": "MuiTypography-gutterBottom",
+            "h1": "MuiTypography-h1",
+            "h2": "MuiTypography-h2",
+            "h3": "MuiTypography-h3",
+            "h4": "MuiTypography-h4",
+            "h5": "MuiTypography-h5",
+            "h6": "MuiTypography-h6",
+            "noWrap": "MuiTypography-noWrap",
+            "overline": "MuiTypography-overline",
+            "paragraph": "MuiTypography-paragraph",
+            "root": "MuiTypography-root",
+            "srOnly": "MuiTypography-srOnly",
+            "subtitle1": "MuiTypography-subtitle1",
+            "subtitle2": "MuiTypography-subtitle2",
+          }
+        }
+        color="primary"
+        component="a"
+        data-testid="investigation-search-table-doi-link"
+        href="https://doi.org/doi 1"
+        onBlur={[Function]}
+        onFocus={[Function]}
+        variant="inherit"
+      >
+        <a
+          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          data-testid="investigation-search-table-doi-link"
+          href="https://doi.org/doi 1"
+          onBlur={[Function]}
+          onFocus={[Function]}
+        >
+          doi 1
+        </a>
+      </ForwardRef(Typography)>
+    </WithStyles(ForwardRef(Typography))>
+  </ForwardRef(Link)>
+</WithStyles(ForwardRef(Link))>
+`;

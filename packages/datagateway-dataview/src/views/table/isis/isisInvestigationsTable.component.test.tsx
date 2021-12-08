@@ -49,6 +49,7 @@ describe('ISIS Investigations table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
+  let replaceSpy: jest.SpyInstance;
 
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
@@ -102,6 +103,7 @@ describe('ISIS Investigations table component', () => {
       },
     ];
     history = createMemoryHistory();
+    replaceSpy = jest.spyOn(history, 'replace');
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -173,7 +175,8 @@ describe('ISIS Investigations table component', () => {
     expect(useISISInvestigationIds).toHaveBeenCalledWith(
       parseInt(instrumentId),
       parseInt(instrumentChildId),
-      studyHierarchy
+      studyHierarchy,
+      true
     );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
@@ -182,7 +185,7 @@ describe('ISIS Investigations table component', () => {
 
   it('calls useISISInvestigationsInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useISISInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
+    (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -196,6 +199,23 @@ describe('ISIS Investigations table component', () => {
     expect(fetchNextPage).toHaveBeenCalledWith({
       pageParam: { startIndex: 50, stopIndex: 74 },
     });
+  });
+
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigation-table-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('study pid');
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigation-table-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/study pid');
   });
 
   it('updates filter query params on text filter', () => {
@@ -244,6 +264,16 @@ describe('ISIS Investigations table component', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    });
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -260,7 +290,7 @@ describe('ISIS Investigations table component', () => {
 
   it('calls addToCart mutate function on unchecked checkbox click', () => {
     const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValueOnce({
+    (useAddToCart as jest.Mock).mockReturnValue({
       mutate: addToCart,
       loading: false,
     });
@@ -272,7 +302,7 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('calls removeFromCart mutate function on checked checkbox click', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
+    (useCart as jest.Mock).mockReturnValue({
       data: [
         {
           entityId: 1,
@@ -285,7 +315,7 @@ describe('ISIS Investigations table component', () => {
     });
 
     const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValueOnce({
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
       mutate: removeFromCart,
       loading: false,
     });
@@ -325,6 +355,16 @@ describe('ISIS Investigations table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useISISInvestigationIds).toHaveBeenCalledWith(4, 5, false, false);
+    expect(useISISInvestigationIds).not.toHaveBeenCalledWith(4, 5, false, true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
   it('renders details panel correctly and it fetches data and can navigate', () => {

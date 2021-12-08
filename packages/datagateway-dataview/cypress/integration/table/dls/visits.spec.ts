@@ -19,6 +19,10 @@ describe('DLS - Visits Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should be able to click an investigation to see its datasets', () => {
@@ -97,6 +101,11 @@ describe('DLS - Visits Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Visit ID').click();
 

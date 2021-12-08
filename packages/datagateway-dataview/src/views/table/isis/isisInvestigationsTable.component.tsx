@@ -3,6 +3,7 @@ import {
   Investigation,
   Table,
   tableLink,
+  externalSiteLink,
   useISISInvestigationsInfinite,
   useISISInvestigationCount,
   useISISInvestigationIds,
@@ -12,7 +13,7 @@ import {
   useCart,
   useDateFilter,
   useInvestigationSizes,
-  usePushSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
   TableActionProps,
@@ -68,7 +69,8 @@ const ISISInvestigationsTable = (
   const { data: allIds } = useISISInvestigationIds(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
-    studyHierarchy
+    studyHierarchy,
+    selectAllSetting
   );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
@@ -84,12 +86,13 @@ const ISISInvestigationsTable = (
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'investigation' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   const aggregatedData: Investigation[] = React.useMemo(
@@ -99,7 +102,7 @@ const ISISInvestigationsTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -143,14 +146,6 @@ const ISISInvestigationsTable = (
         icon: FingerprintIcon,
         label: t('investigations.name'),
         dataKey: 'name',
-        cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigationData = cellProps.rowData as Investigation;
-          return tableLink(
-            `${urlPrefix}/${investigationData.id}`,
-            investigationData.name,
-            view
-          );
-        },
         filterComponent: textFilter,
       },
       {
@@ -160,10 +155,10 @@ const ISISInvestigationsTable = (
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           if (investigationData?.studyInvestigations?.[0]?.study) {
-            return tableLink(
-              `${urlPrefix}/${investigationData.id}`,
+            return externalSiteLink(
+              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
               investigationData.studyInvestigations[0].study.pid,
-              view
+              'isis-investigation-table-doi-link'
             );
           } else {
             return '';
@@ -199,6 +194,7 @@ const ISISInvestigationsTable = (
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -218,7 +214,7 @@ const ISISInvestigationsTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

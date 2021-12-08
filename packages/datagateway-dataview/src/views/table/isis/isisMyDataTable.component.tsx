@@ -2,12 +2,11 @@ import {
   ColumnType,
   formatCountOrSize,
   Investigation,
-  MicroFrontendId,
-  NotificationType,
   parseSearchToQuery,
   readSciGatewayToken,
   Table,
   tableLink,
+  externalSiteLink,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
@@ -16,7 +15,7 @@ import {
   useInvestigationCount,
   useInvestigationsInfinite,
   useInvestigationSizes,
-  usePushSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
 } from 'datagateway-common';
@@ -56,10 +55,6 @@ const ISISMyDataTable = (): React.ReactElement => {
         'investigationUsers.user.name': { eq: username },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({ investigationUsers: 'user' }),
-    },
   ]);
   const { fetchNextPage, data } = useInvestigationsInfinite([
     {
@@ -74,12 +69,22 @@ const ISISMyDataTable = (): React.ReactElement => {
         {
           investigationInstruments: 'instrument',
         },
-        { investigationUsers: 'user' },
         { studyInvestigations: 'study' },
       ]),
     },
   ]);
-  const { data: allIds } = useIds('investigation');
+  const { data: allIds } = useIds(
+    'investigation',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: username },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'investigation'
@@ -95,12 +100,13 @@ const ISISMyDataTable = (): React.ReactElement => {
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'investigation' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   const aggregatedData: Investigation[] = React.useMemo(
@@ -110,7 +116,7 @@ const ISISMyDataTable = (): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -118,34 +124,6 @@ const ISISMyDataTable = (): React.ReactElement => {
   );
 
   const sizeQueries = useInvestigationSizes(data);
-
-  // Broadcast a SciGateway notification for any warning encountered.
-  const broadcastWarning = (message: string): void => {
-    document.dispatchEvent(
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: NotificationType,
-          payload: {
-            severity: 'warning',
-            message,
-          },
-        },
-      })
-    );
-  };
-
-  React.useEffect(() => {
-    if (localStorage.getItem('autoLogin') === 'true') {
-      broadcastWarning(t('my_data_table.login_warning_msg'));
-    }
-  }, [t]);
-
-  React.useEffect(() => {
-    // Sort and filter by startDate upon load.
-    if (!('startDate' in sort)) pushSort('startDate', 'desc');
-    // we only want this to run on mount so ignore warning
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const urlPrefix = React.useCallback(
     (investigationData: Investigation): string => {
@@ -214,7 +192,11 @@ const ISISMyDataTable = (): React.ReactElement => {
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           if (investigationData?.studyInvestigations?.[0]?.study) {
-            return investigationData.studyInvestigations[0].study.pid;
+            return externalSiteLink(
+              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
+              investigationData.studyInvestigations[0].study.pid,
+              'isis-mydata-table-doi-link'
+            );
           } else {
             return '';
           }
@@ -274,6 +256,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -292,7 +275,7 @@ const ISISMyDataTable = (): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

@@ -26,15 +26,15 @@ import {
   useDateFilter,
   useIds,
   useLuceneSearch,
-  usePushSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
 } from 'datagateway-common';
-import { StateType } from '../state/app.types';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
+import { useSelector } from 'react-redux';
+import { StateType } from '../state/app.types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -85,21 +85,22 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
-  const searchText = useSelector(
-    (state: StateType) => state.dgsearch.searchText
+  const location = useLocation();
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
+
+  const selectAllSetting = useSelector(
+    (state: StateType) => state.dgsearch.selectAllSetting
   );
-  const startDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.startDate
-  );
-  const endDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.endDate
-  );
+
   const { data: luceneData } = useLuceneSearch('Dataset', {
     searchText,
     startDate,
     endDate,
   });
-  const location = useLocation();
   const [t] = useTranslation();
 
   const { filters, sort } = React.useMemo(
@@ -129,14 +130,18 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
       }),
     },
   ]);
-  const { data: allIds } = useIds('dataset', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
+  const { data: allIds } = useIds(
+    'dataset',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'dataset'
@@ -153,7 +158,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -252,12 +257,13 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'dataset' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
@@ -331,8 +337,9 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
+      disableSelectAll={!selectAllSetting}
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}

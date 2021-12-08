@@ -8,8 +8,8 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
-  usePushView,
+  useSort,
+  useUpdateView,
 } from './index';
 import {
   FiltersType,
@@ -29,7 +29,13 @@ import axios from 'axios';
 import handleICATError from '../handleICATError';
 
 import { createReactQueryWrapper } from '../setupTests';
-import { useCustomFilterCount } from '..';
+import {
+  useCustomFilterCount,
+  usePushSearchText,
+  usePushSearchToggles,
+  usePushSearchEndDate,
+  usePushSearchStartDate,
+} from '..';
 
 jest.mock('../handleICATError');
 
@@ -103,7 +109,56 @@ describe('generic api functions', () => {
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
+        searchText: null,
+        dataset: true,
+        datafile: true,
+        investigation: true,
+        startDate: null,
+        endDate: null,
       });
+    });
+
+    it('parses query string with search parameters successfully', () => {
+      const query =
+        'view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25';
+
+      expect(parseSearchToQuery(query)).toEqual({
+        view: 'table',
+        search: null,
+        page: null,
+        results: null,
+        filters: {},
+        sort: {},
+        searchText: 'testText',
+        dataset: true,
+        datafile: false,
+        investigation: true,
+        startDate: new Date('2021-10-17T00:00:00Z'),
+        endDate: new Date('2021-10-25T00:00:00Z'),
+      });
+    });
+
+    it('parses query string with invalid search parameters successfully', () => {
+      const query =
+        'view=table&searchText=testText&datafile=false&startDate=2021-10-34&endDate=2021-14-25';
+
+      //Use JSON.stringify so wont fail due to startDate/endDate not being the same instance
+      expect(JSON.stringify(parseSearchToQuery(query))).toEqual(
+        JSON.stringify({
+          view: 'table',
+          search: null,
+          page: null,
+          results: null,
+          filters: {},
+          sort: {},
+          searchText: 'testText',
+          dataset: true,
+          datafile: false,
+          investigation: true,
+          startDate: new Date(NaN),
+          endDate: new Date(NaN),
+        })
+      );
     });
 
     it('logs errors if filter or search params are wrong', () => {
@@ -130,10 +185,62 @@ describe('generic api functions', () => {
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
+        searchText: null,
+        dataset: true,
+        datafile: true,
+        investigation: true,
+        startDate: null,
+        endDate: null,
       };
 
       const params = new URLSearchParams(
         '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}'
+      );
+
+      expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
+    });
+
+    it('parses query object with search parameters successfully', () => {
+      const query: QueryParams = {
+        view: 'table',
+        search: null,
+        page: null,
+        results: null,
+        filters: {},
+        sort: {},
+        searchText: 'testText',
+        dataset: true,
+        datafile: false,
+        investigation: true,
+        startDate: new Date('2021-10-17T00:00:00Z'),
+        endDate: new Date('2021-10-25T00:00:00Z'),
+      };
+
+      const params = new URLSearchParams(
+        '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
+      );
+
+      expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
+    });
+
+    it('parses query object with invalid search parameters successfully', () => {
+      const query: QueryParams = {
+        view: 'table',
+        search: null,
+        page: null,
+        results: null,
+        filters: {},
+        sort: {},
+        searchText: 'testText',
+        dataset: true,
+        datafile: false,
+        investigation: true,
+        startDate: new Date('2021-10-34T00:00:00Z'),
+        endDate: new Date('2021-14-25T00:00:00Z'),
+      };
+
+      const params = new URLSearchParams(
+        '?view=table&searchText=testText&datafile=false&startDate=Invalid+Date&endDate=Invalid+Date'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -158,7 +265,7 @@ describe('generic api functions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('id asc'));
-      params.append('where', JSON.stringify({ name: { like: 'test' } }));
+      params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
       params.append('where', JSON.stringify({ title: { nlike: 'test' } }));
       params.append(
         'where',
@@ -180,9 +287,11 @@ describe('generic api functions', () => {
     let history: History;
     let wrapper: WrapperComponent<unknown>;
     let pushSpy: jest.SpyInstance;
+    let replaceSpy: jest.SpyInstance;
     beforeEach(() => {
       history = createMemoryHistory();
       pushSpy = jest.spyOn(history, 'push');
+      replaceSpy = jest.spyOn(history, 'replace');
       const newWrapper: WrapperComponent<unknown> = ({ children }) => (
         <Router history={history}>{children}</Router>
       );
@@ -194,17 +303,31 @@ describe('generic api functions', () => {
       jest.resetModules();
     });
 
-    describe('usePushSort', () => {
-      it('returns callback that when called pushes a new sort to the url query', () => {
-        const { result } = renderHook(() => usePushSort(), {
+    describe('useSort', () => {
+      it('returns callback that can push a new sort to the url query', () => {
+        const { result } = renderHook(() => useSort(), {
           wrapper,
         });
 
         act(() => {
-          result.current('name', 'asc');
+          result.current('name', 'asc', 'push');
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
+        });
+      });
+
+      it('returns callback that can replace the sort with a new one in the url query', () => {
+        const { result } = renderHook(() => useSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', 'asc', 'replace');
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
           search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
         });
       });
@@ -217,12 +340,12 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => usePushSort(), {
+        const { result } = renderHook(() => useSort(), {
           wrapper,
         });
 
         act(() => {
-          result.current('name', null);
+          result.current('name', null, 'push');
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
@@ -299,9 +422,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushView', () => {
-      it('returns callback that when called pushes a new page to the url query', () => {
-        const { result } = renderHook(() => usePushView(), {
+    describe('useUpdateView', () => {
+      it('returns callback that when called pushes a new view to the url query', () => {
+        const { result } = renderHook(() => useUpdateView('push'), {
           wrapper,
         });
 
@@ -310,6 +433,104 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?view=table');
+      });
+
+      it('returns callback that when called replaces the current view with a new one in the url query', () => {
+        const { result } = renderHook(() => useUpdateView('replace'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('table');
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith('?view=table');
+      });
+    });
+
+    describe('usePushSearchText', () => {
+      it('returns callback that when called pushes search text to the url query', () => {
+        const { result } = renderHook(() => usePushSearchText(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('test');
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith('?searchText=test');
+      });
+    });
+
+    describe('usePushSearchToggles', () => {
+      it('returns callback that when called pushes search toggles to the url query', () => {
+        const { result } = renderHook(() => usePushSearchToggles(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(false, false, false);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith(
+          '?dataset=false&datafile=false&investigation=false'
+        );
+      });
+    });
+
+    describe('usePushStartDate', () => {
+      it('returns callback that when called pushes startDate to the url query', () => {
+        const { result } = renderHook(() => usePushSearchStartDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-17T00:00:00Z'));
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith(
+          expect.stringContaining('?startDate=2021-10-17')
+        );
+      });
+      it('returns callback that when called with null can remove startDate from the url query', () => {
+        const { result } = renderHook(() => usePushSearchStartDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-17T00:00:00Z'));
+          result.current(null);
+        });
+
+        expect(pushSpy).toHaveBeenLastCalledWith('?');
+      });
+    });
+
+    describe('usePushEndDate', () => {
+      it('returns callback that when called pushes endDate to the url query', () => {
+        const { result } = renderHook(() => usePushSearchEndDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-25T00:00:00Z'));
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith(
+          expect.stringContaining('?endDate=2021-10-25')
+        );
+      });
+      it('returns callback that when called with null can remove endDate from the url query', () => {
+        const { result } = renderHook(() => usePushSearchEndDate(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(new Date('2021-10-25T00:00:00Z'));
+          result.current(null);
+        });
+
+        expect(pushSpy).toHaveBeenLastCalledWith('?');
       });
     });
   });
@@ -346,6 +567,18 @@ describe('generic api functions', () => {
         params.toString()
       );
       expect(result.current.data).toEqual([1, 2, 3]);
+    });
+
+    it('does not send axios request to fetch ids when set to disabled', async () => {
+      const { result } = renderHook(
+        () => useIds('investigation', undefined, false),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      expect(result.current.isIdle).toBe(true);
+      expect(axios.get).not.toHaveBeenCalled();
     });
 
     it('sends axios request to fetch ids and calls handleICATError on failure', async () => {

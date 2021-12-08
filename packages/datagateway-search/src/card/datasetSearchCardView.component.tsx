@@ -14,7 +14,7 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
   useAllFacilityCycles,
   useLuceneSearch,
@@ -28,27 +28,37 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { StateType } from '../state/app.types';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
 interface DatasetCardViewProps {
   hierarchy: string;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    actionButtons: {
+      display: 'flex',
+      flexDirection: 'column',
+      '& button': {
+        marginTop: theme.spacing(1),
+        margin: 'auto',
+      },
+    },
+  })
+);
 
 const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const { hierarchy } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
-  const searchText = useSelector(
-    (state: StateType) => state.dgsearch.searchText
-  );
-  const startDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.startDate
-  );
-  const endDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.endDate
-  );
+  const location = useLocation();
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
+
   const { data: luceneData } = useLuceneSearch('Dataset', {
     searchText,
     startDate,
@@ -56,7 +66,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   });
 
   const [t] = useTranslation();
-  const location = useLocation();
 
   const { filters, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -65,7 +74,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
@@ -265,25 +274,38 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     ]
   );
 
+  const classes = useStyles();
+
   const buttons = React.useMemo(
-    () => [
-      (dataset: Dataset) => (
-        <div>
-          <AddToCartButton
-            entityType="dataset"
-            allIds={data?.map((dataset) => dataset.id) ?? []}
-            entityId={dataset.id}
-          />
-          <DownloadButton
-            entityType="dataset"
-            entityId={dataset.id}
-            entityName={dataset.name}
-            variant="outlined"
-          />
-        </div>
-      ),
-    ],
-    [data]
+    () =>
+      hierarchy !== 'dls'
+        ? [
+            (dataset: Dataset) => (
+              <div className={classes.actionButtons}>
+                <AddToCartButton
+                  entityType="dataset"
+                  allIds={data?.map((dataset) => dataset.id) ?? []}
+                  entityId={dataset.id}
+                />
+                <DownloadButton
+                  entityType="dataset"
+                  entityId={dataset.id}
+                  entityName={dataset.name}
+                />
+              </div>
+            ),
+          ]
+        : [
+            (dataset: Dataset) => (
+              <AddToCartButton
+                entityType="dataset"
+                allIds={data?.map((dataset) => dataset.id) ?? []}
+                entityId={dataset.id}
+              />
+            ),
+          ],
+
+    [classes.actionButtons, data, hierarchy]
   );
 
   return (
@@ -292,7 +314,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

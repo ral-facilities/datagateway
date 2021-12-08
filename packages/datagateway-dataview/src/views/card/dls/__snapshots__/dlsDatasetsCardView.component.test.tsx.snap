@@ -5,14 +5,6 @@ Object {
   "buttons": Array [
     [Function],
   ],
-  "customFilters": Array [
-    Object {
-      "dataKey": "type.id",
-      "filterItems": Array [],
-      "label": "datasets.type.id",
-      "prefixLabel": true,
-    },
-  ],
   "data": Array [
     Object {
       "createTime": "2019-07-23",
@@ -44,6 +36,7 @@ Object {
     },
     Object {
       "dataKey": "createTime",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -104,7 +97,9 @@ Object {
   "onSort": [Function],
   "page": null,
   "results": null,
-  "sort": Object {},
+  "sort": Object {
+    "createTime": "desc",
+  },
   "title": Object {
     "content": [Function],
     "dataKey": "name",

@@ -11,6 +11,7 @@ import {
   Table,
   Investigation,
   tableLink,
+  externalSiteLink,
   FacilityCycle,
   ColumnType,
   DetailsPanelProps,
@@ -22,7 +23,7 @@ import {
   useIds,
   useInvestigationCount,
   useInvestigationsInfinite,
-  usePushSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
   useInvestigationsDatasetCount,
@@ -30,11 +31,11 @@ import {
   formatCountOrSize,
   useLuceneSearch,
 } from 'datagateway-common';
-import { StateType } from '../state/app.types';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
+import { StateType } from '../state/app.types';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -105,22 +106,23 @@ const InvestigationSearchTable = (
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
-  const searchText = useSelector(
-    (state: StateType) => state.dgsearch.searchText
+  const location = useLocation();
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
+
+  const selectAllSetting = useSelector(
+    (state: StateType) => state.dgsearch.selectAllSetting
   );
-  const startDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.startDate
-  );
-  const endDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.endDate
-  );
+
   const { data: luceneData } = useLuceneSearch('Investigation', {
     searchText,
     startDate,
     endDate,
   });
 
-  const location = useLocation();
   const [t] = useTranslation();
 
   const { filters, sort } = React.useMemo(
@@ -150,14 +152,18 @@ const InvestigationSearchTable = (
       }),
     },
   ]);
-  const { data: allIds } = useIds('investigation', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
+  const { data: allIds } = useIds(
+    'investigation',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'investigation'
@@ -174,7 +180,7 @@ const InvestigationSearchTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -245,12 +251,13 @@ const InvestigationSearchTable = (
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'investigation' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
@@ -284,6 +291,14 @@ const InvestigationSearchTable = (
       {
         label: t('investigations.doi'),
         dataKey: 'doi',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          return externalSiteLink(
+            `https://doi.org/${investigationData.doi}`,
+            investigationData.doi,
+            'investigation-search-table-doi-link'
+          );
+        },
         filterComponent: textFilter,
       },
       {
@@ -354,13 +369,16 @@ const InvestigationSearchTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
-      selectedRows={selectedRows}
-      allIds={allIds}
-      onCheck={addToCart}
-      onUncheck={removeFromCart}
+      onSort={handleSort}
       detailsPanel={InvestigationDetailsPanel}
       columns={columns}
+      {...(hierarchy !== 'dls' && {
+        selectedRows,
+        allIds,
+        onCheck: addToCart,
+        onUncheck: removeFromCart,
+        disableSelectAll: !selectAllSetting,
+      })}
     />
   );
 };

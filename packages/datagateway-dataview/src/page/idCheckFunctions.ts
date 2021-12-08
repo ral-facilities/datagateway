@@ -64,7 +64,6 @@ const unmemoizedCheckInstrumentAndFacilityCycleId = (
   facilityCycleId: number,
   investigationId: number
 ): Promise<boolean> => {
-  console.log('performing instrument and facility cycle check');
   return axios
     .get(
       `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations/`,
@@ -161,7 +160,6 @@ const unmemoizedCheckInstrumentId = (
       },
     })
     .then((response: AxiosResponse<Investigation[]>) => {
-      console.log('instrument study check', response.data.length);
       return response.data.length > 0;
     })
     .catch((error) => {

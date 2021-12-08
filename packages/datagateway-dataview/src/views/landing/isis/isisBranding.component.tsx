@@ -27,16 +27,14 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.contrastText,
       '& a': {
         '&:link': {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          color: (theme as any).ukri?.bright?.orange,
+          color: '#FFCA98',
         },
         '&:visited': {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          color: (theme as any).ukri?.bright?.orange,
+          color: '#FFCA98',
         },
         '&:active': {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          color: (theme as any).ukri?.deep?.red,
+          color: (theme as any).colours?.red,
         },
       },
     },

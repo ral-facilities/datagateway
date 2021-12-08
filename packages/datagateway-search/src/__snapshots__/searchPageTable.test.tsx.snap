@@ -1272,6 +1272,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "enabled": true,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -1308,6 +1309,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "enabled": true,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -1336,6 +1338,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
+                    "enabled": true,
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
@@ -1473,6 +1476,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "staleTime": 0,
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -1499,6 +1503,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "staleTime": 0,
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -1517,6 +1522,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "queryFn": [Function],
                     "queryHash": "[\\"cart\\"]",
                     "queryKey": "cart",
+                    "staleTime": 0,
                   },
                   "queryHash": "[\\"cart\\"]",
                   "queryKey": "cart",
@@ -1604,6 +1610,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "staleTime": 0,
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -1630,6 +1637,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "staleTime": 0,
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -1648,6 +1656,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "queryFn": [Function],
                     "queryHash": "[\\"cart\\"]",
                     "queryKey": "cart",
+                    "staleTime": 0,
                   },
                   "queryHash": "[\\"cart\\"]",
                   "queryKey": "cart",
@@ -2287,6 +2296,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "enabled": true,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -2323,6 +2333,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "enabled": true,
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
@@ -2351,6 +2362,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
+                    "enabled": true,
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
@@ -3015,11 +3027,8 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
             currentTab="investigation"
             datafileTab={true}
             datasetTab={true}
-            endDate={null}
             investigationTab={true}
-            searchText=""
             setCurrentTab={[Function]}
-            startDate={null}
           >
             <div>
               <WithStyles(ForwardRef(AppBar))
@@ -3988,6 +3997,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                         "label": "investigations.name",
                                       },
                                       Object {
+                                        "cellContentRenderer": [Function],
                                         "dataKey": "doi",
                                         "filterComponent": [Function],
                                         "label": "investigations.doi",
@@ -4020,6 +4030,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                   }
                                   data={Array []}
                                   detailsPanel={[Function]}
+                                  disableSelectAll={false}
                                   loadMoreRows={[Function]}
                                   loading={false}
                                   onCheck={[Function]}

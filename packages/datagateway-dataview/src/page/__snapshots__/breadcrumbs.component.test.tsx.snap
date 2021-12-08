@@ -246,51 +246,22 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                         title="breadcrumbs.home"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
-                                          PopperProps={
-                                            Object {
-                                              "popperOptions": Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-                                                  },
-                                                },
-                                              },
-                                            }
-                                          }
+                                          arrow={true}
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-3",
+                                              "arrow": "makeStyles-arrow-3",
                                               "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
-                                          title={
-                                            <React.Fragment>
-                                              breadcrumbs.home
-                                              <span
-                                                className="makeStyles-arrow-4"
-                                              />
-                                            </React.Fragment>
-                                          }
+                                          title="breadcrumbs.home"
                                         >
                                           <ForwardRef(Tooltip)
-                                            PopperProps={
-                                              Object {
-                                                "popperOptions": Object {
-                                                  "modifiers": Object {
-                                                    "arrow": Object {
-                                                      "element": null,
-                                                      "enabled": false,
-                                                    },
-                                                  },
-                                                },
-                                              }
-                                            }
+                                            arrow={true}
                                             classes={
                                               Object {
-                                                "arrow": "MuiTooltip-arrow",
-                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "arrow": "MuiTooltip-arrow makeStyles-arrow-3",
+                                                "popper": "MuiTooltip-popper",
                                                 "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
                                                 "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
@@ -303,14 +274,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
-                                            title={
-                                              <React.Fragment>
-                                                breadcrumbs.home
-                                                <span
-                                                  className="makeStyles-arrow-4"
-                                                />
-                                              </React.Fragment>
-                                            }
+                                            title="breadcrumbs.home"
                                           >
                                             <div
                                               aria-describedby={null}
@@ -389,7 +353,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </p>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-3"
+                                              className="MuiTooltip-popper MuiTooltip-popperArrow"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -430,51 +394,22 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                         title="breadcrumbs.investigation {count:100}"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
-                                          PopperProps={
-                                            Object {
-                                              "popperOptions": Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-                                                  },
-                                                },
-                                              },
-                                            }
-                                          }
+                                          arrow={true}
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-3",
+                                              "arrow": "makeStyles-arrow-3",
                                               "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
-                                          title={
-                                            <React.Fragment>
-                                              breadcrumbs.investigation {count:100}
-                                              <span
-                                                className="makeStyles-arrow-4"
-                                              />
-                                            </React.Fragment>
-                                          }
+                                          title="breadcrumbs.investigation {count:100}"
                                         >
                                           <ForwardRef(Tooltip)
-                                            PopperProps={
-                                              Object {
-                                                "popperOptions": Object {
-                                                  "modifiers": Object {
-                                                    "arrow": Object {
-                                                      "element": null,
-                                                      "enabled": false,
-                                                    },
-                                                  },
-                                                },
-                                              }
-                                            }
+                                            arrow={true}
                                             classes={
                                               Object {
-                                                "arrow": "MuiTooltip-arrow",
-                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "arrow": "MuiTooltip-arrow makeStyles-arrow-3",
+                                                "popper": "MuiTooltip-popper",
                                                 "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
                                                 "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
@@ -487,14 +422,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
-                                            title={
-                                              <React.Fragment>
-                                                breadcrumbs.investigation {count:100}
-                                                <span
-                                                  className="makeStyles-arrow-4"
-                                                />
-                                              </React.Fragment>
-                                            }
+                                            title="breadcrumbs.investigation {count:100}"
                                           >
                                             <div
                                               aria-describedby={null}
@@ -681,7 +609,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </a>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-3"
+                                              className="MuiTooltip-popper MuiTooltip-popperArrow"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -722,51 +650,22 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                         title="Test 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
-                                          PopperProps={
-                                            Object {
-                                              "popperOptions": Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-                                                  },
-                                                },
-                                              },
-                                            }
-                                          }
+                                          arrow={true}
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-3",
+                                              "arrow": "makeStyles-arrow-3",
                                               "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
-                                          title={
-                                            <React.Fragment>
-                                              Test 1
-                                              <span
-                                                className="makeStyles-arrow-4"
-                                              />
-                                            </React.Fragment>
-                                          }
+                                          title="Test 1"
                                         >
                                           <ForwardRef(Tooltip)
-                                            PopperProps={
-                                              Object {
-                                                "popperOptions": Object {
-                                                  "modifiers": Object {
-                                                    "arrow": Object {
-                                                      "element": null,
-                                                      "enabled": false,
-                                                    },
-                                                  },
-                                                },
-                                              }
-                                            }
+                                            arrow={true}
                                             classes={
                                               Object {
-                                                "arrow": "MuiTooltip-arrow",
-                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "arrow": "MuiTooltip-arrow makeStyles-arrow-3",
+                                                "popper": "MuiTooltip-popper",
                                                 "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
                                                 "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
@@ -779,14 +678,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
-                                            title={
-                                              <React.Fragment>
-                                                Test 1
-                                                <span
-                                                  className="makeStyles-arrow-4"
-                                                />
-                                              </React.Fragment>
-                                            }
+                                            title="Test 1"
                                           >
                                             <div
                                               aria-describedby={null}
@@ -973,7 +865,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </a>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-3"
+                                              className="MuiTooltip-popper MuiTooltip-popperArrow"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -1013,51 +905,22 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                         title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
-                                          PopperProps={
-                                            Object {
-                                              "popperOptions": Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-                                                  },
-                                                },
-                                              },
-                                            }
-                                          }
+                                          arrow={true}
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-3",
+                                              "arrow": "makeStyles-arrow-3",
                                               "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
-                                          title={
-                                            <React.Fragment>
-                                              INVESTIGATION 1
-                                              <span
-                                                className="makeStyles-arrow-4"
-                                              />
-                                            </React.Fragment>
-                                          }
+                                          title="INVESTIGATION 1"
                                         >
                                           <ForwardRef(Tooltip)
-                                            PopperProps={
-                                              Object {
-                                                "popperOptions": Object {
-                                                  "modifiers": Object {
-                                                    "arrow": Object {
-                                                      "element": null,
-                                                      "enabled": false,
-                                                    },
-                                                  },
-                                                },
-                                              }
-                                            }
+                                            arrow={true}
                                             classes={
                                               Object {
-                                                "arrow": "MuiTooltip-arrow",
-                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "arrow": "MuiTooltip-arrow makeStyles-arrow-3",
+                                                "popper": "MuiTooltip-popper",
                                                 "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
                                                 "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
@@ -1070,14 +933,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
-                                            title={
-                                              <React.Fragment>
-                                                INVESTIGATION 1
-                                                <span
-                                                  className="makeStyles-arrow-4"
-                                                />
-                                              </React.Fragment>
-                                            }
+                                            title="INVESTIGATION 1"
                                           >
                                             <div
                                               aria-describedby={null}
@@ -1156,7 +1012,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </p>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-3"
+                                              className="MuiTooltip-popper MuiTooltip-popperArrow"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -1197,51 +1053,22 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                         title="breadcrumbs.datafile {count:100}"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
-                                          PopperProps={
-                                            Object {
-                                              "popperOptions": Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-                                                  },
-                                                },
-                                              },
-                                            }
-                                          }
+                                          arrow={true}
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-3",
+                                              "arrow": "makeStyles-arrow-3",
                                               "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
-                                          title={
-                                            <React.Fragment>
-                                              breadcrumbs.datafile {count:100}
-                                              <span
-                                                className="makeStyles-arrow-4"
-                                              />
-                                            </React.Fragment>
-                                          }
+                                          title="breadcrumbs.datafile {count:100}"
                                         >
                                           <ForwardRef(Tooltip)
-                                            PopperProps={
-                                              Object {
-                                                "popperOptions": Object {
-                                                  "modifiers": Object {
-                                                    "arrow": Object {
-                                                      "element": null,
-                                                      "enabled": false,
-                                                    },
-                                                  },
-                                                },
-                                              }
-                                            }
+                                            arrow={true}
                                             classes={
                                               Object {
-                                                "arrow": "MuiTooltip-arrow",
-                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "arrow": "MuiTooltip-arrow makeStyles-arrow-3",
+                                                "popper": "MuiTooltip-popper",
                                                 "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
                                                 "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
@@ -1254,14 +1081,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               }
                                             }
                                             disableHoverListener={true}
-                                            title={
-                                              <React.Fragment>
-                                                breadcrumbs.datafile {count:100}
-                                                <span
-                                                  className="makeStyles-arrow-4"
-                                                />
-                                              </React.Fragment>
-                                            }
+                                            title="breadcrumbs.datafile {count:100}"
                                           >
                                             <div
                                               aria-describedby={null}
@@ -1344,7 +1164,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </p>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-3"
+                                              className="MuiTooltip-popper MuiTooltip-popperArrow"
                                               id={null}
                                               open={false}
                                               placement="bottom"

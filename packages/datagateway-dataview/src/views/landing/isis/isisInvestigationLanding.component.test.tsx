@@ -364,6 +364,40 @@ describe('ISIS Investigation Landing page', () => {
     );
   });
 
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigation-landing-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigation-landing-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
+  });
+
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('study pid');
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/study pid');
+  });
+
   it('copies data citation to clipboard', () => {
     // Mock the clipboard object
     const testWriteText = jest.fn();

@@ -111,7 +111,18 @@ const LinkedInvestigation = (
 
   const shortInvestigationInfo = [
     {
-      content: (entity: Investigation) => entity.doi,
+      content: function doiFormat(entity: Investigation) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              data-testid="landing-study-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('investigations.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -296,7 +307,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const shortInfo = [
     {
-      content: (entity: Study) => entity.pid,
+      content: function studyPidFormat(entity: Study) {
+        return (
+          entity?.pid && (
+            <MuiLink
+              href={`https://doi.org/${entity.pid}`}
+              data-testid="landing-study-pid-link"
+            >
+              {entity.pid}
+            </MuiLink>
+          )
+        );
+      },
       label: t('studies.pid'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -366,7 +388,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12}>
+        <Grid item container xs={12} id="study-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Typography
@@ -436,9 +458,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {t('doi_constants.publisher.name')}
                 {pid && ', '}
                 {pid && (
-                  <a
+                  <MuiLink
                     href={`https://doi.org/${pid}`}
-                  >{`https://doi.org/${pid}`}</a>
+                  >{`https://doi.org/${pid}`}</MuiLink>
                 )}
               </i>
             </Typography>

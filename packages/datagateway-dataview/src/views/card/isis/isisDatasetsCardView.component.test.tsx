@@ -112,10 +112,6 @@ describe('ISIS Datasets - Card View', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsPaginated).toHaveBeenCalledWith([
       {
@@ -123,10 +119,6 @@ describe('ISIS Datasets - Card View', () => {
         filterValue: JSON.stringify({
           'investigation.id': { eq: investigationId },
         }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
       },
     ]);
   });
@@ -205,6 +197,16 @@ describe('ISIS Datasets - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
   });
 
   it('updates sort query params on sort', () => {

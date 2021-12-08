@@ -39,7 +39,7 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
 
   return !(selectedIds && selectedIds.includes(entityId)) ? (
     <Button
-      id="add-to-cart-btn"
+      id={`add-to-cart-btn-${entityType}-${entityId}`}
       variant="contained"
       color="primary"
       startIcon={<AddCircleOutlineOutlined />}
@@ -50,7 +50,7 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
     </Button>
   ) : (
     <Button
-      id="remove-from-cart-btn"
+      id={`remove-from-cart-btn-${entityType}-${entityId}`}
       variant="contained"
       color="secondary"
       startIcon={<RemoveCircleOutlineOutlined />}

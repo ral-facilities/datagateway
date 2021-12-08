@@ -4,6 +4,7 @@ import {
   Fingerprint,
   Public,
 } from '@material-ui/icons';
+import { Link as MuiLink } from '@material-ui/core';
 import {
   CardView,
   formatCountOrSize,
@@ -20,7 +21,7 @@ import {
   usePushFilters,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
   AddToCartButton,
 } from 'datagateway-common';
@@ -39,7 +40,7 @@ const InvestigationCardView = (): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
   const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
@@ -100,8 +101,20 @@ const InvestigationCardView = (): React.ReactElement => {
   const information = React.useMemo(
     () => [
       {
-        icon: Public,
+        content: function doiFormat(entity: Investigation) {
+          return (
+            entity?.doi && (
+              <MuiLink
+                href={`https://doi.org/${entity.doi}`}
+                data-testid="investigation-card-doi-link"
+              >
+                {entity.doi}
+              </MuiLink>
+            )
+          );
+        },
         label: t('investigations.doi'),
+        icon: Public,
         dataKey: 'doi',
         filterComponent: textFilter,
       },
@@ -192,7 +205,7 @@ const InvestigationCardView = (): React.ReactElement => {
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilters}
-      onSort={pushSort}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
