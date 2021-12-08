@@ -6,7 +6,6 @@ import {
   WithStyles,
   Grid,
   createStyles,
-  Link,
   Box,
   Paper,
   Button,
@@ -43,27 +42,33 @@ const styles = (theme: Theme): StyleRules =>
     paper: {
       borderRadius: '4px',
       marginBottom: theme.spacing(2),
+      height: '100%',
     },
     bluePaper: {
       borderRadius: '4px',
       marginBottom: theme.spacing(2),
       backgroundColor: '#003088',
+      height: '100%',
     },
     paperHeading: {
       fontWeight: 'bold',
       color: theme.palette.text.primary,
+      marginBottom: theme.spacing(2),
     },
     paperCaption: {
       textAlign: 'left',
       color: theme.palette.secondary.main,
+      marginBottom: theme.spacing(2),
     },
     bluePaperHeading: {
       fontWeight: 'bold',
       color: theme.palette.text.primary,
+      marginBottom: theme.spacing(2),
     },
     bluePaperCaption: {
       textAlign: 'left',
       color: theme.palette.secondary.main,
+      marginBottom: theme.spacing(2),
     },
     paperContent: {
       padding: theme.spacing(2),
@@ -71,47 +76,11 @@ const styles = (theme: Theme): StyleRules =>
     avatar: {
       backgroundColor: '#1E5DF8',
       color: '#FFFFFF',
-      width: '70px',
-      height: '70px',
+      width: '60px',
+      height: '60px',
     },
     avatarIcon: {
       transform: 'scale(1.75)',
-    },
-    howItWorks: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      // TODO: Remove use of "vw" here?
-      paddingLeft: '10vw',
-      paddingRight: '10vw',
-      paddingTop: 15,
-      backgroundColor: theme.palette.background.default,
-    },
-    howItWorksTitle: {
-      fontWeight: 'bold',
-      color: theme.palette.text.primary,
-      paddingBottom: 20,
-    },
-    howItWorksGridItem: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-    howItWorksGridItemTitle: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.orange,
-      fontWeight: 'bold',
-      paddingBottom: 10,
-    },
-    howItWorksGridItemImage: {
-      height: 200,
-      width: 200,
-      borderRadius: 200 / 2,
-      paddingBottom: 10,
-    },
-    howItWorksGridItemCaption: {
-      textAlign: 'center',
-      color: theme.palette.secondary.main,
     },
   });
 
@@ -319,96 +288,6 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
           </Grid>
         </Grid>
       </Box>
-
-      <div className={props.classes.howItWorks}>
-        <Typography variant="h4" className={props.classes.howItWorksTitle}>
-          {props.howLabel}
-        </Typography>
-
-        <Grid container spacing={3}>
-          <Grid
-            item
-            sm={12}
-            md={4}
-            className={props.classes.howItWorksGridItem}
-          >
-            <Link
-              variant="h5"
-              className={props.classes.howItWorksGridItemTitle}
-              href={props.exploreLink}
-            >
-              {props.exploreLabel}
-            </Link>
-            <Link href={props.exploreLink}>
-              <img
-                src={props.exploreImage}
-                alt={props.exploreLabel}
-                className={props.classes.howItWorksGridItemImage}
-              />
-            </Link>
-            <Typography
-              variant="body1"
-              className={props.classes.howItWorksGridItemCaption}
-            >
-              {props.exploreDescription}
-            </Typography>
-          </Grid>
-          <Grid
-            item
-            sm={12}
-            md={4}
-            className={props.classes.howItWorksGridItem}
-          >
-            <Link
-              variant="h5"
-              className={props.classes.howItWorksGridItemTitle}
-              href={props.discoverLink}
-            >
-              {props.discoverLabel}
-            </Link>
-            <Link href={props.discoverLink}>
-              <img
-                src={props.discoverImage}
-                alt={props.discoverLabel}
-                className={props.classes.howItWorksGridItemImage}
-              />
-            </Link>
-            <Typography
-              variant="body1"
-              className={props.classes.howItWorksGridItemCaption}
-            >
-              {props.discoverDescription}
-            </Typography>
-          </Grid>
-          <Grid
-            item
-            sm={12}
-            md={4}
-            className={props.classes.howItWorksGridItem}
-          >
-            <Link
-              variant="h5"
-              className={props.classes.howItWorksGridItemTitle}
-              href={props.downloadLink}
-            >
-              {props.downloadLabel}
-            </Link>
-            <Link href={props.downloadLink}>
-              <img
-                src={props.downloadImage}
-                alt={props.downloadLabel}
-                className={props.classes.howItWorksGridItemImage}
-              />
-            </Link>
-            <Typography
-              variant="body1"
-              className={props.classes.howItWorksGridItemCaption}
-            >
-              {props.downloadDescription}
-            </Typography>
-          </Grid>
-        </Grid>
-      </div>
     </div>
   );
 };
