@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
   parseSearchToQuery,
   Study,
   tableLink,
@@ -19,7 +20,6 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { format, set } from 'date-fns';
 import { Link as MuiLink } from '@material-ui/core';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface ISISStudiesCVProps {
   instrumentId: string;

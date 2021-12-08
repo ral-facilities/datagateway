@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
   FacilityCycle,
   parseSearchToQuery,
   tableLink,
@@ -16,7 +17,6 @@ import {
 import { CalendarToday } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface ISISFacilityCyclesCVProps {
   instrumentId: string;

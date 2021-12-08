@@ -28,6 +28,7 @@ export { default as ExpandCellComponent } from './table/cellRenderers/expandCell
 export * from './table/cellRenderers/cellContentRenderers';
 
 export { default as CardView } from './card/cardView.component';
+export type { CardViewDetails } from './card/cardView.component';
 export { default as AdvancedFilter } from './card/advancedFilter.component';
 
 export * from './state/actions/index';

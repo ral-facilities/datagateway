@@ -8,6 +8,7 @@ import {
 } from '@material-ui/icons';
 import {
   CardView,
+  CardViewDetails,
   formatCountOrSize,
   Investigation,
   nestedValue,
@@ -31,7 +32,6 @@ import { useTranslation } from 'react-i18next';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
