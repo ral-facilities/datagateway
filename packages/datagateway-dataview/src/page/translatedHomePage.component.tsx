@@ -6,6 +6,8 @@ import GreenSwirl1Image from 'datagateway-common/src/images/green-swirl1.png';
 import GreenSwirl2Image from 'datagateway-common/src/images/green-swirl2.png';
 import Decal1Image from 'datagateway-common/src/images/decal1.svg';
 import Decal2Image from 'datagateway-common/src/images/decal2.svg';
+import Decal2DarkImage from 'datagateway-common/src/images/decal2-dark.svg';
+import Decal2DarkHCImage from 'datagateway-common/src/images/decal2-darkhc.svg';
 import FacilityImage from 'datagateway-common/src/images/facility.jpg';
 import ExploreImage from 'datagateway-common/src/images/explore.jpg';
 import DiscoverImage from 'datagateway-common/src/images/discover.jpg';
@@ -29,6 +31,8 @@ export const TranslatedHomePage = React.memo(
         greenSwirl2Image={props.pluginHost + GreenSwirl2Image}
         decal1Image={props.pluginHost + Decal1Image}
         decal2Image={props.pluginHost + Decal2Image}
+        decal2DarkImage={props.pluginHost + Decal2DarkImage}
+        decal2DarkHCImage={props.pluginHost + Decal2DarkHCImage}
         facilityImage={props.pluginHost + FacilityImage}
         exploreImage={props.pluginHost + ExploreImage}
         discoverImage={props.pluginHost + DiscoverImage}
