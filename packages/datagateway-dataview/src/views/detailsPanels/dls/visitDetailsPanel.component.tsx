@@ -255,12 +255,12 @@ const VisitDetailsPanel = (
           hidden={value !== 'publications'}
         >
           <Grid container className={classes.root} direction="column">
+            <Typography variant="overline">
+              {investigationData.publications.length <= 1
+                ? t('investigations.details.publications.reference')
+                : t('investigations.details.publications.reference') + 's'}
+            </Typography>
             {investigationData.publications.length > 0 ? (
-              <Typography variant="overline">
-                {investigationData.publications.length <= 1
-                  ? t('investigations.details.publications.reference')
-                  : t('investigations.details.publications.reference') + 's'}
-              </Typography>                
               investigationData.publications.map((publication) => {
                 return (
                   <Grid key={publication.id} item xs>
