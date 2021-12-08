@@ -82,6 +82,12 @@ const styles = (theme: Theme): StyleRules =>
     avatarIcon: {
       transform: 'scale(1.75)',
     },
+    buttonContainer: {
+      display: 'flex',
+    },
+    button: {
+      margin: theme.spacing(2),
+    },
   });
 
 export interface HomePageProps {
@@ -99,6 +105,7 @@ export interface HomePageProps {
   logo: string;
   backgroundImage: string;
   greenSwirl1Image: string;
+  greenSwirl2Image: string;
   decal1Image: string;
   decal2Image: string;
   facilityImage: string;
@@ -266,24 +273,34 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
           </Grid>
           <Grid item xs={12} sm={4}>
             <Paper className={props.classes.bluePaper} elevation={1}>
-              <Box className={props.classes.paperContent}>
-                <Typography
-                  variant="h4"
-                  className={props.classes.bluePaperHeading}
-                >
-                  ISIS Neutron and Muon Source
-                </Typography>
-                <Typography
-                  variant="body1"
-                  className={props.classes.bluePaperCaption}
-                >
-                  World-leading centre for research giving unique insights into
-                  the properties of materials on the atomic scale.
-                </Typography>
-                <Button color="primary" variant="contained">
-                  Read more
-                </Button>
-              </Box>
+              <div
+                style={{
+                  backgroundImage: `url(${props.greenSwirl2Image})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'top right',
+                  backgroundSize: 'auto 100%',
+                  height: '100%',
+                }}
+              >
+                <Box className={props.classes.paperContent}>
+                  <Typography
+                    variant="h4"
+                    className={props.classes.bluePaperHeading}
+                  >
+                    ISIS Neutron and Muon Source
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    className={props.classes.bluePaperCaption}
+                  >
+                    World-leading centre for research giving unique insights
+                    into the properties of materials on the atomic scale.
+                  </Typography>
+                  <Button color="primary" variant="contained">
+                    Read more
+                  </Button>
+                </Box>
+              </div>
             </Paper>
           </Grid>
         </Grid>
