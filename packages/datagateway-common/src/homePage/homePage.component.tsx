@@ -175,7 +175,14 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
         <Paper className={props.classes.paper} elevation={1}>
           <Grid container style={{ height: '100%' }}>
             <Grid item xs={6}>
-              <Box className={props.classes.paperContent}>
+              <Box
+                className={props.classes.paperContent}
+                display="flex"
+                flexDirection="column"
+                justifyContent="flex-start"
+                height="100%"
+                boxSizing="border-box"
+              >
                 <Typography variant="h4" className={props.classes.paperHeading}>
                   Browse, explore and visualise experimental data
                 </Typography>
@@ -196,9 +203,11 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                   DataGateway focuses on providing data discovery and data
                   access functionality to the data.
                 </Typography>
-                <Button color="primary" variant="contained">
-                  Browse data
-                </Button>
+                <Box marginTop="auto">
+                  <Button color="primary" variant="contained">
+                    Browse data
+                  </Button>
+                </Box>
               </Box>
             </Grid>
             <Grid item xs={6}>
@@ -229,7 +238,14 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
             <Paper className={props.classes.paper} elevation={1}>
-              <Box className={props.classes.paperContent}>
+              <Box
+                className={props.classes.paperContent}
+                display="flex"
+                flexDirection="column"
+                justifyContent="flex-start"
+                height="100%"
+                boxSizing="border-box"
+              >
                 <Avatar className={props.classes.avatar}>
                   <SearchIcon className={props.classes.avatarIcon} />
                 </Avatar>
@@ -243,15 +259,24 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                   Search for the experimental data according to different
                   criteria.
                 </Typography>
-                <Button color="primary" variant="contained">
-                  Search data
-                </Button>
+                <Box marginTop="auto">
+                  <Button color="primary" variant="contained">
+                    Search data
+                  </Button>
+                </Box>
               </Box>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Paper className={props.classes.paper} elevation={1}>
-              <Box className={props.classes.paperContent}>
+              <Box
+                className={props.classes.paperContent}
+                display="flex"
+                flexDirection="column"
+                justifyContent="flex-start"
+                height="100%"
+                boxSizing="border-box"
+              >
                 <Avatar className={props.classes.avatar}>
                   <DownloadIcon className={props.classes.avatarIcon} />
                 </Avatar>
@@ -265,9 +290,11 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                   Retrieve the experimental data using a variety of download
                   methods.
                 </Typography>
-                <Button color="primary" variant="contained">
-                  Download data
-                </Button>
+                <Box marginTop="auto">
+                  <Button color="primary" variant="contained">
+                    Download data
+                  </Button>
+                </Box>
               </Box>
             </Paper>
           </Grid>
@@ -282,7 +309,14 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                   height: '100%',
                 }}
               >
-                <Box className={props.classes.paperContent}>
+                <Box
+                  className={props.classes.paperContent}
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="flex-start"
+                  height="100%"
+                  boxSizing="border-box"
+                >
                   <Typography
                     variant="h4"
                     className={props.classes.bluePaperHeading}
@@ -296,9 +330,11 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
                     World-leading centre for research giving unique insights
                     into the properties of materials on the atomic scale.
                   </Typography>
-                  <Button color="primary" variant="contained">
-                    Read more
-                  </Button>
+                  <Box marginTop="auto">
+                    <Button color="primary" variant="contained">
+                      Read more
+                    </Button>
+                  </Box>
                 </Box>
               </div>
             </Paper>
