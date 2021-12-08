@@ -275,20 +275,29 @@ const InvestigationDetailsPanel = (
           hidden={value !== 'publications'}
         >
           <Grid container className={classes.root} direction="column">
-            <Typography variant="overline">
-              {investigationData.publications.length <= 1
-                ? t('investigations.details.publications.reference')
-                : t('investigations.details.publications.reference') + 's'}
-            </Typography>
-            {investigationData.publications.map((publication) => {
-              return (
-                <Grid key={publication.id} item xs>
-                  <Typography>
-                    <b>{publication.fullReference}</b>
-                  </Typography>
-                </Grid>
-              );
-            })}
+            {investigationData.publications.length > 0 ? (
+              <Typography variant="overline">
+                {investigationData.publications.length <= 1
+                  ? t('investigations.details.publications.reference')
+                  : t('investigations.details.publications.reference') + 's'}
+              </Typography>
+              investigationData.publications.map((publication) => {
+                return (
+                  <Grid key={publication.id} item xs>
+                    <Typography variant="overline">
+                      {t('investigations.details.publications.reference')}
+                    </Typography>
+                    <Typography>
+                      <b>{publication.fullReference}</b>
+                    </Typography>
+                  </Grid>
+                );
+              })
+            ) : (
+              <Typography data-testid="visit-details-panel-no-publications">
+                {t('investigations.details.publications.no_publications')}
+              </Typography>
+            )}
           </Grid>
         </div>
       )}

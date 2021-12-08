@@ -27,6 +27,27 @@ describe('ISIS - MyData Table', () => {
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should('exist');
     });
 
+    it('should disable the hover tool tip by pressing escape', () => {
+      // The hover tool tip has a enter delay of 500ms.
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.get('[data-testid="isis-mydata-table-title"]')
+        .first()
+        .trigger('mouseover', { force: true })
+        .wait(700)
+        .get('[data-testid="arrow-tooltip-component-true"]')
+        .should('exist');
+
+      cy.get('body').type('{esc}');
+
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.get('[data-testid="isis-mydata-table-title"]')
+        .wait(700)
+        .first()
+        .get('[data-testid="arrow-tooltip-component-false"]')
+        .first()
+        .should('exist');
+    });
+
     it('should be able to click an investigation to see its landing page', () => {
       cy.get('[role="gridcell"] a').first().click({ force: true });
       cy.location('pathname').should(

@@ -177,7 +177,8 @@ const ISISMyDataTable = (): React.ReactElement => {
             return tableLink(
               `${url}/${investigationData.id}`,
               investigationData.title,
-              view
+              view,
+              'isis-mydata-table-title'
             );
           } else {
             return investigationData.title;

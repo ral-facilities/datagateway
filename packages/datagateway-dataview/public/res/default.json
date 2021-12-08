@@ -98,7 +98,8 @@
       },
       "publications": {
         "label": "Publications",
-        "reference": "Reference"
+        "reference": "Reference",
+        "no_publications": "No publications"
       },
       "type": {
         "id": "Type ID"

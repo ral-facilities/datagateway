@@ -62,11 +62,18 @@ const ISISInstrumentsTable = (
           return tableLink(
             `/${pathRoot}/instrument/${instrumentData.id}/${instrumentChild}`,
             instrumentData.fullName || instrumentData.name,
-            view
+            view,
+            'isis-instrument-table-name'
           );
         },
         filterComponent: textFilter,
         defaultSort: 'asc',
+      },
+      {
+        icon: TitleIcon,
+        label: t('instruments.type'),
+        dataKey: 'type',
+        filterComponent: textFilter,
       },
     ];
   }, [t, textFilter, view, studyHierarchy]);

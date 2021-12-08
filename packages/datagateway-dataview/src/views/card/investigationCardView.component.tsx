@@ -82,7 +82,12 @@ const InvestigationCardView = (): React.ReactElement => {
       // Provide both the dataKey (for tooltip) and content to render.
       dataKey: 'title',
       content: (investigation: Investigation) => {
-        return investigationLink(investigation.id, investigation.title, view);
+        return investigationLink(
+          investigation.id,
+          investigation.title,
+          view,
+          'investigation-card-title'
+        );
       },
       filterComponent: textFilter,
     }),

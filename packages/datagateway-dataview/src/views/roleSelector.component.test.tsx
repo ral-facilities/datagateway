@@ -128,7 +128,7 @@ describe('Role Selector', () => {
     ).toBe('my_data_table.all_roles');
     expect(
       wrapper.find('[role="listbox"] li[role="option"]').at(1).text()
-    ).toBe(mockData[0].role);
+    ).toBe(mockData[0].role.toLowerCase());
     expect(
       wrapper.find('[role="listbox"] li[role="option"]').at(2).text()
     ).toBe(mockData[1].role);
@@ -143,11 +143,6 @@ describe('Role Selector', () => {
 
     const selectInput = wrapper.find('input').first();
     selectInput.simulate('change', { target: { value: 'PI' } });
-
-    expect(mockPushFilters).toHaveBeenCalledWith('investigationUsers.role', {
-      value: 'PI',
-      type: 'include',
-    });
 
     selectInput.simulate('change', { target: { value: '' } });
 

@@ -109,7 +109,7 @@ const RoleSelector: React.FC = () => {
         </MenuItem>
         {roles?.map((role) => (
           <MenuItem key={role} value={role}>
-            {role}
+            {role.replace('_', ' ').toLowerCase()}
           </MenuItem>
         ))}
       </Select>

@@ -117,6 +117,7 @@ describe('Visit details panel component', () => {
     expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
   });
 
+
   it('checks if multiple samples result in change of title to plural version', () => {
     rowData.samples = [
       {
@@ -147,6 +148,16 @@ describe('Visit details panel component', () => {
 
     const wrapper = createWrapper();
     expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('renders publication tab and text " NO publications" when no data is prsent', () => {
+    rowData.publications = [];
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="visit-details-panel-no-publications"]')
+        .exists()
+    ).toBeTruthy();
   });
 
   it('calls useInvestigationDetails and useInvestigationSize hooks on load', () => {
