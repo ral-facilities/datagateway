@@ -24,7 +24,6 @@ import {
   Study,
   tableLink,
   useStudy,
-  Mark,
   ViewsType,
   AddToCartButton,
   ArrowTooltip,
@@ -34,7 +33,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import Branding from './isisBranding.component';
-import Button from '@material-ui/core/Button';
 import CitationFormatter from '../../citationFormatter.component';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -188,8 +186,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   ]);
 
   const [value, setValue] = React.useState<'details'>('details');
-  const citationRef = React.useRef<HTMLElement>(null);
-  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const { instrumentId, studyId } = props;
 
   const pathRoot = 'browseStudyHierarchy';
@@ -435,68 +431,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Typography data-testid="landing-study-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
-
-            <Typography
-              className={classes.subHeading}
-              component="h6"
-              variant="h6"
-              data-testid="landing-study-citation-label"
-            >
-              {t('studies.details.citation_label')}
-            </Typography>
-            <Typography data-testid="landing-study-citation_format">
-              {t('studies.details.citation_format')}
-            </Typography>
-            <Typography data-testid="landing-study-citation">
-              <i ref={citationRef}>
-                {formattedUsers.length > 1 &&
-                  `${formattedUsers[0].fullName} et al; `}
-                {formattedUsers.length === 1 &&
-                  `${formattedUsers[0].fullName}; `}
-                {`${data?.[0]?.studyInvestigations?.[0]?.investigation?.startDate?.slice(
-                  0,
-                  4
-                )}: `}
-                {title && `${title}, `}
-                {t('doi_constants.publisher.name')}
-                {pid && ', '}
-                {pid && (
-                  <MuiLink
-                    href={`https://doi.org/${pid}`}
-                  >{`https://doi.org/${pid}`}</MuiLink>
-                )}
-              </i>
-            </Typography>
-            {!copiedCitation ? (
-              <Button
-                id="landing-study-copy-citation"
-                aria-label={t('studies.details.copy_citation_arialabel')}
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => {
-                  if (citationRef?.current?.textContent) {
-                    navigator.clipboard.writeText(
-                      citationRef.current.textContent
-                    );
-                    setCopiedCitation(true);
-                    setTimeout(() => setCopiedCitation(false), 1750);
-                  }
-                }}
-              >
-                {t('studies.details.copy_citation')}
-              </Button>
-            ) : (
-              <Button
-                id="landing-study-copied-citation"
-                variant="contained"
-                color="primary"
-                size="small"
-                startIcon={<Mark size={20} visible={true} />}
-              >
-                {t('studies.details.copied_citation')}
-              </Button>
-            )}
             {pid && <CitationFormatter doi={pid} />}
           </Grid>
 

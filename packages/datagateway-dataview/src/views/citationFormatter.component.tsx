@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Mark } from 'datagateway-common';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
@@ -61,12 +61,12 @@ const CitationFormatter = (
   const [copiedCitation, setCopiedCitation] = React.useState(false);
   const [error, setError] = React.useState(false);
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const loadCitation = (format: string): void => {
     /* Notes:
         - locale 'en-GB' returns plain text whereas 'GB' gives the formatted text */
     const citationPromise = fetchCitation(
       doi,
-      event.target.value as string,
+      format,
       t('studies.details.citation_formatter.locale')
     );
     Promise.resolve(citationPromise)
@@ -79,6 +79,10 @@ const CitationFormatter = (
       });
   };
 
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+    loadCitation(event.target.value as string);
+  };
+
   //Information on available formats can be found here: https://citationstyles.org/developers/
   let citationFormats: string[] = t(
     'studies.details.citation_formatter.formats',
@@ -89,6 +93,12 @@ const CitationFormatter = (
   if (!Array.isArray(citationFormats))
     citationFormats = ['format1', 'format2', 'format3'];
 
+  //Load the default format (taken as the first citation format) on page load
+  useEffect(() => {
+    loadCitation(citationFormats[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Box>
       <Typography className={classes.subHeading} component="h6" variant="h6">
@@ -98,14 +108,11 @@ const CitationFormatter = (
       <FormControl id="citation-formatter" error={error}>
         <Select
           className={classes.formatSelect}
-          defaultValue="none"
+          defaultValue={citationFormats[0]}
           onChange={handleChange}
           aria-label={t('studies.details.citation_formatter.select_arialabel')}
           aria-describedby="citation-formatter-error-message"
         >
-          <MenuItem value="none" disabled>
-            {t('studies.details.citation_formatter.select_format')}
-          </MenuItem>
           {citationFormats.map((format) => (
             <MenuItem key={format} value={format}>
               {format}
@@ -126,7 +133,9 @@ const CitationFormatter = (
       {!copiedCitation ? (
         <Button
           id="citation-formatter-copy-citation"
-          aria-label={t('studies.details.copy_citation_arialabel')}
+          aria-label={t(
+            'studies.details.citation_formatter.copy_citation_arialabel'
+          )}
           variant="contained"
           color="primary"
           size="small"
@@ -137,7 +146,7 @@ const CitationFormatter = (
             setTimeout(() => setCopiedCitation(false), 1750);
           }}
         >
-          {t('studies.details.copy_citation')}
+          {t('studies.details.citation_formatter.copy_citation')}
         </Button>
       ) : (
         <Button
@@ -147,7 +156,7 @@ const CitationFormatter = (
           size="small"
           startIcon={<Mark size={20} visible={true} />}
         >
-          {t('studies.details.copied_citation')}
+          {t('studies.details.citation_formatter.copied_citation')}
         </Button>
       )}
     </Box>

@@ -208,12 +208,6 @@ describe('ISIS Study Landing page', () => {
     expect(
       wrapper.find('[data-testid="landing-study-user-0"]').first().text()
     ).toEqual('Principal Investigator: John Smith');
-
-    expect(
-      wrapper.find('[data-testid="landing-study-citation"]').first().text()
-    ).toEqual(
-      'John Smith; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
-    );
   });
 
   it('multiple users displayed correctly', () => {
@@ -249,12 +243,6 @@ describe('ISIS Study Landing page', () => {
     expect(
       wrapper.find('[data-testid="landing-investigation-user-3"]')
     ).toHaveLength(0);
-
-    expect(
-      wrapper.find('[data-testid="landing-study-citation"]').first().text()
-    ).toEqual(
-      'John Smith et al; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
-    );
   });
 
   it('displays DOI and renders the expected link', () => {
@@ -313,49 +301,6 @@ describe('ISIS Study Landing page', () => {
     expect(
       wrapper.find('[data-testid="landing-study-pid-link"]').first().text()
     ).toEqual('study pid');
-  });
-
-  it('copies data citation to clipboard', () => {
-    // Mock the clipboard object
-    const testWriteText = jest.fn();
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: testWriteText,
-      },
-    });
-
-    (useStudy as jest.Mock).mockReturnValue({
-      data: [
-        {
-          ...initialData[0],
-          studyInvestigations: [
-            {
-              investigation: {
-                ...investigation,
-                investigationUsers: [investigationUser[0]],
-              },
-            },
-          ],
-        },
-      ],
-    });
-    const wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[data-testid="landing-study-citation"]').first().text()
-    ).toEqual(
-      'John Smith; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
-    );
-
-    wrapper.find('#landing-study-copy-citation').first().simulate('click');
-
-    expect(testWriteText).toHaveBeenCalledWith(
-      'John Smith; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
-    );
-
-    expect(
-      wrapper.find('#landing-study-copied-citation').first().text()
-    ).toEqual('studies.details.copied_citation');
   });
 
   it('renders structured data correctly', () => {

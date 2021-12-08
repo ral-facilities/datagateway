@@ -29,7 +29,48 @@ describe('Citation formatter component tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends axios request to fetch a formatted citation', async () => {
+  it('sends axios request to fetch a formatted citation on load', async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: 'This is a test',
+    });
+
+    const wrapper = createWrapper();
+    await act(async () => flushPromises());
+    wrapper.update();
+
+    expect(
+      wrapper
+        .find(
+          '[aria-label="studies.details.citation_formatter.select_arialabel"]'
+        )
+        .first()
+        .prop('defaultValue')
+    ).toEqual('format1');
+
+    const params = new URLSearchParams({
+      style: 'format1',
+      locale: 'studies.details.citation_formatter.locale',
+    });
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://data.crosscite.org/text/x-bibliography/test',
+      expect.objectContaining({
+        params,
+      })
+    );
+    expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      params.toString()
+    );
+
+    expect(
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
+    ).toEqual('This is a test');
+    expect(
+      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
+    ).toEqual(false);
+  });
+
+  it('sends axios request to fetch a formatted citation when a format is selected', async () => {
     const wrapper = createWrapper();
 
     (axios.get as jest.Mock).mockResolvedValue({
@@ -54,7 +95,7 @@ describe('Citation formatter component tests', () => {
         params,
       })
     );
-    expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+    expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
       params.toString()
     );
 
@@ -67,19 +108,10 @@ describe('Citation formatter component tests', () => {
   });
 
   it('copies data citation to clipboard', async () => {
-    let wrapper;
-    act(() => {
-      wrapper = createWrapper();
-    });
-
     (axios.get as jest.Mock).mockResolvedValue({
       data: 'This is a test',
     });
-
-    wrapper
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'format2' } });
+    const wrapper = createWrapper();
     await act(async () => flushPromises());
     wrapper.update();
 
@@ -101,25 +133,20 @@ describe('Citation formatter component tests', () => {
 
     expect(
       wrapper.find('#citation-formatter-copied-citation').first().text()
-    ).toEqual('studies.details.copied_citation');
+    ).toEqual('studies.details.citation_formatter.copied_citation');
   });
 
   it('displays error message when axios request to fetch a formatted citation fails', async () => {
-    const wrapper = createWrapper();
-
     (axios.get as jest.Mock).mockRejectedValueOnce({
       message: 'error',
     });
 
-    wrapper
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'format2' } });
+    const wrapper = createWrapper();
     await act(async () => flushPromises());
     wrapper.update();
 
     const params = new URLSearchParams({
-      style: 'format2',
+      style: 'format1',
       locale: 'studies.details.citation_formatter.locale',
     });
 

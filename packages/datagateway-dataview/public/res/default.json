@@ -57,19 +57,16 @@
       "users": "Study Users",
       "publisher": "Publisher",
       "format": "Data Format",
-      "citation_label": "Data Citation",
-      "citation_format": "The recommended format for citing this data in a research publication is [author]; [date]: [title], [publisher], [doi]:",
-      "copy_citation" : "Copy citation",
-      "copied_citation" : "Copied citation",
-      "copy_citation_arialabel" : "Copy citation button",
       "citation_formatter": {
-        "label": "Data Citation Formatter",
-        "details": "You can also select your preferred citation format here:",
-        "select_format": "Select a format",
+        "label": "Data Citation",
+        "details": "The recommended format for citing this data can be found below. You can also select your preferred format here:",
         "select_arialabel": "Citation format drop down list",
+        "copy_citation" : "Copy citation",
+        "copied_citation" : "Copied citation",
+        "copy_citation_arialabel" : "Copy citation button",
         "error": "An error has occurred while fetching the citation.",
         "locale": "en-GB",
-        "formats": ["bibtex", "chicago-author-date", "ieee", "ieee-with-url", "science"]
+        "formats": ["chicago-author-date", "bibtex", "ieee", "ieee-with-url", "science"]
       }
     }
   },

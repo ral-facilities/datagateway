@@ -22,15 +22,9 @@ exports[`Citation formatter component tests renders correctly 1`] = `
       aria-describedby="citation-formatter-error-message"
       aria-label="studies.details.citation_formatter.select_arialabel"
       className="makeStyles-formatSelect-2"
-      defaultValue="none"
+      defaultValue="format1"
       onChange={[Function]}
     >
-      <WithStyles(ForwardRef(MenuItem))
-        disabled={true}
-        value="none"
-      >
-        studies.details.citation_formatter.select_format
-      </WithStyles(ForwardRef(MenuItem))>
       <WithStyles(ForwardRef(MenuItem))
         key="format1"
         value="format1"
@@ -59,7 +53,7 @@ exports[`Citation formatter component tests renders correctly 1`] = `
     </i>
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Button))
-    aria-label="studies.details.copy_citation_arialabel"
+    aria-label="studies.details.citation_formatter.copy_citation_arialabel"
     color="primary"
     disabled={true}
     id="citation-formatter-copy-citation"
@@ -67,7 +61,7 @@ exports[`Citation formatter component tests renders correctly 1`] = `
     size="small"
     variant="contained"
   >
-    studies.details.copy_citation
+    studies.details.citation_formatter.copy_citation
   </WithStyles(ForwardRef(Button))>
 </div>
 `;

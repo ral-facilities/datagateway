@@ -139,15 +139,18 @@ describe('ISIS - Study Landing', () => {
     cy.visit('/browseStudyHierarchy/instrument/1/study/4');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
+    cy.get('[data-testid="citation-formatter-citation"]').contains(
+      'Dr Sabrina Gaertner, Mr Vincent DEGUIN, Dr Pierre Ghesquiere, Dr Claire PETUYA, Dr Tristan Youngs, Dr Helen Fraser, Dr Bastian Gundlach, et al. 2018. ‘Amorphous Micrometre-Sized Water Ice Particles for Planetary Science Experiments: Characterising Ice Phase and Surface Structures’. ISIS Facility. https://doi.org/10.5286/ISIS.E.RB1810842.'
+    );
 
     cy.get('#citation-formatter').click();
     cy.get('[role="listbox"]')
       .find('[role="option"]')
       .should('have.length.gte', 2);
 
-    cy.get('[role="option"][data-value="chicago-author-date"]').click();
+    cy.get('[role="option"][data-value="bibtex"]').click();
     cy.get('[data-testid="citation-formatter-citation"]').contains(
-      'Dr Sabrina Gaertner, Mr Vincent DEGUIN, Dr Pierre Ghesquiere, Dr Claire PETUYA, Dr Tristan Youngs, Dr Helen Fraser, Dr Bastian Gundlach, et al. 2018. ‘Amorphous Micrometre-Sized Water Ice Particles for Planetary Science Experiments: Characterising Ice Phase and Surface Structures’. ISIS Facility. https://doi.org/10.5286/ISIS.E.RB1810842.'
+      '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire'
     );
     cy.get('#citation-formatter-error-message').should('not.exist');
   });
