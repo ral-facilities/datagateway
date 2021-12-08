@@ -9,6 +9,7 @@ import {
   Button,
   Avatar,
   makeStyles,
+  fade,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
@@ -61,22 +62,24 @@ const useStyles = (props: StyleProps) => {
         },
         paperHeading: {
           fontWeight: 'bold',
-          color: theme.palette.text.primary,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).colours?.homePage?.heading,
           marginBottom: theme.spacing(2),
         },
         paperDescription: {
           textAlign: 'left',
-          color: theme.palette.secondary.main,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).colours?.homePage?.description,
           marginBottom: theme.spacing(2),
         },
         bluePaperHeading: {
           fontWeight: 'bold',
-          color: theme.palette.text.primary,
+          color: '#FFFFFF',
           marginBottom: theme.spacing(2),
         },
         bluePaperDescription: {
           textAlign: 'left',
-          color: theme.palette.secondary.main,
+          color: '#FFFFFF',
           marginBottom: theme.spacing(2),
         },
         paperContent: {
@@ -109,6 +112,15 @@ const useStyles = (props: StyleProps) => {
           backgroundPosition: 'top left',
           backgroundSize: 'auto 100%',
           height: '100%',
+        },
+        lightBlueButton: {
+          color: '#FFFFFF',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          backgroundColor: (theme as any).colours?.lightBlue,
+          '&:hover': {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            backgroundColor: fade((theme as any).colours?.lightBlue, 0.8),
+          },
         },
       })
   );
@@ -314,6 +326,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                     <Button
                       color="primary"
                       variant="contained"
+                      className={classes.lightBlueButton}
                       href={t('homePage.facility.link')}
                       aria-label={t('homePage.facility.button_arialabel')}
                     >
