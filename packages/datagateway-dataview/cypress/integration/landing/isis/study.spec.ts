@@ -140,7 +140,7 @@ describe('ISIS - Study Landing', () => {
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
     cy.get('[data-testid="citation-formatter-citation"]').contains(
-      'Dr Sabrina Gaertner, Mr Vincent DEGUIN, Dr Pierre Ghesquiere, Dr Claire PETUYA, Dr Tristan Youngs, Dr Helen Fraser, Dr Bastian Gundlach, et al. 2018. ‘Amorphous Micrometre-Sized Water Ice Particles for Planetary Science Experiments: Characterising Ice Phase and Surface Structures’. ISIS Facility. https://doi.org/10.5286/ISIS.E.RB1810842.'
+      'STFC ISIS Neutron and Muon Source, https://doi.org/10.5286/ISIS.E.RB1810842'
     );
 
     cy.get('#citation-formatter').click();

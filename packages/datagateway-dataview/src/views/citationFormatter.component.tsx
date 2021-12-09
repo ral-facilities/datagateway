@@ -14,6 +14,7 @@ import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
+import { FormattedUser } from './landing/isis/isisStudyLanding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,12 +49,16 @@ const fetchCitation = (
 
 interface CitationFormatterProps {
   doi: string;
+  formattedUsers: FormattedUser[];
+  title: string | undefined;
+  pid: string;
+  startDate: string | undefined;
 }
 
 const CitationFormatter = (
   props: CitationFormatterProps
 ): React.ReactElement => {
-  const { doi } = props;
+  const { doi, formattedUsers, title, pid, startDate } = props;
 
   const [t] = useTranslation();
   const classes = useStyles();
@@ -62,21 +67,35 @@ const CitationFormatter = (
   const [error, setError] = React.useState(false);
 
   const loadCitation = (format: string): void => {
-    /* Notes:
+    if (format === 'default') {
+      let citation = '';
+      if (formattedUsers.length > 1)
+        citation += `${formattedUsers[0].fullName} et al; `;
+      if (formattedUsers.length === 1)
+        citation += `${formattedUsers[0].fullName}; `;
+      if (startDate) citation += `${startDate.slice(0, 4)}: `;
+      if (title) citation += `${title}, `;
+      citation += t('doi_constants.publisher.name');
+      if (pid) citation += `, https://doi.org/${pid}`;
+
+      setCitation(citation);
+    } else {
+      /* Notes:
         - locale 'en-GB' returns plain text whereas 'GB' gives the formatted text */
-    const citationPromise = fetchCitation(
-      doi,
-      format,
-      t('studies.details.citation_formatter.locale')
-    );
-    Promise.resolve(citationPromise)
-      .then((value) => {
-        setError(false);
-        setCitation(value);
-      })
-      .catch((error) => {
-        setError(true);
-      });
+      const citationPromise = fetchCitation(
+        doi,
+        format,
+        t('studies.details.citation_formatter.locale')
+      );
+      Promise.resolve(citationPromise)
+        .then((value) => {
+          setError(false);
+          setCitation(value);
+        })
+        .catch((error) => {
+          setError(true);
+        });
+    }
   };
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
@@ -95,7 +114,7 @@ const CitationFormatter = (
 
   //Load the default format (taken as the first citation format) on page load
   useEffect(() => {
-    loadCitation(citationFormats[0]);
+    loadCitation('default');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -108,11 +127,14 @@ const CitationFormatter = (
       <FormControl id="citation-formatter" error={error}>
         <Select
           className={classes.formatSelect}
-          defaultValue={citationFormats[0]}
+          defaultValue="default"
           onChange={handleChange}
           aria-label={t('studies.details.citation_formatter.select_arialabel')}
           aria-describedby="citation-formatter-error-message"
         >
+          <MenuItem value="default">
+            {t('studies.details.citation_formatter.default_format')}
+          </MenuItem>
           {citationFormats.map((format) => (
             <MenuItem key={format} value={format}>
               {format}

@@ -66,7 +66,8 @@
         "copy_citation_arialabel" : "Copy citation button",
         "error": "An error has occurred while fetching the citation.",
         "locale": "en-GB",
-        "formats": ["chicago-author-date", "bibtex", "ieee", "ieee-with-url", "science"]
+        "default_format": "default",
+        "formats": ["bibtex", "chicago-author-date", "ieee", "ieee-with-url", "science"]
       }
     }
   },

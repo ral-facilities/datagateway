@@ -10,8 +10,18 @@ describe('Citation formatter component tests', () => {
   let shallow;
   let mount;
 
+  const props = {
+    doi: 'test',
+    formattedUsers: [
+      { role: 'principal_experimenter', fullName: 'John Smith' },
+    ],
+    title: 'title',
+    pid: 'test',
+    startDate: '2019-04-03',
+  };
+
   const createWrapper = (): ReactWrapper => {
-    return mount(<CitationFormatter doi="test" />);
+    return mount(<CitationFormatter {...props} />);
   };
 
   beforeEach(() => {
@@ -25,17 +35,12 @@ describe('Citation formatter component tests', () => {
 
   //Have to mock formats data in react-i18next.jsx
   it('renders correctly', () => {
-    const wrapper = shallow(<CitationFormatter doi="test" />);
+    const wrapper = shallow(<CitationFormatter {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends axios request to fetch a formatted citation on load', async () => {
-    (axios.get as jest.Mock).mockResolvedValue({
-      data: 'This is a test',
-    });
-
+  it('formats citation on load', async () => {
     const wrapper = createWrapper();
-    await act(async () => flushPromises());
     wrapper.update();
 
     expect(
@@ -45,26 +50,13 @@ describe('Citation formatter component tests', () => {
         )
         .first()
         .prop('defaultValue')
-    ).toEqual('format1');
-
-    const params = new URLSearchParams({
-      style: 'format1',
-      locale: 'studies.details.citation_formatter.locale',
-    });
-
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://data.crosscite.org/text/x-bibliography/test',
-      expect.objectContaining({
-        params,
-      })
-    );
-    expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
-      params.toString()
-    );
+    ).toEqual('default');
 
     expect(
       wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual('This is a test');
+    ).toEqual(
+      'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
+    );
     expect(
       wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
     ).toEqual(false);
@@ -95,7 +87,7 @@ describe('Citation formatter component tests', () => {
         params,
       })
     );
-    expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+    expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
       params.toString()
     );
 
@@ -108,12 +100,7 @@ describe('Citation formatter component tests', () => {
   });
 
   it('copies data citation to clipboard', async () => {
-    (axios.get as jest.Mock).mockResolvedValue({
-      data: 'This is a test',
-    });
     const wrapper = createWrapper();
-    await act(async () => flushPromises());
-    wrapper.update();
 
     // Mock the clipboard object
     const testWriteText = jest.fn();
@@ -125,11 +112,15 @@ describe('Citation formatter component tests', () => {
 
     expect(
       wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual('This is a test');
+    ).toEqual(
+      'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
+    );
 
     wrapper.find('#citation-formatter-copy-citation').first().simulate('click');
 
-    expect(testWriteText).toHaveBeenCalledWith('This is a test');
+    expect(testWriteText).toHaveBeenCalledWith(
+      'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
+    );
 
     expect(
       wrapper.find('#citation-formatter-copied-citation').first().text()
@@ -142,11 +133,15 @@ describe('Citation formatter component tests', () => {
     });
 
     const wrapper = createWrapper();
+    wrapper
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: 'format2' } });
     await act(async () => flushPromises());
     wrapper.update();
 
     const params = new URLSearchParams({
-      style: 'format1',
+      style: 'format2',
       locale: 'studies.details.citation_formatter.locale',
     });
 
@@ -166,6 +161,6 @@ describe('Citation formatter component tests', () => {
 
     expect(
       wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
-    ).toEqual(true);
+    ).toEqual(false);
   });
 });

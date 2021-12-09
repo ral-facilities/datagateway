@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface FormattedUser {
+export interface FormattedUser {
   role: string;
   fullName: string;
 }
@@ -431,7 +431,17 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Typography data-testid="landing-study-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
-            {pid && <CitationFormatter doi={pid} />}
+            {pid && (
+              <CitationFormatter
+                doi={pid}
+                formattedUsers={formattedUsers}
+                title={title}
+                pid={pid}
+                startDate={
+                  data?.[0]?.studyInvestigations?.[0]?.investigation?.startDate
+                }
+              />
+            )}
           </Grid>
 
           <Divider orientation="vertical" />
