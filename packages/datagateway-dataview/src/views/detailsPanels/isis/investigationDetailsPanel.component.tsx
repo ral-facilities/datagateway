@@ -220,25 +220,33 @@ const InvestigationDetailsPanel = (
           hidden={value !== 'users'}
         >
           <Grid container className={classes.root} direction="column">
-            {investigationData.investigationUsers.map((investigationUser) => {
-              if (investigationUser.user) {
-                return (
-                  <Grid key={investigationUser.user.id} item xs>
-                    <Typography variant="overline">
-                      {t('investigations.details.users.name')}
-                    </Typography>
-                    <Typography>
-                      <b>
-                        {investigationUser.user.fullName ||
-                          investigationUser.user.name}
-                      </b>
-                    </Typography>
-                  </Grid>
-                );
-              } else {
-                return null;
-              }
-            })}
+            <Typography variant="overline">
+              {investigationData.investigationUsers.length <= 1
+                ? t('investigations.details.users.name')
+                : t('investigations.details.users.name') + 's'}
+            </Typography>
+            {investigationData.investigationUsers.length > 0 ? (
+              investigationData.investigationUsers.map((investigationUser) => {
+                if (investigationUser.user) {
+                  return (
+                    <Grid key={investigationUser.user.id} item xs>
+                      <Typography>
+                        <b>
+                          {investigationUser.user.fullName ||
+                            investigationUser.user.name}
+                        </b>
+                      </Typography>
+                    </Grid>
+                  );
+                } else {
+                  return null;
+                }
+              })
+            ) : (
+              <Typography data-testid="investigation-details-panel-no-name">
+                {t('investigations.details.users.no_name')}
+              </Typography>
+            )}
           </Grid>
         </div>
       )}
@@ -255,15 +263,21 @@ const InvestigationDetailsPanel = (
                 ? t('investigations.details.samples.name')
                 : t('investigations.details.samples.name') + 's'}
             </Typography>
-            {investigationData.samples.map((sample) => {
-              return (
-                <Grid key={sample.id} item xs>
-                  <Typography>
-                    <b>{sample.name}</b>
-                  </Typography>
-                </Grid>
-              );
-            })}
+            {investigationData.samples.length > 0 ? (
+              investigationData.samples.map((sample) => {
+                return (
+                  <Grid key={sample.id} item xs>
+                    <Typography>
+                      <b>{sample.name}</b>
+                    </Typography>
+                  </Grid>
+                );
+              })
+            ) : (
+              <Typography data-testid="investigation-details-panel-no-samples">
+                {t('investigations.details.samples.no_samples')}
+              </Typography>
+            )}
           </Grid>
         </div>
       )}

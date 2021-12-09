@@ -153,7 +153,7 @@ const InstrumentDetailsPanel = (
                 }
               })
             ) : (
-              <Typography variant="overline">
+              <Typography data-testid="instrument-details-panel-no-name">
                 {t('instruments.details.instrument_scientists.no_name')}
               </Typography>
             )}
