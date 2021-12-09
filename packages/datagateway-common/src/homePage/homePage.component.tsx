@@ -1,192 +1,325 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import {
-  withStyles,
   Theme,
-  WithStyles,
   Grid,
   createStyles,
-  Link,
+  Box,
+  Paper,
+  Button,
+  Avatar,
+  makeStyles,
+  fade,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
-
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    bigImage: {
-      height: 250,
-      width: '100%',
-      '& img': {
-        paddingLeft: 90,
-        paddingTop: 80,
-        height: 150,
-        float: 'left',
-      },
-    },
-    howItWorks: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      // TODO: Remove use of "vw" here?
-      paddingLeft: '10vw',
-      paddingRight: '10vw',
-      paddingTop: 15,
-      backgroundColor: theme.palette.background.default,
-    },
-    howItWorksTitle: {
-      fontWeight: 'bold',
-      color: theme.palette.text.primary,
-      paddingBottom: 20,
-    },
-    howItWorksGridItem: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-    howItWorksGridItemTitle: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.orange,
-      fontWeight: 'bold',
-      paddingBottom: 10,
-    },
-    howItWorksGridItemImage: {
-      height: 200,
-      width: 200,
-      borderRadius: 200 / 2,
-      paddingBottom: 10,
-    },
-    howItWorksGridItemCaption: {
-      textAlign: 'center',
-      color: theme.palette.secondary.main,
-    },
-  });
+import SearchIcon from '@material-ui/icons/Search';
+import DownloadIcon from '@material-ui/icons/GetApp';
+import { Trans, useTranslation } from 'react-i18next';
 
 export interface HomePageProps {
-  title: string;
-  logoLabel: string;
-  howLabel: string;
-  exploreLabel: string;
-  exploreDescription: string;
-  exploreLink: string;
-  discoverLabel: string;
-  discoverDescription: string;
-  discoverLink: string;
-  downloadLabel: string;
-  downloadDescription: string;
-  downloadLink: string;
   logo: string;
   backgroundImage: string;
-  exploreImage: string;
-  discoverImage: string;
-  downloadImage: string;
+  greenSwirl1Image: string;
+  greenSwirl2Image: string;
+  decal1Image: string;
+  decal2Image: string;
+  decal2DarkImage: string;
+  decal2DarkHCImage: string;
+  facilityImage: string;
 }
 
-type CombinedHomePageProps = HomePageProps & WithStyles<typeof styles>;
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const useStyles = (props: HomePageProps) => {
+  return makeStyles<Theme>(
+    (theme: Theme): StyleRules =>
+      createStyles({
+        backgroundImage: {
+          backgroundImage: `url(${props.backgroundImage})`,
+          backgroundPosition: 'center 40%',
+          width: '100%',
+          height: 250,
+        },
+        backgroundDecals: {
+          backgroundImage: `url(${props.greenSwirl1Image}), url(${props.decal1Image})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'top left, top right',
+          width: '100%',
+          height: 250,
+        },
+        backgroundTitle: {
+          color: '#FFFFFF',
+          margin: 'auto',
+          fontSize: '48px',
+          fontWeight: 'lighter',
+          textAlign: 'center',
+        },
+        contentBox: {
+          transform: 'translate(0px, -20px)',
+          marginLeft: '10%',
+          marginRight: '10%',
+        },
+        paper: {
+          borderRadius: '4px',
+          marginBottom: theme.spacing(2),
+          height: '100%',
+        },
+        bluePaper: {
+          borderRadius: '4px',
+          marginBottom: theme.spacing(2),
+          backgroundColor: '#003088',
+          height: '100%',
+        },
+        paperContent: {
+          padding: theme.spacing(2),
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          height: '100%',
+          boxSizing: 'border-box',
+        },
+        avatar: {
+          backgroundColor: '#1E5DF8',
+          color: '#FFFFFF',
+          width: '60px',
+          height: '60px',
+          marginBottom: theme.spacing(2),
+        },
+        avatarIcon: {
+          transform: 'scale(1.75)',
+        },
+        paperHeading: {
+          fontWeight: 'bold',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).colours?.homePage?.heading,
+          marginBottom: theme.spacing(2),
+        },
+        paperDescription: {
+          textAlign: 'left',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).colours?.homePage?.description,
+          marginBottom: theme.spacing(2),
+        },
+        bluePaperHeading: {
+          fontWeight: 'bold',
+          color: '#FFFFFF',
+          marginBottom: theme.spacing(2),
+        },
+        bluePaperDescription: {
+          textAlign: 'left',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).colours?.homePage?.blueDescription,
+          marginBottom: theme.spacing(2),
+        },
+        browseBackground: {
+          backgroundImage: `url(${props.facilityImage})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'bottom right',
+          backgroundSize: 'cover',
+          width: '100%',
+          height: '100%',
+          borderRadius: '4px',
+        },
+        browseDecal: {
+          backgroundImage:
+            theme.palette.type === 'light'
+              ? `url(${props.decal2Image})`
+              : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (theme as any).colours?.type === 'default'
+              ? `url(${props.decal2DarkImage})`
+              : `url(${props.decal2DarkHCImage})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'top left',
+          backgroundSize: 'auto 100%',
+          height: '100%',
+        },
+        facilityDecal: {
+          backgroundImage: `url(${props.greenSwirl2Image})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'top right',
+          backgroundSize: 'auto 100%',
+          height: '100%',
+        },
+        lightBlueButton: {
+          color: '#FFFFFF',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          backgroundColor: (theme as any).colours?.homePage?.blueButton,
+          '&:hover': {
+            //Check if null to avoid error when loading
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            backgroundColor: (theme as any).colours?.homePage?.blueButton
+              ? fade(
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  (theme as any).colours?.homePage?.blueButton,
+                  0.8
+                )
+              : '#FFFFFF',
+          },
+        },
+      })
+  );
+};
 
-const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
+const HomePage = (props: HomePageProps): React.ReactElement => {
+  const [t] = useTranslation();
+  const classes = useStyles(props)();
+
   return (
     <div id="dg-homepage">
-      <div className={props.classes.bigImage}>
-        <div
-          style={{
-            backgroundImage: `url(${props.backgroundImage})`,
-            width: '100%',
-            height: 250,
-          }}
-        >
-          <img src={props.logo} alt={props.logoLabel} />
+      <div className={classes.backgroundImage}>
+        <div className={classes.backgroundDecals}>
+          <Box
+            style={{
+              position: 'relative',
+              left: '50%',
+              top: '45px',
+              transform: 'translate(-50%)',
+            }}
+          >
+            <Typography variant="h2" className={classes.backgroundTitle}>
+              <Trans i18nKey="home_page.title_line1">
+                <strong>Data discovery</strong> and <strong>access</strong>
+              </Trans>
+            </Typography>
+            <Typography variant="h2" className={classes.backgroundTitle}>
+              <Trans i18nKey="home_page.title_line2">
+                for <strong>large-scale</strong>
+                science facilities
+              </Trans>
+            </Typography>
+          </Box>
         </div>
       </div>
-      <div className={props.classes.howItWorks}>
-        <Typography variant="h4" className={props.classes.howItWorksTitle}>
-          {props.howLabel}
-        </Typography>
-
-        <Grid container spacing={3}>
-          <Grid
-            item
-            sm={12}
-            md={4}
-            className={props.classes.howItWorksGridItem}
-          >
-            <Link
-              variant="h5"
-              className={props.classes.howItWorksGridItemTitle}
-              href={props.exploreLink}
-            >
-              {props.exploreLabel}
-            </Link>
-            <Link href={props.exploreLink}>
-              <img
-                src={props.exploreImage}
-                alt={props.exploreLabel}
-                className={props.classes.howItWorksGridItemImage}
-              />
-            </Link>
-            <Typography
-              variant="body1"
-              className={props.classes.howItWorksGridItemCaption}
-            >
-              {props.exploreDescription}
-            </Typography>
+      <Box className={classes.contentBox}>
+        <Paper className={classes.paper} elevation={1}>
+          <Grid container style={{ height: '100%' }}>
+            <Grid item xs={6}>
+              <Box className={classes.paperContent}>
+                <Typography variant="h4" className={classes.paperHeading}>
+                  {t('home_page.browse.title')}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={classes.paperDescription}
+                >
+                  {t('home_page.browse.description1')}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={classes.paperDescription}
+                >
+                  <Trans i18nKey="home_page.browse.description2">
+                    <strong>DataGateway</strong> focuses on providing data
+                    discovery and data access functionality to the data.
+                  </Trans>
+                </Typography>
+                <Box marginTop="auto">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    href={t('home_page.browse.link')}
+                    aria-label={t('home_page.browse.button_arialabel')}
+                  >
+                    {t('home_page.browse.button')}
+                  </Button>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <div className={classes.browseBackground}>
+                <div className={classes.browseDecal}></div>
+              </div>
+            </Grid>
           </Grid>
-          <Grid
-            item
-            sm={12}
-            md={4}
-            className={props.classes.howItWorksGridItem}
-          >
-            <Link
-              variant="h5"
-              className={props.classes.howItWorksGridItemTitle}
-              href={props.discoverLink}
-            >
-              {props.discoverLabel}
-            </Link>
-            <Link href={props.discoverLink}>
-              <img
-                src={props.discoverImage}
-                alt={props.discoverLabel}
-                className={props.classes.howItWorksGridItemImage}
-              />
-            </Link>
-            <Typography
-              variant="body1"
-              className={props.classes.howItWorksGridItemCaption}
-            >
-              {props.discoverDescription}
-            </Typography>
+        </Paper>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={4}>
+            <Paper className={classes.paper} elevation={1}>
+              <Box className={classes.paperContent}>
+                <Avatar className={classes.avatar}>
+                  <SearchIcon className={classes.avatarIcon} />
+                </Avatar>
+                <Typography variant="h4" className={classes.paperHeading}>
+                  {t('home_page.search.title')}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={classes.paperDescription}
+                >
+                  {t('home_page.search.description')}
+                </Typography>
+                <Box marginTop="auto">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    href={t('home_page.search.link')}
+                    aria-label={t('home_page.search.button_arialabel')}
+                  >
+                    {t('home_page.search.button')}
+                  </Button>
+                </Box>
+              </Box>
+            </Paper>
           </Grid>
-          <Grid
-            item
-            sm={12}
-            md={4}
-            className={props.classes.howItWorksGridItem}
-          >
-            <Link
-              variant="h5"
-              className={props.classes.howItWorksGridItemTitle}
-              href={props.downloadLink}
-            >
-              {props.downloadLabel}
-            </Link>
-            <Link href={props.downloadLink}>
-              <img
-                src={props.downloadImage}
-                alt={props.downloadLabel}
-                className={props.classes.howItWorksGridItemImage}
-              />
-            </Link>
-            <Typography
-              variant="body1"
-              className={props.classes.howItWorksGridItemCaption}
-            >
-              {props.downloadDescription}
-            </Typography>
+          <Grid item xs={12} sm={4}>
+            <Paper className={classes.paper} elevation={1}>
+              <Box className={classes.paperContent}>
+                <Avatar className={classes.avatar}>
+                  <DownloadIcon className={classes.avatarIcon} />
+                </Avatar>
+                <Typography variant="h4" className={classes.paperHeading}>
+                  {t('home_page.download.title')}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={classes.paperDescription}
+                >
+                  {t('home_page.download.description')}
+                </Typography>
+                <Box marginTop="auto">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    href={t('home_page.download.link')}
+                    aria-label={t('home_page.download.button_arialabel')}
+                  >
+                    {t('home_page.download.button')}
+                  </Button>
+                </Box>
+              </Box>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Paper className={classes.bluePaper} elevation={1}>
+              <div className={classes.facilityDecal}>
+                <Box className={classes.paperContent}>
+                  <Typography variant="h4" className={classes.bluePaperHeading}>
+                    {t('home_page.facility.title')}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    className={classes.bluePaperDescription}
+                  >
+                    {t('home_page.facility.description')}
+                  </Typography>
+                  <Box marginTop="auto">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      className={classes.lightBlueButton}
+                      href={t('home_page.facility.link')}
+                      aria-label={t('home_page.facility.button_arialabel')}
+                    >
+                      {t('home_page.facility.button')}
+                    </Button>
+                  </Box>
+                </Box>
+              </div>
+            </Paper>
           </Grid>
         </Grid>
-      </div>
+      </Box>
     </div>
   );
 };
 
-export default withStyles(styles)(HomePage);
+export default HomePage;

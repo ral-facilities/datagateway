@@ -1,11 +1,14 @@
 import React from 'react';
 import { HomePage } from 'datagateway-common';
-import { useTranslation } from 'react-i18next';
 import DGLogo from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import BackgroundImage from 'datagateway-common/src/images/background.jpg';
-import ExploreImage from 'datagateway-common/src/images/explore.jpg';
-import DiscoverImage from 'datagateway-common/src/images/discover.jpg';
-import DownloadImage from 'datagateway-common/src/images/download.jpg';
+import GreenSwirl1Image from 'datagateway-common/src/images/green-swirl1.png';
+import GreenSwirl2Image from 'datagateway-common/src/images/green-swirl2.png';
+import Decal1Image from 'datagateway-common/src/images/decal1.svg';
+import Decal2Image from 'datagateway-common/src/images/decal2.svg';
+import Decal2DarkImage from 'datagateway-common/src/images/decal2-dark.svg';
+import Decal2DarkHCImage from 'datagateway-common/src/images/decal2-darkhc.svg';
+import FacilityImage from 'datagateway-common/src/images/facility.jpg';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 
@@ -16,27 +19,18 @@ export interface TranslatedHomePageStateProps {
 export const TranslatedHomePage = React.memo(
   (props: TranslatedHomePageStateProps): React.ReactElement => {
     const TranslatedHomePage = HomePage;
-    const [t] = useTranslation();
 
     return (
       <TranslatedHomePage
-        title={t('homePage.title')}
-        logoLabel={t('homePage.logoLabel')}
-        howLabel={t('homePage.howLabel')}
-        exploreLabel={t('homePage.exploreLabel')}
-        exploreDescription={t('homePage.exploreDescription')}
-        exploreLink={t('homePage.exploreLink')}
-        discoverLabel={t('homePage.discoverLabel')}
-        discoverDescription={t('homePage.discoverDescription')}
-        discoverLink={t('homePage.discoverLink')}
-        downloadLabel={t('homePage.downloadLabel')}
-        downloadDescription={t('homePage.downloadDescription')}
-        downloadLink={t('homePage.downloadLink')}
         logo={props.pluginHost + DGLogo}
         backgroundImage={props.pluginHost + BackgroundImage}
-        exploreImage={props.pluginHost + ExploreImage}
-        discoverImage={props.pluginHost + DiscoverImage}
-        downloadImage={props.pluginHost + DownloadImage}
+        greenSwirl1Image={props.pluginHost + GreenSwirl1Image}
+        greenSwirl2Image={props.pluginHost + GreenSwirl2Image}
+        decal1Image={props.pluginHost + Decal1Image}
+        decal2Image={props.pluginHost + Decal2Image}
+        decal2DarkImage={props.pluginHost + Decal2DarkImage}
+        decal2DarkHCImage={props.pluginHost + Decal2DarkHCImage}
+        facilityImage={props.pluginHost + FacilityImage}
       />
     );
   }

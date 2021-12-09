@@ -205,19 +205,38 @@
     "show_more": "Show more",
     "show_less": "Show less"
   },
-  "homePage": {
-    "title": "DataGateway",
-    "logoLabel": "DataGateway Logo",
-    "howLabel": "How it works...",
-    "exploreLabel": "1. Explore",
-    "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
-    "exploreLink": "/browse/investigation",
-    "discoverLabel": "2. Discover",
-    "discoverDescription": "Search for the experimental data according to different criteria.",
-    "discoverLink": "/search",
-    "downloadLabel": "3. Download",
-    "downloadDescription": "Retrieve the experimental data using a variety of download methods.",
-    "downloadLink": "/download"
+  "home_page": {
+    "title_line1": "<0>Data discovery</0> and <2>access</2>",
+    "title_line2": "for <1>large-scale</1> science facilities",
+    "browse": {
+      "title": "Browse, explore and visualise experimental data",
+      "description1": "Large scale facilities, such as synchrotrons, neutron and muon sources, lasers and accelerators, generate vast amounts of data that need to be managed in an efficient way, supporting data ingestion for long-term storage and archival, as well as data analysis and data publication workflows.",
+      "description2": "<0>DataGateway</0> focuses on providing data discovery and data access functionality to the data.",
+      "link": "/browse/investigation",
+      "button": "Browse data",
+      "button_arialabel": "Browse data"
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search for the experimental data according to different criteria.",
+      "link": "/search",
+      "button": "Search data",
+      "button_arialabel": "Search data"
+    },
+    "download": {
+      "title": "Download",
+      "description": "Retrieve the experimental data using a variety of download methods.",
+      "link": "/download",
+      "button": "Download data",
+      "button_arialabel": "Download data"
+    },
+    "facility": {
+      "title": "ISIS Neutron and Muon Source",
+      "description": "World-leading centre for research giving unique insights into the properties of materials on the atomic scale.",
+      "link": "https://www.isis.stfc.ac.uk/Pages/About.aspx",
+      "button": "Read more",
+      "button_arialabel": "Read more"
+    }
   },
   "selec_alert": {
     "added": "{{count}} item has been added to selections.",

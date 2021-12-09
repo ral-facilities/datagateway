@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.2"
+   overflow="visible"
+   preserveAspectRatio="none"
+   viewBox="0 0 220 300"
+   width="220"
+   height="300"
+   id="svg11"
+   sodipodi:docname="decal2-dark.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs15" />
+  <sodipodi:namedview
+     id="namedview13"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="2.91"
+     inkscape:cx="159.62199"
+     inkscape:cy="154.46735"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg11" />
+  <g
+     transform="scale(1,1.0126003)"
+     id="g9"
+     style="fill:#3a3a3a;fill-opacity:1">
+    <g
+       id="g4"
+       style="fill:#3a3a3a;fill-opacity:1">
+      <path
+         d="M 0,0 H 100 V 80 H 220 L 0,300 Z"
+         style="fill:#3a3a3a;stroke:#8c8c8c;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;fill-opacity:1"
+         vector-effect="non-scaling-stroke"
+         id="path2" />
+    </g>
+    <defs
+       id="defs7">
+      <path
+         id="path-163887275029651"
+         d="M 0,0 H 100 V 80 H 220 L 0,300 Z"
+         vector-effect="non-scaling-stroke" />
+    </defs>
+  </g>
+</svg>
