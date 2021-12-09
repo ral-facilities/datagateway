@@ -176,12 +176,12 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
             }}
           >
             <Typography variant="h2" className={classes.backgroundTitle}>
-              <Trans i18nKey="homePage.title_line1">
+              <Trans i18nKey="home_page.title_line1">
                 <strong>Data discovery</strong> and <strong>access</strong>
               </Trans>
             </Typography>
             <Typography variant="h2" className={classes.backgroundTitle}>
-              <Trans i18nKey="homePage.title_line2">
+              <Trans i18nKey="home_page.title_line2">
                 for <strong>large-scale</strong>
                 science facilities
               </Trans>
@@ -195,13 +195,13 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
             <Grid item xs={6}>
               <Box className={classes.paperContent}>
                 <Typography variant="h4" className={classes.paperHeading}>
-                  {t('homePage.browse.title')}
+                  {t('home_page.browse.title')}
                 </Typography>
                 <Typography
                   variant="body1"
                   className={classes.paperDescription}
                 >
-                  {t('homePage.browse.description1')}
+                  {t('home_page.browse.description1')}
                 </Typography>
                 <Typography
                   variant="body1"
@@ -216,10 +216,10 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                   <Button
                     color="primary"
                     variant="contained"
-                    href={t('homePage.browse.link')}
-                    aria-label={t('homePage.browse.button_arialabel')}
+                    href={t('home_page.browse.link')}
+                    aria-label={t('home_page.browse.button_arialabel')}
                   >
-                    {t('homePage.browse.button')}
+                    {t('home_page.browse.button')}
                   </Button>
                 </Box>
               </Box>
@@ -239,22 +239,22 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                   <SearchIcon className={classes.avatarIcon} />
                 </Avatar>
                 <Typography variant="h4" className={classes.paperHeading}>
-                  {t('homePage.search.title')}
+                  {t('home_page.search.title')}
                 </Typography>
                 <Typography
                   variant="body1"
                   className={classes.paperDescription}
                 >
-                  {t('homePage.search.description')}
+                  {t('home_page.search.description')}
                 </Typography>
                 <Box marginTop="auto">
                   <Button
                     color="primary"
                     variant="contained"
-                    href={t('homePage.search.link')}
-                    aria-label={t('homePage.search.button_arialabel')}
+                    href={t('home_page.search.link')}
+                    aria-label={t('home_page.search.button_arialabel')}
                   >
-                    {t('homePage.search.button')}
+                    {t('home_page.search.button')}
                   </Button>
                 </Box>
               </Box>
@@ -267,22 +267,22 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                   <DownloadIcon className={classes.avatarIcon} />
                 </Avatar>
                 <Typography variant="h4" className={classes.paperHeading}>
-                  {t('homePage.download.title')}
+                  {t('home_page.download.title')}
                 </Typography>
                 <Typography
                   variant="body1"
                   className={classes.paperDescription}
                 >
-                  {t('homePage.download.description')}
+                  {t('home_page.download.description')}
                 </Typography>
                 <Box marginTop="auto">
                   <Button
                     color="primary"
                     variant="contained"
-                    href={t('homePage.download.link')}
-                    aria-label={t('homePage.download.button_arialabel')}
+                    href={t('home_page.download.link')}
+                    aria-label={t('home_page.download.button_arialabel')}
                   >
-                    {t('homePage.download.button')}
+                    {t('home_page.download.button')}
                   </Button>
                 </Box>
               </Box>
@@ -293,23 +293,23 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
               <div className={classes.facilityDecal}>
                 <Box className={classes.paperContent}>
                   <Typography variant="h4" className={classes.bluePaperHeading}>
-                    {t('homePage.facility.title')}
+                    {t('home_page.facility.title')}
                   </Typography>
                   <Typography
                     variant="body1"
                     className={classes.bluePaperDescription}
                   >
-                    {t('homePage.facility.description')}
+                    {t('home_page.facility.description')}
                   </Typography>
                   <Box marginTop="auto">
                     <Button
                       color="primary"
                       variant="contained"
                       className={classes.lightBlueButton}
-                      href={t('homePage.facility.link')}
-                      aria-label={t('homePage.facility.button_arialabel')}
+                      href={t('home_page.facility.link')}
+                      aria-label={t('home_page.facility.button_arialabel')}
                     >
-                      {t('homePage.facility.button')}
+                      {t('home_page.facility.button')}
                     </Button>
                   </Box>
                 </Box>

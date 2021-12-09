@@ -25,7 +25,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           variant="h2"
         >
           <Trans
-            i18nKey="homePage.title_line1"
+            i18nKey="home_page.title_line1"
           >
             <strong>
               Data discovery
@@ -41,7 +41,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           variant="h2"
         >
           <Trans
-            i18nKey="homePage.title_line2"
+            i18nKey="home_page.title_line2"
           >
             for 
             <strong>
@@ -79,13 +79,13 @@ exports[`Home page component homepage renders correctly 1`] = `
               className="makeStyles-paperHeading-10"
               variant="h4"
             >
-              homePage.browse.title
+              home_page.browse.title
             </WithStyles(ForwardRef(Typography))>
             <WithStyles(ForwardRef(Typography))
               className="makeStyles-paperDescription-11"
               variant="body1"
             >
-              homePage.browse.description1
+              home_page.browse.description1
             </WithStyles(ForwardRef(Typography))>
             <WithStyles(ForwardRef(Typography))
               className="makeStyles-paperDescription-11"
@@ -104,12 +104,12 @@ exports[`Home page component homepage renders correctly 1`] = `
               marginTop="auto"
             >
               <WithStyles(ForwardRef(Button))
-                aria-label="homePage.browse.button_arialabel"
+                aria-label="home_page.browse.button_arialabel"
                 color="primary"
-                href="homePage.browse.link"
+                href="home_page.browse.link"
                 variant="contained"
               >
-                homePage.browse.button
+                home_page.browse.button
               </WithStyles(ForwardRef(Button))>
             </Styled(MuiBox)>
           </Styled(MuiBox)>
@@ -155,24 +155,24 @@ exports[`Home page component homepage renders correctly 1`] = `
               className="makeStyles-paperHeading-10"
               variant="h4"
             >
-              homePage.search.title
+              home_page.search.title
             </WithStyles(ForwardRef(Typography))>
             <WithStyles(ForwardRef(Typography))
               className="makeStyles-paperDescription-11"
               variant="body1"
             >
-              homePage.search.description
+              home_page.search.description
             </WithStyles(ForwardRef(Typography))>
             <Styled(MuiBox)
               marginTop="auto"
             >
               <WithStyles(ForwardRef(Button))
-                aria-label="homePage.search.button_arialabel"
+                aria-label="home_page.search.button_arialabel"
                 color="primary"
-                href="homePage.search.link"
+                href="home_page.search.link"
                 variant="contained"
               >
-                homePage.search.button
+                home_page.search.button
               </WithStyles(ForwardRef(Button))>
             </Styled(MuiBox)>
           </Styled(MuiBox)>
@@ -201,24 +201,24 @@ exports[`Home page component homepage renders correctly 1`] = `
               className="makeStyles-paperHeading-10"
               variant="h4"
             >
-              homePage.download.title
+              home_page.download.title
             </WithStyles(ForwardRef(Typography))>
             <WithStyles(ForwardRef(Typography))
               className="makeStyles-paperDescription-11"
               variant="body1"
             >
-              homePage.download.description
+              home_page.download.description
             </WithStyles(ForwardRef(Typography))>
             <Styled(MuiBox)
               marginTop="auto"
             >
               <WithStyles(ForwardRef(Button))
-                aria-label="homePage.download.button_arialabel"
+                aria-label="home_page.download.button_arialabel"
                 color="primary"
-                href="homePage.download.link"
+                href="home_page.download.link"
                 variant="contained"
               >
-                homePage.download.button
+                home_page.download.button
               </WithStyles(ForwardRef(Button))>
             </Styled(MuiBox)>
           </Styled(MuiBox)>
@@ -243,25 +243,25 @@ exports[`Home page component homepage renders correctly 1`] = `
                 className="makeStyles-bluePaperHeading-12"
                 variant="h4"
               >
-                homePage.facility.title
+                home_page.facility.title
               </WithStyles(ForwardRef(Typography))>
               <WithStyles(ForwardRef(Typography))
                 className="makeStyles-bluePaperDescription-13"
                 variant="body1"
               >
-                homePage.facility.description
+                home_page.facility.description
               </WithStyles(ForwardRef(Typography))>
               <Styled(MuiBox)
                 marginTop="auto"
               >
                 <WithStyles(ForwardRef(Button))
-                  aria-label="homePage.facility.button_arialabel"
+                  aria-label="home_page.facility.button_arialabel"
                   className="makeStyles-lightBlueButton-17"
                   color="primary"
-                  href="homePage.facility.link"
+                  href="home_page.facility.link"
                   variant="contained"
                 >
-                  homePage.facility.button
+                  home_page.facility.button
                 </WithStyles(ForwardRef(Button))>
               </Styled(MuiBox)>
             </Styled(MuiBox)>
