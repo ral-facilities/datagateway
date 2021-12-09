@@ -135,22 +135,28 @@ const InstrumentDetailsPanel = (
                 ? t('instruments.details.instrument_scientists.name')
                 : t('instruments.details.instrument_scientists.name') + 's'}
             </Typography>
-            {instrumentData.instrumentScientists.map((instrumentScientist) => {
-              if (instrumentScientist.user) {
-                return (
-                  <Grid key={instrumentScientist.user.id} item xs>
-                    <Typography>
-                      <b>
-                        {instrumentScientist.user.fullName ||
-                          instrumentScientist.user.name}
-                      </b>
-                    </Typography>
-                  </Grid>
-                );
-              } else {
-                return null;
-              }
-            })}
+            {instrumentData.instrumentScientists.length > 0 ? (
+              instrumentData.instrumentScientists.map((instrumentScientist) => {
+                if (instrumentScientist.user) {
+                  return (
+                    <Grid key={instrumentScientist.user.id} item xs>
+                      <Typography>
+                        <b>
+                          {instrumentScientist.user.fullName ||
+                            instrumentScientist.user.name}
+                        </b>
+                      </Typography>
+                    </Grid>
+                  );
+                } else {
+                  return null;
+                }
+              })
+            ) : (
+              <Typography variant="overline">
+                {t('instruments.details.instrument_scientists.no_name')}
+              </Typography>
+            )}
           </Grid>
         </div>
       )}
