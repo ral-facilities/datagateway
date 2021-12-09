@@ -215,8 +215,8 @@
       "button": "Browse data",
       "button_arialabel": "Browse data"
     },
-    "discover": {
-      "title": "Discover",
+    "search": {
+      "title": "Search",
       "description": "Search for the experimental data according to different criteria.",
       "link": "/search",
       "button": "Search data",

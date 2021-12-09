@@ -16,26 +16,35 @@ import SearchIcon from '@material-ui/icons/Search';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import { Trans, useTranslation } from 'react-i18next';
 
-interface StyleProps {
+export interface HomePageProps {
+  logo: string;
+  backgroundImage: string;
+  greenSwirl1Image: string;
+  greenSwirl2Image: string;
+  decal1Image: string;
   decal2Image: string;
   decal2DarkImage: string;
   decal2DarkHCImage: string;
+  facilityImage: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useStyles = (props: StyleProps) => {
+const useStyles = (props: HomePageProps) => {
   return makeStyles<Theme>(
     (theme: Theme): StyleRules =>
       createStyles({
         backgroundImage: {
-          height: 250,
+          backgroundImage: `url(${props.backgroundImage})`,
+          backgroundPosition: 'center 40%',
           width: '100%',
-          '& img': {
-            paddingLeft: 90,
-            paddingTop: 80,
-            height: 150,
-            float: 'left',
-          },
+          height: 250,
+        },
+        backgroundDecals: {
+          backgroundImage: `url(${props.greenSwirl1Image}), url(${props.decal1Image})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'top left, top right',
+          width: '100%',
+          height: 250,
         },
         backgroundTitle: {
           color: '#FFFFFF',
@@ -60,6 +69,24 @@ const useStyles = (props: StyleProps) => {
           backgroundColor: '#003088',
           height: '100%',
         },
+        paperContent: {
+          padding: theme.spacing(2),
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          height: '100%',
+          boxSizing: 'border-box',
+        },
+        avatar: {
+          backgroundColor: '#1E5DF8',
+          color: '#FFFFFF',
+          width: '60px',
+          height: '60px',
+          marginBottom: theme.spacing(2),
+        },
+        avatarIcon: {
+          transform: 'scale(1.75)',
+        },
         paperHeading: {
           fontWeight: 'bold',
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,28 +106,20 @@ const useStyles = (props: StyleProps) => {
         },
         bluePaperDescription: {
           textAlign: 'left',
-          color: '#FFFFFF',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).colours?.homePage?.blueDescription,
           marginBottom: theme.spacing(2),
         },
-        paperContent: {
-          padding: theme.spacing(2),
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
+        browseBackground: {
+          backgroundImage: `url(${props.facilityImage})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'bottom right',
+          backgroundSize: 'cover',
+          width: '100%',
           height: '100%',
-          boxSizing: 'border-box',
+          borderRadius: '4px',
         },
-        avatar: {
-          backgroundColor: '#1E5DF8',
-          color: '#FFFFFF',
-          width: '60px',
-          height: '60px',
-          marginBottom: theme.spacing(2),
-        },
-        avatarIcon: {
-          transform: 'scale(1.75)',
-        },
-        decal2: {
+        browseDecal: {
           backgroundImage:
             theme.palette.type === 'light'
               ? `url(${props.decal2Image})`
@@ -113,83 +132,61 @@ const useStyles = (props: StyleProps) => {
           backgroundSize: 'auto 100%',
           height: '100%',
         },
+        facilityDecal: {
+          backgroundImage: `url(${props.greenSwirl2Image})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'top right',
+          backgroundSize: 'auto 100%',
+          height: '100%',
+        },
         lightBlueButton: {
           color: '#FFFFFF',
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          backgroundColor: (theme as any).colours?.lightBlue,
+          backgroundColor: (theme as any).colours?.homePage?.blueButton,
           '&:hover': {
+            //Check if null to avoid error when loading
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            backgroundColor: fade((theme as any).colours?.lightBlue, 0.8),
+            backgroundColor: (theme as any).colours?.homePage?.blueButton
+              ? fade(
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  (theme as any).colours?.homePage?.blueButton,
+                  0.8
+                )
+              : '#FFFFFF',
           },
         },
       })
   );
 };
 
-export interface HomePageProps {
-  logo: string;
-  backgroundImage: string;
-  greenSwirl1Image: string;
-  greenSwirl2Image: string;
-  decal1Image: string;
-  decal2Image: string;
-  decal2DarkImage: string;
-  decal2DarkHCImage: string;
-  facilityImage: string;
-  exploreImage: string;
-  discoverImage: string;
-  downloadImage: string;
-}
-
 const HomePage = (props: HomePageProps): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = useStyles({
-    decal2Image: props.decal2Image,
-    decal2DarkImage: props.decal2DarkImage,
-    decal2DarkHCImage: props.decal2DarkHCImage,
-  })();
+  const classes = useStyles(props)();
 
   return (
     <div id="dg-homepage">
       <div className={classes.backgroundImage}>
-        <div
-          style={{
-            backgroundImage: `url(${props.backgroundImage})`,
-            backgroundPosition: 'center 40%',
-            width: '100%',
-            height: 250,
-          }}
-        >
-          <div
+        <div className={classes.backgroundDecals}>
+          <Box
             style={{
-              backgroundImage: `url(${props.greenSwirl1Image}), url(${props.decal1Image})`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'top left, top right',
-              width: '100%',
-              height: 250,
+              position: 'relative',
+              left: '50%',
+              top: '45px',
+              transform: 'translate(-50%)',
             }}
           >
-            <Box
-              style={{
-                position: 'relative',
-                left: '50%',
-                top: '45px',
-                transform: 'translate(-50%)',
-              }}
-            >
-              <Typography variant="h2" className={classes.backgroundTitle}>
-                <Trans i18nKey="homePage.title_line1">
-                  <strong>Data discovery</strong> and <strong>access</strong>
-                </Trans>
-              </Typography>
-              <Typography variant="h2" className={classes.backgroundTitle}>
-                <Trans i18nKey="homePage.title_line2">
-                  for <strong>large-scale</strong>
-                  science facilities
-                </Trans>
-              </Typography>
-            </Box>
-          </div>
+            <Typography variant="h2" className={classes.backgroundTitle}>
+              <Trans i18nKey="homePage.title_line1">
+                <strong>Data discovery</strong> and <strong>access</strong>
+              </Trans>
+            </Typography>
+            <Typography variant="h2" className={classes.backgroundTitle}>
+              <Trans i18nKey="homePage.title_line2">
+                for <strong>large-scale</strong>
+                science facilities
+              </Trans>
+            </Typography>
+          </Box>
         </div>
       </div>
       <Box className={classes.contentBox}>
@@ -228,18 +225,8 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
               </Box>
             </Grid>
             <Grid item xs={6}>
-              <div
-                style={{
-                  backgroundImage: `url(${props.facilityImage})`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'bottom right',
-                  backgroundSize: 'cover',
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '4px',
-                }}
-              >
-                <div className={classes.decal2}></div>
+              <div className={classes.browseBackground}>
+                <div className={classes.browseDecal}></div>
               </div>
             </Grid>
           </Grid>
@@ -252,22 +239,22 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                   <SearchIcon className={classes.avatarIcon} />
                 </Avatar>
                 <Typography variant="h4" className={classes.paperHeading}>
-                  {t('homePage.discover.title')}
+                  {t('homePage.search.title')}
                 </Typography>
                 <Typography
                   variant="body1"
                   className={classes.paperDescription}
                 >
-                  {t('homePage.discover.description')}
+                  {t('homePage.search.description')}
                 </Typography>
                 <Box marginTop="auto">
                   <Button
                     color="primary"
                     variant="contained"
-                    href={t('homePage.discover.link')}
-                    aria-label={t('homePage.discover.button_arialabel')}
+                    href={t('homePage.search.link')}
+                    aria-label={t('homePage.search.button_arialabel')}
                   >
-                    {t('homePage.discover.button')}
+                    {t('homePage.search.button')}
                   </Button>
                 </Box>
               </Box>
@@ -303,15 +290,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
           </Grid>
           <Grid item xs={12} sm={4}>
             <Paper className={classes.bluePaper} elevation={1}>
-              <div
-                style={{
-                  backgroundImage: `url(${props.greenSwirl2Image})`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'top right',
-                  backgroundSize: 'auto 100%',
-                  height: '100%',
-                }}
-              >
+              <div className={classes.facilityDecal}>
                 <Box className={classes.paperContent}>
                   <Typography variant="h4" className={classes.bluePaperHeading}>
                     {t('homePage.facility.title')}

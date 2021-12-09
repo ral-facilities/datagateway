@@ -9,9 +9,6 @@ import Decal2Image from 'datagateway-common/src/images/decal2.svg';
 import Decal2DarkImage from 'datagateway-common/src/images/decal2-dark.svg';
 import Decal2DarkHCImage from 'datagateway-common/src/images/decal2-darkhc.svg';
 import FacilityImage from 'datagateway-common/src/images/facility.jpg';
-import ExploreImage from 'datagateway-common/src/images/explore.jpg';
-import DiscoverImage from 'datagateway-common/src/images/discover.jpg';
-import DownloadImage from 'datagateway-common/src/images/download.jpg';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 
@@ -34,9 +31,6 @@ export const TranslatedHomePage = React.memo(
         decal2DarkImage={props.pluginHost + Decal2DarkImage}
         decal2DarkHCImage={props.pluginHost + Decal2DarkHCImage}
         facilityImage={props.pluginHost + FacilityImage}
-        exploreImage={props.pluginHost + ExploreImage}
-        discoverImage={props.pluginHost + DiscoverImage}
-        downloadImage={props.pluginHost + DownloadImage}
       />
     );
   }
