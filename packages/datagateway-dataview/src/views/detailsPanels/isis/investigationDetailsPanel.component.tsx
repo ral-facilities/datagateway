@@ -308,7 +308,7 @@ const InvestigationDetailsPanel = (
                 );
               })
             ) : (
-              <Typography data-testid="visit-details-panel-no-publications">
+              <Typography data-testid="investigation-details-panel-no-publications">
                 {t('investigations.details.publications.no_publications')}
               </Typography>
             )}
