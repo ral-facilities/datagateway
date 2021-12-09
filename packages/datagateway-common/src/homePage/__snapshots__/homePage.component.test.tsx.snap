@@ -92,7 +92,7 @@ exports[`Home page component homepage renders correctly 1`] = `
               variant="body1"
             >
               <Trans
-                i18nKey="homePage.browse.description2"
+                i18nKey="home_page.browse.description2"
               >
                 <strong>
                   DataGateway

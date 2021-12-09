@@ -207,7 +207,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                   variant="body1"
                   className={classes.paperDescription}
                 >
-                  <Trans i18nKey="homePage.browse.description2">
+                  <Trans i18nKey="home_page.browse.description2">
                     <strong>DataGateway</strong> focuses on providing data
                     discovery and data access functionality to the data.
                   </Trans>
