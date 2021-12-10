@@ -127,12 +127,12 @@ const ISISInvestigationsCardView = (
       {
         content: function doiFormat(entity: Investigation) {
           return (
-            entity?.studyInvestigations?.[0]?.study.pid && (
+            entity?.studyInvestigations?.[0]?.study?.pid && (
               <MuiLink
                 href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
                 data-testid="isis-investigations-card-doi-link"
               >
-                {entity.studyInvestigations[0].study.pid}
+                {entity.studyInvestigations[0].study?.pid}
               </MuiLink>
             )
           );
