@@ -3,7 +3,7 @@
 exports[`SelectionAlert renders correctly 1`] = `
 <SelectionAlert
   marginSide="4px"
-  navigateToSelections={[Function]}
+  navigateToSelection={[Function]}
   selectedItems={
     Array [
       Object {
@@ -639,7 +639,7 @@ exports[`SelectionAlert renders correctly 1`] = `
 
 exports[`SelectionAlert renders correctly after animation finished 1`] = `
 <SelectionAlert
-  navigateToSelections={[Function]}
+  navigateToSelection={[Function]}
   selectedItems={
     Array [
       Object {
