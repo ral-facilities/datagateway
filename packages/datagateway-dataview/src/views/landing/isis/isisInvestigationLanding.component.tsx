@@ -226,7 +226,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     {
       content: function parentDoiFormat(entity: Investigation) {
         return (
-          entity?.studyInvestigations?.[0]?.study.pid && (
+          entity?.studyInvestigations?.[0]?.study?.pid && (
             <MuiLink
               href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
               data-testid="isis-investigations-landing-parent-doi-link"
