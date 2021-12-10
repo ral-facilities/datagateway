@@ -5,6 +5,7 @@ import {
   useStudiesInfinite,
   useStudyCount,
   ColumnType,
+  getStudyInfoInvestigation,
   Study,
   useDateFilter,
   useSort,
@@ -123,8 +124,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         label: t('studies.title'),
         dataKey: 'studyInvestigations.investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) =>
-          (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
-            ?.title ?? '',
+          getStudyInfoInvestigation(cellProps.rowData as Study)?.title ?? '',
         filterComponent: textFilter,
       },
       {
@@ -148,8 +148,8 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
-          (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
-            ?.startDate ?? '',
+          getStudyInfoInvestigation(cellProps.rowData as Study)?.startDate ??
+          '',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
@@ -158,8 +158,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
-          (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
-            ?.endDate ?? '',
+          getStudyInfoInvestigation(cellProps.rowData as Study)?.endDate ?? '',
         filterComponent: dateFilter,
       },
     ];

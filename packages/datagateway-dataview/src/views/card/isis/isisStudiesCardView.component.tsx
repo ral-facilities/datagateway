@@ -2,6 +2,7 @@ import React from 'react';
 import {
   CardView,
   CardViewDetails,
+  getStudyInfoInvestigation,
   parseSearchToQuery,
   Study,
   tableLink,
@@ -116,7 +117,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       label: t('studies.title'),
       dataKey: 'studyInvestigations.investigation.title',
       content: (study: Study) => {
-        return study.studyInvestigations?.[0]?.investigation?.title ?? '';
+        return getStudyInfoInvestigation(study)?.title ?? '';
       },
       filterComponent: textFilter,
     }),
@@ -148,7 +149,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         content: (study: Study) =>
-          study.studyInvestigations?.[0]?.investigation?.startDate ?? '',
+          getStudyInfoInvestigation(study)?.startDate ?? '',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
@@ -157,7 +158,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         content: (study: Study) =>
-          study.studyInvestigations?.[0]?.investigation?.endDate ?? '',
+          getStudyInfoInvestigation(study)?.endDate ?? '',
         filterComponent: dateFilter,
       },
     ],

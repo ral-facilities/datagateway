@@ -118,8 +118,8 @@ export interface InvestigationType {
 
 export interface StudyInvestigation {
   id: number;
-  study: Study;
-  investigation: Investigation;
+  study?: Study;
+  investigation?: Investigation;
 }
 
 export interface Study {
