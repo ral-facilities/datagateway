@@ -35,7 +35,8 @@
       "url": "Information Page",
       "instrument_scientists": {
         "label": "Instrument Scientists",
-        "name": "Name"
+        "name": "Name",
+        "no_name": "No Scientists"
       }
     }
   },
@@ -90,11 +91,13 @@
       "facility": "Facility",
       "users": {
         "label": "Investigation Users",
-        "name": "Name"
+        "name": "Name",
+        "no_name": "No Users"
       },
       "samples": {
         "label": "Investigation Samples",
-        "name": "Sample"
+        "name": "Sample",
+        "no_samples": "No Samples"
       },
       "publications": {
         "label": "Publications",

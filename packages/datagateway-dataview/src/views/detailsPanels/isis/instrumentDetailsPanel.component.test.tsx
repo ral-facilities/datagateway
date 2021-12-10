@@ -146,6 +146,14 @@ describe('Instrument details panel component', () => {
     expect(wrapper.find('InstrumentDetailsPanel').props()).toMatchSnapshot();
   });
 
+  it('renders publication tab and text "No Scientists" when no data is prsent', () => {
+    rowData.instrumentScientists = [];
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testid="instrument-details-panel-no-name"]').exists()
+    ).toBeTruthy();
+  });
+
   it('Shows "No <field> provided" incase of a null field', () => {
     const { description, type, url, ...amendedRowData } = rowData;
 
