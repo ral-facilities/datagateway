@@ -15,6 +15,7 @@ import { StyleRules } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 export interface HomePageProps {
   logo: string;
@@ -216,8 +217,9 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                   <Button
                     color="primary"
                     variant="contained"
-                    href={t('home_page.browse.link')}
-                    aria-label={t('home_page.browse.button_arialabel')}
+                    component={Link}
+                    to={t('home_page.browse.link')}
+                    data-testid="browse-button"
                   >
                     {t('home_page.browse.button')}
                   </Button>
@@ -251,8 +253,9 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                   <Button
                     color="primary"
                     variant="contained"
-                    href={t('home_page.search.link')}
-                    aria-label={t('home_page.search.button_arialabel')}
+                    component={Link}
+                    to={t('home_page.search.link')}
+                    data-testid="search-button"
                   >
                     {t('home_page.search.button')}
                   </Button>
@@ -279,8 +282,9 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                   <Button
                     color="primary"
                     variant="contained"
-                    href={t('home_page.download.link')}
-                    aria-label={t('home_page.download.button_arialabel')}
+                    component={Link}
+                    to={t('home_page.download.link')}
+                    data-testid="download-button"
                   >
                     {t('home_page.download.button')}
                   </Button>
@@ -307,7 +311,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                       variant="contained"
                       className={classes.lightBlueButton}
                       href={t('home_page.facility.link')}
-                      aria-label={t('home_page.facility.button_arialabel')}
+                      data-testid="facility-button"
                     >
                       {t('home_page.facility.button')}
                     </Button>

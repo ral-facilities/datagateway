@@ -104,9 +104,23 @@ exports[`Home page component homepage renders correctly 1`] = `
               marginTop="auto"
             >
               <WithStyles(ForwardRef(Button))
-                aria-label="home_page.browse.button_arialabel"
                 color="primary"
-                href="home_page.browse.link"
+                component={
+                  Object {
+                    "$$typeof": Symbol(react.forward_ref),
+                    "displayName": "Link",
+                    "propTypes": Object {
+                      "innerRef": [Function],
+                      "onClick": [Function],
+                      "replace": [Function],
+                      "target": [Function],
+                      "to": [Function],
+                    },
+                    "render": [Function],
+                  }
+                }
+                data-testid="browse-button"
+                to="home_page.browse.link"
                 variant="contained"
               >
                 home_page.browse.button
@@ -167,9 +181,23 @@ exports[`Home page component homepage renders correctly 1`] = `
               marginTop="auto"
             >
               <WithStyles(ForwardRef(Button))
-                aria-label="home_page.search.button_arialabel"
                 color="primary"
-                href="home_page.search.link"
+                component={
+                  Object {
+                    "$$typeof": Symbol(react.forward_ref),
+                    "displayName": "Link",
+                    "propTypes": Object {
+                      "innerRef": [Function],
+                      "onClick": [Function],
+                      "replace": [Function],
+                      "target": [Function],
+                      "to": [Function],
+                    },
+                    "render": [Function],
+                  }
+                }
+                data-testid="search-button"
+                to="home_page.search.link"
                 variant="contained"
               >
                 home_page.search.button
@@ -213,9 +241,23 @@ exports[`Home page component homepage renders correctly 1`] = `
               marginTop="auto"
             >
               <WithStyles(ForwardRef(Button))
-                aria-label="home_page.download.button_arialabel"
                 color="primary"
-                href="home_page.download.link"
+                component={
+                  Object {
+                    "$$typeof": Symbol(react.forward_ref),
+                    "displayName": "Link",
+                    "propTypes": Object {
+                      "innerRef": [Function],
+                      "onClick": [Function],
+                      "replace": [Function],
+                      "target": [Function],
+                      "to": [Function],
+                    },
+                    "render": [Function],
+                  }
+                }
+                data-testid="download-button"
+                to="home_page.download.link"
                 variant="contained"
               >
                 home_page.download.button
@@ -255,9 +297,9 @@ exports[`Home page component homepage renders correctly 1`] = `
                 marginTop="auto"
               >
                 <WithStyles(ForwardRef(Button))
-                  aria-label="home_page.facility.button_arialabel"
                   className="makeStyles-lightBlueButton-17"
                   color="primary"
+                  data-testid="facility-button"
                   href="home_page.facility.link"
                   variant="contained"
                 >
