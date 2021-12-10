@@ -21,8 +21,7 @@
   "helpSteps": [
     {
       "target": "#plugin-link--download",
-      "content":
-        "DataGateway Download allows you to view and manage items in the current download selection as well see previous downloads"
+      "content": "DataGateway Download allows you to view and manage items in the current download selection as well see previous downloads"
     },
     {
       "target": ".tour-download-cart-tab",
@@ -51,7 +50,7 @@
   ],
   "routes": [
     {
-      "section": "Test",
+      "section": "Discover",
       "link": "/download",
       "displayName": "Download",
       "order": 0

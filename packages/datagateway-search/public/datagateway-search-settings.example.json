@@ -30,7 +30,7 @@
   "searchableEntities": ["investigation", "dataset", "datafile"],
   "routes": [
     {
-      "section": "Test",
+      "section": "Discover",
       "link": "/search/data",
       "displayName": "Search",
       "order": 0
