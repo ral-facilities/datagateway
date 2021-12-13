@@ -68,7 +68,7 @@
         "error": "An error has occurred while fetching the citation.",
         "locale": "en-GB",
         "default_format": "default",
-        "formats": ["bibtex", "chicago-author-date", "ieee", "ieee-with-url", "science"]
+        "formats": ["american-physics-society", "american-chemical-society", "american-institute-of-physics",  "bibtex", "chicago-author-date", "ieee-with-url", "institute-of-physics-numeric", "nature", "science"]
       }
     }
   },
