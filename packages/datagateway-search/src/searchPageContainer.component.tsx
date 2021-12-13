@@ -352,7 +352,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   <Grid item xs={true}>
                     <SelectionAlert
                       selectedItems={cartItems ?? []}
-                      navigateToSelections={navigateToDownload}
+                      navigateToSelection={navigateToDownload}
                     />
                   </Grid>
                 </Grid>

@@ -104,7 +104,7 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="selection-alert-text"]')
       .invoke('text')
       .then((text) => {
-        expect(text.trim()).equal('1 item has been added to selections.');
+        expect(text.trim()).equal('1 item has been added to selection.');
       });
     cy.get('[aria-label="selection-alert-close"]').click();
     cy.get('[aria-label="selection-alert"]', { timeout: 10000 }).should(

@@ -178,8 +178,8 @@
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "buttons": {
-    "add_to_cart": "Add to selections",
-    "remove_from_cart": "Remove from selections",
+    "add_to_cart": "Add to selection",
+    "remove_from_cart": "Remove from selection",
     "download": "Download"
   },
   "advanced_filters": {
@@ -216,37 +216,33 @@
       "description1": "Large scale facilities, such as synchrotrons, neutron and muon sources, lasers and accelerators, generate vast amounts of data that need to be managed in an efficient way, supporting data ingestion for long-term storage and archival, as well as data analysis and data publication workflows.",
       "description2": "<0>DataGateway</0> focuses on providing data discovery and data access functionality to the data.",
       "link": "/browse/investigation",
-      "button": "Browse data",
-      "button_arialabel": "Browse data"
+      "button": "Browse data"
     },
     "search": {
       "title": "Search",
       "description": "Search for the experimental data according to different criteria.",
       "link": "/search",
-      "button": "Search data",
-      "button_arialabel": "Search data"
+      "button": "Search data"
     },
     "download": {
       "title": "Download",
       "description": "Retrieve the experimental data using a variety of download methods.",
       "link": "/download",
-      "button": "Download data",
-      "button_arialabel": "Download data"
+      "button": "Download data"
     },
     "facility": {
       "title": "ISIS Neutron and Muon Source",
       "description": "World-leading centre for research giving unique insights into the properties of materials on the atomic scale.",
       "link": "https://www.isis.stfc.ac.uk/Pages/About.aspx",
-      "button": "Read more",
-      "button_arialabel": "Read more"
+      "button": "Read more"
     }
   },
   "selec_alert": {
-    "added": "{{count}} item has been added to selections.",
-    "added_plural": "{{count}} items have been added to selections.",
-    "removed": "{{count}} item has been removed from selections.",
-    "removed_plural": "{{count}} items have been removed from selections.",
-    "link": "Go to selections."
+    "added": "{{count}} item has been added to selection.",
+    "added_plural": "{{count}} items have been added to selection.",
+    "removed": "{{count}} item has been removed from selection.",
+    "removed_plural": "{{count}} items have been removed from selection.",
+    "link": "Go to selection."
   },
   "doi_constants": {
     "keywords": [

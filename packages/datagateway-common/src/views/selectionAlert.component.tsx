@@ -83,7 +83,7 @@ const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
 const SelectionAlert = React.memo(
   (props: {
     selectedItems: DownloadCartItem[];
-    navigateToSelections: () => void;
+    navigateToSelection: () => void;
     width?: string;
     marginSide?: string;
   }): React.ReactElement | null => {
@@ -138,7 +138,7 @@ const SelectionAlert = React.memo(
                 cursor: 'pointer',
                 fontSize: '14px',
               }}
-              onClick={props.navigateToSelections}
+              onClick={props.navigateToSelection}
             >
               {t('selec_alert.link')}
             </button>

@@ -42,7 +42,7 @@ describe('SelectionAlert', () => {
     const wrapper = mount(
       <SelectionAlert
         selectedItems={cart}
-        navigateToSelections={() => undefined}
+        navigateToSelection={() => undefined}
         width={'100px'}
         marginSide={'4px'}
       />
@@ -57,7 +57,7 @@ describe('SelectionAlert', () => {
     const wrapper = mount(
       <SelectionAlert
         selectedItems={cartItems}
-        navigateToSelections={() => undefined}
+        navigateToSelection={() => undefined}
       />
     );
     expect(
@@ -69,7 +69,7 @@ describe('SelectionAlert', () => {
     const wrapper = mount(
       <SelectionAlert
         selectedItems={cartItems}
-        navigateToSelections={() => undefined}
+        navigateToSelection={() => undefined}
       />
     );
     wrapper.setProps({ selectedItems: [cartItems[0], cartItems[1]] });
@@ -82,7 +82,7 @@ describe('SelectionAlert', () => {
     const wrapper = mount(
       <SelectionAlert
         selectedItems={cartItems}
-        navigateToSelections={() => undefined}
+        navigateToSelection={() => undefined}
       />
     );
     wrapper.setProps({ selectedItems: [] });
@@ -95,7 +95,7 @@ describe('SelectionAlert', () => {
     const wrapper = mount(
       <SelectionAlert
         selectedItems={[]}
-        navigateToSelections={() => undefined}
+        navigateToSelection={() => undefined}
       />
     );
     expect(wrapper.find('[aria-label="selection-alert"]').exists()).toBeFalsy();
@@ -105,7 +105,7 @@ describe('SelectionAlert', () => {
     const wrapper = mount(
       <SelectionAlert
         selectedItems={cartItems}
-        navigateToSelections={() => undefined}
+        navigateToSelection={() => undefined}
       />
     );
     wrapper
@@ -120,7 +120,7 @@ describe('SelectionAlert', () => {
     const wrapper = mount(
       <SelectionAlert
         selectedItems={cartItems}
-        navigateToSelections={() => undefined}
+        navigateToSelection={() => undefined}
       />
     );
     wrapper
@@ -131,7 +131,7 @@ describe('SelectionAlert', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('clicking link calls navigateToSelections', () => {
+  it('clicking link calls navigateToSelection', () => {
     let navigated = false;
     const navigate = (): void => {
       navigated = true;
@@ -139,7 +139,7 @@ describe('SelectionAlert', () => {
     const wrapper = mount(
       <SelectionAlert
         selectedItems={cartItems}
-        navigateToSelections={navigate}
+        navigateToSelection={navigate}
       />
     );
     wrapper
