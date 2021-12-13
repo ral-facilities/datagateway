@@ -663,7 +663,7 @@ const PageContainer: React.FC = () => {
                   <Grid item xs={true}>
                     <SelectionAlert
                       selectedItems={cartItems ?? []}
-                      navigateToSelections={navigateToDownload}
+                      navigateToSelection={navigateToDownload}
                       marginSide={'8px'}
                     />
                   </Grid>
