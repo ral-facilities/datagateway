@@ -191,6 +191,7 @@ describe('Datafile search table component', () => {
       searchText: '',
       startDate: null,
       endDate: null,
+      maxCount: 300,
     });
 
     expect(useDatafileCount).toHaveBeenCalledWith([

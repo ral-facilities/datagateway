@@ -144,12 +144,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
         advanced_search_help.limited_search_results.title
       </WithStyles(WithStyles(ForwardRef(DialogTitle)))>
       <WithStyles(WithStyles(ForwardRef(DialogContent)))>
-        <Trans
-          i18nKey="advanced_search_help.limited_search_results.description"
-          t={[Function]}
-        >
-          Due to technical and performance reasons, only the top 300 results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. If you find your search gives 300 results, try using a more specific query to find what you are looking for.
-        </Trans>
+        advanced_search_help.limited_search_results.description {maxNumResults:{tabs:{datasetTab:false,datafileTab:false,investigationTab:false,currentTab:investigation},selectAllSetting:true,settingsLoaded:false,sideLayout:false,searchableEntities:[investigation,dataset,datafile],maxNumResults:300}}
       </WithStyles(WithStyles(ForwardRef(DialogContent)))>
     </WithStyles(ForwardRef(Paper))>
     <WithStyles(ForwardRef(Typography))

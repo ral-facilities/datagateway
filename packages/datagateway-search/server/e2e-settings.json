@@ -4,6 +4,9 @@
   "apiUrl": "http://localhost:5000",
   "downloadApiUrl": "https://localhost:8181/topcat",
   "icatUrl": "https://localhost:8181/icat",
+  "selectAllSetting": true,
+  "searchableEntities": ["investigation", "dataset", "datafile"],
+  "maxNumResults": 300,
   "helpSteps": [
     {
       "target": "#plugin-link--search-data",

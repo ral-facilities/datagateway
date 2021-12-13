@@ -8,6 +8,8 @@ import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
 import { Trans, useTranslation } from 'react-i18next';
 import AdvancedHelpDialogue from './search/advancedHelpDialogue';
+import { useSelector } from 'react-redux';
+import { StateType } from './state/app.types';
 
 interface SearchBoxContainerProps {
   searchText: string;
@@ -20,6 +22,10 @@ const SearchBoxContainer = (
 ): React.ReactElement => {
   const { searchText, initiateSearch, onSearchTextChange } = props;
   const [t] = useTranslation();
+
+  const maxNumResults = useSelector(
+    (state: StateType) => state.dgsearch.maxNumResults
+  );
 
   return (
     <Grid
@@ -87,7 +93,9 @@ const SearchBoxContainer = (
       </Grid>
 
       <Typography style={{ margin: '10px' }}>
-        {t('searchBox.limited_results_message')}
+        {t('searchBox.limited_results_message', {
+          maxNumResults,
+        })}
       </Typography>
     </Grid>
   );

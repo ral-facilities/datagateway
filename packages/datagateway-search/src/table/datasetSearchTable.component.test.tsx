@@ -205,6 +205,7 @@ describe('Dataset table component', () => {
       searchText: '',
       startDate: null,
       endDate: null,
+      maxCount: 300,
     });
 
     expect(useDatasetCount).toHaveBeenCalledWith([

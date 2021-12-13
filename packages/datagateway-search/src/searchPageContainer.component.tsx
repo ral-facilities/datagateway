@@ -150,8 +150,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     currentTab,
   } = props;
 
-  console.log(maxNumResults);
-
   const location = useLocation();
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,

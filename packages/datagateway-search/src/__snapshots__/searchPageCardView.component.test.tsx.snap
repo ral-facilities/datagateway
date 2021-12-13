@@ -135,12 +135,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -169,12 +170,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -233,12 +235,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -267,12 +270,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -293,23 +297,25 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Investigation",
                       Object {
                         "endDate": null,
+                        "maxCount": 300,
                         "searchText": "",
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Investigation",
                     Object {
                       "endDate": null,
+                      "maxCount": 300,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -394,12 +400,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -428,12 +435,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -454,23 +462,25 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Dataset",
                       Object {
                         "endDate": null,
+                        "maxCount": 300,
                         "searchText": "",
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Dataset",
                     Object {
                       "endDate": null,
+                      "maxCount": 300,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -555,12 +565,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -589,12 +600,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -615,23 +627,25 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Datafile",
                       Object {
                         "endDate": null,
+                        "maxCount": 300,
                         "searchText": "",
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Datafile",
                     Object {
                       "endDate": null,
+                      "maxCount": 300,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -1755,7 +1769,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "status": "loading",
                   },
                 },
-                "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
+                "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -1820,12 +1834,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -1854,12 +1869,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -1880,23 +1896,25 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Datafile",
                       Object {
                         "endDate": null,
+                        "maxCount": 300,
                         "searchText": "",
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Datafile",
                     Object {
                       "endDate": null,
+                      "maxCount": 300,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -1916,7 +1934,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                 },
-                "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
+                "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -1981,12 +1999,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -2015,12 +2034,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -2041,23 +2061,25 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Dataset",
                       Object {
                         "endDate": null,
+                        "maxCount": 300,
                         "searchText": "",
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Dataset",
                     Object {
                       "endDate": null,
+                      "maxCount": 300,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -2077,7 +2099,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                 },
-                "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
+                "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -2142,12 +2164,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -2176,12 +2199,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -2240,12 +2264,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -2274,12 +2299,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": 300,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -2300,23 +2326,25 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Investigation",
                       Object {
                         "endDate": null,
+                        "maxCount": 300,
                         "searchText": "",
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Investigation",
                     Object {
                       "endDate": null,
+                      "maxCount": 300,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -2350,6 +2378,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
             datafileTab={true}
             datasetTab={true}
             investigationTab={true}
+            maxNumResults={300}
             setCurrentTab={[Function]}
           >
             <div>

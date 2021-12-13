@@ -14,6 +14,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import { Link, Paper } from '@material-ui/core';
 import { Trans, useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { StateType } from '../state/app.types';
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -60,6 +62,10 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const [t] = useTranslation();
+
+  const maxNumResults = useSelector(
+    (state: StateType) => state.dgsearch.maxNumResults
+  );
 
   const handleClickOpen = (): void => {
     setOpen(true);
@@ -180,15 +186,9 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
             {t('advanced_search_help.limited_search_results.title')}
           </DialogueHeading>
           <DialogueContent>
-            <Trans
-              t={t}
-              i18nKey="advanced_search_help.limited_search_results.description"
-            >
-              Due to technical and performance reasons, only the top 300 results
-              will be displayed for each entity type i.e. Investigation, Dataset
-              or Datafile. If you find your search gives 300 results, try using
-              a more specific query to find what you are looking for.
-            </Trans>
+            {t('advanced_search_help.limited_search_results.description', {
+              maxNumResults,
+            })}
           </DialogueContent>
         </Paper>
         <Typography className={classes.root} gutterBottom>
