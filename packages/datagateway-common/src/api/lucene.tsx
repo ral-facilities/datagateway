@@ -75,8 +75,6 @@ export const fetchLuceneData = async (
     maxCount: params.maxCount ? params.maxCount : 300,
   };
 
-  console.log(params.maxCount);
-
   return axios
     .get(`${settings.icatUrl}/lucene/data`, {
       params: queryParams,
