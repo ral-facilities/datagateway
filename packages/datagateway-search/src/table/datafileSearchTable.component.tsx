@@ -103,10 +103,15 @@ const DatafileSearchTable = (
     (state: StateType) => state.dgsearch.selectAllSetting
   );
 
+  const maxNumResults = useSelector(
+    (state: StateType) => state.dgsearch.maxNumResults
+  );
+
   const { data: luceneData } = useLuceneSearch('Datafile', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const [t] = useTranslation();
 

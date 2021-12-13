@@ -5,6 +5,8 @@ import {
   ConfigureSearchableEntitiesPayload,
   ConfigureSearchableEntitiesType,
   SettingsLoadedType,
+  ConfigureMaxNumResultsPayload,
+  ConfigureMaxNumResultsType,
 } from './actions.types';
 import {
   loadUrls,
@@ -39,6 +41,15 @@ export const loadSearchableEntitites = (
   type: ConfigureSearchableEntitiesType,
   payload: {
     entities: entities,
+  },
+});
+
+export const loadMaxNumResults = (
+  maxNumResults: number
+): ActionType<ConfigureMaxNumResultsPayload> => ({
+  type: ConfigureMaxNumResultsType,
+  payload: {
+    maxNumResults: maxNumResults,
   },
 });
 
@@ -90,6 +101,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if ('searchableEntities' in settings) {
           dispatch(loadSearchableEntitites(settings['searchableEntities']));
+        }
+
+        if ('maxNumResults' in settings) {
+          dispatch(loadMaxNumResults(settings['maxNumResults']));
         }
 
         if (Array.isArray(settings['routes']) && settings['routes'].length) {

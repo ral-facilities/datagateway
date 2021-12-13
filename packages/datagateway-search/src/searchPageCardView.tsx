@@ -40,6 +40,7 @@ interface SearchCardViewProps {
 }
 
 interface SearchCardViewStoreProps {
+  maxNumResults: number;
   datasetTab: boolean;
   datafileTab: boolean;
   investigationTab: boolean;
@@ -88,6 +89,7 @@ const SearchPageCardView = (
     SearchCardViewDispatchProps
 ): React.ReactElement => {
   const {
+    maxNumResults,
     investigationTab,
     datasetTab,
     datafileTab,
@@ -109,16 +111,19 @@ const SearchPageCardView = (
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const { data: dataset } = useLuceneSearch('Dataset', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const { data: datafile } = useLuceneSearch('Datafile', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
 
   // Setting a tab based on user selection and what tabs are available
@@ -299,6 +304,7 @@ const SearchPageCardView = (
 
 const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
   return {
+    maxNumResults: state.dgsearch.maxNumResults,
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,

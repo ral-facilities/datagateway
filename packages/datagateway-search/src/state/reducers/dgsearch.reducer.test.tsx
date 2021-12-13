@@ -7,6 +7,7 @@ import {
   setCurrentTab,
 } from '../actions/actions';
 import {
+  loadMaxNumResults,
   loadSearchableEntitites,
   loadSelectAllSetting,
   settingsLoaded,
@@ -86,5 +87,13 @@ describe('dgsearch reducer', () => {
     );
 
     expect(updatedState.searchableEntities).toEqual(['dataset']);
+  });
+
+  it('should set maxNumResults property when configuring action is sent', () => {
+    expect(state.maxNumResults).toEqual(300);
+
+    const updatedState = DGSearchReducer(state, loadMaxNumResults(200));
+
+    expect(updatedState.maxNumResults).toEqual(200);
   });
 });

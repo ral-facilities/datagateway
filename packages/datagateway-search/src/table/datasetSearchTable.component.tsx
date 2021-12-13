@@ -96,10 +96,15 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     (state: StateType) => state.dgsearch.selectAllSetting
   );
 
+  const maxNumResults = useSelector(
+    (state: StateType) => state.dgsearch.maxNumResults
+  );
+
   const { data: luceneData } = useLuceneSearch('Dataset', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const [t] = useTranslation();
 
