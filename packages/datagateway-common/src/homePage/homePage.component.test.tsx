@@ -10,22 +10,15 @@ describe('Home page component', () => {
     shallow = createShallow({ untilSelector: 'div' });
 
     props = {
-      title: 'test-title',
-      howLabel: 'test-howLabel',
-      exploreLabel: 'test-exploreLabel',
-      exploreDescription: 'test-exploreDescription',
-      exploreLink: 'test-exploreLink',
-      discoverLabel: 'test-discoverLabel',
-      discoverDescription: 'test-discoverDescription',
-      discoverLink: 'test-discoverLink',
-      downloadLabel: 'test-downloadLabel',
-      downloadDescription: 'test-downloadDescription',
-      downloadLink: 'test-downloadLink',
       logo: 'test-logo',
-      backgroundImage: 'test-backgroundImage',
-      exploreImage: 'test-exploreImage',
-      discoverImage: 'test-discoverImage',
-      downloadImage: 'test-downloadImage',
+      backgroundImage: 'test-bakcgroundImage',
+      greenSwirl1Image: 'test-greenSwirl1Image',
+      greenSwirl2Image: 'test-greenSwirl2Image',
+      decal1Image: 'test-decal1Image',
+      decal2Image: 'test-decal2Image',
+      decal2DarkImage: 'test-decal2DarkImage',
+      decal2DarkHCImage: 'test-Decal2DarkHCImage',
+      facilityImage: 'test-facilityImage',
     };
   });
 

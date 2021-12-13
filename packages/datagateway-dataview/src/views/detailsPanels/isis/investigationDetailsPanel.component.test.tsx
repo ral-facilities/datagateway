@@ -118,12 +118,64 @@ describe('Investigation details panel component', () => {
     expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
   });
 
-  it('renders publication tab and text " NO publications" when no data is prsent', () => {
+  it('checks if multiple samples result in change of title to plural version', () => {
+    rowData.samples = [
+      {
+        id: 7,
+        name: 'Test sample',
+      },
+      {
+        id: 8,
+        name: 'Test sample 1',
+      },
+    ];
+
+    const wrapper = createWrapper();
+    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('checks if multiple publications result in change of title to plural version', () => {
+    rowData.publications = [
+      {
+        id: 8,
+        fullReference: 'Test publication',
+      },
+      {
+        id: 9,
+        fullReference: 'Test publication 1',
+      },
+    ];
+
+    const wrapper = createWrapper();
+    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+  });
+
+  it('renders publication tab and text "No Publications" when no data is prsent', () => {
     rowData.publications = [];
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-testid="visit-details-panel-no-publications"]')
+        .find('[data-testid="investigation-details-panel-no-publications"]')
+        .exists()
+    ).toBeTruthy();
+  });
+
+  it('renders publication tab and text "No Samples" when no data is prsent', () => {
+    rowData.samples = [];
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="investigation-details-panel-no-samples"]')
+        .exists()
+    ).toBeTruthy();
+  });
+
+  it('renders publication tab and text "No Users" when no data is prsent', () => {
+    rowData.investigationUsers = [];
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="investigation-details-panel-no-name"]')
         .exists()
     ).toBeTruthy();
   });

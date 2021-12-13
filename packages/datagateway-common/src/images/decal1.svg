@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="246"
+   height="250"
+   viewBox="0 0 65.087499 66.145833"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="decal1.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="3.1108586"
+     inkscape:cx="69.594935"
+     inkscape:cy="69.916389"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <path
+       id="path-163879434470215"
+       d="m 479.95102,84.341463 c 0,0 0,246.999997 0,246.999997 0,0 -238.97143,-248.004062 -246,-246.999997 -7.02857,1.004065 246,0 246,0 z"
+       vector-effect="non-scaling-stroke" />
+    <path
+       id="path-163879434470317"
+       d="m 0,0 c 0,0 70,0 70,0 0,0 0,150 0,150 0,0 -70,0 -70,0 C 0,150 0,0 0,0 Z"
+       vector-effect="non-scaling-stroke" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       style="overflow:visible"
+       id="g31"
+       transform="matrix(0,0.26458333,-0.26458333,0,65.346065,1.0325932)">
+      <g
+         id="g16">
+        <defs
+           id="defs10">
+          <path
+             id="path25"
+             d="m 479.95102,84.341463 c 0,0 0,246.999997 0,246.999997 0,0 -238.97143,-248.004062 -246,-246.999997 -7.02857,1.004065 246,0 246,0 z"
+             vector-effect="non-scaling-stroke" />
+        </defs>
+        <g
+           transform="translate(-233.80726,-84.341463)"
+           id="g14">
+          <path
+             d="m 479.95102,84.341463 c 0,0 0,246.999997 0,246.999997 0,0 -238.97143,-248.004062 -246,-246.999997 -7.02857,1.004065 246,0 246,0 z"
+             style="fill:#1e5df8;stroke:#8c8c8c;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter"
+             vector-effect="non-scaling-stroke"
+             id="path12" />
+        </g>
+      </g>
+    </g>
+    <g
+       style="overflow:visible"
+       id="g55"
+       transform="matrix(0,0.26458333,-0.26458333,0,65.237608,0.00678609)">
+      <g
+         id="g40">
+        <defs
+           id="defs34">
+          <path
+             id="path49"
+             d="m 0,0 c 0,0 70,0 70,0 0,0 0,150 0,150 0,0 -70,0 -70,0 C 0,150 0,0 0,0 Z"
+             vector-effect="non-scaling-stroke" />
+        </defs>
+        <g
+           id="g38">
+          <path
+             d="m 0,0 c 0,0 70,0 70,0 0,0 0,150 0,150 0,0 -70,0 -70,0 C 0,150 0,0 0,0 Z"
+             style="fill:#1e5df8;stroke:#8c8c8c;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter"
+             vector-effect="non-scaling-stroke"
+             id="path36" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

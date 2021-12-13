@@ -130,25 +130,33 @@ const InstrumentDetailsPanel = (
           hidden={value !== 'users'}
         >
           <Grid container className={classes.root} direction="column">
-            {instrumentData.instrumentScientists.map((instrumentScientist) => {
-              if (instrumentScientist.user) {
-                return (
-                  <Grid key={instrumentScientist.user.id} item xs>
-                    <Typography variant="overline">
-                      {t('instruments.details.instrument_scientists.name')}
-                    </Typography>
-                    <Typography>
-                      <b>
-                        {instrumentScientist.user.fullName ||
-                          instrumentScientist.user.name}
-                      </b>
-                    </Typography>
-                  </Grid>
-                );
-              } else {
-                return null;
-              }
-            })}
+            <Typography variant="overline">
+              {instrumentData.instrumentScientists.length <= 1
+                ? t('instruments.details.instrument_scientists.name')
+                : t('instruments.details.instrument_scientists.name') + 's'}
+            </Typography>
+            {instrumentData.instrumentScientists.length > 0 ? (
+              instrumentData.instrumentScientists.map((instrumentScientist) => {
+                if (instrumentScientist.user) {
+                  return (
+                    <Grid key={instrumentScientist.user.id} item xs>
+                      <Typography>
+                        <b>
+                          {instrumentScientist.user.fullName ||
+                            instrumentScientist.user.name}
+                        </b>
+                      </Typography>
+                    </Grid>
+                  );
+                } else {
+                  return null;
+                }
+              })
+            ) : (
+              <Typography data-testid="instrument-details-panel-no-name">
+                {t('instruments.details.instrument_scientists.no_name')}
+              </Typography>
+            )}
           </Grid>
         </div>
       )}
