@@ -78,20 +78,20 @@
     },
     {
       "section": "Browse",
+      "link": "/browseStudyHierarchy/instrument",
+      "displayName": "Studies",
+      "order": 4
+    },
+    {
+      "section": "Browse",
       "link": "/my-data/DLS",
       "displayName": "My Data DLS",
-      "order": 4
+      "order": 5
     },
     {
       "section": "Browse",
       "link": "/my-data/ISIS",
       "displayName": "MY Data ISIS",
-      "order": 5
-    },
-    {
-      "section": "Browse",
-      "link": "/browseStudyHierarchy/instrument",
-      "displayName": "Studies",
       "order": 6
     }
   ],
