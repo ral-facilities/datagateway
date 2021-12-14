@@ -222,7 +222,7 @@
     "search": {
       "title": "Search",
       "description": "Search for the experimental data according to different criteria.",
-      "link": "/search",
+      "link": "/search/data",
       "button": "Search data"
     },
     "download": {

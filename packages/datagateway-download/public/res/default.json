@@ -80,6 +80,8 @@
     "download": "Download Selection",
     "number_of_files": "Number of files",
     "total_size": "Total size",
-    "no_selections": "No data selected. <2>Browse</2> or <6>search</6> for data."
+    "no_selections": "No data selected. <2>Browse</2> or <6>search</6> for data.",
+    "browse_link": "/browse/investigation",
+    "search_link": "/search/data"
   }
 }
