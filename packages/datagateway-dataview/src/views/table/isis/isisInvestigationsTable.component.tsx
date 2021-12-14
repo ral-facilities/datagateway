@@ -184,7 +184,6 @@ const ISISInvestigationsTable = (
           const principal_investigators = investigationData?.investigationUsers?.filter(
             (iu) => iu.role === 'principal_experimenter'
           );
-          console.log(investigationData?.investigationUsers);
           if (principal_investigators && principal_investigators.length !== 0) {
             return principal_investigators?.[0].user?.fullName;
           } else {

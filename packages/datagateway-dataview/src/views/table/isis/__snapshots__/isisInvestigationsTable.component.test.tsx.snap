@@ -75,7 +75,7 @@ Object {
     },
     Object {
       "cellContentRenderer": [Function],
-      "dataKey": "investigationInstruments.instrument.fullName",
+      "dataKey": "investigationUsers.user.principal_investigators",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -85,7 +85,7 @@ Object {
           "render": [Function],
         },
       },
-      "label": "investigations.instrument",
+      "label": "investigations.principal_investigators",
     },
     Object {
       "dataKey": "startDate",
