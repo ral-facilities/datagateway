@@ -2,6 +2,7 @@ import { Link } from '@material-ui/core';
 import { Title, Link as LinkIcon } from '@material-ui/icons';
 import {
   CardView,
+  CardViewDetails,
   Instrument,
   parseSearchToQuery,
   tableLink,
@@ -13,7 +14,6 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';

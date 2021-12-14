@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
   Investigation,
   tableLink,
   parseSearchToQuery,
@@ -14,7 +15,6 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 const DLSProposalsCardView = (): React.ReactElement => {
   const [t] = useTranslation();

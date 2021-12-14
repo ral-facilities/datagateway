@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
   Dataset,
   formatCountOrSize,
   tableLink,
@@ -21,7 +22,6 @@ import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface DLSDatasetsCVProps {
   proposalName: string;

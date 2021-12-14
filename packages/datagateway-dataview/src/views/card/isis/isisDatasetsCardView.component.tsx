@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
   Dataset,
   tableLink,
   formatCountOrSize,
@@ -22,7 +23,6 @@ import { useTranslation } from 'react-i18next';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
