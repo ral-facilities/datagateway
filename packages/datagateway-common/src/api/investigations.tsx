@@ -626,6 +626,9 @@ export const useISISInvestigationsInfinite = (
       {
         studyInvestigations: 'study',
       },
+      {
+        investigationUsers: 'user',
+      },
     ]),
   };
 

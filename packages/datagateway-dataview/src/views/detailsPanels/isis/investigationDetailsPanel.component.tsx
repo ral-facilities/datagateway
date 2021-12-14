@@ -298,9 +298,6 @@ const InvestigationDetailsPanel = (
               investigationData.publications.map((publication) => {
                 return (
                   <Grid key={publication.id} item xs>
-                    <Typography variant="overline">
-                      {t('investigations.details.publications.reference')}
-                    </Typography>
                     <Typography>
                       <b>{publication.fullReference}</b>
                     </Typography>
