@@ -29,6 +29,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { useSelector } from 'react-redux';
+import { StateType } from '../state/app.types';
 
 interface DatasetCardViewProps {
   hierarchy: string;
@@ -59,10 +61,15 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
+  const maxNumResults = useSelector(
+    (state: StateType) => state.dgsearch.maxNumResults
+  );
+
   const { data: luceneData } = useLuceneSearch('Dataset', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
 
   const [t] = useTranslation();

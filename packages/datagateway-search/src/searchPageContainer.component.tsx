@@ -121,6 +121,7 @@ const ViewButton = (props: {
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
   searchableEntities: string[];
+  maxNumResults: number;
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
@@ -145,6 +146,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setInvestigationTab,
     sideLayout,
     searchableEntities,
+    maxNumResults,
     currentTab,
   } = props;
 
@@ -205,6 +207,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const {
     refetch: searchDatasets,
@@ -214,6 +217,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const {
     refetch: searchDatafiles,
@@ -223,6 +227,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
 
   const requestReceived =
@@ -404,6 +409,7 @@ const mapDispatchToProps = (
 const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   sideLayout: state.dgsearch.sideLayout,
   searchableEntities: state.dgsearch.searchableEntities,
+  maxNumResults: state.dgsearch.maxNumResults,
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,
   investigationTab: state.dgsearch.tabs.investigationTab,

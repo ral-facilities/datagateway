@@ -183,6 +183,7 @@ describe('Investigation - Card View', () => {
       searchText: '',
       startDate: null,
       endDate: null,
+      maxCount: 300,
     });
 
     expect(useInvestigationCount).toHaveBeenCalledWith([

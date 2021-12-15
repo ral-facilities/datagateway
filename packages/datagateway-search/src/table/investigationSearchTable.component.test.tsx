@@ -212,6 +212,7 @@ describe('Investigation Search Table component', () => {
       searchText: '',
       startDate: null,
       endDate: null,
+      maxCount: 300,
     });
 
     expect(useInvestigationCount).toHaveBeenCalledWith([
