@@ -8,7 +8,6 @@ import {
   investigationLink,
   tableLink,
   formatCountOrSize,
-  getStudyInfoInvestigation,
 } from './cellContentRenderers';
 
 describe('Cell content renderers', () => {
@@ -20,7 +19,7 @@ describe('Cell content renderers', () => {
 
   describe('formatBytes', () => {
     it('converts to bytes correctly', () => {
-      expect(formatBytes(10000)).toEqual('9.77 KB');
+      expect(formatBytes(10000)).toEqual('10 KB');
     });
 
     it('handles 0 correctly', () => {
@@ -66,7 +65,7 @@ describe('Cell content renderers', () => {
         formatCountOrSize({ isFetching: false, isSuccess: true, data: 1 }, true)
       ).toEqual('1 B');
       expect(formatCountOrSize({ data: 10000, isSuccess: true }, true)).toEqual(
-        '9.77 KB'
+        '10 KB'
       );
     });
 
@@ -74,63 +73,6 @@ describe('Cell content renderers', () => {
       expect(
         formatCountOrSize({ isFetching: false, isSuccess: true, data: 0 })
       ).toEqual('0');
-    });
-  });
-
-  describe('getStudyInfoInvestigation', () => {
-    it('filters out missing investigations and returns first existing investigation', () => {
-      expect(
-        getStudyInfoInvestigation({
-          id: 1,
-          pid: 'doi 1',
-          name: 'study 1',
-          modTime: '',
-          createTime: '',
-          studyInvestigations: [
-            {
-              id: 2,
-            },
-            {
-              id: 3,
-              investigation: {
-                id: 4,
-                title: 'Investigating the properties of the number 4',
-                name: 'investigation 4',
-                visitId: '1',
-              },
-            },
-          ],
-        })?.name
-      ).toEqual('investigation 4');
-    });
-
-    it('handles undefined properties fine', () => {
-      expect(
-        getStudyInfoInvestigation({
-          id: 1,
-          pid: 'doi 1',
-          name: 'study 1',
-          modTime: '',
-          createTime: '',
-        })
-      ).toBeUndefined();
-      expect(
-        getStudyInfoInvestigation({
-          id: 1,
-          pid: 'doi 1',
-          name: 'study 1',
-          modTime: '',
-          createTime: '',
-          studyInvestigations: [
-            {
-              id: 2,
-            },
-            {
-              id: 3,
-            },
-          ],
-        })
-      ).toBeUndefined();
     });
   });
 
