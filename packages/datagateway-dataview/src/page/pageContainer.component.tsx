@@ -192,6 +192,11 @@ const NavBar = React.memo(
   }): React.ReactElement => {
     const [t] = useTranslation();
     const classes = useNavBarStyles();
+    const isStudyHierarchy =
+      useRouteMatch([
+        ...Object.values(paths.studyHierarchy.toggle),
+        ...Object.values(paths.studyHierarchy.standard),
+      ]) !== null;
 
     return (
       <Sticky>
@@ -210,7 +215,7 @@ const NavBar = React.memo(
             />
           </Grid>
 
-          {props.loggedInAnonymously ? (
+          {props.loggedInAnonymously || isStudyHierarchy ? (
             <Grid item>
               <Paper square className={classes.openDataPaper}>
                 <Grid
@@ -225,7 +230,9 @@ const NavBar = React.memo(
                       interactive
                       title={
                         <h4>
-                          {t('app.open_data_warning.tooltip')}
+                          {isStudyHierarchy
+                            ? t('app.open_data_warning.studies_tooltip')
+                            : t('app.open_data_warning.tooltip')}
                           <br />
                           <br />
                           <a

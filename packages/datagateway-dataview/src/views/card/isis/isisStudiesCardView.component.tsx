@@ -1,6 +1,8 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
+  getStudyInfoInvestigation,
   parseSearchToQuery,
   Study,
   tableLink,
@@ -17,8 +19,8 @@ import PublicIcon from '@material-ui/icons/Public';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import { format, set } from 'date-fns';
 import { Link as MuiLink } from '@material-ui/core';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface ISISStudiesCVProps {
   instrumentId: string;
@@ -42,12 +44,27 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const unembargoDate = format(
+    // set s and ms to 0 to escape recursive loop of fetching data every time they change
+    set(new Date(), { seconds: 0, milliseconds: 0 }),
+    'yyyy-MM-dd HH:mm:ss'
+  );
+
   const { data: totalDataCount, isLoading: countLoading } = useStudyCount([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
         'studyInvestigations.investigation.investigationInstruments.instrument.id': {
           eq: instrumentId,
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
         },
       }),
     },
@@ -58,6 +75,15 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       filterValue: JSON.stringify({
         'studyInvestigations.investigation.investigationInstruments.instrument.id': {
           eq: instrumentId,
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
         },
       }),
     },
@@ -91,7 +117,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       label: t('studies.title'),
       dataKey: 'studyInvestigations.investigation.title',
       content: (study: Study) => {
-        return study.studyInvestigations?.[0]?.investigation?.title ?? '';
+        return getStudyInfoInvestigation(study)?.title ?? '';
       },
       filterComponent: textFilter,
     }),
@@ -123,7 +149,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         content: (study: Study) =>
-          study.studyInvestigations?.[0]?.investigation?.startDate ?? '',
+          getStudyInfoInvestigation(study)?.startDate ?? '',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
@@ -132,7 +158,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         content: (study: Study) =>
-          study.studyInvestigations?.[0]?.investigation?.endDate ?? '',
+          getStudyInfoInvestigation(study)?.endDate ?? '',
         filterComponent: dateFilter,
       },
     ],

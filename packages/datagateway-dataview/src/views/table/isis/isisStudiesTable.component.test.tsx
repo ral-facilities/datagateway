@@ -17,6 +17,11 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router';
 import { createMemoryHistory, History } from 'history';
+import { parse } from 'date-fns';
+
+jest
+  .useFakeTimers('modern')
+  .setSystemTime(parse('2021-10-27', 'yyyy-MM-dd', 0));
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -103,6 +108,14 @@ describe('ISIS Studies table component', () => {
           },
         }),
       },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.releaseDate': {
+            lt: '2021-10-27 00:00:00',
+          },
+        }),
+      },
     ]);
     expect(useStudiesInfinite).toHaveBeenCalledWith([
       {
@@ -110,6 +123,14 @@ describe('ISIS Studies table component', () => {
         filterValue: JSON.stringify({
           'studyInvestigations.investigation.investigationInstruments.instrument.id': {
             eq: instrumentId,
+          },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.releaseDate': {
+            lt: '2021-10-27 00:00:00',
           },
         }),
       },

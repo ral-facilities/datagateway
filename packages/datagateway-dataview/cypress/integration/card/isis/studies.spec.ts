@@ -22,11 +22,11 @@ describe('ISIS - Studies Cards', () => {
   it('should be able to click a study to see its landing page', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('STUDY 494')
+      .contains('STUDY 314')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/494'
+      '/browseStudyHierarchy/instrument/1/study/314'
     );
   });
 
@@ -96,7 +96,7 @@ describe('ISIS - Studies Cards', () => {
         });
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('STUDY 494');
+      cy.get('[data-testid="card"]').first().contains('STUDY 314');
 
       cy.contains('[role="button"]', 'Start Date')
         .click()
@@ -146,15 +146,15 @@ describe('ISIS - Studies Cards', () => {
         .wait(['@getStudiesCount', '@getStudiesOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('STUDY 11');
+      cy.get('[data-testid="card"]').first().contains('STUDY 21');
 
       cy.get('[aria-label="Filter by Title"]')
         .first()
-        .type('peace')
+        .type('science')
         .wait(['@getStudiesCount', '@getStudiesOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('STUDY 341');
+      cy.get('[data-testid="card"]').first().contains('STUDY 314');
     });
   });
 });

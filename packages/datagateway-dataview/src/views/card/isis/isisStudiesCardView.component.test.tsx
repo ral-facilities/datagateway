@@ -18,6 +18,11 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISStudiesCardView from './isisStudiesCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { parse } from 'date-fns';
+
+jest
+  .useFakeTimers('modern')
+  .setSystemTime(parse('2021-10-27', 'yyyy-MM-dd', 0));
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -106,6 +111,14 @@ describe('ISIS Studies - Card View', () => {
           },
         }),
       },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.releaseDate': {
+            lt: '2021-10-27 00:00:00',
+          },
+        }),
+      },
     ]);
     expect(useStudiesPaginated).toHaveBeenCalledWith([
       {
@@ -113,6 +126,14 @@ describe('ISIS Studies - Card View', () => {
         filterValue: JSON.stringify({
           'studyInvestigations.investigation.investigationInstruments.instrument.id': {
             eq: instrumentId,
+          },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.releaseDate': {
+            lt: '2021-10-27 00:00:00',
           },
         }),
       },

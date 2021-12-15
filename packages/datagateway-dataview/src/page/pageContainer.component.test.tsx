@@ -278,6 +278,18 @@ describe('PageContainer - Tests', () => {
     ).toBeTruthy();
   });
 
+  it('displays warning label when browsing study hierarchy', () => {
+    history.replace(paths.studyHierarchy.toggle.isisStudy);
+    const response = { username: 'SomePerson' };
+    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
+
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper.find('[aria-label="open-data-warning"]').exists()
+    ).toBeTruthy();
+  });
+
   it('does not display warning label when logged in', () => {
     const response = { username: 'SomePerson' };
     (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
