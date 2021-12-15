@@ -29,7 +29,7 @@ import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
-import AssessmentIcon from '@material-ui/icons/Assessment';
+import PersonIcon from '@material-ui/icons/Person';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
@@ -176,7 +176,7 @@ const ISISInvestigationsTable = (
         disableSort: true,
       },
       {
-        icon: AssessmentIcon,
+        icon: PersonIcon,
         label: t('investigations.principal_investigators'),
         dataKey: 'investigationUsers.user.principal_investigators',
         cellContentRenderer: (cellProps: TableCellProps) => {

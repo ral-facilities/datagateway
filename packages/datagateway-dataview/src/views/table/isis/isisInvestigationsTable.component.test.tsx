@@ -437,13 +437,13 @@ describe('ISIS Investigations table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('gracefully handles empty Study Investigation and InvestigationInstrument, missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', () => {
+  it('gracefully handles empty Study Investigation and investigationUsers, missing Study from Study Investigation object and missing User from investigationUsers object', () => {
     (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: {
         pages: [
           {
             ...rowData[0],
-            investigationInstruments: [],
+            investigationUsers: [],
             studyInvestigations: [],
           },
         ],
@@ -460,7 +460,7 @@ describe('ISIS Investigations table component', () => {
         pages: [
           {
             ...rowData[0],
-            investigationInstruments: [
+            investigationUsers: [
               {
                 id: 1,
               },
@@ -483,7 +483,6 @@ describe('ISIS Investigations table component', () => {
 
   it('renders actions correctly', () => {
     const wrapper = createWrapper();
-
     expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 });
