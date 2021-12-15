@@ -8,6 +8,7 @@ import {
   investigationLink,
   tableLink,
   formatCountOrSize,
+  getStudyInfoInvestigation,
 } from './cellContentRenderers';
 
 describe('Cell content renderers', () => {
@@ -73,6 +74,63 @@ describe('Cell content renderers', () => {
       expect(
         formatCountOrSize({ isFetching: false, isSuccess: true, data: 0 })
       ).toEqual('0');
+    });
+  });
+
+  describe('getStudyInfoInvestigation', () => {
+    it('filters out missing investigations and returns first existing investigation', () => {
+      expect(
+        getStudyInfoInvestigation({
+          id: 1,
+          pid: 'doi 1',
+          name: 'study 1',
+          modTime: '',
+          createTime: '',
+          studyInvestigations: [
+            {
+              id: 2,
+            },
+            {
+              id: 3,
+              investigation: {
+                id: 4,
+                title: 'Investigating the properties of the number 4',
+                name: 'investigation 4',
+                visitId: '1',
+              },
+            },
+          ],
+        })?.name
+      ).toEqual('investigation 4');
+    });
+
+    it('handles undefined properties fine', () => {
+      expect(
+        getStudyInfoInvestigation({
+          id: 1,
+          pid: 'doi 1',
+          name: 'study 1',
+          modTime: '',
+          createTime: '',
+        })
+      ).toBeUndefined();
+      expect(
+        getStudyInfoInvestigation({
+          id: 1,
+          pid: 'doi 1',
+          name: 'study 1',
+          modTime: '',
+          createTime: '',
+          studyInvestigations: [
+            {
+              id: 2,
+            },
+            {
+              id: 3,
+            },
+          ],
+        })
+      ).toBeUndefined();
     });
   });
 
