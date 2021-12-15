@@ -124,7 +124,9 @@ describe('Download Cart', () => {
     cy.contains(/^DATASET 1$/).should('be.visible');
     cy.contains('Remove All').click();
     cy.contains(/^DATASET 1$/).should('not.exist');
-    cy.get('[aria-rowcount=0]').should('exist');
+
+    //Check no selections message is displayed
+    cy.get('[data-testid="no-selections-messsage"]').should('exist');
 
     cy.wait('@removeFromCart').then(
       (xhr) => expect(xhr.response.body.cartItems).to.be.empty
