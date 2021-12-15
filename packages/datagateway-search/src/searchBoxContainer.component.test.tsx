@@ -4,8 +4,15 @@ import { ReactWrapper } from 'enzyme';
 import { createShallow } from '@material-ui/core/test-utils';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
+import { useSelector } from 'react-redux';
+import { initialState } from './state/reducers/dgsearch.reducer';
 
 jest.mock('loglevel');
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
 
 describe('SearchBoxContainer - Tests', () => {
   let shallow;
@@ -18,6 +25,9 @@ describe('SearchBoxContainer - Tests', () => {
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'Grid' });
+    useSelector.mockImplementation(() => {
+      return initialState;
+    });
   });
 
   it('renders searchBoxContainer correctly', () => {

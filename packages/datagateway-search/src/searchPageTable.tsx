@@ -40,6 +40,7 @@ interface SearchTableProps {
 }
 
 interface SearchTableStoreProps {
+  maxNumResults: number;
   datasetTab: boolean;
   datafileTab: boolean;
   investigationTab: boolean;
@@ -86,6 +87,7 @@ const SearchPageTable = (
   props: SearchTableProps & SearchTableStoreProps & SearchTableDispatchProps
 ): React.ReactElement => {
   const {
+    maxNumResults,
     investigationTab,
     datasetTab,
     datafileTab,
@@ -107,16 +109,19 @@ const SearchPageTable = (
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const { data: dataset } = useLuceneSearch('Dataset', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const { data: datafile } = useLuceneSearch('Datafile', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
 
   // Setting a tab based on user selection and what tabs are available
@@ -313,6 +318,7 @@ const SearchPageTable = (
 
 const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   return {
+    maxNumResults: state.dgsearch.maxNumResults,
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,

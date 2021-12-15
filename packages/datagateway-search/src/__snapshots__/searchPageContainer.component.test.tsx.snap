@@ -141,6 +141,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -175,6 +176,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -201,6 +203,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Investigation",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -212,6 +215,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Investigation",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -302,6 +306,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -336,6 +341,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -362,6 +368,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Dataset",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -373,6 +380,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Dataset",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -463,6 +471,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -497,6 +506,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -523,6 +533,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Datafile",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -534,6 +545,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Datafile",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -890,6 +902,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -924,6 +937,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -950,6 +964,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Datafile",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -961,6 +976,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Datafile",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -1051,6 +1067,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -1085,6 +1102,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -1111,6 +1129,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Dataset",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -1122,6 +1141,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Dataset",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -1212,6 +1232,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -1246,6 +1267,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -1272,6 +1294,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Investigation",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -1283,6 +1306,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Investigation",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },

@@ -135,7 +135,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       }
     }
   >
-    searchBox.limited_results_message
+    searchBox.limited_results_message {maxNumResults:{tabs:{datasetTab:false,datafileTab:false,investigationTab:false,currentTab:investigation},selectAllSetting:true,settingsLoaded:false,sideLayout:false,searchableEntities:[investigation,dataset,datafile],maxNumResults:300}}
   </WithStyles(ForwardRef(Typography))>
 </div>
 `;

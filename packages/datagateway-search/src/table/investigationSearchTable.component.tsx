@@ -117,10 +117,15 @@ const InvestigationSearchTable = (
     (state: StateType) => state.dgsearch.selectAllSetting
   );
 
+  const maxNumResults = useSelector(
+    (state: StateType) => state.dgsearch.maxNumResults
+  );
+
   const { data: luceneData } = useLuceneSearch('Investigation', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
 
   const [t] = useTranslation();
