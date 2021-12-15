@@ -20,7 +20,7 @@
     "i18next": "^20.3.5",
     "lodash.debounce": "^4.0.8",
     "loglevel": "^1.7.1",
-    "react-draggable": "^4.4.3",
+    "react-draggable": "^4.4.4",
     "react-i18next": "^11.11.4",
     "react-query": "^3.18.1",
     "react-redux": "^7.1.0",
