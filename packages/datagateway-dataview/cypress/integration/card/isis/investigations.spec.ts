@@ -225,7 +225,7 @@ describe('ISIS - Investigations Cards', () => {
         .first()
         .contains('Again bad simply low summer.');
       // check that size is correct after filtering
-      cy.get('[data-testid="card"]').first().contains('10.93 GB');
+      cy.get('[data-testid="card"]').first().contains('11.74 GB');
 
       cy.get('input[id="Start Date filter from"]')
         .type('2004-01-01')

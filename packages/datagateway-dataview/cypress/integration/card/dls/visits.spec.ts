@@ -47,7 +47,7 @@ describe('DLS - Visits Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('10.25 GB', { timeout: 10000 });
+      .contains('11.01 GB', { timeout: 10000 });
     cy.get('#visit-users-tab').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
