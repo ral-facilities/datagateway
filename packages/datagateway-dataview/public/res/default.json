@@ -37,6 +37,7 @@
       "instrument_scientists": {
         "label": "Instrument Scientists",
         "name": "Name",
+        "name_plural": "Names",
         "no_name": "No Scientists"
       }
     }
@@ -93,16 +94,19 @@
       "users": {
         "label": "Investigation Users",
         "name": "Name",
+        "name_plural": "Names",
         "no_name": "No Users"
       },
       "samples": {
         "label": "Investigation Samples",
         "name": "Sample",
+        "name_plural": "Samples",
         "no_samples": "No Samples"
       },
       "publications": {
         "label": "Publications",
         "reference": "Reference",
+        "reference_plural": "References",
         "no_publications": "No publications"
       },
       "type": {
@@ -222,7 +226,7 @@
     "search": {
       "title": "Search",
       "description": "Search for the experimental data according to different criteria.",
-      "link": "/search",
+      "link": "/search/data",
       "button": "Search data"
     },
     "download": {

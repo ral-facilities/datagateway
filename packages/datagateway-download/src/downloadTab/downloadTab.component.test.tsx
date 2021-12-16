@@ -4,6 +4,8 @@ import DownloadTabs from './downloadTab.component';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
 
 // Create our mocked datagateway-download settings file.
 const mockedSettings = {
@@ -28,10 +30,12 @@ const mockedSettings = {
 describe('DownloadTab', () => {
   let shallow;
   let mount;
+  let history;
 
   beforeEach(() => {
     shallow = createShallow();
     mount = createMount();
+    history = createMemoryHistory();
   });
 
   afterEach(() => {
@@ -48,9 +52,11 @@ describe('DownloadTab', () => {
 
   it('renders the previously used tab based on sessionStorage', async () => {
     let wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadTabs />
-      </DownloadSettingsContext.Provider>
+      <Router history={history}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadTabs />
+        </DownloadSettingsContext.Provider>
+      </Router>
     );
 
     await act(async () => {
@@ -115,9 +121,11 @@ describe('DownloadTab', () => {
 
   it('shows the appropriate table when clicking between tabs', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadTabs />
-      </DownloadSettingsContext.Provider>
+      <Router history={history}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadTabs />
+        </DownloadSettingsContext.Provider>
+      </Router>
     );
 
     await act(async () => {

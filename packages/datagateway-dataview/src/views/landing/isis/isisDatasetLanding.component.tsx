@@ -230,15 +230,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {field.icon}
                       {field.label}:
                     </Typography>
-                    <Typography className={classes.shortInfoValue}>
-                      <ArrowTooltip
-                        title={getTooltipText(field.content(data as Dataset))}
-                      >
-                        <Typography>
-                          {field.content(data as Dataset)}
-                        </Typography>
-                      </ArrowTooltip>
-                    </Typography>
+                    <ArrowTooltip
+                      title={getTooltipText(field.content(data as Dataset))}
+                    >
+                      <Typography className={classes.shortInfoValue}>
+                        {field.content(data as Dataset)}
+                      </Typography>
+                    </ArrowTooltip>
                   </div>
                 )
             )}
