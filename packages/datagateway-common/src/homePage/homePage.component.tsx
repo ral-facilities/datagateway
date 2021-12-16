@@ -88,8 +88,16 @@ const useStyles = (props: HomePageProps) => {
         avatarIcon: {
           transform: 'scale(1.75)',
         },
+        paperMainHeading: {
+          fontWeight: 'bold',
+          fontSize: '32px',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).colours?.homePage?.heading,
+          marginBottom: theme.spacing(2),
+        },
         paperHeading: {
           fontWeight: 'bold',
+          fontSize: '24px',
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           color: (theme as any).colours?.homePage?.heading,
           marginBottom: theme.spacing(2),
@@ -97,11 +105,12 @@ const useStyles = (props: HomePageProps) => {
         paperDescription: {
           textAlign: 'left',
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          color: (theme as any).colours?.homePage?.description,
+          color: (theme as any).colours?.contrastGrey,
           marginBottom: theme.spacing(2),
         },
         bluePaperHeading: {
           fontWeight: 'bold',
+          fontSize: '24px',
           color: '#FFFFFF',
           marginBottom: theme.spacing(2),
         },
@@ -195,7 +204,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
           <Grid container style={{ height: '100%' }}>
             <Grid item xs={6}>
               <Box className={classes.paperContent}>
-                <Typography variant="h4" className={classes.paperHeading}>
+                <Typography variant="h3" className={classes.paperMainHeading}>
                   {t('home_page.browse.title')}
                 </Typography>
                 <Typography

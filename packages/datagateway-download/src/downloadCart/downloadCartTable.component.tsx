@@ -16,6 +16,10 @@ import {
   Typography,
   Button,
   LinearProgress,
+  createStyles,
+  makeStyles,
+  Theme,
+  Link,
 } from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
 import {
@@ -30,7 +34,19 @@ import chunk from 'lodash.chunk';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    noSelectionsMessage: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      color: (theme as any).colours?.homePage?.description,
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -39,6 +55,7 @@ interface DownloadCartTableProps {
 const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   props: DownloadCartTableProps
 ) => {
+  const classes = useStyles();
   const settings = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
@@ -230,7 +247,39 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     return filteredData.sort(sortCartItems);
   }, [data, sort, filters]);
 
-  return (
+  return data.length === 0 ? (
+    <div
+      className="tour-download-results"
+      data-testid="no-selections-messsage"
+      style={{
+        //Table should take up page but leave room for: SG appbar, SG footer,
+        //tabs, table padding.
+        height: 'calc(100vh - 64px - 48px - 48px - 48px)',
+        minHeight: 230,
+        overflowX: 'auto',
+      }}
+    >
+      <Paper>
+        <Grid container direction="column" alignItems="center" justify="center">
+          <Grid item>
+            <Typography className={classes.noSelectionsMessage}>
+              <Trans i18nKey="downloadCart.no_selections">
+                No data selected.{' '}
+                <Link component={RouterLink} to={t('downloadCart.browse_link')}>
+                  Browse
+                </Link>{' '}
+                or{' '}
+                <Link component={RouterLink} to={t('downloadCart.search_link')}>
+                  search
+                </Link>{' '}
+                for data.
+              </Trans>
+            </Typography>
+          </Grid>
+        </Grid>
+      </Paper>
+    </div>
+  ) : (
     <div>
       <Grid container direction="column">
         {/* Show loading progress if data is still being loaded */}
@@ -247,7 +296,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             className="tour-download-results"
             style={{
               height:
-                'calc(100vh - 64px - 30px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
+                'calc(100vh - 64px - 48px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
               minHeight: 230,
               overflowX: 'auto',
             }}
