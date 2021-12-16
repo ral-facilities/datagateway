@@ -243,6 +243,12 @@ describe('ISIS Study Landing page', () => {
     expect(
       wrapper.find('[data-testid="landing-investigation-user-3"]')
     ).toHaveLength(0);
+
+    expect(
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
+    ).toEqual(
+      'John Smith et al; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
+    );
   });
 
   it('displays DOI and renders the expected link', () => {

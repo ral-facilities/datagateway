@@ -327,10 +327,7 @@ describe('ISIS Investigation Landing page', () => {
     });
     const wrapper = createWrapper();
     expect(
-      wrapper
-        .find('[aria-label="landing-investigation-citation"]')
-        .first()
-        .text()
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual('Test 1, doi_constants.publisher.name, https://doi.org/doi 1');
   });
 
@@ -340,10 +337,7 @@ describe('ISIS Investigation Landing page', () => {
     });
     const wrapper = createWrapper();
     expect(
-      wrapper
-        .find('[aria-label="landing-investigation-citation"]')
-        .first()
-        .text()
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual(
       'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
     );
@@ -355,10 +349,7 @@ describe('ISIS Investigation Landing page', () => {
     });
     const wrapper = createWrapper();
     expect(
-      wrapper
-        .find('[aria-label="landing-investigation-citation"]')
-        .first()
-        .text()
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual(
       'John Smith et al; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
     );
@@ -396,42 +387,5 @@ describe('ISIS Investigation Landing page', () => {
         .first()
         .prop('href')
     ).toEqual('https://doi.org/study pid');
-  });
-
-  it('copies data citation to clipboard', () => {
-    // Mock the clipboard object
-    const testWriteText = jest.fn();
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: testWriteText,
-      },
-    });
-
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
-    });
-    const wrapper = createWrapper();
-
-    expect(
-      wrapper
-        .find('[aria-label="landing-investigation-citation"]')
-        .first()
-        .text()
-    ).toEqual(
-      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
-    );
-
-    wrapper
-      .find('#landing-investigation-copy-citation')
-      .first()
-      .simulate('click');
-
-    expect(testWriteText).toHaveBeenCalledWith(
-      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
-    );
-
-    expect(
-      wrapper.find('#landing-investigation-copied-citation').first().text()
-    ).toEqual('Copied citation');
   });
 });

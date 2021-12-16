@@ -16,11 +16,10 @@ describe('Citation formatter component tests', () => {
       { role: 'principal_experimenter', fullName: 'John Smith' },
     ],
     title: 'title',
-    pid: 'test',
     startDate: '2019-04-03',
   };
 
-  const createWrapper = (): ReactWrapper => {
+  const createWrapper = (props): ReactWrapper => {
     return mount(<CitationFormatter {...props} />);
   };
 
@@ -33,14 +32,19 @@ describe('Citation formatter component tests', () => {
     (axios.get as jest.Mock).mockClear();
   });
 
-  //Have to mock formats data in react-i18next.jsx
   it('renders correctly', () => {
     const wrapper = shallow(<CitationFormatter {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
+  it('renders correctly without a doi', () => {
+    const newProps = { ...props, doi: undefined };
+    const wrapper = shallow(<CitationFormatter {...newProps} />);
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('formats citation on load', async () => {
-    const wrapper = createWrapper();
+    const wrapper = createWrapper(props);
     wrapper.update();
 
     expect(
@@ -62,8 +66,29 @@ describe('Citation formatter component tests', () => {
     ).toEqual(false);
   });
 
+  it('formats citation on load without a doi', async () => {
+    const newProps = { ...props, doi: undefined };
+    const wrapper = createWrapper(newProps);
+    wrapper.update();
+
+    expect(
+      wrapper
+        .find(
+          '[aria-label="studies.details.citation_formatter.select_arialabel"]'
+        )
+        .exists()
+    ).toBeFalsy();
+
+    expect(
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
+    ).toEqual('John Smith; 2019: title, doi_constants.publisher.name');
+    expect(
+      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
+    ).toEqual(false);
+  });
+
   it('sends axios request to fetch a formatted citation when a format is selected', async () => {
-    const wrapper = createWrapper();
+    const wrapper = createWrapper(props);
 
     (axios.get as jest.Mock).mockResolvedValue({
       data: 'This is a test',
@@ -100,7 +125,7 @@ describe('Citation formatter component tests', () => {
   });
 
   it('copies data citation to clipboard', async () => {
-    const wrapper = createWrapper();
+    const wrapper = createWrapper(props);
 
     // Mock the clipboard object
     const testWriteText = jest.fn();
@@ -132,7 +157,7 @@ describe('Citation formatter component tests', () => {
       message: 'error',
     });
 
-    const wrapper = createWrapper();
+    const wrapper = createWrapper(props);
     wrapper
       .find('input')
       .first()

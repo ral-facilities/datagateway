@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Mark } from 'datagateway-common';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
@@ -48,17 +48,16 @@ const fetchCitation = (
 };
 
 interface CitationFormatterProps {
-  doi: string;
+  doi: string | undefined;
   formattedUsers: FormattedUser[];
   title: string | undefined;
-  pid: string;
   startDate: string | undefined;
 }
 
 const CitationFormatter = (
   props: CitationFormatterProps
 ): React.ReactElement => {
-  const { doi, formattedUsers, title, pid, startDate } = props;
+  const { doi, formattedUsers, title, startDate } = props;
 
   const [t] = useTranslation();
   const classes = useStyles();
@@ -66,37 +65,40 @@ const CitationFormatter = (
   const [copiedCitation, setCopiedCitation] = React.useState(false);
   const [error, setError] = React.useState(false);
 
-  const loadCitation = (format: string): void => {
-    if (format === 'default') {
-      let citation = '';
-      if (formattedUsers.length > 1)
-        citation += `${formattedUsers[0].fullName} et al; `;
-      if (formattedUsers.length === 1)
-        citation += `${formattedUsers[0].fullName}; `;
-      if (startDate) citation += `${startDate.slice(0, 4)}: `;
-      if (title) citation += `${title}, `;
-      citation += t('doi_constants.publisher.name');
-      if (pid) citation += `, https://doi.org/${pid}`;
+  const loadCitation = useCallback(
+    (format: string): void => {
+      if (format === 'default') {
+        let citation = '';
+        if (formattedUsers.length > 1)
+          citation += `${formattedUsers[0].fullName} et al; `;
+        if (formattedUsers.length === 1)
+          citation += `${formattedUsers[0].fullName}; `;
+        if (startDate) citation += `${startDate.slice(0, 4)}: `;
+        if (title) citation += `${title}, `;
+        citation += t('doi_constants.publisher.name');
+        if (doi) citation += `, https://doi.org/${doi}`;
 
-      setCitation(citation);
-    } else {
-      /* Notes:
+        setCitation(citation);
+      } else if (doi) {
+        /* Notes:
         - locale 'en-GB' returns plain text whereas 'GB' gives the formatted text */
-      const citationPromise = fetchCitation(
-        doi,
-        format,
-        t('studies.details.citation_formatter.locale')
-      );
-      Promise.resolve(citationPromise)
-        .then((value) => {
-          setError(false);
-          setCitation(value);
-        })
-        .catch((error) => {
-          setError(true);
-        });
-    }
-  };
+        const citationPromise = fetchCitation(
+          doi,
+          format,
+          t('studies.details.citation_formatter.locale')
+        );
+        Promise.resolve(citationPromise)
+          .then((value) => {
+            setError(false);
+            setCitation(value);
+          })
+          .catch((error) => {
+            setError(true);
+          });
+      }
+    },
+    [doi, formattedUsers, startDate, t, title]
+  );
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
     loadCitation(event.target.value as string);
@@ -115,38 +117,48 @@ const CitationFormatter = (
   //Load the default format (taken as the first citation format) on page load
   useEffect(() => {
     loadCitation('default');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loadCitation]);
 
   return (
     <Box>
       <Typography className={classes.subHeading} component="h6" variant="h6">
         {t('studies.details.citation_formatter.label')}
       </Typography>
-      <Typography>{t('studies.details.citation_formatter.details')}</Typography>
-      <FormControl id="citation-formatter" error={error}>
-        <Select
-          className={classes.formatSelect}
-          defaultValue="default"
-          onChange={handleChange}
-          aria-label={t('studies.details.citation_formatter.select_arialabel')}
-          aria-describedby="citation-formatter-error-message"
-        >
-          <MenuItem value="default">
-            {t('studies.details.citation_formatter.default_format')}
-          </MenuItem>
-          {citationFormats.map((format) => (
-            <MenuItem key={format} value={format}>
-              {format}
+      <Typography>
+        {t('studies.details.citation_formatter.details') +
+          (doi
+            ? ` ${t(
+                'studies.details.citation_formatter.details_select_format'
+              )}`
+            : '')}
+      </Typography>
+      {doi && (
+        <FormControl id="citation-formatter" error={error}>
+          <Select
+            className={classes.formatSelect}
+            defaultValue="default"
+            onChange={handleChange}
+            aria-label={t(
+              'studies.details.citation_formatter.select_arialabel'
+            )}
+            aria-describedby="citation-formatter-error-message"
+          >
+            <MenuItem value="default">
+              {t('studies.details.citation_formatter.default_format')}
             </MenuItem>
-          ))}
-        </Select>
-        {error && (
-          <FormHelperText id="citation-formatter-error-message">
-            {t('studies.details.citation_formatter.error')}
-          </FormHelperText>
-        )}
-      </FormControl>
+            {citationFormats.map((format) => (
+              <MenuItem key={format} value={format}>
+                {format}
+              </MenuItem>
+            ))}
+          </Select>
+          {error && (
+            <FormHelperText id="citation-formatter-error-message">
+              {t('studies.details.citation_formatter.error')}
+            </FormHelperText>
+          )}
+        </FormControl>
+      )}
       <Typography>
         <i data-testid="citation-formatter-citation">
           <Trans>{citation}</Trans>

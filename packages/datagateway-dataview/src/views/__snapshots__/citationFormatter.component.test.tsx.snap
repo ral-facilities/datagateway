@@ -12,7 +12,7 @@ exports[`Citation formatter component tests renders correctly 1`] = `
     studies.details.citation_formatter.label
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
-    studies.details.citation_formatter.details
+    studies.details.citation_formatter.details studies.details.citation_formatter.details_select_format
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(FormControl))
     error={false}
@@ -50,6 +50,41 @@ exports[`Citation formatter component tests renders correctly 1`] = `
       </WithStyles(ForwardRef(MenuItem))>
     </WithStyles(ForwardRef(Select))>
   </WithStyles(ForwardRef(FormControl))>
+  <WithStyles(ForwardRef(Typography))>
+    <i
+      data-testid="citation-formatter-citation"
+    >
+      <Trans />
+    </i>
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Button))
+    aria-label="studies.details.citation_formatter.copy_citation_arialabel"
+    color="primary"
+    disabled={true}
+    id="citation-formatter-copy-citation"
+    onClick={[Function]}
+    size="small"
+    variant="contained"
+  >
+    studies.details.citation_formatter.copy_citation
+  </WithStyles(ForwardRef(Button))>
+</div>
+`;
+
+exports[`Citation formatter component tests renders correctly without a doi 1`] = `
+<div
+  className="MuiBox-root MuiBox-root-4"
+>
+  <WithStyles(ForwardRef(Typography))
+    className="makeStyles-subHeading-1"
+    component="h6"
+    variant="h6"
+  >
+    studies.details.citation_formatter.label
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    studies.details.citation_formatter.details
+  </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <i
       data-testid="citation-formatter-citation"

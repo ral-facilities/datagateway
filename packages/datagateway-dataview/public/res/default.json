@@ -61,7 +61,8 @@
       "format": "Data Format",
       "citation_formatter": {
         "label": "Data Citation",
-        "details": "The recommended format for citing this data can be found below. You can also select your preferred format here:",
+        "details": "The recommended format for citing this data can be found below.",
+        "details_select_format": "You can also select your preferred format here:",
         "select_arialabel": "Citation format drop down list",
         "copy_citation" : "Copy citation",
         "copied_citation" : "Copied citation",

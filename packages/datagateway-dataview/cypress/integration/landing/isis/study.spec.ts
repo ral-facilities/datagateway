@@ -173,6 +173,11 @@ describe('ISIS - Study Landing', () => {
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('invaliddoi').should('be.visible');
 
+    //Default citation
+    cy.get('[data-testid="citation-formatter-citation"]').contains(
+      'STFC ISIS Neutron and Muon Source, https://doi.org/invaliddoi'
+    );
+
     cy.get('#citation-formatter').click();
     cy.get('[role="listbox"]')
       .find('[role="option"]')
