@@ -134,20 +134,6 @@ describe('ISIS - Investigation Landing', () => {
         visitId: '1',
         doi: '10.5286/ISIS.E.RB1810842',
         size: 1,
-        studyInvestigations: [
-          {
-            id: 6,
-            investigation: {
-              id: 1,
-            },
-            study: {
-              id: 7,
-              pid: '10.5286/ISIS.E.RB1810842',
-              startDate: '2019-06-10',
-              endDate: '2019-06-11',
-            },
-          },
-        ],
       },
     ]);
     cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');
@@ -179,20 +165,7 @@ describe('ISIS - Investigation Landing', () => {
         visitId: '1',
         doi: 'invaliddoi',
         size: 1,
-        studyInvestigations: [
-          {
-            id: 6,
-            investigation: {
-              id: 1,
-            },
-            study: {
-              id: 7,
-              pid: '10.5286/ISIS.E.RB1810842',
-              startDate: '2019-06-10',
-              endDate: '2019-06-11',
-            },
-          },
-        ],
+        startDate: '2019-06-10',
       },
     ]);
     cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');

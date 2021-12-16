@@ -328,7 +328,9 @@ describe('ISIS Investigation Landing page', () => {
     const wrapper = createWrapper();
     expect(
       wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual('Test 1, doi_constants.publisher.name, https://doi.org/doi 1');
+    ).toEqual(
+      '2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+    );
   });
 
   it('displays citation correctly with one user', () => {

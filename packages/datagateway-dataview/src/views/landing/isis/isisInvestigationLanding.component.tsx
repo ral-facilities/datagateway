@@ -147,10 +147,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const title = React.useMemo(() => data?.[0]?.title, [data]);
   const doi = React.useMemo(() => data?.[0]?.doi, [data]);
-  const studyInvestigation = React.useMemo(
-    () => data?.[0]?.studyInvestigations,
-    [data]
-  );
 
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];
@@ -395,11 +391,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               doi={doi}
               formattedUsers={formattedUsers}
               title={title}
-              startDate={
-                studyInvestigation
-                  ? studyInvestigation[0]?.study?.startDate
-                  : undefined
-              }
+              startDate={data?.[0]?.startDate}
             />
 
             {formattedSamples && (
