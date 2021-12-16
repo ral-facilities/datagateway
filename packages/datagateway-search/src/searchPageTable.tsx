@@ -34,6 +34,19 @@ const badgeStyles = (theme: Theme): StyleRules =>
     },
   });
 
+const tabStyles = (theme: Theme): StyleRules =>
+  createStyles({
+    indicator: {
+      //Use white for all modes except use red for dark high contrast mode as this is much clearer
+      backgroundColor:
+        theme.palette.type === 'dark' &&
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (theme as any).colours?.type === 'contrast'
+          ? '#FF0000'
+          : '#FFFFFF',
+    },
+  });
+
 interface SearchTableProps {
   containerHeight: string;
   hierarchy: string;
@@ -82,6 +95,7 @@ function a11yProps(index: string): React.ReactFragment {
 }
 
 const StyledBadge = withStyles(badgeStyles)(Badge);
+const StyledTabs = withStyles(tabStyles)(Tabs);
 
 const SearchPageTable = (
   props: SearchTableProps & SearchTableStoreProps & SearchTableDispatchProps
@@ -171,7 +185,7 @@ const SearchPageTable = (
   return (
     <div>
       <AppBar position="static">
-        <Tabs
+        <StyledTabs
           className="tour-search-tab-select"
           value={currentTab}
           onChange={handleChange}
@@ -267,7 +281,7 @@ const SearchPageTable = (
           ) : (
             <Tab value="datafile" style={{ display: 'none' }} />
           )}
-        </Tabs>
+        </StyledTabs>
       </AppBar>
 
       {currentTab === 'investigation' && (
