@@ -185,7 +185,7 @@ describe('ISIS - Datasets Table', () => {
         '2001-09-30 04:00:59'
       );
       // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('5.15 GB');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('5.53 GB');
     });
 
     it('date between', () => {
@@ -231,11 +231,11 @@ describe('ISIS - Datasets Table', () => {
     beforeEach(() => {
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '5.78 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '6.21 GB').should(
         'exist'
       );
 
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '5.15 GB').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '5.53 GB').should(
         'exist'
       );
     });

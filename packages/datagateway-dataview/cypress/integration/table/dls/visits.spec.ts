@@ -212,7 +212,7 @@ describe('DLS - Visits Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('10.25 GB', { timeout: 10000 }).should('be.visible');
+      cy.contains('11.01 GB', { timeout: 10000 }).should('be.visible');
     });
 
     // TODO: Since we only have one investigation, we cannot test

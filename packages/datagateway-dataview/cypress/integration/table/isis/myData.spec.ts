@@ -204,7 +204,7 @@ describe('ISIS - MyData Table', () => {
         cy.get('[aria-rowcount="3"]').should('exist');
 
         // check that size is correct after filtering
-        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('12.02 GB');
+        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('12.91 GB');
 
         cy.get('#role-selector').click();
         cy.get('[role="option"]').first().click();
@@ -262,7 +262,7 @@ describe('ISIS - MyData Table', () => {
         // a re-render which can prevent the click.
         cy.contains(
           '[aria-rowindex="1"] [aria-colindex="8"]',
-          '9.66 GB'
+          '10.38 GB'
         ).should('exist');
       });
 
