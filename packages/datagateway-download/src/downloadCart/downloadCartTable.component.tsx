@@ -265,11 +265,19 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             <Typography className={classes.noSelectionsMessage}>
               <Trans i18nKey="downloadCart.no_selections">
                 No data selected.{' '}
-                <Link component={RouterLink} to={t('downloadCart.browse_link')}>
+                <Link
+                  component={RouterLink}
+                  to={t('downloadCart.browse_link')}
+                  style={{ fontWeight: 'bold' }}
+                >
                   Browse
                 </Link>{' '}
                 or{' '}
-                <Link component={RouterLink} to={t('downloadCart.search_link')}>
+                <Link
+                  component={RouterLink}
+                  to={t('downloadCart.search_link')}
+                  style={{ fontWeight: 'bold' }}
+                >
                   search
                 </Link>{' '}
                 for data.
