@@ -34,7 +34,7 @@ describe('Download Confirmation', () => {
 
   it('should load correctly and display the confirmation dialog for the cart items', () => {
     // Show the correct download size of the cart items.
-    cy.contains('Download Size: 10.25 GB').should('exist');
+    cy.contains('Download Size: 11.01 GB').should('exist');
 
     // Shows HTTPS as the default access method.
     cy.contains('#confirm-access-method', 'HTTPS').should('exist');
