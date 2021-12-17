@@ -45,6 +45,11 @@ exports[`Download cart table component renders correctly 1`] = `
                   "render": [Function],
                 }
               }
+              style={
+                Object {
+                  "fontWeight": "bold",
+                }
+              }
               to="downloadCart.browse_link"
             >
               Browse
@@ -65,6 +70,11 @@ exports[`Download cart table component renders correctly 1`] = `
                     "to": [Function],
                   },
                   "render": [Function],
+                }
+              }
+              style={
+                Object {
+                  "fontWeight": "bold",
                 }
               }
               to="downloadCart.search_link"
