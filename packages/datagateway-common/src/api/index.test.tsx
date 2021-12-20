@@ -266,7 +266,7 @@ describe('generic api functions', () => {
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('id asc'));
       params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
-      params.append('where', JSON.stringify({ title: { nlike: 'test' } }));
+      params.append('where', JSON.stringify({ title: { nilike: 'test' } }));
       params.append(
         'where',
         JSON.stringify({ startDate: { gte: '2021-08-05 00:00:00' } })
