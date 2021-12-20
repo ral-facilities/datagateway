@@ -9,6 +9,7 @@ import {
   Theme,
   createStyles,
   withStyles,
+  LinearProgress,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 import { StateType } from './state/app.types';
@@ -28,6 +29,7 @@ import {
   useLuceneSearch,
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
+import { useIsFetching } from 'react-query';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -130,6 +132,14 @@ const SearchPageTable = (
     maxCount: maxNumResults,
   });
 
+  const isFetchingNum = useIsFetching({
+    predicate: (query) =>
+      !query.queryHash.includes('InvestigationCount') &&
+      !query.queryHash.includes('DatasetCount') &&
+      !query.queryHash.includes('DatafileCount'),
+  });
+  const loading = isFetchingNum > 0;
+
   // Setting a tab based on user selection and what tabs are available
   useEffect(() => {
     if (currentTab === 'investigation') {
@@ -203,6 +213,8 @@ const SearchPageTable = (
 
   return (
     <div>
+      {/* Show loading progress if data is still being loaded */}
+      {loading && <LinearProgress color="secondary" />}
       <AppBar position="static">
         <Tabs
           className="tour-search-tab-select"
