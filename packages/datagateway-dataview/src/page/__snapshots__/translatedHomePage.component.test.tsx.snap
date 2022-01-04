@@ -76,19 +76,19 @@ exports[`HomePage translated homepage renders correctly 1`] = `
             className="makeStyles-paperContent-7"
           >
             <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperHeading-10"
-              variant="h4"
+              className="makeStyles-paperMainHeading-10"
+              variant="h3"
             >
               home_page.browse.title
             </WithStyles(ForwardRef(Typography))>
             <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperDescription-11"
+              className="makeStyles-paperDescription-12"
               variant="body1"
             >
               home_page.browse.description1
             </WithStyles(ForwardRef(Typography))>
             <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperDescription-11"
+              className="makeStyles-paperDescription-12"
               variant="body1"
             >
               <Trans
@@ -133,10 +133,10 @@ exports[`HomePage translated homepage renders correctly 1`] = `
           xs={6}
         >
           <div
-            className="makeStyles-browseBackground-14"
+            className="makeStyles-browseBackground-15"
           >
             <div
-              className="makeStyles-browseDecal-15"
+              className="makeStyles-browseDecal-16"
             />
           </div>
         </WithStyles(ForwardRef(Grid))>
@@ -166,13 +166,13 @@ exports[`HomePage translated homepage renders correctly 1`] = `
               />
             </WithStyles(ForwardRef(Avatar))>
             <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperHeading-10"
+              className="makeStyles-paperHeading-11"
               variant="h4"
             >
               home_page.search.title
             </WithStyles(ForwardRef(Typography))>
             <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperDescription-11"
+              className="makeStyles-paperDescription-12"
               variant="body1"
             >
               home_page.search.description
@@ -226,13 +226,13 @@ exports[`HomePage translated homepage renders correctly 1`] = `
               />
             </WithStyles(ForwardRef(Avatar))>
             <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperHeading-10"
+              className="makeStyles-paperHeading-11"
               variant="h4"
             >
               home_page.download.title
             </WithStyles(ForwardRef(Typography))>
             <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperDescription-11"
+              className="makeStyles-paperDescription-12"
               variant="body1"
             >
               home_page.download.description
@@ -276,19 +276,19 @@ exports[`HomePage translated homepage renders correctly 1`] = `
           elevation={1}
         >
           <div
-            className="makeStyles-facilityDecal-16"
+            className="makeStyles-facilityDecal-17"
           >
             <Styled(MuiBox)
               className="makeStyles-paperContent-7"
             >
               <WithStyles(ForwardRef(Typography))
-                className="makeStyles-bluePaperHeading-12"
+                className="makeStyles-bluePaperHeading-13"
                 variant="h4"
               >
                 home_page.facility.title
               </WithStyles(ForwardRef(Typography))>
               <WithStyles(ForwardRef(Typography))
-                className="makeStyles-bluePaperDescription-13"
+                className="makeStyles-bluePaperDescription-14"
                 variant="body1"
               >
                 home_page.facility.description
@@ -297,7 +297,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
                 marginTop="auto"
               >
                 <WithStyles(ForwardRef(Button))
-                  className="makeStyles-lightBlueButton-17"
+                  className="makeStyles-lightBlueButton-18"
                   color="primary"
                   data-testid="facility-button"
                   href="home_page.facility.link"

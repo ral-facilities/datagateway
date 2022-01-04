@@ -226,7 +226,7 @@ export const getApiParams = (props: {
           } else {
             searchParams.append(
               'where',
-              JSON.stringify({ [column]: { nlike: filter.value } })
+              JSON.stringify({ [column]: { nilike: filter.value } })
             );
           }
         }

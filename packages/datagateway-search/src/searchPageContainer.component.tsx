@@ -285,10 +285,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, []);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
-  // grid padding, search box, checkboxes, date selectors, padding.
+  // grid padding, search box, checkboxes, date selectors, example search text, limited results message, padding.
   const spacing = 2;
   // TODO: Container height is too small on smaller screens (e.g. laptops).
-  const containerHeight = `calc(100vh - 64px - 30px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)`;
+  const containerHeight = `calc(100vh - 64px - 48px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 21px - 24px - 8px)`;
 
   const { data: cartItems } = useCart();
   const { push } = useHistory();

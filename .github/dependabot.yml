@@ -9,6 +9,8 @@ updates:
   open-pull-requests-limit: 10
   versioning-strategy: increase
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: "@date-io/date-fns"
     versions:
     - ">= 2.a, < 3"

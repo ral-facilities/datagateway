@@ -20,7 +20,7 @@ describe('Cell content renderers', () => {
 
   describe('formatBytes', () => {
     it('converts to bytes correctly', () => {
-      expect(formatBytes(10000)).toEqual('9.77 KB');
+      expect(formatBytes(10000)).toEqual('10 KB');
     });
 
     it('handles 0 correctly', () => {
@@ -66,7 +66,7 @@ describe('Cell content renderers', () => {
         formatCountOrSize({ isFetching: false, isSuccess: true, data: 1 }, true)
       ).toEqual('1 B');
       expect(formatCountOrSize({ data: 10000, isSuccess: true }, true)).toEqual(
-        '9.77 KB'
+        '10 KB'
       );
     });
 
