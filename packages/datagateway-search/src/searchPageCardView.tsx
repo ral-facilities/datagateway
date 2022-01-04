@@ -9,6 +9,7 @@ import {
   Theme,
   createStyles,
   withStyles,
+  LinearProgress,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 import { StateType } from './state/app.types';
@@ -18,10 +19,17 @@ import { useTranslation } from 'react-i18next';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
-import { parseSearchToQuery, useLuceneSearch } from 'datagateway-common';
+import {
+  parseSearchToQuery,
+  useDatafileCount,
+  useDatasetCount,
+  useInvestigationCount,
+  useLuceneSearch,
+} from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
 import { useLocation } from 'react-router-dom';
+import { useIsFetching } from 'react-query';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -140,6 +148,14 @@ const SearchPageCardView = (
     maxCount: maxNumResults,
   });
 
+  const isFetchingNum = useIsFetching({
+    predicate: (query) =>
+      !query.queryHash.includes('InvestigationCount') &&
+      !query.queryHash.includes('DatasetCount') &&
+      !query.queryHash.includes('DatafileCount'),
+  });
+  const loading = isFetchingNum > 0;
+
   // Setting a tab based on user selection and what tabs are available
   useEffect(() => {
     if (currentTab === 'investigation') {
@@ -180,12 +196,41 @@ const SearchPageCardView = (
     setCurrentTab(newValue);
   };
 
+  const { data: investigationDataCount } = useInvestigationCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: investigation || [] },
+      }),
+    },
+  ]);
+
+  const { data: datasetDataCount } = useDatasetCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: dataset || [] },
+      }),
+    },
+  ]);
+
+  const { data: datafileDataCount } = useDatafileCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: datafile || [] },
+      }),
+    },
+  ]);
+
   const badgeDigits = (length?: number): 3 | 2 | 1 => {
     return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
   };
 
   return (
     <div>
+      {/* Show loading progress if data is still being loaded */}
+      {loading && <LinearProgress color="secondary" />}
       <AppBar position="static">
         <StyledTabs
           className="tour-search-tab-select"
@@ -198,7 +243,7 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="investigation-badge"
-                  badgeContent={investigation?.length ?? 0}
+                  badgeContent={investigationDataCount ?? 0}
                   showZero
                   max={999}
                 >
@@ -228,7 +273,7 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="dataset-badge"
-                  badgeContent={dataset?.length ?? 0}
+                  badgeContent={datasetDataCount ?? 0}
                   showZero
                   max={999}
                 >
@@ -258,7 +303,7 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="datafile-badge"
-                  badgeContent={datafile?.length ?? 0}
+                  badgeContent={datafileDataCount ?? 0}
                   showZero
                   max={999}
                 >
