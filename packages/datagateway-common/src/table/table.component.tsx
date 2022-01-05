@@ -63,12 +63,30 @@ const styles = (theme: Theme): StyleRules =>
       overflow: 'hidden',
       height: rowHeight,
       padding: 0,
+      paddingLeft: 16,
+      '&:last-child': {
+        paddingRight: 0,
+      },
+    },
+    tableCellNoPadding: {
+      flex: 1,
+      overflow: 'hidden',
+      height: rowHeight,
+      padding: 0,
+      paddingLeft: 0,
+      '&:last-child': {
+        paddingRight: 0,
+      },
     },
     headerTableCell: {
       flex: 1,
       height: headerHeight,
       justifyContent: 'space-between',
       padding: 0,
+      paddingLeft: 16,
+      '&:last-child': {
+        paddingRight: 0,
+      },
     },
   });
 
@@ -392,16 +410,19 @@ const VirtualizedTable = React.memo(
                     />
                   )}
                   {columns.map(
-                    ({
-                      cellContentRenderer,
-                      className,
-                      dataKey,
-                      label,
-                      icon,
-                      filterComponent,
-                      disableSort,
-                      defaultSort,
-                    }) => {
+                    (
+                      {
+                        cellContentRenderer,
+                        className,
+                        dataKey,
+                        label,
+                        icon,
+                        filterComponent,
+                        disableSort,
+                        defaultSort,
+                      },
+                      index
+                    ) => {
                       return (
                         <Column
                           key={dataKey}
@@ -431,7 +452,12 @@ const VirtualizedTable = React.memo(
                               {...props}
                               cellContentRenderer={cellContentRenderer}
                               className={clsx(
-                                classes.tableCell,
+                                //Remove padding only when in the first column and there is another element displayed before it e.g. a checkbox
+                                ((selectedRows && onCheck && onUncheck) ||
+                                  detailsPanel) &&
+                                  index === 0
+                                  ? classes.tableCellNoPadding
+                                  : classes.tableCell,
                                 classes.flexContainer
                               )}
                             />

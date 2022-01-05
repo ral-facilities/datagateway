@@ -6,7 +6,6 @@ import {
   TableSortLabel,
   Box,
   Typography,
-  useMediaQuery,
   Divider,
 } from '@material-ui/core';
 import Draggable from 'react-draggable';
@@ -84,8 +83,6 @@ const DataHeader = React.memo(
       </Typography>
     );
 
-    const smWindow = !useMediaQuery('(min-width: 960px)');
-
     return (
       <TableCell
         size="small"
@@ -93,7 +90,6 @@ const DataHeader = React.memo(
         className={className}
         variant="head"
         sortDirection={currSortDirection}
-        style={smWindow ? { paddingLeft: 8, paddingRight: 8 } : {}}
       >
         <div
           style={{
