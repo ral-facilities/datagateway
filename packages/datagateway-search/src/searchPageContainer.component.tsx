@@ -14,8 +14,8 @@ import {
   Theme,
 } from '@material-ui/core';
 
-import SearchPageTable from './searchPageTable';
-import SearchPageCardView from './searchPageCardView';
+import SearchPageTable from './searchPageTable.component';
+import SearchPageCardView from './searchPageCardView.component';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
