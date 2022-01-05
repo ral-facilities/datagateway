@@ -60,8 +60,19 @@
       "users": "Study Users",
       "publisher": "Publisher",
       "format": "Data Format",
-      "citation_label": "Data Citation",
-      "citation_format": "The recommended format for citing this data in a research publication is [author]; [date]: [title], [publisher], [doi]:"
+      "citation_formatter": {
+        "label": "Data Citation",
+        "details": "The recommended format for citing this data can be found below.",
+        "details_select_format": "You can also select your preferred format here:",
+        "select_arialabel": "Citation format drop down list",
+        "copy_citation" : "Copy citation",
+        "copied_citation" : "Copied citation",
+        "copy_citation_arialabel" : "Copy citation button",
+        "error": "An error has occurred while fetching the citation.",
+        "locale": "en-GB",
+        "default_format": "default",
+        "formats": ["american-physics-society", "american-chemical-society", "american-institute-of-physics",  "bibtex", "chicago-author-date", "ieee-with-url", "institute-of-physics-numeric", "nature", "science"]
+      }
     }
   },
   "investigations": {

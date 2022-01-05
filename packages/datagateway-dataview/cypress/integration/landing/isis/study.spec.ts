@@ -21,7 +21,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('should be able to click a specific investigation', () => {
-    cy.get('[aria-label="landing-study-part-label"')
+    cy.get('[data-testid="landing-study-part-label"')
       .children()
       .first()
       .click({ force: true });
@@ -120,5 +120,74 @@ describe('ISIS - Study Landing', () => {
       .get('[data-testid="arrow-tooltip-component-false"]')
       .first()
       .should('exist');
+  });
+
+  it('should be able to use the citation formatter', () => {
+    cy.intercept('/studies', [
+      {
+        id: 101224979,
+        pid: '10.5286/ISIS.E.RB1810842',
+        studyInvestigations: [
+          {
+            createId: 'uows/1050072',
+            createTime: '2019-02-07 15:27:19.790000+00:00',
+            id: 101224981,
+          },
+        ],
+      },
+    ]);
+    cy.intercept('/text/x-bibliography', [
+      '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
+    ]);
+
+    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.get('#datagateway-dataview').should('be.visible');
+    cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
+    cy.get('[data-testid="citation-formatter-citation"]').contains(
+      'STFC ISIS Neutron and Muon Source, https://doi.org/10.5286/ISIS.E.RB1810842'
+    );
+
+    cy.get('#citation-formatter').click();
+    cy.get('[role="listbox"]')
+      .find('[role="option"]')
+      .should('have.length.gte', 2);
+
+    cy.get('[role="option"][data-value="bibtex"]').click();
+    cy.get('[data-testid="citation-formatter-citation"]').contains(
+      '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire'
+    );
+    cy.get('#citation-formatter-error-message').should('not.exist');
+  });
+
+  it('citation formatter should give an error when there is a problem', () => {
+    cy.intercept('/studies', [
+      {
+        id: 101224979,
+        pid: 'invaliddoi',
+        studyInvestigations: [
+          {
+            createId: 'uows/1050072',
+            createTime: '2019-02-07 15:27:19.790000+00:00',
+            id: 101224981,
+          },
+        ],
+      },
+    ]);
+    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.get('#datagateway-dataview').should('be.visible');
+    cy.contains('invaliddoi').should('be.visible');
+
+    //Default citation
+    cy.get('[data-testid="citation-formatter-citation"]').contains(
+      'STFC ISIS Neutron and Muon Source, https://doi.org/invaliddoi'
+    );
+
+    cy.get('#citation-formatter').click();
+    cy.get('[role="listbox"]')
+      .find('[role="option"]')
+      .should('have.length.gte', 2);
+
+    cy.get('[role="option"][data-value="chicago-author-date"]').click();
+    cy.get('#citation-formatter-error-message').should('exist');
   });
 });

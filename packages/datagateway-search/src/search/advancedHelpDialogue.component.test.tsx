@@ -1,6 +1,6 @@
 import React from 'react';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
-import AdvancedHelpDialogue from './advancedHelpDialogue';
+import AdvancedHelpDialogue from './advancedHelpDialogue.component';
 import { Provider, useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 import { dGCommonInitialState } from 'datagateway-common';

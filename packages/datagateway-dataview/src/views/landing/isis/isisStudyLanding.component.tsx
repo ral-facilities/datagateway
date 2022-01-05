@@ -24,7 +24,6 @@ import {
   Study,
   tableLink,
   useStudy,
-  Mark,
   ViewsType,
   AddToCartButton,
   ArrowTooltip,
@@ -34,7 +33,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import Branding from './isisBranding.component';
-import Button from '@material-ui/core/Button';
+import CitationFormatter from '../../citationFormatter.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,7 +86,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface FormattedUser {
+export interface FormattedUser {
   role: string;
   fullName: string;
 }
@@ -148,7 +147,7 @@ const LinkedInvestigation = (
         component="h6"
         variant="h6"
         align="center"
-        aria-label="landing-study-part-label"
+        data-testid="landing-study-part-label"
       >
         {tableLink(
           `${props.urlPrefix}/investigation/${investigation.id}`,
@@ -187,8 +186,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   ]);
 
   const [value, setValue] = React.useState<'details'>('details');
-  const citationRef = React.useRef<HTMLElement>(null);
-  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const { instrumentId, studyId } = props;
 
   const pathRoot = 'browseStudyHierarchy';
@@ -397,11 +394,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               className={classes.subHeading}
               component="h5"
               variant="h5"
-              aria-label="landing-investigation-title"
+              data-testid="landing-investigation-title"
             >
               {title}
             </Typography>
-            <Typography aria-label="landing-study-description">
+            <Typography data-testid="landing-study-description">
               {summary}
             </Typography>
 
@@ -411,12 +408,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   className={classes.subHeading}
                   component="h6"
                   variant="h6"
-                  aria-label="landing-study-users-label"
+                  data-testid="landing-study-users-label"
                 >
                   {t('studies.details.users')}
                 </Typography>
                 {formattedUsers.map((user, i) => (
-                  <Typography aria-label={`landing-study-user-${i}`} key={i}>
+                  <Typography data-testid={`landing-study-user-${i}`} key={i}>
                     <b>{user.role}:</b> {user.fullName}
                   </Typography>
                 ))}
@@ -427,75 +424,21 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               className={classes.subHeading}
               component="h6"
               variant="h6"
-              aria-label="landing-study-publisher-label"
+              data-testid="landing-study-publisher-label"
             >
               {t('studies.details.publisher')}
             </Typography>
-            <Typography aria-label="landing-study-publisher">
+            <Typography data-testid="landing-study-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
-
-            <Typography
-              className={classes.subHeading}
-              component="h6"
-              variant="h6"
-              aria-label="landing-study-citation-label"
-            >
-              {t('studies.details.citation_label')}
-            </Typography>
-            <Typography aria-label="landing-study-citation_format">
-              {t('studies.details.citation_format')}
-            </Typography>
-            <Typography aria-label="landing-study-citation">
-              <i ref={citationRef}>
-                {formattedUsers.length > 1 &&
-                  `${formattedUsers[0].fullName} et al; `}
-                {formattedUsers.length === 1 &&
-                  `${formattedUsers[0].fullName}; `}
-                {`${data?.[0]?.studyInvestigations?.[0]?.investigation?.startDate?.slice(
-                  0,
-                  4
-                )}: `}
-                {title && `${title}, `}
-                {t('doi_constants.publisher.name')}
-                {pid && ', '}
-                {pid && (
-                  <MuiLink
-                    href={`https://doi.org/${pid}`}
-                  >{`https://doi.org/${pid}`}</MuiLink>
-                )}
-              </i>
-            </Typography>
-            {!copiedCitation ? (
-              <Button
-                id="landing-study-copy-citation"
-                aria-label="landing-study-copy-citation"
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => {
-                  if (citationRef?.current?.textContent) {
-                    navigator.clipboard.writeText(
-                      citationRef.current.textContent
-                    );
-                    setCopiedCitation(true);
-                    setTimeout(() => setCopiedCitation(false), 1750);
-                  }
-                }}
-              >
-                Copy citation
-              </Button>
-            ) : (
-              <Button
-                id="landing-study-copied-citation"
-                variant="contained"
-                color="primary"
-                size="small"
-                startIcon={<Mark size={20} visible={true} />}
-              >
-                Copied citation
-              </Button>
-            )}
+            <CitationFormatter
+              doi={pid}
+              formattedUsers={formattedUsers}
+              title={title}
+              startDate={
+                data?.[0]?.studyInvestigations?.[0]?.investigation?.startDate
+              }
+            />
           </Grid>
 
           <Divider orientation="vertical" />
