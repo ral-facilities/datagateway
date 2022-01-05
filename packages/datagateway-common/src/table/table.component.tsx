@@ -68,15 +68,8 @@ const styles = (theme: Theme): StyleRules =>
         paddingRight: 0,
       },
     },
-    tableCellNoPadding: {
-      flex: 1,
-      overflow: 'hidden',
-      height: rowHeight,
-      padding: 0,
+    tableNoPadding: {
       paddingLeft: 0,
-      '&:last-child': {
-        paddingRight: 0,
-      },
     },
     headerTableCell: {
       flex: 1,
@@ -279,6 +272,17 @@ const VirtualizedTable = React.memo(
       [widthProps, setWidthProps]
     );
 
+    const tableCellClass = clsx(classes.tableCell, classes.flexContainer);
+    const tableCellNoPaddingClass = clsx(
+      classes.tableCell,
+      classes.tableNoPadding,
+      classes.flexContainer
+    );
+    const headerTableCellClass = clsx(
+      classes.headerTableCell,
+      classes.headerFlexContainer
+    );
+
     return (
       <AutoSizer>
         {({ height, width }) => {
@@ -337,10 +341,7 @@ const VirtualizedTable = React.memo(
                         !disableSelectAll && (
                           <SelectHeader
                             {...props}
-                            className={clsx(
-                              classes.headerTableCell,
-                              classes.headerFlexContainer
-                            )}
+                            className={headerTableCellClass}
                             selectedRows={selectedRows}
                             totalRowCount={rowCount}
                             allIds={
@@ -363,10 +364,7 @@ const VirtualizedTable = React.memo(
                           {...props}
                           selectedRows={selectedRows}
                           data={data}
-                          className={clsx(
-                            classes.tableCell,
-                            classes.flexContainer
-                          )}
+                          className={tableCellClass}
                           onCheck={onCheck}
                           onUncheck={onUncheck}
                           lastChecked={lastChecked}
@@ -401,10 +399,7 @@ const VirtualizedTable = React.memo(
                           {...props}
                           expandedIndex={expandedIndex}
                           setExpandedIndex={setExpandedIndex}
-                          className={clsx(
-                            classes.tableCell,
-                            classes.flexContainer
-                          )}
+                          className={tableCellClass}
                         />
                       )}
                     />
@@ -433,10 +428,7 @@ const VirtualizedTable = React.memo(
                           headerRenderer={(headerProps) => (
                             <DataHeader
                               {...headerProps}
-                              className={clsx(
-                                classes.headerTableCell,
-                                classes.headerFlexContainer
-                              )}
+                              className={headerTableCellClass}
                               sort={sort}
                               onSort={onSort}
                               icon={icon}
@@ -451,15 +443,14 @@ const VirtualizedTable = React.memo(
                             <DataCell
                               {...props}
                               cellContentRenderer={cellContentRenderer}
-                              className={clsx(
+                              className={
                                 //Remove padding only when in the first column and there is another element displayed before it e.g. a checkbox
                                 ((selectedRows && onCheck && onUncheck) ||
                                   detailsPanel) &&
-                                  index === 0
-                                  ? classes.tableCellNoPadding
-                                  : classes.tableCell,
-                                classes.flexContainer
-                              )}
+                                index === 0
+                                  ? tableCellNoPaddingClass
+                                  : tableCellClass
+                              }
                             />
                           )}
                           minWidth={dataColumnMinWidth}
@@ -480,10 +471,7 @@ const VirtualizedTable = React.memo(
                         <TableCell
                           size="small"
                           component="div"
-                          className={clsx(
-                            classes.headerTableCell,
-                            classes.headerFlexContainer
-                          )}
+                          className={headerTableCellClass}
                           variant="head"
                         >
                           Actions
@@ -493,10 +481,7 @@ const VirtualizedTable = React.memo(
                         <ActionCell
                           {...props}
                           actions={actions}
-                          className={clsx(
-                            classes.tableCell,
-                            classes.flexContainer
-                          )}
+                          className={tableCellClass}
                         />
                       )}
                     />

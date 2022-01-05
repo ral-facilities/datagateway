@@ -161,9 +161,10 @@ Object {
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "headerTableCell": "VirtualizedTable-headerTableCell-8",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
+    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
     "tableRow": "VirtualizedTable-tableRow-4",
     "tableRowHover": "VirtualizedTable-tableRowHover-5",
   },
@@ -247,7 +248,7 @@ Object {
 
 exports[`Dataset table component renders details panel correctly 1`] = `
 <div
-  className="MuiGrid-root makeStyles-root-251 MuiGrid-container MuiGrid-direction-xs-column"
+  className="MuiGrid-root makeStyles-root-261 MuiGrid-container MuiGrid-direction-xs-column"
   id="details-panel"
 >
   <WithStyles(ForwardRef(Grid))
@@ -262,7 +263,7 @@ exports[`Dataset table component renders details panel correctly 1`] = `
       </b>
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Divider))
-      className="makeStyles-divider-252"
+      className="makeStyles-divider-262"
     />
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
