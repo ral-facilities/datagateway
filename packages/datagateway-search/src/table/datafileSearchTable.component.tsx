@@ -93,9 +93,10 @@ const DatafileSearchTable = (
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search, 'datafile'),
+    [location.search]
+  );
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -115,8 +116,8 @@ const DatafileSearchTable = (
   });
   const [t] = useTranslation();
 
-  const { filters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search),
+  const { datafileFilters, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search, 'datafile'),
     [location.search]
   );
 
@@ -168,8 +169,8 @@ const DatafileSearchTable = (
     [data]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
+  const textFilter = useTextFilter(datafileFilters);
+  const dateFilter = useDateFilter(datafileFilters);
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(

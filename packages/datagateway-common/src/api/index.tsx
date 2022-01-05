@@ -11,6 +11,7 @@ import {
   ViewsType,
   Entity,
   UpdateMethod,
+  SearchableEntities,
 } from '../app.types';
 import {
   useQueries,
@@ -52,7 +53,10 @@ export const nestedValue = (data: Entity, dataKey: string): string => {
 /**
  * Convert from search query string to QueryParam object
  */
-export const parseSearchToQuery = (queryParams: string): QueryParams => {
+export const parseSearchToQuery = (
+  queryParams: string,
+  searchableFilters?: SearchableEntities
+): QueryParams => {
   // Get the URLSearchParams object from the search query.
   const query = new URLSearchParams(queryParams);
 
@@ -61,6 +65,9 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const page = query.get('page');
   const results = query.get('results');
   const filters = query.get('filters');
+  const invesigationFilters = query.get('investigationFilters');
+  const datasetFilters = query.get('datasetFilters');
+  const datafileFilters = query.get('datadileFilters');
   const sort = query.get('sort');
   const view = query.get('view') as ViewsType;
   const searchText = query.get('searchText');
@@ -70,25 +77,93 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const startDateString = query.get('startDate');
   const endDateString = query.get('endDate');
 
+  console.log('Searchable filters parse outside if', searchableFilters);
+
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
-  if (filters) {
-    try {
-      const fq: FiltersType = JSON.parse(filters);
+  if (searchableFilters === undefined) {
+    if (filters) {
+      try {
+        console.log('Searchable filters parse', searchableFilters);
+        const fq: FiltersType = JSON.parse(filters);
 
-      // Create the entries for the filter.
-      for (const [f, v] of Object.entries(fq)) {
-        // Add only if there are filter items present.
-        if (Array.isArray(v)) {
-          if (v.length > 0) {
+        // Create the entries for the filter.
+        for (const [f, v] of Object.entries(fq)) {
+          // Add only if there are filter items present.
+          if (Array.isArray(v)) {
+            if (v.length > 0) {
+              parsedFilters[f] = v;
+            }
+          } else {
             parsedFilters[f] = v;
           }
-        } else {
-          parsedFilters[f] = v;
         }
+      } catch (e) {
+        console.error('Filter query provided in an incorrect format.');
       }
-    } catch (e) {
-      console.error('Filter query provided in an incorrect format.');
+    }
+  } else if (searchableFilters === 'investigation') {
+    if (invesigationFilters) {
+      try {
+        console.log('Searchable filters parse', searchableFilters);
+        const fq: FiltersType = JSON.parse(invesigationFilters);
+
+        // Create the entries for the filter.
+        for (const [f, v] of Object.entries(fq)) {
+          // Add only if there are filter items present.
+          if (Array.isArray(v)) {
+            if (v.length > 0) {
+              parsedFilters[f] = v;
+            }
+          } else {
+            parsedFilters[f] = v;
+          }
+        }
+      } catch (e) {
+        console.error('Filter query provided in an incorrect format.');
+      }
+    }
+  } else if (searchableFilters === 'dataset') {
+    if (datasetFilters) {
+      try {
+        console.log('Searchable filters parse', searchableFilters);
+        const fq: FiltersType = JSON.parse(datasetFilters);
+
+        // Create the entries for the filter.
+        for (const [f, v] of Object.entries(fq)) {
+          // Add only if there are filter items present.
+          if (Array.isArray(v)) {
+            if (v.length > 0) {
+              parsedFilters[f] = v;
+            }
+          } else {
+            parsedFilters[f] = v;
+          }
+        }
+      } catch (e) {
+        console.error('Filter query provided in an incorrect format.');
+      }
+    }
+  } else if (searchableFilters === 'datafile') {
+    if (datafileFilters) {
+      try {
+        console.log('Searchable filters parse', searchableFilters);
+        const fq: FiltersType = JSON.parse(datafileFilters);
+
+        // Create the entries for the filter.
+        for (const [f, v] of Object.entries(fq)) {
+          // Add only if there are filter items present.
+          if (Array.isArray(v)) {
+            if (v.length > 0) {
+              parsedFilters[f] = v;
+            }
+          } else {
+            parsedFilters[f] = v;
+          }
+        }
+      } catch (e) {
+        console.error('Filter query provided in an incorrect format.');
+      }
     }
   }
 
@@ -119,6 +194,9 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     page: page ? Number(page) : null,
     results: results ? Number(results) : null,
     filters: parsedFilters,
+    investigationFilters: parsedFilters,
+    datasetFilters: parsedFilters,
+    datafileFilters: parsedFilters,
     sort: parsedSort,
     searchText: searchText,
     dataset: dataset !== null ? dataset === 'true' : true,
@@ -134,50 +212,211 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
 /**
  * Convert from QueryParam object to URLSearchParams
  */
-export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
-  const filters = query.filters;
-  const sort = query.sort;
-
+export const parseQueryToSearch = (
+  query: QueryParams,
+  searchableFilters?: SearchableEntities
+): URLSearchParams => {
   const queryParams = new URLSearchParams();
+  if (searchableFilters === undefined) {
+    const filters = query.filters;
+    const sort = query.sort;
 
-  // Loop and add all the query parameters which is in use.
-  for (const [q, v] of Object.entries(query)) {
-    if (v !== null && q !== 'filters' && q !== 'sort') {
-      if ((q === 'startDate' || q === 'endDate') && isValid(v)) {
-        queryParams.append(q, format(v, 'yyyy-MM-dd'));
-      } else if (
-        //Take default value of these as true, so don't put in url if this is the case
-        !(
-          (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
-          v === true
+    // Loop and add all the query parameters which is in use.
+    for (const [q, v] of Object.entries(query)) {
+      if (
+        v !== null &&
+        q !== 'filters' &&
+        q !== 'sort' &&
+        q !== 'investigationFilters' &&
+        q !== 'datasetFilters' &&
+        q !== 'datafileFilters'
+      ) {
+        if ((q === 'startDate' || q === 'endDate') && isValid(v)) {
+          queryParams.append(q, format(v, 'yyyy-MM-dd'));
+        } else if (
+          //Take default value of these as true, so don't put in url if this is the case
+          !(
+            (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
+            v === true
+          )
         )
-      )
-        queryParams.append(q, v);
+          queryParams.append(q, v);
+      }
     }
-  }
 
-  // Add filters.
-  const addFilters: FiltersType = {};
-  for (const [f, v] of Object.entries(filters)) {
-    if (Array.isArray(v)) {
-      if (v.length > 0) {
+    // Add filters.
+    const addFilters: FiltersType = {};
+    for (const [f, v] of Object.entries(filters)) {
+      if (Array.isArray(v)) {
+        if (v.length > 0) {
+          addFilters[f] = v;
+        }
+      } else {
         addFilters[f] = v;
       }
-    } else {
-      addFilters[f] = v;
     }
-  }
-  if (Object.keys(addFilters).length > 0) {
-    queryParams.append('filters', JSON.stringify(addFilters));
-  }
+    if (Object.keys(addFilters).length > 0) {
+      queryParams.append('filters', JSON.stringify(addFilters));
+    }
 
-  // Add sort.
-  const addSort: SortType = {};
-  for (const [s, v] of Object.entries(sort)) {
-    addSort[s] = v;
-  }
-  if (Object.keys(addSort).length > 0) {
-    queryParams.append('sort', JSON.stringify(addSort));
+    // Add sort.
+    const addSort: SortType = {};
+    for (const [s, v] of Object.entries(sort)) {
+      addSort[s] = v;
+    }
+    if (Object.keys(addSort).length > 0) {
+      queryParams.append('sort', JSON.stringify(addSort));
+    }
+  } else if (searchableFilters === 'investigation') {
+    const filters = query.investigationFilters;
+    const sort = query.sort;
+
+    // Loop and add all the query parameters which is in use.
+    for (const [q, v] of Object.entries(query)) {
+      if (
+        v !== null &&
+        q !== 'filters' &&
+        q !== 'sort' &&
+        q !== 'investigationFilters' &&
+        q !== 'datasetFilters' &&
+        q !== 'datafileFilters'
+      ) {
+        if ((q === 'startDate' || q === 'endDate') && isValid(v)) {
+          queryParams.append(q, format(v, 'yyyy-MM-dd'));
+        } else if (
+          //Take default value of these as true, so don't put in url if this is the case
+          !(
+            (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
+            v === true
+          )
+        )
+          queryParams.append(q, v);
+      }
+    }
+
+    // Add filters.
+    const addFilters: FiltersType = {};
+    for (const [f, v] of Object.entries(filters)) {
+      if (Array.isArray(v)) {
+        if (v.length > 0) {
+          addFilters[f] = v;
+        }
+      } else {
+        addFilters[f] = v;
+      }
+    }
+    if (Object.keys(addFilters).length > 0) {
+      queryParams.append('filters', JSON.stringify(addFilters));
+    }
+
+    // Add sort.
+    const addSort: SortType = {};
+    for (const [s, v] of Object.entries(sort)) {
+      addSort[s] = v;
+    }
+    if (Object.keys(addSort).length > 0) {
+      queryParams.append('sort', JSON.stringify(addSort));
+    }
+  } else if (searchableFilters === 'dataset') {
+    const filters = query.datasetFilters;
+    const sort = query.sort;
+
+    // Loop and add all the query parameters which is in use.
+    for (const [q, v] of Object.entries(query)) {
+      if (
+        v !== null &&
+        q !== 'filters' &&
+        q !== 'sort' &&
+        q !== 'investigationFilters' &&
+        q !== 'datasetFilters' &&
+        q !== 'datafileFilters'
+      ) {
+        if ((q === 'startDate' || q === 'endDate') && isValid(v)) {
+          queryParams.append(q, format(v, 'yyyy-MM-dd'));
+        } else if (
+          //Take default value of these as true, so don't put in url if this is the case
+          !(
+            (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
+            v === true
+          )
+        )
+          queryParams.append(q, v);
+      }
+    }
+
+    // Add filters.
+    const addFilters: FiltersType = {};
+    for (const [f, v] of Object.entries(filters)) {
+      if (Array.isArray(v)) {
+        if (v.length > 0) {
+          addFilters[f] = v;
+        }
+      } else {
+        addFilters[f] = v;
+      }
+    }
+    if (Object.keys(addFilters).length > 0) {
+      queryParams.append('filters', JSON.stringify(addFilters));
+    }
+
+    // Add sort.
+    const addSort: SortType = {};
+    for (const [s, v] of Object.entries(sort)) {
+      addSort[s] = v;
+    }
+    if (Object.keys(addSort).length > 0) {
+      queryParams.append('sort', JSON.stringify(addSort));
+    }
+  } else if (searchableFilters === 'datafile') {
+    const filters = query.datafileFilters;
+    const sort = query.sort;
+
+    // Loop and add all the query parameters which is in use.
+    for (const [q, v] of Object.entries(query)) {
+      if (
+        v !== null &&
+        q !== 'filters' &&
+        q !== 'sort' &&
+        q !== 'investigationFilters' &&
+        q !== 'datasetFilters' &&
+        q !== 'datafileFilters'
+      ) {
+        if ((q === 'startDate' || q === 'endDate') && isValid(v)) {
+          queryParams.append(q, format(v, 'yyyy-MM-dd'));
+        } else if (
+          //Take default value of these as true, so don't put in url if this is the case
+          !(
+            (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
+            v === true
+          )
+        )
+          queryParams.append(q, v);
+      }
+    }
+
+    // Add filters.
+    const addFilters: FiltersType = {};
+    for (const [f, v] of Object.entries(filters)) {
+      if (Array.isArray(v)) {
+        if (v.length > 0) {
+          addFilters[f] = v;
+        }
+      } else {
+        addFilters[f] = v;
+      }
+    }
+    if (Object.keys(addFilters).length > 0) {
+      queryParams.append('filters', JSON.stringify(addFilters));
+    }
+
+    // Add sort.
+    const addSort: SortType = {};
+    for (const [s, v] of Object.entries(sort)) {
+      addSort[s] = v;
+    }
+    if (Object.keys(addSort).length > 0) {
+      queryParams.append('sort', JSON.stringify(addSort));
+    }
   }
 
   return queryParams;
@@ -284,36 +523,104 @@ export const useSort = (): ((
   );
 };
 
-export const usePushFilters = (): ((
-  filterKey: string,
-  filter: Filter | null
-) => void) => {
+export const usePushFilters = (
+  searchableFilters?: SearchableEntities
+): ((filterKey: string, filter: Filter | null) => void) => {
   const { push } = useHistory();
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
       let query = parseSearchToQuery(window.location.search);
-      if (filter !== null) {
-        // if given an defined filter, update the relevant column in the sort state
-        query = {
-          ...query,
-          filters: {
-            ...query.filters,
-            [filterKey]: filter,
-          },
-        };
-      } else {
-        // if filter is null, user no longer wants to filter by that column so remove column from filter state
-        const { [filterKey]: filter, ...rest } = query.filters;
-        query = {
-          ...query,
-          filters: {
-            ...rest,
-          },
-        };
+      if (searchableFilters === undefined) {
+        console.log('Searchable filters', searchableFilters);
+        if (filter !== null) {
+          // if given an defined filter, update the relevant column in the sort state
+          query = {
+            ...query,
+            filters: {
+              ...query.filters,
+              [filterKey]: filter,
+            },
+          };
+        } else {
+          // if filter is null, user no longer wants to filter by that column so remove column from filter state
+          const { [filterKey]: filter, ...rest } = query.filters;
+          query = {
+            ...query,
+            filters: {
+              ...rest,
+            },
+          };
+        }
+      } else if (searchableFilters === 'investigation') {
+        console.log('Searchable filters', searchableFilters);
+        if (filter !== null) {
+          // if given an defined filter, update the relevant column in the sort state
+          query = {
+            ...query,
+            investigationFilters: {
+              ...query.investigationFilters,
+              [filterKey]: filter,
+            },
+          };
+        } else {
+          // if filter is null, user no longer wants to filter by that column so remove column from filter state
+          const { [filterKey]: filter, ...rest } = query.investigationFilters;
+          query = {
+            ...query,
+            investigationFilters: {
+              ...rest,
+            },
+          };
+        }
+      } else if (searchableFilters === 'dataset') {
+        console.log('Searchable filters', searchableFilters);
+        if (filter !== null) {
+          // if given an defined filter, update the relevant column in the sort state
+          query = {
+            ...query,
+            datasetFilters: {
+              ...query.datasetFilters,
+              [filterKey]: filter,
+            },
+          };
+        } else {
+          // if filter is null, user no longer wants to filter by that column so remove column from filter state
+          const { [filterKey]: filter, ...rest } = query.datasetFilters;
+          query = {
+            ...query,
+            datasetFilters: {
+              ...rest,
+            },
+          };
+        }
+      } else if (searchableFilters === 'datafile') {
+        console.log('Searchable filters', searchableFilters);
+        if (filter !== null) {
+          // if given an defined filter, update the relevant column in the sort state
+          query = {
+            ...query,
+            datafileFilters: {
+              ...query.datafileFilters,
+              [filterKey]: filter,
+            },
+          };
+        } else {
+          // if filter is null, user no longer wants to filter by that column so remove column from filter state
+          const { [filterKey]: filter, ...rest } = query.datafileFilters;
+          query = {
+            ...query,
+            datafileFilters: {
+              ...rest,
+            },
+          };
+        }
       }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
+      console.log('Searchable filters after', searchableFilters);
+      push({
+        search: `?${parseQueryToSearch(query, searchableFilters).toString()}`,
+      });
     },
-    [push]
+    [push, searchableFilters]
   );
 };
 

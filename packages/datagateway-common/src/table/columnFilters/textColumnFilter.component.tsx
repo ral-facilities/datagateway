@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, InputAdornment, MenuItem, Select } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import debounce from 'lodash.debounce';
-import { FiltersType, TextFilter } from '../../app.types';
+import { FiltersType, SearchableEntities, TextFilter } from '../../app.types';
 import { usePushFilters } from '../../api';
 
 const TextColumnFilter = (props: {
@@ -109,9 +109,10 @@ const TextColumnFilter = (props: {
 export default TextColumnFilter;
 
 export const useTextFilter = (
-  filters: FiltersType
+  filters: FiltersType,
+  searchableFilters?: SearchableEntities
 ): ((label: string, dataKey: string) => React.ReactElement) => {
-  const pushFilters = usePushFilters();
+  const pushFilters = usePushFilters(searchableFilters);
   return React.useMemo(() => {
     const textFilter = (label: string, dataKey: string): React.ReactElement => (
       <TextColumnFilter

@@ -55,9 +55,10 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search, 'dataset'),
+    [location.search]
+  );
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -74,15 +75,15 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
 
   const [t] = useTranslation();
 
-  const { filters, sort, page, results } = React.useMemo(
-    () => parseSearchToQuery(location.search),
+  const { datasetFilters, sort, page, results } = React.useMemo(
+    () => parseSearchToQuery(location.search, 'dataset'),
     [location.search]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
+  const textFilter = useTextFilter(datasetFilters, 'dataset');
+  const dateFilter = useDateFilter(datasetFilters, 'dataset');
   const handleSort = useSort();
-  const pushFilters = usePushFilters();
+  const pushFilters = usePushFilters('dataset');
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -325,7 +326,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
-      filters={filters}
+      filters={datasetFilters}
       sort={sort}
       page={page}
       results={results}

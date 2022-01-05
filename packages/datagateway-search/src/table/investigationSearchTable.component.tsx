@@ -30,6 +30,7 @@ import {
   useInvestigationSizes,
   formatCountOrSize,
   useLuceneSearch,
+  // usePushFilters,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -107,9 +108,10 @@ const InvestigationSearchTable = (
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search, 'investigation'),
+    [location.search]
+  );
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -130,8 +132,8 @@ const InvestigationSearchTable = (
 
   const [t] = useTranslation();
 
-  const { filters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search),
+  const { investigationFilters, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search, 'investigation'),
     [location.search]
   );
 
@@ -183,8 +185,10 @@ const InvestigationSearchTable = (
     [data]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
+  const textFilter = useTextFilter(investigationFilters, 'investigation');
+  const dateFilter = useDateFilter(investigationFilters, 'investigation');
+  // const pushFilters = usePushFilters('investigation');
+
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(

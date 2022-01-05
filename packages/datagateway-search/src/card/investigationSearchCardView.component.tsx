@@ -67,10 +67,18 @@ const InvestigationCardView = (
   const [t] = useTranslation();
   const location = useLocation();
 
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
-  const { filters, sort, page, results, startDate, endDate } = queryParams;
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search, 'investigation'),
+    [location.search]
+  );
+  const {
+    investigationFilters,
+    sort,
+    page,
+    results,
+    startDate,
+    endDate,
+  } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
@@ -134,10 +142,10 @@ const InvestigationCardView = (
     }
   }, [hierarchy, isisLink]);
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
+  const textFilter = useTextFilter(investigationFilters, 'investigation');
+  const dateFilter = useDateFilter(investigationFilters, 'investigation');
   const handleSort = useSort();
-  const pushFilters = usePushFilters();
+  const pushFilters = usePushFilters('investigation');
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -337,7 +345,7 @@ const InvestigationCardView = (
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
-      filters={filters}
+      filters={investigationFilters}
       sort={sort}
       page={page}
       results={results}

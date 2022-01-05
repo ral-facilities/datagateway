@@ -294,9 +294,14 @@ export interface SortType {
 
 export type ViewsType = 'table' | 'card' | null;
 
+export type SearchableEntities = 'investigation' | 'dataset' | 'datafile';
+
 export interface QueryParams {
   sort: SortType;
   filters: FiltersType;
+  investigationFilters: FiltersType;
+  datasetFilters: FiltersType;
+  datafileFilters: FiltersType;
   view: ViewsType;
   search: string | null;
   page: number | null;
