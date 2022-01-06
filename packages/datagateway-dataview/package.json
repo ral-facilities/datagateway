@@ -15,6 +15,7 @@
     "connected-react-router": "^6.9.1",
     "custom-event-polyfill": "^1.0.7",
     "datagateway-common": "0.1.0",
+    "date-fns": "^2.17.0",
     "history": "^4.10.1",
     "i18next": "^20.3.5",
     "i18next-browser-languagedetector": "^6.1.2",
@@ -95,7 +96,7 @@
     ]
   },
   "devDependencies": {
-    "@craco/craco": "^6.1.1",
+    "@craco/craco": "^6.4.3",
     "@types/enzyme": "^3.10.10",
     "@types/jsrsasign": "^8.0.3",
     "@types/loglevel": "^1.6.3",
@@ -108,7 +109,7 @@
     "@types/single-spa-react": "^3.0.1",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
-    "@welldone-software/why-did-you-render": "^4.2.5",
+    "@welldone-software/why-did-you-render": "^6.2.3",
     "babel-eslint": "10.1.0",
     "cross-env": "^7.0.3",
     "cypress": "6.5.0",
@@ -130,7 +131,7 @@
     "jsrsasign": "^10.2.0",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
-    "serve": "^11.3.2",
+    "serve": "^13.0.2",
     "start-server-and-test": "^1.14.0"
   }
 }

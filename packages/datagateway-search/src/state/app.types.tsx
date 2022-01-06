@@ -13,6 +13,7 @@ export interface DGSearchState {
   settingsLoaded: boolean;
   sideLayout: boolean;
   searchableEntities: string[];
+  maxNumResults: number;
 }
 
 export type StateType = {

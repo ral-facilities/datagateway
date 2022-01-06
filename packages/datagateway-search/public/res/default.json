@@ -29,7 +29,7 @@
       "cancel": "Cancel",
       "clear": "Clear"
     },
-    "limited_results_message": "Please note: Only the top 300 results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. Click 'Advanced' to learn more."
+    "limited_results_message": "Please note: Only the top {{maxNumResults}} results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. Click 'Advanced' to learn more."
   },
   "searchPageTable": {
     "tabs_arialabel": "Search table",
@@ -162,7 +162,7 @@
     },
     "limited_search_results": {
       "title": "Limited results",
-      "description": "Due to technical and performance reasons, only the top 300 results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. If you find your search gives 300 results, try using a more specific query to find what you are looking for."
+      "description": "Due to technical and performance reasons, only the top {{maxNumResults}} results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. If you find your search gives {{maxNumResults}} results, try using a more specific query to find what you are looking for."
     },
     "footer": "Further information on searching can be found <2>here</2>."
   }

@@ -1,150 +1,92 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Download cart table component renders correctly 1`] = `
-<div>
-  <WithStyles(ForwardRef(Grid))
-    container={true}
-    direction="column"
-  >
+<div
+  className="tour-download-results"
+  data-testid="no-selections-messsage"
+  style={
+    Object {
+      "height": "calc(100vh - 64px - 48px - 48px - 48px)",
+      "minHeight": 230,
+      "overflowX": "auto",
+    }
+  }
+>
+  <WithStyles(ForwardRef(Paper))>
     <WithStyles(ForwardRef(Grid))
-      item={true}
-      xs={12}
-    >
-      <WithStyles(ForwardRef(LinearProgress))
-        color="secondary"
-      />
-    </WithStyles(ForwardRef(Grid))>
-    <WithStyles(ForwardRef(Grid))
-      item={true}
-    >
-      <WithStyles(ForwardRef(Paper))
-        className="tour-download-results"
-        style={
-          Object {
-            "height": "calc(100vh - 64px - 30px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)",
-            "minHeight": 230,
-            "overflowX": "auto",
-          }
-        }
-      >
-        <WithStyles(VirtualizedTable)
-          actions={
-            Array [
-              [Function],
-            ]
-          }
-          columns={
-            Array [
-              Object {
-                "dataKey": "name",
-                "filterComponent": [Function],
-                "label": "downloadCart.name",
-              },
-              Object {
-                "dataKey": "entityType",
-                "filterComponent": [Function],
-                "label": "downloadCart.type",
-              },
-              Object {
-                "cellContentRenderer": [Function],
-                "dataKey": "size",
-                "label": "downloadCart.size",
-              },
-            ]
-          }
-          data={Array []}
-          loading={true}
-          onSort={[Function]}
-          sort={Object {}}
-        />
-      </WithStyles(ForwardRef(Paper))>
-    </WithStyles(ForwardRef(Grid))>
-    <WithStyles(ForwardRef(Grid))
-      alignItems="flex-end"
+      alignItems="center"
       container={true}
       direction="column"
-      item={true}
-      justify="space-between"
+      justify="center"
     >
       <WithStyles(ForwardRef(Grid))
-        alignContent="flex-end"
-        container={true}
-        direction="column"
         item={true}
-        style={
-          Object {
-            "marginRight": "1.2em",
-          }
-        }
-        xs={true}
       >
         <WithStyles(ForwardRef(Typography))
-          id="fileCountDisplay"
+          className="makeStyles-noSelectionsMessage-1"
         >
-          downloadCart.number_of_files
-          :
-           
-          0
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))
-          id="totalSizeDisplay"
-        >
-          downloadCart.total_size
-          :
-           
-          0 B
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        container={true}
-        item={true}
-        justify="flex-end"
-        spacing={1}
-        style={
-          Object {
-            "marginRight": "1em",
-          }
-        }
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Grid))
-          item={true}
-        >
-          <WithStyles(ForwardRef(Button))
-            className="tour-download-remove-button"
-            color="primary"
-            id="removeAllButton"
-            onClick={[Function]}
-            variant="contained"
+          <Trans
+            i18nKey="downloadCart.no_selections"
           >
-            downloadCart.remove_all
-          </WithStyles(ForwardRef(Button))>
-        </WithStyles(ForwardRef(Grid))>
-        <WithStyles(ForwardRef(Grid))
-          item={true}
-        >
-          <WithStyles(ForwardRef(Button))
-            className="tour-download-download-button"
-            color="primary"
-            disabled={true}
-            id="downloadCartButton"
-            onClick={[Function]}
-            variant="contained"
-          >
-            downloadCart.download
-          </WithStyles(ForwardRef(Button))>
-        </WithStyles(ForwardRef(Grid))>
+            No data selected.
+             
+            <WithStyles(ForwardRef(Link))
+              component={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "displayName": "Link",
+                  "propTypes": Object {
+                    "innerRef": [Function],
+                    "onClick": [Function],
+                    "replace": [Function],
+                    "target": [Function],
+                    "to": [Function],
+                  },
+                  "render": [Function],
+                }
+              }
+              style={
+                Object {
+                  "fontWeight": "bold",
+                }
+              }
+              to="downloadCart.browse_link"
+            >
+              Browse
+            </WithStyles(ForwardRef(Link))>
+             
+            or
+             
+            <WithStyles(ForwardRef(Link))
+              component={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "displayName": "Link",
+                  "propTypes": Object {
+                    "innerRef": [Function],
+                    "onClick": [Function],
+                    "replace": [Function],
+                    "target": [Function],
+                    "to": [Function],
+                  },
+                  "render": [Function],
+                }
+              }
+              style={
+                Object {
+                  "fontWeight": "bold",
+                }
+              }
+              to="downloadCart.search_link"
+            >
+              search
+            </WithStyles(ForwardRef(Link))>
+             
+            for data.
+          </Trans>
+        </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(DownloadConfirmDialog)
-    aria-labelledby="downloadCartConfirmation"
-    clearCart={[Function]}
-    isTwoLevel={false}
-    open={false}
-    redirectToStatusTab={[MockFunction]}
-    setClose={[Function]}
-    totalSize={0}
-  />
+  </WithStyles(ForwardRef(Paper))>
 </div>
 `;

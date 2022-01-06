@@ -188,6 +188,7 @@ describe('Dataset - Card View', () => {
       searchText: '',
       startDate: null,
       endDate: null,
+      maxCount: 300,
     });
 
     expect(useDatasetCount).toHaveBeenCalledWith([

@@ -8,6 +8,7 @@ import {
 } from '@material-ui/icons';
 import {
   CardView,
+  CardViewDetails,
   formatCountOrSize,
   Investigation,
   tableLink,
@@ -31,7 +32,6 @@ import { useTranslation } from 'react-i18next';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -129,12 +129,12 @@ const ISISInvestigationsCardView = (
       {
         content: function doiFormat(entity: Investigation) {
           return (
-            entity?.studyInvestigations?.[0]?.study.pid && (
+            entity?.studyInvestigations?.[0]?.study?.pid && (
               <MuiLink
                 href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
                 data-testid="isis-investigations-card-doi-link"
               >
-                {entity.studyInvestigations[0].study.pid}
+                {entity.studyInvestigations[0].study?.pid}
               </MuiLink>
             )
           );

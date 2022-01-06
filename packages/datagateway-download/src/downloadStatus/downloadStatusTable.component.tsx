@@ -247,7 +247,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         <Paper
           style={{
             height:
-              'calc(100vh - 64px - 30px - 48px - 48px - (1.75rem + 40px))',
+              'calc(100vh - 64px - 48px - 48px - 48px - (1.75rem + 40px))',
             minHeight: 230,
             overflowX: 'auto',
           }}

@@ -123,4 +123,70 @@ describe('ISIS - Investigation Landing', () => {
       .first()
       .should('exist');
   });
+
+  it('should be able to use the citation formatter', () => {
+    cy.intercept('/investigations', [
+      {
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        summary: 'foo bar',
+        visitId: '1',
+        doi: '10.5286/ISIS.E.RB1810842',
+        size: 1,
+      },
+    ]);
+    cy.intercept('/text/x-bibliography', [
+      '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
+    ]);
+
+    cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');
+    cy.get('#datagateway-dataview').should('be.visible');
+    cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
+    cy.get('[data-testid="citation-formatter-citation"]').contains(
+      'STFC ISIS Neutron and Muon Source, https://doi.org/10.5286/ISIS.E.RB1810842'
+    );
+
+    cy.get('#citation-formatter').click();
+    cy.get('[role="listbox"]')
+      .find('[role="option"]')
+      .should('have.length.gte', 2);
+
+    cy.get('[role="option"][data-value="bibtex"]').click();
+    cy.get('[data-testid="citation-formatter-citation"]').contains(
+      '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire'
+    );
+    cy.get('#citation-formatter-error-message').should('not.exist');
+  });
+
+  it('citation formatter should give an error when there is a problem', () => {
+    cy.intercept('/investigations', [
+      {
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        summary: 'foo bar',
+        visitId: '1',
+        doi: 'invaliddoi',
+        size: 1,
+        startDate: '2019-06-10',
+      },
+    ]);
+    cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');
+    cy.get('#datagateway-dataview').should('be.visible');
+    cy.contains('invaliddoi').should('be.visible');
+
+    //Default citation
+    cy.get('[data-testid="citation-formatter-citation"]').contains(
+      '2019: Test 1, STFC ISIS Neutron and Muon Source, https://doi.org/invaliddoi'
+    );
+
+    cy.get('#citation-formatter').click();
+    cy.get('[role="listbox"]')
+      .find('[role="option"]')
+      .should('have.length.gte', 2);
+
+    cy.get('[role="option"][data-value="chicago-author-date"]').click();
+    cy.get('#citation-formatter-error-message').should('exist');
+  });
 });

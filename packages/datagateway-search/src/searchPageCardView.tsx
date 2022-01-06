@@ -9,6 +9,7 @@ import {
   Theme,
   createStyles,
   withStyles,
+  LinearProgress,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 import { StateType } from './state/app.types';
@@ -18,10 +19,17 @@ import { useTranslation } from 'react-i18next';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
-import { parseSearchToQuery, useLuceneSearch } from 'datagateway-common';
+import {
+  parseSearchToQuery,
+  useDatafileCount,
+  useDatasetCount,
+  useInvestigationCount,
+  useLuceneSearch,
+} from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
 import { useLocation } from 'react-router-dom';
+import { useIsFetching } from 'react-query';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -34,12 +42,26 @@ const badgeStyles = (theme: Theme): StyleRules =>
     },
   });
 
+const tabStyles = (theme: Theme): StyleRules =>
+  createStyles({
+    indicator: {
+      //Use white for all modes except use red for dark high contrast mode as this is much clearer
+      backgroundColor:
+        theme.palette.type === 'dark' &&
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (theme as any).colours?.type === 'contrast'
+          ? '#FF0000'
+          : '#FFFFFF',
+    },
+  });
+
 interface SearchCardViewProps {
   containerHeight: string;
   hierarchy: string;
 }
 
 interface SearchCardViewStoreProps {
+  maxNumResults: number;
   datasetTab: boolean;
   datafileTab: boolean;
   investigationTab: boolean;
@@ -81,6 +103,7 @@ function a11yProps(index: string): React.ReactFragment {
 }
 
 const StyledBadge = withStyles(badgeStyles)(Badge);
+const StyledTabs = withStyles(tabStyles)(Tabs);
 
 const SearchPageCardView = (
   props: SearchCardViewProps &
@@ -88,6 +111,7 @@ const SearchPageCardView = (
     SearchCardViewDispatchProps
 ): React.ReactElement => {
   const {
+    maxNumResults,
     investigationTab,
     datasetTab,
     datafileTab,
@@ -109,17 +133,28 @@ const SearchPageCardView = (
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const { data: dataset } = useLuceneSearch('Dataset', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const { data: datafile } = useLuceneSearch('Datafile', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
+
+  const isFetchingNum = useIsFetching({
+    predicate: (query) =>
+      !query.queryHash.includes('InvestigationCount') &&
+      !query.queryHash.includes('DatasetCount') &&
+      !query.queryHash.includes('DatafileCount'),
+  });
+  const loading = isFetchingNum > 0;
 
   // Setting a tab based on user selection and what tabs are available
   useEffect(() => {
@@ -161,14 +196,43 @@ const SearchPageCardView = (
     setCurrentTab(newValue);
   };
 
+  const { data: investigationDataCount } = useInvestigationCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: investigation || [] },
+      }),
+    },
+  ]);
+
+  const { data: datasetDataCount } = useDatasetCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: dataset || [] },
+      }),
+    },
+  ]);
+
+  const { data: datafileDataCount } = useDatafileCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: datafile || [] },
+      }),
+    },
+  ]);
+
   const badgeDigits = (length?: number): 3 | 2 | 1 => {
     return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
   };
 
   return (
     <div>
+      {/* Show loading progress if data is still being loaded */}
+      {loading && <LinearProgress color="secondary" />}
       <AppBar position="static">
-        <Tabs
+        <StyledTabs
           className="tour-search-tab-select"
           value={currentTab}
           onChange={handleChange}
@@ -179,7 +243,7 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="investigation-badge"
-                  badgeContent={investigation?.length ?? 0}
+                  badgeContent={investigationDataCount ?? 0}
                   showZero
                   max={999}
                 >
@@ -209,7 +273,7 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="dataset-badge"
-                  badgeContent={dataset?.length ?? 0}
+                  badgeContent={datasetDataCount ?? 0}
                   showZero
                   max={999}
                 >
@@ -239,7 +303,7 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="datafile-badge"
-                  badgeContent={datafile?.length ?? 0}
+                  badgeContent={datafileDataCount ?? 0}
                   showZero
                   max={999}
                 >
@@ -264,7 +328,7 @@ const SearchPageCardView = (
           ) : (
             <Tab value="datafile" style={{ display: 'none' }} />
           )}
-        </Tabs>
+        </StyledTabs>
       </AppBar>
 
       {currentTab === 'investigation' && (
@@ -299,6 +363,7 @@ const SearchPageCardView = (
 
 const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
   return {
+    maxNumResults: state.dgsearch.maxNumResults,
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,

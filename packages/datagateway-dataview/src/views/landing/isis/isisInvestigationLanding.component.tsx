@@ -1,5 +1,4 @@
 import {
-  Button,
   createStyles,
   Divider,
   Grid,
@@ -31,7 +30,6 @@ import {
   tableLink,
   useInvestigation,
   useInvestigationSizes,
-  Mark,
   AddToCartButton,
   DownloadButton,
   ArrowTooltip,
@@ -40,6 +38,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
+import CitationFormatter from '../../citationFormatter.component';
 import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -113,8 +112,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     location.search,
   ]);
   const [value, setValue] = React.useState<'details'>('details');
-  const citationRef = React.useRef<HTMLElement>(null);
-  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const {
     instrumentId,
     instrumentChildId,
@@ -150,10 +147,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const title = React.useMemo(() => data?.[0]?.title, [data]);
   const doi = React.useMemo(() => data?.[0]?.doi, [data]);
-  const studyInvestigation = React.useMemo(
-    () => data?.[0]?.studyInvestigations,
-    [data]
-  );
 
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];
@@ -228,7 +221,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     {
       content: function parentDoiFormat(entity: Investigation) {
         return (
-          entity?.studyInvestigations?.[0]?.study.pid && (
+          entity?.studyInvestigations?.[0]?.study?.pid && (
             <MuiLink
               href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
               data-testid="isis-investigations-landing-parent-doi-link"
@@ -394,67 +387,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Typography aria-label="landing-investigation-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
-
-            <Typography
-              className={classes.subHeading}
-              component="h6"
-              variant="h6"
-              aria-label="landing-investigation-citation-label"
-            >
-              {t('studies.details.citation_label')}
-            </Typography>
-            <Typography aria-label="landing-investigation-citation_format">
-              {t('studies.details.citation_format')}
-            </Typography>
-            <Typography aria-label="landing-investigation-citation">
-              <i ref={citationRef}>
-                {formattedUsers.length > 1 &&
-                  `${formattedUsers[0].fullName} et al; `}
-                {formattedUsers.length === 1 &&
-                  `${formattedUsers[0].fullName}; `}
-                {studyInvestigation &&
-                  studyInvestigation[0]?.study?.startDate &&
-                  `${studyInvestigation[0].study.startDate.slice(0, 4)}: `}
-                {title && `${title}, `}
-                {t('doi_constants.publisher.name')}
-                {doi && ', '}
-                {doi && (
-                  <MuiLink
-                    href={`https://doi.org/${doi}`}
-                  >{`https://doi.org/${doi}`}</MuiLink>
-                )}
-              </i>
-            </Typography>
-            {!copiedCitation ? (
-              <Button
-                id="landing-investigation-copy-citation"
-                aria-label="landing-investigation-copy-citation"
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => {
-                  if (citationRef?.current?.textContent) {
-                    navigator.clipboard.writeText(
-                      citationRef.current.textContent
-                    );
-                    setCopiedCitation(true);
-                    setTimeout(() => setCopiedCitation(false), 1500);
-                  }
-                }}
-              >
-                Copy citation
-              </Button>
-            ) : (
-              <Button
-                id="landing-investigation-copied-citation"
-                variant="contained"
-                color="primary"
-                size="small"
-                startIcon={<Mark size={20} visible={true} />}
-              >
-                Copied citation
-              </Button>
-            )}
+            <CitationFormatter
+              doi={doi}
+              formattedUsers={formattedUsers}
+              title={title}
+              startDate={data?.[0]?.startDate}
+            />
 
             {formattedSamples && (
               <div>
@@ -510,17 +448,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {field.icon}
                       {field.label}:
                     </Typography>
-                    <Typography className={classes.shortInfoValue}>
-                      <ArrowTooltip
-                        title={getTooltipText(
-                          field.content(data[0] as Investigation)
-                        )}
-                      >
-                        <Typography>
-                          {field.content(data[0] as Investigation)}
-                        </Typography>
-                      </ArrowTooltip>
-                    </Typography>
+                    <ArrowTooltip
+                      title={getTooltipText(
+                        field.content(data[0] as Investigation)
+                      )}
+                    >
+                      <Typography className={classes.shortInfoValue}>
+                        {field.content(data[0] as Investigation)}
+                      </Typography>
+                    </ArrowTooltip>
                   </div>
                 )
             )}

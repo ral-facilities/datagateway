@@ -221,9 +221,9 @@ const InvestigationDetailsPanel = (
         >
           <Grid container className={classes.root} direction="column">
             <Typography variant="overline">
-              {investigationData.investigationUsers.length <= 1
-                ? t('investigations.details.users.name')
-                : t('investigations.details.users.name') + 's'}
+              {t('investigations.details.users.name', {
+                count: investigationData.investigationUsers.length,
+              })}
             </Typography>
             {investigationData.investigationUsers.length > 0 ? (
               investigationData.investigationUsers.map((investigationUser) => {
@@ -259,9 +259,9 @@ const InvestigationDetailsPanel = (
         >
           <Grid container className={classes.root} direction="column">
             <Typography variant="overline">
-              {investigationData.samples.length <= 1
-                ? t('investigations.details.samples.name')
-                : t('investigations.details.samples.name') + 's'}
+              {t('investigations.details.samples.name', {
+                count: investigationData.samples.length,
+              })}
             </Typography>
             {investigationData.samples.length > 0 ? (
               investigationData.samples.map((sample) => {
@@ -290,9 +290,9 @@ const InvestigationDetailsPanel = (
         >
           <Grid container className={classes.root} direction="column">
             <Typography variant="overline">
-              {investigationData.publications.length <= 1
-                ? t('investigations.details.publications.reference')
-                : t('investigations.details.publications.reference') + 's'}
+              {t('investigations.details.publications.reference', {
+                count: investigationData.publications.length,
+              })}
             </Typography>
             {investigationData.publications.length > 0 ? (
               investigationData.publications.map((publication) => {

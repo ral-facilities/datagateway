@@ -121,6 +121,7 @@ const ViewButton = (props: {
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
   searchableEntities: string[];
+  maxNumResults: number;
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
@@ -145,6 +146,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setInvestigationTab,
     sideLayout,
     searchableEntities,
+    maxNumResults,
     currentTab,
   } = props;
 
@@ -205,6 +207,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const {
     refetch: searchDatasets,
@@ -214,6 +217,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
   const {
     refetch: searchDatafiles,
@@ -223,6 +227,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
 
   const requestReceived =
@@ -280,10 +285,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, []);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
-  // grid padding, search box, checkboxes, date selectors, padding.
+  // grid padding, search box, checkboxes, date selectors, example search text, limited results message, padding.
   const spacing = 2;
   // TODO: Container height is too small on smaller screens (e.g. laptops).
-  const containerHeight = `calc(100vh - 64px - 30px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)`;
+  const containerHeight = `calc(100vh - 64px - 48px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 21px - 24px - 8px)`;
 
   const { data: cartItems } = useCart();
   const { push } = useHistory();
@@ -347,7 +352,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   <Grid item xs={true}>
                     <SelectionAlert
                       selectedItems={cartItems ?? []}
-                      navigateToSelections={navigateToDownload}
+                      navigateToSelection={navigateToDownload}
                     />
                   </Grid>
                 </Grid>
@@ -404,6 +409,7 @@ const mapDispatchToProps = (
 const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   sideLayout: state.dgsearch.sideLayout,
   searchableEntities: state.dgsearch.searchableEntities,
+  maxNumResults: state.dgsearch.maxNumResults,
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,
   investigationTab: state.dgsearch.tabs.investigationTab,

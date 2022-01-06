@@ -5,6 +5,8 @@
   "downloadApiUrl": "example.download.api.url",
   "icatUrl": "example.icat.url",
   "selectAllSetting": true,
+  "searchableEntities": ["investigation", "dataset", "datafile"],
+  "maxNumResults": 300,
   "helpSteps": [
     {
       "target": "#plugin-link--search-data",
@@ -27,10 +29,9 @@
       "content": "Select the type of search results to view"
     }
   ],
-  "searchableEntities": ["investigation", "dataset", "datafile"],
   "routes": [
     {
-      "section": "Test",
+      "section": "Discover",
       "link": "/search/data",
       "displayName": "Search",
       "order": 0

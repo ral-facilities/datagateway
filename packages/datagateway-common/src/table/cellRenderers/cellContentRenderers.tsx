@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@material-ui/core';
-import { ViewsType } from '../../app.types';
+import { Investigation, Study, ViewsType } from '../../app.types';
 import { UseQueryResult } from 'react-query';
 
 export function formatBytes(bytes: number | undefined): string {
@@ -11,9 +11,9 @@ export function formatBytes(bytes: number | undefined): string {
 
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  const i = Math.floor(Math.log(bytes) / Math.log(1000));
 
-  return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(1000, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
 /**
@@ -34,6 +34,13 @@ export function formatCountOrSize(
   }
   return 'Unknown';
 }
+
+export const getStudyInfoInvestigation = (
+  study: Study
+): Investigation | undefined => {
+  return study.studyInvestigations?.filter((si) => si?.investigation)?.[0]
+    ?.investigation;
+};
 
 // NOTE: Allow the link to specify the view to keep the same view when navigating.
 const appendView = (link: string, view?: ViewsType): string =>

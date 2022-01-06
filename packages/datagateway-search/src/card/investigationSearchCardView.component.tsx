@@ -39,6 +39,8 @@ import {
   createStyles,
   Theme,
 } from '@material-ui/core';
+import { useSelector } from 'react-redux';
+import { StateType } from '../state/app.types';
 
 interface InvestigationCardProps {
   hierarchy: string;
@@ -139,10 +141,15 @@ const InvestigationCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const maxNumResults = useSelector(
+    (state: StateType) => state.dgsearch.maxNumResults
+  );
+
   const { data: luceneData } = useLuceneSearch('Investigation', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
 
   const {

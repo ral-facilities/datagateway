@@ -49,13 +49,15 @@ const usePaperStyles = makeStyles(
     createStyles({
       cardPaper: { backgroundColor: 'inherit' },
       tablePaper: {
-        height: 'calc(100vh - 180px)',
+        //Footer is 48px
+        height: 'calc(100vh - 180px - 48px)',
         width: '100%',
         backgroundColor: 'inherit',
         overflowX: 'auto',
       },
       tablePaperMessage: {
-        height: 'calc(100vh - 244px - 4rem)',
+        //Footer is 48px
+        height: 'calc(100vh - 244px - 4rem - 48px)',
         width: '100%',
         backgroundColor: 'inherit',
         overflowX: 'auto',
@@ -192,6 +194,11 @@ const NavBar = React.memo(
   }): React.ReactElement => {
     const [t] = useTranslation();
     const classes = useNavBarStyles();
+    const isStudyHierarchy =
+      useRouteMatch([
+        ...Object.values(paths.studyHierarchy.toggle),
+        ...Object.values(paths.studyHierarchy.standard),
+      ]) !== null;
 
     return (
       <Sticky>
@@ -210,7 +217,7 @@ const NavBar = React.memo(
             />
           </Grid>
 
-          {props.loggedInAnonymously ? (
+          {props.loggedInAnonymously || isStudyHierarchy ? (
             <Grid item>
               <Paper square className={classes.openDataPaper}>
                 <Grid
@@ -225,7 +232,9 @@ const NavBar = React.memo(
                       interactive
                       title={
                         <h4>
-                          {t('app.open_data_warning.tooltip')}
+                          {isStudyHierarchy
+                            ? t('app.open_data_warning.studies_tooltip')
+                            : t('app.open_data_warning.tooltip')}
                           <br />
                           <br />
                           <a
@@ -663,7 +672,7 @@ const PageContainer: React.FC = () => {
                   <Grid item xs={true}>
                     <SelectionAlert
                       selectedItems={cartItems ?? []}
-                      navigateToSelections={navigateToDownload}
+                      navigateToSelection={navigateToDownload}
                       marginSide={'8px'}
                     />
                   </Grid>

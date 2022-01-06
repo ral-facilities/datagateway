@@ -2,6 +2,7 @@ import React from 'react';
 
 import {
   CardView,
+  CardViewDetails,
   formatCountOrSize,
   Investigation,
   tableLink,
@@ -27,7 +28,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
-import { CardViewDetails } from 'datagateway-common/lib/card/cardView.component';
 
 interface DLSVisitsCVProps {
   proposalName: string;
