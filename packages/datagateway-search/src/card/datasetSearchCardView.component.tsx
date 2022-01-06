@@ -83,7 +83,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const dateFilter = useDateFilter(datasetFilters, 'dataset');
   const handleSort = useSort();
   const pushFilters = usePushFilters();
-  const pushPage = usePushPage();
+  const pushPage = usePushPage('dataset');
   const pushResults = usePushResults();
 
   const { data: totalDataCount, isLoading: countLoading } = useDatasetCount(

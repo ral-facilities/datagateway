@@ -145,7 +145,7 @@ const InvestigationCardView = (
   const dateFilter = useDateFilter(investigationFilters, 'investigation');
   const handleSort = useSort();
   const pushFilters = usePushFilters();
-  const pushPage = usePushPage();
+  const pushPage = usePushPage('investigation');
   const pushResults = usePushResults();
 
   const maxNumResults = useSelector(

@@ -416,7 +416,9 @@ export const usePushFilters = (
   );
 };
 
-export const usePushPage = (): ((page: number) => void) => {
+export const usePushPage = (
+  searchableFilters?: SearchableEntities
+): ((page: number) => void) => {
   const { push } = useHistory();
 
   return React.useCallback(
@@ -425,9 +427,9 @@ export const usePushPage = (): ((page: number) => void) => {
         ...parseSearchToQuery(window.location.search),
         page,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      push(`?${parseQueryToSearch(query, searchableFilters).toString()}`);
     },
-    [push]
+    [push, searchableFilters]
   );
 };
 
