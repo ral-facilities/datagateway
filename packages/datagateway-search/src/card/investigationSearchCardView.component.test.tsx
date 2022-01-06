@@ -292,7 +292,7 @@ describe('Investigation - Card View', () => {
       wrapper
         .find(CardView)
         .first()
-        .find('[aria-label="card-info-data-investigations.dataset_count"]')
+        .find('[data-testid="card-info-data-investigations.dataset_count"]')
         .text()
     ).toEqual('Calculating...');
   });
@@ -333,7 +333,7 @@ describe('Investigation - Card View', () => {
       wrapper
         .find(CardView)
         .first()
-        .find('[aria-label="card-info-data-investigations.size"]')
+        .find('[data-testid="card-info-data-investigations.size"]')
         .text()
     ).toEqual('1 B');
   });

@@ -1,4 +1,4 @@
-import { Box, Typography, Link as MuiLink } from '@material-ui/core';
+import { Typography, Link as MuiLink } from '@material-ui/core';
 import {
   Fingerprint,
   Public,
@@ -173,13 +173,11 @@ const ISISInvestigationsCardView = (
           return (
             <ArrowTooltip title={principal_investigator}>
               <Typography>
-                <Box
-                  fontStyle={
-                    principal_investigator === '' ? 'italic' : 'normal'
-                  }
-                >
-                  {principal_investigator || 'Not specified'}
-                </Box>
+                {principal_investigator === '' ? (
+                  <i>{'Not specified'}</i>
+                ) : (
+                  principal_investigator
+                )}
               </Typography>
             </ArrowTooltip>
           );

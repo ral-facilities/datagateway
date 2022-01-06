@@ -1,9 +1,12 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import TextColumnFilter, { useTextFilter } from './textColumnFilter.component';
+import TextColumnFilter, {
+  usePrincipalExperimenterFilter,
+  useTextFilter,
+} from './textColumnFilter.component';
 import { Select } from '@material-ui/core';
 import { act } from 'react-dom/test-utils';
-import { usePushFilter } from '../../api';
+import { usePushFilter, usePushFilters } from '../../api';
 import { renderHook } from '@testing-library/react-hooks';
 
 jest.mock('../../api');
@@ -239,5 +242,67 @@ describe('Text filter component', () => {
 
     expect(pushFilter).toHaveBeenCalledTimes(2);
     expect(pushFilter).toHaveBeenLastCalledWith('name', null);
+  });
+
+  it('usePrincipalExperimenterFilter hook returns a function which can generate a working PI filter', () => {
+    const pushFilters = jest.fn();
+    (usePushFilters as jest.Mock).mockImplementation(() => pushFilters);
+
+    const { result } = renderHook(() => usePrincipalExperimenterFilter({}));
+    let piFilter;
+
+    act(() => {
+      piFilter = result.current(
+        'Principal Investigator',
+        'investigationUsers.user.fullName'
+      );
+    });
+
+    const shallowWrapper = shallow(piFilter);
+    expect(shallowWrapper).toMatchSnapshot();
+
+    const mountWrapper = mount(piFilter);
+    // We simulate a change in the input to 'test'.
+    const textFilterInput = mountWrapper.find('input').first();
+
+    textFilterInput.instance().value = 'test';
+    textFilterInput.simulate('change');
+
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+
+    expect(pushFilters).toHaveBeenCalledTimes(1);
+    expect(pushFilters).toHaveBeenLastCalledWith([
+      {
+        filterKey: 'investigationUsers.user.fullName',
+        filter: {
+          value: 'test',
+          type: 'include',
+        },
+      },
+      {
+        filterKey: 'investigationUsers.role',
+        filter: {
+          value: 'principal_experimenter',
+          type: 'include',
+        },
+      },
+    ]);
+
+    textFilterInput.instance().value = '';
+    textFilterInput.simulate('change');
+
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+
+    expect(pushFilters).toHaveBeenCalledTimes(2);
+    expect(pushFilters).toHaveBeenLastCalledWith([
+      {
+        filterKey: 'investigationUsers.user.fullName',
+        filter: null,
+      },
+      {
+        filterKey: 'investigationUsers.role',
+        filter: null,
+      },
+    ]);
   });
 });

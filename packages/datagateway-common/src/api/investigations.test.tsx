@@ -857,6 +857,7 @@ describe('investigation api functions', () => {
           JSON.stringify([
             { investigationInstruments: 'instrument' },
             { studyInvestigations: 'study' },
+            { investigationUsers: 'user' },
           ])
         );
 
@@ -913,6 +914,7 @@ describe('investigation api functions', () => {
           JSON.stringify([
             { investigationInstruments: 'instrument' },
             { studyInvestigations: 'study' },
+            { investigationUsers: 'user' },
           ])
         );
 
@@ -949,6 +951,7 @@ describe('investigation api functions', () => {
           JSON.stringify([
             { investigationInstruments: 'instrument' },
             { studyInvestigations: 'study' },
+            { investigationUsers: 'user' },
           ])
         );
 

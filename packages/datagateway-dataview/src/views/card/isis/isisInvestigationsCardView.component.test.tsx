@@ -71,6 +71,18 @@ describe('ISIS Investigations - Card View', () => {
         studyInvestigations: [
           { id: 1, study: { id: 1, pid: 'study pid' }, name: 'study 1' },
         ],
+        investigationUsers: [
+          {
+            id: 2,
+            role: 'experimenter',
+            user: { id: 2, name: 'test', fullName: 'Test experimenter' },
+          },
+          {
+            id: 3,
+            role: 'principal_experimenter',
+            user: { id: 3, name: 'testpi', fullName: 'Test PI' },
+          },
+        ],
       },
     ];
     history = createMemoryHistory();
@@ -202,6 +214,31 @@ describe('ISIS Investigations - Card View', () => {
         .first()
         .prop('href')
     ).toEqual('https://doi.org/study pid');
+  });
+
+  it('displays the correct user as the PI ', () => {
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper
+        .find(
+          '[data-testid="card-info-data-investigations.principal_investigators"]'
+        )
+        .text()
+    ).toEqual('Test PI');
+  });
+
+  it('displays some filler text if no PI ', () => {
+    cardData[0].investigationUsers[1].role = 'experimenter';
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper
+        .find(
+          '[data-testid="card-info-data-investigations.principal_investigators"]'
+        )
+        .text()
+    ).toEqual('Not specified');
   });
 
   it('uses default sort', () => {

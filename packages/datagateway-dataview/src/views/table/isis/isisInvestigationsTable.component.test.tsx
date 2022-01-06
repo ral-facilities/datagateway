@@ -80,13 +80,16 @@ describe('ISIS Investigations table component', () => {
         visitId: '1',
         doi: 'doi 1',
         size: 1,
-        investigationInstruments: [
+        investigationUsers: [
           {
-            id: 1,
-            instrument: {
-              id: 4,
-              name: 'LARMOR',
-            },
+            id: 2,
+            role: 'experimenter',
+            user: { id: 2, name: 'test', fullName: 'Test experimenter' },
+          },
+          {
+            id: 3,
+            role: 'principal_experimenter',
+            user: { id: 3, name: 'testpi', fullName: 'Test PI' },
           },
         ],
         studyInvestigations: [
@@ -435,6 +438,13 @@ describe('ISIS Investigations table component', () => {
     expect(
       wrapper.find('[aria-colindex=5]').find('p').children()
     ).toMatchSnapshot();
+  });
+
+  it('displays the correct user as the PI ', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual(
+      'Test PI'
+    );
   });
 
   it('gracefully handles empty Study Investigation and investigationUsers, missing Study from Study Investigation object and missing User from investigationUsers object', () => {
