@@ -3,7 +3,7 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import TextColumnFilter, { useTextFilter } from './textColumnFilter.component';
 import { Select } from '@material-ui/core';
 import { act } from 'react-dom/test-utils';
-import { usePushFilters } from '../../api';
+import { usePushFilter } from '../../api';
 import { renderHook } from '@testing-library/react-hooks';
 
 jest.mock('../../api');
@@ -204,8 +204,8 @@ describe('Text filter component', () => {
   });
 
   it('useTextFilter hook returns a function which can generate a working text filter', () => {
-    const pushFilters = jest.fn();
-    (usePushFilters as jest.Mock).mockImplementation(() => pushFilters);
+    const pushFilter = jest.fn();
+    (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
 
     const { result } = renderHook(() => useTextFilter({}));
     let textFilter;
@@ -226,8 +226,8 @@ describe('Text filter component', () => {
 
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
 
-    expect(pushFilters).toHaveBeenCalledTimes(1);
-    expect(pushFilters).toHaveBeenLastCalledWith('name', {
+    expect(pushFilter).toHaveBeenCalledTimes(1);
+    expect(pushFilter).toHaveBeenLastCalledWith('name', {
       value: 'test',
       type: 'include',
     });
@@ -237,7 +237,7 @@ describe('Text filter component', () => {
 
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
 
-    expect(pushFilters).toHaveBeenCalledTimes(2);
-    expect(pushFilters).toHaveBeenLastCalledWith('name', null);
+    expect(pushFilter).toHaveBeenCalledTimes(2);
+    expect(pushFilter).toHaveBeenLastCalledWith('name', null);
   });
 });

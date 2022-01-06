@@ -6,7 +6,7 @@ import {
   parseSearchToQuery,
   useInvestigationCount,
   useInvestigationsPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
@@ -27,7 +27,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const handleSort = useSort();
-  const pushFilters = usePushFilters();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -78,7 +78,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
+      onFilter={pushFilter}
       onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}

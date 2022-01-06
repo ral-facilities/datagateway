@@ -7,7 +7,7 @@ import DateColumnFilter, {
 } from './dateColumnFilter.component';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-test-renderer';
-import { usePushFilters } from '../../api';
+import { usePushFilter } from '../../api';
 jest.mock('../../api');
 
 describe('Date filter component', () => {
@@ -363,8 +363,8 @@ describe('Date filter component', () => {
   });
 
   it('useTextFilter hook returns a function which can generate a working text filter', () => {
-    const pushFilters = jest.fn();
-    (usePushFilters as jest.Mock).mockImplementation(() => pushFilters);
+    const pushFilter = jest.fn();
+    (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
 
     const { result } = renderHook(() => useDateFilter({}));
     let dateFilter;
@@ -381,7 +381,7 @@ describe('Date filter component', () => {
     startDateFilterInput.instance().value = '2021-08-09';
     startDateFilterInput.simulate('change');
 
-    expect(pushFilters).toHaveBeenLastCalledWith('startDate', {
+    expect(pushFilter).toHaveBeenLastCalledWith('startDate', {
       startDate: '2021-08-09',
     });
 
@@ -392,7 +392,7 @@ describe('Date filter component', () => {
     startDateFilterInput.instance().value = '';
     startDateFilterInput.simulate('change');
 
-    expect(pushFilters).toHaveBeenCalledTimes(2);
-    expect(pushFilters).toHaveBeenLastCalledWith('startDate', null);
+    expect(pushFilter).toHaveBeenCalledTimes(2);
+    expect(pushFilter).toHaveBeenLastCalledWith('startDate', null);
   });
 });

@@ -5,7 +5,7 @@ import {
   parseSearchToQuery,
   useCustomFilter,
   useIds,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
@@ -354,9 +354,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushFilters', () => {
+    describe('usePushFilter', () => {
       it('returns callback that when called pushes a new filter to the url query', () => {
-        const { result } = renderHook(() => usePushFilters(), {
+        const { result } = renderHook(() => usePushFilter(), {
           wrapper,
         });
 
@@ -380,7 +380,7 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => usePushFilters(), {
+        const { result } = renderHook(() => usePushFilter(), {
           wrapper,
         });
 

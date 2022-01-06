@@ -13,6 +13,7 @@ import {
   useCart,
   useDateFilter,
   useInvestigationSizes,
+  usePrincipalExperimenterFilter,
   useSort,
   useRemoveFromCart,
   useTextFilter,
@@ -103,6 +104,7 @@ const ISISInvestigationsTable = (
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
+  const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -178,7 +180,8 @@ const ISISInvestigationsTable = (
       {
         icon: PersonIcon,
         label: t('investigations.principal_investigators'),
-        dataKey: 'investigationUsers.user.principal_investigators',
+        dataKey: 'investigationUsers.user.fullName',
+        disableSort: true,
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           const principal_investigators = investigationData?.investigationUsers?.filter(
@@ -190,7 +193,7 @@ const ISISInvestigationsTable = (
             return '';
           }
         },
-        filterComponent: textFilter,
+        filterComponent: principalExperimenterFilter,
       },
       {
         icon: CalendarTodayIcon,
@@ -207,7 +210,15 @@ const ISISInvestigationsTable = (
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+    [
+      t,
+      textFilter,
+      principalExperimenterFilter,
+      dateFilter,
+      urlPrefix,
+      view,
+      sizeQueries,
+    ]
   );
 
   return (
