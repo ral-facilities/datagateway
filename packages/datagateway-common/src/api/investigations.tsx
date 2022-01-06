@@ -529,6 +529,9 @@ export const useISISInvestigationsPaginated = (
       {
         studyInvestigations: 'study',
       },
+      {
+        investigationUsers: 'user',
+      },
     ]),
   };
 

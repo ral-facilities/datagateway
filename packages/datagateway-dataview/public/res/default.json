@@ -201,7 +201,8 @@
       "explore": ["Location"],
       "save": ["Size"],
       "description": ["Description", "Summary"],
-      "link": ["URL"]
+      "link": ["URL"],
+      "person": ["Principal Investigator"]
     }
   },
   "entity_card": {

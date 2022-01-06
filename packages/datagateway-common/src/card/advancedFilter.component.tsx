@@ -19,6 +19,7 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import SaveIcon from '@material-ui/icons/Save';
 import DescriptionIcon from '@material-ui/icons/Description';
 import LinkIcon from '@material-ui/icons/Link';
+import PersonIcon from '@material-ui/icons/Person';
 import { useTranslation } from 'react-i18next';
 
 const useAdvancedFilterStyles = makeStyles((theme: Theme) =>
@@ -125,6 +126,12 @@ export const UnmemoisedAdvancedFilter = (
       }) as string[]).includes(label)
     ) {
       return <LinkIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.person', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <PersonIcon className={classes.icon} />;
     } else {
       return null;
     }
