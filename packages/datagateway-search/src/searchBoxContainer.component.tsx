@@ -10,6 +10,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import AdvancedHelpDialogue from './search/advancedHelpDialogue.component';
 import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface SearchBoxContainerProps {
   searchText: string;
@@ -61,11 +62,17 @@ const SearchBoxContainer = (
         <Typography style={{ fontSize: '14px', padding: 0, margin: 0 }}>
           <Trans t={t} i18nKey="searchBox.search_textbox_label">
             e.g. title has
-            <Link href={t('searchBox.search_textbox_label_link1')}>
+            <Link
+              component={RouterLink}
+              to={t('searchBox.search_textbox_label_link1')}
+            >
               &quot;instrument calibration&quot;
             </Link>
             , or{' '}
-            <Link href={t('searchBox.search_textbox_label_link2')}>
+            <Link
+              component={RouterLink}
+              to={t('searchBox.search_textbox_label_link2')}
+            >
               neutron AND scattering
             </Link>
             .
