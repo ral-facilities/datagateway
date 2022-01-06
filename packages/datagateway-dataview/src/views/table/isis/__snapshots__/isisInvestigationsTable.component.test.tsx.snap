@@ -361,7 +361,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
       <WithStyles(ForwardRef(Typography))
         variant="overline"
       >
-        investigations.details.users.names
+        investigations.details.users.name
       </WithStyles(ForwardRef(Typography))>
       <WithStyles(ForwardRef(Grid))
         item={true}
