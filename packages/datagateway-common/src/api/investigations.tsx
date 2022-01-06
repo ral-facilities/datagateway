@@ -10,6 +10,7 @@ import {
   AdditionalFilters,
   FiltersType,
   Investigation,
+  InvestigationEntity,
   SortType,
 } from '../app.types';
 import { StateType } from '../state/app.types';
@@ -93,11 +94,17 @@ export const useInvestigation = (
 };
 
 export const useInvestigationsPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  investigationEntity?: InvestigationEntity
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters, sort, page, results } = parseSearchToQuery(location.search);
+
+  const query = parseSearchToQuery(location.search);
+  const { sort, page, results } = query;
+  const filters = investigationEntity
+    ? query.investigationFilters
+    : query.filters;
 
   return useQuery<
     Investigation[],
@@ -137,11 +144,16 @@ export const useInvestigationsPaginated = (
 };
 
 export const useInvestigationsInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  investigationEntity?: InvestigationEntity
 ): UseInfiniteQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters, sort } = parseSearchToQuery(location.search);
+  const query = parseSearchToQuery(location.search);
+  const { sort } = query;
+  const filters = investigationEntity
+    ? query.investigationFilters
+    : query.filters;
 
   return useInfiniteQuery<
     Investigation[],
@@ -152,7 +164,10 @@ export const useInvestigationsInfinite = (
     ['investigation', { sort, filters }, additionalFilters],
     (params) => {
       const { sort, filters } = params.queryKey[1];
-      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
+      const offsetParams = params.pageParam ?? {
+        startIndex: 0,
+        stopIndex: 49,
+      };
       return fetchInvestigations(
         apiUrl,
         { sort, filters },
@@ -406,11 +421,15 @@ const fetchInvestigationCount = (
 };
 
 export const useInvestigationCount = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  investigationEntity?: InvestigationEntity
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters } = parseSearchToQuery(location.search);
+  const query = parseSearchToQuery(location.search);
+  const filters = investigationEntity
+    ? query.investigationFilters
+    : query.filters;
 
   return useQuery<
     number,

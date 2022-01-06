@@ -10,6 +10,7 @@ import {
   FiltersType,
   Datafile,
   SortType,
+  DatafileEntity,
 } from '../app.types';
 import { StateType } from '../state/app.types';
 import {
@@ -55,11 +56,14 @@ const fetchDatafiles = (
 };
 
 export const useDatafilesPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  datafileEntity?: DatafileEntity
 ): UseQueryResult<Datafile[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters, sort, page, results } = parseSearchToQuery(location.search);
+  const query = parseSearchToQuery(location.search);
+  const { sort, page, results } = query;
+  const filters = datafileEntity ? query.datafileFilters : query.filters;
 
   return useQuery<
     Datafile[],
@@ -99,11 +103,14 @@ export const useDatafilesPaginated = (
 };
 
 export const useDatafilesInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  datafileEntity?: DatafileEntity
 ): UseInfiniteQueryResult<Datafile[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters, sort } = parseSearchToQuery(location.search);
+  const query = parseSearchToQuery(location.search);
+  const { sort } = query;
+  const filters = datafileEntity ? query.datafileFilters : query.filters;
 
   return useInfiniteQuery<
     Datafile[],
@@ -155,11 +162,13 @@ export const fetchDatafileCountQuery = (
 };
 
 export const useDatafileCount = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  datafileEntity?: DatafileEntity
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters } = parseSearchToQuery(location.search);
+  const query = parseSearchToQuery(location.search);
+  const filters = datafileEntity ? query.datafileFilters : query.filters;
 
   return useQuery<
     number,

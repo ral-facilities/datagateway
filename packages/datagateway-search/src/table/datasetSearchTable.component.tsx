@@ -86,10 +86,9 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  const queryParams = React.useMemo(
-    () => parseSearchToQuery(location.search, 'dataset'),
-    [location.search]
-  );
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -110,32 +109,38 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   const [t] = useTranslation();
 
   const { datasetFilters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search, 'dataset'),
+    () => parseSearchToQuery(location.search),
     [location.search]
   );
 
-  const { data: totalDataCount } = useDatasetCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
-  const { fetchNextPage, data } = useDatasetsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigation: { investigationInstruments: 'instrument' },
-      }),
-    },
-  ]);
+  const { data: totalDataCount } = useDatasetCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    'dataset'
+  );
+  const { fetchNextPage, data } = useDatasetsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          investigation: { investigationInstruments: 'instrument' },
+        }),
+      },
+    ],
+    'dataset'
+  );
   const { data: allIds } = useIds(
     'dataset',
     [
@@ -162,8 +167,8 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     [data]
   );
 
-  const textFilter = useTextFilter(datasetFilters);
-  const dateFilter = useDateFilter(datasetFilters);
+  const textFilter = useTextFilter(datasetFilters, 'dataset');
+  const dateFilter = useDateFilter(datasetFilters, 'dataset');
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(

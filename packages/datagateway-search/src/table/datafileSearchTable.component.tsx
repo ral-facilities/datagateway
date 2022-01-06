@@ -93,10 +93,9 @@ const DatafileSearchTable = (
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  const queryParams = React.useMemo(
-    () => parseSearchToQuery(location.search, 'datafile'),
-    [location.search]
-  );
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -117,32 +116,40 @@ const DatafileSearchTable = (
   const [t] = useTranslation();
 
   const { datafileFilters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search, 'datafile'),
+    () => parseSearchToQuery(location.search),
     [location.search]
   );
 
-  const { data: totalDataCount } = useDatafileCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
-  const { fetchNextPage, data } = useDatafilesInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        dataset: { investigation: { investigationInstruments: 'instrument' } },
-      }),
-    },
-  ]);
+  const { data: totalDataCount } = useDatafileCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    'datafile'
+  );
+  const { fetchNextPage, data } = useDatafilesInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          dataset: {
+            investigation: { investigationInstruments: 'instrument' },
+          },
+        }),
+      },
+    ],
+    'datafile'
+  );
   const { data: allIds } = useIds(
     'datafile',
     [
@@ -169,8 +176,8 @@ const DatafileSearchTable = (
     [data]
   );
 
-  const textFilter = useTextFilter(datafileFilters);
-  const dateFilter = useDateFilter(datafileFilters);
+  const textFilter = useTextFilter(datafileFilters, 'datafile');
+  const dateFilter = useDateFilter(datafileFilters, 'datafile');
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(

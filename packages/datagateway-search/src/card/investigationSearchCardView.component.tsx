@@ -67,10 +67,9 @@ const InvestigationCardView = (
   const [t] = useTranslation();
   const location = useLocation();
 
-  const queryParams = React.useMemo(
-    () => parseSearchToQuery(location.search, 'investigation'),
-    [location.search]
-  );
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
   const {
     investigationFilters,
     sort,
@@ -145,7 +144,7 @@ const InvestigationCardView = (
   const textFilter = useTextFilter(investigationFilters, 'investigation');
   const dateFilter = useDateFilter(investigationFilters, 'investigation');
   const handleSort = useSort();
-  const pushFilters = usePushFilters('investigation');
+  const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -163,28 +162,34 @@ const InvestigationCardView = (
   const {
     data: totalDataCount,
     isLoading: countLoading,
-  } = useInvestigationCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
-  const { isLoading: dataLoading, data } = useInvestigationsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigationInstruments: 'instrument',
-      }),
-    },
-  ]);
+  } = useInvestigationCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    'investigation'
+  );
+  const { isLoading: dataLoading, data } = useInvestigationsPaginated(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          investigationInstruments: 'instrument',
+        }),
+      },
+    ],
+    'investigation'
+  );
 
   // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
   // the correct calculation queries for each facility

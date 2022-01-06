@@ -55,10 +55,9 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  const queryParams = React.useMemo(
-    () => parseSearchToQuery(location.search, 'dataset'),
-    [location.search]
-  );
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -76,39 +75,45 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const [t] = useTranslation();
 
   const { datasetFilters, sort, page, results } = React.useMemo(
-    () => parseSearchToQuery(location.search, 'dataset'),
+    () => parseSearchToQuery(location.search),
     [location.search]
   );
 
   const textFilter = useTextFilter(datasetFilters, 'dataset');
   const dateFilter = useDateFilter(datasetFilters, 'dataset');
   const handleSort = useSort();
-  const pushFilters = usePushFilters('dataset');
+  const pushFilters = usePushFilters();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
-  const { isLoading: dataLoading, data } = useDatasetsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigation: { investigationInstruments: 'instrument' },
-      }),
-    },
-  ]);
+  const { data: totalDataCount, isLoading: countLoading } = useDatasetCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    'dataset'
+  );
+  const { isLoading: dataLoading, data } = useDatasetsPaginated(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          investigation: { investigationInstruments: 'instrument' },
+        }),
+      },
+    ],
+    'dataset'
+  );
 
   const dlsLink = (
     datasetData: Dataset,

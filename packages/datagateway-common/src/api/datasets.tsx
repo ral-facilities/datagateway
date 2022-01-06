@@ -11,6 +11,7 @@ import {
   FiltersType,
   Dataset,
   SortType,
+  DatasetEntity,
 } from '../app.types';
 import { StateType } from '../state/app.types';
 import {
@@ -93,11 +94,14 @@ export const useDataset = (
 };
 
 export const useDatasetsPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  datasetEntity?: DatasetEntity
 ): UseQueryResult<Dataset[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters, sort, page, results } = parseSearchToQuery(location.search);
+  const query = parseSearchToQuery(location.search);
+  const { sort, page, results } = query;
+  const filters = datasetEntity ? query.datasetFilters : query.filters;
 
   return useQuery<
     Dataset[],
@@ -137,11 +141,14 @@ export const useDatasetsPaginated = (
 };
 
 export const useDatasetsInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  datasetEntity?: DatasetEntity
 ): UseInfiniteQueryResult<Dataset[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters, sort } = parseSearchToQuery(location.search);
+  const query = parseSearchToQuery(location.search);
+  const { sort } = query;
+  const filters = datasetEntity ? query.datasetFilters : query.filters;
 
   return useInfiniteQuery<
     Dataset[],
@@ -400,11 +407,13 @@ export const fetchDatasetCountQuery = (
 };
 
 export const useDatasetCount = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  datasetEntity?: DatasetEntity
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters } = parseSearchToQuery(location.search);
+  const query = parseSearchToQuery(location.search);
+  const filters = datasetEntity ? query.datasetFilters : query.filters;
 
   return useQuery<
     number,

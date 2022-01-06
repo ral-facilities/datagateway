@@ -30,7 +30,6 @@ import {
   useInvestigationSizes,
   formatCountOrSize,
   useLuceneSearch,
-  // usePushFilters,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -108,10 +107,9 @@ const InvestigationSearchTable = (
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  const queryParams = React.useMemo(
-    () => parseSearchToQuery(location.search, 'investigation'),
-    [location.search]
-  );
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -133,32 +131,38 @@ const InvestigationSearchTable = (
   const [t] = useTranslation();
 
   const { investigationFilters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search, 'investigation'),
+    () => parseSearchToQuery(location.search),
     [location.search]
   );
 
-  const { data: totalDataCount } = useInvestigationCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigationInstruments: 'instrument',
-      }),
-    },
-  ]);
+  const { data: totalDataCount } = useInvestigationCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    'investigation'
+  );
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          investigationInstruments: 'instrument',
+        }),
+      },
+    ],
+    'investigation'
+  );
   const { data: allIds } = useIds(
     'investigation',
     [
@@ -187,8 +191,6 @@ const InvestigationSearchTable = (
 
   const textFilter = useTextFilter(investigationFilters, 'investigation');
   const dateFilter = useDateFilter(investigationFilters, 'investigation');
-  // const pushFilters = usePushFilters('investigation');
-
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
