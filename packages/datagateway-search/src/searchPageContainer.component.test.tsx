@@ -493,6 +493,10 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('sends actions to update tabs when user clicks search button', async () => {
+    history.replace(
+      '/search/data?searchText=test&dataset=false&datafile=false'
+    );
+
     const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
     const wrapper = mount(
@@ -504,13 +508,7 @@ describe('SearchPageContainer - Tests', () => {
         </Router>
       </Provider>
     );
-    testStore.clearActions();
-
-    history.replace('/search/data?dataset=false&datafile=false');
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    wrapper.update();
 
     await act(async () => {
       await flushPromises();
@@ -681,22 +679,6 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('does not search when there are no searchable entities', async () => {
-    state.dgsearch.searchableEntities = [];
-
-    const wrapper = createWrapper();
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect((axios.get as jest.Mock).mock.calls.length).toBe(0);
-  });
-
   it('switches view button display name when clicked', async () => {
     const wrapper = createWrapper();
 
@@ -727,5 +709,21 @@ describe('SearchPageContainer - Tests', () => {
     expect(
       wrapper.find('[aria-label="container-view-button"]').first().text()
     ).toEqual('app.view_table');
+  });
+
+  it('does not search when there are no searchable entities', async () => {
+    state.dgsearch.searchableEntities = [];
+
+    const wrapper = createWrapper();
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect((axios.get as jest.Mock).mock.calls.length).toBe(0);
   });
 });

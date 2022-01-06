@@ -293,7 +293,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   React.useEffect(() => {
     const newQueryParams = parseSearchToQuery(location.search);
-    if (newQueryParams.searchText !== searchText) {
+    if (newQueryParams.searchText && newQueryParams.searchText !== searchText) {
       //Ensure search text is assigned from the URL
       setSearchText(newQueryParams.searchText ? newQueryParams.searchText : '');
       setSearchOnNextRender(true);
