@@ -522,38 +522,6 @@ describe('SearchPageContainer - Tests', () => {
     expect(testStore.getActions()[2]).toEqual(setInvestigationTab(true));
   });
 
-  it('switches view button display name when clicked', async () => {
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(
-      wrapper.find('[aria-label="container-view-button"]').exists()
-    ).toBeTruthy();
-    expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
-    ).toEqual('app.view_cards');
-
-    // Click view button
-    wrapper
-      .find('[aria-label="container-view-button"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-
-    // Check that the text on the button has changed
-    expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
-    ).toEqual('app.view_table');
-  });
-
   it('search text state is updated when text is changed and pushes when search initiated', async () => {
     const wrapper = createWrapper();
 
@@ -727,5 +695,37 @@ describe('SearchPageContainer - Tests', () => {
     });
 
     expect((axios.get as jest.Mock).mock.calls.length).toBe(0);
+  });
+
+  it('switches view button display name when clicked', async () => {
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').exists()
+    ).toBeTruthy();
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').first().text()
+    ).toEqual('app.view_cards');
+
+    // Click view button
+    wrapper
+      .find('[aria-label="container-view-button"]')
+      .first()
+      .simulate('click');
+    wrapper.update();
+
+    // Check that the text on the button has changed
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').first().text()
+    ).toEqual('app.view_table');
   });
 });
