@@ -60,6 +60,8 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   // Get filters in URL.
   const search = query.get('search');
   const page = query.get('page');
+  const investigationPage = query.get('investigationPage');
+  const datasetPage = query.get('datasetPage');
   const results = query.get('results');
   const filters = query.get('filters');
   const investigationFilters = query.get('investigationFilters');
@@ -123,6 +125,8 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     view: view,
     search: search ? search : null,
     page: page ? Number(page) : null,
+    investigationPage: investigationPage ? Number(investigationPage) : null,
+    datasetPage: datasetPage ? Number(datasetPage) : null,
     results: results ? Number(results) : null,
     filters: parseFilters(filters),
     investigationFilters: parseFilters(investigationFilters),
@@ -327,87 +331,45 @@ export const usePushFilters = (
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
       let query = parseSearchToQuery(window.location.search);
-      if (searchableFilters === undefined) {
-        if (filter !== null) {
-          // if given an defined filter, update the relevant column in the sort state
-          query = {
-            ...query,
-            filters: {
-              ...query.filters,
-              [filterKey]: filter,
-            },
-          };
-        } else {
-          // if filter is null, user no longer wants to filter by that column so remove column from filter state
-          const { [filterKey]: filter, ...rest } = query.filters;
-          query = {
-            ...query,
-            filters: {
-              ...rest,
-            },
-          };
-        }
-      } else if (searchableFilters === 'investigation') {
-        if (filter !== null) {
-          // if given an defined filter, update the relevant column in the sort state
-          query = {
-            ...query,
-            investigationFilters: {
-              ...query.investigationFilters,
-              [filterKey]: filter,
-            },
-          };
-        } else {
-          // if filter is null, user no longer wants to filter by that column so remove column from filter state
-          const { [filterKey]: filter, ...rest } = query.investigationFilters;
-          query = {
-            ...query,
-            investigationFilters: {
-              ...rest,
-            },
-          };
-        }
-      } else if (searchableFilters === 'dataset') {
-        if (filter !== null) {
-          // if given an defined filter, update the relevant column in the sort state
-          query = {
-            ...query,
-            datasetFilters: {
-              ...query.datasetFilters,
-              [filterKey]: filter,
-            },
-          };
-        } else {
-          // if filter is null, user no longer wants to filter by that column so remove column from filter state
-          const { [filterKey]: filter, ...rest } = query.datasetFilters;
-          query = {
-            ...query,
-            datasetFilters: {
-              ...rest,
-            },
-          };
-        }
-      } else if (searchableFilters === 'datafile') {
-        if (filter !== null) {
-          // if given an defined filter, update the relevant column in the sort state
-          query = {
-            ...query,
-            datafileFilters: {
-              ...query.datafileFilters,
-              [filterKey]: filter,
-            },
-          };
-        } else {
-          // if filter is null, user no longer wants to filter by that column so remove column from filter state
-          const { [filterKey]: filter, ...rest } = query.datafileFilters;
-          query = {
-            ...query,
-            datafileFilters: {
-              ...rest,
-            },
-          };
-        }
+
+      let filters = query.filters;
+      switch (searchableFilters) {
+        case 'investigation':
+          filters = query.investigationFilters;
+          break;
+        case 'dataset':
+          filters = query.datasetFilters;
+          break;
+        case 'datafile':
+          filters = query.datafileFilters;
+          break;
       }
+
+      const filterName =
+        searchableFilters === undefined
+          ? 'filters'
+          : (searchableFilters as string) + 'Filters';
+
+      if (filter !== null) {
+        // if given an defined filter, update the relevant column in the sort state
+        query = {
+          ...query,
+          [filterName]: {
+            ...filters,
+            [filterKey]: filter,
+          },
+        };
+      } else {
+        // if filter is null, user no longer wants to filter by that column so remove column from filter state
+        const { [filterKey]: filter, ...rest } = filters;
+        query = {
+          ...query,
+          [filterName]: {
+            ...rest,
+          },
+        };
+      }
+
       push({
         search: `?${parseQueryToSearch(query, searchableFilters).toString()}`,
       });
@@ -425,7 +387,9 @@ export const usePushPage = (
     (page: number) => {
       const query = {
         ...parseSearchToQuery(window.location.search),
-        page,
+        [searchableFilters === undefined
+          ? page
+          : (searchableFilters as string) + 'Page']: page,
       };
       push(`?${parseQueryToSearch(query, searchableFilters).toString()}`);
     },

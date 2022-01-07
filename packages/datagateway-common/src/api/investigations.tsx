@@ -101,10 +101,12 @@ export const useInvestigationsPaginated = (
   const location = useLocation();
 
   const query = parseSearchToQuery(location.search);
-  const { sort, page, results } = query;
+  const { sort, results } = query;
   const filters = investigationEntity
     ? query.investigationFilters
     : query.filters;
+
+  const page = investigationEntity ? query.investigationPage : query.page;
 
   return useQuery<
     Investigation[],

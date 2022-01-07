@@ -100,8 +100,10 @@ export const useDatasetsPaginated = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const query = parseSearchToQuery(location.search);
-  const { sort, page, results } = query;
+  const { sort, results } = query;
   const filters = datasetEntity ? query.datasetFilters : query.filters;
+
+  const page = datasetEntity ? query.datasetPage : query.page;
 
   return useQuery<
     Dataset[],

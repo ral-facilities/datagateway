@@ -73,7 +73,7 @@ const InvestigationCardView = (
   const {
     investigationFilters,
     sort,
-    page,
+    investigationPage,
     results,
     startDate,
     endDate,
@@ -144,7 +144,7 @@ const InvestigationCardView = (
   const textFilter = useTextFilter(investigationFilters, 'investigation');
   const dateFilter = useDateFilter(investigationFilters, 'investigation');
   const handleSort = useSort();
-  const pushFilters = usePushFilters();
+  const pushFilters = usePushFilters('investigation');
   const pushPage = usePushPage('investigation');
   const pushResults = usePushResults();
 
@@ -352,7 +352,7 @@ const InvestigationCardView = (
       loadedCount={!countLoading}
       filters={investigationFilters}
       sort={sort}
-      page={page}
+      page={investigationPage}
       results={results}
       title={title}
       description={description}

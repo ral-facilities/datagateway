@@ -310,6 +310,8 @@ export interface QueryParams {
   view: ViewsType;
   search: string | null;
   page: number | null;
+  investigationPage: number | null;
+  datasetPage: number | null;
   results: number | null;
   searchText: string | null;
   dataset: boolean;

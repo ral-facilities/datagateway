@@ -74,7 +74,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
 
   const [t] = useTranslation();
 
-  const { datasetFilters, sort, page, results } = React.useMemo(
+  const { datasetFilters, sort, datasetPage, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
@@ -82,7 +82,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const textFilter = useTextFilter(datasetFilters, 'dataset');
   const dateFilter = useDateFilter(datasetFilters, 'dataset');
   const handleSort = useSort();
-  const pushFilters = usePushFilters();
+  const pushFilters = usePushFilters('dataset');
   const pushPage = usePushPage('dataset');
   const pushResults = usePushResults();
 
@@ -333,7 +333,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       loadedCount={!countLoading}
       filters={datasetFilters}
       sort={sort}
-      page={page}
+      page={datasetPage}
       results={results}
       title={title}
       description={description}
