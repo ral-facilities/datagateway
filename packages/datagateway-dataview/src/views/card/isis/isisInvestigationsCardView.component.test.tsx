@@ -228,19 +228,6 @@ describe('ISIS Investigations - Card View', () => {
     ).toEqual('Test PI');
   });
 
-  it('displays some filler text if no PI ', () => {
-    cardData[0].investigationUsers[1].role = 'experimenter';
-    const wrapper = createWrapper();
-
-    expect(
-      wrapper
-        .find(
-          '[data-testid="card-info-data-investigations.principal_investigators"]'
-        )
-        .text()
-    ).toEqual('Not specified');
-  });
-
   it('uses default sort', () => {
     const wrapper = createWrapper();
     wrapper.update();

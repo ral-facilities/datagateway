@@ -1,4 +1,4 @@
-import { Typography, Link as MuiLink } from '@material-ui/core';
+import { Link as MuiLink } from '@material-ui/core';
 import {
   Fingerprint,
   Public,
@@ -23,7 +23,6 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  ArrowTooltip,
   AddToCartButton,
   DownloadButton,
 } from 'datagateway-common';
@@ -170,19 +169,8 @@ const ISISInvestigationsCardView = (
               principal_investigators?.[0].user?.fullName ?? '';
           }
 
-          return (
-            <ArrowTooltip title={principal_investigator}>
-              <Typography>
-                {principal_investigator === '' ? (
-                  <i>{'Not specified'}</i>
-                ) : (
-                  principal_investigator
-                )}
-              </Typography>
-            </ArrowTooltip>
-          );
+          return principal_investigator;
         },
-        noTooltip: true,
         filterComponent: principalExperimenterFilter,
       },
       {
