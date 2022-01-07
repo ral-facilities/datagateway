@@ -127,7 +127,7 @@ describe('Investigations Cards', () => {
     cy.contains('[role="button"]', 'Type ID - 1').should('exist');
     cy.get('[data-testid="card"]').first().contains('Day purpose item create.');
 
-    cy.get('[aria-label="advanced-filters-link"]').click();
+    cy.get('[data-testid="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
       .first()
       .type('before')

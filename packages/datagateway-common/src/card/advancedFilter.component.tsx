@@ -146,7 +146,7 @@ export const UnmemoisedAdvancedFilter = (
             <div className={classes.filter}>
               <Grid container>
                 {title.label && chooseIcon(title.label)}
-                <Typography aria-label="title-label" variant="subtitle1">
+                <Typography variant="subtitle1">
                   {title.label ? title.label : title.dataKey}
                 </Typography>
               </Grid>
@@ -161,7 +161,7 @@ export const UnmemoisedAdvancedFilter = (
             <div className={classes.filter}>
               <Grid container>
                 {description.label && chooseIcon(description.label)}
-                <Typography aria-label="description-label" variant="subtitle1">
+                <Typography variant="subtitle1">
                   {description.label ? description.label : description.dataKey}
                 </Typography>
               </Grid>
@@ -180,10 +180,7 @@ export const UnmemoisedAdvancedFilter = (
                   <div key={index} className={classes.filter}>
                     <Grid container>
                       {info.label && chooseIcon(info.label)}
-                      <Typography
-                        aria-label="information-label"
-                        variant="subtitle1"
-                      >
+                      <Typography variant="subtitle1">
                         {info.label ? info.label : info.dataKey}
                       </Typography>
                     </Grid>
@@ -202,7 +199,7 @@ export const UnmemoisedAdvancedFilter = (
         <Link
           component="button"
           variant="body1"
-          aria-label="advanced-filters-link"
+          data-testid="advanced-filters-link"
           onClick={() => setAdvSearchCollapsed((prev) => !prev)}
         >
           {!advSearchCollapsed
