@@ -8,9 +8,10 @@ Object {
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "headerTableCell": "VirtualizedTable-headerTableCell-8",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
+    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
     "tableRow": "VirtualizedTable-tableRow-4",
     "tableRowHover": "VirtualizedTable-tableRowHover-5",
   },
@@ -215,7 +216,7 @@ exports[`ISIS MyData table component renders details panel correctly and it fetc
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-482"
+      className="makeStyles-root-495"
       container={true}
       direction="column"
     >
@@ -231,7 +232,7 @@ exports[`ISIS MyData table component renders details panel correctly and it fetc
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-483"
+          className="makeStyles-divider-496"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
