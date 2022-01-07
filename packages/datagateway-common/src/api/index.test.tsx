@@ -500,7 +500,7 @@ describe('generic api functions', () => {
     });
 
     describe('usePushPage', () => {
-      it('returns callback that when called pushes a new page to the url query', () => {
+      it('returns callback that when called pushes a new page to the url query (general page)', () => {
         const { result } = renderHook(() => usePushPage(), {
           wrapper,
         });
@@ -510,6 +510,30 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?page=1');
+      });
+
+      it('returns callback that when called pushes a new page to the url query (search invesigation page)', () => {
+        const { result } = renderHook(() => usePushPage('investigation'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(1);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith('?investigationPage=1');
+      });
+
+      it('returns callback that when called pushes a new page to the url query (search dataset page)', () => {
+        const { result } = renderHook(() => usePushPage('dataset'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(1);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith('?datasetPage=1');
       });
     });
 
