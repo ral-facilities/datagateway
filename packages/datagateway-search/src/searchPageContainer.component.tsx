@@ -14,8 +14,8 @@ import {
   Theme,
 } from '@material-ui/core';
 
-import SearchPageTable from './searchPageTable';
-import SearchPageCardView from './searchPageCardView';
+import SearchPageTable from './searchPageTable.component';
+import SearchPageCardView from './searchPageCardView.component';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
@@ -340,20 +340,29 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             </Grid>
 
             {requestReceived && (
-              <div>
-                <Grid container>
-                  <Grid item xs={'auto'}>
-                    <ViewButton
-                      viewCards={view === 'card'}
-                      handleButtonChange={handleButtonChange}
-                      disabled={currentTab === 'datafile'}
-                    />
-                  </Grid>
-                  <Grid item xs={true}>
-                    <SelectionAlert
-                      selectedItems={cartItems ?? []}
-                      navigateToSelection={navigateToDownload}
-                    />
+              <div style={{ width: '100%' }}>
+                <Grid container justify="center">
+                  <Grid
+                    container
+                    style={{
+                      width: '98vw',
+                      minWidth: 584,
+                      backgroundColor: '#00000000',
+                    }}
+                  >
+                    <Grid item xs={'auto'}>
+                      <ViewButton
+                        viewCards={view === 'card'}
+                        handleButtonChange={handleButtonChange}
+                        disabled={currentTab === 'datafile'}
+                      />
+                    </Grid>
+                    <Grid item xs={true}>
+                      <SelectionAlert
+                        selectedItems={cartItems ?? []}
+                        navigateToSelection={navigateToDownload}
+                      />
+                    </Grid>
                   </Grid>
                 </Grid>
                 <Grid container justify="center" id="container-search-table">

@@ -179,9 +179,11 @@ describe('ISIS Study Landing page', () => {
     let wrapper = createWrapper();
 
     expect(
-      wrapper.find('[aria-label="landing-study-users-label"]')
+      wrapper.find('[data-testid="landing-study-users-label"]')
     ).toHaveLength(0);
-    expect(wrapper.find('[aria-label="landing-study-user-0"]')).toHaveLength(0);
+    expect(wrapper.find('[data-testid="landing-study-user-0"]')).toHaveLength(
+      0
+    );
 
     (useStudy as jest.Mock).mockReturnValue({
       data: [
@@ -201,17 +203,11 @@ describe('ISIS Study Landing page', () => {
     wrapper = createWrapper();
 
     expect(
-      wrapper.find('[aria-label="landing-study-users-label"]')
+      wrapper.find('[data-testid="landing-study-users-label"]')
     ).toHaveLength(3);
     expect(
-      wrapper.find('[aria-label="landing-study-user-0"]').first().text()
+      wrapper.find('[data-testid="landing-study-user-0"]').first().text()
     ).toEqual('Principal Investigator: John Smith');
-
-    expect(
-      wrapper.find('[aria-label="landing-study-citation"]').first().text()
-    ).toEqual(
-      'John Smith; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
-    );
   });
 
   it('multiple users displayed correctly', () => {
@@ -233,23 +229,23 @@ describe('ISIS Study Landing page', () => {
     const wrapper = createWrapper();
 
     expect(
-      wrapper.find('[aria-label="landing-study-users-label"]')
+      wrapper.find('[data-testid="landing-study-users-label"]')
     ).toHaveLength(3);
     expect(
-      wrapper.find('[aria-label="landing-study-user-0"]').first().text()
+      wrapper.find('[data-testid="landing-study-user-0"]').first().text()
     ).toEqual('Principal Investigator: John Smith');
     expect(
-      wrapper.find('[aria-label="landing-study-user-1"]').first().text()
+      wrapper.find('[data-testid="landing-study-user-1"]').first().text()
     ).toEqual('Local Contact: Jane Smith');
     expect(
-      wrapper.find('[aria-label="landing-study-user-2"]').first().text()
+      wrapper.find('[data-testid="landing-study-user-2"]').first().text()
     ).toEqual('Experimenter: Jesse Smith');
     expect(
-      wrapper.find('[aria-label="landing-investigation-user-3"]')
+      wrapper.find('[data-testid="landing-investigation-user-3"]')
     ).toHaveLength(0);
 
     expect(
-      wrapper.find('[aria-label="landing-study-citation"]').first().text()
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual(
       'John Smith et al; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
     );
@@ -311,49 +307,6 @@ describe('ISIS Study Landing page', () => {
     expect(
       wrapper.find('[data-testid="landing-study-pid-link"]').first().text()
     ).toEqual('study pid');
-  });
-
-  it('copies data citation to clipboard', () => {
-    // Mock the clipboard object
-    const testWriteText = jest.fn();
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: testWriteText,
-      },
-    });
-
-    (useStudy as jest.Mock).mockReturnValue({
-      data: [
-        {
-          ...initialData[0],
-          studyInvestigations: [
-            {
-              investigation: {
-                ...investigation,
-                investigationUsers: [investigationUser[0]],
-              },
-            },
-          ],
-        },
-      ],
-    });
-    const wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[aria-label="landing-study-citation"]').first().text()
-    ).toEqual(
-      'John Smith; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
-    );
-
-    wrapper.find('#landing-study-copy-citation').first().simulate('click');
-
-    expect(testWriteText).toHaveBeenCalledWith(
-      'John Smith; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
-    );
-
-    expect(
-      wrapper.find('#landing-study-copied-citation').first().text()
-    ).toEqual('Copied citation');
   });
 
   it('renders structured data correctly', () => {
