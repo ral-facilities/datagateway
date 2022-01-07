@@ -215,28 +215,34 @@ describe('Investigation Search Table component', () => {
       maxCount: 300,
     });
 
-    expect(useInvestigationCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigationInstruments: 'instrument',
-        }),
-      },
-    ]);
+    expect(useInvestigationCount).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      'investigation'
+    );
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            investigationInstruments: 'instrument',
+          }),
+        },
+      ],
+      'investigation'
+    );
     expect(useIds).toHaveBeenCalledWith(
       'investigation',
       [
@@ -304,7 +310,7 @@ describe('Investigation Search Table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?investigationFilters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
     );
@@ -327,7 +333,9 @@ describe('Investigation Search Table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
+      `?investigationFilters=${encodeURIComponent(
+        '{"endDate":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     filterInput.instance().value = '';

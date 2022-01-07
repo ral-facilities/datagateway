@@ -194,30 +194,36 @@ describe('Datafile search table component', () => {
       maxCount: 300,
     });
 
-    expect(useDatafileCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useDatafilesInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          dataset: {
-            investigation: { investigationInstruments: 'instrument' },
-          },
-        }),
-      },
-    ]);
+    expect(useDatafileCount).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      'datafile'
+    );
+    expect(useDatafilesInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            dataset: {
+              investigation: { investigationInstruments: 'instrument' },
+            },
+          }),
+        },
+      ],
+      'datafile'
+    );
     expect(useIds).toHaveBeenCalledWith(
       'datafile',
       [
@@ -264,7 +270,7 @@ describe('Datafile search table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?datafileFilters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -287,7 +293,9 @@ describe('Datafile search table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?datafileFilters=${encodeURIComponent(
+        '{"modTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     filterInput.instance().value = '';

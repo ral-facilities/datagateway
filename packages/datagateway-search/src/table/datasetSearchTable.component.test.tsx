@@ -208,28 +208,34 @@ describe('Dataset table component', () => {
       maxCount: 300,
     });
 
-    expect(useDatasetCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useDatasetsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigation: { investigationInstruments: 'instrument' },
-        }),
-      },
-    ]);
+    expect(useDatasetCount).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      'dataset'
+    );
+    expect(useDatasetsInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            investigation: { investigationInstruments: 'instrument' },
+          }),
+        },
+      ],
+      'dataset'
+    );
     expect(useIds).toHaveBeenCalledWith(
       'dataset',
       [
@@ -278,7 +284,7 @@ describe('Dataset table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?datasetFilters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -301,7 +307,9 @@ describe('Dataset table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?datasetFilters=${encodeURIComponent(
+        '{"modTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     filterInput.instance().value = '';

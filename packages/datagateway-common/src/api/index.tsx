@@ -388,7 +388,7 @@ export const usePushPage = (
       const query = {
         ...parseSearchToQuery(window.location.search),
         [searchableFilters === undefined
-          ? page
+          ? 'page'
           : (searchableFilters as string) + 'Page']: page,
       };
       push(`?${parseQueryToSearch(query, searchableFilters).toString()}`);

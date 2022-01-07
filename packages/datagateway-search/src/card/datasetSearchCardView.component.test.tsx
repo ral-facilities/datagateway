@@ -191,28 +191,34 @@ describe('Dataset - Card View', () => {
       maxCount: 300,
     });
 
-    expect(useDatasetCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useDatasetsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigation: { investigationInstruments: 'instrument' },
-        }),
-      },
-    ]);
+    expect(useDatasetCount).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      'dataset'
+    );
+    expect(useDatasetsPaginated).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            investigation: { investigationInstruments: 'instrument' },
+          }),
+        },
+      ],
+      'dataset'
+    );
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith(cardData);
     expect(useDatasetSizes).toHaveBeenCalledWith([]);
   });
@@ -228,7 +234,7 @@ describe('Dataset - Card View', () => {
       .simulate('change', { target: { value: 'test' } });
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?datasetFilters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -252,7 +258,9 @@ describe('Dataset - Card View', () => {
       .simulate('change', { target: { value: '2019-08-06' } });
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?datasetFilters=${encodeURIComponent(
+        '{"modTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     advancedFilter

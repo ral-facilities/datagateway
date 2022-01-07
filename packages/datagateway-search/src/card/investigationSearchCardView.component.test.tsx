@@ -186,28 +186,34 @@ describe('Investigation - Card View', () => {
       maxCount: 300,
     });
 
-    expect(useInvestigationCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useInvestigationsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigationInstruments: 'instrument',
-        }),
-      },
-    ]);
+    expect(useInvestigationCount).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      'investigation'
+    );
+    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            investigationInstruments: 'instrument',
+          }),
+        },
+      ],
+      'investigation'
+    );
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(cardData);
     expect(useInvestigationSizes).toHaveBeenCalledWith([]);
   });
@@ -223,7 +229,7 @@ describe('Investigation - Card View', () => {
       .simulate('change', { target: { value: 'test' } });
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?investigationFilters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
     );
@@ -247,7 +253,9 @@ describe('Investigation - Card View', () => {
       .simulate('change', { target: { value: '2019-08-06' } });
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
+      `?investigationFilters=${encodeURIComponent(
+        '{"endDate":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     advancedFilter

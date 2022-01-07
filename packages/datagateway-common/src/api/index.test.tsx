@@ -106,8 +106,13 @@ describe('generic api functions', () => {
         view: 'table',
         search: 'test',
         page: 1,
+        datasetPage: null,
+        investigationPage: null,
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
+        datafileFilters: {},
+        datasetFilters: {},
+        investigationFilters: {},
         sort: { name: 'asc' },
         searchText: null,
         dataset: true,
@@ -135,6 +140,11 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-17T00:00:00Z'),
         endDate: new Date('2021-10-25T00:00:00Z'),
+        datasetPage: null,
+        investigationPage: null,
+        datafileFilters: {},
+        datasetFilters: {},
+        investigationFilters: {},
       });
     });
 
@@ -148,8 +158,13 @@ describe('generic api functions', () => {
           view: 'table',
           search: null,
           page: null,
+          investigationPage: null,
+          datasetPage: null,
           results: null,
           filters: {},
+          investigationFilters: {},
+          datasetFilters: {},
+          datafileFilters: {},
           sort: {},
           searchText: 'testText',
           dataset: true,
@@ -191,6 +206,11 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: null,
         endDate: null,
+        datasetPage: null,
+        investigationPage: null,
+        datafileFilters: {},
+        datasetFilters: {},
+        investigationFilters: {},
       };
 
       const params = new URLSearchParams(
@@ -214,6 +234,11 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-17T00:00:00Z'),
         endDate: new Date('2021-10-25T00:00:00Z'),
+        datasetPage: null,
+        investigationPage: null,
+        datafileFilters: {},
+        datasetFilters: {},
+        investigationFilters: {},
       };
 
       const params = new URLSearchParams(
@@ -237,6 +262,11 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-34T00:00:00Z'),
         endDate: new Date('2021-14-25T00:00:00Z'),
+        datasetPage: null,
+        investigationPage: null,
+        datafileFilters: {},
+        datasetFilters: {},
+        investigationFilters: {},
       };
 
       const params = new URLSearchParams(
