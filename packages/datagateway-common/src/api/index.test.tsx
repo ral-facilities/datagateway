@@ -98,7 +98,7 @@ describe('generic api functions', () => {
   });
 
   describe('parseSearchToQuery', () => {
-    it('parses query string successfully', () => {
+    it('parses query string successfully (general filters)', () => {
       const query =
         '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}';
 
@@ -111,6 +111,81 @@ describe('generic api functions', () => {
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         datafileFilters: {},
+        datasetFilters: {},
+        investigationFilters: {},
+        sort: { name: 'asc' },
+        searchText: null,
+        dataset: true,
+        datafile: true,
+        investigation: true,
+        startDate: null,
+        endDate: null,
+      });
+    });
+
+    it('parses query string successfully (investigation filters)', () => {
+      const query =
+        '?view=table&search=test&page=1&results=10&investigationFilters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}';
+
+      expect(parseSearchToQuery(query)).toEqual({
+        view: 'table',
+        search: 'test',
+        page: 1,
+        datasetPage: null,
+        investigationPage: null,
+        results: 10,
+        filters: {},
+        datafileFilters: {},
+        datasetFilters: {},
+        investigationFilters: { name: { value: 'test', type: 'include' } },
+        sort: { name: 'asc' },
+        searchText: null,
+        dataset: true,
+        datafile: true,
+        investigation: true,
+        startDate: null,
+        endDate: null,
+      });
+    });
+
+    it('parses query string successfully (dataset filters)', () => {
+      const query =
+        '?view=table&search=test&page=1&results=10&datasetFilters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}';
+
+      expect(parseSearchToQuery(query)).toEqual({
+        view: 'table',
+        search: 'test',
+        page: 1,
+        datasetPage: null,
+        investigationPage: null,
+        results: 10,
+        filters: {},
+        datafileFilters: {},
+        datasetFilters: { name: { value: 'test', type: 'include' } },
+        investigationFilters: {},
+        sort: { name: 'asc' },
+        searchText: null,
+        dataset: true,
+        datafile: true,
+        investigation: true,
+        startDate: null,
+        endDate: null,
+      });
+    });
+
+    it('parses query string successfully (datafile filters)', () => {
+      const query =
+        '?view=table&search=test&page=1&results=10&datafileFilters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}';
+
+      expect(parseSearchToQuery(query)).toEqual({
+        view: 'table',
+        search: 'test',
+        page: 1,
+        datasetPage: null,
+        investigationPage: null,
+        results: 10,
+        filters: {},
+        datafileFilters: { name: { value: 'test', type: 'include' } },
         datasetFilters: {},
         investigationFilters: {},
         sort: { name: 'asc' },
