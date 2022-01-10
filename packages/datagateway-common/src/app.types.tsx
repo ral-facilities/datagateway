@@ -294,13 +294,17 @@ export interface SortType {
 
 export type ViewsType = 'table' | 'card' | null;
 
-export type SearchableEntities = 'investigation' | 'dataset' | 'datafile';
-
 export type InvestigationEntity = 'investigation';
 
 export type DatasetEntity = 'dataset';
 
 export type DatafileEntity = 'datafile';
+
+export type SearchableEntities =
+  | InvestigationEntity
+  | DatasetEntity
+  | DatafileEntity;
+
 export interface QueryParams {
   sort: SortType;
   filters: FiltersType;

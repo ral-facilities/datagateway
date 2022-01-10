@@ -342,12 +342,12 @@ describe('generic api functions', () => {
         datasetPage: null,
         investigationPage: null,
         datafileFilters: {},
-        datasetFilters: { title: { value: 'sp', type: 'include' } },
+        datasetFilters: { title: { value: 'test', type: 'include' } },
         investigationFilters: {},
       };
 
       const params = new URLSearchParams(
-        'view=table&search=test&page=1&results=10&datasetFilters=%7B%22title%22%3A%7B%22value%22%3A%22sp%22%2C%22type%22%3A%22include%22%7D%7D'
+        'view=table&search=test&page=1&results=10&datasetFilters=%7B%22title%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
       );
 
       expect(parseQueryToSearch(query, 'dataset').toString()).toEqual(
@@ -371,13 +371,13 @@ describe('generic api functions', () => {
         endDate: null,
         datasetPage: null,
         investigationPage: null,
-        datafileFilters: { location: { value: 'red', type: 'include' } },
+        datafileFilters: { location: { value: 'test', type: 'include' } },
         datasetFilters: {},
         investigationFilters: {},
       };
 
       const params = new URLSearchParams(
-        'view=table&search=test&page=1&results=10&datafileFilters=%7B%22location%22%3A%7B%22value%22%3A%22red%22%2C%22type%22%3A%22include%22%7D%7D'
+        'view=table&search=test&page=1&results=10&datafileFilters=%7B%22location%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
       );
 
       expect(parseQueryToSearch(query, 'datafile').toString()).toEqual(

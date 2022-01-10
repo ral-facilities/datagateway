@@ -87,6 +87,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
           // Add only if there are filter items present.
           if (Array.isArray(v)) {
             if (v.length > 0) {
+              console.log('hello');
               parsedFilters[f] = v;
             }
           } else {
@@ -144,6 +145,33 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   return params;
 };
 
+const selectFilters = (
+  query: QueryParams,
+  searchableFilters?: SearchableEntities
+): {
+  filters: FiltersType;
+  filterName: string;
+} => {
+  let filters = query.filters;
+  switch (searchableFilters) {
+    case 'investigation':
+      filters = query.investigationFilters;
+      break;
+    case 'dataset':
+      filters = query.datasetFilters;
+      break;
+    case 'datafile':
+      filters = query.datafileFilters;
+      break;
+  }
+
+  const filterName =
+    searchableFilters === undefined
+      ? 'filters'
+      : (searchableFilters as string) + 'Filters';
+
+  return { filters, filterName };
+};
 /**
  * Convert from QueryParam object to URLSearchParams
  */
@@ -176,18 +204,7 @@ export const parseQueryToSearch = (
     }
   }
 
-  let filters = query.filters;
-  switch (searchableFilters) {
-    case 'investigation':
-      filters = query.investigationFilters;
-      break;
-    case 'dataset':
-      filters = query.datasetFilters;
-      break;
-    case 'datafile':
-      filters = query.datafileFilters;
-      break;
-  }
+  const { filters, filterName } = selectFilters(query, searchableFilters);
 
   // Add filters.
   const addFilters: FiltersType = {};
@@ -201,12 +218,7 @@ export const parseQueryToSearch = (
     }
   }
   if (Object.keys(addFilters).length > 0) {
-    queryParams.append(
-      searchableFilters === undefined
-        ? 'filters'
-        : (searchableFilters as string) + 'Filters',
-      JSON.stringify(addFilters)
-    );
+    queryParams.append(filterName, JSON.stringify(addFilters));
   }
 
   const sort = query.sort;
@@ -332,23 +344,7 @@ export const usePushFilters = (
     (filterKey: string, filter: Filter | null) => {
       let query = parseSearchToQuery(window.location.search);
 
-      let filters = query.filters;
-      switch (searchableFilters) {
-        case 'investigation':
-          filters = query.investigationFilters;
-          break;
-        case 'dataset':
-          filters = query.datasetFilters;
-          break;
-        case 'datafile':
-          filters = query.datafileFilters;
-          break;
-      }
-
-      const filterName =
-        searchableFilters === undefined
-          ? 'filters'
-          : (searchableFilters as string) + 'Filters';
+      const { filters, filterName } = selectFilters(query, searchableFilters);
 
       if (filter !== null) {
         // if given an defined filter, update the relevant column in the sort state
