@@ -15,7 +15,6 @@ const ActionCell = React.memo(
     return (
       <TableCell
         size="medium"
-        padding="checkbox"
         component="div"
         className={className}
         variant="body"
