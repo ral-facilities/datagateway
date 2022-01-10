@@ -7,7 +7,7 @@ import {
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { FiltersType, DateFilter, SearchableEntities } from '../../app.types';
-import { usePushFilters } from '../../api';
+import { usePushFilter } from '../../api';
 import { useTheme } from '@material-ui/core';
 
 export function datesEqual(
@@ -157,17 +157,17 @@ export const useDateFilter = (
   filters: FiltersType,
   searchableFilters?: SearchableEntities
 ): ((label: string, dataKey: string) => React.ReactElement) => {
-  const pushFilters = usePushFilters(searchableFilters);
+  const pushFilter = usePushFilter(searchableFilters);
   return React.useMemo(() => {
     const dateFilter = (label: string, dataKey: string): React.ReactElement => (
       <DateColumnFilter
         label={label}
         value={filters[dataKey] as DateFilter}
         onChange={(value: { startDate?: string; endDate?: string } | null) =>
-          pushFilters(dataKey, value ? value : null)
+          pushFilter(dataKey, value ? value : null)
         }
       />
     );
     return dateFilter;
-  }, [filters, pushFilters]);
+  }, [filters, pushFilter]);
 };

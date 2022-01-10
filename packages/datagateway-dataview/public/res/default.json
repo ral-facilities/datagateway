@@ -78,6 +78,7 @@
   "investigations": {
     "title": "Title",
     "name": "Name",
+    "principal_investigators": "Principal Investigator",
     "end_date": "End Date",
     "start_date": "Start Date",
     "size": "Size",
@@ -216,7 +217,8 @@
       "explore": ["Location"],
       "save": ["Size"],
       "description": ["Description", "Summary"],
-      "link": ["URL"]
+      "link": ["URL"],
+      "person": ["Principal Investigator"]
     }
   },
   "entity_card": {

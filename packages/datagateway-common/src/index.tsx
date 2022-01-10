@@ -17,6 +17,7 @@ export { default as DataHeader } from './table/headerRenderers/dataHeader.compon
 export {
   default as TextColumnFilter,
   useTextFilter,
+  usePrincipalExperimenterFilter,
 } from './table/columnFilters/textColumnFilter.component';
 export {
   default as DateColumnFilter,

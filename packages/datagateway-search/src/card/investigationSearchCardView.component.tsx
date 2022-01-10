@@ -14,7 +14,7 @@ import {
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
@@ -144,7 +144,7 @@ const InvestigationCardView = (
   const textFilter = useTextFilter(investigationFilters, 'investigation');
   const dateFilter = useDateFilter(investigationFilters, 'investigation');
   const handleSort = useSort();
-  const pushFilters = usePushFilters('investigation');
+  const pushFilter = usePushFilter('investigation');
   const pushPage = usePushPage('investigation');
   const pushResults = usePushResults();
 
@@ -345,7 +345,7 @@ const InvestigationCardView = (
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
+      onFilter={pushFilter}
       onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}

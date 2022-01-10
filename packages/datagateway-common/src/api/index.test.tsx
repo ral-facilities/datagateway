@@ -5,6 +5,7 @@ import {
   parseSearchToQuery,
   useCustomFilter,
   useIds,
+  usePushFilter,
   usePushFilters,
   usePushPage,
   usePushResults,
@@ -549,9 +550,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushFilters', () => {
-      it('returns callback that when called pushes a new filter to the url query (general filters)', () => {
-        const { result } = renderHook(() => usePushFilters(), {
+    describe('usePushFilter', () => {
+      it('returns callback that when called pushes a new filter to the url query', () => {
+        const { result } = renderHook(() => usePushFilter(), {
           wrapper,
         });
 
@@ -622,12 +623,58 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => usePushFilters(), {
+        const { result } = renderHook(() => usePushFilter(), {
           wrapper,
         });
 
         act(() => {
           result.current('name', null);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: '?',
+        });
+      });
+    });
+
+    describe('usePushFilters', () => {
+      it('returns callback that when called pushes multiple new filters to the url query', () => {
+        const { result } = renderHook(() => usePushFilters(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current([
+            { filterKey: 'name', filter: { value: 'test', type: 'include' } },
+            { filterKey: 'title', filter: { value: 'test2', type: 'include' } },
+          ]);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?filters=${encodeURIComponent(
+            '{"name":{"value":"test","type":"include"},"title":{"value":"test2","type":"include"}}'
+          )}`,
+        });
+      });
+
+      it('returns callback that when called removes multiple null filters from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(
+            () =>
+              '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D'
+          ),
+        }));
+
+        const { result } = renderHook(() => usePushFilters(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current([
+            { filterKey: 'name', filter: null },
+            { filterKey: 'title', filter: null },
+          ]);
         });
 
         expect(pushSpy).toHaveBeenCalledWith({

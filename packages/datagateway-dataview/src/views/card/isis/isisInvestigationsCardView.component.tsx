@@ -1,9 +1,9 @@
-import { Typography, Link as MuiLink } from '@material-ui/core';
+import { Link as MuiLink } from '@material-ui/core';
 import {
   Fingerprint,
   Public,
   Save,
-  Assessment,
+  Person,
   CalendarToday,
 } from '@material-ui/icons';
 import {
@@ -11,19 +11,18 @@ import {
   CardViewDetails,
   formatCountOrSize,
   Investigation,
-  nestedValue,
   tableLink,
   useInvestigationSizes,
   parseSearchToQuery,
   useDateFilter,
   useISISInvestigationCount,
   useISISInvestigationsPaginated,
-  usePushFilters,
+  usePrincipalExperimenterFilter,
+  usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  ArrowTooltip,
   AddToCartButton,
   DownloadButton,
 } from 'datagateway-common';
@@ -68,8 +67,9 @@ const ISISInvestigationsCardView = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
+  const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
   const handleSort = useSort();
-  const pushFilters = usePushFilters();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -155,22 +155,23 @@ const ISISInvestigationsCardView = (
         disableSort: true,
       },
       {
-        icon: Assessment,
-        label: t('investigations.instrument'),
-        dataKey: 'investigationInstruments.instrument.name',
+        icon: Person,
+        label: t('investigations.principal_investigators'),
+        dataKey: 'investigationUsers.user.fullName',
+        disableSort: true,
         content: function Content(investigation: Investigation) {
-          const instrument = nestedValue(
-            investigation,
-            'investigationInstruments[0].instrument.name'
+          const principal_investigators = investigation?.investigationUsers?.filter(
+            (iu) => iu.role === 'principal_experimenter'
           );
-          return (
-            <ArrowTooltip title={instrument}>
-              <Typography>{instrument}</Typography>
-            </ArrowTooltip>
-          );
+          let principal_investigator = '';
+          if (principal_investigators && principal_investigators.length !== 0) {
+            principal_investigator =
+              principal_investigators?.[0].user?.fullName ?? '';
+          }
+
+          return principal_investigator;
         },
-        noTooltip: true,
-        filterComponent: textFilter,
+        filterComponent: principalExperimenterFilter,
       },
       {
         icon: CalendarToday,
@@ -186,7 +187,7 @@ const ISISInvestigationsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [data, dateFilter, sizeQueries, t, textFilter]
+    [data, dateFilter, principalExperimenterFilter, sizeQueries, t, textFilter]
   );
 
   const classes = useStyles();
@@ -231,7 +232,7 @@ const ISISInvestigationsCardView = (
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
+      onFilter={pushFilter}
       onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}

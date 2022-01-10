@@ -11,7 +11,7 @@ import {
   useDateFilter,
   useDatasetCount,
   useDatasetsPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
@@ -82,7 +82,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const textFilter = useTextFilter(datasetFilters, 'dataset');
   const dateFilter = useDateFilter(datasetFilters, 'dataset');
   const handleSort = useSort();
-  const pushFilters = usePushFilters('dataset');
+  const pushFilter = usePushFilter('dataset');
   const pushPage = usePushPage('dataset');
   const pushResults = usePushResults();
 
@@ -326,7 +326,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
+      onFilter={pushFilter}
       onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}

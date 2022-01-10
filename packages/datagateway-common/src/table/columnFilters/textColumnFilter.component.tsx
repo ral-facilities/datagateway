@@ -3,7 +3,7 @@ import { Input, InputAdornment, MenuItem, Select } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import debounce from 'lodash.debounce';
 import { FiltersType, SearchableEntities, TextFilter } from '../../app.types';
-import { usePushFilters } from '../../api';
+import { usePushFilter, usePushFilters } from '../../api';
 
 const TextColumnFilter = (props: {
   label: string;
@@ -112,15 +112,42 @@ export const useTextFilter = (
   filters: FiltersType,
   searchableFilters?: SearchableEntities
 ): ((label: string, dataKey: string) => React.ReactElement) => {
-  const pushFilters = usePushFilters(searchableFilters);
+  const pushFilter = usePushFilter(searchableFilters);
   return React.useMemo(() => {
     const textFilter = (label: string, dataKey: string): React.ReactElement => (
       <TextColumnFilter
         label={label}
         value={filters[dataKey] as TextFilter}
         onChange={(value: { value?: string | number; type: string } | null) =>
-          pushFilters(dataKey, value ? value : null)
+          pushFilter(dataKey, value ? value : null)
         }
+      />
+    );
+    return textFilter;
+  }, [filters, pushFilter]);
+};
+
+export const usePrincipalExperimenterFilter = (
+  filters: FiltersType
+): ((label: string, dataKey: string) => React.ReactElement) => {
+  const pushFilters = usePushFilters();
+
+  return React.useMemo(() => {
+    const textFilter = (label: string, dataKey: string): React.ReactElement => (
+      <TextColumnFilter
+        label={label}
+        value={filters[dataKey] as TextFilter}
+        onChange={(value: { value?: string | number; type: string } | null) => {
+          pushFilters([
+            { filterKey: dataKey, filter: value ? value : null },
+            {
+              filterKey: 'investigationUsers.role',
+              filter: value
+                ? { value: 'principal_experimenter', type: 'include' }
+                : null,
+            },
+          ]);
+        }}
       />
     );
     return textFilter;
