@@ -11,9 +11,10 @@ Object {
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "headerTableCell": "VirtualizedTable-headerTableCell-8",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
+    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
     "tableRow": "VirtualizedTable-tableRow-4",
     "tableRowHover": "VirtualizedTable-tableRowHover-5",
   },
@@ -214,7 +215,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-443"
+      className="makeStyles-root-456"
       container={true}
       direction="column"
     >
@@ -230,7 +231,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-444"
+          className="makeStyles-divider-457"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

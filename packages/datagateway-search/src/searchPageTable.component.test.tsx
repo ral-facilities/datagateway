@@ -3,7 +3,7 @@ import { StateType } from './state/app.types';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
 
-import SearchPageTable from './searchPageTable';
+import SearchPageTable from './searchPageTable.component';
 
 import { mount as enzymeMount, ReactWrapper } from 'enzyme';
 import { createMount } from '@material-ui/core/test-utils';
