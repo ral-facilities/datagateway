@@ -549,8 +549,8 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushFilters', () => {
-      it('returns callback that when called pushes a new filter to the url query', () => {
+    describe.only('usePushFilters', () => {
+      it('returns callback that when called pushes a new filter to the url query (general filters)', () => {
         const { result } = renderHook(() => usePushFilters(), {
           wrapper,
         });
@@ -561,6 +561,53 @@ describe('generic api functions', () => {
 
         expect(pushSpy).toHaveBeenCalledWith({
           search: `?filters=${encodeURIComponent(
+            '{"name":{"value":"test","type":"include"}}'
+          )}`,
+        });
+      });
+
+      it('returns callback that when called pushes a new filter to the url query (investigation filters)', () => {
+        const { result } = renderHook(() => usePushFilters('investigation'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', { value: 'test', type: 'include' });
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?investigationFilters=${encodeURIComponent(
+            '{"name":{"value":"test","type":"include"}}'
+          )}`,
+        });
+      });
+      it('returns callback that when called pushes a new filter to the url query (dataset filters)', () => {
+        const { result } = renderHook(() => usePushFilters('dataset'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', { value: 'test', type: 'include' });
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?datasetFilters=${encodeURIComponent(
+            '{"name":{"value":"test","type":"include"}}'
+          )}`,
+        });
+      });
+
+      it('returns callback that when called pushes a new filter to the url query (datafile filters)', () => {
+        const { result } = renderHook(() => usePushFilters('datafile'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', { value: 'test', type: 'include' });
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?datafileFilters=${encodeURIComponent(
             '{"name":{"value":"test","type":"include"}}'
           )}`,
         });
