@@ -393,7 +393,7 @@ const EntityCard = React.memo(
                         const { label, icon: Icon } = info;
                         return (
                           <Typography
-                            aria-label={`card-info-${label}`}
+                            data-testid={`card-info-${label}`}
                             key={index}
                           >
                             {Icon && <Icon />}
@@ -408,7 +408,7 @@ const EntityCard = React.memo(
                     {information.map(
                       (info: EntityCardDetails, index: number) => (
                         <div
-                          aria-label={`card-info-data-${info.label}`}
+                          data-testid={`card-info-data-${info.label}`}
                           key={index}
                         >
                           {info.content && info.content}

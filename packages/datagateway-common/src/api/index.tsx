@@ -284,7 +284,7 @@ export const useSort = (): ((
   );
 };
 
-export const usePushFilters = (): ((
+export const usePushFilter = (): ((
   filterKey: string,
   filter: Filter | null
 ) => void) => {
@@ -311,6 +311,41 @@ export const usePushFilters = (): ((
           },
         };
       }
+      push({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [push]
+  );
+};
+
+export const usePushFilters = (): ((
+  filters: { filterKey: string; filter: Filter | null }[]
+) => void) => {
+  const { push } = useHistory();
+  return React.useCallback(
+    (filters: { filterKey: string; filter: Filter | null }[]) => {
+      let query = parseSearchToQuery(window.location.search);
+      filters.forEach((f) => {
+        const { filter, filterKey } = f;
+        if (filter !== null) {
+          // if given an defined filter, update the relevant column in the sort state
+          query = {
+            ...query,
+            filters: {
+              ...query.filters,
+              [filterKey]: filter,
+            },
+          };
+        } else {
+          // if filter is null, user no longer wants to filter by that column so remove column from filter state
+          const { [filterKey]: filter, ...rest } = query.filters;
+          query = {
+            ...query,
+            filters: {
+              ...rest,
+            },
+          };
+        }
+      });
       push({ search: `?${parseQueryToSearch(query).toString()}` });
     },
     [push]

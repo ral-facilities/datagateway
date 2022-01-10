@@ -76,7 +76,8 @@ Object {
     },
     Object {
       "cellContentRenderer": [Function],
-      "dataKey": "investigationInstruments.instrument.fullName",
+      "dataKey": "investigationUsers.user.fullName",
+      "disableSort": true,
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -86,7 +87,7 @@ Object {
           "render": [Function],
         },
       },
-      "label": "investigations.instrument",
+      "label": "investigations.principal_investigators",
     },
     Object {
       "dataKey": "startDate",
@@ -121,12 +122,23 @@ Object {
       "doi": "doi 1",
       "endDate": "2019-06-11",
       "id": 1,
-      "investigationInstruments": Array [
+      "investigationUsers": Array [
         Object {
-          "id": 1,
-          "instrument": Object {
-            "id": 4,
-            "name": "LARMOR",
+          "id": 2,
+          "role": "experimenter",
+          "user": Object {
+            "fullName": "Test experimenter",
+            "id": 2,
+            "name": "test",
+          },
+        },
+        Object {
+          "id": 3,
+          "role": "principal_experimenter",
+          "user": Object {
+            "fullName": "Test PI",
+            "id": 3,
+            "name": "testpi",
           },
         },
       ],
@@ -183,6 +195,12 @@ exports[`ISIS Investigations table component renders details panel correctly and
       id="investigation-details-tab"
       label="investigations.details.label"
       value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="investigation-users-panel"
+      id="investigation-users-tab"
+      label="investigations.details.users.label"
+      value="users"
     />
     <WithStyles(ForwardRef(Tab))
       id="investigation-datasets-tab"
@@ -325,6 +343,46 @@ exports[`ISIS Investigations table component renders details panel correctly and
         <WithStyles(ForwardRef(Typography))>
           <b>
             2019-06-11
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+  <div
+    aria-labelledby="investigation-users-tab"
+    hidden={true}
+    id="investigation-users-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-456"
+      container={true}
+      direction="column"
+    >
+      <WithStyles(ForwardRef(Typography))
+        variant="overline"
+      >
+        investigations.details.users.name
+      </WithStyles(ForwardRef(Typography))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        key="2"
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            Test experimenter
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        key="3"
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            Test PI
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>

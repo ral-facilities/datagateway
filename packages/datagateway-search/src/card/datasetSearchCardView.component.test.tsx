@@ -300,7 +300,7 @@ describe('Dataset - Card View', () => {
       wrapper
         .find(CardView)
         .first()
-        .find('[aria-label="card-info-data-datasets.datafile_count"]')
+        .find('[data-testid="card-info-data-datasets.datafile_count"]')
         .text()
     ).toEqual('Calculating...');
   });
@@ -345,7 +345,7 @@ describe('Dataset - Card View', () => {
       wrapper
         .find(CardView)
         .first()
-        .find('[aria-label="card-info-data-datasets.size"]')
+        .find('[data-testid="card-info-data-datasets.size"]')
         .text()
     ).toEqual('1 B');
   });

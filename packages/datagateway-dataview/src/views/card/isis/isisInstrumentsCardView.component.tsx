@@ -8,7 +8,7 @@ import {
   tableLink,
   useInstrumentCount,
   useInstrumentsPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
@@ -37,7 +37,7 @@ const ISISInstrumentsCardView = (
 
   const textFilter = useTextFilter(filters);
   const handleSort = useSort();
-  const pushFilters = usePushFilters();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -104,7 +104,7 @@ const ISISInstrumentsCardView = (
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
+      onFilter={pushFilter}
       onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}

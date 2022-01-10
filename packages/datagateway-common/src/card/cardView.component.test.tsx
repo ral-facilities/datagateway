@@ -392,16 +392,16 @@ describe('Card View', () => {
     };
     const wrapper = createWrapper(updatedProps);
     expect(
-      wrapper.find('[aria-label="card-info-visitId"]').first().text()
+      wrapper.find('[data-testid="card-info-visitId"]').first().text()
     ).toEqual('visitId:');
     expect(
-      wrapper.find('[aria-label="card-info-data-visitId"]').first().text()
+      wrapper.find('[data-testid="card-info-data-visitId"]').first().text()
     ).toEqual('1');
     expect(
-      wrapper.find('[aria-label="card-info-Name"]').first().text()
+      wrapper.find('[data-testid="card-info-Name"]').first().text()
     ).toEqual('Name:');
     expect(
-      wrapper.find('[aria-label="card-info-data-Name"]').first().text()
+      wrapper.find('[data-testid="card-info-data-Name"]').first().text()
     ).toEqual('Content');
 
     // Click to sort ascending
@@ -428,10 +428,10 @@ describe('Card View', () => {
 
     const wrapper = createWrapper(updatedProps);
     expect(
-      wrapper.find('[aria-label="card-info-Name"]').first().text()
+      wrapper.find('[data-testid="card-info-Name"]').first().text()
     ).toEqual('Name:');
     expect(
-      wrapper.find('[aria-label="card-info-data-Name"]').first().text()
+      wrapper.find('[data-testid="card-info-data-Name"]').first().text()
     ).toEqual('Content');
   });
 

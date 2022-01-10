@@ -115,7 +115,7 @@ describe('DLS - Datasets Cards', () => {
     });
 
     it('multiple fields', () => {
-      cy.get('[aria-label="advanced-filters-link"]').click();
+      cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('[aria-label="Filter by Name"]')
         .first()
         .type('241')
@@ -153,7 +153,7 @@ describe('DLS - Datasets Cards', () => {
       .click()
       .wait('@getDatasetsOrder', { timeout: 10000 });
 
-    cy.get('[aria-label="advanced-filters-link"]').click();
+    cy.get('[data-testid="advanced-filters-link"]').click();
 
     cy.get('[aria-label="Filter by Name"]')
       .first()

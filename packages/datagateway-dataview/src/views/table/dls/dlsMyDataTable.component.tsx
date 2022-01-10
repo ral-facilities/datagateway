@@ -10,7 +10,7 @@ import {
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsInfinite,
-  usePushFilters,
+  usePushFilter,
   useSort,
   useTextFilter,
 } from 'datagateway-common';
@@ -71,7 +71,7 @@ const DLSMyDataTable = (): React.ReactElement => {
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
-  const pushFilters = usePushFilters();
+  const pushFilter = usePushFilter();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -153,7 +153,7 @@ const DLSMyDataTable = (): React.ReactElement => {
   React.useEffect(() => {
     // Sort and filter by startDate upon load.
     if (!('startDate' in filters))
-      pushFilters('startDate', {
+      pushFilter('startDate', {
         endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
       });
     // we only want this to run on mount
