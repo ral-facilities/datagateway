@@ -549,7 +549,7 @@ describe('generic api functions', () => {
       });
     });
 
-    describe.only('usePushFilters', () => {
+    describe('usePushFilters', () => {
       it('returns callback that when called pushes a new filter to the url query (general filters)', () => {
         const { result } = renderHook(() => usePushFilters(), {
           wrapper,
