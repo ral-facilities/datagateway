@@ -568,7 +568,7 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called pushes a new filter to the url query (investigation filters)', () => {
-        const { result } = renderHook(() => usePushFilters('investigation'), {
+        const { result } = renderHook(() => usePushFilter('investigation'), {
           wrapper,
         });
 
@@ -583,7 +583,7 @@ describe('generic api functions', () => {
         });
       });
       it('returns callback that when called pushes a new filter to the url query (dataset filters)', () => {
-        const { result } = renderHook(() => usePushFilters('dataset'), {
+        const { result } = renderHook(() => usePushFilter('dataset'), {
           wrapper,
         });
 
@@ -599,7 +599,7 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called pushes a new filter to the url query (datafile filters)', () => {
-        const { result } = renderHook(() => usePushFilters('datafile'), {
+        const { result } = renderHook(() => usePushFilter('datafile'), {
           wrapper,
         });
 
