@@ -529,6 +529,9 @@ export const useISISInvestigationsPaginated = (
       {
         studyInvestigations: 'study',
       },
+      {
+        investigationUsers: 'user',
+      },
     ]),
   };
 
@@ -625,6 +628,9 @@ export const useISISInvestigationsInfinite = (
       },
       {
         studyInvestigations: 'study',
+      },
+      {
+        investigationUsers: 'user',
       },
     ]),
   };

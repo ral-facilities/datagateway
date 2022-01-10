@@ -80,13 +80,16 @@ describe('ISIS Investigations table component', () => {
         visitId: '1',
         doi: 'doi 1',
         size: 1,
-        investigationInstruments: [
+        investigationUsers: [
           {
-            id: 1,
-            instrument: {
-              id: 4,
-              name: 'LARMOR',
-            },
+            id: 2,
+            role: 'experimenter',
+            user: { id: 2, name: 'test', fullName: 'Test experimenter' },
+          },
+          {
+            id: 3,
+            role: 'principal_experimenter',
+            user: { id: 3, name: 'testpi', fullName: 'Test PI' },
           },
         ],
         studyInvestigations: [
@@ -437,13 +440,20 @@ describe('ISIS Investigations table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('gracefully handles empty Study Investigation and InvestigationInstrument, missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', () => {
+  it('displays the correct user as the PI ', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual(
+      'Test PI'
+    );
+  });
+
+  it('gracefully handles empty Study Investigation and investigationUsers, missing Study from Study Investigation object and missing User from investigationUsers object', () => {
     (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: {
         pages: [
           {
             ...rowData[0],
-            investigationInstruments: [],
+            investigationUsers: [],
             studyInvestigations: [],
           },
         ],
@@ -460,7 +470,7 @@ describe('ISIS Investigations table component', () => {
         pages: [
           {
             ...rowData[0],
-            investigationInstruments: [
+            investigationUsers: [
               {
                 id: 1,
               },
@@ -483,7 +493,6 @@ describe('ISIS Investigations table component', () => {
 
   it('renders actions correctly', () => {
     const wrapper = createWrapper();
-
     expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 });

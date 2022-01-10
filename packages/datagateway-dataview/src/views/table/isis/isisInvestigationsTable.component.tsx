@@ -13,6 +13,7 @@ import {
   useCart,
   useDateFilter,
   useInvestigationSizes,
+  usePrincipalExperimenterFilter,
   useSort,
   useRemoveFromCart,
   useTextFilter,
@@ -29,7 +30,7 @@ import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
-import AssessmentIcon from '@material-ui/icons/Assessment';
+import PersonIcon from '@material-ui/icons/Person';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
@@ -103,6 +104,7 @@ const ISISInvestigationsTable = (
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
+  const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -176,19 +178,22 @@ const ISISInvestigationsTable = (
         disableSort: true,
       },
       {
-        icon: AssessmentIcon,
-        label: t('investigations.instrument'),
-        dataKey: 'investigationInstruments.instrument.fullName',
+        icon: PersonIcon,
+        label: t('investigations.principal_investigators'),
+        dataKey: 'investigationUsers.user.fullName',
+        disableSort: true,
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.investigationInstruments?.[0]?.instrument) {
-            return investigationData.investigationInstruments[0].instrument
-              .fullName;
+          const principal_investigators = investigationData?.investigationUsers?.filter(
+            (iu) => iu.role === 'principal_experimenter'
+          );
+          if (principal_investigators && principal_investigators.length !== 0) {
+            return principal_investigators?.[0].user?.fullName;
           } else {
             return '';
           }
         },
-        filterComponent: textFilter,
+        filterComponent: principalExperimenterFilter,
       },
       {
         icon: CalendarTodayIcon,
@@ -205,7 +210,15 @@ const ISISInvestigationsTable = (
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+    [
+      t,
+      textFilter,
+      principalExperimenterFilter,
+      dateFilter,
+      urlPrefix,
+      view,
+      sizeQueries,
+    ]
   );
 
   return (

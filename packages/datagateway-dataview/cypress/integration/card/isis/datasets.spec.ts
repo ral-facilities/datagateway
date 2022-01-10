@@ -118,7 +118,7 @@ describe('ISIS - Datasets Cards', () => {
     });
 
     it('multiple fields', () => {
-      cy.get('[aria-label="advanced-filters-link"]').click();
+      cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('[aria-label="Filter by Name"]')
         .first()
         .type('337')
