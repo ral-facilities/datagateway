@@ -38,6 +38,41 @@ describe('Investigation search tab', () => {
     cy.get('#container-search-table').should('exist');
   });
 
+  it('should be able to filter with advanced filters', () => {
+    cy.get('[aria-label="Dataset checkbox"]').click();
+    cy.get('[aria-label="Datafile checkbox"]').click();
+
+    cy.get('[aria-label="Submit search"]')
+      .click()
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
+
+    cy.get('[aria-label="Filter by Title"]').type('spe');
+
+    cy.get('[aria-label="Filter by Name"]').type('1');
+
+    cy.get('[aria-label="Filter by Visit ID"]').type('1');
+
+    cy.get('[aria-label="Filter by DOI"]').type('0-');
+
+    cy.get('[aria-label="Filter by Instrument"]').type('pa');
+
+    cy.get('[id="Start Date filter from"]').type('2002-08-05');
+
+    cy.get('[id="Start Date filter to"]').type('2004-08-05');
+
+    cy.get('[id="End Date filter from"]').type('2002-11-19');
+
+    cy.get('[id="End Date filter to"]').type('2004-11-19');
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+      'Standard country something spend sign. Forward knowledge us officer report lot. Central he give seek in.'
+    );
+  });
+
   it('should be able to search by title text', () => {
     cy.clearDownloadCart();
     cy.get('[aria-label="Search text input"]')

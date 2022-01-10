@@ -38,6 +38,30 @@ describe('Datafile search tab', () => {
     cy.get('#container-search-table').should('exist');
   });
 
+  it('should be able to filter with advanced filters', () => {
+    cy.get('[aria-label="Investigation checkbox"]').click();
+    cy.get('[aria-label="Dataset checkbox"]').click();
+
+    cy.get('[aria-label="Submit search"]')
+      .click()
+      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
+        timeout: 10000,
+      });
+    cy.get('[aria-label="Filter by Location"]').type('red');
+
+    cy.get('[aria-label="Filter by Name"]').type('1');
+
+    cy.get('[aria-label="Filter by Dataset"]').type('2');
+
+    cy.get('[id="Modified Time filter from"]').type('2004-04-30');
+
+    cy.get('[id="Modified Time filter to"]').type('2006-04-30');
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1');
+  });
+
   it('should be able to search by text', () => {
     cy.clearDownloadCart();
     cy.get('[aria-label="Search text input"]')

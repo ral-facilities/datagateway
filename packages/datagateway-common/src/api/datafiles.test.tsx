@@ -102,6 +102,66 @@ describe('datafile api functions', () => {
       expect(result.current.data).toEqual(mockData);
     });
 
+    it('sends axios request to fetch paginated datafiles and returns successful response (search datafile)', async () => {
+      history = createMemoryHistory({
+        initialEntries: [
+          '/?sort={"name":"asc"}&datafileFilters={"name":{"value":"test","type":"include"}}&page=2&results=20',
+        ],
+      });
+
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData,
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDatafilesPaginated(
+            [
+              {
+                filterType: 'include',
+                filterValue: JSON.stringify({
+                  datafileInstruments: 'instrument',
+                }),
+              },
+            ],
+            'datafile'
+          ),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('id asc'));
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('skip', JSON.stringify(20));
+      params.append('limit', JSON.stringify(20));
+      params.append(
+        'include',
+        JSON.stringify({
+          datafileInstruments: 'instrument',
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datafiles',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData);
+    });
+
     it('sends axios request to fetch paginated datafiles and calls handleICATError on failure', async () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
@@ -209,6 +269,94 @@ describe('datafile api functions', () => {
       ]);
     });
 
+    it('sends axios request to fetch infinite datafiles and returns successful response (search datafile)', async () => {
+      history = createMemoryHistory({
+        initialEntries: [
+          '/?sort={"name":"asc"}&datafileFilters={"name":{"value":"test","type":"include"}}&page=2&results=20',
+        ],
+      });
+
+      (axios.get as jest.Mock).mockImplementation((url, options) =>
+        options.params.get('skip') === '0'
+          ? Promise.resolve({ data: mockData[0] })
+          : Promise.resolve({ data: mockData[1] })
+      );
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDatafilesInfinite(
+            [
+              {
+                filterType: 'include',
+                filterValue: JSON.stringify({
+                  datafileInstruments: 'instrument',
+                }),
+              },
+            ],
+            'datafile'
+          ),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('id asc'));
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('skip', JSON.stringify(0));
+      params.append('limit', JSON.stringify(50));
+      params.append(
+        'include',
+        JSON.stringify({
+          datafileInstruments: 'instrument',
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datafiles',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+
+      result.current.fetchNextPage({
+        pageParam: { startIndex: 50, stopIndex: 74 },
+      });
+
+      await waitFor(() => result.current.isFetching);
+
+      await waitFor(() => !result.current.isFetching);
+
+      expect(axios.get).toHaveBeenNthCalledWith(
+        2,
+        'https://example.com/api/datafiles',
+        expect.objectContaining({
+          params,
+        })
+      );
+      params.set('skip', JSON.stringify(50));
+      params.set('limit', JSON.stringify(25));
+      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+        params.toString()
+      );
+
+      expect(result.current.data.pages).toStrictEqual([
+        mockData[0],
+        mockData[1],
+      ]);
+    });
+
     it('sends axios request to fetch infinite datafiles and calls handleICATError on failure', async () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
@@ -250,6 +398,54 @@ describe('datafile api functions', () => {
               filterValue: JSON.stringify(['name', 'title']),
             },
           ]),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('distinct', JSON.stringify(['name', 'title']));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datafiles/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData.length);
+    });
+
+    it('sends axios request to fetch datafile count and returns successful response (search datafile)', async () => {
+      history = createMemoryHistory({
+        initialEntries: [
+          '/?sort={"name":"asc"}&datafileFilters={"name":{"value":"test","type":"include"}}&page=2&results=20',
+        ],
+      });
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData.length,
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDatafileCount(
+            [
+              {
+                filterType: 'distinct',
+                filterValue: JSON.stringify(['name', 'title']),
+              },
+            ],
+            'datafile'
+          ),
         {
           wrapper: createReactQueryWrapper(history),
         }

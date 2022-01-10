@@ -38,6 +38,33 @@ describe('Dataset search tab', () => {
     cy.get('#container-search-table').should('exist');
   });
 
+  it('should be able to filter with advanced filters', () => {
+    cy.get('[aria-label="Investigation checkbox"]').click();
+    cy.get('[aria-label="Datafile checkbox"]').click();
+
+    cy.get('[aria-label="Submit search"]')
+      .click()
+      .wait(['@datasets', '@datasets', '@datasetsCount'], {
+        timeout: 10000,
+      });
+
+    cy.get('[aria-label="Filter by Investigation"]').type('spend');
+
+    cy.get('[aria-label="Filter by Name"]').type('1');
+
+    cy.get('[id="Create Time filter from"]').type('2007-03-29');
+
+    cy.get('[id="Create Time filter to"]').type('2009-03-29');
+
+    cy.get('[id="Modified Time filter from"]').type('2009-05-31');
+
+    cy.get('[id="Modified Time filter to"]').type('2011-05-31');
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 15');
+  });
+
   it('should be able to search by text', () => {
     cy.clearDownloadCart();
     cy.get('[aria-label="Search text input"]')
