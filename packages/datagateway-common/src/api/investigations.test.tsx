@@ -181,7 +181,7 @@ describe('investigation api functions', () => {
       expect(result.current.data).toEqual(mockData);
     });
 
-    it('sends axios request to fetch paginated investigations and returns successful response (investigation)', async () => {
+    it('sends axios request to fetch paginated investigations and returns successful response (search investigation filters)', async () => {
       history = createMemoryHistory({
         initialEntries: [
           '/?sort={"name":"asc"}&investigationFilters={"name":{"value":"test","type":"include"}}&investigationPage=2&results=20',
@@ -351,7 +351,7 @@ describe('investigation api functions', () => {
       ]);
     });
 
-    it('sends axios request to fetch infinite investigations and returns successful response (search investigations)', async () => {
+    it('sends axios request to fetch infinite investigations and returns successful response (search investigation filters)', async () => {
       history = createMemoryHistory({
         initialEntries: [
           '/?sort={"name":"asc"}&investigationFilters={"name":{"value":"test","type":"include"}}&investigationPage=2&results=20',
@@ -897,7 +897,7 @@ describe('investigation api functions', () => {
       expect(result.current.data).toEqual(mockData.length);
     });
 
-    it('sends axios request to fetch investigation count and returns successful response (investigation)', async () => {
+    it('sends axios request to fetch investigation count and returns successful response (search investigation filters)', async () => {
       history = createMemoryHistory({
         initialEntries: [
           '/?sort={"name":"asc"}&investigationFilters={"name":{"value":"test","type":"include"}}&investigationPage=2&results=20',

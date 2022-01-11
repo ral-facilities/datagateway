@@ -126,14 +126,14 @@ describe('generic api functions', () => {
 
     it('parses query string successfully (investigation filters)', () => {
       const query =
-        '?view=table&search=test&page=1&results=10&investigationFilters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}';
+        '?view=table&search=test&investigationPage=1&results=10&investigationFilters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}';
 
       expect(parseSearchToQuery(query)).toEqual({
         view: 'table',
         search: 'test',
-        page: 1,
+        page: null,
         datasetPage: null,
-        investigationPage: null,
+        investigationPage: 1,
         results: 10,
         filters: {},
         datafileFilters: {},
@@ -151,13 +151,13 @@ describe('generic api functions', () => {
 
     it('parses query string successfully (dataset filters)', () => {
       const query =
-        '?view=table&search=test&page=1&results=10&datasetFilters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}';
+        '?view=table&search=test&datasetPage=1&results=10&datasetFilters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}';
 
       expect(parseSearchToQuery(query)).toEqual({
         view: 'table',
         search: 'test',
-        page: 1,
-        datasetPage: null,
+        page: null,
+        datasetPage: 1,
         investigationPage: null,
         results: 10,
         filters: {},
@@ -296,11 +296,11 @@ describe('generic api functions', () => {
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
     });
 
-    it('parses query object successfully (search investigation filters)', () => {
+    it('parses query object successfully (investigation filters)', () => {
       const query: QueryParams = {
         view: 'table',
         search: 'test',
-        page: 1,
+        page: null,
         results: 10,
         filters: {},
         sort: {},
@@ -311,14 +311,14 @@ describe('generic api functions', () => {
         startDate: null,
         endDate: null,
         datasetPage: null,
-        investigationPage: null,
+        investigationPage: 1,
         datafileFilters: {},
         datasetFilters: {},
         investigationFilters: { title: { value: 'test', type: 'include' } },
       };
 
       const params = new URLSearchParams(
-        'view=table&search=test&page=1&results=10&investigationFilters=%7B%22title%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
+        'view=table&search=test&results=10&investigationPage=1&investigationFilters=%7B%22title%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
       );
 
       expect(parseQueryToSearch(query, 'investigation').toString()).toEqual(
@@ -326,11 +326,11 @@ describe('generic api functions', () => {
       );
     });
 
-    it('parses query object successfully (search dataset filters)', () => {
+    it('parses query object successfully (dataset filters)', () => {
       const query: QueryParams = {
         view: 'table',
         search: 'test',
-        page: 1,
+        page: null,
         results: 10,
         filters: {},
         sort: {},
@@ -340,7 +340,7 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: null,
         endDate: null,
-        datasetPage: null,
+        datasetPage: 1,
         investigationPage: null,
         datafileFilters: {},
         datasetFilters: { title: { value: 'test', type: 'include' } },
@@ -348,7 +348,7 @@ describe('generic api functions', () => {
       };
 
       const params = new URLSearchParams(
-        'view=table&search=test&page=1&results=10&datasetFilters=%7B%22title%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
+        'view=table&search=test&results=10&datasetPage=1&datasetFilters=%7B%22title%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
       );
 
       expect(parseQueryToSearch(query, 'dataset').toString()).toEqual(
@@ -356,7 +356,7 @@ describe('generic api functions', () => {
       );
     });
 
-    it('parses query object successfully (search datafile filters)', () => {
+    it('parses query object successfully (datafile filters)', () => {
       const query: QueryParams = {
         view: 'table',
         search: 'test',
