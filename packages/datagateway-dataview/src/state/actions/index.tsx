@@ -140,7 +140,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
                   section: route['section'],
                   link: route['link'],
                   plugin: 'datagateway-dataview',
-                  displayName: '\xa0' + route['displayName'],
+                  displayName: route['displayName'],
                   order: route['order'] ? route['order'] : 0,
                   helpSteps:
                     index === 0 && 'helpSteps' in settings
