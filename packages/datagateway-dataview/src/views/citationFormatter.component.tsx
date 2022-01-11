@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   createStyles,
   FormControl,
   FormHelperText,
@@ -24,6 +25,9 @@ const useStyles = makeStyles((theme: Theme) =>
     formatSelect: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
+    },
+    spinner: {
+      marginLeft: theme.spacing(1),
     },
   })
 );
@@ -64,6 +68,7 @@ const CitationFormatter = (
   const [citation, setCitation] = React.useState('');
   const [copiedCitation, setCopiedCitation] = React.useState(false);
   const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const loadCitation = useCallback(
     (format: string): void => {
@@ -80,6 +85,7 @@ const CitationFormatter = (
 
         setCitation(citation);
       } else if (doi) {
+        setLoading(true);
         /* Notes:
         - locale 'en-GB' returns plain text whereas 'GB' gives the formatted text */
         const citationPromise = fetchCitation(
@@ -91,9 +97,11 @@ const CitationFormatter = (
           .then((value) => {
             setError(false);
             setCitation(value);
+            setLoading(false);
           })
           .catch((error) => {
             setError(true);
+            setLoading(false);
           });
       }
     },
@@ -134,24 +142,29 @@ const CitationFormatter = (
       </Typography>
       {doi && (
         <FormControl id="citation-formatter" error={error}>
-          <Select
-            className={classes.formatSelect}
-            defaultValue="default"
-            onChange={handleChange}
-            aria-label={t(
-              'studies.details.citation_formatter.select_arialabel'
-            )}
-            aria-describedby="citation-formatter-error-message"
-          >
-            <MenuItem value="default">
-              {t('studies.details.citation_formatter.default_format')}
-            </MenuItem>
-            {citationFormats.map((format) => (
-              <MenuItem key={format} value={format}>
-                {format}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Select
+              className={classes.formatSelect}
+              defaultValue="default"
+              onChange={handleChange}
+              aria-label={t(
+                'studies.details.citation_formatter.select_arialabel'
+              )}
+              aria-describedby="citation-formatter-error-message"
+            >
+              <MenuItem value="default">
+                {t('studies.details.citation_formatter.default_format')}
               </MenuItem>
-            ))}
-          </Select>
+              {citationFormats.map((format) => (
+                <MenuItem key={format} value={format}>
+                  {format}
+                </MenuItem>
+              ))}
+            </Select>
+            {loading && (
+              <CircularProgress size={24} className={classes.spinner} />
+            )}
+          </div>
           {error && (
             <FormHelperText id="citation-formatter-error-message">
               {t('studies.details.citation_formatter.error')}
