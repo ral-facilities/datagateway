@@ -11,11 +11,12 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Mark } from 'datagateway-common';
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { FormattedUser } from './landing/isis/isisStudyLanding.component';
+import { useQuery, UseQueryResult } from 'react-query';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,20 +60,18 @@ interface CitationFormatterProps {
   startDate: string | undefined;
 }
 
-const CitationFormatter = (
-  props: CitationFormatterProps
-): React.ReactElement => {
-  const { doi, formattedUsers, title, startDate } = props;
+const useCitation = (
+  citationProps: CitationFormatterProps,
+  publisherName: string,
+  format: string,
+  locale: string
+): UseQueryResult<string> => {
+  const { doi, formattedUsers, title, startDate } = citationProps;
 
-  const [t] = useTranslation();
-  const classes = useStyles();
-  const [citation, setCitation] = React.useState('');
-  const [copiedCitation, setCopiedCitation] = React.useState(false);
-  const [error, setError] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-
-  const loadCitation = useCallback(
-    (format: string): void => {
+  return useQuery<string, AxiosError>(
+    [formattedUsers, title, startDate, publisherName, doi, format, locale],
+    () => {
+      //Default citation format (No use of DataCite)
       if (format === 'default') {
         let citation = '';
         if (formattedUsers.length > 1)
@@ -81,36 +80,39 @@ const CitationFormatter = (
           citation += `${formattedUsers[0].fullName}; `;
         if (startDate) citation += `${startDate.slice(0, 4)}: `;
         if (title) citation += `${title}, `;
-        citation += t('doi_constants.publisher.name');
+        citation += publisherName;
         if (doi) citation += `, https://doi.org/${doi}`;
 
-        setCitation(citation);
-      } else if (doi) {
-        setLoading(true);
-        /* Notes:
-        - locale 'en-GB' returns plain text whereas 'GB' gives the formatted text */
-        const citationPromise = fetchCitation(
-          doi,
-          format,
-          t('studies.details.citation_formatter.locale')
-        );
-        Promise.resolve(citationPromise)
-          .then((value) => {
-            setError(false);
-            setCitation(value);
-            setLoading(false);
-          })
-          .catch((error) => {
-            setError(true);
-            setLoading(false);
-          });
+        return citation;
+      } else {
+        if (doi) return fetchCitation(doi, format, locale);
+        else throw new Error('No DOI was supplied');
       }
     },
-    [doi, formattedUsers, startDate, t, title]
+    {
+      cacheTime: Infinity,
+    }
+  );
+};
+
+const CitationFormatter = (
+  props: CitationFormatterProps
+): React.ReactElement => {
+  const { doi } = props;
+
+  const [t] = useTranslation();
+  const classes = useStyles();
+  const [copiedCitation, setCopiedCitation] = React.useState(false);
+  const [format, setFormat] = React.useState('default');
+  const { data: citation, isFetching: fetching, isError: error } = useCitation(
+    props,
+    t('doi_constants.publisher.name'),
+    format,
+    t('studies.details.citation_formatter.locale')
   );
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
-    loadCitation(event.target.value as string);
+    setFormat(event.target.value as string);
   };
 
   //Information on available formats can be found here: https://citationstyles.org/developers/
@@ -123,17 +125,17 @@ const CitationFormatter = (
   if (!Array.isArray(citationFormats))
     citationFormats = ['format1', 'format2', 'format3'];
 
-  //Load the default format (taken as the first citation format) on page load
-  useEffect(() => {
-    loadCitation('default');
-  }, [loadCitation]);
-
   return (
     <Box>
-      <Typography className={classes.subHeading} component="h6" variant="h6">
+      <Typography
+        className={classes.subHeading}
+        component="h6"
+        variant="h6"
+        data-testid="citation-formatter-title"
+      >
         {t('studies.details.citation_formatter.label')}
       </Typography>
-      <Typography>
+      <Typography data-testid="citation-formatter-details">
         {t('studies.details.citation_formatter.details') +
           (doi
             ? ` ${t(
@@ -162,7 +164,7 @@ const CitationFormatter = (
                 </MenuItem>
               ))}
             </Select>
-            {loading && (
+            {fetching && (
               <CircularProgress
                 data-testid="loading-spinner"
                 size={24}
@@ -179,7 +181,7 @@ const CitationFormatter = (
       )}
       <Typography>
         <i data-testid="citation-formatter-citation">
-          <Trans>{citation}</Trans>
+          {citation && <Trans>{citation}</Trans>}
         </i>
       </Typography>
       {!copiedCitation ? (
@@ -191,11 +193,13 @@ const CitationFormatter = (
           variant="contained"
           color="primary"
           size="small"
-          disabled={citation === ''}
+          disabled={citation === undefined}
           onClick={() => {
-            navigator.clipboard.writeText(citation);
-            setCopiedCitation(true);
-            setTimeout(() => setCopiedCitation(false), 1750);
+            if (citation) {
+              navigator.clipboard.writeText(citation);
+              setCopiedCitation(true);
+              setTimeout(() => setCopiedCitation(false), 1750);
+            }
           }}
         >
           {t('studies.details.citation_formatter.copy_citation')}

@@ -190,6 +190,8 @@ describe('ISIS - Investigation Landing', () => {
       .should('have.length.gte', 2);
 
     cy.get('[role="option"][data-value="chicago-author-date"]').click();
-    cy.get('#citation-formatter-error-message').should('exist');
+    cy.get('#citation-formatter-error-message', { timeout: 10000 }).should(
+      'exist'
+    );
   });
 });
