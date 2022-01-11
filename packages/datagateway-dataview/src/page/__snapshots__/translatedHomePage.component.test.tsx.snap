@@ -101,7 +101,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
               </Trans>
             </WithStyles(ForwardRef(Typography))>
             <Styled(MuiBox)
-              marginTop="auto"
+              marginTop="16px"
             >
               <WithStyles(ForwardRef(Button))
                 color="primary"
