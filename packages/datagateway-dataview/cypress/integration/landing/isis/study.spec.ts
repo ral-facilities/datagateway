@@ -173,6 +173,9 @@ describe('ISIS - Study Landing', () => {
         ],
       },
     ]);
+    cy.intercept('/text/x-bibliography', {
+      statusCode: 503,
+    });
     cy.visit('/browseStudyHierarchy/instrument/1/study/4');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('invaliddoi').should('be.visible');

@@ -172,6 +172,9 @@ describe('ISIS - Investigation Landing', () => {
         startDate: '2019-06-10',
       },
     ]);
+    cy.intercept('/text/x-bibliography', {
+      statusCode: 503,
+    });
     cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('invaliddoi').should('be.visible');
