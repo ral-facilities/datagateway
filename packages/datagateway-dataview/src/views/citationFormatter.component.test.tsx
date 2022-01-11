@@ -107,7 +107,7 @@ describe('Citation formatter component tests', () => {
     });
 
     expect(axios.get).toHaveBeenCalledWith(
-      'https://data.crosscite.org/text/x-bibliography/test',
+      'https://api.datacite.org/text/x-bibliography/test',
       expect.objectContaining({
         params,
       })
@@ -171,7 +171,7 @@ describe('Citation formatter component tests', () => {
     });
 
     expect(axios.get).toHaveBeenCalledWith(
-      'https://data.crosscite.org/text/x-bibliography/test',
+      'https://api.datacite.org/text/x-bibliography/test',
       expect.objectContaining({
         params,
       })

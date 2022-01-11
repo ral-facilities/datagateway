@@ -42,8 +42,9 @@ const fetchCitation = (
     locale: locale,
   });
   //Documentation found here: https://support.datacite.org/docs/datacite-content-resolver
+  //api.datacite.org seems to work better than data.crosscite.org
   return axios
-    .get<string>(`https://data.crosscite.org/text/x-bibliography/${doi}`, {
+    .get<string>(`https://api.datacite.org/text/x-bibliography/${doi}`, {
       params,
     })
     .then((response) => {
