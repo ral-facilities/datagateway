@@ -188,4 +188,28 @@ describe('Citation formatter component tests', () => {
       wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
     ).toEqual(false);
   });
+
+  it('displays loading spinner while waiting for a response from DataCite', async () => {
+    (axios.get as jest.Mock).mockRejectedValueOnce({
+      message: 'error',
+    });
+
+    const wrapper = createWrapper(props);
+    wrapper
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: 'format2' } });
+    wrapper.update();
+
+    expect(
+      wrapper.find('[data-testid="loading-spinner"]').exists()
+    ).toBeTruthy();
+
+    await act(async () => flushPromises());
+    wrapper.update();
+
+    expect(
+      wrapper.find('[data-testid="loading-spinner"]').exists()
+    ).toBeFalsy();
+  });
 });

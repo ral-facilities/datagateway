@@ -162,7 +162,11 @@ const CitationFormatter = (
               ))}
             </Select>
             {loading && (
-              <CircularProgress size={24} className={classes.spinner} />
+              <CircularProgress
+                data-testid="loading-spinner"
+                size={24}
+                className={classes.spinner}
+              />
             )}
           </div>
           {error && (
