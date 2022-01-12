@@ -31,7 +31,9 @@ export const TranslatedHomePage = React.memo(
         decal2DarkImage={props.pluginHost + Decal2DarkImage}
         decal2DarkHCImage={props.pluginHost + Decal2DarkHCImage}
         facilityImage={
-          props.facilityImageURL ? props.facilityImageURL : FacilityImage
+          props.facilityImageURL
+            ? props.facilityImageURL
+            : props.pluginHost + FacilityImage
         }
       />
     );
