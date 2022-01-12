@@ -161,9 +161,11 @@ const LinkedInvestigation = (
             {field.icon}
             {field.label}:
           </Typography>
-          <Typography className={classes.shortInfoValue}>
-            {field.content(investigation)}
-          </Typography>
+          <ArrowTooltip title={getTooltipText(field.content(investigation))}>
+            <Typography className={classes.shortInfoValue}>
+              {field.content(investigation)}
+            </Typography>
+          </ArrowTooltip>
         </div>
       ))}
       <div className={classes.actionButtons}>
