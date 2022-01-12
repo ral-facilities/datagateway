@@ -9,10 +9,6 @@ describe('DLS - Proposals Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
-
-    //Default sort
-    cy.get('[aria-sort="ascending"]').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
   });
 
   it('should be able to click a proposal to see its investigations', () => {
@@ -20,7 +16,7 @@ describe('DLS - Proposals Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%2030/investigation'
+      '/browse/proposal/INVESTIGATION%201/investigation'
     );
   });
 
@@ -110,67 +106,6 @@ describe('DLS - Proposals Table', () => {
       cy.window().should(($window) => {
         expect(width).to.be.greaterThan($window.innerWidth);
       });
-    });
-  });
-
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
-
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Title').click().click();
-    });
-
-    it('ascending order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'About quickly both stop. Population buy on poor. Avoid teacher summer positive feel sing.'
-      );
-    });
-
-    it('descending order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
-
-      cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Yourself smile either I pass significant. Avoid sound suddenly development line get executive ahead.'
-      );
-    });
-
-    it('no order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      );
-    });
-
-    it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Title').click();
-
-      cy.get('[aria-rowindex="2"] [aria-colindex="1"]').contains(
-        'Learn street computer. Take voice light on. Wrong structure how year.'
-      );
     });
   });
 

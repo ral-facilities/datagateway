@@ -59,7 +59,6 @@ const DLSProposalsCardView = (): React.ReactElement => {
           'dls-proposal-card-title'
         ),
       filterComponent: textFilter,
-      defaultSort: 'asc',
       disableSort: true,
     }),
     [t, textFilter, view]
