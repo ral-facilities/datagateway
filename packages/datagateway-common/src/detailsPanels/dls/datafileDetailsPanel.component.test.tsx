@@ -1,9 +1,10 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
 import DatafilesDetailsPanel from './datafileDetailsPanel.component';
-import { Datafile, useDatafileDetails } from 'datagateway-common';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
+import { Datafile } from '../../app.types';
+import { useDatafileDetails } from '../../api/datafiles';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');

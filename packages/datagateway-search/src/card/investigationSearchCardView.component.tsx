@@ -28,10 +28,11 @@ import {
   ArrowTooltip,
   AddToCartButton,
   DownloadButton,
+  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   Typography,
   Link as MuiLink,
@@ -66,6 +67,7 @@ const InvestigationCardView = (
 
   const [t] = useTranslation();
   const location = useLocation();
+  const { push } = useHistory();
 
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
@@ -75,13 +77,10 @@ const InvestigationCardView = (
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
-  const dlsLink = (investigationData: Investigation): React.ReactElement =>
-    tableLink(
-      `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
-      investigationData.title
-    );
+  const dlsLinkURL = (investigationData: Investigation): string =>
+    `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`;
 
-  const isisLink = React.useCallback(
+  const isisLinkURL = React.useCallback(
     (investigationData: Investigation) => {
       let instrumentId;
       let facilityCycleId;
@@ -106,30 +105,50 @@ const InvestigationCardView = (
         }
       }
 
-      if (facilityCycleId) {
-        return tableLink(
-          `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`,
-          investigationData.title
-        );
-      } else {
-        return investigationData.title;
-      }
+      if (facilityCycleId)
+        return `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`;
+      else return null;
     },
     [facilityCycles]
   );
 
-  const genericLink = (investigationData: Investigation): React.ReactElement =>
-    tableLink(
-      `/browse/investigation/${investigationData.id}/dataset`,
-      investigationData.title
-    );
+  const isisLink = React.useCallback(
+    (investigationData: Investigation) => {
+      const linkURL = isisLinkURL(investigationData);
+
+      if (linkURL) return tableLink(linkURL, investigationData.title);
+      else return investigationData.title;
+    },
+    [isisLinkURL]
+  );
+
+  const genericLinkURL = (investigationData: Investigation): string =>
+    `/browse/investigation/${investigationData.id}/dataset`;
+
+  const hierarchyLinkURL = React.useMemo(() => {
+    if (hierarchy === 'dls') {
+      return dlsLinkURL;
+    } else if (hierarchy === 'isis') {
+      return isisLinkURL;
+    } else {
+      return genericLinkURL;
+    }
+  }, [hierarchy, isisLinkURL]);
 
   const hierarchyLink = React.useMemo(() => {
     if (hierarchy === 'dls') {
+      const dlsLink = (investigationData: Investigation): React.ReactElement =>
+        tableLink(dlsLinkURL(investigationData), investigationData.title);
+
       return dlsLink;
     } else if (hierarchy === 'isis') {
       return isisLink;
     } else {
+      const genericLink = (
+        investigationData: Investigation
+      ): React.ReactElement =>
+        tableLink(genericLinkURL(investigationData), investigationData.title);
+
       return genericLink;
     }
   }, [hierarchy, isisLink]);
@@ -302,6 +321,25 @@ const InvestigationCardView = (
     ]
   );
 
+  const moreInformation = React.useCallback(
+    (investigation: Investigation) => {
+      const datasetsURL = hierarchyLinkURL(investigation);
+      return (
+        <ISISInvestigationDetailsPanel
+          rowData={investigation}
+          viewDatasets={
+            datasetsURL
+              ? (id: number) => {
+                  push(datasetsURL);
+                }
+              : undefined
+          }
+        />
+      );
+    },
+    [hierarchyLinkURL, push]
+  );
+
   const classes = useStyles();
 
   const buttons = React.useMemo(
@@ -344,6 +382,7 @@ const InvestigationCardView = (
       title={title}
       description={description}
       information={information}
+      moreInformation={moreInformation}
       buttons={buttons}
     />
   );

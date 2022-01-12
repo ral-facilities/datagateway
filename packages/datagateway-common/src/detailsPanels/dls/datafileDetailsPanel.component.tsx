@@ -1,11 +1,5 @@
 import React from 'react';
 import {
-  Entity,
-  Datafile,
-  useDatafileDetails,
-  formatBytes,
-} from 'datagateway-common';
-import {
   Typography,
   Grid,
   createStyles,
@@ -14,6 +8,9 @@ import {
   Divider,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { useDatafileDetails } from '../../api/datafiles';
+import { Datafile, Entity } from '../../app.types';
+import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

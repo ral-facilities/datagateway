@@ -1,5 +1,4 @@
 import React from 'react';
-import { Entity, Instrument, useInstrumentDetails } from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -12,6 +11,8 @@ import {
   Link,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { Entity, Instrument } from '../../app.types';
+import { useInstrumentDetails } from '../../api/instruments';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

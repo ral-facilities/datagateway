@@ -1,14 +1,9 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
-import {
-  Dataset,
-  DatasetType,
-  useDatasetDetails,
-  useDatasetSize,
-} from 'datagateway-common';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
+import { useDatasetDetails, useDatasetSize } from '../../api/datasets';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');

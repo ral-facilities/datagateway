@@ -63,4 +63,12 @@ export { default as AddToCartButton } from './views/addToCartButton.component';
 export { default as DownloadButton } from './views/downloadButton.component';
 export { default as SelectionAlert } from './views/selectionAlert.component';
 
+export { default as ISISDatafileDetailsPanel } from './detailsPanels/isis/datafileDetailsPanel.component';
+export { default as ISISDatasetDetailsPanel } from './detailsPanels/isis/datasetDetailsPanel.component';
+export { default as ISISInstrumentDetailsPanel } from './detailsPanels/isis/instrumentDetailsPanel.component';
+export { default as ISISInvestigationDetailsPanel } from './detailsPanels/isis/investigationDetailsPanel.component';
+export { default as DLSDatafileDetailsPanel } from './detailsPanels/dls/datafileDetailsPanel.component';
+export { default as DLSDatasetDetailsPanel } from './detailsPanels/dls/datasetDetailsPanel.component';
+export { default as DLSVisitDetailsPanel } from './detailsPanels/dls/visitDetailsPanel.component';
+
 // ReactDOM.render(<App />, document.getElementById('root'));
