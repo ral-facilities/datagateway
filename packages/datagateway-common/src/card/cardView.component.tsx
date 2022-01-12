@@ -472,6 +472,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   }, [onResultsChange, resOptions, loadedCount, totalDataCount, props.results]);
 
   const [t] = useTranslation();
+  const hasFilteredResults = loadedData && (filterUpdate || totalDataCount > 0);
 
   return (
     <Grid container direction="column" alignItems="center">
@@ -565,154 +566,158 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      <Grid container direction="row">
-        <Grid item xs={12} md={3}>
-          <Grid
-            item
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="stretch"
-            spacing={5}
-            xs={12}
-            style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-          >
-            {/* Sorting options */}
-            {hasSort && (filterUpdate || totalDataCount > 0) && (
-              <Grid item xs>
-                <Paper>
-                  <Box p={2}>
-                    <Typography variant="h5">Sort By</Typography>
-                  </Box>
+      <Grid container direction="row" justify="center">
+        {(hasSort || customFilters || !hasFilteredResults) && (
+          <Grid item xs={12} md={3}>
+            <Grid
+              item
+              container
+              direction="column"
+              justify="flex-start"
+              alignItems="stretch"
+              spacing={5}
+              xs={12}
+              style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+            >
+              {/* Sorting options */}
+              {hasSort && (filterUpdate || totalDataCount > 0) && (
+                <Grid item xs>
+                  <Paper>
+                    <Box p={2}>
+                      <Typography variant="h5">Sort By</Typography>
+                    </Box>
 
-                  {/* Show all the available sort options: 
+                    {/* Show all the available sort options: 
                         title, description and the further information (if provided) */}
-                  <Box>
-                    <List component="nav" aria-label="sort-by-list">
-                      {cardSort &&
-                        cardSort.map((s, i) => (
-                          <ListItem
-                            key={i}
-                            button
-                            onClick={() => {
-                              onSort(
-                                s.dataKey,
-                                nextSortDirection(s.dataKey),
-                                'push'
-                              );
-                              if (page !== 1) {
-                                onPageChange(1);
-                              }
-                            }}
-                            aria-label={`Sort by ${s.label.toUpperCase()}${
-                              sort[s.label]
-                                ? `, current direction ${
-                                    sort[s.label] === 'asc'
-                                      ? 'ascending'
-                                      : 'descending'
-                                  }`
-                                : ''
-                            }`}
-                          >
-                            <ListItemText primary={s.label} />
-                            <ListItemIcon>
-                              <TableSortLabel
-                                active={s.dataKey in sort}
-                                direction={sort[s.dataKey]}
-                                // Set tabindex to -1 to prevent button focus
-                                tabIndex={-1}
-                              >
-                                {s.dataKey in sort && sort[s.dataKey]}
-                              </TableSortLabel>
-                            </ListItemIcon>
-                          </ListItem>
-                        ))}
-                    </List>
-                  </Box>
-                </Paper>
-              </Grid>
-            )}
-
-            {/* Filtering options */}
-            {customFilters && (filterUpdate || totalDataCount > 0) && (
-              <Grid item xs>
-                <Paper>
-                  <Box p={2}>
-                    <Typography variant="h5">Filter By</Typography>
-                  </Box>
-
-                  {/* Show the specific options available to filter by */}
-                  <Box>
-                    {filtersInfo &&
-                      Object.entries(filtersInfo).map(
-                        ([filterKey, filter], filterIndex) => {
-                          return (
-                            <Accordion
-                              key={filterIndex}
-                              defaultExpanded={filter.hasSelectedItems}
+                    <Box>
+                      <List component="nav" aria-label="sort-by-list">
+                        {cardSort &&
+                          cardSort.map((s, i) => (
+                            <ListItem
+                              key={i}
+                              button
+                              onClick={() => {
+                                onSort(
+                                  s.dataKey,
+                                  nextSortDirection(s.dataKey),
+                                  'push'
+                                );
+                                if (page !== 1) {
+                                  onPageChange(1);
+                                }
+                              }}
+                              aria-label={`Sort by ${s.label.toUpperCase()}${
+                                sort[s.label]
+                                  ? `, current direction ${
+                                      sort[s.label] === 'asc'
+                                        ? 'ascending'
+                                        : 'descending'
+                                    }`
+                                  : ''
+                              }`}
                             >
-                              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography>{filter.label}</Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <div className={classes.expandDetails}>
-                                  <List
-                                    component="nav"
-                                    aria-label="filter-by-list"
-                                  >
-                                    {Object.entries(filter.items).map(
-                                      ([name, data], valueIndex) => (
-                                        <ListItem
-                                          style={{ display: 'flex' }}
-                                          key={valueIndex}
-                                          button
-                                          disabled={data.selected}
-                                          onClick={() => {
-                                            changeFilter(filterKey, name);
-                                            setFilterUpdate(true);
-                                          }}
-                                          aria-label={`Filter by ${filter.label} ${name}`}
-                                        >
-                                          <div style={{ flex: 1 }}>
-                                            <Chip
-                                              label={
-                                                <ArrowTooltip title={name}>
-                                                  <Typography>
-                                                    {name}
-                                                  </Typography>
-                                                </ArrowTooltip>
-                                              }
-                                            />
-                                          </div>
-                                          {data.count && (
-                                            <Divider
-                                              orientation="vertical"
-                                              flexItem
-                                            />
-                                          )}
-                                          {data.count && (
-                                            <Typography
-                                              style={{ paddingLeft: '5%' }}
-                                            >
-                                              {data.count}
-                                            </Typography>
-                                          )}
-                                        </ListItem>
-                                      )
-                                    )}
-                                  </List>
-                                </div>
-                              </AccordionDetails>
-                            </Accordion>
-                          );
-                        }
-                      )}
-                  </Box>
-                </Paper>
-              </Grid>
-            )}
+                              <ListItemText primary={s.label} />
+                              <ListItemIcon>
+                                <TableSortLabel
+                                  active={s.dataKey in sort}
+                                  direction={sort[s.dataKey]}
+                                  // Set tabindex to -1 to prevent button focus
+                                  tabIndex={-1}
+                                >
+                                  {s.dataKey in sort && sort[s.dataKey]}
+                                </TableSortLabel>
+                              </ListItemIcon>
+                            </ListItem>
+                          ))}
+                      </List>
+                    </Box>
+                  </Paper>
+                </Grid>
+              )}
+
+              {/* Filtering options */}
+              {customFilters && (filterUpdate || totalDataCount > 0) && (
+                <Grid item xs>
+                  <Paper>
+                    <Box p={2}>
+                      <Typography variant="h5">Filter By</Typography>
+                    </Box>
+
+                    {/* Show the specific options available to filter by */}
+                    <Box>
+                      {filtersInfo &&
+                        Object.entries(filtersInfo).map(
+                          ([filterKey, filter], filterIndex) => {
+                            return (
+                              <Accordion
+                                key={filterIndex}
+                                defaultExpanded={filter.hasSelectedItems}
+                              >
+                                <AccordionSummary
+                                  expandIcon={<ExpandMoreIcon />}
+                                >
+                                  <Typography>{filter.label}</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                  <div className={classes.expandDetails}>
+                                    <List
+                                      component="nav"
+                                      aria-label="filter-by-list"
+                                    >
+                                      {Object.entries(filter.items).map(
+                                        ([name, data], valueIndex) => (
+                                          <ListItem
+                                            style={{ display: 'flex' }}
+                                            key={valueIndex}
+                                            button
+                                            disabled={data.selected}
+                                            onClick={() => {
+                                              changeFilter(filterKey, name);
+                                              setFilterUpdate(true);
+                                            }}
+                                            aria-label={`Filter by ${filter.label} ${name}`}
+                                          >
+                                            <div style={{ flex: 1 }}>
+                                              <Chip
+                                                label={
+                                                  <ArrowTooltip title={name}>
+                                                    <Typography>
+                                                      {name}
+                                                    </Typography>
+                                                  </ArrowTooltip>
+                                                }
+                                              />
+                                            </div>
+                                            {data.count && (
+                                              <Divider
+                                                orientation="vertical"
+                                                flexItem
+                                              />
+                                            )}
+                                            {data.count && (
+                                              <Typography
+                                                style={{ paddingLeft: '5%' }}
+                                              >
+                                                {data.count}
+                                              </Typography>
+                                            )}
+                                          </ListItem>
+                                        )
+                                      )}
+                                    </List>
+                                  </div>
+                                </AccordionDetails>
+                              </Accordion>
+                            );
+                          }
+                        )}
+                    </Box>
+                  </Paper>
+                </Grid>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        )}
 
         {/* Card data */}
         <Grid item xs={12} md={9}>
@@ -738,38 +743,37 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           )}
 
           {/* List of cards */}
-          {loadedData &&
-            (filterUpdate || totalDataCount > 0 ? (
-              <List style={{ padding: 0, marginRight: 20 }}>
-                {data.map((entity, index) => {
-                  return (
-                    <ListItem key={index} alignItems="flex-start">
-                      {/* Create an individual card */}
-                      <EntityCard
-                        entity={entity}
-                        title={title}
-                        description={description}
-                        information={information}
-                        moreInformation={moreInformation}
-                        // Pass in the React nodes with the data to the card.
-                        buttons={buttons}
-                        // Pass tag names to the card given the specified data key for the filter.
-                        customFilters={customFilters}
-                        image={image}
-                      />
-                    </ListItem>
-                  );
-                })}
-              </List>
-            ) : (
-              <Grid item xs={12} md={8}>
-                <Paper className={classes.noResultsPaper}>
-                  <Typography align="center" variant="h6" component="h6">
-                    {t('loading.filter_message')}
-                  </Typography>
-                </Paper>
-              </Grid>
-            ))}
+          {hasFilteredResults ? (
+            <List style={{ padding: 0, marginRight: 20 }}>
+              {data.map((entity, index) => {
+                return (
+                  <ListItem key={index} alignItems="flex-start">
+                    {/* Create an individual card */}
+                    <EntityCard
+                      entity={entity}
+                      title={title}
+                      description={description}
+                      information={information}
+                      moreInformation={moreInformation}
+                      // Pass in the React nodes with the data to the card.
+                      buttons={buttons}
+                      // Pass tag names to the card given the specified data key for the filter.
+                      customFilters={customFilters}
+                      image={image}
+                    />
+                  </ListItem>
+                );
+              })}
+            </List>
+          ) : (
+            <Grid item xs={12} md={8}>
+              <Paper className={classes.noResultsPaper}>
+                <Typography align="center" variant="h6" component="h6">
+                  {t('loading.filter_message')}
+                </Typography>
+              </Paper>
+            </Grid>
+          )}
         </Grid>
       </Grid>
 

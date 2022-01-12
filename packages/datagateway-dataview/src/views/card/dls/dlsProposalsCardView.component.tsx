@@ -60,6 +60,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
         ),
       filterComponent: textFilter,
       defaultSort: 'asc',
+      disableSort: true,
     }),
     [t, textFilter, view]
   );
@@ -69,6 +70,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
       label: t('investigations.name'),
       dataKey: 'name',
       filterComponent: textFilter,
+      disableSort: true,
     }),
     [t, textFilter]
   );
