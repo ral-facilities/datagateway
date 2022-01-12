@@ -5,16 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { useDatasetDetails, useDatasetSize } from '../../api/datasets';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useDatasetDetails: jest.fn(),
-    useDatasetSize: jest.fn(),
-  };
-});
+jest.mock('../../api/datasets');
 
 describe('Dataset details panel component', () => {
   let mount;

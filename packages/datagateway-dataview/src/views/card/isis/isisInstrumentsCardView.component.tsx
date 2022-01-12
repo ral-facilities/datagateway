@@ -13,11 +13,11 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
+  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
 interface ISISInstrumentsCVProps {
   studyHierarchy: boolean;
@@ -117,7 +117,7 @@ const ISISInstrumentsCardView = (
       description={description}
       information={information}
       moreInformation={(instrument: Instrument) => (
-        <InstrumentDetailsPanel rowData={instrument} />
+        <ISISInstrumentDetailsPanel rowData={instrument} />
       )}
     />
   );

@@ -6,15 +6,7 @@ import { ReactWrapper } from 'enzyme';
 import { Dataset, DatasetType } from '../../app.types';
 import { useDatasetDetails } from '../../api/datasets';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useDatasetDetails: jest.fn(),
-  };
-});
+jest.mock('../../api/datasets');
 
 describe('Dataset details panel component', () => {
   let mount;

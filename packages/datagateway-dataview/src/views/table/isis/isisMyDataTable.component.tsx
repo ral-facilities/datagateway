@@ -18,12 +18,12 @@ import {
   useSort,
   useRemoveFromCart,
   useTextFilter,
+  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
-import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 
 import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
@@ -150,7 +150,7 @@ const ISISMyDataTable = (): React.ReactElement => {
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => (
-      <InvestigationDetailsPanel
+      <ISISInvestigationDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         viewDatasets={

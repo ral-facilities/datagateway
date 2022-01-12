@@ -6,15 +6,7 @@ import { ReactWrapper } from 'enzyme';
 import { Datafile } from '../../app.types';
 import { useDatafileDetails } from '../../api/datafiles';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useDatafileDetails: jest.fn(),
-  };
-});
+jest.mock('../../api/datafiles');
 
 describe('Datafile details panel component', () => {
   let mount;

@@ -6,15 +6,7 @@ import { ReactWrapper } from 'enzyme';
 import { Investigation } from '../../app.types';
 import { useInvestigationDetails } from '../../api/investigations';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useInvestigationDetails: jest.fn(),
-  };
-});
+jest.mock('../../api/investigations');
 
 describe('Investigation details panel component', () => {
   let mount;

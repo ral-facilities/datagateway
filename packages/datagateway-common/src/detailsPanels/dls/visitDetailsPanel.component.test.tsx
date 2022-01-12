@@ -8,16 +8,7 @@ import {
   useInvestigationSize,
 } from '../../api/investigations';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useInvestigationDetails: jest.fn(),
-    useInvestigationSize: jest.fn(),
-  };
-});
+jest.mock('../../api/investigations');
 
 describe('Visit details panel component', () => {
   let mount;
