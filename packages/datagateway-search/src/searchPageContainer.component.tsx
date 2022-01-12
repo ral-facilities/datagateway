@@ -28,6 +28,7 @@ import {
   usePushSearchText,
   useCart,
   SelectionAlert,
+  readSciGatewayToken,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -297,6 +298,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously = username === null || username === 'anon/anon';
+
   return (
     <Switch>
       <Route
@@ -363,6 +367,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                       <SelectionAlert
                         selectedItems={cartItems ?? []}
                         navigateToSelection={navigateToDownload}
+                        loggedInAnonymously={loggedInAnonymously}
                       />
                     </Grid>
                   </Grid>
