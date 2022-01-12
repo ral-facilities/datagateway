@@ -97,7 +97,7 @@
     "removed": "{{count}} item has been removed from selection.",
     "removed_plural": "{{count}} items have been removed from selection.",
     "link": "Go to selection.",
-    "warning_message_session_token": "Please remember to download all you items as this session will timeout after 2 hours of inactivity"
+    "warning_message_session_token": "Please remember to submit your selection as this session will timeout after 2 hours of inactivity and the selection will be lost after the timeout"
   },
   "app": {
     "results": "Results",
