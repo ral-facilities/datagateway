@@ -49,15 +49,15 @@ const usePaperStyles = makeStyles(
     createStyles({
       cardPaper: { backgroundColor: 'inherit' },
       tablePaper: {
-        //Footer is 48px
-        height: 'calc(100vh - 180px - 48px)',
+        //Footer is 36px
+        height: 'calc(100vh - 180px - 36px)',
         width: '100%',
         backgroundColor: 'inherit',
         overflowX: 'auto',
       },
       tablePaperMessage: {
-        //Footer is 48px
-        height: 'calc(100vh - 244px - 4rem - 48px)',
+        //Footer is 36px
+        height: 'calc(100vh - 244px - 4rem - 36px)',
         width: '100%',
         backgroundColor: 'inherit',
         overflowX: 'auto',

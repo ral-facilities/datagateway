@@ -15,6 +15,8 @@ import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Router } from 'react-router';
+import { flushPromises } from '../../../setupTests';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -321,11 +323,13 @@ describe('ISIS Investigation Landing page', () => {
     ).toEqual('Sample');
   });
 
-  it('displays citation correctly when study missing', () => {
+  it('displays citation correctly when study missing', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], studyInvestigations: undefined }],
     });
     const wrapper = createWrapper();
+    await act(async () => flushPromises());
+    wrapper.update();
     expect(
       wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual(
@@ -333,11 +337,13 @@ describe('ISIS Investigation Landing page', () => {
     );
   });
 
-  it('displays citation correctly with one user', () => {
+  it('displays citation correctly with one user', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
     });
     const wrapper = createWrapper();
+    await act(async () => flushPromises());
+    wrapper.update();
     expect(
       wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual(
@@ -345,11 +351,13 @@ describe('ISIS Investigation Landing page', () => {
     );
   });
 
-  it('displays citation correctly with multiple users', () => {
+  it('displays citation correctly with multiple users', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: investigationUser }],
     });
     const wrapper = createWrapper();
+    await act(async () => flushPromises());
+    wrapper.update();
     expect(
       wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual(

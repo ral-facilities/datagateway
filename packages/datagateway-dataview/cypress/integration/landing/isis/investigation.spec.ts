@@ -172,6 +172,9 @@ describe('ISIS - Investigation Landing', () => {
         startDate: '2019-06-10',
       },
     ]);
+    cy.intercept('/text/x-bibliography', {
+      statusCode: 503,
+    });
     cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('invaliddoi').should('be.visible');
@@ -187,6 +190,8 @@ describe('ISIS - Investigation Landing', () => {
       .should('have.length.gte', 2);
 
     cy.get('[role="option"][data-value="chicago-author-date"]').click();
-    cy.get('#citation-formatter-error-message').should('exist');
+    cy.get('#citation-formatter-error-message', { timeout: 10000 }).should(
+      'exist'
+    );
   });
 });

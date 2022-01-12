@@ -118,11 +118,6 @@ const ViewButton = (props: {
   );
 };
 
-// Table should take up page but leave room for: SG appbar, SG footer,
-// grid padding, search box, checkboxes, date selectors, example search text, limited results message, padding.
-const spacing = 1;
-const containerHeight = `calc(100vh - 64px - 48px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 21px - 24px - 8px)`;
-
 const calculateScrollbarHeight = (): number => {
   // Create outer element
   const outer = document.createElement('div');
@@ -146,47 +141,48 @@ const calculateScrollbarHeight = (): number => {
 };
 const scrollBarHeight = calculateScrollbarHeight();
 
-const searchPageStyles = makeStyles<Theme, { view: ViewsType }>(
-  (theme: Theme) => {
-    return createStyles({
-      root: {
-        margin: 0,
-        width: '100%',
+const searchPageStyles = makeStyles<
+  Theme,
+  { view: ViewsType; containerHeight: string }
+>((theme: Theme) => {
+  return createStyles({
+    root: {
+      margin: 0,
+      width: '100%',
+    },
+    topLayout: {
+      height: '100%',
+      // make width of box bigger on smaller screens to prevent overflow
+      // decreasing the space for the search results
+      width: '95%',
+      '@media (min-width: 1600px) and (min-height: 700px)': {
+        width: '70%',
       },
-      topLayout: {
-        height: '100%',
-        // make width of box bigger on smaller screens to prevent overflow
-        // decreasing the space for the search results
-        width: '95%',
-        '@media (min-width: 1600px) and (min-height: 700px)': {
-          width: '70%',
-        },
-        margin: '0 auto',
-      },
-      sideLayout: {
-        height: '100%',
-        width: '100%',
-      },
-      dataViewTopBar: {
-        width: '98%',
-        backgroundColor: '#00000000',
-      },
-      dataView: {
-        // Only use height for the paper component if the view is table.
-        // also ensure we account for the potential horizontal scrollbar
-        height: ({ view }) =>
-          view !== 'card'
-            ? containerHeight.slice(0, containerHeight.lastIndexOf(')')) +
-              ` + ${scrollBarHeight}px` +
-              containerHeight.slice(containerHeight.lastIndexOf(')'))
-            : 'auto',
-        minHeight: 500 + scrollBarHeight,
-        width: '98%',
-        backgroundColor: '#00000000',
-      },
-    });
-  }
-);
+      margin: '0 auto',
+    },
+    sideLayout: {
+      height: '100%',
+      width: '100%',
+    },
+    dataViewTopBar: {
+      width: '98%',
+      backgroundColor: '#00000000',
+    },
+    dataView: {
+      // Only use height for the paper component if the view is table.
+      // also ensure we account for the potential horizontal scrollbar
+      height: ({ view, containerHeight }) =>
+        view !== 'card'
+          ? containerHeight.slice(0, containerHeight.lastIndexOf(')')) +
+            ` + ${scrollBarHeight}px` +
+            containerHeight.slice(containerHeight.lastIndexOf(')'))
+          : 'auto',
+      minHeight: 500 + scrollBarHeight,
+      width: '98%',
+      backgroundColor: '#00000000',
+    },
+  });
+});
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
@@ -354,12 +350,19 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Table should take up page but leave room for: SG appbar, SG footer,
+  // grid padding, search box, checkboxes, date selectors, example search text, limited results message, padding.
+  const spacing = 1;
+  const containerHeight = `calc(100vh - 64px - 48px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 21px - 24px - 8px${
+    loading ? '' : ' - 4px'
+  })`;
+
   const { data: cartItems } = useCart();
   const { push } = useHistory();
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
-  const classes = searchPageStyles({ view });
+  const classes = searchPageStyles({ view, containerHeight });
 
   return (
     <Switch>
