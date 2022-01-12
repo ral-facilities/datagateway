@@ -73,6 +73,9 @@ describe('SelectionAlert', () => {
         loggedInAnonymously={true}
       />
     );
+
+    wrapper.update();
+
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({
       type: NotificationType,
@@ -81,7 +84,6 @@ describe('SelectionAlert', () => {
         message: 'selec_alert.warning_message_session_token',
       },
     });
-    expect(wrapper).toMatchSnapshot();
   });
 
   it('renders correctly with more than one item selected', () => {
