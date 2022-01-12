@@ -29,10 +29,12 @@ import {
   useSort,
   useRemoveFromCart,
   useTextFilter,
+  ISISDatasetDetailsPanel,
+  DLSDatasetDetailsPanel,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 
@@ -86,6 +88,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
+  const { push } = useHistory();
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
@@ -170,25 +173,36 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const dlsLink = (
+  const dlsLinkURL = (
     datasetData: Dataset,
     linkType = 'dataset'
-  ): React.ReactElement | string => {
+  ): string | null => {
     if (datasetData.investigation) {
       return linkType === 'investigation'
-        ? tableLink(
-            `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset`,
-            datasetData.investigation.title
-          )
-        : tableLink(
-            `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`,
-            datasetData.name
-          );
+        ? `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset`
+        : `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`;
     }
-    return linkType === 'investigation' ? '' : datasetData.name;
+    return null;
   };
 
-  const isisLink = React.useCallback(
+  const dlsLink = React.useCallback(
+    (
+      datasetData: Dataset,
+      linkType = 'dataset'
+    ): React.ReactElement | string => {
+      const linkURL = dlsLinkURL(datasetData, linkType);
+
+      if (datasetData.investigation && linkURL) {
+        return linkType === 'investigation'
+          ? tableLink(linkURL, datasetData.investigation.title)
+          : tableLink(linkURL, datasetData.name);
+      }
+      return linkType === 'investigation' ? '' : datasetData.name;
+    },
+    []
+  );
+
+  const isisLinkURL = React.useCallback(
     (datasetData: Dataset, linkType = 'dataset') => {
       let instrumentId;
       let facilityCycleId;
@@ -196,7 +210,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         instrumentId =
           datasetData.investigation?.investigationInstruments[0].instrument?.id;
       } else {
-        return linkType === 'investigation' ? '' : datasetData.name;
+        return null;
       }
 
       if (facilityCycles?.length && datasetData.investigation?.startDate) {
@@ -215,37 +229,64 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
 
       if (facilityCycleId) {
         return linkType === 'investigation'
-          ? tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}`,
-              datasetData.investigation.title
-            )
-          : tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}`,
-              datasetData.name
-            );
+          ? `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}`
+          : `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}`;
       }
-      return linkType === 'investigation' ? '' : datasetData.name;
+      return null;
     },
     [facilityCycles]
   );
 
-  const genericLink = (
-    datasetData: Dataset,
-    linkType = 'dataset'
-  ): React.ReactElement | string => {
-    if (datasetData.investigation) {
-      return linkType === 'investigation'
-        ? tableLink(
-            `/browse/investigation/${datasetData.investigation.id}/dataset`,
-            datasetData.investigation.title
-          )
-        : tableLink(
-            `/browse/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`,
-            datasetData.name
-          );
+  const isisLink = React.useCallback(
+    (datasetData: Dataset, linkType = 'dataset') => {
+      const linkURL = isisLinkURL(datasetData, linkType);
+
+      if (datasetData.investigation && linkURL) {
+        return linkType === 'investigation'
+          ? tableLink(linkURL, datasetData.investigation.title)
+          : tableLink(linkURL, datasetData.name);
+      } else return linkType === 'investigation' ? '' : datasetData.name;
+    },
+    [isisLinkURL]
+  );
+
+  const genericLinkURL = React.useCallback(
+    (datasetData: Dataset, linkType = 'dataset'): string | null => {
+      if (datasetData.investigation) {
+        return linkType === 'investigation'
+          ? `/browse/investigation/${datasetData.investigation.id}/dataset`
+          : `/browse/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`;
+      }
+      return null;
+    },
+    []
+  );
+
+  const genericLink = React.useCallback(
+    (
+      datasetData: Dataset,
+      linkType = 'dataset'
+    ): React.ReactElement | string => {
+      const linkURL = genericLinkURL(datasetData, linkType);
+      if (datasetData.investigation && linkURL) {
+        return linkType === 'investigation'
+          ? tableLink(linkURL, datasetData.investigation.title)
+          : tableLink(linkURL, datasetData.name);
+      }
+      return linkType === 'investigation' ? '' : datasetData.name;
+    },
+    [genericLinkURL]
+  );
+
+  const hierarchyLinkURL = React.useMemo(() => {
+    if (hierarchy === 'dls') {
+      return dlsLinkURL;
+    } else if (hierarchy === 'isis') {
+      return isisLinkURL;
+    } else {
+      return genericLinkURL;
     }
-    return linkType === 'investigation' ? '' : datasetData.name;
-  };
+  }, [genericLinkURL, hierarchy, isisLinkURL]);
 
   const hierarchyLink = React.useMemo(() => {
     if (hierarchy === 'dls') {
@@ -255,7 +296,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     } else {
       return genericLink;
     }
-  }, [hierarchy, isisLink]);
+  }, [dlsLink, genericLink, hierarchy, isisLink]);
 
   const selectedRows = React.useMemo(
     () =>
@@ -335,6 +376,42 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     ]
   );
 
+  const detailsPanel = React.useCallback(
+    ({ rowData, detailsPanelResize }) => {
+      if (hierarchy === 'isis') {
+        const datafilesURL = hierarchyLinkURL(rowData as Dataset);
+        return (
+          <ISISDatasetDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+            viewDatafiles={
+              datafilesURL
+                ? (id: number) => {
+                    push(datafilesURL);
+                  }
+                : undefined
+            }
+          />
+        );
+      } else if (hierarchy === 'dls') {
+        return (
+          <DLSDatasetDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+          />
+        );
+      } else {
+        return (
+          <DatasetDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+          />
+        );
+      }
+    },
+    [hierarchy, hierarchyLinkURL, push]
+  );
+
   return (
     <Table
       loading={addToCartLoading || removeFromCartLoading}
@@ -348,7 +425,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      detailsPanel={DatasetDetailsPanel}
+      detailsPanel={detailsPanel}
       columns={columns}
     />
   );

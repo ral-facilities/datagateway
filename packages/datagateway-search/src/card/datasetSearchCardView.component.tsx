@@ -236,6 +236,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       return genericLink;
     }
   }, [dlsLink, genericLink, hierarchy, isisLink]);
+
   // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
   // the correct calculation queries for each facility
   const datasetCountQueries = useDatasetsDatafileCount(

@@ -28,6 +28,8 @@ import {
   useSort,
   useRemoveFromCart,
   useTextFilter,
+  ISISDatafileDetailsPanel,
+  DLSDatafileDetailsPanel,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -333,6 +335,10 @@ const DatafileSearchTable = (
     [t, textFilter, dateFilter, hierarchyLink]
   );
 
+  let detailsPanel = DatafileDetailsPanel;
+  if (hierarchy === 'isis') detailsPanel = ISISDatafileDetailsPanel;
+  else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
+
   return (
     <Table
       loading={addToCartLoading || removeFromCartLoading}
@@ -346,7 +352,7 @@ const DatafileSearchTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      detailsPanel={DatafileDetailsPanel}
+      detailsPanel={detailsPanel}
       columns={columns}
     />
   );
