@@ -4956,7 +4956,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     role="tabpanel"
                   >
                     <Styled(MuiBox)
-                      p={3}
+                      pt={1}
                     >
                       <div
                         className="MuiBox-root MuiBox-root-8"
@@ -4965,8 +4965,8 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                           elevation={0}
                           style={
                             Object {
-                              "height": "calc(undefined - 96px)",
-                              "minHeight": 230,
+                              "height": "calc(undefined - 56px)",
+                              "minHeight": "calc(500px - 56px)",
                               "overflowX": "auto",
                             }
                           }
@@ -5007,8 +5007,8 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                             elevation={0}
                             style={
                               Object {
-                                "height": "calc(undefined - 96px)",
-                                "minHeight": 230,
+                                "height": "calc(undefined - 56px)",
+                                "minHeight": "calc(500px - 56px)",
                                 "overflowX": "auto",
                               }
                             }
@@ -5017,8 +5017,8 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                               className="MuiPaper-root MuiPaper-elevation0 MuiPaper-rounded"
                               style={
                                 Object {
-                                  "height": "calc(undefined - 96px)",
-                                  "minHeight": 230,
+                                  "height": "calc(undefined - 56px)",
+                                  "minHeight": "calc(500px - 56px)",
                                   "overflowX": "auto",
                                 }
                               }
