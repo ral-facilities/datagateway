@@ -5,6 +5,7 @@ import {
   settingsLoaded,
   loadSelectAllSetting,
   loadPluginHostSetting,
+  loadFacilityImageSetting,
 } from '.';
 import {
   ConfigureFeatureSwitchesType,
@@ -12,6 +13,7 @@ import {
   SettingsLoadedType,
   ConfigureSelectAllSettingType,
   ConfigurePluginHostSettingType,
+  ConfigureFacilityImageSettingType,
 } from './actions.types';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -87,12 +89,21 @@ describe('Actions', () => {
     });
   });
 
+  it('given JSON loadFacilityImageSetting returns a ConfigureFacilityImageSettingType with ConfigureFacilityImageSettingPayload', () => {
+    const action = loadFacilityImageSetting('test-image.jpg');
+    expect(action.type).toEqual(ConfigureFacilityImageSettingType);
+    expect(action.payload).toEqual({
+      settings: 'test-image.jpg',
+    });
+  });
+
   it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
           data: {
             facilityName: 'Generic',
+            facilityImageURL: 'test-image.jpg',
             features: {},
             idsUrl: 'ids',
             apiUrl: 'api',
@@ -125,8 +136,9 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(7);
+    expect(actions.length).toEqual(8);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
+    expect(actions).toContainEqual(loadFacilityImageSetting('test-image.jpg'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
       loadUrls({

@@ -20,7 +20,6 @@ export interface TranslatedHomePageStateProps {
 export const TranslatedHomePage = React.memo(
   (props: TranslatedHomePageStateProps): React.ReactElement => {
     const TranslatedHomePage = HomePage;
-    console.log('HELLO LOOK HERE: ' + props.facilityImageURL);
     return (
       <TranslatedHomePage
         logo={props.pluginHost + DGLogo}
