@@ -13,13 +13,14 @@ import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 
 export interface TranslatedHomePageStateProps {
+  facilityImageURL?: string | undefined;
   pluginHost: string | undefined;
 }
 
 export const TranslatedHomePage = React.memo(
   (props: TranslatedHomePageStateProps): React.ReactElement => {
     const TranslatedHomePage = HomePage;
-
+    console.log('HELLO LOOK HERE: ' + props.facilityImageURL);
     return (
       <TranslatedHomePage
         logo={props.pluginHost + DGLogo}
@@ -30,7 +31,9 @@ export const TranslatedHomePage = React.memo(
         decal2Image={props.pluginHost + Decal2Image}
         decal2DarkImage={props.pluginHost + Decal2DarkImage}
         decal2DarkHCImage={props.pluginHost + Decal2DarkHCImage}
-        facilityImage={props.pluginHost + FacilityImage}
+        facilityImage={
+          props.facilityImageURL ? props.facilityImageURL : FacilityImage
+        }
       />
     );
   }
@@ -40,6 +43,7 @@ TranslatedHomePage.displayName = 'TranslatedHomePage';
 
 const mapStateToProps = (state: StateType): TranslatedHomePageStateProps => ({
   pluginHost: state.dgdataview.pluginHost,
+  facilityImageURL: state.dgdataview.facilityImageURL,
 });
 
 export default connect(mapStateToProps)(TranslatedHomePage);
