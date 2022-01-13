@@ -10,6 +10,8 @@ import {
   ConfigureSelectAllSettingType,
   ConfigurePluginHostSettingPayload,
   ConfigurePluginHostSettingType,
+  ConfigureFacilityImageSettingPayload,
+  ConfigureFacilityImageSettingType,
 } from '../actions/actions.types';
 
 export const initialState: DGDataViewState = {
@@ -18,6 +20,7 @@ export const initialState: DGDataViewState = {
   settingsLoaded: false,
   selectAllSetting: true,
   pluginHost: '',
+  facilityImageURL: '',
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
@@ -69,12 +72,23 @@ export function handleConfigurePluginHostSetting(
   };
 }
 
+export function handleConfigureFacilityImageSetting(
+  state: DGDataViewState,
+  payload: ConfigureFacilityImageSettingPayload
+): DGDataViewState {
+  return {
+    ...state,
+    facilityImageURL: payload.settings,
+  };
+}
+
 const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
   [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
+  [ConfigureFacilityImageSettingType]: handleConfigureFacilityImageSetting,
 });
 
 export default DGDataViewReducer;
