@@ -70,5 +70,6 @@ export { default as ISISInvestigationDetailsPanel } from './detailsPanels/isis/i
 export { default as DLSDatafileDetailsPanel } from './detailsPanels/dls/datafileDetailsPanel.component';
 export { default as DLSDatasetDetailsPanel } from './detailsPanels/dls/datasetDetailsPanel.component';
 export { default as DLSVisitDetailsPanel } from './detailsPanels/dls/visitDetailsPanel.component';
+export { default as InvestigationDetailsPanel } from './detailsPanels/investigationDetailsPanel.component';
 
 // ReactDOM.render(<App />, document.getElementById('root'));

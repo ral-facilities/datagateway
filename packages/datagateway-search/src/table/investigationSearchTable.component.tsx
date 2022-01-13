@@ -1,20 +1,11 @@
 import React from 'react';
 import {
-  createStyles,
-  Divider,
-  Grid,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
-import {
   Table,
   Investigation,
   tableLink,
   externalSiteLink,
   FacilityCycle,
   ColumnType,
-  DetailsPanelProps,
   parseSearchToQuery,
   useAddToCart,
   useAllFacilityCycles,
@@ -30,6 +21,7 @@ import {
   useInvestigationSizes,
   formatCountOrSize,
   useLuceneSearch,
+  InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
@@ -37,64 +29,6 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { StateType } from '../state/app.types';
 import { useSelector } from 'react-redux';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-export const InvestigationDetailsPanel = (
-  props: DetailsPanelProps
-): React.ReactElement => {
-  const classes = useStyles();
-  const [t] = useTranslation();
-  const investigationData = props.rowData as Investigation;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{investigationData.title}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.name')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.name}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.start_date')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.startDate}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.end_date')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.endDate}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
 
 interface InvestigationTableProps {
   hierarchy: string;

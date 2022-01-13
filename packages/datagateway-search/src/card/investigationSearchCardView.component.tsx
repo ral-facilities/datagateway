@@ -28,8 +28,8 @@ import {
   ArrowTooltip,
   AddToCartButton,
   DownloadButton,
+  InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
-  Entity,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -40,75 +40,9 @@ import {
   makeStyles,
   createStyles,
   Theme,
-  Grid,
-  Divider,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
-
-const useDetailsPanelStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-interface InvestigationDetailsPanelProps {
-  rowData: Entity;
-  detailsPanelResize?: () => void;
-  viewDatasets?: (id: number) => void;
-}
-
-export const InvestigationDetailsPanel = (
-  props: InvestigationDetailsPanelProps
-): React.ReactElement => {
-  const classes = useDetailsPanelStyles();
-  const [t] = useTranslation();
-  const investigationData = props.rowData as Investigation;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{investigationData.title}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.name')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.name}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.start_date')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.startDate}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.end_date')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.endDate}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
 
 interface InvestigationCardProps {
   hierarchy: string;
