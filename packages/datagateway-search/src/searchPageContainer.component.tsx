@@ -291,17 +291,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  React.useEffect(() => {
-    const newQueryParams = parseSearchToQuery(location.search);
-    if (newQueryParams.searchText && newQueryParams.searchText !== searchText) {
-      //Ensure search text is assigned from the URL
-      setSearchText(newQueryParams.searchText ? newQueryParams.searchText : '');
-      setSearchOnNextRender(true);
-    }
-    //Want to search whever the location changes so that clicking a react-router link also initiates the search
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
-
   // Table should take up page but leave room for: SG appbar, SG footer,
   // grid padding, search box, checkboxes, date selectors, example search text, limited results message, padding.
   const spacing = 2;

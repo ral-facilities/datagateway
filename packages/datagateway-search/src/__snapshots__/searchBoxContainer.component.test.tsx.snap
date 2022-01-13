@@ -76,42 +76,14 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       >
         e.g. title has
         <WithStyles(ForwardRef(Link))
-          component={
-            Object {
-              "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
-              "propTypes": Object {
-                "innerRef": [Function],
-                "onClick": [Function],
-                "replace": [Function],
-                "target": [Function],
-                "to": [Function],
-              },
-              "render": [Function],
-            }
-          }
-          to="searchBox.search_textbox_label_link1"
+          href="searchBox.search_textbox_label_link1"
         >
           "instrument calibration"
         </WithStyles(ForwardRef(Link))>
         , or
          
         <WithStyles(ForwardRef(Link))
-          component={
-            Object {
-              "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
-              "propTypes": Object {
-                "innerRef": [Function],
-                "onClick": [Function],
-                "replace": [Function],
-                "target": [Function],
-                "to": [Function],
-              },
-              "render": [Function],
-            }
-          }
-          to="searchBox.search_textbox_label_link2"
+          href="searchBox.search_textbox_label_link2"
         >
           neutron AND scattering
         </WithStyles(ForwardRef(Link))>
