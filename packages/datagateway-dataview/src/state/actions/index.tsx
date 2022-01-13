@@ -11,6 +11,8 @@ import {
   ConfigureSelectAllSettingType,
   ConfigurePluginHostSettingPayload,
   ConfigurePluginHostSettingType,
+  ConfigureFacilityImageSettingPayload,
+  ConfigureFacilityImageSettingType,
 } from './actions.types';
 import {
   loadUrls,
@@ -64,6 +66,15 @@ export const loadPluginHostSetting = (
   type: ConfigurePluginHostSettingType,
   payload: {
     settings: pluginHostSetting,
+  },
+});
+
+export const loadFacilityImageSetting = (
+  facilityImageSetting: string
+): ActionType<ConfigureFacilityImageSettingPayload> => ({
+  type: ConfigureFacilityImageSettingType,
+  payload: {
+    settings: facilityImageSetting,
   },
 });
 
@@ -127,6 +138,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           dispatch(loadPluginHostSetting(settings['pluginHost']));
         }
 
+        if ('facilityImageURL' in settings) {
+          dispatch(loadFacilityImageSetting(settings['facilityImageURL']));
+        }
+
         if (Array.isArray(settings['routes']) && settings['routes'].length) {
           settings['routes'].forEach((route: PluginRoute, index: number) => {
             if (
@@ -140,7 +155,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
                   section: route['section'],
                   link: route['link'],
                   plugin: 'datagateway-dataview',
-                  displayName: '\xa0' + route['displayName'],
+                  displayName: route['displayName'],
                   order: route['order'] ? route['order'] : 0,
                   helpSteps:
                     index === 0 && 'helpSteps' in settings

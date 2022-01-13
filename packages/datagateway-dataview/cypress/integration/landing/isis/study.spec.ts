@@ -173,6 +173,9 @@ describe('ISIS - Study Landing', () => {
         ],
       },
     ]);
+    cy.intercept('/text/x-bibliography', {
+      statusCode: 503,
+    });
     cy.visit('/browseStudyHierarchy/instrument/1/study/4');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('invaliddoi').should('be.visible');
@@ -188,6 +191,8 @@ describe('ISIS - Study Landing', () => {
       .should('have.length.gte', 2);
 
     cy.get('[role="option"][data-value="chicago-author-date"]').click();
-    cy.get('#citation-formatter-error-message').should('exist');
+    cy.get('#citation-formatter-error-message', { timeout: 10000 }).should(
+      'exist'
+    );
   });
 });

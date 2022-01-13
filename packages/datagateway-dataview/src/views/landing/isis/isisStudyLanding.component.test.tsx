@@ -11,6 +11,8 @@ import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Router } from 'react-router';
+import { flushPromises } from '../../../setupTests';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -210,7 +212,7 @@ describe('ISIS Study Landing page', () => {
     ).toEqual('Principal Investigator: John Smith');
   });
 
-  it('multiple users displayed correctly', () => {
+  it('multiple users displayed correctly', async () => {
     (useStudy as jest.Mock).mockReturnValue({
       data: [
         {
@@ -227,6 +229,8 @@ describe('ISIS Study Landing page', () => {
       ],
     });
     const wrapper = createWrapper();
+    await act(async () => flushPromises());
+    wrapper.update();
 
     expect(
       wrapper.find('[data-testid="landing-study-users-label"]')

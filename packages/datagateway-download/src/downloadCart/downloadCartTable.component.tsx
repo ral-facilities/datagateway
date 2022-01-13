@@ -254,7 +254,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       style={{
         //Table should take up page but leave room for: SG appbar, SG footer,
         //tabs, table padding.
-        height: 'calc(100vh - 64px - 48px - 48px - 48px)',
+        height: 'calc(100vh - 64px - 36px - 48px - 48px)',
         minHeight: 230,
         overflowX: 'auto',
       }}

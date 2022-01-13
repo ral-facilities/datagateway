@@ -4,6 +4,7 @@ import { DGCommonState } from 'datagateway-common';
 import { FeatureSwitches, BreadcrumbSettings } from './actions/actions.types';
 
 export interface DGDataViewState {
+  facilityImageURL: string;
   features: FeatureSwitches;
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
