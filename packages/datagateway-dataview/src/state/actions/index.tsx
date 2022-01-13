@@ -11,6 +11,8 @@ import {
   ConfigureSelectAllSettingType,
   ConfigurePluginHostSettingPayload,
   ConfigurePluginHostSettingType,
+  ConfigureFacilityImageSettingPayload,
+  ConfigureFacilityImageSettingType,
 } from './actions.types';
 import {
   loadUrls,
@@ -64,6 +66,15 @@ export const loadPluginHostSetting = (
   type: ConfigurePluginHostSettingType,
   payload: {
     settings: pluginHostSetting,
+  },
+});
+
+export const loadFacilityImageSetting = (
+  facilityImageSetting: string
+): ActionType<ConfigureFacilityImageSettingPayload> => ({
+  type: ConfigureFacilityImageSettingType,
+  payload: {
+    settings: facilityImageSetting,
   },
 });
 
@@ -125,6 +136,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if ('pluginHost' in settings) {
           dispatch(loadPluginHostSetting(settings['pluginHost']));
+        }
+
+        if ('facilityImageURL' in settings) {
+          dispatch(loadFacilityImageSetting(settings['facilityImageURL']));
         }
 
         if (Array.isArray(settings['routes']) && settings['routes'].length) {
