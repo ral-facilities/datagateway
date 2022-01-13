@@ -1,4 +1,5 @@
 import React from 'react';
+import ResizeObserver from 'resize-observer-polyfill';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import { Switch, Route, RouteComponentProps } from 'react-router';
@@ -118,29 +119,6 @@ const ViewButton = (props: {
   );
 };
 
-const calculateScrollbarHeight = (): number => {
-  // Create outer element
-  const outer = document.createElement('div');
-  outer.style.visibility = 'hidden';
-  outer.style.overflow = 'scroll';
-
-  // Append it to `body`
-  document.body.appendChild(outer);
-
-  // Create the child element
-  const inner = document.createElement('div');
-  outer.appendChild(inner);
-
-  // Calculate the difference between their heights
-  const scrollbarHeight = outer.offsetHeight - inner.offsetHeight;
-
-  // Remove the parent element
-  document.body.removeChild(outer);
-
-  return scrollbarHeight;
-};
-const scrollBarHeight = calculateScrollbarHeight();
-
 const searchPageStyles = makeStyles<
   Theme,
   { view: ViewsType; containerHeight: string }
@@ -172,12 +150,8 @@ const searchPageStyles = makeStyles<
       // Only use height for the paper component if the view is table.
       // also ensure we account for the potential horizontal scrollbar
       height: ({ view, containerHeight }) =>
-        view !== 'card'
-          ? containerHeight.slice(0, containerHeight.lastIndexOf(')')) +
-            ` + ${scrollBarHeight}px` +
-            containerHeight.slice(containerHeight.lastIndexOf(')'))
-          : 'auto',
-      minHeight: 500 + scrollBarHeight,
+        view !== 'card' ? containerHeight : 'auto',
+      minHeight: 500,
       width: '98%',
       backgroundColor: '#00000000',
     },
@@ -350,10 +324,26 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const searchBoxRef = React.useRef<HTMLDivElement>(null);
+  const [searchBoxHeight, setSearchBoxHeight] = React.useState(0);
+
+  React.useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      if (entries[0].contentRect.height)
+        setSearchBoxHeight(entries[0].contentRect.height);
+    });
+    const curr = searchBoxRef.current;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    observer.observe(curr);
+    return () => {
+      curr && observer.unobserve(curr);
+    };
+  }, []);
+
   // Table should take up page but leave room for: SG appbar, SG footer,
-  // grid padding, search box, checkboxes, date selectors, example search text, limited results message, padding.
-  const spacing = 1;
-  const containerHeight = `calc(100vh - 64px - 48px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 21px - 24px - 8px${
+  // search box, search box padding, display as cards button, loading bar
+  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 47px${
     loading ? '' : ' - 4px'
   })`;
 
@@ -379,10 +369,15 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             direction={sideLayout ? 'row' : 'column'}
             justify="center"
             alignItems="center"
-            spacing={spacing}
+            spacing={1}
             className={classes.root}
           >
-            <Grid item id="container-search-filters" style={{ width: '100%' }}>
+            <Grid
+              item
+              id="container-search-filters"
+              ref={searchBoxRef}
+              style={{ width: '100%' }}
+            >
               {sideLayout ? (
                 <Paper className={classes.sideLayout}>
                   <SearchBoxContainerSide

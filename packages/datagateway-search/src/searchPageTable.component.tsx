@@ -335,6 +335,7 @@ const SearchPageTable = (
               height: `calc(${containerHeight} - 56px)`,
               minHeight: `calc(500px - 56px)`,
               overflowX: 'auto',
+              overflowY: 'hidden',
             }}
             elevation={0}
           >
@@ -349,6 +350,7 @@ const SearchPageTable = (
               height: `calc(${containerHeight} - 56px)`,
               minHeight: `calc(500px - 56px)`,
               overflowX: 'auto',
+              overflowY: 'hidden',
             }}
             elevation={0}
           >
@@ -363,6 +365,7 @@ const SearchPageTable = (
               height: `calc(${containerHeight} - 56px)`,
               minHeight: `calc(500px - 56px)`,
               overflowX: 'auto',
+              overflowY: 'hidden',
             }}
             elevation={0}
           >

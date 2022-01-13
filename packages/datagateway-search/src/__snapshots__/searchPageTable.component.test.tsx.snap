@@ -4968,6 +4968,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                               "height": "calc(undefined - 56px)",
                               "minHeight": "calc(500px - 56px)",
                               "overflowX": "auto",
+                              "overflowY": "hidden",
                             }
                           }
                         >
@@ -5010,6 +5011,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                 "height": "calc(undefined - 56px)",
                                 "minHeight": "calc(500px - 56px)",
                                 "overflowX": "auto",
+                                "overflowY": "hidden",
                               }
                             }
                           >
@@ -5020,6 +5022,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                   "height": "calc(undefined - 56px)",
                                   "minHeight": "calc(500px - 56px)",
                                   "overflowX": "auto",
+                                  "overflowY": "hidden",
                                 }
                               }
                             >
