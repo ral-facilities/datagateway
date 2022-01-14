@@ -12,6 +12,8 @@ import {
   StateType,
   AdvancedFilter,
   CardView,
+  InvestigationDetailsPanel,
+  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -434,5 +436,38 @@ describe('Investigation - Card View', () => {
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');
+  });
+
+  it('displays generic details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper
+      .find('[aria-label="card-more-info-expand"]')
+      .first()
+      .simulate('click');
+
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for ISIS when expanded', () => {
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper
+      .find('[aria-label="card-more-info-expand"]')
+      .first()
+      .simulate('click');
+
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for DLS when expanded', () => {
+    const wrapper = createWrapper('dls');
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper
+      .find('[aria-label="card-more-info-expand"]')
+      .first()
+      .simulate('click');
+
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
   });
 });
