@@ -260,7 +260,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     {
       content: function distributionFormat(entity: Investigation) {
         return (
-          <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
+          <MuiLink href="https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx">
             {t('doi_constants.distribution.format')}
           </MuiLink>
         );
