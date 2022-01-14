@@ -9,6 +9,7 @@ import {
   useInvestigationSizes,
   AddToCartButton,
   DownloadButton,
+  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -20,7 +21,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { createMemoryHistory, History } from 'history';
 
 jest.mock('datagateway-common', () => {
@@ -261,13 +261,13 @@ describe('ISIS Investigations - Card View', () => {
 
   it('displays details panel when more information is expanded and navigates to datasets view when tab clicked', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
 
     wrapper.find('#investigation-datasets-tab').first().simulate('click');
     expect(history.location.pathname).toBe(

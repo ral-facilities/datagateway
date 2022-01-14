@@ -42,7 +42,6 @@ describe('Investigation details panel component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
