@@ -4401,6 +4401,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                             }
                             loadedCount={false}
                             loadedData={false}
+                            moreInformation={[Function]}
                             onFilter={[Function]}
                             onPageChange={[Function]}
                             onResultsChange={[Function]}

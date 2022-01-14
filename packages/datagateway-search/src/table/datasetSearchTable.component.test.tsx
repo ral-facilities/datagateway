@@ -1,14 +1,15 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatasetSearchTable, {
-  DatasetDetailsPanel,
-} from './datasetSearchTable.component';
+import { createMount } from '@material-ui/core/test-utils';
+import DatasetSearchTable from './datasetSearchTable.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
   Dataset,
   dGCommonInitialState,
+  DatasetDetailsPanel,
+  ISISDatasetDetailsPanel,
+  DLSDatasetDetailsPanel,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
@@ -49,7 +50,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Dataset table component', () => {
-  let shallow;
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -70,7 +70,6 @@ describe('Dataset table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     history = createMemoryHistory();
 
@@ -404,15 +403,27 @@ describe('Dataset table component', () => {
     expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <DatasetDetailsPanel
-        rowData={rowData[0]}
-        detailsPanelResize={jest.fn()}
-      />
-    );
+  it('displays generic details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for ISIS when expanded', () => {
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for DLS when expanded', () => {
+    const wrapper = createWrapper('dls');
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders Dataset title as a link', () => {

@@ -1,19 +1,10 @@
 import React from 'react';
 import {
-  createStyles,
-  Divider,
-  Grid,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
-import {
   Table,
   Dataset,
   tableLink,
   FacilityCycle,
   ColumnType,
-  DetailsPanelProps,
   formatCountOrSize,
   parseSearchToQuery,
   useAddToCart,
@@ -29,6 +20,7 @@ import {
   useSort,
   useRemoveFromCart,
   useTextFilter,
+  DatasetDetailsPanel,
   ISISDatasetDetailsPanel,
   DLSDatasetDetailsPanel,
 } from 'datagateway-common';
@@ -37,46 +29,6 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-export const DatasetDetailsPanel = (
-  props: DetailsPanelProps
-): React.ReactElement => {
-  const classes = useStyles();
-  const [t] = useTranslation();
-  const datasetData = props.rowData as Dataset;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{datasetData.name}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">{t('datasets.description')}</Typography>
-        <Typography>
-          <b>{datasetData.description}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
 
 interface DatasetTableProps {
   hierarchy: string;

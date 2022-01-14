@@ -1,8 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import InvestigationSearchTable, {
-  InvestigationDetailsPanel,
-} from './investigationSearchTable.component';
+import { createMount } from '@material-ui/core/test-utils';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
@@ -20,6 +17,8 @@ import {
   useInvestigationSizes,
   useLuceneSearch,
   useRemoveFromCart,
+  ISISInvestigationDetailsPanel,
+  InvestigationDetailsPanel,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -29,6 +28,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
+import InvestigationSearchTable from './investigationSearchTable.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -51,7 +51,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Investigation Search Table component', () => {
-  let shallow;
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -72,7 +71,6 @@ describe('Investigation Search Table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     history = createMemoryHistory();
 
@@ -438,15 +436,27 @@ describe('Investigation Search Table component', () => {
     expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <InvestigationDetailsPanel
-        rowData={rowData[0]}
-        detailsPanelResize={jest.fn()}
-      />
-    );
+  it('displays generic details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for ISIS when expanded', () => {
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for DLS when expanded', () => {
+    const wrapper = createWrapper('dls');
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders title, visit ID, Name and DOI as links', () => {

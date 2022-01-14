@@ -71,5 +71,7 @@ export { default as DLSDatafileDetailsPanel } from './detailsPanels/dls/datafile
 export { default as DLSDatasetDetailsPanel } from './detailsPanels/dls/datasetDetailsPanel.component';
 export { default as DLSVisitDetailsPanel } from './detailsPanels/dls/visitDetailsPanel.component';
 export { default as InvestigationDetailsPanel } from './detailsPanels/investigationDetailsPanel.component';
+export { default as DatasetDetailsPanel } from './detailsPanels/datasetDetailsPanel.component';
+export { default as DatafileDetailsPanel } from './detailsPanels/datasetDetailsPanel.component';
 
 // ReactDOM.render(<App />, document.getElementById('root'));
