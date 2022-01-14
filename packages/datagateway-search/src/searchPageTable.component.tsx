@@ -90,7 +90,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
       border={0}
       {...other}
     >
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && <Box pt={1}>{children}</Box>}
     </Box>
   );
 }
@@ -332,9 +332,10 @@ const SearchPageTable = (
         <TabPanel value={currentTab} index={'investigation'}>
           <Paper
             style={{
-              height: `calc(${containerHeight} - 96px)`,
-              minHeight: 230,
+              height: `calc(${containerHeight} - 56px)`,
+              minHeight: `calc(500px - 56px)`,
               overflowX: 'auto',
+              overflowY: 'hidden',
             }}
             elevation={0}
           >
@@ -346,9 +347,10 @@ const SearchPageTable = (
         <TabPanel value={currentTab} index={'dataset'}>
           <Paper
             style={{
-              height: `calc(${containerHeight} - 96px)`,
-              minHeight: 230,
+              height: `calc(${containerHeight} - 56px)`,
+              minHeight: `calc(500px - 56px)`,
               overflowX: 'auto',
+              overflowY: 'hidden',
             }}
             elevation={0}
           >
@@ -360,9 +362,10 @@ const SearchPageTable = (
         <TabPanel value={currentTab} index={'datafile'}>
           <Paper
             style={{
-              height: `calc(${containerHeight} - 96px)`,
-              minHeight: 230,
+              height: `calc(${containerHeight} - 56px)`,
+              minHeight: `calc(500px - 56px)`,
               overflowX: 'auto',
+              overflowY: 'hidden',
             }}
             elevation={0}
           >
