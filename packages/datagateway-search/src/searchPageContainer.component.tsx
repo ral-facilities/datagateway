@@ -324,21 +324,26 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const searchBoxRef = React.useRef<HTMLDivElement>(null);
   const [searchBoxHeight, setSearchBoxHeight] = React.useState(0);
 
-  React.useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
+  const searchBoxResizeObserver = React.useRef<ResizeObserver>(
+    new ResizeObserver((entries) => {
       if (entries[0].contentRect.height)
         setSearchBoxHeight(entries[0].contentRect.height);
-    });
-    const curr = searchBoxRef.current;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    observer.observe(curr);
-    return () => {
-      curr && observer.unobserve(curr);
-    };
+    })
+  );
+
+  // need to use a useCallback instead of a useRef for this
+  // see https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
+  const searchBoxRef = React.useCallback((container: HTMLDivElement) => {
+    if (container !== null) {
+      searchBoxResizeObserver.current.observe(container);
+    }
+    // When element is unmounted we know container is null so time to clean up
+    else {
+      if (searchBoxResizeObserver.current)
+        searchBoxResizeObserver.current.disconnect();
+    }
   }, []);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
