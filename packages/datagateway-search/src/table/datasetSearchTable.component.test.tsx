@@ -418,6 +418,30 @@ describe('Dataset table component', () => {
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
   });
 
+  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 4,
+          name: 'facility cycle name',
+          startDate: '2000-06-10',
+          endDate: '2020-06-11',
+        },
+      ],
+    });
+
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+
+    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
+    );
+  });
+
   it('displays correct details panel for DLS when expanded', () => {
     const wrapper = createWrapper('dls');
     expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();

@@ -27,6 +27,7 @@ import {
   DownloadButton,
   ISISDatasetDetailsPanel,
   DLSDatasetDetailsPanel,
+  DatasetDetailsPanel,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -339,9 +340,9 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
             }
           />
         );
-      } else {
+      } else if (hierarchy === 'dls')
         return <DLSDatasetDetailsPanel rowData={dataset} />;
-      }
+      else return <DatasetDetailsPanel rowData={dataset} />;
     },
     [hierarchy, hierarchyLinkURL, push]
   );

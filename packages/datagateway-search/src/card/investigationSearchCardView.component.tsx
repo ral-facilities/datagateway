@@ -338,9 +338,7 @@ const InvestigationCardView = (
             }
           />
         );
-      } else {
-        return <InvestigationDetailsPanel rowData={investigation} />;
-      }
+      } else return <InvestigationDetailsPanel rowData={investigation} />;
     },
     [hierarchy, hierarchyLinkURL, push]
   );

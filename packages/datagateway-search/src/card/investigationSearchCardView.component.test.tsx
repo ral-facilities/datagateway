@@ -460,6 +460,33 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
   });
 
+  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 4,
+          name: 'facility cycle name',
+          startDate: '2000-06-10',
+          endDate: '2020-06-11',
+        },
+      ],
+    });
+
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper
+      .find('[aria-label="card-more-info-expand"]')
+      .first()
+      .simulate('click');
+
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+
+    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/4/facilityCycle/4/investigation/1/dataset'
+    );
+  });
+
   it('displays correct details panel for DLS when expanded', () => {
     const wrapper = createWrapper('dls');
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
