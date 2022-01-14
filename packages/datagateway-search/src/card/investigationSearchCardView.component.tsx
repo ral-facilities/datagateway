@@ -89,7 +89,7 @@ const InvestigationCardView = (
         instrumentId =
           investigationData.investigationInstruments[0].instrument?.id;
       } else {
-        return investigationData.title;
+        return null;
       }
 
       if (investigationData.startDate && facilityCycles?.length) {
