@@ -157,30 +157,6 @@ describe('DLS Proposals table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
-    );
-  });
-
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"desc"}')}`
-    );
-  });
-
   it('renders title and name as links', () => {
     const wrapper = createWrapper();
 

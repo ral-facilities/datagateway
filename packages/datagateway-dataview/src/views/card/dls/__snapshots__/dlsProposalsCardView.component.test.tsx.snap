@@ -12,6 +12,7 @@ Object {
   ],
   "description": Object {
     "dataKey": "name",
+    "disableSort": true,
     "filterComponent": [Function],
     "label": "investigations.name",
   },
@@ -24,13 +25,11 @@ Object {
   "onSort": [Function],
   "page": null,
   "results": null,
-  "sort": Object {
-    "title": "asc",
-  },
+  "sort": Object {},
   "title": Object {
     "content": [Function],
     "dataKey": "title",
-    "defaultSort": "asc",
+    "disableSort": true,
     "filterComponent": [Function],
     "label": "investigations.title",
   },

@@ -1,4 +1,5 @@
 import React from 'react';
+import ResizeObserver from 'resize-observer-polyfill';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import { Switch, Route, RouteComponentProps } from 'react-router';
@@ -117,6 +118,45 @@ const ViewButton = (props: {
     </div>
   );
 };
+
+const searchPageStyles = makeStyles<
+  Theme,
+  { view: ViewsType; containerHeight: string }
+>((theme: Theme) => {
+  return createStyles({
+    root: {
+      margin: 0,
+      width: '100%',
+    },
+    topLayout: {
+      height: '100%',
+      // make width of box bigger on smaller screens to prevent overflow
+      // decreasing the space for the search results
+      width: '95%',
+      '@media (min-width: 1600px) and (min-height: 700px)': {
+        width: '70%',
+      },
+      margin: '0 auto',
+    },
+    sideLayout: {
+      height: '100%',
+      width: '100%',
+    },
+    dataViewTopBar: {
+      width: '98%',
+      backgroundColor: '#00000000',
+    },
+    dataView: {
+      // Only use height for the paper component if the view is table.
+      // also ensure we account for the potential horizontal scrollbar
+      height: ({ view, containerHeight }) =>
+        view !== 'card' ? containerHeight : 'auto',
+      minHeight: 500,
+      width: '98%',
+      backgroundColor: '#00000000',
+    },
+  });
+});
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
@@ -284,11 +324,26 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const searchBoxRef = React.useRef<HTMLDivElement>(null);
+  const [searchBoxHeight, setSearchBoxHeight] = React.useState(0);
+
+  React.useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      if (entries[0].contentRect.height)
+        setSearchBoxHeight(entries[0].contentRect.height);
+    });
+    const curr = searchBoxRef.current;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    observer.observe(curr);
+    return () => {
+      curr && observer.unobserve(curr);
+    };
+  }, []);
+
   // Table should take up page but leave room for: SG appbar, SG footer,
-  // grid padding, search box, checkboxes, date selectors, example search text, limited results message, padding.
-  const spacing = 2;
-  // TODO: Container height is too small on smaller screens (e.g. laptops).
-  const containerHeight = `calc(100vh - 64px - 48px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 21px - 24px - 8px${
+  // search box, search box padding, display as cards button, loading bar
+  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 47px${
     loading ? '' : ' - 4px'
   })`;
 
@@ -296,6 +351,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const { push } = useHistory();
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
+
+  const classes = searchPageStyles({ view, containerHeight });
 
   return (
     <Switch>
@@ -312,12 +369,17 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             direction={sideLayout ? 'row' : 'column'}
             justify="center"
             alignItems="center"
-            spacing={spacing}
-            style={{ margin: 0, width: '100%' }}
+            spacing={1}
+            className={classes.root}
           >
-            <Grid item id="container-search-filters">
+            <Grid
+              item
+              id="container-search-filters"
+              ref={searchBoxRef}
+              style={{ width: '100%' }}
+            >
               {sideLayout ? (
-                <Paper style={{ height: '100%', width: '100%' }}>
+                <Paper className={classes.sideLayout}>
                   <SearchBoxContainerSide
                     searchText={searchText}
                     initiateSearch={initiateSearch}
@@ -325,13 +387,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   />
                 </Paper>
               ) : (
-                <Paper
-                  style={{
-                    height: '100%',
-                    width: '70vw',
-                    minWidth: 584, // Minimum width to ensure search box contents stay aligned
-                  }}
-                >
+                <Paper className={classes.topLayout}>
                   <SearchBoxContainer
                     searchText={searchText}
                     initiateSearch={initiateSearch}
@@ -344,14 +400,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             {requestReceived && (
               <div style={{ width: '100%' }}>
                 <Grid container justify="center">
-                  <Grid
-                    container
-                    style={{
-                      width: '98vw',
-                      minWidth: 584,
-                      backgroundColor: '#00000000',
-                    }}
-                  >
+                  <Grid container className={classes.dataViewTopBar}>
                     <Grid item xs={'auto'}>
                       <ViewButton
                         viewCards={view === 'card'}
@@ -368,16 +417,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   </Grid>
                 </Grid>
                 <Grid container justify="center" id="container-search-table">
-                  <Paper
-                    style={{
-                      // Only use height for the paper component if the view is table.
-                      ...(view === 'table' ? { height: containerHeight } : {}),
-                      minHeight: 326,
-                      width: '98vw',
-                      minWidth: 584,
-                      backgroundColor: '#00000000',
-                    }}
-                  >
+                  <Paper className={classes.dataView}>
                     {/* Show loading progress if data is still being loaded */}
                     {loading && (
                       <Grid item xs={12}>
