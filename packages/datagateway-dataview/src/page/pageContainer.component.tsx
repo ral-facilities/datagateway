@@ -674,6 +674,7 @@ const PageContainer: React.FC = () => {
                       selectedItems={cartItems ?? []}
                       navigateToSelection={navigateToDownload}
                       marginSide={'8px'}
+                      loggedInAnonymously={loggedInAnonymously}
                     />
                   </Grid>
                 </StyledGrid>
