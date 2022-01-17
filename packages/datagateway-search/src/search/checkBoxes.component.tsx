@@ -1,15 +1,13 @@
 import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
 import { parseSearchToQuery, usePushSearchToggles } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
+import { InputLabel, ListItemText, MenuItem, Select } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,10 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     formControl: {
-      marginLeft: theme.spacing(2),
-    },
-    formControlSide: {
-      margin: theme.spacing(2),
+      margin: theme.spacing(1),
+      minWidth: 120,
+      maxWidth: 300,
     },
     formLabel: {
       margin: 'auto',
@@ -29,14 +26,33 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 interface CheckBoxStoreProps {
   sideLayout: boolean;
   searchableEntities: string[];
 }
 
+interface SearchToggle {
+  name: string;
+  value: boolean;
+  label: string;
+  ariaLabel: string;
+}
+
 const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
   const classes = useStyles();
-  const { sideLayout, searchableEntities } = props;
+  const [t] = useTranslation();
+  const { searchableEntities } = props;
 
   const investigationSearchable = searchableEntities.includes('investigation');
   const datasetSearchable = searchableEntities.includes('dataset');
@@ -49,94 +65,74 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
   );
   const pushSearchToggles = usePushSearchToggles();
 
-  const searchableEntitiesToggles: boolean[] = [];
-  if (investigationSearchable) searchableEntitiesToggles.push(investigation);
-  if (datasetSearchable) searchableEntitiesToggles.push(dataset);
-  if (datafileSearchable) searchableEntitiesToggles.push(datafile);
+  const searchToggles: SearchToggle[] = [];
 
-  const handleChange = (name: string, checked: boolean) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const toggleOption = !checked;
-    if (name === 'Investigation') {
-      pushSearchToggles(dataset, datafile, toggleOption);
-    } else if (name === 'Datafile') {
-      pushSearchToggles(dataset, toggleOption, investigation);
-    } else if (name === 'Dataset') {
-      pushSearchToggles(toggleOption, datafile, investigation);
-    }
+  if (investigationSearchable)
+    searchToggles.push({
+      name: 'Investigation',
+      value: investigation,
+      label: t('searchBox.checkboxes.investigation'),
+      ariaLabel: t('searchBox.checkboxes.investigation_arialabel'),
+    });
+  if (datasetSearchable)
+    searchToggles.push({
+      name: 'Dataset',
+      value: dataset,
+      label: t('searchBox.checkboxes.dataset'),
+      ariaLabel: t('searchBox.checkboxes.dataset_arialabel'),
+    });
+  if (datafileSearchable)
+    searchToggles.push({
+      name: 'Datafile',
+      value: datafile,
+      label: t('searchBox.checkboxes.datafile'),
+      ariaLabel: t('searchBox.checkboxes.datafile_arialabel'),
+    });
+
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+    const newValues = event.target.value as string[];
+
+    pushSearchToggles(
+      newValues.indexOf('Dataset') > -1,
+      newValues.indexOf('Datafile') > -1,
+      newValues.indexOf('Investigation') > -1
+    );
   };
 
-  const error = !searchableEntitiesToggles.includes(true);
-
-  const [t] = useTranslation();
+  const error = searchToggles.filter((toggle) => toggle.value).length === 0;
 
   return (
     <div className={classes.root}>
       <FormControl
         required
         error={error}
-        component="fieldset"
-        className={`${
-          sideLayout ? classes.formControlSide : classes.formControl
-        } tour-search-checkbox`}
+        className={`${classes.formControl} tour-search-checkbox`}
       >
-        <FormGroup row={!sideLayout}>
-          <FormLabel
-            component="legend"
-            focused={false}
-            className={classes.formLabel}
-          >
-            {t('searchBox.checkboxes.text')}
-          </FormLabel>
-          {investigationSearchable && (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={investigation}
-                  onChange={handleChange('Investigation', investigation)}
-                  value="Investigation"
-                  inputProps={{
-                    'aria-label': t(
-                      'searchBox.checkboxes.investigation_arialabel'
-                    ),
-                  }}
-                />
-              }
-              label={t('searchBox.checkboxes.investigation')}
-            />
-          )}
-          {datasetSearchable && (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={dataset}
-                  onChange={handleChange('Dataset', dataset)}
-                  value="Dataset"
-                  inputProps={{
-                    'aria-label': t('searchBox.checkboxes.dataset_arialabel'),
-                  }}
-                />
-              }
-              label={t('searchBox.checkboxes.dataset')}
-            />
-          )}
-          {datafileSearchable && (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={datafile}
-                  onChange={handleChange('Datafile', datafile)}
-                  value="Datafile"
-                  inputProps={{
-                    'aria-label': t('searchBox.checkboxes.datafile_arialabel'),
-                  }}
-                />
-              }
-              label={t('searchBox.checkboxes.datafile')}
-            />
-          )}
-        </FormGroup>
+        <InputLabel id="search-entities-checkbox-label">Types</InputLabel>
+        <Select
+          labelId="search-entities-checkbox-label"
+          id="search-entities-checkbox"
+          multiple
+          value={searchToggles
+            .filter((toggle) => toggle.value)
+            .map((toggle) => toggle.name)}
+          onChange={handleChange}
+          variant="outlined"
+          renderValue={(selected) => {
+            return (selected as string[]).join(', ');
+          }}
+          MenuProps={MenuProps}
+        >
+          {searchToggles.map((toggle) => (
+            <MenuItem key={toggle.name} value={toggle.name}>
+              <Checkbox
+                checked={toggle.value}
+                inputProps={{ 'aria-label': toggle.ariaLabel }}
+              />
+              <ListItemText primary={toggle.name} />
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
     </div>
   );
