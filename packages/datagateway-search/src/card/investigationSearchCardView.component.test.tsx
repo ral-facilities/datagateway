@@ -369,7 +369,7 @@ describe('Investigation - Card View', () => {
         },
       ],
     });
-    delete cardData[0].investigation?.investigationInstruments;
+    delete cardData[0].investigationInstruments;
 
     (useInvestigationsPaginated as jest.Mock).mockReturnValue({
       data: cardData,
@@ -377,7 +377,7 @@ describe('Investigation - Card View', () => {
     });
     const wrapper = createWrapper('isis');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
+    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');
