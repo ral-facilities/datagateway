@@ -1,11 +1,11 @@
 {
   "searchBox": {
     "search_text": "Search for title, name, instrument",
-    "search_textbox_label": "e.g. <1>\"instrument calibration\"</1>, or <4>neutron AND scattering</4>.",
+    "search_textbox_label": "For example <1>\"instrument calibration\"</1> or <4>neutron AND scattering</4>. See all search options.",
     "search_textbox_label_link1": "?searchText=\"instrument+calibration\"",
     "search_textbox_label_link2": "?searchText=neutron+AND+scattering",
-    "start_date": "Start Date",
-    "end_date": "End Date",
+    "start_date": "Start date",
+    "end_date": "End date",
     "checkboxes": {
       "text": "Please select at least one",
       "investigation": "Investigation",
@@ -29,7 +29,7 @@
       "cancel": "Cancel",
       "clear": "Clear"
     },
-    "limited_results_message": "Please note: Only the top {{maxNumResults}} results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. Click 'Advanced' to learn more."
+    "limited_results_message": "Only the top {{maxNumResults}} results will be displayed for each type"
   },
   "searchPageTable": {
     "tabs_arialabel": "Search table",

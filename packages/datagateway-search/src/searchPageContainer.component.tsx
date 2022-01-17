@@ -135,7 +135,7 @@ const searchPageStyles = makeStyles<
       // decreasing the space for the search results
       width: '95%',
       '@media (min-width: 1600px) and (min-height: 700px)': {
-        width: '70%',
+        width: '95%',
       },
       margin: '0 auto',
     },

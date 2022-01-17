@@ -1,6 +1,14 @@
 import React from 'react';
 
-import { Grid, Box, Typography, Link } from '@material-ui/core';
+import {
+  Grid,
+  Box,
+  Typography,
+  Link,
+  makeStyles,
+  createStyles,
+  Theme,
+} from '@material-ui/core';
 
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
@@ -10,6 +18,27 @@ import { Trans, useTranslation } from 'react-i18next';
 import AdvancedHelpDialogue from './search/advancedHelpDialogue.component';
 import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    leftText: {
+      textAlign: 'left',
+      fontSize: '14px',
+      textIndent: '16px',
+      display: 'inline-block',
+    },
+    rightText: {
+      textAlign: 'right',
+      fontSize: '14px',
+      right: 0,
+      paddingRight: '16px',
+      marginLeft: 'auto',
+    },
+    bold: {
+      fontWeight: 'bold',
+    },
+  })
+);
 
 interface SearchBoxContainerProps {
   searchText: string;
@@ -21,6 +50,7 @@ const SearchBoxContainer = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
   const { searchText, initiateSearch, onSearchTextChange } = props;
+  const classes = useStyles();
   const [t] = useTranslation();
 
   const maxNumResults = useSelector(
@@ -28,76 +58,57 @@ const SearchBoxContainer = (
   );
 
   return (
-    <Grid
-      container
-      direction="row"
-      justify="center"
-      alignItems="stretch"
-      id="container-searchbox"
-    >
-      <Grid item xs={8}>
-        <Box pl={2} pb={1}>
+    <div style={{ display: 'block', boxSizing: 'border-box' }}>
+      <Grid container direction="row" justify="center" id="container-searchbox">
+        <Grid item xs={4}>
           <SearchTextBox
             searchText={searchText}
             initiateSearch={initiateSearch}
             onChange={onSearchTextChange}
           />
-        </Box>
-      </Grid>
+        </Grid>
 
-      <Grid item style={{ display: 'flex' }}>
-        <Box px={2} m="auto">
-          <SearchButton initiateSearch={initiateSearch} />
-        </Box>
-      </Grid>
+        <Grid item style={{ marginTop: '8px' }}>
+          <CheckboxesGroup />
+        </Grid>
 
-      <Grid item style={{ display: 'flex' }}>
-        <Box px={2} m="auto">
-          <AdvancedHelpDialogue />
-        </Box>
-      </Grid>
+        <Grid item style={{ marginTop: '8px' }}>
+          <SelectDates initiateSearch={initiateSearch} />
+        </Grid>
 
-      <Grid container item justify="center" style={{ padding: 0, margin: 0 }}>
-        <Typography style={{ fontSize: '14px', padding: 0, margin: 0 }}>
+        <Grid item style={{ display: 'flex', marginTop: '8px' }}>
+          <Box px={2} m="auto">
+            <SearchButton initiateSearch={initiateSearch} />
+          </Box>
+        </Grid>
+
+        <Grid item style={{ display: 'flex' }}>
+          <Box px={2} m="auto">
+            <AdvancedHelpDialogue />
+          </Box>
+        </Grid>
+      </Grid>
+      <div style={{ display: 'flex' }}>
+        <Typography className={classes.leftText}>
           <Trans t={t} i18nKey="searchBox.search_textbox_label">
-            e.g. title has
+            For example
             <Link href={t('searchBox.search_textbox_label_link1')}>
               &quot;instrument calibration&quot;
             </Link>
-            , or{' '}
+            or{' '}
             <Link href={t('searchBox.search_textbox_label_link2')}>
               neutron AND scattering
             </Link>
-            .
+            . See all search options.
           </Trans>
         </Typography>
-      </Grid>
-
-      <Grid
-        container
-        item
-        justify="center"
-        style={{ paddingBottom: 8, paddingTop: 8 }}
-      >
-        <Grid item style={{ display: 'flex' }}>
-          <Box m="auto">
-            <CheckboxesGroup />
-          </Box>
-        </Grid>
-
-        <Grid item>
-          <Box px={0.75}>
-            <SelectDates initiateSearch={initiateSearch} />
-          </Box>
-        </Grid>
-      </Grid>
-
-      <Typography style={{ margin: '10px' }}>
-        {t('searchBox.limited_results_message', {
-          maxNumResults,
-        })}
-      </Typography>
-    </Grid>
+        <Typography display="inline" className={classes.rightText}>
+          {t('searchBox.limited_results_message', {
+            maxNumResults,
+          })}
+        </Typography>
+      </div>
+    </div>
   );
 };
 

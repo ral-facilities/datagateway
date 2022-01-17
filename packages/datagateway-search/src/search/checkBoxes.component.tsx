@@ -108,9 +108,12 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         error={error}
         className={`${classes.formControl} tour-search-checkbox`}
       >
-        <InputLabel id="search-entities-checkbox-label">Types</InputLabel>
+        <InputLabel id="search-entities-checkbox-label" variant="outlined">
+          Types
+        </InputLabel>
         <Select
           labelId="search-entities-checkbox-label"
+          label="Types *"
           id="search-entities-checkbox"
           multiple
           value={searchToggles

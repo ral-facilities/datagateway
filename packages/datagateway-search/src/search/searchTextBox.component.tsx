@@ -22,24 +22,22 @@ const SearchTextBox = (props: SearchTextProps): React.ReactElement => {
   };
 
   return (
-    <div>
-      <TextField
-        className="tour-search-textfield"
-        id="filled-search"
-        label={t('searchBox.search_text')}
-        type="search"
-        margin="normal"
-        value={searchText}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        fullWidth
-        variant="outlined"
-        color="secondary"
-        InputProps={{
-          'aria-label': t('searchBox.search_text_arialabel'),
-        }}
-      />
-    </div>
+    <TextField
+      className="tour-search-textfield"
+      id="filled-search"
+      label={t('searchBox.search_text')}
+      type="search"
+      margin="normal"
+      value={searchText}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+      fullWidth
+      variant="outlined"
+      color="secondary"
+      InputProps={{
+        'aria-label': t('searchBox.search_text_arialabel'),
+      }}
+    />
   );
 };
 
