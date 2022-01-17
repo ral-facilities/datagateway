@@ -1,7 +1,7 @@
 {
   "searchBox": {
     "search_text": "Search for title, name, instrument",
-    "search_textbox_label": "For example <1>\"instrument calibration\"</1> or <4>neutron AND scattering</4>. See all search options.",
+    "search_textbox_label": "For example <1>\"instrument calibration\"</1> or <4>neutron AND scattering</4>.",
     "search_textbox_label_link1": "?searchText=\"instrument+calibration\"",
     "search_textbox_label_link2": "?searchText=neutron+AND+scattering",
     "start_date": "Start date",

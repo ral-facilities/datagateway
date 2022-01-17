@@ -2,7 +2,6 @@ import React from 'react';
 
 import {
   Grid,
-  Box,
   Typography,
   Link,
   makeStyles,
@@ -18,6 +17,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import AdvancedHelpDialogue from './search/advancedHelpDialogue.component';
 import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'left',
       fontSize: '14px',
       textIndent: '16px',
-      display: 'inline-block',
     },
     rightText: {
       textAlign: 'right',
@@ -58,9 +57,9 @@ const SearchBoxContainer = (
   );
 
   return (
-    <div style={{ display: 'block', boxSizing: 'border-box' }}>
+    <div>
       <Grid container direction="row" justify="center" id="container-searchbox">
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <SearchTextBox
             searchText={searchText}
             initiateSearch={initiateSearch}
@@ -76,37 +75,54 @@ const SearchBoxContainer = (
           <SelectDates initiateSearch={initiateSearch} />
         </Grid>
 
-        <Grid item style={{ display: 'flex', marginTop: '8px' }}>
-          <Box px={2} m="auto">
-            <SearchButton initiateSearch={initiateSearch} />
-          </Box>
-        </Grid>
-
-        <Grid item style={{ display: 'flex' }}>
-          <Box px={2} m="auto">
-            <AdvancedHelpDialogue />
-          </Box>
+        <Grid
+          item
+          style={{ display: 'flex', marginTop: '24px', marginLeft: 6 }}
+        >
+          <SearchButton initiateSearch={initiateSearch} />
         </Grid>
       </Grid>
       <div style={{ display: 'flex' }}>
         <Typography className={classes.leftText}>
           <Trans t={t} i18nKey="searchBox.search_textbox_label">
             For example
-            <Link href={t('searchBox.search_textbox_label_link1')}>
+            <Link
+              style={{ fontWeight: 'bold' }}
+              href={t('searchBox.search_textbox_label_link1')}
+            >
               &quot;instrument calibration&quot;
             </Link>
             or{' '}
-            <Link href={t('searchBox.search_textbox_label_link2')}>
+            <Link
+              style={{ fontWeight: 'bold' }}
+              href={t('searchBox.search_textbox_label_link2')}
+            >
               neutron AND scattering
             </Link>
-            . See all search options.
+            .
           </Trans>
+          <AdvancedHelpDialogue />
         </Typography>
-        <Typography display="inline" className={classes.rightText}>
-          {t('searchBox.limited_results_message', {
-            maxNumResults,
-          })}
-        </Typography>
+
+        <div className={classes.rightText}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
+            <InfoOutlinedIcon fontSize="small" />{' '}
+            <Typography
+              display="inline"
+              style={{ paddingLeft: '6px', fontSize: '14px' }}
+            >
+              {t('searchBox.limited_results_message', {
+                maxNumResults,
+              })}
+            </Typography>
+          </div>
+        </div>
       </div>
     </div>
   );

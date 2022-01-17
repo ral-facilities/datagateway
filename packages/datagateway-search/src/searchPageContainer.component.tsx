@@ -133,9 +133,9 @@ const searchPageStyles = makeStyles<
       height: '100%',
       // make width of box bigger on smaller screens to prevent overflow
       // decreasing the space for the search results
-      width: '95%',
+      width: '100%',
       '@media (min-width: 1600px) and (min-height: 700px)': {
-        width: '95%',
+        width: '98%',
       },
       margin: '0 auto',
     },

@@ -108,12 +108,17 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         error={error}
         className={`${classes.formControl} tour-search-checkbox`}
       >
-        <InputLabel id="search-entities-checkbox-label" variant="outlined">
-          Types
-        </InputLabel>
+        {error && (
+          <InputLabel
+            id="search-entities-checkbox-label"
+            variant="outlined"
+            shrink={false}
+          >
+            Types
+          </InputLabel>
+        )}
         <Select
           labelId="search-entities-checkbox-label"
-          label="Types *"
           id="search-entities-checkbox"
           multiple
           value={searchToggles
@@ -122,7 +127,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
           onChange={handleChange}
           variant="outlined"
           renderValue={(selected) => {
-            return (selected as string[]).join(', ');
+            return `Types (${(selected as string[]).length})`;
           }}
           MenuProps={MenuProps}
         >
