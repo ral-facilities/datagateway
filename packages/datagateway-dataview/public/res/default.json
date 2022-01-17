@@ -65,13 +65,23 @@
         "details": "The recommended format for citing this data can be found below.",
         "details_select_format": "You can also select your preferred format here:",
         "select_arialabel": "Citation format drop down list",
-        "copy_citation" : "Copy citation",
-        "copied_citation" : "Copied citation",
-        "copy_citation_arialabel" : "Copy citation button",
+        "copy_citation": "Copy citation",
+        "copied_citation": "Copied citation",
+        "copy_citation_arialabel": "Copy citation button",
         "error": "An error has occurred while fetching the citation.",
         "locale": "en-GB",
         "default_format": "default",
-        "formats": ["american-physics-society", "american-chemical-society", "american-institute-of-physics",  "bibtex", "chicago-author-date", "ieee-with-url", "institute-of-physics-numeric", "nature", "science"]
+        "formats": [
+          "american-physics-society",
+          "american-chemical-society",
+          "american-institute-of-physics",
+          "bibtex",
+          "chicago-author-date",
+          "ieee-with-url",
+          "institute-of-physics-numeric",
+          "nature",
+          "science"
+        ]
       }
     }
   },
@@ -260,7 +270,8 @@
     "added_plural": "{{count}} items have been added to selection.",
     "removed": "{{count}} item has been removed from selection.",
     "removed_plural": "{{count}} items have been removed from selection.",
-    "link": "Go to selection."
+    "link": "Go to selection.",
+    "warning_message_session_token": "Please remember to submit your selection as this session will timeout after 2 hours of inactivity and the selection will be lost after the timeout"
   },
   "doi_constants": {
     "keywords": [
