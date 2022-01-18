@@ -136,7 +136,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
               'aria-label': t('searchBox.start_date_button_arialabel'),
             }}
             color="secondary"
-            style={sideLayout ? {} : { paddingRight: 6, width: '175px' }}
+            style={sideLayout ? {} : { paddingRight: 6, width: '178px' }}
             okLabel={
               <span style={{ color: buttonColour }}>
                 {t('searchBox.date_picker.ok')}
@@ -176,7 +176,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
               'aria-label': t('searchBox.end_date_button_arialabel'),
             }}
             color="secondary"
-            style={sideLayout ? {} : { width: '175px' }}
+            style={sideLayout ? {} : { width: '178px' }}
             okLabel={
               <span style={{ color: buttonColour }}>
                 {t('searchBox.date_picker.ok')}

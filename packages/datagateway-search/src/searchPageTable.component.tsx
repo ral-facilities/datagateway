@@ -241,9 +241,19 @@ const SearchPageTable = (
               label={
                 <StyledBadge
                   id="investigation-badge"
-                  badgeContent={investigationDataCount ?? 0}
+                  badgeContent={
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {investigationDataCount ?? 0}
+                    </span>
+                  }
                   showZero
                   max={999}
+                  style={{ marginTop: '1px' }}
                 >
                   <span
                     style={{
@@ -254,6 +264,8 @@ const SearchPageTable = (
                       marginLeft: `calc(-0.5 * ${badgeDigits(
                         investigation?.length
                       )}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
                     }}
                   >
                     {t('tabs.investigation')}
@@ -271,9 +283,19 @@ const SearchPageTable = (
               label={
                 <StyledBadge
                   id="dataset-badge"
-                  badgeContent={datasetDataCount ?? 0}
+                  badgeContent={
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {datasetDataCount ?? 0}
+                    </span>
+                  }
                   showZero
                   max={999}
+                  style={{ marginTop: '1px' }}
                 >
                   <span
                     style={{
@@ -284,6 +306,8 @@ const SearchPageTable = (
                       marginLeft: `calc(-0.5 * ${badgeDigits(
                         dataset?.length
                       )}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
                     }}
                   >
                     {t('tabs.dataset')}
@@ -301,9 +325,19 @@ const SearchPageTable = (
               label={
                 <StyledBadge
                   id="datafile-badge"
-                  badgeContent={datafileDataCount ?? 0}
+                  badgeContent={
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {datafileDataCount ?? 0}
+                    </span>
+                  }
                   showZero
                   max={999}
+                  style={{ marginTop: '1px' }}
                 >
                   <span
                     style={{
@@ -314,6 +348,8 @@ const SearchPageTable = (
                       marginLeft: `calc(-0.5 * ${badgeDigits(
                         datafile?.length
                       )}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
                     }}
                   >
                     {t('tabs.datafile')}

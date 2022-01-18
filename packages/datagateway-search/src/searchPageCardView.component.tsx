@@ -45,13 +45,8 @@ const badgeStyles = (theme: Theme): StyleRules =>
 const tabStyles = (theme: Theme): StyleRules =>
   createStyles({
     indicator: {
-      //Use white for all modes except use red for dark high contrast mode as this is much clearer
-      backgroundColor:
-        theme.palette.type === 'dark' &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).colours?.type === 'contrast'
-          ? '#FF0000'
-          : '#FFFFFF',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      backgroundColor: (theme as any).colours?.blue,
     },
   });
 
@@ -243,9 +238,19 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="investigation-badge"
-                  badgeContent={investigationDataCount ?? 0}
+                  badgeContent={
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {investigationDataCount ?? 0}
+                    </span>
+                  }
                   showZero
                   max={999}
+                  style={{ marginTop: '1px' }}
                 >
                   <span
                     style={{
@@ -256,6 +261,8 @@ const SearchPageCardView = (
                       marginLeft: `calc(-0.5 * ${badgeDigits(
                         investigation?.length
                       )}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
                     }}
                   >
                     {t('tabs.investigation')}
@@ -273,9 +280,19 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="dataset-badge"
-                  badgeContent={datasetDataCount ?? 0}
+                  badgeContent={
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {datasetDataCount ?? 0}
+                    </span>
+                  }
                   showZero
                   max={999}
+                  style={{ marginTop: '1px' }}
                 >
                   <span
                     style={{
@@ -286,6 +303,8 @@ const SearchPageCardView = (
                       marginLeft: `calc(-0.5 * ${badgeDigits(
                         dataset?.length
                       )}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
                     }}
                   >
                     {t('tabs.dataset')}
@@ -303,9 +322,19 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="datafile-badge"
-                  badgeContent={datafileDataCount ?? 0}
+                  badgeContent={
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {datafileDataCount ?? 0}
+                    </span>
+                  }
                   showZero
                   max={999}
+                  style={{ marginTop: '1px' }}
                 >
                   <span
                     style={{
@@ -316,6 +345,8 @@ const SearchPageCardView = (
                       marginLeft: `calc(-0.5 * ${badgeDigits(
                         datafile?.length
                       )}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
                     }}
                   >
                     {t('tabs.datafile')}

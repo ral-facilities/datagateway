@@ -23,6 +23,10 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 'auto',
       marginRight: theme.spacing(2),
     },
+    select: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      color: (theme as any).colours?.contrastGrey,
+    },
   })
 );
 
@@ -120,6 +124,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         <Select
           labelId="search-entities-checkbox-label"
           id="search-entities-checkbox"
+          className={classes.select}
           multiple
           value={searchToggles
             .filter((toggle) => toggle.value)

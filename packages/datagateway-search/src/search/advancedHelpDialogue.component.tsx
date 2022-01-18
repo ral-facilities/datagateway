@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme: Theme) => {
       padding: theme.spacing(2),
     },
     advancedButton: {
-      top: '-1px',
       fontSize: '14px',
       fontWeight: 'bold',
     },

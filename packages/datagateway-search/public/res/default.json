@@ -1,9 +1,9 @@
 {
   "searchBox": {
     "search_text": "Search for title, name, instrument",
-    "search_textbox_label": "For example <1>\"instrument calibration\"</1> or <4>neutron AND scattering</4>.",
-    "search_textbox_label_link1": "?searchText=\"instrument+calibration\"",
-    "search_textbox_label_link2": "?searchText=neutron+AND+scattering",
+    "examples_label": "For example <1>\"instrument calibration\"</1> or <4>neutron AND scattering</4>.",
+    "examples_label_link1": "?searchText=\"instrument+calibration\"",
+    "examples_label_link2": "?searchText=neutron+AND+scattering",
     "start_date": "Start date",
     "end_date": "End date",
     "checkboxes": {
@@ -22,7 +22,7 @@
     "end_date_arialabel": "End date input",
     "end_date_button_arialabel": "End date picker",
     "search_button_arialabel": "Submit search",
-    "invalid_date_message": "Please enter the date in the format yyyy-MM-dd.",
+    "invalid_date_message": "Date format: yyyy-MM-dd.",
     "invalid_date_range_message": "Invalid date range",
     "date_picker": {
       "ok": "OK",

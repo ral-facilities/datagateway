@@ -22,23 +22,29 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    infoIcon: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      color: (theme as any).colours?.contrastGrey,
+    },
     containerBox: {
       maxWidth: '1600px',
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
       margin: 'auto',
       justifyContent: 'center',
     },
     leftText: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      color: (theme as any).colours?.contrastGrey,
       textAlign: 'left',
       fontSize: '14px',
-      textIndent: '16px',
     },
     rightText: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      color: (theme as any).colours?.contrastGrey,
       textAlign: 'right',
       fontSize: '14px',
-      right: 0,
-      paddingRight: '16px',
       marginLeft: 'auto',
     },
     bold: {
@@ -92,23 +98,23 @@ const SearchBoxContainer = (
       </Grid>
       <div style={{ display: 'flex' }}>
         <Typography className={classes.leftText}>
-          <Trans t={t} i18nKey="searchBox.search_textbox_label">
+          <Trans t={t} i18nKey="searchBox.examples_label">
             For example
             <Link
               style={{ fontWeight: 'bold' }}
-              href={t('searchBox.search_textbox_label_link1')}
+              href={t('searchBox.examples_label_link1')}
             >
               &quot;instrument calibration&quot;
             </Link>
             or{' '}
             <Link
               style={{ fontWeight: 'bold' }}
-              href={t('searchBox.search_textbox_label_link2')}
+              href={t('searchBox.examples_label_link2')}
             >
               neutron AND scattering
             </Link>
-            .{' '}
-          </Trans>
+            .
+          </Trans>{' '}
           <AdvancedHelpDialogue />
         </Typography>
 
@@ -120,7 +126,7 @@ const SearchBoxContainer = (
               flexWrap: 'nowrap',
             }}
           >
-            <InfoOutlinedIcon fontSize="small" />{' '}
+            <InfoOutlinedIcon className={classes.infoIcon} fontSize="small" />{' '}
             <Typography
               display="inline"
               style={{ paddingLeft: '6px', fontSize: '14px' }}
