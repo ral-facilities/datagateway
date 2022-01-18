@@ -7,6 +7,7 @@ import {
   makeStyles,
   createStyles,
   Theme,
+  Box,
 } from '@material-ui/core';
 
 import SelectDates from './search/datePicker.component';
@@ -21,6 +22,13 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    containerBox: {
+      maxWidth: '1600px',
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      margin: 'auto',
+      justifyContent: 'center',
+    },
     leftText: {
       textAlign: 'left',
       fontSize: '14px',
@@ -57,9 +65,9 @@ const SearchBoxContainer = (
   );
 
   return (
-    <div>
+    <Box className={classes.containerBox}>
       <Grid container direction="row" justify="center" id="container-searchbox">
-        <Grid item xs={6}>
+        <Grid item xs="auto" style={{ flexGrow: 1 }}>
           <SearchTextBox
             searchText={searchText}
             initiateSearch={initiateSearch}
@@ -99,7 +107,7 @@ const SearchBoxContainer = (
             >
               neutron AND scattering
             </Link>
-            .
+            .{' '}
           </Trans>
           <AdvancedHelpDialogue />
         </Typography>
@@ -109,7 +117,7 @@ const SearchBoxContainer = (
             style={{
               display: 'flex',
               alignItems: 'center',
-              flexWrap: 'wrap',
+              flexWrap: 'nowrap',
             }}
           >
             <InfoOutlinedIcon fontSize="small" />{' '}
@@ -124,7 +132,7 @@ const SearchBoxContainer = (
           </div>
         </div>
       </div>
-    </div>
+    </Box>
   );
 };
 
