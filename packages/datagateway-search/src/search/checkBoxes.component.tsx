@@ -123,7 +123,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         )}
         <Select
           labelId="search-entities-checkbox-label"
-          id="search-entities-checkbox"
+          id="search-entities-menu"
           className={classes.select}
           multiple
           value={searchToggles

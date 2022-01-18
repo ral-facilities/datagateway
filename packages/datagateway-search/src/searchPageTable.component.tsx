@@ -34,7 +34,7 @@ import { useIsFetching } from 'react-query';
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
     badge: {
-      backgroundColor: '#fff',
+      backgroundColor: '#CCCCCC',
       color: '#000000',
       fontSize: '14px',
       fontWeight: 'bold',
@@ -225,7 +225,7 @@ const SearchPageTable = (
     <div>
       {/* Show loading progress if data is still being loaded */}
       {loading && <LinearProgress color="secondary" />}
-      <AppBar position="static">
+      <AppBar position="static" elevation={0}>
         <StyledTabs
           className="tour-search-tab-select"
           value={currentTab}

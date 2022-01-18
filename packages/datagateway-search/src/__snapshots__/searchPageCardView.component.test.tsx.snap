@@ -3389,6 +3389,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
           >
             <div>
               <WithStyles(ForwardRef(AppBar))
+                elevation={0}
                 position="static"
               >
                 <ForwardRef(AppBar)
@@ -3407,12 +3408,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                       "root": "MuiAppBar-root",
                     }
                   }
+                  elevation={0}
                   position="static"
                 >
                   <WithStyles(ForwardRef(Paper))
                     className="MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary"
                     component="header"
-                    elevation={4}
+                    elevation={0}
                     square={true}
                   >
                     <ForwardRef(Paper)
@@ -3450,11 +3452,11 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         }
                       }
                       component="header"
-                      elevation={4}
+                      elevation={0}
                       square={true}
                     >
                       <header
-                        className="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary MuiPaper-elevation4"
+                        className="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary MuiPaper-elevation0"
                       >
                         <WithStyles(WithStyles(ForwardRef(Tabs)))
                           aria-label="searchPageCardView.tabs_arialabel"
@@ -3529,6 +3531,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                           <span
                                             style={
                                               Object {
+                                                "fontSize": "16px",
+                                                "fontWeight": "bold",
                                                 "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                 "marginRight": "calc(0.5 * 1ch + 6px)",
                                                 "paddingRight": "1ch",
@@ -3573,6 +3577,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                             <span
                                               style={
                                                 Object {
+                                                  "fontSize": "16px",
+                                                  "fontWeight": "bold",
                                                   "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                   "marginRight": "calc(0.5 * 1ch + 6px)",
                                                   "paddingRight": "1ch",
@@ -3693,6 +3699,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                         <span
                                                           style={
                                                             Object {
+                                                              "fontSize": "16px",
+                                                              "fontWeight": "bold",
                                                               "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                               "marginRight": "calc(0.5 * 1ch + 6px)",
                                                               "paddingRight": "1ch",
@@ -3760,6 +3768,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                           <span
                                             style={
                                               Object {
+                                                "fontSize": "16px",
+                                                "fontWeight": "bold",
                                                 "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                 "marginRight": "calc(0.5 * 1ch + 6px)",
                                                 "paddingRight": "1ch",
@@ -3804,6 +3814,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                             <span
                                               style={
                                                 Object {
+                                                  "fontSize": "16px",
+                                                  "fontWeight": "bold",
                                                   "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                   "marginRight": "calc(0.5 * 1ch + 6px)",
                                                   "paddingRight": "1ch",
@@ -3924,6 +3936,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                         <span
                                                           style={
                                                             Object {
+                                                              "fontSize": "16px",
+                                                              "fontWeight": "bold",
                                                               "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                               "marginRight": "calc(0.5 * 1ch + 6px)",
                                                               "paddingRight": "1ch",
@@ -3991,6 +4005,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                           <span
                                             style={
                                               Object {
+                                                "fontSize": "16px",
+                                                "fontWeight": "bold",
                                                 "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                 "marginRight": "calc(0.5 * 1ch + 6px)",
                                                 "paddingRight": "1ch",
@@ -4035,6 +4051,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                             <span
                                               style={
                                                 Object {
+                                                  "fontSize": "16px",
+                                                  "fontWeight": "bold",
                                                   "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                   "marginRight": "calc(0.5 * 1ch + 6px)",
                                                   "paddingRight": "1ch",
@@ -4155,6 +4173,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                         <span
                                                           style={
                                                             Object {
+                                                              "fontSize": "16px",
+                                                              "fontWeight": "bold",
                                                               "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                               "marginRight": "calc(0.5 * 1ch + 6px)",
                                                               "paddingRight": "1ch",

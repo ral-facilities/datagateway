@@ -76,18 +76,16 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
 
   return (
     <React.Fragment>
-      <Typography display="inline" style={{ fontSize: '14px' }}>
-        See all{' '}
-        <Link
-          component="button"
-          className={classes.advancedButton}
-          aria-label={t('advanced_search_help.advanced_button_arialabel')}
-          onClick={handleClickOpen}
-        >
-          search options
-        </Link>
-        .
-      </Typography>
+      See all{' '}
+      <Link
+        component="button"
+        className={classes.advancedButton}
+        aria-label={t('advanced_search_help.advanced_button_arialabel')}
+        onClick={handleClickOpen}
+      >
+        search options
+      </Link>
+      .
       <Dialog
         onClose={handleClose}
         aria-labelledby="advanced-search-dialog-title"

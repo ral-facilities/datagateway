@@ -1,15 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Advanced help dialogue component tests renders correctly 1`] = `
-<div>
-  <WithStyles(ForwardRef(Button))
+<Fragment>
+  See all
+   
+  <WithStyles(ForwardRef(Link))
     aria-label="advanced_search_help.advanced_button_arialabel"
     className="makeStyles-advancedButton-2"
+    component="button"
     onClick={[Function]}
-    variant="text"
   >
-    advanced_search_help.advanced_button
-  </WithStyles(ForwardRef(Button))>
+    search options
+  </WithStyles(ForwardRef(Link))>
+  .
   <WithStyles(ForwardRef(Dialog))
     PaperProps={
       Object {
@@ -166,5 +169,5 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
       </Trans>
     </WithStyles(ForwardRef(Typography))>
   </WithStyles(ForwardRef(Dialog))>
-</div>
+</Fragment>
 `;
