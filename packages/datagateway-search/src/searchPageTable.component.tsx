@@ -45,13 +45,8 @@ const badgeStyles = (theme: Theme): StyleRules =>
 const tabStyles = (theme: Theme): StyleRules =>
   createStyles({
     indicator: {
-      //Use white for all modes except use red for dark high contrast mode as this is much clearer
-      backgroundColor:
-        theme.palette.type === 'dark' &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).colours?.type === 'contrast'
-          ? '#FF0000'
-          : '#FFFFFF',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      backgroundColor: (theme as any).colours?.blue,
     },
   });
 
@@ -246,6 +241,7 @@ const SearchPageTable = (
                       style={{
                         fontSize: '14px',
                         fontWeight: 'bold',
+                        marginTop: '1px',
                       }}
                     >
                       {investigationDataCount ?? 0}
@@ -288,6 +284,7 @@ const SearchPageTable = (
                       style={{
                         fontSize: '14px',
                         fontWeight: 'bold',
+                        marginTop: '1px',
                       }}
                     >
                       {datasetDataCount ?? 0}
@@ -330,6 +327,7 @@ const SearchPageTable = (
                       style={{
                         fontSize: '14px',
                         fontWeight: 'bold',
+                        marginTop: '1px',
                       }}
                     >
                       {datafileDataCount ?? 0}

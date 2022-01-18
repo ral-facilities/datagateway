@@ -243,6 +243,7 @@ const SearchPageCardView = (
                       style={{
                         fontSize: '14px',
                         fontWeight: 'bold',
+                        marginTop: '1px',
                       }}
                     >
                       {investigationDataCount ?? 0}
@@ -285,6 +286,7 @@ const SearchPageCardView = (
                       style={{
                         fontSize: '14px',
                         fontWeight: 'bold',
+                        marginTop: '1px',
                       }}
                     >
                       {datasetDataCount ?? 0}
@@ -327,6 +329,7 @@ const SearchPageCardView = (
                       style={{
                         fontSize: '14px',
                         fontWeight: 'bold',
+                        marginTop: '1px',
                       }}
                     >
                       {datafileDataCount ?? 0}
