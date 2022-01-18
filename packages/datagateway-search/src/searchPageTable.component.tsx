@@ -22,11 +22,17 @@ import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
 import {
+  Filter,
+  FiltersType,
   parseSearchToQuery,
+  SearchableEntities,
+  // SortType,
   useDatafileCount,
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
+  usePushFilter,
+  useSort,
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { useIsFetching } from 'react-query';
@@ -154,6 +160,47 @@ const SearchPageTable = (
   });
   const loading = isFetchingNum > 0;
 
+  const storeFilters = (
+    filters: FiltersType,
+    searchableEntities: SearchableEntities
+  ): void => {
+    const filter = (searchableEntities as string) + 'Filters';
+
+    localStorage.setItem(filter, JSON.stringify(filters));
+  };
+  const getFilters = (
+    searchableEntities: SearchableEntities
+  ): Filter | null => {
+    const filter = (searchableEntities as string) + 'Filters';
+    const savedFilters = localStorage.getItem(filter);
+    if (savedFilters) {
+      return JSON.parse(savedFilters) as Filter;
+    } else {
+      return null;
+    }
+  };
+
+  // const storeSort = (sort: SortType): void => {
+  //   localStorage.setItem('investigationSort', JSON.stringify(sort));
+  // };
+  const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  // console.log('POP filters', filters);
+  // console.log('POP filters string', JSON.parse(JSON.stringify(filters)));
+  const pushFilters = usePushFilter('push');
+  const replaceFilters = usePushFilter('replace');
+  const handleSort = useSort('push');
+
+  const updateFilters = (filter: Filter | null): void => {
+    if (filter) {
+      Object.entries(filter).map(([key, value]) => replaceFilters(key, value));
+
+      console.log('POP dict test', Object.entries(filter));
+      console.log('POP filers updated', JSON.stringify(filter));
+    }
+  };
+
   // Setting a tab based on user selection and what tabs are available
   useEffect(() => {
     if (currentTab === 'investigation') {
@@ -191,7 +238,66 @@ const SearchPageTable = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
+    console.log('POP investigation filters', getFilters('investigation'));
+    console.log('POP dataset filters', getFilters('dataset'));
+    console.log('POP datafile filters', getFilters('datafile'));
+
+    if (currentTab === 'investigation') {
+      storeFilters(filters, 'investigation');
+    }
+
+    if (currentTab === 'dataset') {
+      storeFilters(filters, 'dataset');
+    }
+
+    if (currentTab === 'datafile') {
+      storeFilters(filters, 'datafile');
+    }
+
+    if (newValue === 'investigation') {
+      updateFilters(getFilters('investigation'));
+    }
+
+    // if (newValue === 'dataset') {
+    //   storeFilters(filters, 'dataset');
+    // }
+
+    // if (newValue === 'datafile') {
+    //   storeFilters(filters, 'datafile');
+    // }
+
+    // console.log('POP current', currentTab);
+    // console.log('POP newValue', newValue);
+    // console.log('POP investigation', investigationTab);
+    // console.log('POP datafile', datafileTab);
     setCurrentTab(newValue);
+
+    pushFilters('name', null);
+    pushFilters('title', null);
+    pushFilters('visitId', null);
+    pushFilters('doi', null);
+    pushFilters('size', null);
+    pushFilters('datasetCount', null);
+    pushFilters('datafileCount', null);
+    pushFilters('startDate', null);
+    pushFilters('endDate', null);
+    pushFilters('investigation.title', null);
+    pushFilters('investigationInstruments.instrument.fullName', null);
+    pushFilters('createTime', null);
+    pushFilters('modTime', null);
+    pushFilters('location', null);
+    pushFilters('fileSize', null);
+    handleSort('title', null);
+    handleSort('visitId', null);
+    handleSort('name', null);
+    handleSort('doi', null);
+    handleSort('investigationInstruments.instrument.fullName', null);
+    handleSort('startDate', null);
+    handleSort('endDate', null);
+    handleSort('investigation.title', null);
+    handleSort('createTime', null);
+    handleSort('modTime', null);
+    handleSort('location', null);
   };
 
   const { data: investigationDataCount } = useInvestigationCount([

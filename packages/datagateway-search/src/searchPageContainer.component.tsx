@@ -211,7 +211,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
-
   const [searchText, setSearchText] = React.useState(
     queryParams.searchText ? queryParams.searchText : ''
   );

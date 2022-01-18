@@ -29,6 +29,8 @@ import {
   useSort,
   useRemoveFromCart,
   useTextFilter,
+  // FiltersType,
+  // SortType,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -75,6 +77,13 @@ export const DatasetDetailsPanel = (
     </Grid>
   );
 };
+
+// const storeFilters = (filters: FiltersType): void => {
+//   localStorage.setItem('datasetFilters', JSON.stringify(filters));
+// };
+// const storeSort = (sort: SortType): void => {
+//   localStorage.setItem('datasetSort', JSON.stringify(sort));
+// };
 
 interface DatasetTableProps {
   hierarchy: string;
@@ -161,9 +170,12 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     [data]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
-  const handleSort = useSort();
+  const textFilter = useTextFilter(filters, 'push');
+  const dateFilter = useDateFilter(filters, 'push');
+  const handleSort = useSort('push');
+
+  // storeFilters(filters);
+  // storeSort(sort);
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

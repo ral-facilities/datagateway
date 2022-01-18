@@ -30,6 +30,8 @@ import {
   useInvestigationSizes,
   formatCountOrSize,
   useLuceneSearch,
+  // FiltersType,
+  // SortType,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -94,6 +96,25 @@ export const InvestigationDetailsPanel = (
     </Grid>
   );
 };
+
+// const storeFilters = (filters: FiltersType): void => {
+//   localStorage.setItem('investigaitonFilters', JSON.stringify(filters));
+// };
+// const storeSort = (sort: SortType): void => {
+//   localStorage.setItem('investigationSort', JSON.stringify(sort));
+// };
+
+// const getFilters = (filters: FiltersType): string => {
+//   // We store the view into localStorage so the user can
+//   // return to the view they were on the next time they open the page.
+//   const savedFilters = localStorage.getItem('investigationFilters');
+//   const currentFilters = JSON.stringify(filters);
+
+//   // We set to 'table' initially if there is none present.
+//   if (!savedFilters) storeFilters(filters);
+//   else return savedFilters;
+//   return currentFilters;
+// };
 
 interface InvestigationTableProps {
   hierarchy: string;
@@ -183,9 +204,33 @@ const InvestigationSearchTable = (
     [data]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
-  const handleSort = useSort();
+  const textFilter = useTextFilter(filters, 'push');
+  const dateFilter = useDateFilter(filters, 'push');
+  const handleSort = useSort('push');
+  // const replaceTextFilter = useTextFilter(filters, 'replace');
+  // const replaceDateFilter = useDateFilter(filters, 'replace');
+  // const replaceHandleSort = useSort('replace');
+  // if (filters.length > 2) {
+  //   storeFilters(filters);
+  // }
+  // if (sort !== {}) {
+  //   storeSort(sort);
+  // }
+
+  //console.log('Find me', getFilters(filters));
+
+  // React.useEffect(() => {
+  //   // If the view query parameter was not found and the previously
+  //   // stored view is in localstorage, update our current query with the view.
+  //   const savedFilters = localStorage.getItem('investigationFilters');
+  //   if (savedFilters) {
+  //     console.log('pizzas', savedFilters);
+  //     //Replace rather than push here to ensure going back doesn't just go to the same
+  //     //page without the query which would execute this code again
+  //     replaceTextFilter(savedFilters, JSON.parse(savedFilters));
+  //     replaceDateFilter(savedFilters, JSON.parse(savedFilters));
+  //   }
+  // }, [location.pathname, replaceTextFilter, replaceDateFilter]);
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

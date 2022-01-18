@@ -244,19 +244,14 @@ export const getApiParams = (props: {
   return searchParams;
 };
 
-export const useSort = (): ((
-  sortKey: string,
-  order: Order | null,
+export const useSort = (
   updateMethod: UpdateMethod
-) => void) => {
+): ((sortKey: string, order: Order | null) => void) => {
   const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
 
   return React.useCallback(
-    (
-      sortKey: string,
-      order: Order | null,
-      updateMethod: UpdateMethod
-    ): void => {
+    (sortKey: string, order: Order | null): void => {
       let query = parseSearchToQuery(window.location.search);
       if (order !== null) {
         query = {
@@ -276,22 +271,25 @@ export const useSort = (): ((
           },
         };
       }
-      (updateMethod === 'push' ? push : replace)({
+      functionToUse({
         search: `?${parseQueryToSearch(query).toString()}`,
       });
     },
-    [push, replace]
+    [functionToUse]
   );
 };
 
-export const usePushFilter = (): ((
-  filterKey: string,
-  filter: Filter | null
-) => void) => {
-  const { push } = useHistory();
+export const usePushFilter = (
+  updateMethod: UpdateMethod
+): ((filterKey: string, filter: Filter | null) => void) => {
+  const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
       let query = parseSearchToQuery(window.location.search);
+      console.log('POP Hello world');
+      console.log('POP filter index', filter);
+      console.log('POP filter string index', JSON.stringify(filter));
       if (filter !== null) {
         // if given an defined filter, update the relevant column in the sort state
         query = {
@@ -311,9 +309,9 @@ export const usePushFilter = (): ((
           },
         };
       }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
+      functionToUse({ search: `?${parseQueryToSearch(query).toString()}` });
     },
-    [push]
+    [functionToUse]
   );
 };
 
@@ -352,23 +350,28 @@ export const usePushFilters = (): ((
   );
 };
 
-export const usePushPage = (): ((page: number) => void) => {
-  const { push } = useHistory();
-
+export const usePushPage = (
+  updateMethod: UpdateMethod
+): ((page: number) => void) => {
+  const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
   return React.useCallback(
     (page: number) => {
       const query = {
         ...parseSearchToQuery(window.location.search),
         page,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      functionToUse(`?${parseQueryToSearch(query).toString()}`);
     },
-    [push]
+    [functionToUse]
   );
 };
 
-export const usePushResults = (): ((results: number) => void) => {
-  const { push } = useHistory();
+export const usePushResults = (
+  updateMethod: UpdateMethod
+): ((results: number) => void) => {
+  const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
 
   return React.useCallback(
     (results: number) => {
@@ -376,9 +379,9 @@ export const usePushResults = (): ((results: number) => void) => {
         ...parseSearchToQuery(window.location.search),
         results,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      functionToUse(`?${parseQueryToSearch(query).toString()}`);
     },
-    [push]
+    [functionToUse]
   );
 };
 

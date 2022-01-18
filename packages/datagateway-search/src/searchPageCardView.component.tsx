@@ -25,6 +25,8 @@ import {
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
+  usePushFilter,
+  useSort,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
@@ -156,6 +158,8 @@ const SearchPageCardView = (
   });
   const loading = isFetchingNum > 0;
 
+  const pushFilters = usePushFilter('push');
+  const handleSort = useSort('push');
   // Setting a tab based on user selection and what tabs are available
   useEffect(() => {
     if (currentTab === 'investigation') {
@@ -187,13 +191,55 @@ const SearchPageCardView = (
         }
       }
     }
-  }, [setCurrentTab, investigationTab, datasetTab, datafileTab, currentTab]);
+  }, [
+    setCurrentTab,
+    investigationTab,
+    datasetTab,
+    datafileTab,
+    currentTab,
+    pushFilters,
+  ]);
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
     setCurrentTab(newValue);
+    pushFilters('name', null);
+    pushFilters('title', null);
+    pushFilters('visitId', null);
+    pushFilters('doi', null);
+    pushFilters('size', null);
+    pushFilters('datasetCount', null);
+    pushFilters('datafileCount', null);
+    pushFilters('startDate', null);
+    pushFilters('endDate', null);
+    pushFilters('investigation.title', null);
+    pushFilters('investigationInstruments.instrument.fullName', null);
+    pushFilters('createTime', null);
+    pushFilters('modTime', null);
+    pushFilters('location', null);
+    pushFilters('fileSize', null);
+    handleSort('title', null);
+    handleSort('visitId', null);
+    handleSort('name', null);
+    handleSort('doi', null);
+    handleSort('investigationInstruments.instrument.fullName', null);
+    handleSort('startDate', null);
+    handleSort('endDate', null);
+    handleSort('investigation.title', null);
+    handleSort('createTime', null);
+    handleSort('modTime', null);
+    handleSort('location', null);
+
+    // put the clear all filter here
+    // put the clear all filter here
+    // put the clear all filter here
+    // put the clear all filter here
+    // put the clear all filter here
+    // put the clear all filter here
+    // put the clear all filter here
+    // put the clear all filter here
   };
 
   const { data: investigationDataCount } = useInvestigationCount([

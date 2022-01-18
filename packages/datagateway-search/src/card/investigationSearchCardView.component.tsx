@@ -134,12 +134,12 @@ const InvestigationCardView = (
     }
   }, [hierarchy, isisLink]);
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
-  const handleSort = useSort();
-  const pushFilter = usePushFilter();
-  const pushPage = usePushPage();
-  const pushResults = usePushResults();
+  const textFilter = useTextFilter(filters, 'push');
+  const dateFilter = useDateFilter(filters, 'push');
+  const handleSort = useSort('push');
+  const pushFilter = usePushFilter('push');
+  const pushPage = usePushPage('push');
+  const pushResults = usePushResults('push');
 
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults

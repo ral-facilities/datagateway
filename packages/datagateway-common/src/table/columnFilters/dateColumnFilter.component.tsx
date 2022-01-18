@@ -6,7 +6,7 @@ import {
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { FiltersType, DateFilter } from '../../app.types';
+import { FiltersType, DateFilter, UpdateMethod } from '../../app.types';
 import { usePushFilter } from '../../api';
 import { useTheme } from '@material-ui/core';
 
@@ -154,9 +154,10 @@ const DateColumnFilter = (props: {
 export default DateColumnFilter;
 
 export const useDateFilter = (
-  filters: FiltersType
+  filters: FiltersType,
+  updateMethod: UpdateMethod
 ): ((label: string, dataKey: string) => React.ReactElement) => {
-  const pushFilter = usePushFilter();
+  const pushFilter = usePushFilter(updateMethod);
   return React.useMemo(() => {
     const dateFilter = (label: string, dataKey: string): React.ReactElement => (
       <DateColumnFilter
