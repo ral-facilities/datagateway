@@ -5,7 +5,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
   See all
    
   <WithStyles(ForwardRef(Link))
-    aria-label="advanced_search_help.advanced_button_arialabel"
+    aria-label="advanced_search_help.search_options_arialabel"
     className="makeStyles-advancedButton-2"
     component="button"
     onClick={[Function]}

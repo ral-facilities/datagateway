@@ -261,12 +261,13 @@ describe('SearchPageContainer Component', () => {
       cy.get('[aria-label="selection-alert"]').should('not.exist');
     });
 
-    it('should be able to deselect checkboxes', () => {
+    it.only('should be able to deselect checkboxes', () => {
+      cy.get('#search-entities-menu').click();
       cy.get('[aria-label="Investigation checkbox"]').click();
       cy.get('[aria-label="Datafile checkbox"]').click();
 
       cy.get('[aria-label="Submit search"]')
-        .click()
+        .click({ force: true })
         .wait(['@investigations', '@investigations', '@investigationsCount'], {
           timeout: 10000,
         });

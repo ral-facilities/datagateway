@@ -80,7 +80,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
       <Link
         component="button"
         className={classes.advancedButton}
-        aria-label={t('advanced_search_help.advanced_button_arialabel')}
+        aria-label={t('advanced_search_help.search_options_arialabel')}
         onClick={handleClickOpen}
       >
         search options
