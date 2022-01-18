@@ -36,9 +36,10 @@ const badgeStyles = (theme: Theme): StyleRules =>
     badge: {
       backgroundColor: '#fff',
       color: '#000000',
-      fontSize: 'inherit',
+      fontSize: '14px',
+      fontWeight: 'bold',
       lineHeight: 'inherit',
-      top: '0.875em',
+      top: '1em',
     },
   });
 
@@ -238,20 +239,9 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="investigation-badge"
-                  badgeContent={
-                    <span
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        marginTop: '1px',
-                      }}
-                    >
-                      {investigationDataCount ?? 0}
-                    </span>
-                  }
+                  badgeContent={investigationDataCount ?? 0}
                   showZero
                   max={999}
-                  style={{ marginTop: '1px' }}
                 >
                   <span
                     style={{
@@ -281,20 +271,9 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="dataset-badge"
-                  badgeContent={
-                    <span
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        marginTop: '1px',
-                      }}
-                    >
-                      {datasetDataCount ?? 0}
-                    </span>
-                  }
+                  badgeContent={datasetDataCount ?? 0}
                   showZero
                   max={999}
-                  style={{ marginTop: '1px' }}
                 >
                   <span
                     style={{
@@ -324,20 +303,9 @@ const SearchPageCardView = (
               label={
                 <StyledBadge
                   id="datafile-badge"
-                  badgeContent={
-                    <span
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        marginTop: '1px',
-                      }}
-                    >
-                      {datafileDataCount ?? 0}
-                    </span>
-                  }
+                  badgeContent={datafileDataCount ?? 0}
                   showZero
                   max={999}
-                  style={{ marginTop: '1px' }}
                 >
                   <span
                     style={{
