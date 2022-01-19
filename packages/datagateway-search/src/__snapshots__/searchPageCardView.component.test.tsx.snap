@@ -3660,7 +3660,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                     badgeContent={0}
                                                     classes={
                                                       Object {
-                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-2",
+                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-3",
+                                                        "root": "WithStyles(ForwardRef(Badge))-root-2",
                                                       }
                                                     }
                                                     id="investigation-badge"
@@ -3679,13 +3680,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
                                                           "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
                                                           "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
-                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2",
+                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3",
                                                           "colorError": "MuiBadge-colorError",
                                                           "colorPrimary": "MuiBadge-colorPrimary",
                                                           "colorSecondary": "MuiBadge-colorSecondary",
                                                           "dot": "MuiBadge-dot",
                                                           "invisible": "MuiBadge-invisible",
-                                                          "root": "MuiBadge-root",
+                                                          "root": "MuiBadge-root WithStyles(ForwardRef(Badge))-root-2",
                                                         }
                                                       }
                                                       id="investigation-badge"
@@ -3693,7 +3694,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                       showZero={true}
                                                     >
                                                       <span
-                                                        className="MuiBadge-root"
+                                                        className="MuiBadge-root WithStyles(ForwardRef(Badge))-root-2"
                                                         id="investigation-badge"
                                                       >
                                                         <span
@@ -3710,7 +3711,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           tabs.investigation
                                                         </span>
                                                         <span
-                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2 MuiBadge-anchorOriginTopRightRectangle"
+                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3 MuiBadge-anchorOriginTopRightRectangle"
                                                         >
                                                           0
                                                         </span>
@@ -3897,7 +3898,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                     badgeContent={0}
                                                     classes={
                                                       Object {
-                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-2",
+                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-3",
+                                                        "root": "WithStyles(ForwardRef(Badge))-root-2",
                                                       }
                                                     }
                                                     id="dataset-badge"
@@ -3916,13 +3918,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
                                                           "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
                                                           "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
-                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2",
+                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3",
                                                           "colorError": "MuiBadge-colorError",
                                                           "colorPrimary": "MuiBadge-colorPrimary",
                                                           "colorSecondary": "MuiBadge-colorSecondary",
                                                           "dot": "MuiBadge-dot",
                                                           "invisible": "MuiBadge-invisible",
-                                                          "root": "MuiBadge-root",
+                                                          "root": "MuiBadge-root WithStyles(ForwardRef(Badge))-root-2",
                                                         }
                                                       }
                                                       id="dataset-badge"
@@ -3930,7 +3932,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                       showZero={true}
                                                     >
                                                       <span
-                                                        className="MuiBadge-root"
+                                                        className="MuiBadge-root WithStyles(ForwardRef(Badge))-root-2"
                                                         id="dataset-badge"
                                                       >
                                                         <span
@@ -3947,7 +3949,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           tabs.dataset
                                                         </span>
                                                         <span
-                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2 MuiBadge-anchorOriginTopRightRectangle"
+                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3 MuiBadge-anchorOriginTopRightRectangle"
                                                         >
                                                           0
                                                         </span>
@@ -4134,7 +4136,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                     badgeContent={0}
                                                     classes={
                                                       Object {
-                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-2",
+                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-3",
+                                                        "root": "WithStyles(ForwardRef(Badge))-root-2",
                                                       }
                                                     }
                                                     id="datafile-badge"
@@ -4153,13 +4156,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
                                                           "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
                                                           "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
-                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2",
+                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3",
                                                           "colorError": "MuiBadge-colorError",
                                                           "colorPrimary": "MuiBadge-colorPrimary",
                                                           "colorSecondary": "MuiBadge-colorSecondary",
                                                           "dot": "MuiBadge-dot",
                                                           "invisible": "MuiBadge-invisible",
-                                                          "root": "MuiBadge-root",
+                                                          "root": "MuiBadge-root WithStyles(ForwardRef(Badge))-root-2",
                                                         }
                                                       }
                                                       id="datafile-badge"
@@ -4167,7 +4170,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                       showZero={true}
                                                     >
                                                       <span
-                                                        className="MuiBadge-root"
+                                                        className="MuiBadge-root WithStyles(ForwardRef(Badge))-root-2"
                                                         id="datafile-badge"
                                                       >
                                                         <span
@@ -4184,7 +4187,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           tabs.datafile
                                                         </span>
                                                         <span
-                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2 MuiBadge-anchorOriginTopRightRectangle"
+                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3 MuiBadge-anchorOriginTopRightRectangle"
                                                         >
                                                           0
                                                         </span>
@@ -4242,10 +4245,10 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                       className="MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-1"
                                       classes={
                                         Object {
-                                          "colorPrimary": "PrivateTabIndicator-colorPrimary-4",
-                                          "colorSecondary": "PrivateTabIndicator-colorSecondary-5",
-                                          "root": "PrivateTabIndicator-root-3",
-                                          "vertical": "PrivateTabIndicator-vertical-6",
+                                          "colorPrimary": "PrivateTabIndicator-colorPrimary-5",
+                                          "colorSecondary": "PrivateTabIndicator-colorSecondary-6",
+                                          "root": "PrivateTabIndicator-root-4",
+                                          "vertical": "PrivateTabIndicator-vertical-7",
                                         }
                                       }
                                       color="secondary"
@@ -4258,7 +4261,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                       }
                                     >
                                       <span
-                                        className="PrivateTabIndicator-root-3 PrivateTabIndicator-colorSecondary-5 MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-1"
+                                        className="PrivateTabIndicator-root-4 PrivateTabIndicator-colorSecondary-6 MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-1"
                                         style={
                                           Object {
                                             "left": 0,
@@ -4292,7 +4295,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                 >
                   <div
                     aria-labelledby="simple-tab-investigation"
-                    className="MuiBox-root MuiBox-root-7"
+                    className="MuiBox-root MuiBox-root-8"
                     hidden={false}
                     id="simple-tabpanel-investigation"
                     role="tabpanel"
@@ -4301,7 +4304,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                       p={3}
                     >
                       <div
-                        className="MuiBox-root MuiBox-root-8"
+                        className="MuiBox-root MuiBox-root-9"
                       >
                         <InvestigationCardView>
                           <mockConstructor

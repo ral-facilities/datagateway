@@ -7,7 +7,13 @@ import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
 import { parseSearchToQuery, usePushSearchToggles } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
-import { InputLabel, ListItemText, MenuItem, Select } from '@material-ui/core';
+import {
+  FormHelperText,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  Select,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -148,6 +154,11 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
             </MenuItem>
           ))}
         </Select>
+        {error && (
+          <FormHelperText style={{ marginLeft: '14px', marginRight: '14px' }}>
+            {t('searchBox.checkboxes.types_error')}
+          </FormHelperText>
+        )}
       </FormControl>
     </div>
   );

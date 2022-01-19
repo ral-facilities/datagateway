@@ -26,6 +26,21 @@ describe('SearchBoxContainer Component', () => {
     cy.get('[aria-label="Datafile checkbox"]').should('exist');
   });
 
+  it('should display an error when all checkboxes are deselected', () => {
+    cy.get('#search-entities-menu').should('exist');
+    cy.get('.MuiFormHelperText-root').should('not.exist');
+
+    cy.get('#search-entities-menu').click();
+    cy.get('[aria-label="Investigation checkbox"]').click();
+    cy.get('[aria-label="Dataset checkbox"]').click();
+    cy.get('[aria-label="Datafile checkbox"]').click();
+    //Close drop down menu
+    cy.get('body').type('{esc}');
+
+    cy.get('.MuiFormHelperText-root').should('exist');
+    cy.get('.MuiFormHelperText-root').contains('At least one required');
+  });
+
   it('should display an error when an invalid start date is entered', () => {
     cy.get('[aria-label="Start date input"]').type('2009-13-01');
     cy.get('.MuiFormHelperText-root').contains('Date format: yyyy-MM-dd.');

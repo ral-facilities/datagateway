@@ -13,7 +13,8 @@
       "investigation_arialabel": "Investigation checkbox",
       "dataset_arialabel": "Dataset checkbox",
       "datafile_arialabel": "Datafile checkbox",
-      "types": "Types"
+      "types": "Types",
+      "types_error": "At least one required"
     },
     "search_button": "Search",
     "search_text_arialabel": "Search text input",

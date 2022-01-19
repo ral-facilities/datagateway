@@ -131,6 +131,21 @@ describe('Checkbox component tests', () => {
     ).toEqual(false);
   });
 
+  it('renders an error message when nothing is selected', () => {
+    history.replace(
+      '/?searchText=&investigation=false&dataset=false&datafile=false'
+    );
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper.find('#search-entities-checkbox-label').first().text()
+    ).toContain('searchBox.checkboxes.types');
+
+    expect(wrapper.find('.MuiFormHelperText-root').last().text()).toEqual(
+      'searchBox.checkboxes.types_error'
+    );
+  });
+
   it('pushes URL with new dataset value when user clicks checkbox', () => {
     history.replace('/?searchText=&investigation=false');
     const wrapper = createWrapper();

@@ -33,6 +33,18 @@ import { useIsFetching } from 'react-query';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
+    root: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      backgroundColor: (theme as any).colours?.tabsGrey,
+      //Fixes contrast issue for unselected tabs in darkmode
+      color:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (theme as any).palette.type === 'dark'
+          ? '#FFFFFF'
+          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (theme as any).colours?.blue,
+      boxShadow: 'none',
+    },
     badge: {
       backgroundColor: '#CCCCCC',
       //Increase contrast on high contrast modes by using black text
