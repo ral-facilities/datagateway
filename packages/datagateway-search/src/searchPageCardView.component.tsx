@@ -347,9 +347,10 @@ const SearchPageCardView = (
         <TabPanel value={currentTab} index={'datafile'}>
           <Paper
             style={{
-              height: `calc(${containerHeight} - 96px)`,
-              minHeight: 230,
+              height: `calc(${containerHeight} - 56px)`,
+              minHeight: `calc(500px - 56px)`,
               overflowX: 'auto',
+              overflowY: 'hidden',
             }}
             elevation={0}
           >

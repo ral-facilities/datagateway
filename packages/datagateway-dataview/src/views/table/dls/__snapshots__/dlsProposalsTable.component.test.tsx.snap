@@ -16,7 +16,7 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "title",
-      "defaultSort": "asc",
+      "disableSort": true,
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -31,6 +31,7 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "name",
+      "disableSort": true,
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -67,9 +68,7 @@ Object {
   ],
   "loadMoreRows": [Function],
   "onSort": [Function],
-  "sort": Object {
-    "title": "asc",
-  },
+  "sort": Object {},
   "totalRowCount": 1,
 }
 `;

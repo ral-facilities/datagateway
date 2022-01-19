@@ -2,6 +2,7 @@
 
 exports[`SelectionAlert renders correctly 1`] = `
 <SelectionAlert
+  loggedInAnonymously={false}
   marginSide="4px"
   navigateToSelection={[Function]}
   selectedItems={
@@ -639,6 +640,7 @@ exports[`SelectionAlert renders correctly 1`] = `
 
 exports[`SelectionAlert renders correctly after animation finished 1`] = `
 <SelectionAlert
+  loggedInAnonymously={false}
   navigateToSelection={[Function]}
   selectedItems={
     Array [
@@ -668,12 +670,12 @@ exports[`SelectionAlert renders correctly after animation finished 1`] = `
 >
   <WithStyles(ForwardRef(Paper))
     aria-label="selection-alert"
-    className="makeStyles-root-1 makeStyles-root-17"
+    className="makeStyles-root-1 makeStyles-root-19"
     onAnimationEnd={[Function]}
   >
     <ForwardRef(Paper)
       aria-label="selection-alert"
-      className="makeStyles-root-1 makeStyles-root-17"
+      className="makeStyles-root-1 makeStyles-root-19"
       classes={
         Object {
           "elevation0": "MuiPaper-elevation0",
@@ -710,7 +712,7 @@ exports[`SelectionAlert renders correctly after animation finished 1`] = `
     >
       <div
         aria-label="selection-alert"
-        className="MuiPaper-root makeStyles-root-1 makeStyles-root-17 MuiPaper-elevation1 MuiPaper-rounded"
+        className="MuiPaper-root makeStyles-root-1 makeStyles-root-19 MuiPaper-elevation1 MuiPaper-rounded"
         onAnimationEnd={[Function]}
       >
         <WithStyles(ForwardRef(Grid))
