@@ -317,6 +317,8 @@ const SearchPageTable = (
     localStorage.removeItem('datafileSort');
     localStorage.removeItem('investigationPage');
     localStorage.removeItem('datasetPage');
+    localStorage.removeItem('investigationResults');
+    localStorage.removeItem('datasetResults');
   }, []);
 
   const { data: investigationDataCount } = useInvestigationCount([

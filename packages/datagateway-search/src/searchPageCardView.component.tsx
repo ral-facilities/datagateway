@@ -258,6 +258,8 @@ const SearchPageCardView = (
   const clearSort = useClearSort();
   const pushPage = useUpdatePage('push');
   const pushResults = useUpdateResults('push');
+  const defaultResultsValue = 10;
+  const defaultPageValue = 1;
 
   const replaceFilters = useUpdateFilter('replace');
   const replaceHandleSort = useUpdateSort('replace');
@@ -372,8 +374,8 @@ const SearchPageCardView = (
 
     clearAllFilters(filters);
     clearAllSort(sort);
-    resetPageNumber(1);
-    resetResultsNumber(10);
+    resetPageNumber(defaultPageValue);
+    resetResultsNumber(defaultResultsValue);
 
     if (newValue === 'investigation') {
       updateFilters(getFilters('investigation'));
@@ -404,6 +406,8 @@ const SearchPageCardView = (
     localStorage.removeItem('datafileSort');
     localStorage.removeItem('investigationPage');
     localStorage.removeItem('datasetPage');
+    localStorage.removeItem('investigationResults');
+    localStorage.removeItem('datasetResults');
   }, []);
 
   const { data: investigationDataCount } = useInvestigationCount([
