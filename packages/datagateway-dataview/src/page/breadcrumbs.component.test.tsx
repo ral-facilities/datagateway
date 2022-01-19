@@ -1,20 +1,19 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
+import { Router } from 'react-router';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { StateType } from '../state/app.types';
-// history package is part of react-router, which we depend on
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createLocation } from 'history';
+import { createLocation, createMemoryHistory, History } from 'history';
 import { flushPromises } from '../setupTests';
 import PageBreadcrumbs from './breadcrumbs.component';
 import axios from 'axios';
 import { ReactWrapper } from 'enzyme';
+import { QueryClientProvider, QueryClient } from 'react-query';
 
 jest.mock('loglevel');
 
@@ -44,282 +43,27 @@ const DLSRoutes = {
     '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
 };
 
-describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
-  let mount;
-  let shallow;
-  let state: StateType;
-
-  const createWrapper = (state: StateType): ReactWrapper => {
-    const mockStore = configureStore([thunk]);
-    return shallow(
-      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-        <PageBreadcrumbs store={mockStore(state)} />
-      </MemoryRouter>
-    );
-  };
-
-  beforeEach(() => {
-    mount = createMount();
-    shallow = createShallow({ untilSelector: 'div' });
-
-    state = JSON.parse(
-      JSON.stringify({
-        dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
-
-        // Initialise our router object to hold location information.
-        router: {
-          action: 'POP',
-          location: createLocation('/'),
-        },
-      })
-    );
-
-    // Set up generic axios response; to be used for all tests.
-    // We only need to include the ID, name, title and visitId
-    // as those are the entity fields which the breadcrumb looks for
-    // when requesting information from the API.
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({
-        data: {
-          id: 1,
-          name: 'INVESTIGATION 1',
-          title: 'Test 1',
-          visitId: '1',
-        },
-      })
-    );
-  });
-
-  afterEach(() => {
-    mount.cleanUp();
-    (axios.get as jest.Mock).mockClear();
-  });
-
-  it('renders correctly for generic investigations route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(genericRoutes['investigations']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for DLS proposals route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(DLSRoutes['proposals']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for ISIS instruments route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(ISISRoutes['instruments']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for ISIS facilityCycles route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(ISISRoutes['facilityCycles']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for DLS investigations route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(DLSRoutes['investigations']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for generic datasets route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(genericRoutes['datasets']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for ISIS datasets route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(ISISRoutes['datasets']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for DLS datasets route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(DLSRoutes['datasets']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for generic datafiles route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(genericRoutes['datafiles']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('Includes view in url for generic datafiles route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation({
-      pathname: genericRoutes['datafiles'],
-      search: '?view=card',
-    });
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for ISIS datafiles route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(ISISRoutes['datafiles']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders correctly for DLS datafiles route', async () => {
-    // Set up test state pathname.
-    state.router.location = createLocation(DLSRoutes['datafiles']);
-
-    // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders an updated breadcrumb for a new router location', async () => {
-    // We need to use the same state for this test.
-    const mockStore = configureStore([thunk]);
-
-    // Set up initial location; we pick datasets and compare with datafiles,
-    // since the last property displayName can also be tested and will be set initially
-    // after the first render to datasets (unlike investigations, where it will not be set).
-    state.router.location = createLocation(genericRoutes['datasets']);
-
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-          <PageBreadcrumbs />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    await flushPromises();
-    wrapper.update();
-
-    // Change to new location.
-    state.router.location = createLocation(genericRoutes['datafiles']);
-
-    // Update to use new store which has a new router location.
-    wrapper.setProps({ store: mockStore(state) });
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-  });
-});
-
-describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
+describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   let mount;
   let state: StateType;
+  let history: History;
 
   const createWrapper = (state: StateType): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     return mount(
       <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-          <PageBreadcrumbs />
-        </MemoryRouter>
+        <QueryClientProvider client={new QueryClient()}>
+          <Router history={history}>
+            <PageBreadcrumbs />
+          </Router>
+        </QueryClientProvider>
       </Provider>
     );
   };
 
-  // Ensure that we can flush all promises before updating a wrapper.
-  const flushPromises = (): Promise<NodeJS.Immediate> =>
-    new Promise(setImmediate);
-
   beforeEach(() => {
     mount = createMount();
+    history = createMemoryHistory();
 
     state = JSON.parse(
       JSON.stringify({
@@ -333,7 +77,7 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
               replaceEntityField: 'title',
             },
             investigation: {
-              replaceEntityField: 'title',
+              replaceEntityField: 'visitId',
               parentEntity: 'proposal',
             },
           },
@@ -352,8 +96,8 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
       Promise.resolve({
         data: {
           id: 1,
-          name: 'INVESTIGATION 1',
-          title: 'Test 1',
+          name: 'Name 1',
+          title: 'Title 1',
           visitId: '1',
         },
       })
@@ -365,9 +109,9 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     (axios.get as jest.Mock).mockClear();
   });
 
-  it('does not request the investigation entity from the correct API endpoint for generic route', async () => {
+  it('generic route renders correctly at the base route and does not request', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(genericRoutes['investigations']);
+    history.replace(createLocation(genericRoutes['investigations']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -378,11 +122,23 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
 
     // Expect the axios.get to not have been made.
     expect(axios.get).not.toBeCalled();
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] p').text()).toEqual(
+      'breadcrumbs.investigation'
+    );
   });
 
-  it('requests the dataset entity from the correct API endpoint for generic route', async () => {
+  it('generic route renders correctly at the dataset level and requests the investigation entity', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(genericRoutes['datasets']);
+    history.replace(
+      createLocation({
+        pathname: genericRoutes['datasets'],
+        search: '?view=card',
+      })
+    );
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -398,11 +154,27 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
+      'breadcrumbs.investigation'
+    );
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
+    ).toEqual('/browse/investigation?view=card');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] p').text()
+    ).toEqual('Title 1');
+    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
+      'breadcrumbs.dataset'
+    );
   });
 
-  it('requests the datafiles entity from the correct API endpoint for generic route', async () => {
+  it('generic route renders correctly at the datafile level and requests the investigation & dataset entities', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(genericRoutes['datafiles']);
+    history.replace(createLocation(genericRoutes['datafiles']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -424,11 +196,33 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
+      'breadcrumbs.investigation'
+    );
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
+    ).toEqual('/browse/investigation');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
+    ).toEqual('Title 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
+    ).toEqual('/browse/investigation/1/dataset');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] p').text()
+    ).toEqual('Name 1');
+    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
+      'breadcrumbs.datafile'
+    );
   });
 
-  it('does not request the proposal entity from the correct API endpoint for DLS route', async () => {
+  it('DLS route renders correctly at the base level and does not request', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(DLSRoutes['proposals']);
+    history.replace(createLocation(DLSRoutes['proposals']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -439,11 +233,18 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
 
     // Expect the axios.get to not have been called.
     expect(axios.get).not.toBeCalled();
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] p').text()).toEqual(
+      'breadcrumbs.proposal'
+    );
   });
 
-  it('requests the investigation entity from the correct API endpoint for DLS route', async () => {
+  it('DLS route renders correctly at the investigation level and requests the proposal entity', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(DLSRoutes['investigations']);
+    history.replace(createLocation(DLSRoutes['investigations']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -463,11 +264,24 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         },
       }
     );
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
+      'breadcrumbs.proposal'
+    );
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
+    ).toEqual('/browse/proposal');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] p').text()
+    ).toEqual('Title 1');
   });
 
-  it('requests the dataset entity from the correct API endpoint for DLS route', async () => {
+  it('DLS route renders correctly at the dataset level and requests the proposal & investigation entities', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(DLSRoutes['datasets']);
+    history.replace(createLocation(DLSRoutes['datasets']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -493,11 +307,33 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
+      'breadcrumbs.proposal'
+    );
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
+    ).toEqual('/browse/proposal');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
+    ).toEqual('Title 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
+    ).toEqual('/browse/proposal/INVESTIGATION 1/investigation');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] p').text()
+    ).toEqual('1');
+    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
+      'breadcrumbs.dataset'
+    );
   });
 
-  it('requests the datafiles entity from the correct API endpoint for DLS route', async () => {
+  it('DLS route renders correctly at the datafile level and requests the proposal, investigation and dataset entities', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(DLSRoutes['datafiles']);
+    history.replace(createLocation(DLSRoutes['datafiles']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -528,11 +364,39 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
+      'breadcrumbs.proposal'
+    );
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
+    ).toEqual('/browse/proposal');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
+    ).toEqual('Title 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
+    ).toEqual('/browse/proposal/INVESTIGATION 1/investigation');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').text()
+    ).toEqual('1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').prop('href')
+    ).toEqual('/browse/proposal/INVESTIGATION 1/investigation/1/dataset');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] p').text()
+    ).toEqual('Name 1');
+    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
+      'breadcrumbs.datafile'
+    );
   });
 
-  it('requests the instrument entity from the correct API endpoint for ISIS route', async () => {
+  it('ISIS route renders correctly at the base level and does not request', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(ISISRoutes['instruments']);
+    history.replace(createLocation(ISISRoutes['instruments']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -541,13 +405,20 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     await flushPromises();
     wrapper.update();
 
-    // Expect the axios.get to have been called three times.
+    // Expect the axios.get not to have been called
     expect(axios.get).not.toHaveBeenCalled();
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] p').text()).toEqual(
+      'breadcrumbs.instrument'
+    );
   });
 
-  it('requests the facilityCycles entity from the correct API endpoint for ISIS route', async () => {
+  it('ISIS route renders correctly at the facility cycle level and requests the instrument entity', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(ISISRoutes['facilityCycles']);
+    history.replace(createLocation(ISISRoutes['facilityCycles']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -563,11 +434,27 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
+      'breadcrumbs.instrument'
+    );
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
+    ).toEqual('/browse/instrument');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] p').text()
+    ).toEqual('Name 1');
+    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
+      'breadcrumbs.facilityCycle'
+    );
   });
 
-  it('requests the investigations entity from the correct API endpoint for ISIS route', async () => {
+  it('ISIS route renders correctly at the investigation level and requests the instrument and facility cycle entities', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(ISISRoutes['investigations']);
+    history.replace(createLocation(ISISRoutes['investigations']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -588,11 +475,33 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
+      'breadcrumbs.instrument'
+    );
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
+    ).toEqual('/browse/instrument');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
+    ).toEqual('Name 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
+    ).toEqual('/browse/instrument/1/facilityCycle');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] p').text()
+    ).toEqual('Name 1');
+    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
+      'breadcrumbs.investigation'
+    );
   });
 
-  it('requests the datasets entity from the correct API endpoint for ISIS route', async () => {
+  it('ISIS route renders correctly at the dataset level and requests the instrument, facility cycle and investigation entities', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(ISISRoutes['datasets']);
+    history.replace(createLocation(ISISRoutes['datasets']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -618,11 +527,38 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
+      'breadcrumbs.instrument'
+    );
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
+    ).toEqual('/browse/instrument');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
+    ).toEqual('Name 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
+    ).toEqual('/browse/instrument/1/facilityCycle');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').text()
+    ).toEqual('Name 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').prop('href')
+    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] p').text()
+    ).toEqual('Title 1');
+    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
+      'breadcrumbs.dataset'
+    );
   });
 
-  it('requests the datafiles entity from the correct API endpoint for ISIS route', async () => {
+  it('ISIS route renders correctly at the datafile level and requests the instrument, facility cycle, investigation and dataset entities', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(ISISRoutes['datafiles']);
+    history.replace(createLocation(ISISRoutes['datafiles']));
 
     // Set up store with test state and mount the breadcrumb.
     const wrapper = createWrapper(state);
@@ -653,5 +589,39 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
+
+    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
+      'breadcrumbs.home'
+    );
+    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
+      'breadcrumbs.instrument'
+    );
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
+    ).toEqual('/browse/instrument');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
+    ).toEqual('Name 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
+    ).toEqual('/browse/instrument/1/facilityCycle');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').text()
+    ).toEqual('Name 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').prop('href')
+    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').text()
+    ).toEqual('Title 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').prop('href')
+    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1/dataset');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-4"] p').text()
+    ).toEqual('Name 1');
+    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
+      'breadcrumbs.datafile'
+    );
   });
 });
