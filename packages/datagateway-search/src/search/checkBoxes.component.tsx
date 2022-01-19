@@ -118,11 +118,11 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
             variant="outlined"
             shrink={false}
           >
-            Types
+            {t('searchBox.checkboxes.types')}
           </InputLabel>
         )}
         <Select
-          labelId="search-entities-checkbox-label"
+          {...(error ? { labelId: 'search-entities-checkbox-label' } : {})}
           id="search-entities-menu"
           className={classes.select}
           multiple
@@ -132,7 +132,9 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
           onChange={handleChange}
           variant="outlined"
           renderValue={(selected) => {
-            return `Types (${(selected as string[]).length})`;
+            return `${t('searchBox.checkboxes.types')} (${
+              (selected as string[]).length
+            })`;
           }}
           MenuProps={MenuProps}
         >

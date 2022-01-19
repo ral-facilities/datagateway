@@ -7,13 +7,13 @@
     "start_date": "Start date",
     "end_date": "End date",
     "checkboxes": {
-      "text": "Please select at least one",
       "investigation": "Investigation",
       "dataset": "Dataset",
       "datafile": "Datafile",
       "investigation_arialabel": "Investigation checkbox",
       "dataset_arialabel": "Dataset checkbox",
-      "datafile_arialabel": "Datafile checkbox"
+      "datafile_arialabel": "Datafile checkbox",
+      "types": "Types"
     },
     "search_button": "Search",
     "search_text_arialabel": "Search text input",

@@ -61,7 +61,7 @@ describe('Checkbox component tests', () => {
     const wrapper = createWrapper();
 
     expect(wrapper.find('#search-entities-menu').last().text()).toEqual(
-      'Types (2)'
+      'searchBox.checkboxes.types (2)'
     );
 
     wrapper
@@ -100,7 +100,7 @@ describe('Checkbox component tests', () => {
     const wrapper = createWrapper();
 
     expect(wrapper.find('#search-entities-menu').last().text()).toEqual(
-      'Types (1)'
+      'searchBox.checkboxes.types (1)'
     );
 
     wrapper

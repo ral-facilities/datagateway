@@ -35,7 +35,10 @@ const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
     badge: {
       backgroundColor: '#CCCCCC',
-      color: '#000000',
+      //Increase contrast on high contrast modes by using black text
+      color:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (theme as any).colours?.type === 'contrast' ? '#000000' : '#333333',
       fontSize: '14px',
       fontWeight: 'bold',
       lineHeight: 'inherit',
