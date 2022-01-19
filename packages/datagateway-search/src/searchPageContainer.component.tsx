@@ -28,6 +28,8 @@ import {
   usePushSearchText,
   useCart,
   SelectionAlert,
+  FiltersType,
+  useClearFilters,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -118,6 +120,27 @@ const ViewButton = (props: {
   );
 };
 
+const ClearButton = (props: {
+  handleFilterClearButton: () => void;
+}): React.ReactElement => {
+  const classes = viewButtonStyles();
+
+  return (
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-clear-filter-button"
+        style={{ margin: '5px' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => props.handleFilterClearButton()}
+      >
+        Clear Filters
+      </Button>
+    </div>
+  );
+};
+
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
   searchableEntities: string[];
@@ -147,7 +170,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     sideLayout,
     searchableEntities,
     maxNumResults,
-    currentTab,
   } = props;
 
   const location = useLocation();
@@ -188,6 +210,27 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     // push the view to query parameters.
     pushView(nextView);
   }, [pushView, view]);
+
+  const filterLocation = useLocation();
+
+  const { filters } = React.useMemo(
+    () => parseSearchToQuery(filterLocation.search),
+    [filterLocation.search]
+  );
+
+  console.log(filters);
+
+  const clearFilters = useClearFilters();
+
+  const clearAllFilters = (filter: FiltersType): void => {
+    if (filter) {
+      Object.entries(filter).map(([key, value]) => clearFilters(key, value));
+    }
+  };
+
+  const handleFilterClearButton = (): void => {
+    clearAllFilters(filters);
+  };
 
   React.useEffect(() => {
     // If the view query parameter was not found and the previously
@@ -353,11 +396,16 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                     }}
                   >
                     <Grid item xs={'auto'}>
-                      <ViewButton
-                        viewCards={view === 'card'}
-                        handleButtonChange={handleButtonChange}
-                        disabled={currentTab === 'datafile'}
-                      />
+                      <>
+                        <ViewButton
+                          viewCards={view === 'card'}
+                          handleButtonChange={handleButtonChange}
+                          disabled={false}
+                        />
+                        <ClearButton
+                          handleFilterClearButton={handleFilterClearButton}
+                        />
+                      </>
                     </Grid>
                     <Grid item xs={true}>
                       <SelectionAlert
