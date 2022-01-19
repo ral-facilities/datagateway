@@ -7,10 +7,10 @@ import {
   parseSearchToQuery,
   useInvestigationCount,
   useInvestigationsPaginated,
-  usePushFilter,
-  usePushPage,
+  useUpdateFilter,
+  useUpdatePage,
   usePushResults,
-  useSort,
+  useUpdateSort,
   useTextFilter,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
@@ -25,10 +25,10 @@ const DLSProposalsCardView = (): React.ReactElement => {
     [location.search]
   );
 
-  const textFilter = useTextFilter(filters);
-  const handleSort = useSort();
-  const pushFilter = usePushFilter();
-  const pushPage = usePushPage();
+  const textFilter = useTextFilter(filters, 'push');
+  const handleSort = useUpdateSort('push');
+  const pushFilter = useUpdateFilter('push');
+  const pushPage = useUpdatePage('push');
   const pushResults = usePushResults();
 
   const {

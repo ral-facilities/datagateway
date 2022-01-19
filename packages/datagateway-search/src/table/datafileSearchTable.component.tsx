@@ -25,11 +25,9 @@ import {
   useDateFilter,
   useIds,
   useLuceneSearch,
-  useSort,
+  useUpdateSort,
   useRemoveFromCart,
   useTextFilter,
-  // FiltersType,
-  // SortType,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -47,13 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-// const storeFilters = (filters: FiltersType): void => {
-//   localStorage.setItem('datafileFilters', JSON.stringify(filters));
-// };
-// const storeSort = (sort: SortType): void => {
-//   localStorage.setItem('datafileSort', JSON.stringify(sort));
-// };
 
 export const DatafileDetailsPanel = (
   props: DetailsPanelProps
@@ -179,10 +170,7 @@ const DatafileSearchTable = (
 
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
-  const handleSort = useSort('push');
-
-  // storeFilters(filters);
-  // storeSort(sort);
+  const handleSort = useUpdateSort('push');
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

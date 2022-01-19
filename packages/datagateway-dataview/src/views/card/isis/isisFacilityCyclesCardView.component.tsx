@@ -8,10 +8,10 @@ import {
   useDateFilter,
   useFacilityCycleCount,
   useFacilityCyclesPaginated,
-  usePushFilter,
-  usePushPage,
+  useUpdateFilter,
+  useUpdatePage,
   usePushResults,
-  useSort,
+  useUpdateSort,
   useTextFilter,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
@@ -34,11 +34,11 @@ const ISISFacilityCyclesCardView = (
     [location.search]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
-  const handleSort = useSort();
-  const pushFilter = usePushFilter();
-  const pushPage = usePushPage();
+  const textFilter = useTextFilter(filters, 'push');
+  const dateFilter = useDateFilter(filters, 'push');
+  const handleSort = useUpdateSort('push');
+  const pushFilter = useUpdateFilter('push');
+  const pushPage = useUpdatePage('push');
   const pushResults = usePushResults();
 
   const {

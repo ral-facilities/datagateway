@@ -14,10 +14,10 @@ import {
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
-  usePushFilter,
-  usePushPage,
+  useUpdateFilter,
+  useUpdatePage,
   usePushResults,
-  useSort,
+  useUpdateSort,
   useTextFilter,
   useAllFacilityCycles,
   tableLink,
@@ -136,9 +136,9 @@ const InvestigationCardView = (
 
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
-  const handleSort = useSort('push');
-  const pushFilter = usePushFilter('push');
-  const pushPage = usePushPage('push');
+  const handleSort = useUpdateSort('push');
+  const pushFilter = useUpdateFilter('push');
+  const pushPage = useUpdatePage('push');
   const pushResults = usePushResults('push');
 
   const maxNumResults = useSelector(

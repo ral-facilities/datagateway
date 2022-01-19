@@ -13,7 +13,7 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  useSort,
+  useUpdateSort,
   useIds,
   useCart,
   useAddToCart,
@@ -48,9 +48,9 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     [location.search]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
-  const handleSort = useSort();
+  const textFilter = useTextFilter(filters, 'push');
+  const dateFilter = useDateFilter(filters, 'push');
+  const handleSort = useUpdateSort('push');
 
   const { data: allIds } = useIds(
     'dataset',

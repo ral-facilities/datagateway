@@ -8,10 +8,10 @@ import {
   tableLink,
   useInstrumentCount,
   useInstrumentsPaginated,
-  usePushFilter,
-  usePushPage,
+  useUpdateFilter,
+  useUpdatePage,
   usePushResults,
-  useSort,
+  useUpdateSort,
   useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -35,10 +35,10 @@ const ISISInstrumentsCardView = (
     [location.search]
   );
 
-  const textFilter = useTextFilter(filters);
-  const handleSort = useSort();
-  const pushFilter = usePushFilter();
-  const pushPage = usePushPage();
+  const textFilter = useTextFilter(filters, 'push');
+  const handleSort = useUpdateSort('push');
+  const pushFilter = useUpdateFilter('push');
+  const pushPage = useUpdatePage('push');
   const pushResults = usePushResults();
 
   const {

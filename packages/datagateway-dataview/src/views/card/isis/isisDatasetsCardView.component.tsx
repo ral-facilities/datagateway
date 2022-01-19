@@ -10,10 +10,10 @@ import {
   useDateFilter,
   useDatasetCount,
   useDatasetsPaginated,
-  usePushFilter,
-  usePushPage,
+  useUpdateFilter,
+  useUpdatePage,
   usePushResults,
-  useSort,
+  useUpdateSort,
   useTextFilter,
   AddToCartButton,
   DownloadButton,
@@ -63,11 +63,11 @@ const ISISDatasetsCardView = (
     [location.search]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
-  const handleSort = useSort();
-  const pushFilter = usePushFilter();
-  const pushPage = usePushPage();
+  const textFilter = useTextFilter(filters, 'push');
+  const dateFilter = useDateFilter(filters, 'push');
+  const handleSort = useUpdateSort('push');
+  const pushFilter = useUpdateFilter('push');
+  const pushPage = useUpdatePage('push');
   const pushResults = usePushResults();
 
   const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([

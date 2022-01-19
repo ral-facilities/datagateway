@@ -30,8 +30,8 @@ import {
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
-  usePushFilter,
-  useSort,
+  useUpdateFilter,
+  useUpdateSort,
   useClearFilters,
   useClearSort,
 } from 'datagateway-common';
@@ -209,8 +209,8 @@ const SearchPageTable = (
   const clearFilters = useClearFilters();
   const clearSort = useClearSort();
 
-  const replaceFilters = usePushFilter('replace');
-  const replaceHandleSort = useSort('replace');
+  const replaceFilters = useUpdateFilter('replace');
+  const replaceHandleSort = useUpdateSort('replace');
 
   const updateFilters = (filter: FiltersType | null): void => {
     if (filter) {
@@ -315,6 +315,8 @@ const SearchPageTable = (
     localStorage.removeItem('investigationSort');
     localStorage.removeItem('datasetSort');
     localStorage.removeItem('datafileSort');
+    localStorage.removeItem('investigationPage');
+    localStorage.removeItem('datasetPage');
   }, []);
 
   const { data: investigationDataCount } = useInvestigationCount([

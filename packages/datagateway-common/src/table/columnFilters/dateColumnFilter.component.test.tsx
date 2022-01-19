@@ -7,7 +7,7 @@ import DateColumnFilter, {
 } from './dateColumnFilter.component';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-test-renderer';
-import { usePushFilter } from '../../api';
+import { useUpdateFilter } from '../../api';
 jest.mock('../../api');
 
 describe('Date filter component', () => {
@@ -364,7 +364,7 @@ describe('Date filter component', () => {
 
   it('useTextFilter hook returns a function which can generate a working text filter', () => {
     const pushFilter = jest.fn();
-    (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
+    (useUpdateFilter as jest.Mock).mockImplementation(() => pushFilter);
 
     const { result } = renderHook(() => useDateFilter({}));
     let dateFilter;

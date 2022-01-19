@@ -18,10 +18,10 @@ import {
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
-  usePushFilter,
-  usePushPage,
+  useUpdateFilter,
+  useUpdatePage,
   usePushResults,
-  useSort,
+  useUpdateSort,
   useTextFilter,
   AddToCartButton,
 } from 'datagateway-common';
@@ -38,11 +38,11 @@ const InvestigationCardView = (): React.ReactElement => {
     [location.search]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
-  const handleSort = useSort();
-  const pushFilter = usePushFilter();
-  const pushPage = usePushPage();
+  const textFilter = useTextFilter(filters, 'push');
+  const dateFilter = useDateFilter(filters, 'push');
+  const handleSort = useUpdateSort('push');
+  const pushFilter = useUpdateFilter('push');
+  const pushPage = useUpdatePage('push');
   const pushResults = usePushResults();
 
   const {

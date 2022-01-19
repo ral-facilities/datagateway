@@ -10,8 +10,8 @@ import {
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsInfinite,
-  usePushFilter,
-  useSort,
+  useUpdateFilter,
+  useUpdateSort,
   useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -68,10 +68,10 @@ const DLSMyDataTable = (): React.ReactElement => {
     [data]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
-  const handleSort = useSort();
-  const pushFilter = usePushFilter();
+  const textFilter = useTextFilter(filters, 'push');
+  const dateFilter = useDateFilter(filters, 'push');
+  const handleSort = useUpdateSort('push');
+  const pushFilter = useUpdateFilter('push');
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

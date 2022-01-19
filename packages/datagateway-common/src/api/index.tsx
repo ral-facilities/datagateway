@@ -244,7 +244,7 @@ export const getApiParams = (props: {
   return searchParams;
 };
 
-export const useSort = (
+export const useUpdateSort = (
   updateMethod: UpdateMethod
 ): ((sortKey: string, order: Order | null) => void) => {
   const { push, replace } = useHistory();
@@ -279,7 +279,7 @@ export const useSort = (
   );
 };
 
-export const usePushFilter = (
+export const useUpdateFilter = (
   updateMethod: UpdateMethod
 ): ((filterKey: string, filter: Filter | null) => void) => {
   const { push, replace } = useHistory();
@@ -398,7 +398,7 @@ export const useClearSort = (): ((
   );
 };
 
-export const usePushPage = (
+export const useUpdatePage = (
   updateMethod: UpdateMethod
 ): ((page: number) => void) => {
   const { push, replace } = useHistory();
@@ -415,11 +415,8 @@ export const usePushPage = (
   );
 };
 
-export const usePushResults = (
-  updateMethod: UpdateMethod
-): ((results: number) => void) => {
-  const { push, replace } = useHistory();
-  const functionToUse = updateMethod === 'push' ? push : replace;
+export const usePushResults = (): ((results: number) => void) => {
+  const { push } = useHistory();
 
   return React.useCallback(
     (results: number) => {
@@ -427,9 +424,9 @@ export const usePushResults = (
         ...parseSearchToQuery(window.location.search),
         results,
       };
-      functionToUse(`?${parseQueryToSearch(query).toString()}`);
+      push(`?${parseQueryToSearch(query).toString()}`);
     },
-    [functionToUse]
+    [push]
   );
 };
 

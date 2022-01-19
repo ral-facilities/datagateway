@@ -18,10 +18,10 @@ import {
   useISISInvestigationCount,
   useISISInvestigationsPaginated,
   usePrincipalExperimenterFilter,
-  usePushFilter,
-  usePushPage,
+  useUpdateFilter,
+  useUpdatePage,
   usePushResults,
-  useSort,
+  useUpdateSort,
   useTextFilter,
   AddToCartButton,
   DownloadButton,
@@ -65,12 +65,12 @@ const ISISInvestigationsCardView = (
     [location.search]
   );
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
+  const textFilter = useTextFilter(filters, 'push');
+  const dateFilter = useDateFilter(filters, 'push');
   const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
-  const handleSort = useSort();
-  const pushFilter = usePushFilter();
-  const pushPage = usePushPage();
+  const handleSort = useUpdateSort('push');
+  const pushFilter = useUpdateFilter('push');
+  const pushPage = useUpdatePage('push');
   const pushResults = usePushResults();
 
   const {

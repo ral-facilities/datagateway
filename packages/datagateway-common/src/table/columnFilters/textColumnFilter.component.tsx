@@ -3,7 +3,7 @@ import { Input, InputAdornment, MenuItem, Select } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import debounce from 'lodash.debounce';
 import { FiltersType, TextFilter, UpdateMethod } from '../../app.types';
-import { usePushFilter, usePushFilters } from '../../api';
+import { useUpdateFilter, usePushFilters } from '../../api';
 
 const TextColumnFilter = (props: {
   label: string;
@@ -112,7 +112,7 @@ export const useTextFilter = (
   filters: FiltersType,
   updateMethod: UpdateMethod
 ): ((label: string, dataKey: string) => React.ReactElement) => {
-  const pushFilter = usePushFilter(updateMethod);
+  const pushFilter = useUpdateFilter(updateMethod);
   return React.useMemo(() => {
     const textFilter = (label: string, dataKey: string): React.ReactElement => (
       <TextColumnFilter

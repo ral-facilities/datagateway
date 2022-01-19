@@ -28,13 +28,13 @@ import {
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
-  usePushFilter,
-  useSort,
+  useUpdateFilter,
+  useUpdateSort,
   useClearFilters,
   useClearSort,
   InvestigationEntity,
   DatasetEntity,
-  usePushPage,
+  useUpdatePage,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
@@ -232,15 +232,13 @@ const SearchPageCardView = (
     [location.search]
   );
 
-  // const pushFilters = usePushFilter('push');
-  // const handleSort = useSort('push');
   const clearFilters = useClearFilters();
   const clearSort = useClearSort();
 
-  const replaceFilters = usePushFilter('replace');
-  const replaceHandleSort = useSort('replace');
-  const replacePage = usePushPage('replace');
-  const pushPage = usePushPage('push');
+  const replaceFilters = useUpdateFilter('replace');
+  const replaceHandleSort = useUpdateSort('replace');
+  const replacePage = useUpdatePage('replace');
+  const pushPage = useUpdatePage('push');
 
   const updateFilters = (filter: FiltersType | null): void => {
     if (filter) {
@@ -361,6 +359,8 @@ const SearchPageCardView = (
     localStorage.removeItem('investigationSort');
     localStorage.removeItem('datasetSort');
     localStorage.removeItem('datafileSort');
+    localStorage.removeItem('investigationPage');
+    localStorage.removeItem('datasetPage');
   }, []);
 
   const { data: investigationDataCount } = useInvestigationCount([

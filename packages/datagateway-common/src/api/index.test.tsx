@@ -5,11 +5,11 @@ import {
   parseSearchToQuery,
   useCustomFilter,
   useIds,
-  usePushFilter,
+  useUpdateFilter,
   usePushFilters,
-  usePushPage,
+  useUpdatePage,
   usePushResults,
-  useSort,
+  useUpdateSort,
   useUpdateView,
 } from './index';
 import {
@@ -304,9 +304,9 @@ describe('generic api functions', () => {
       jest.resetModules();
     });
 
-    describe('useSort', () => {
+    describe('useUpdateSort', () => {
       it('returns callback that can push a new sort to the url query', () => {
-        const { result } = renderHook(() => useSort(), {
+        const { result } = renderHook(() => useUpdateSort('push'), {
           wrapper,
         });
 
@@ -320,7 +320,7 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that can replace the sort with a new one in the url query', () => {
-        const { result } = renderHook(() => useSort(), {
+        const { result } = renderHook(() => useUpdateSort('push'), {
           wrapper,
         });
 
@@ -341,7 +341,7 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => useSort(), {
+        const { result } = renderHook(() => useUpdateSort('push'), {
           wrapper,
         });
 
@@ -355,9 +355,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushFilter', () => {
+    describe('useUpdateFilter', () => {
       it('returns callback that when called pushes a new filter to the url query', () => {
-        const { result } = renderHook(() => usePushFilter(), {
+        const { result } = renderHook(() => useUpdateFilter('push'), {
           wrapper,
         });
 
@@ -381,7 +381,7 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => usePushFilter(), {
+        const { result } = renderHook(() => useUpdateFilter('push'), {
           wrapper,
         });
 
@@ -441,9 +441,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushPage', () => {
+    describe('useUpdatePage', () => {
       it('returns callback that when called pushes a new page to the url query', () => {
-        const { result } = renderHook(() => usePushPage(), {
+        const { result } = renderHook(() => useUpdatePage('push'), {
           wrapper,
         });
 

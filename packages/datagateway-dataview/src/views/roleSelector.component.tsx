@@ -14,7 +14,7 @@ import {
   parseSearchToQuery,
   readSciGatewayToken,
   StateType,
-  usePushFilter,
+  useUpdateFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -86,7 +86,7 @@ const RoleSelector: React.FC = () => {
       ? filters['investigationUsers.role'].value
       : '';
   const { data: roles } = useRoles(username);
-  const pushFilter = usePushFilter();
+  const pushFilter = useUpdateFilter('push');
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
     pushFilter(
