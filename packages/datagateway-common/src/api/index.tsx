@@ -415,8 +415,11 @@ export const useUpdatePage = (
   );
 };
 
-export const usePushResults = (): ((results: number) => void) => {
-  const { push } = useHistory();
+export const useUpdateResults = (
+  updateMethod: UpdateMethod
+): ((results: number) => void) => {
+  const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
 
   return React.useCallback(
     (results: number) => {
@@ -424,9 +427,9 @@ export const usePushResults = (): ((results: number) => void) => {
         ...parseSearchToQuery(window.location.search),
         results,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      functionToUse(`?${parseQueryToSearch(query).toString()}`);
     },
-    [push]
+    [functionToUse]
   );
 };
 

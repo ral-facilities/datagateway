@@ -35,6 +35,7 @@ import {
   InvestigationEntity,
   DatasetEntity,
   useUpdatePage,
+  useUpdateResults,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
@@ -193,6 +194,15 @@ const SearchPageCardView = (
     localStorage.setItem(pageNumber, JSON.stringify(page));
   };
 
+  const storeResults = (
+    results: number,
+    searchableEntities: InvestigationEntity | DatasetEntity
+  ): void => {
+    const resultsNumber = (searchableEntities as string) + 'Results';
+
+    localStorage.setItem(resultsNumber, JSON.stringify(results));
+  };
+
   const getFilters = (
     searchableEntities: SearchableEntities
   ): FiltersType | null => {
@@ -227,18 +237,32 @@ const SearchPageCardView = (
     }
   };
 
-  const { filters, sort, page } = React.useMemo(
+  const getResults = (
+    searchableEntities: InvestigationEntity | DatasetEntity
+  ): number | null => {
+    const resultsNumber = (searchableEntities as string) + 'Results';
+    const savedResults = localStorage.getItem(resultsNumber);
+    if (savedResults) {
+      return JSON.parse(savedResults) as number;
+    } else {
+      return null;
+    }
+  };
+
+  const { filters, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
 
   const clearFilters = useClearFilters();
   const clearSort = useClearSort();
+  const pushPage = useUpdatePage('push');
+  const pushResults = useUpdateResults('push');
 
   const replaceFilters = useUpdateFilter('replace');
   const replaceHandleSort = useUpdateSort('replace');
   const replacePage = useUpdatePage('replace');
-  const pushPage = useUpdatePage('push');
+  const replaceResults = useUpdateResults('replace');
 
   const updateFilters = (filter: FiltersType | null): void => {
     if (filter) {
@@ -271,6 +295,16 @@ const SearchPageCardView = (
 
   const resetPageNumber = (page: number): void => {
     pushPage(page);
+  };
+
+  const updateResults = (results: number | null): void => {
+    if (results) {
+      replaceResults(results);
+    }
+  };
+
+  const resetResultsNumber = (results: number): void => {
+    pushResults(results);
   };
   useEffect(() => {
     if (currentTab === 'investigation') {
@@ -314,6 +348,9 @@ const SearchPageCardView = (
       if (page) {
         storePage(page, 'investigation');
       }
+      if (results) {
+        storeResults(results, 'investigation');
+      }
     }
 
     if (currentTab === 'dataset') {
@@ -321,6 +358,9 @@ const SearchPageCardView = (
       storeSort(sort, 'dataset');
       if (page) {
         storePage(page, 'dataset');
+      }
+      if (results) {
+        storeResults(results, 'dataset');
       }
     }
 
@@ -333,17 +373,20 @@ const SearchPageCardView = (
     clearAllFilters(filters);
     clearAllSort(sort);
     resetPageNumber(1);
+    resetResultsNumber(10);
 
     if (newValue === 'investigation') {
       updateFilters(getFilters('investigation'));
       updateSort(getSort('investigation'));
       updatePage(getPage('investigation'));
+      updateResults(getResults('investigation'));
     }
 
     if (newValue === 'dataset') {
       updateFilters(getFilters('dataset'));
       updateSort(getSort('dataset'));
       updatePage(getPage('dataset'));
+      updateResults(getResults('dataset'));
     }
 
     if (newValue === 'datafile') {

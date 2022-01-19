@@ -9,7 +9,7 @@ import {
   useInvestigationsPaginated,
   useUpdateFilter,
   useUpdatePage,
-  usePushResults,
+  useUpdateResults,
   useUpdateSort,
   useTextFilter,
 } from 'datagateway-common';
@@ -29,7 +29,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
   const handleSort = useUpdateSort('push');
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
-  const pushResults = usePushResults();
+  const pushResults = useUpdateResults('push');
 
   const {
     data: totalDataCount,

@@ -13,7 +13,7 @@ import {
   useDatasetsPaginated,
   useUpdateFilter,
   useUpdatePage,
-  usePushResults,
+  useUpdateResults,
   useUpdateSort,
   useTextFilter,
   useAllFacilityCycles,
@@ -84,7 +84,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const handleSort = useUpdateSort('push');
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
-  const pushResults = usePushResults('push');
+  const pushResults = useUpdateResults('push');
 
   const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
     {

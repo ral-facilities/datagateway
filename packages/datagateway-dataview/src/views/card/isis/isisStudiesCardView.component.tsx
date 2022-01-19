@@ -9,7 +9,7 @@ import {
   useDateFilter,
   useUpdateFilter,
   useUpdatePage,
-  usePushResults,
+  useUpdateResults,
   useUpdateSort,
   useStudiesPaginated,
   useStudyCount,
@@ -42,7 +42,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   const handleSort = useUpdateSort('push');
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
-  const pushResults = usePushResults();
+  const pushResults = useUpdateResults('push');
 
   const unembargoDate = format(
     // set s and ms to 0 to escape recursive loop of fetching data every time they change

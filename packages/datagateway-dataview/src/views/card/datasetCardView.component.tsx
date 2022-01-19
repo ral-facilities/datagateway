@@ -10,7 +10,7 @@ import {
   useDatasetsPaginated,
   useUpdateFilter,
   useUpdatePage,
-  usePushResults,
+  useUpdateResults,
   useUpdateSort,
   useTextFilter,
   AddToCartButton,
@@ -38,7 +38,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const handleSort = useUpdateSort('push');
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
-  const pushResults = usePushResults();
+  const pushResults = useUpdateResults('push');
 
   const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
     {

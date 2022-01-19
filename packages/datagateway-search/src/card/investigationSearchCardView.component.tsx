@@ -16,7 +16,7 @@ import {
   useInvestigationsPaginated,
   useUpdateFilter,
   useUpdatePage,
-  usePushResults,
+  useUpdateResults,
   useUpdateSort,
   useTextFilter,
   useAllFacilityCycles,
@@ -139,7 +139,7 @@ const InvestigationCardView = (
   const handleSort = useUpdateSort('push');
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
-  const pushResults = usePushResults('push');
+  const pushResults = useUpdateResults('push');
 
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults

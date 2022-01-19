@@ -12,7 +12,7 @@ import {
   useDatasetsPaginated,
   useUpdateFilter,
   useUpdatePage,
-  usePushResults,
+  useUpdateResults,
   useUpdateSort,
   useTextFilter,
   AddToCartButton,
@@ -68,7 +68,7 @@ const ISISDatasetsCardView = (
   const handleSort = useUpdateSort('push');
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
-  const pushResults = usePushResults();
+  const pushResults = useUpdateResults('push');
 
   const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
     {

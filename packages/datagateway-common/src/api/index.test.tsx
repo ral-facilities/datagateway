@@ -8,7 +8,7 @@ import {
   useUpdateFilter,
   usePushFilters,
   useUpdatePage,
-  usePushResults,
+  useUpdateResults,
   useUpdateSort,
   useUpdateView,
 } from './index';
@@ -455,9 +455,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('usePushResults', () => {
+    describe('useUpdateResults', () => {
       it('returns callback that when called pushes a new page to the url query', () => {
-        const { result } = renderHook(() => usePushResults(), {
+        const { result } = renderHook(() => useUpdateResults('push'), {
           wrapper,
         });
 
