@@ -27,7 +27,6 @@ import {
   SelectionAlert,
   useClearFilters,
 } from 'datagateway-common';
-import { useClearFilters } from 'datagateway-common/src/api';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -634,6 +633,10 @@ const PageContainer: React.FC = () => {
 
   const handleFilterClearButton = (): void => {
     clearFilters();
+  };
+
+  const handleFilterClearButton = (): void => {
+    clearAllFilters(filters);
   };
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
