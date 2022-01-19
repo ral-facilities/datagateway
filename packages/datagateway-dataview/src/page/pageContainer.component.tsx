@@ -27,6 +27,7 @@ import {
   SelectionAlert,
   useClearFilters,
 } from 'datagateway-common';
+import { useClearFilters } from 'datagateway-common/src/api';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -395,6 +396,27 @@ const ViewButton = (props: {
       >
         {props.viewCards ? t('app.view_table') : t('app.view_cards')}
       </Button>
+      <Button
+        className="tour-dataview-clear-filter-button"
+        style={{ margin: '5px' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => props.handleFilterClearButton()}
+      >
+        Clear Filters
+      </Button>
+    </div>
+  );
+};
+
+const ClearButton = (props: {
+  handleFilterClearButton: () => void;
+}): React.ReactElement => {
+  const classes = viewButtonStyles();
+
+  return (
+    <div className={classes.root}>
       <Button
         className="tour-dataview-clear-filter-button"
         style={{ margin: '5px' }}
