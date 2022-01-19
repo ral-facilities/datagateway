@@ -20,13 +20,21 @@ import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
 import {
+  FiltersType,
   parseSearchToQuery,
+  SearchableEntities,
+  SortType,
   useDatafileCount,
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
   usePushFilter,
   useSort,
+  useClearFilters,
+  useClearSort,
+  InvestigationEntity,
+  DatasetEntity,
+  usePushPage,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
@@ -158,9 +166,114 @@ const SearchPageCardView = (
   });
   const loading = isFetchingNum > 0;
 
-  const pushFilters = usePushFilter('push');
-  const handleSort = useSort('push');
-  // Setting a tab based on user selection and what tabs are available
+  const storeFilters = (
+    filters: FiltersType,
+    searchableEntities: SearchableEntities
+  ): void => {
+    const filter = (searchableEntities as string) + 'Filters';
+
+    localStorage.setItem(filter, JSON.stringify(filters));
+  };
+
+  const storeSort = (
+    sorts: SortType,
+    searchableEntities: SearchableEntities
+  ): void => {
+    const sort = (searchableEntities as string) + 'Sort';
+
+    localStorage.setItem(sort, JSON.stringify(sorts));
+  };
+
+  const storePage = (
+    page: number,
+    searchableEntities: InvestigationEntity | DatasetEntity
+  ): void => {
+    const pageNumber = (searchableEntities as string) + 'Page';
+
+    localStorage.setItem(pageNumber, JSON.stringify(page));
+  };
+
+  const getFilters = (
+    searchableEntities: SearchableEntities
+  ): FiltersType | null => {
+    const filter = (searchableEntities as string) + 'Filters';
+    const savedFilters = localStorage.getItem(filter);
+    if (savedFilters) {
+      return JSON.parse(savedFilters) as FiltersType;
+    } else {
+      return null;
+    }
+  };
+
+  const getSort = (searchableEntities: SearchableEntities): SortType | null => {
+    const sort = (searchableEntities as string) + 'Sort';
+    const savedSort = localStorage.getItem(sort);
+    if (savedSort) {
+      return JSON.parse(savedSort) as SortType;
+    } else {
+      return null;
+    }
+  };
+
+  const getPage = (
+    searchableEntities: InvestigationEntity | DatasetEntity
+  ): number | null => {
+    const pageNumber = (searchableEntities as string) + 'Page';
+    const savedPage = localStorage.getItem(pageNumber);
+    if (savedPage) {
+      return JSON.parse(savedPage) as number;
+    } else {
+      return null;
+    }
+  };
+
+  const { filters, sort, page } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  // const pushFilters = usePushFilter('push');
+  // const handleSort = useSort('push');
+  const clearFilters = useClearFilters();
+  const clearSort = useClearSort();
+
+  const replaceFilters = usePushFilter('replace');
+  const replaceHandleSort = useSort('replace');
+  const replacePage = usePushPage('replace');
+  const pushPage = usePushPage('push');
+
+  const updateFilters = (filter: FiltersType | null): void => {
+    if (filter) {
+      Object.entries(filter).map(([key, value]) => replaceFilters(key, value));
+    }
+  };
+
+  const clearAllFilters = (filter: FiltersType): void => {
+    if (filter) {
+      Object.entries(filter).map(([key, value]) => clearFilters(key, value));
+    }
+  };
+
+  const updateSort = (sort: SortType | null): void => {
+    if (sort) {
+      Object.entries(sort).map(([key, value]) => replaceHandleSort(key, value));
+    }
+  };
+
+  const clearAllSort = (sort: SortType): void => {
+    if (sort) {
+      Object.entries(sort).map(([key, value]) => clearSort(key, value));
+    }
+  };
+  const updatePage = (page: number | null): void => {
+    if (page) {
+      replacePage(page);
+    }
+  };
+
+  const resetPageNumber = (page: number): void => {
+    pushPage(page);
+  };
   useEffect(() => {
     if (currentTab === 'investigation') {
       if (!investigationTab) {
@@ -191,56 +304,64 @@ const SearchPageCardView = (
         }
       }
     }
-  }, [
-    setCurrentTab,
-    investigationTab,
-    datasetTab,
-    datafileTab,
-    currentTab,
-    pushFilters,
-  ]);
+  }, [setCurrentTab, investigationTab, datasetTab, datafileTab, currentTab]);
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    setCurrentTab(newValue);
-    pushFilters('name', null);
-    pushFilters('title', null);
-    pushFilters('visitId', null);
-    pushFilters('doi', null);
-    pushFilters('size', null);
-    pushFilters('datasetCount', null);
-    pushFilters('datafileCount', null);
-    pushFilters('startDate', null);
-    pushFilters('endDate', null);
-    pushFilters('investigation.title', null);
-    pushFilters('investigationInstruments.instrument.fullName', null);
-    pushFilters('createTime', null);
-    pushFilters('modTime', null);
-    pushFilters('location', null);
-    pushFilters('fileSize', null);
-    handleSort('title', null);
-    handleSort('visitId', null);
-    handleSort('name', null);
-    handleSort('doi', null);
-    handleSort('investigationInstruments.instrument.fullName', null);
-    handleSort('startDate', null);
-    handleSort('endDate', null);
-    handleSort('investigation.title', null);
-    handleSort('createTime', null);
-    handleSort('modTime', null);
-    handleSort('location', null);
+    if (currentTab === 'investigation') {
+      storeFilters(filters, 'investigation');
+      storeSort(sort, 'investigation');
+      if (page) {
+        storePage(page, 'investigation');
+      }
+    }
 
-    // put the clear all filter here
-    // put the clear all filter here
-    // put the clear all filter here
-    // put the clear all filter here
-    // put the clear all filter here
-    // put the clear all filter here
-    // put the clear all filter here
-    // put the clear all filter here
+    if (currentTab === 'dataset') {
+      storeFilters(filters, 'dataset');
+      storeSort(sort, 'dataset');
+      if (page) {
+        storePage(page, 'dataset');
+      }
+    }
+
+    if (currentTab === 'datafile') {
+      storeFilters(filters, 'datafile');
+      storeSort(sort, 'datafile');
+    }
+    setCurrentTab(newValue);
+
+    clearAllFilters(filters);
+    clearAllSort(sort);
+    resetPageNumber(1);
+
+    if (newValue === 'investigation') {
+      updateFilters(getFilters('investigation'));
+      updateSort(getSort('investigation'));
+      updatePage(getPage('investigation'));
+    }
+
+    if (newValue === 'dataset') {
+      updateFilters(getFilters('dataset'));
+      updateSort(getSort('dataset'));
+      updatePage(getPage('dataset'));
+    }
+
+    if (newValue === 'datafile') {
+      updateFilters(getFilters('datafile'));
+      updateSort(getSort('datafile'));
+    }
   };
+
+  React.useEffect(() => {
+    localStorage.removeItem('investigationFilters');
+    localStorage.removeItem('datasetFilters');
+    localStorage.removeItem('datafileFilters');
+    localStorage.removeItem('investigationSort');
+    localStorage.removeItem('datasetSort');
+    localStorage.removeItem('datafileSort');
+  }, []);
 
   const { data: investigationDataCount } = useInvestigationCount([
     {

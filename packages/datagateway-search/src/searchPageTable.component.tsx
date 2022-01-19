@@ -206,8 +206,6 @@ const SearchPageTable = (
     [location.search]
   );
 
-  // const pushFilters = usePushFilter('push');
-  // const handleSort = useSort('push');
   const clearFilters = useClearFilters();
   const clearSort = useClearSort();
 
