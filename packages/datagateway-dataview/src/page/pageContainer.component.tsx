@@ -25,7 +25,9 @@ import {
   readSciGatewayToken,
   ArrowTooltip,
   SelectionAlert,
+  FiltersType,
 } from 'datagateway-common';
+import { useClearFilters } from 'datagateway-common/src/api';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -397,6 +399,27 @@ const ViewButton = (props: {
   );
 };
 
+const ClearButton = (props: {
+  handleFilterClearButton: () => void;
+}): React.ReactElement => {
+  const classes = viewButtonStyles();
+
+  return (
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-clear-filter-button"
+        style={{ margin: '5px' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => props.handleFilterClearButton()}
+      >
+        Clear Filters
+      </Button>
+    </div>
+  );
+};
+
 const StyledRouting = (props: {
   viewStyle: ViewsType;
   view: ViewsType;
@@ -596,6 +619,22 @@ const PageContainer: React.FC = () => {
     pushView(nextView);
   }, [pushView, view]);
 
+  const filterLocation = useLocation();
+  const clearFilters = useClearFilters();
+
+  const { filters } = React.useMemo(
+    () => parseSearchToQuery(filterLocation.search),
+    [filterLocation.search]
+  );
+
+  console.log(filters);
+
+  const handleFilterClearButton = (filter: FiltersType): void => {
+    if (filter) {
+      Object.entries(filter).map(([key, value]) => clearFilters(key, value));
+    }
+  };
+
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
   const isisRouteMatch = useRouteMatch(isisPaths);
@@ -665,10 +704,15 @@ const PageContainer: React.FC = () => {
                       exact
                       path={togglePaths}
                       render={() => (
-                        <ViewButton
-                          viewCards={view === 'card'}
-                          handleButtonChange={handleButtonChange}
-                        />
+                        <>
+                          <ViewButton
+                            viewCards={view === 'card'}
+                            handleButtonChange={handleButtonChange}
+                          />
+                          <ClearButton
+                            handleFilterClearButton={handleFilterClearButton}
+                          />
+                        </>
                       )}
                     />
                     <Route
