@@ -191,6 +191,27 @@ const ClearButton = (props: {
   );
 };
 
+const ClearButton = (props: {
+  handleFilterClearButton: () => void;
+}): React.ReactElement => {
+  const classes = viewButtonStyles();
+
+  return (
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-clear-filter-button"
+        style={{ margin: '5px' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => props.handleFilterClearButton()}
+      >
+        Clear Filters
+      </Button>
+    </div>
+  );
+};
+
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
   searchableEntities: string[];
@@ -459,6 +480,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                           viewCards={view === 'card'}
                           handleButtonChange={handleButtonChange}
                           disabled={false}
+<<<<<<< HEAD
+=======
+                        />
+                        <ClearButton
+>>>>>>> a4c01a27 (Added the clear filters button and linked the functionality to DG-search #1019)
                           handleFilterClearButton={handleFilterClearButton}
                         />
                       </>
