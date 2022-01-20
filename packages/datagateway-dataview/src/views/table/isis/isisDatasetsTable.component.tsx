@@ -14,7 +14,7 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  useUpdateSort,
+  useSort,
   useIds,
   useCart,
   useAddToCart,
@@ -67,7 +67,7 @@ const ISISDatasetsTable = (
 
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
-  const handleSort = useUpdateSort('push');
+  const handleSort = useSort();
 
   const { data: allIds } = useIds(
     'dataset',

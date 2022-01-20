@@ -14,7 +14,7 @@ import {
   useDateFilter,
   useInvestigationSizes,
   usePrincipalExperimenterFilter,
-  useUpdateSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
   TableActionProps,
@@ -103,7 +103,7 @@ const ISISInvestigationsTable = (
 
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
-  const handleSort = useUpdateSort('push');
+  const handleSort = useSort();
   const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
 
   const loadMoreRows = React.useCallback(

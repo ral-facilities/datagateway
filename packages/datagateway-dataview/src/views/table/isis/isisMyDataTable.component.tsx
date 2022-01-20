@@ -15,7 +15,7 @@ import {
   useInvestigationCount,
   useInvestigationsInfinite,
   useInvestigationSizes,
-  useUpdateSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
 } from 'datagateway-common';
@@ -116,7 +116,7 @@ const ISISMyDataTable = (): React.ReactElement => {
 
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
-  const handleSort = useUpdateSort('push');
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

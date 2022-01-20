@@ -21,7 +21,7 @@ import {
   useUpdateFilter,
   useUpdatePage,
   useUpdateResults,
-  useUpdateSort,
+  useSort,
   useTextFilter,
   AddToCartButton,
   DownloadButton,
@@ -68,7 +68,7 @@ const ISISInvestigationsCardView = (
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
   const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
-  const handleSort = useUpdateSort('push');
+  const handleSort = useSort();
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
   const pushResults = useUpdateResults('push');

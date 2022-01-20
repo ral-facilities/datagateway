@@ -31,7 +31,7 @@ import {
   useInvestigationCount,
   useLuceneSearch,
   useUpdateFilter,
-  useUpdateSort,
+  useSort,
   useClearFilters,
   useClearSort,
 } from 'datagateway-common';
@@ -210,7 +210,7 @@ const SearchPageTable = (
   const clearSort = useClearSort();
 
   const replaceFilters = useUpdateFilter('replace');
-  const replaceHandleSort = useUpdateSort('replace');
+  const replaceHandleSort = useSort();
 
   const updateFilters = (filter: FiltersType | null): void => {
     if (filter) {
@@ -226,7 +226,9 @@ const SearchPageTable = (
 
   const updateSort = (sort: SortType | null): void => {
     if (sort) {
-      Object.entries(sort).map(([key, value]) => replaceHandleSort(key, value));
+      Object.entries(sort).map(([key, value]) =>
+        replaceHandleSort(key, value, 'replace')
+      );
     }
   };
 

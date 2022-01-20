@@ -26,7 +26,7 @@ import {
   useDateFilter,
   useIds,
   useLuceneSearch,
-  useUpdateSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
 } from 'datagateway-common';
@@ -163,7 +163,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
-  const handleSort = useUpdateSort('push');
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

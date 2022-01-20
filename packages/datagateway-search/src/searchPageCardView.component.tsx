@@ -29,7 +29,7 @@ import {
   useInvestigationCount,
   useLuceneSearch,
   useUpdateFilter,
-  useUpdateSort,
+  useSort,
   useClearFilters,
   useClearSort,
   InvestigationEntity,
@@ -262,7 +262,7 @@ const SearchPageCardView = (
   const defaultPageValue = 1;
 
   const replaceFilters = useUpdateFilter('replace');
-  const replaceHandleSort = useUpdateSort('replace');
+  const replaceHandleSort = useSort();
   const replacePage = useUpdatePage('replace');
   const replaceResults = useUpdateResults('replace');
 
@@ -280,7 +280,9 @@ const SearchPageCardView = (
 
   const updateSort = (sort: SortType | null): void => {
     if (sort) {
-      Object.entries(sort).map(([key, value]) => replaceHandleSort(key, value));
+      Object.entries(sort).map(([key, value]) =>
+        replaceHandleSort(key, value, 'replace')
+      );
     }
   };
 

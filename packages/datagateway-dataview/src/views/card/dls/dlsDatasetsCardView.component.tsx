@@ -12,7 +12,7 @@ import {
   useUpdateFilter,
   useUpdatePage,
   useUpdateResults,
-  useUpdateSort,
+  useSort,
   useTextFilter,
   useDatasetsDatafileCount,
   AddToCartButton,
@@ -41,7 +41,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
-  const handleSort = useUpdateSort('push');
+  const handleSort = useSort();
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
   const pushResults = useUpdateResults('push');

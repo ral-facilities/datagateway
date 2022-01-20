@@ -8,7 +8,7 @@ import {
   getStudyInfoInvestigation,
   Study,
   useDateFilter,
-  useUpdateSort,
+  useSort,
   useTextFilter,
   externalSiteLink,
 } from 'datagateway-common';
@@ -96,7 +96,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
-  const handleSort = useUpdateSort('push');
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

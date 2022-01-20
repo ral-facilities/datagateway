@@ -9,7 +9,7 @@ import {
   usePushFilters,
   useUpdatePage,
   useUpdateResults,
-  useUpdateSort,
+  useSort,
   useUpdateView,
 } from './index';
 import {
@@ -304,9 +304,9 @@ describe('generic api functions', () => {
       jest.resetModules();
     });
 
-    describe('useUpdateSort', () => {
+    describe('useSort', () => {
       it('returns callback that can push a new sort to the url query', () => {
-        const { result } = renderHook(() => useUpdateSort('push'), {
+        const { result } = renderHook(() => useSort(), {
           wrapper,
         });
 
@@ -320,7 +320,7 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that can replace the sort with a new one in the url query', () => {
-        const { result } = renderHook(() => useUpdateSort('push'), {
+        const { result } = renderHook(() => useSort(), {
           wrapper,
         });
 
@@ -341,7 +341,7 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => useUpdateSort('push'), {
+        const { result } = renderHook(() => useSort(), {
           wrapper,
         });
 

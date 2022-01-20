@@ -11,7 +11,7 @@ import {
   useUpdateFilter,
   useUpdatePage,
   useUpdateResults,
-  useUpdateSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
@@ -36,7 +36,7 @@ const ISISFacilityCyclesCardView = (
 
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
-  const handleSort = useUpdateSort('push');
+  const handleSort = useSort();
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
   const pushResults = useUpdateResults('push');

@@ -244,14 +244,19 @@ export const getApiParams = (props: {
   return searchParams;
 };
 
-export const useUpdateSort = (
+export const useSort = (): ((
+  sortKey: string,
+  order: Order | null,
   updateMethod: UpdateMethod
-): ((sortKey: string, order: Order | null) => void) => {
+) => void) => {
   const { push, replace } = useHistory();
-  const functionToUse = updateMethod === 'push' ? push : replace;
 
   return React.useCallback(
-    (sortKey: string, order: Order | null): void => {
+    (
+      sortKey: string,
+      order: Order | null,
+      updateMethod: UpdateMethod
+    ): void => {
       let query = parseSearchToQuery(window.location.search);
       if (order !== null) {
         query = {
@@ -271,11 +276,11 @@ export const useUpdateSort = (
           },
         };
       }
-      functionToUse({
+      (updateMethod === 'push' ? push : replace)({
         search: `?${parseQueryToSearch(query).toString()}`,
       });
     },
-    [functionToUse]
+    [push, replace]
   );
 };
 

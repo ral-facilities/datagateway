@@ -11,7 +11,7 @@ import {
   useUpdateFilter,
   useUpdatePage,
   useUpdateResults,
-  useUpdateSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -36,7 +36,7 @@ const ISISInstrumentsCardView = (
   );
 
   const textFilter = useTextFilter(filters, 'push');
-  const handleSort = useUpdateSort('push');
+  const handleSort = useSort();
   const pushFilter = useUpdateFilter('push');
   const pushPage = useUpdatePage('push');
   const pushResults = useUpdateResults('push');
