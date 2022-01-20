@@ -635,10 +635,6 @@ const PageContainer: React.FC = () => {
     clearFilters();
   };
 
-  const handleFilterClearButton = (): void => {
-    clearAllFilters(filters);
-  };
-
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
   const isisRouteMatch = useRouteMatch(isisPaths);

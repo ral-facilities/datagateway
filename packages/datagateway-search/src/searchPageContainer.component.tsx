@@ -480,11 +480,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                           viewCards={view === 'card'}
                           handleButtonChange={handleButtonChange}
                           disabled={false}
-<<<<<<< HEAD
-=======
-                        />
-                        <ClearButton
->>>>>>> a4c01a27 (Added the clear filters button and linked the functionality to DG-search #1019)
                           handleFilterClearButton={handleFilterClearButton}
                         />
                       </>
