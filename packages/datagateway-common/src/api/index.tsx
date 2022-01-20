@@ -358,6 +358,7 @@ export const useClearQueryParams = (
   const { replace } = useHistory();
   return React.useCallback(() => {
     const query = parseSearchToQuery(window.location.search);
+
     if (queryparams === 'filters') {
       query.filters = {};
     } else if (queryparams === 'sort') {

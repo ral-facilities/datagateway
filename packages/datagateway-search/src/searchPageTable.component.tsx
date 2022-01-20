@@ -276,6 +276,7 @@ const SearchPageTable = (
       storeFilters(filters, 'datafile');
       storeSort(sort, 'datafile');
     }
+
     setCurrentTab(newValue);
 
     clearFilters();

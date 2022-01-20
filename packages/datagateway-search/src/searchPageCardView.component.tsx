@@ -351,6 +351,7 @@ const SearchPageCardView = (
       storeFilters(filters, 'datafile');
       storeSort(sort, 'datafile');
     }
+
     setCurrentTab(newValue);
 
     clearFilters();

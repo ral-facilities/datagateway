@@ -36,6 +36,7 @@ import {
   usePushSearchToggles,
   usePushSearchEndDate,
   usePushSearchStartDate,
+  useClearQueryParams,
 } from '..';
 
 jest.mock('../handleICATError');
@@ -452,6 +453,89 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?page=1');
+      });
+    });
+
+    describe.only('useClearQueryParams', () => {
+      it('returns callback that when called removes all filters from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(
+            () =>
+              '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D'
+          ),
+        }));
+
+        const { result } = renderHook(() => useClearQueryParams('filters'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current();
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?',
+        });
+      });
+
+      it('returns callback that when called removes all sorts from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(
+            () => '?sort=%7B%22name%22%3A%22asc%22%7D'
+          ),
+        }));
+
+        const { result } = renderHook(() => useClearQueryParams('sort'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current();
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?',
+        });
+      });
+
+      it('returns callback that when called removes page number from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?page=1'),
+        }));
+
+        const { result } = renderHook(() => useClearQueryParams('page'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current();
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?',
+        });
+      });
+
+      it('returns callback that when called removes results number from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?results=1'),
+        }));
+
+        const { result } = renderHook(() => useClearQueryParams('results'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current();
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?',
+        });
       });
     });
 
