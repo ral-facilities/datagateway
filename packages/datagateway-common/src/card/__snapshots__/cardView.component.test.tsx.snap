@@ -49,6 +49,7 @@ exports[`Card View renders correctly 1`] = `
   <WithStyles(ForwardRef(Grid))
     container={true}
     direction="row"
+    justify="center"
   >
     <WithStyles(ForwardRef(Grid))
       item={true}

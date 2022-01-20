@@ -9,9 +9,10 @@ import {
   darken,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { DownloadCartItem } from '../app.types';
+import { DownloadCartItem, MicroFrontendId } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { NotificationType } from '../state/actions/actions.types';
 
 //Note: By default auto fill to the avaiable space
 type SelectionAlertProps = {
@@ -84,6 +85,7 @@ const SelectionAlert = React.memo(
   (props: {
     selectedItems: DownloadCartItem[];
     navigateToSelection: () => void;
+    loggedInAnonymously: boolean;
     width?: string;
     marginSide?: string;
   }): React.ReactElement | null => {
@@ -101,13 +103,31 @@ const SelectionAlert = React.memo(
     //Current number of selections
     const newNumSelecItems = props.selectedItems.length;
 
+    const broadcastWarning = (message: string): void => {
+      document.dispatchEvent(
+        new CustomEvent(MicroFrontendId, {
+          detail: {
+            type: NotificationType,
+            payload: {
+              severity: 'warning',
+              message,
+            },
+          },
+        })
+      );
+    };
+
     //Check for a change and assign text based on increase or decrease
+
     if (newNumSelecItems !== numSelectedItems) {
       const difference = newNumSelecItems - numSelectedItems;
 
-      if (difference > 0)
+      if (difference > 0) {
         setAlertText(t('selec_alert.added', { count: difference }));
-      else setAlertText(t('selec_alert.removed', { count: difference * -1 }));
+        if (props.loggedInAnonymously && newNumSelecItems === 1) {
+          broadcastWarning(t('selec_alert.warning_message_session_token'));
+        }
+      } else setAlertText(t('selec_alert.removed', { count: difference * -1 }));
 
       setNumSelectedItems(newNumSelecItems);
       //Change has occurred so need to ensure displayed

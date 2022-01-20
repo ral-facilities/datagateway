@@ -1,4 +1,4 @@
-import { Link, ListItemText } from '@material-ui/core';
+import { Link } from '@material-ui/core';
 import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
@@ -131,28 +131,6 @@ describe('DLS Proposals - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
-  });
-
-  it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
-    );
-  });
-
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('investigations.title');
-    button.simulate('click');
-
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"desc"}')}`
-    );
   });
 
   it('renders fine with incomplete data', () => {

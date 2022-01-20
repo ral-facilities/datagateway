@@ -17,20 +17,16 @@ describe('DLS - Proposals Cards', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
-
-    //Default sort
-    cy.contains('[role="button"]', 'asc').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
   });
 
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('About quickly both stop.')
+      .contains('Including spend increase ability music skill former.')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%2030/investigation'
+      '/browse/proposal/INVESTIGATION%201/investigation'
     );
   });
 
@@ -57,68 +53,7 @@ describe('DLS - Proposals Cards', () => {
       .should('exist');
   });
 
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Title')
-        .click()
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-    });
-
-    it('one field', () => {
-      cy.contains('[role="button"]', 'Title')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('About quickly both stop.');
-
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'asc').should('not.exist');
-      cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Yourself smile either I pass significant.');
-
-      cy.contains('[role="button"]', 'Title')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('not.exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Including spend increase ability music skill former.');
-    });
-
-    it('multiple fields', () => {
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('INVESTIGATION 1');
-
-      cy.contains('[role="button"]', 'Title')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('INVESTIGATION 1');
-    });
-  });
-
   describe('should be able to filter by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Title')
-        .click()
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-    });
-
     it('multiple fields', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('[aria-label="Filter by Title"]')

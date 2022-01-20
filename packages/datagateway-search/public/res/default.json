@@ -91,12 +91,13 @@
     "remove_from_cart": "Remove from selection",
     "download": "Download"
   },
-  "selec_alert" : {
+  "selec_alert": {
     "added": "{{count}} item has been added to selection.",
-    "added_plural" : "{{count}} items have been added to selection.",
-    "removed" : "{{count}} item has been removed from selection.",
-    "removed_plural" : "{{count}} items have been removed from selection.",
-    "link" : "Go to selection."
+    "added_plural": "{{count}} items have been added to selection.",
+    "removed": "{{count}} item has been removed from selection.",
+    "removed_plural": "{{count}} items have been removed from selection.",
+    "link": "Go to selection.",
+    "warning_message_session_token": "Please remember to submit your selection as this session will timeout after 2 hours of inactivity and the selection will be lost after the timeout"
   },
   "app": {
     "results": "Results",

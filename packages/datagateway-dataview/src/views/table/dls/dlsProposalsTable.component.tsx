@@ -66,7 +66,7 @@ const DLSProposalsTable = (): React.ReactElement => {
           );
         },
         filterComponent: textFilter,
-        defaultSort: 'asc',
+        disableSort: true,
       },
       {
         icon: TitleIcon,
@@ -80,6 +80,7 @@ const DLSProposalsTable = (): React.ReactElement => {
           );
         },
         filterComponent: textFilter,
+        disableSort: true,
       },
     ],
     [t, textFilter, view]
