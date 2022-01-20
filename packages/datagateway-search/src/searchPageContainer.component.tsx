@@ -196,6 +196,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     location.search,
   ]);
   const { view, startDate, endDate } = queryParams;
+  const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
+
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
   const investigation = searchableEntities.includes('investigation')
@@ -211,9 +213,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
-  const [searchText, setSearchText] = React.useState(
-    queryParams.searchText ? queryParams.searchText : ''
-  );
+
+  const [searchText, setSearchText] = React.useState(searchTextURL);
+  const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
 
   const handleSearchTextChange = (searchText: string): void => {
     setSearchText(searchText);
@@ -257,7 +259,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     isIdle: investigationsIdle,
     isFetching: investigationsFetching,
   } = useLuceneSearch('Investigation', {
-    searchText,
+    searchText: searchTextURL,
     startDate,
     endDate,
     maxCount: maxNumResults,
@@ -267,7 +269,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     isIdle: datasetsIdle,
     isFetching: datasetsFetching,
   } = useLuceneSearch('Dataset', {
-    searchText,
+    searchText: searchTextURL,
     startDate,
     endDate,
     maxCount: maxNumResults,
@@ -277,7 +279,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     isIdle: datafilesIdle,
     isFetching: datafilesFetching,
   } = useLuceneSearch('Datafile', {
-    searchText,
+    searchText: searchTextURL,
     startDate,
     endDate,
     maxCount: maxNumResults,
@@ -291,6 +293,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
+    setSearchOnNextRender(true);
 
     localStorage.removeItem('investigationFilters');
     localStorage.removeItem('datasetFilters');
@@ -302,35 +305,40 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     localStorage.removeItem('datasetPage');
     localStorage.removeItem('investigationResults');
     localStorage.removeItem('datasetResults');
+  }, [searchText, pushSearchText]);
 
-    if (dataset) {
-      // Fetch lucene datasets
-      searchDatasets();
-    }
+  React.useEffect(() => {
+    if (searchOnNextRender) {
+      if (dataset) {
+        // Fetch lucene datasets
+        searchDatasets();
+      }
 
-    if (datafile) {
-      // Fetch lucene datafiles
-      searchDatafiles();
-    }
-    if (investigation) {
-      // Fetch lucene investigations
-      searchInvestigations();
-    }
+      if (datafile) {
+        // Fetch lucene datafiles
+        searchDatafiles();
+      }
+      if (investigation) {
+        // Fetch lucene investigations
+        searchInvestigations();
+      }
 
-    if (dataset || datafile || investigation) {
-      // Set the appropriate tabs.
-      setDatafileTab(datafile);
-      setDatasetTab(dataset);
-      setInvestigationTab(investigation);
+      if (dataset || datafile || investigation) {
+        // Set the appropriate tabs.
+        setDatafileTab(datafile);
+        setDatasetTab(dataset);
+        setInvestigationTab(investigation);
+      }
+
+      setSearchOnNextRender(false);
     }
   }, [
-    searchText,
-    datafile,
+    searchOnNextRender,
     dataset,
+    datafile,
     investigation,
-    pushSearchText,
-    searchDatafiles,
     searchDatasets,
+    searchDatafiles,
     searchInvestigations,
     setDatafileTab,
     setDatasetTab,
@@ -344,7 +352,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       queryParams.startDate ||
       queryParams.endDate
     )
-      initiateSearch();
+      setSearchOnNextRender(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
