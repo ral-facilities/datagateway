@@ -19,6 +19,7 @@ import {
   useRemoveFromCart,
   ISISInvestigationDetailsPanel,
   InvestigationDetailsPanel,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -476,10 +477,9 @@ describe('Investigation Search Table component', () => {
 
   it('displays correct details panel for DLS when expanded', () => {
     const wrapper = createWrapper('dls');
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
     wrapper.find('[aria-label="Show details"]').first().simulate('click');
-
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders title, visit ID, Name and DOI as links', () => {

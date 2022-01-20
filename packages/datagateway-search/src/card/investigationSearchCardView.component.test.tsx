@@ -14,6 +14,7 @@ import {
   CardView,
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -489,12 +490,12 @@ describe('Investigation - Card View', () => {
 
   it('displays correct details panel for DLS when expanded', () => {
     const wrapper = createWrapper('dls');
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 });

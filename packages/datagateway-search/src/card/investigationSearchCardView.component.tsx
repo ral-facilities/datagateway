@@ -30,6 +30,7 @@ import {
   DownloadButton,
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -338,7 +339,9 @@ const InvestigationCardView = (
             }
           />
         );
-      } else return <InvestigationDetailsPanel rowData={investigation} />;
+      } else if (hierarchy === 'dls')
+        return <DLSVisitDetailsPanel rowData={investigation} />;
+      else return <InvestigationDetailsPanel rowData={investigation} />;
     },
     [hierarchy, hierarchyLinkURL, push]
   );

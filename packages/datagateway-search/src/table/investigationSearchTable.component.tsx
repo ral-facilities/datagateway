@@ -23,6 +23,7 @@ import {
   useLuceneSearch,
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -335,6 +336,13 @@ const InvestigationSearchTable = (
                   }
                 : undefined
             }
+          />
+        );
+      } else if (hierarchy === 'dls') {
+        return (
+          <DLSVisitDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
           />
         );
       } else {
