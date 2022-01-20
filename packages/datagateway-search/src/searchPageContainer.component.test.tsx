@@ -493,6 +493,10 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('sends actions to update tabs when user clicks search button', async () => {
+    history.replace(
+      '/search/data?searchText=test&dataset=false&datafile=false'
+    );
+
     const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
     const wrapper = mount(
@@ -504,13 +508,7 @@ describe('SearchPageContainer - Tests', () => {
         </Router>
       </Provider>
     );
-    testStore.clearActions();
-
-    history.replace('/search/data?dataset=false&datafile=false');
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    wrapper.update();
 
     await act(async () => {
       await flushPromises();
@@ -520,38 +518,6 @@ describe('SearchPageContainer - Tests', () => {
     expect(testStore.getActions()[0]).toEqual(setDatafileTab(false));
     expect(testStore.getActions()[1]).toEqual(setDatasetTab(false));
     expect(testStore.getActions()[2]).toEqual(setInvestigationTab(true));
-  });
-
-  it('switches view button display name when clicked', async () => {
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(
-      wrapper.find('[aria-label="container-view-button"]').exists()
-    ).toBeTruthy();
-    expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
-    ).toEqual('app.view_cards');
-
-    // Click view button
-    wrapper
-      .find('[aria-label="container-view-button"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-
-    // Check that the text on the button has changed
-    expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
-    ).toEqual('app.view_table');
   });
 
   it('search text state is updated when text is changed and pushes when search initiated', async () => {
@@ -711,6 +677,38 @@ describe('SearchPageContainer - Tests', () => {
         },
       }
     );
+  });
+
+  it('switches view button display name when clicked', async () => {
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').exists()
+    ).toBeTruthy();
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').first().text()
+    ).toEqual('app.view_cards');
+
+    // Click view button
+    wrapper
+      .find('[aria-label="container-view-button"]')
+      .first()
+      .simulate('click');
+    wrapper.update();
+
+    // Check that the text on the button has changed
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').first().text()
+    ).toEqual('app.view_table');
   });
 
   it('does not search when there are no searchable entities', async () => {
