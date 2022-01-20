@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: (theme as any).colours?.contrastGrey,
     },
     containerBox: {
-      maxWidth: '1600px',
+      maxWidth: '1920px',
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
       paddingBottom: theme.spacing(2),
