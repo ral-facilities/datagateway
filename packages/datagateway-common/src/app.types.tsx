@@ -291,16 +291,7 @@ export type AdditionalFilters = {
 export interface SortType {
   [column: string]: Order;
 }
-export type InvestigationEntity = 'investigation';
 
-export type DatasetEntity = 'dataset';
-
-export type DatafileEntity = 'datafile';
-
-export type SearchableEntities =
-  | InvestigationEntity
-  | DatasetEntity
-  | DatafileEntity;
 export type ViewsType = 'table' | 'card' | null;
 
 export interface QueryParams {

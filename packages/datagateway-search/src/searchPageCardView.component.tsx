@@ -22,7 +22,6 @@ import { setCurrentTab } from './state/actions/actions';
 import {
   FiltersType,
   parseSearchToQuery,
-  SearchableEntities,
   SortType,
   useDatafileCount,
   useDatasetCount,
@@ -30,8 +29,6 @@ import {
   useLuceneSearch,
   useClearQueryParam,
   useAddQueryParam,
-  InvestigationEntity,
-  DatasetEntity,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
@@ -165,43 +162,32 @@ const SearchPageCardView = (
 
   const storeFilters = (
     filters: FiltersType,
-    searchableEntities: SearchableEntities
+    searchableEntities: string
   ): void => {
     const filter = (searchableEntities as string) + 'Filters';
 
     localStorage.setItem(filter, JSON.stringify(filters));
   };
 
-  const storeSort = (
-    sorts: SortType,
-    searchableEntities: SearchableEntities
-  ): void => {
+  const storeSort = (sorts: SortType, searchableEntities: string): void => {
     const sort = (searchableEntities as string) + 'Sort';
 
     localStorage.setItem(sort, JSON.stringify(sorts));
   };
 
-  const storePage = (
-    page: number,
-    searchableEntities: InvestigationEntity | DatasetEntity
-  ): void => {
+  const storePage = (page: number, searchableEntities: string): void => {
     const pageNumber = (searchableEntities as string) + 'Page';
 
     localStorage.setItem(pageNumber, JSON.stringify(page));
   };
 
-  const storeResults = (
-    results: number,
-    searchableEntities: InvestigationEntity | DatasetEntity
-  ): void => {
+  const storeResults = (results: number, searchableEntities: string): void => {
     const resultsNumber = (searchableEntities as string) + 'Results';
 
     localStorage.setItem(resultsNumber, JSON.stringify(results));
   };
 
-  const getFilters = (
-    searchableEntities: SearchableEntities
-  ): FiltersType | null => {
+  const getFilters = (searchableEntities: string): FiltersType | null => {
     const filter = (searchableEntities as string) + 'Filters';
     const savedFilters = localStorage.getItem(filter);
     if (savedFilters) {
@@ -211,7 +197,7 @@ const SearchPageCardView = (
     }
   };
 
-  const getSort = (searchableEntities: SearchableEntities): SortType | null => {
+  const getSort = (searchableEntities: string): SortType | null => {
     const sort = (searchableEntities as string) + 'Sort';
     const savedSort = localStorage.getItem(sort);
     if (savedSort) {
@@ -221,9 +207,7 @@ const SearchPageCardView = (
     }
   };
 
-  const getPage = (
-    searchableEntities: InvestigationEntity | DatasetEntity
-  ): number | null => {
+  const getPage = (searchableEntities: string): number | null => {
     const pageNumber = (searchableEntities as string) + 'Page';
     const savedPage = localStorage.getItem(pageNumber);
     if (savedPage) {
@@ -233,9 +217,7 @@ const SearchPageCardView = (
     }
   };
 
-  const getResults = (
-    searchableEntities: InvestigationEntity | DatasetEntity
-  ): number | null => {
+  const getResults = (searchableEntities: string): number | null => {
     const resultsNumber = (searchableEntities as string) + 'Results';
     const savedResults = localStorage.getItem(resultsNumber);
     if (savedResults) {
@@ -320,31 +302,18 @@ const SearchPageCardView = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    if (currentTab === 'investigation') {
-      storeFilters(filters, 'investigation');
-      storeSort(sort, 'investigation');
+    if (currentTab !== 'datafile') {
+      storeFilters(filters, currentTab);
+      storeSort(sort, currentTab);
       if (page) {
-        storePage(page, 'investigation');
+        storePage(page, currentTab);
       }
       if (results) {
-        storeResults(results, 'investigation');
+        storeResults(results, currentTab);
+      } else {
+        storeFilters(filters, currentTab);
+        storeSort(sort, currentTab);
       }
-    }
-
-    if (currentTab === 'dataset') {
-      storeFilters(filters, 'dataset');
-      storeSort(sort, 'dataset');
-      if (page) {
-        storePage(page, 'dataset');
-      }
-      if (results) {
-        storeResults(results, 'dataset');
-      }
-    }
-
-    if (currentTab === 'datafile') {
-      storeFilters(filters, 'datafile');
-      storeSort(sort, 'datafile');
     }
 
     setCurrentTab(newValue);
@@ -354,23 +323,14 @@ const SearchPageCardView = (
     clearPage();
     clearResults();
 
-    if (newValue === 'investigation') {
-      updateFilters(getFilters('investigation'));
-      updateSort(getSort('investigation'));
-      updatePage(getPage('investigation'));
-      updateResults(getResults('investigation'));
-    }
-
-    if (newValue === 'dataset') {
-      updateFilters(getFilters('dataset'));
-      updateSort(getSort('dataset'));
-      updatePage(getPage('dataset'));
-      updateResults(getResults('dataset'));
-    }
-
-    if (newValue === 'datafile') {
-      updateFilters(getFilters('datafile'));
-      updateSort(getSort('datafile'));
+    if (newValue !== 'datafile') {
+      updateFilters(getFilters(newValue));
+      updateSort(getSort(newValue));
+      updatePage(getPage(newValue));
+      updateResults(getResults(newValue));
+    } else {
+      updateFilters(getFilters(newValue));
+      updateSort(getSort(newValue));
     }
   };
 
