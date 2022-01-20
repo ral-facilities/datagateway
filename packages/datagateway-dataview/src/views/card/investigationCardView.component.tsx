@@ -18,9 +18,9 @@ import {
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsPaginated,
-  useUpdateFilter,
-  useUpdatePage,
-  useUpdateResults,
+  usePushFilter,
+  usePushPage,
+  usePushResults,
   useSort,
   useTextFilter,
   AddToCartButton,
@@ -41,9 +41,9 @@ const InvestigationCardView = (): React.ReactElement => {
   const textFilter = useTextFilter(filters, 'push');
   const dateFilter = useDateFilter(filters, 'push');
   const handleSort = useSort();
-  const pushFilter = useUpdateFilter('push');
-  const pushPage = useUpdatePage('push');
-  const pushResults = useUpdateResults('push');
+  const pushFilter = usePushFilter();
+  const pushPage = usePushPage();
+  const pushResults = usePushResults();
 
   const {
     data: totalDataCount,

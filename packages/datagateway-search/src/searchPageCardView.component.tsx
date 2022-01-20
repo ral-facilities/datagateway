@@ -28,13 +28,10 @@ import {
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
-  useUpdateFilter,
-  useSort,
-  useClearQueryParams,
+  useClearQueryParam,
+  useAddQueryParam,
   InvestigationEntity,
   DatasetEntity,
-  useUpdatePage,
-  useUpdateResults,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
@@ -253,27 +250,25 @@ const SearchPageCardView = (
     [location.search]
   );
 
-  const clearFilters = useClearQueryParams('filters');
-  const clearSort = useClearQueryParams('sort');
-  const clearPage = useClearQueryParams('page');
-  const clearResults = useClearQueryParams('results');
+  const clearFilters = useClearQueryParam('filters');
+  const clearSort = useClearQueryParam('sort');
+  const clearPage = useClearQueryParam('page');
+  const clearResults = useClearQueryParam('results');
 
-  const replaceFilters = useUpdateFilter('replace');
-  const handleSort = useSort();
-  const replacePage = useUpdatePage('replace');
-  const replaceResults = useUpdateResults('replace');
+  const replaceFilters = useAddQueryParam('filters');
+  const replaceSorts = useAddQueryParam('sort');
+  const replacePage = useAddQueryParam('page');
+  const replaceResults = useAddQueryParam('results');
 
   const updateFilters = (filter: FiltersType | null): void => {
     if (filter) {
-      Object.entries(filter).map(([key, value]) => replaceFilters(key, value));
+      replaceFilters(filter);
     }
   };
 
   const updateSort = (sort: SortType | null): void => {
     if (sort) {
-      Object.entries(sort).map(([key, value]) =>
-        handleSort(key, value, 'replace')
-      );
+      replaceSorts(sort);
     }
   };
 

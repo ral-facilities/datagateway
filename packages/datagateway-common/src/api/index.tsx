@@ -284,11 +284,12 @@ export const useSort = (): ((
   );
 };
 
-export const useUpdateFilter = (
-  updateMethod: UpdateMethod
-): ((filterKey: string, filter: Filter | null) => void) => {
-  const { push, replace } = useHistory();
-  const functionToUse = updateMethod === 'push' ? push : replace;
+export const usePushFilter = (): ((
+  filterKey: string,
+  filter: Filter | null
+) => void) => {
+  const { push } = useHistory();
+
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
       let query = parseSearchToQuery(window.location.search);
@@ -311,9 +312,9 @@ export const useUpdateFilter = (
           },
         };
       }
-      functionToUse({ search: `?${parseQueryToSearch(query).toString()}` });
+      push({ search: `?${parseQueryToSearch(query).toString()}` });
     },
-    [functionToUse]
+    [push]
   );
 };
 
@@ -352,49 +353,68 @@ export const usePushFilters = (): ((
   );
 };
 
-export const useClearQueryParams = (
-  queryparams: 'filters' | 'sort' | 'page' | 'results'
+export const useAddQueryParam = (
+  type: 'filters' | 'sort' | 'page' | 'results'
+): ((param: FiltersType | SortType | number) => void) => {
+  const { replace } = useHistory();
+  return React.useCallback(
+    (param: FiltersType | SortType | number) => {
+      const query = parseSearchToQuery(window.location.search);
+
+      if (type === 'filters') {
+        query.filters = param as FiltersType;
+      } else if (type === 'sort') {
+        query.sort = param as SortType;
+      } else if (type === 'page') {
+        query.page = param as number;
+      } else if (type === 'results') {
+        query.results = param as number;
+      }
+
+      replace({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [type, replace]
+  );
+};
+
+export const useClearQueryParam = (
+  type: 'filters' | 'sort' | 'page' | 'results'
 ): (() => void) => {
   const { replace } = useHistory();
   return React.useCallback(() => {
     const query = parseSearchToQuery(window.location.search);
 
-    if (queryparams === 'filters') {
+    if (type === 'filters') {
       query.filters = {};
-    } else if (queryparams === 'sort') {
+    } else if (type === 'sort') {
       query.sort = {};
-    } else if (queryparams === 'page') {
+    } else if (type === 'page') {
       query.page = null;
-    } else if (queryparams === 'results') {
+    } else if (type === 'results') {
       query.results = null;
     }
 
     replace({ search: `?${parseQueryToSearch(query).toString()}` });
-  }, [replace, queryparams]);
+  }, [type, replace]);
 };
 
-export const useUpdatePage = (
-  updateMethod: UpdateMethod
-): ((page: number) => void) => {
-  const { push, replace } = useHistory();
-  const functionToUse = updateMethod === 'push' ? push : replace;
+export const usePushPage = (): ((page: number) => void) => {
+  const { push } = useHistory();
+
   return React.useCallback(
     (page: number) => {
       const query = {
         ...parseSearchToQuery(window.location.search),
         page,
       };
-      functionToUse(`?${parseQueryToSearch(query).toString()}`);
+      push(`?${parseQueryToSearch(query).toString()}`);
     },
-    [functionToUse]
+    [push]
   );
 };
 
-export const useUpdateResults = (
-  updateMethod: UpdateMethod
-): ((results: number) => void) => {
-  const { push, replace } = useHistory();
-  const functionToUse = updateMethod === 'push' ? push : replace;
+export const usePushResults = (): ((results: number) => void) => {
+  const { push } = useHistory();
 
   return React.useCallback(
     (results: number) => {
@@ -402,9 +422,9 @@ export const useUpdateResults = (
         ...parseSearchToQuery(window.location.search),
         results,
       };
-      functionToUse(`?${parseQueryToSearch(query).toString()}`);
+      push(`?${parseQueryToSearch(query).toString()}`);
     },
-    [functionToUse]
+    [push]
   );
 };
 

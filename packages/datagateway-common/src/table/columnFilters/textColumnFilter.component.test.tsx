@@ -6,7 +6,7 @@ import TextColumnFilter, {
 } from './textColumnFilter.component';
 import { Select } from '@material-ui/core';
 import { act } from 'react-dom/test-utils';
-import { useUpdateFilter, usePushFilters } from '../../api';
+import { usePushFilter, usePushFilters } from '../../api';
 import { renderHook } from '@testing-library/react-hooks';
 
 jest.mock('../../api');
@@ -208,7 +208,7 @@ describe('Text filter component', () => {
 
   it('useTextFilter hook returns a function which can generate a working text filter', () => {
     const pushFilter = jest.fn();
-    (useUpdateFilter as jest.Mock).mockImplementation(() => pushFilter);
+    (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
 
     const { result } = renderHook(() => useTextFilter({}));
     let textFilter;

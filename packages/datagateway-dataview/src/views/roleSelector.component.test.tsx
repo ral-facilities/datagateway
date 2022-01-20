@@ -7,7 +7,7 @@ import {
   StateType,
   InvestigationUser,
   readSciGatewayToken,
-  useUpdateFilter,
+  usePushFilter,
   parseSearchToQuery,
 } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
@@ -26,7 +26,7 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     readSciGatewayToken: jest.fn(),
-    useUpdateFilter: jest.fn(),
+    usePushFilter: jest.fn(),
     parseSearchToQuery: jest.fn(),
   };
 });
@@ -83,7 +83,7 @@ describe('Role Selector', () => {
     (readSciGatewayToken as jest.Mock).mockReturnValue({
       username: 'testUser',
     });
-    (useUpdateFilter as jest.Mock).mockReturnValue(mockPushFilters);
+    (usePushFilter as jest.Mock).mockReturnValue(mockPushFilters);
     (parseSearchToQuery as jest.Mock).mockReturnValue({ filters: {} });
   });
 

@@ -7,7 +7,7 @@ import {
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { FiltersType, DateFilter, UpdateMethod } from '../../app.types';
-import { useUpdateFilter } from '../../api';
+import { usePushFilter } from '../../api';
 import { useTheme } from '@material-ui/core';
 
 export function datesEqual(
@@ -157,7 +157,7 @@ export const useDateFilter = (
   filters: FiltersType,
   updateMethod: UpdateMethod
 ): ((label: string, dataKey: string) => React.ReactElement) => {
-  const pushFilter = useUpdateFilter(updateMethod);
+  const pushFilter = usePushFilter();
   return React.useMemo(() => {
     const dateFilter = (label: string, dataKey: string): React.ReactElement => (
       <DateColumnFilter

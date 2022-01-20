@@ -18,9 +18,9 @@ import {
   useISISInvestigationCount,
   useISISInvestigationsPaginated,
   usePrincipalExperimenterFilter,
-  useUpdateFilter,
-  useUpdatePage,
-  useUpdateResults,
+  usePushFilter,
+  usePushPage,
+  usePushResults,
   useSort,
   useTextFilter,
   AddToCartButton,
@@ -69,9 +69,9 @@ const ISISInvestigationsCardView = (
   const dateFilter = useDateFilter(filters, 'push');
   const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
   const handleSort = useSort();
-  const pushFilter = useUpdateFilter('push');
-  const pushPage = useUpdatePage('push');
-  const pushResults = useUpdateResults('push');
+  const pushFilter = usePushFilter();
+  const pushPage = usePushPage();
+  const pushResults = usePushResults();
 
   const {
     data: totalDataCount,

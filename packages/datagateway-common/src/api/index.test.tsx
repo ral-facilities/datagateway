@@ -5,10 +5,10 @@ import {
   parseSearchToQuery,
   useCustomFilter,
   useIds,
-  useUpdateFilter,
+  usePushFilter,
   usePushFilters,
-  useUpdatePage,
-  useUpdateResults,
+  usePushPage,
+  usePushResults,
   useSort,
   useUpdateView,
 } from './index';
@@ -36,7 +36,8 @@ import {
   usePushSearchToggles,
   usePushSearchEndDate,
   usePushSearchStartDate,
-  useClearQueryParams,
+  useClearQueryParam,
+  useAddQueryParam,
 } from '..';
 
 jest.mock('../handleICATError');
@@ -356,9 +357,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('useUpdateFilter', () => {
+    describe('usePushFilter', () => {
       it('returns callback that when called pushes a new filter to the url query', () => {
-        const { result } = renderHook(() => useUpdateFilter('push'), {
+        const { result } = renderHook(() => usePushFilter(), {
           wrapper,
         });
 
@@ -367,22 +368,6 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: `?filters=${encodeURIComponent(
-            '{"name":{"value":"test","type":"include"}}'
-          )}`,
-        });
-      });
-
-      it('returns callback that when called replaces a new filter to the url query', () => {
-        const { result } = renderHook(() => useUpdateFilter('replace'), {
-          wrapper,
-        });
-
-        act(() => {
-          result.current('name', { value: 'test', type: 'include' });
-        });
-
-        expect(replaceSpy).toHaveBeenCalledWith({
           search: `?filters=${encodeURIComponent(
             '{"name":{"value":"test","type":"include"}}'
           )}`,
@@ -398,7 +383,7 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => useUpdateFilter('push'), {
+        const { result } = renderHook(() => usePushFilter(), {
           wrapper,
         });
 
@@ -458,9 +443,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('useUpdatePage', () => {
+    describe('usePushPage', () => {
       it('returns callback that when called pushes a new page to the url query', () => {
-        const { result } = renderHook(() => useUpdatePage('push'), {
+        const { result } = renderHook(() => usePushPage(), {
           wrapper,
         });
 
@@ -470,21 +455,9 @@ describe('generic api functions', () => {
 
         expect(pushSpy).toHaveBeenCalledWith('?page=1');
       });
-
-      it('returns callback that when called replaces a new page to the url query', () => {
-        const { result } = renderHook(() => useUpdatePage('replace'), {
-          wrapper,
-        });
-
-        act(() => {
-          result.current(1);
-        });
-
-        expect(replaceSpy).toHaveBeenCalledWith('?page=1');
-      });
     });
 
-    describe('useClearQueryParams', () => {
+    describe('useClearQueryParam', () => {
       it('returns callback that when called removes all filters from the url query', () => {
         jest.mock('./index.tsx', () => ({
           ...jest.requireActual('./index.tsx'),
@@ -494,7 +467,7 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => useClearQueryParams('filters'), {
+        const { result } = renderHook(() => useClearQueryParam('filters'), {
           wrapper,
         });
 
@@ -515,7 +488,7 @@ describe('generic api functions', () => {
           ),
         }));
 
-        const { result } = renderHook(() => useClearQueryParams('sort'), {
+        const { result } = renderHook(() => useClearQueryParam('sort'), {
           wrapper,
         });
 
@@ -534,7 +507,7 @@ describe('generic api functions', () => {
           parseSearchToQuery: jest.fn(() => '?page=1'),
         }));
 
-        const { result } = renderHook(() => useClearQueryParams('page'), {
+        const { result } = renderHook(() => useClearQueryParam('page'), {
           wrapper,
         });
 
@@ -553,7 +526,7 @@ describe('generic api functions', () => {
           parseSearchToQuery: jest.fn(() => '?results=1'),
         }));
 
-        const { result } = renderHook(() => useClearQueryParams('results'), {
+        const { result } = renderHook(() => useClearQueryParam('results'), {
           wrapper,
         });
 
@@ -567,9 +540,9 @@ describe('generic api functions', () => {
       });
     });
 
-    describe('useUpdateResults', () => {
+    describe('usePushResults', () => {
       it('returns callback that when called pushes a new page to the url query', () => {
-        const { result } = renderHook(() => useUpdateResults('push'), {
+        const { result } = renderHook(() => usePushResults(), {
           wrapper,
         });
 
@@ -579,9 +552,77 @@ describe('generic api functions', () => {
 
         expect(pushSpy).toHaveBeenCalledWith('?results=10');
       });
+    });
 
-      it('returns callback that when called replaces a new page to the url query', () => {
-        const { result } = renderHook(() => useUpdateResults('replace'), {
+    describe('useAddQueryParam', () => {
+      it('returns callback that when called removes all filters from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(() => useAddQueryParam('filters'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current({
+            name: { value: 'test', type: 'include' },
+            title: { value: 'test2', type: 'include' },
+          });
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search:
+            '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
+        });
+      });
+
+      it('returns callback that when called removes all sorts from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(() => useAddQueryParam('sort'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current({ name: 'asc' });
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?sort=%7B%22name%22%3A%22asc%22%7D',
+        });
+      });
+
+      it('returns callback that when called removes page number from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(() => useAddQueryParam('page'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(2);
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?page=2',
+        });
+      });
+
+      it('returns callback that when called removes results number from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(() => useAddQueryParam('results'), {
           wrapper,
         });
 
@@ -589,7 +630,9 @@ describe('generic api functions', () => {
           result.current(10);
         });
 
-        expect(replaceSpy).toHaveBeenCalledWith('?results=10');
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?results=10',
+        });
       });
     });
 

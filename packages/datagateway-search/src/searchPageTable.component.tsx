@@ -24,15 +24,13 @@ import { setCurrentTab } from './state/actions/actions';
 import {
   FiltersType,
   parseSearchToQuery,
-  SearchableEntities,
   SortType,
   useDatafileCount,
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
-  useUpdateFilter,
-  useSort,
-  useClearQueryParams,
+  useClearQueryParam,
+  useAddQueryParam,
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { useIsFetching } from 'react-query';
@@ -162,25 +160,20 @@ const SearchPageTable = (
 
   const storeFilters = (
     filters: FiltersType,
-    searchableEntities: SearchableEntities
+    searchableEntities: string
   ): void => {
     const filter = (searchableEntities as string) + 'Filters';
 
     localStorage.setItem(filter, JSON.stringify(filters));
   };
 
-  const storeSort = (
-    sorts: SortType,
-    searchableEntities: SearchableEntities
-  ): void => {
+  const storeSorts = (sorts: SortType, searchableEntities: string): void => {
     const sort = (searchableEntities as string) + 'Sort';
 
     localStorage.setItem(sort, JSON.stringify(sorts));
   };
 
-  const getFilters = (
-    searchableEntities: SearchableEntities
-  ): FiltersType | null => {
+  const getFilters = (searchableEntities: string): FiltersType | null => {
     const filter = (searchableEntities as string) + 'Filters';
     const savedFilters = localStorage.getItem(filter);
     if (savedFilters) {
@@ -190,7 +183,7 @@ const SearchPageTable = (
     }
   };
 
-  const getSort = (searchableEntities: SearchableEntities): SortType | null => {
+  const getSorts = (searchableEntities: string): SortType | null => {
     const sort = (searchableEntities as string) + 'Sort';
     const savedSort = localStorage.getItem(sort);
     if (savedSort) {
@@ -205,23 +198,21 @@ const SearchPageTable = (
     [location.search]
   );
 
-  const clearFilters = useClearQueryParams('filters');
-  const clearSort = useClearQueryParams('sort');
+  const clearFilters = useClearQueryParam('filters');
+  const clearSort = useClearQueryParam('sort');
 
-  const replaceFilters = useUpdateFilter('replace');
-  const handleSort = useSort();
+  const replaceFilters = useAddQueryParam('filters');
+  const replaceSorts = useAddQueryParam('sort');
 
   const updateFilters = (filter: FiltersType | null): void => {
     if (filter) {
-      Object.entries(filter).map(([key, value]) => replaceFilters(key, value));
+      replaceFilters(filter);
     }
   };
 
-  const updateSort = (sort: SortType | null): void => {
+  const updateSorts = (sort: SortType | null): void => {
     if (sort) {
-      Object.entries(sort).map(([key, value]) =>
-        handleSort(key, value, 'replace')
-      );
+      replaceSorts(sort);
     }
   };
 
@@ -262,40 +253,16 @@ const SearchPageTable = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    if (currentTab === 'investigation') {
-      storeFilters(filters, 'investigation');
-      storeSort(sort, 'investigation');
-    }
-
-    if (currentTab === 'dataset') {
-      storeFilters(filters, 'dataset');
-      storeSort(sort, 'dataset');
-    }
-
-    if (currentTab === 'datafile') {
-      storeFilters(filters, 'datafile');
-      storeSort(sort, 'datafile');
-    }
+    storeFilters(filters, currentTab);
+    storeSorts(sort, currentTab);
 
     setCurrentTab(newValue);
 
     clearFilters();
     clearSort();
 
-    if (newValue === 'investigation') {
-      updateFilters(getFilters('investigation'));
-      updateSort(getSort('investigation'));
-    }
-
-    if (newValue === 'dataset') {
-      updateFilters(getFilters('dataset'));
-      updateSort(getSort('dataset'));
-    }
-
-    if (newValue === 'datafile') {
-      updateFilters(getFilters('datafile'));
-      updateSort(getSort('datafile'));
-    }
+    updateFilters(getFilters(newValue));
+    updateSorts(getSorts(newValue));
   };
 
   const { data: investigationDataCount } = useInvestigationCount([
