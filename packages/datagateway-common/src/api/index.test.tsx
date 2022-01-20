@@ -3,6 +3,7 @@ import {
   nestedValue,
   parseQueryToSearch,
   parseSearchToQuery,
+  useClearFilters,
   useCustomFilter,
   useIds,
   usePushFilter,
@@ -466,6 +467,30 @@ describe('generic api functions', () => {
             { filterKey: 'name', filter: null },
             { filterKey: 'title', filter: null },
           ]);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: '?',
+        });
+      });
+    });
+
+    describe('useClearFilters', () => {
+      it('returns callback that when called removes multiple filters from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(
+            () =>
+              '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D'
+          ),
+        }));
+
+        const { result } = renderHook(() => useClearFilters(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current();
         });
 
         expect(pushSpy).toHaveBeenCalledWith({

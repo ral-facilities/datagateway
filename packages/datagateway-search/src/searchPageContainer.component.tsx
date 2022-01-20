@@ -30,7 +30,6 @@ import {
   useCart,
   SelectionAlert,
   readSciGatewayToken,
-  FiltersType,
   useClearFilters,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
@@ -252,25 +251,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     pushView(nextView);
   }, [pushView, view]);
 
-  const filterLocation = useLocation();
-
-  const { filters } = React.useMemo(
-    () => parseSearchToQuery(filterLocation.search),
-    [filterLocation.search]
-  );
-
-  console.log(filters);
-
   const clearFilters = useClearFilters();
 
-  const clearAllFilters = (filter: FiltersType): void => {
-    if (filter) {
-      Object.entries(filter).map(([key, value]) => clearFilters(key, value));
-    }
-  };
-
   const handleFilterClearButton = (): void => {
-    clearAllFilters(filters);
+    clearFilters();
   };
 
   React.useEffect(() => {

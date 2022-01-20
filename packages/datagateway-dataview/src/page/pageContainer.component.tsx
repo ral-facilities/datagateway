@@ -25,7 +25,6 @@ import {
   readSciGatewayToken,
   ArrowTooltip,
   SelectionAlert,
-  FiltersType,
   useClearFilters,
 } from 'datagateway-common';
 import React from 'react';
@@ -619,25 +618,10 @@ const PageContainer: React.FC = () => {
     pushView(nextView);
   }, [pushView, view]);
 
-  const filterLocation = useLocation();
-
-  const { filters } = React.useMemo(
-    () => parseSearchToQuery(filterLocation.search),
-    [filterLocation.search]
-  );
-
-  console.log(filters);
-
   const clearFilters = useClearFilters();
 
-  const clearAllFilters = (filter: FiltersType): void => {
-    if (filter) {
-      Object.entries(filter).map(([key, value]) => clearFilters(key, value));
-    }
-  };
-
   const handleFilterClearButton = (): void => {
-    clearAllFilters(filters);
+    clearFilters();
   };
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
