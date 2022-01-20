@@ -373,6 +373,22 @@ describe('generic api functions', () => {
         });
       });
 
+      it('returns callback that when called replaces a new filter to the url query', () => {
+        const { result } = renderHook(() => useUpdateFilter('replace'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', { value: 'test', type: 'include' });
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: `?filters=${encodeURIComponent(
+            '{"name":{"value":"test","type":"include"}}'
+          )}`,
+        });
+      });
+
       it('returns callback that when called removes a null sort from the url query', () => {
         jest.mock('./index.tsx', () => ({
           ...jest.requireActual('./index.tsx'),
@@ -454,9 +470,21 @@ describe('generic api functions', () => {
 
         expect(pushSpy).toHaveBeenCalledWith('?page=1');
       });
+
+      it('returns callback that when called replaces a new page to the url query', () => {
+        const { result } = renderHook(() => useUpdatePage('replace'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(1);
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith('?page=1');
+      });
     });
 
-    describe.only('useClearQueryParams', () => {
+    describe('useClearQueryParams', () => {
       it('returns callback that when called removes all filters from the url query', () => {
         jest.mock('./index.tsx', () => ({
           ...jest.requireActual('./index.tsx'),
@@ -550,6 +578,18 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?results=10');
+      });
+
+      it('returns callback that when called replaces a new page to the url query', () => {
+        const { result } = renderHook(() => useUpdateResults('replace'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(10);
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith('?results=10');
       });
     });
 
