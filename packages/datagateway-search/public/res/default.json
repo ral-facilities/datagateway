@@ -1,6 +1,6 @@
 {
   "searchBox": {
-    "search_text": "Search for investigations, datasets or datafiles",
+    "search_text": "Search for investigations, datasets and datafiles",
     "examples_label": "For example <1>\"instrument calibration\"</1> or <4>neutron AND scattering</4>.",
     "examples_label_link1": "?searchText=\"instrument+calibration\"",
     "examples_label_link2": "?searchText=neutron+AND+scattering",
