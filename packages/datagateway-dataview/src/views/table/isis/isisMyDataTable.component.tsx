@@ -114,8 +114,8 @@ const ISISMyDataTable = (): React.ReactElement => {
     [data]
   );
 
-  const textFilter = useTextFilter(filters, 'push');
-  const dateFilter = useDateFilter(filters, 'push');
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(

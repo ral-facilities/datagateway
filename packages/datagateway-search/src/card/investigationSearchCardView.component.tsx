@@ -134,8 +134,8 @@ const InvestigationCardView = (
     }
   }, [hierarchy, isisLink]);
 
-  const textFilter = useTextFilter(filters, 'push');
-  const dateFilter = useDateFilter(filters, 'push');
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
   const pushFilter = usePushFilter();
   const pushPage = usePushPage();

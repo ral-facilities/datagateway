@@ -25,7 +25,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
     [location.search]
   );
 
-  const textFilter = useTextFilter(filters, 'push');
+  const textFilter = useTextFilter(filters);
   const handleSort = useSort();
   const pushFilter = usePushFilter();
   const pushPage = usePushPage();

@@ -41,7 +41,7 @@ const ISISInstrumentsTable = (
     [data]
   );
 
-  const textFilter = useTextFilter(filters, 'push');
+  const textFilter = useTextFilter(filters);
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
