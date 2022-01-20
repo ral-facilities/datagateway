@@ -2,141 +2,137 @@
 
 exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
 <div
-  className="MuiGrid-root MuiGrid-container MuiGrid-justify-xs-center"
-  id="container-searchbox"
+  className="MuiBox-root MuiBox-root-6 makeStyles-containerBox-2"
 >
   <WithStyles(ForwardRef(Grid))
-    item={true}
-    xs={8}
+    container={true}
+    direction="row"
+    id="container-searchbox"
+    justify="center"
   >
-    <Styled(MuiBox)
-      pb={1}
-      pl={2}
+    <WithStyles(ForwardRef(Grid))
+      item={true}
+      style={
+        Object {
+          "flexGrow": 1,
+        }
+      }
+      xs="auto"
     >
       <SearchTextBox
         initiateSearch={[MockFunction]}
       />
-    </Styled(MuiBox)>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-    style={
-      Object {
-        "display": "flex",
-      }
-    }
-  >
-    <Styled(MuiBox)
-      m="auto"
-      px={2}
-    >
-      <TranslatedSearchButton
-        initiateSearch={[MockFunction]}
-      />
-    </Styled(MuiBox)>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-    style={
-      Object {
-        "display": "flex",
-      }
-    }
-  >
-    <Styled(MuiBox)
-      m="auto"
-      px={2}
-    >
-      <AdvancedHelpDialogue />
-    </Styled(MuiBox)>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    container={true}
-    item={true}
-    justify="center"
-    style={
-      Object {
-        "margin": 0,
-        "padding": 0,
-      }
-    }
-  >
-    <WithStyles(ForwardRef(Typography))
+    </WithStyles(ForwardRef(Grid))>
+    <WithStyles(ForwardRef(Grid))
+      item={true}
       style={
         Object {
-          "fontSize": "14px",
-          "margin": 0,
-          "padding": 0,
+          "marginTop": "8px",
         }
       }
     >
-      <Trans
-        i18nKey="searchBox.search_textbox_label"
-        t={[Function]}
-      >
-        e.g. title has
-        <WithStyles(ForwardRef(Link))
-          href="searchBox.search_textbox_label_link1"
-        >
-          "instrument calibration"
-        </WithStyles(ForwardRef(Link))>
-        , or
-         
-        <WithStyles(ForwardRef(Link))
-          href="searchBox.search_textbox_label_link2"
-        >
-          neutron AND scattering
-        </WithStyles(ForwardRef(Link))>
-        .
-      </Trans>
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    container={true}
-    item={true}
-    justify="center"
-    style={
-      Object {
-        "paddingBottom": 8,
-        "paddingTop": 8,
+      <Connect(CheckboxesGroup) />
+    </WithStyles(ForwardRef(Grid))>
+    <WithStyles(ForwardRef(Grid))
+      item={true}
+      style={
+        Object {
+          "marginTop": "8px",
+        }
       }
-    }
-  >
+    >
+      <Connect(SelectDates)
+        initiateSearch={[MockFunction]}
+      />
+    </WithStyles(ForwardRef(Grid))>
     <WithStyles(ForwardRef(Grid))
       item={true}
       style={
         Object {
           "display": "flex",
+          "marginLeft": 6,
+          "marginTop": "24px",
         }
       }
     >
-      <Styled(MuiBox)
-        m="auto"
-      >
-        <Connect(CheckboxesGroup) />
-      </Styled(MuiBox)>
-    </WithStyles(ForwardRef(Grid))>
-    <WithStyles(ForwardRef(Grid))
-      item={true}
-    >
-      <Styled(MuiBox)
-        px={0.75}
-      >
-        <Connect(SelectDates)
-          initiateSearch={[MockFunction]}
-        />
-      </Styled(MuiBox)>
+      <TranslatedSearchButton
+        initiateSearch={[MockFunction]}
+      />
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Typography))
+  <div
     style={
       Object {
-        "margin": "10px",
+        "display": "flex",
       }
     }
   >
-    searchBox.limited_results_message {maxNumResults:{tabs:{datasetTab:false,datafileTab:false,investigationTab:false,currentTab:investigation},selectAllSetting:true,settingsLoaded:false,sideLayout:false,searchableEntities:[investigation,dataset,datafile],maxNumResults:300}}
-  </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      className="makeStyles-leftText-3"
+    >
+      <Trans
+        i18nKey="searchBox.examples_label"
+        t={[Function]}
+      >
+        For example
+        <WithStyles(ForwardRef(Link))
+          href="searchBox.examples_label_link1"
+          style={
+            Object {
+              "fontWeight": "bold",
+            }
+          }
+        >
+          "instrument calibration"
+        </WithStyles(ForwardRef(Link))>
+        or
+         
+        <WithStyles(ForwardRef(Link))
+          href="searchBox.examples_label_link2"
+          style={
+            Object {
+              "fontWeight": "bold",
+            }
+          }
+        >
+          neutron AND scattering
+        </WithStyles(ForwardRef(Link))>
+        .
+      </Trans>
+       
+      <AdvancedHelpDialogue />
+    </WithStyles(ForwardRef(Typography))>
+    <div
+      className="makeStyles-rightText-4"
+    >
+      <div
+        style={
+          Object {
+            "alignItems": "center",
+            "display": "flex",
+            "flexWrap": "nowrap",
+          }
+        }
+      >
+        <Memo(ForwardRef(InfoOutlinedIcon))
+          className="makeStyles-infoIcon-1"
+          fontSize="small"
+        />
+         
+        <WithStyles(ForwardRef(Typography))
+          display="inline"
+          style={
+            Object {
+              "fontSize": "14px",
+              "paddingLeft": "6px",
+            }
+          }
+        >
+          searchBox.limited_results_message {maxNumResults:{tabs:{datasetTab:false,datafileTab:false,investigationTab:false,currentTab:investigation},selectAllSetting:true,settingsLoaded:false,sideLayout:false,searchableEntities:[investigation,dataset,datafile],maxNumResults:300}}
+        </WithStyles(ForwardRef(Typography))>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 

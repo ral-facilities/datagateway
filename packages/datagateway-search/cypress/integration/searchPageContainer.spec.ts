@@ -262,8 +262,11 @@ describe('SearchPageContainer Component', () => {
     });
 
     it('should be able to deselect checkboxes', () => {
+      cy.get('#search-entities-menu').click();
       cy.get('[aria-label="Investigation checkbox"]').click();
       cy.get('[aria-label="Datafile checkbox"]').click();
+      //Close drop down menu
+      cy.get('body').type('{esc}');
 
       cy.get('[aria-label="Submit search"]')
         .click()

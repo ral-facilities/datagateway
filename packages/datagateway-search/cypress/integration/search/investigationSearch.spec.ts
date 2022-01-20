@@ -24,8 +24,11 @@ describe('Investigation search tab', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway Search');
 
+    cy.get('#search-entities-menu').click();
     cy.get('[aria-label="Dataset checkbox"]').click();
     cy.get('[aria-label="Datafile checkbox"]').click();
+    //Close drop down menu
+    cy.get('body').type('{esc}');
 
     cy.get('[aria-label="Submit search"]')
       .click()
@@ -111,7 +114,10 @@ describe('Investigation search tab', () => {
   });
 
   it('should be hidden if investigation checkbox is unchecked', () => {
+    cy.get('#search-entities-menu').click();
     cy.get('[aria-label="Investigation checkbox"]').click();
+    //Close drop down menu
+    cy.get('body').type('{esc}');
 
     cy.get('[aria-label="Submit search"]')
       .click()
