@@ -239,6 +239,19 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     }
   }, [location.pathname, view, replaceView]);
 
+  // React.useEffect(() => {
+  //   localStorage.removeItem('investigationFilters');
+  //   localStorage.removeItem('datasetFilters');
+  //   localStorage.removeItem('datafileFilters');
+  //   localStorage.removeItem('investigationSort');
+  //   localStorage.removeItem('datasetSort');
+  //   localStorage.removeItem('datafileSort');
+  //   localStorage.removeItem('investigationPage');
+  //   localStorage.removeItem('datasetPage');
+  //   localStorage.removeItem('investigationResults');
+  //   localStorage.removeItem('datasetResults');
+  // }, []);
+
   const {
     refetch: searchInvestigations,
     isIdle: investigationsIdle,
@@ -278,6 +291,17 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
+
+    localStorage.removeItem('investigationFilters');
+    localStorage.removeItem('datasetFilters');
+    localStorage.removeItem('datafileFilters');
+    localStorage.removeItem('investigationSort');
+    localStorage.removeItem('datasetSort');
+    localStorage.removeItem('datafileSort');
+    localStorage.removeItem('investigationPage');
+    localStorage.removeItem('datasetPage');
+    localStorage.removeItem('investigationResults');
+    localStorage.removeItem('datasetResults');
 
     if (dataset) {
       // Fetch lucene datasets

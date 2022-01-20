@@ -32,8 +32,7 @@ import {
   useLuceneSearch,
   useUpdateFilter,
   useSort,
-  useClearFilters,
-  useClearSort,
+  useClearQueryParams,
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { useIsFetching } from 'react-query';
@@ -206,11 +205,11 @@ const SearchPageTable = (
     [location.search]
   );
 
-  const clearFilters = useClearFilters();
-  const clearSort = useClearSort();
+  const clearFilters = useClearQueryParams('filters');
+  const clearSort = useClearQueryParams('sort');
 
   const replaceFilters = useUpdateFilter('replace');
-  const replaceHandleSort = useSort();
+  const handleSort = useSort();
 
   const updateFilters = (filter: FiltersType | null): void => {
     if (filter) {
@@ -218,23 +217,11 @@ const SearchPageTable = (
     }
   };
 
-  const clearAllFilters = (filter: FiltersType): void => {
-    if (filter) {
-      Object.entries(filter).map(([key, value]) => clearFilters(key, value));
-    }
-  };
-
   const updateSort = (sort: SortType | null): void => {
     if (sort) {
       Object.entries(sort).map(([key, value]) =>
-        replaceHandleSort(key, value, 'replace')
+        handleSort(key, value, 'replace')
       );
-    }
-  };
-
-  const clearAllSort = (sort: SortType): void => {
-    if (sort) {
-      Object.entries(sort).map(([key, value]) => clearSort(key, value));
     }
   };
 
@@ -291,8 +278,8 @@ const SearchPageTable = (
     }
     setCurrentTab(newValue);
 
-    clearAllFilters(filters);
-    clearAllSort(sort);
+    clearFilters();
+    clearSort();
 
     if (newValue === 'investigation') {
       updateFilters(getFilters('investigation'));
@@ -309,19 +296,6 @@ const SearchPageTable = (
       updateSort(getSort('datafile'));
     }
   };
-
-  React.useEffect(() => {
-    localStorage.removeItem('investigationFilters');
-    localStorage.removeItem('datasetFilters');
-    localStorage.removeItem('datafileFilters');
-    localStorage.removeItem('investigationSort');
-    localStorage.removeItem('datasetSort');
-    localStorage.removeItem('datafileSort');
-    localStorage.removeItem('investigationPage');
-    localStorage.removeItem('datasetPage');
-    localStorage.removeItem('investigationResults');
-    localStorage.removeItem('datasetResults');
-  }, []);
 
   const { data: investigationDataCount } = useInvestigationCount([
     {

@@ -30,8 +30,7 @@ import {
   useLuceneSearch,
   useUpdateFilter,
   useSort,
-  useClearFilters,
-  useClearSort,
+  useClearQueryParams,
   InvestigationEntity,
   DatasetEntity,
   useUpdatePage,
@@ -254,15 +253,13 @@ const SearchPageCardView = (
     [location.search]
   );
 
-  const clearFilters = useClearFilters();
-  const clearSort = useClearSort();
-  const pushPage = useUpdatePage('push');
-  const pushResults = useUpdateResults('push');
-  const defaultResultsValue = 10;
-  const defaultPageValue = 1;
+  const clearFilters = useClearQueryParams('filters');
+  const clearSort = useClearQueryParams('sort');
+  const clearPage = useClearQueryParams('page');
+  const clearResults = useClearQueryParams('results');
 
   const replaceFilters = useUpdateFilter('replace');
-  const replaceHandleSort = useSort();
+  const handleSort = useSort();
   const replacePage = useUpdatePage('replace');
   const replaceResults = useUpdateResults('replace');
 
@@ -272,33 +269,18 @@ const SearchPageCardView = (
     }
   };
 
-  const clearAllFilters = (filter: FiltersType): void => {
-    if (filter) {
-      Object.entries(filter).map(([key, value]) => clearFilters(key, value));
-    }
-  };
-
   const updateSort = (sort: SortType | null): void => {
     if (sort) {
       Object.entries(sort).map(([key, value]) =>
-        replaceHandleSort(key, value, 'replace')
+        handleSort(key, value, 'replace')
       );
     }
   };
 
-  const clearAllSort = (sort: SortType): void => {
-    if (sort) {
-      Object.entries(sort).map(([key, value]) => clearSort(key, value));
-    }
-  };
   const updatePage = (page: number | null): void => {
     if (page) {
       replacePage(page);
     }
-  };
-
-  const resetPageNumber = (page: number): void => {
-    pushPage(page);
   };
 
   const updateResults = (results: number | null): void => {
@@ -307,9 +289,6 @@ const SearchPageCardView = (
     }
   };
 
-  const resetResultsNumber = (results: number): void => {
-    pushResults(results);
-  };
   useEffect(() => {
     if (currentTab === 'investigation') {
       if (!investigationTab) {
@@ -374,10 +353,10 @@ const SearchPageCardView = (
     }
     setCurrentTab(newValue);
 
-    clearAllFilters(filters);
-    clearAllSort(sort);
-    resetPageNumber(defaultPageValue);
-    resetResultsNumber(defaultResultsValue);
+    clearFilters();
+    clearSort();
+    clearPage();
+    clearResults();
 
     if (newValue === 'investigation') {
       updateFilters(getFilters('investigation'));
@@ -398,19 +377,6 @@ const SearchPageCardView = (
       updateSort(getSort('datafile'));
     }
   };
-
-  React.useEffect(() => {
-    localStorage.removeItem('investigationFilters');
-    localStorage.removeItem('datasetFilters');
-    localStorage.removeItem('datafileFilters');
-    localStorage.removeItem('investigationSort');
-    localStorage.removeItem('datasetSort');
-    localStorage.removeItem('datafileSort');
-    localStorage.removeItem('investigationPage');
-    localStorage.removeItem('datasetPage');
-    localStorage.removeItem('investigationResults');
-    localStorage.removeItem('datasetResults');
-  }, []);
 
   const { data: investigationDataCount } = useInvestigationCount([
     {

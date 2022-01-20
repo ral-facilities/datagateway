@@ -352,55 +352,24 @@ export const usePushFilters = (): ((
   );
 };
 
-export const useClearFilters = (): ((
-  filterKey: string,
-  filter: Filter | null
-) => void) => {
-  const { push } = useHistory();
-  return React.useCallback(
-    (filterKey: string, filter: Filter | null) => {
-      let query = parseSearchToQuery(window.location.search);
-      if (filter) {
-        // if filter is not null, as user no longer wants to filter by that column so remove column from filter state
-        const { [filterKey]: filter, ...rest } = query.filters;
-        query = {
-          ...query,
-          filters: {
-            ...rest,
-          },
-        };
-      }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
-    },
-    [push]
-  );
-};
+export const useClearQueryParams = (
+  queryparams: 'filters' | 'sort' | 'page' | 'results'
+): (() => void) => {
+  const { replace } = useHistory();
+  return React.useCallback(() => {
+    const query = parseSearchToQuery(window.location.search);
+    if (queryparams === 'filters') {
+      query.filters = {};
+    } else if (queryparams === 'sort') {
+      query.sort = {};
+    } else if (queryparams === 'page') {
+      query.page = null;
+    } else if (queryparams === 'results') {
+      query.results = null;
+    }
 
-export const useClearSort = (): ((
-  sortKey: string,
-  order: Order | null
-) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (sortKey: string, order: Order | null): void => {
-      let query = parseSearchToQuery(window.location.search);
-      if (order) {
-        // if order is null, user no longer wants to sort by that column so remove column from sort state
-        const { [sortKey]: order, ...rest } = query.sort;
-        query = {
-          ...query,
-          sort: {
-            ...rest,
-          },
-        };
-      }
-      push({
-        search: `?${parseQueryToSearch(query).toString()}`,
-      });
-    },
-    [push]
-  );
+    replace({ search: `?${parseQueryToSearch(query).toString()}` });
+  }, [replace, queryparams]);
 };
 
 export const useUpdatePage = (
