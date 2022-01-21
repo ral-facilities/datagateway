@@ -83,6 +83,58 @@ describe('SearchPageContainer Component', () => {
         });
     });
 
+    it('should be able to navigate through tabs without losing the filters (Table)', () => {
+      cy.title().should('equal', 'DataGateway Search');
+
+      cy.get('#container-search-filters').should('exist');
+      cy.get('[aria-label="Filter by Title"]').type('ba');
+      cy.contains('Visit ID').first().click();
+
+      cy.get('[id="simple-tab-dataset"]').click();
+      cy.get('[id="simple-tab-investigation"]').click();
+
+      cy.get('[aria-rowcount="3"]').should('exist');
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Energy place money bad authority. Poor community technology against happy. Detail customer management together dog. Put name war sometimes rise sport your. Imagine across mother herself then.'
+      );
+    });
+
+    it('should be able to navigate through tabs without losing the filters (Card)', () => {
+      cy.title().should('equal', 'DataGateway Search');
+
+      cy.get('[aria-label="Search text input"]').find('#filled-search').clear();
+
+      cy.get('[aria-label="Submit search"]')
+        .click()
+        .wait(['@investigations', '@investigations', '@investigationsCount'], {
+          timeout: 10000,
+        });
+
+      cy.get('#container-search-filters').should('exist');
+
+      cy.get('[aria-label="container-view-button"]').click();
+      cy.get('[data-testid="advanced-filters-link"]').click();
+      cy.get('[aria-label="Filter by Title"]').type('spe');
+
+      cy.get('[data-testid="advanced-filters-link"]').click();
+      cy.get('[aria-label="sort-by-list"]')
+        .get('[aria-label="Sort by VISIT ID"]')
+        .click({ force: true });
+      cy.get('select[id="select-max-results"]', {
+        timeout: 10000,
+      }).select('20');
+      cy.get('[aria-label="Go to next page"]').first().click({ force: true });
+
+      cy.get('[id="simple-tab-dataset"]').click();
+      cy.get('[id="simple-tab-investigation"]').click();
+
+      cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+        'have.length',
+        15
+      );
+    });
+
     it('should have the correct url for the DOI link (Cardview) ', () => {
       // DOI
 
