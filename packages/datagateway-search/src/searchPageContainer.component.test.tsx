@@ -21,6 +21,16 @@ import {
   setDatafileTab,
 } from './state/actions/actions';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import {
+  getFilters,
+  getPage,
+  getResults,
+  getSorts,
+  storeFilters,
+  storePage,
+  storeResults,
+  storeSorts,
+} from './searchPageContainer.component';
 
 jest.mock('loglevel');
 
@@ -43,6 +53,11 @@ describe('SearchPageContainer - Tests', () => {
   let queryClient: QueryClient;
   let history: History;
   let pushSpy;
+
+  const localStorageGetItemMock = jest.spyOn(
+    window.localStorage.__proto__,
+    'getItem'
+  );
 
   const createWrapper = (
     h: History = history,
@@ -67,6 +82,9 @@ describe('SearchPageContainer - Tests', () => {
       initialEntries: ['/search/data'],
     });
     pushSpy = jest.spyOn(history, 'push');
+
+    window.localStorage.__proto__.removeItem = jest.fn();
+    window.localStorage.__proto__.setItem = jest.fn();
 
     const dGSearchInitialState = {
       tabs: {
@@ -490,6 +508,72 @@ describe('SearchPageContainer - Tests', () => {
         },
       }
     );
+  });
+
+  it('gets the filters stored in the local storage', () => {
+    localStorageGetItemMock.mockImplementationOnce(
+      () => '{"investigation.title":{"value":"test","type":"include"}}'
+    );
+    const result = getFilters('dataset');
+    expect(result).toEqual({
+      'investigation.title': {
+        type: 'include',
+        value: 'test',
+      },
+    });
+  });
+
+  it('gets the sorts stored in the local storage', () => {
+    localStorageGetItemMock.mockImplementationOnce(() => '{"name":"asc"}');
+    const result = getSorts('dataset');
+    expect(result).toEqual({
+      name: 'asc',
+    });
+  });
+
+  it('gets the page stored in the local storage', () => {
+    localStorageGetItemMock.mockImplementationOnce(() => 2);
+    const result = getPage('dataset');
+    expect(result).toEqual(2);
+  });
+
+  it('gets the results stored in the local storage', () => {
+    localStorageGetItemMock.mockImplementationOnce(() => 10);
+    const result = getResults('dataset');
+    expect(result).toEqual(10);
+  });
+
+  it('stores the previous filters in the local storage', () => {
+    storeFilters(
+      { title: { value: 'test', type: 'include' } },
+      'investigation'
+    );
+
+    expect(localStorage.setItem).toBeCalledWith(
+      'investigationFilters',
+      '{"title":{"value":"test","type":"include"}}'
+    );
+  });
+
+  it('stores the previous sorts in the local storage', () => {
+    storeSorts({ name: 'asc' }, 'investigation');
+
+    expect(localStorage.setItem).toBeCalledWith(
+      'investigationSort',
+      '{"name":"asc"}'
+    );
+  });
+
+  it('stores the previous page in the local storage', () => {
+    storePage(1, 'investigation');
+
+    expect(localStorage.setItem).toBeCalledWith('investigationPage', '1');
+  });
+
+  it('stores the previous results in the local storage', () => {
+    storeResults(10, 'investigation');
+
+    expect(localStorage.setItem).toBeCalledWith('investigationResults', '10');
   });
 
   it('sends actions to update tabs when user clicks search button', async () => {

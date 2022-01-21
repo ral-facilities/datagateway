@@ -22,18 +22,21 @@ import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
 import {
-  FiltersType,
   parseSearchToQuery,
-  SortType,
   useDatafileCount,
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
-  useClearQueryParam,
-  useAddQueryParam,
+  useUpdateQueryParam,
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { useIsFetching } from 'react-query';
+import {
+  getFilters,
+  getSorts,
+  storeFilters,
+  storeSorts,
+} from './searchPageContainer.component';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -158,63 +161,16 @@ const SearchPageTable = (
   });
   const loading = isFetchingNum > 0;
 
-  const storeFilters = (
-    filters: FiltersType,
-    searchableEntities: string
-  ): void => {
-    const filter = (searchableEntities as string) + 'Filters';
-
-    localStorage.setItem(filter, JSON.stringify(filters));
-  };
-
-  const storeSorts = (sorts: SortType, searchableEntities: string): void => {
-    const sort = (searchableEntities as string) + 'Sort';
-
-    localStorage.setItem(sort, JSON.stringify(sorts));
-  };
-
-  const getFilters = (searchableEntities: string): FiltersType | null => {
-    const filter = (searchableEntities as string) + 'Filters';
-    const savedFilters = localStorage.getItem(filter);
-    if (savedFilters) {
-      return JSON.parse(savedFilters) as FiltersType;
-    } else {
-      return null;
-    }
-  };
-
-  const getSorts = (searchableEntities: string): SortType | null => {
-    const sort = (searchableEntities as string) + 'Sort';
-    const savedSort = localStorage.getItem(sort);
-    if (savedSort) {
-      return JSON.parse(savedSort) as SortType;
-    } else {
-      return null;
-    }
-  };
-
   const { filters, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
 
-  const clearFilters = useClearQueryParam('filters');
-  const clearSort = useClearQueryParam('sort');
+  const clearFilters = {};
+  const clearSorts = {};
 
-  const replaceFilters = useAddQueryParam('filters');
-  const replaceSorts = useAddQueryParam('sort');
-
-  const updateFilters = (filter: FiltersType | null): void => {
-    if (filter) {
-      replaceFilters(filter);
-    }
-  };
-
-  const updateSorts = (sort: SortType | null): void => {
-    if (sort) {
-      replaceSorts(sort);
-    }
-  };
+  const updateFilters = useUpdateQueryParam('filters');
+  const updateSorts = useUpdateQueryParam('sort');
 
   // Setting a tab based on user selection and what tabs are available
   useEffect(() => {
@@ -258,8 +214,8 @@ const SearchPageTable = (
 
     setCurrentTab(newValue);
 
-    clearFilters();
-    clearSort();
+    updateFilters(clearFilters);
+    updateSorts(clearSorts);
 
     updateFilters(getFilters(newValue));
     updateSorts(getSorts(newValue));

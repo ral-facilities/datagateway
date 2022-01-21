@@ -30,6 +30,8 @@ import {
   useCart,
   SelectionAlert,
   readSciGatewayToken,
+  FiltersType,
+  SortType,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -42,6 +44,79 @@ import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import { StyleRules } from '@material-ui/core/styles';
+
+export const storeFilters = (
+  filters: FiltersType,
+  searchableEntities: string
+): void => {
+  const filter = (searchableEntities as string) + 'Filters';
+
+  localStorage.setItem(filter, JSON.stringify(filters));
+};
+
+export const storeSorts = (
+  sorts: SortType,
+  searchableEntities: string
+): void => {
+  const sort = (searchableEntities as string) + 'Sort';
+
+  localStorage.setItem(sort, JSON.stringify(sorts));
+};
+
+export const storePage = (page: number, searchableEntities: string): void => {
+  const pageNumber = (searchableEntities as string) + 'Page';
+
+  localStorage.setItem(pageNumber, JSON.stringify(page));
+};
+
+export const storeResults = (
+  results: number,
+  searchableEntities: string
+): void => {
+  const resultsNumber = (searchableEntities as string) + 'Results';
+
+  localStorage.setItem(resultsNumber, JSON.stringify(results));
+};
+
+export const getFilters = (searchableEntities: string): FiltersType => {
+  const filter = (searchableEntities as string) + 'Filters';
+  const savedFilters = localStorage.getItem(filter);
+  if (savedFilters) {
+    return JSON.parse(savedFilters) as FiltersType;
+  } else {
+    return {};
+  }
+};
+
+export const getSorts = (searchableEntities: string): SortType => {
+  const sort = (searchableEntities as string) + 'Sort';
+  const savedSort = localStorage.getItem(sort);
+  if (savedSort) {
+    return JSON.parse(savedSort) as SortType;
+  } else {
+    return {};
+  }
+};
+
+export const getPage = (searchableEntities: string): number | null => {
+  const pageNumber = (searchableEntities as string) + 'Page';
+  const savedPage = localStorage.getItem(pageNumber);
+  if (savedPage) {
+    return JSON.parse(savedPage) as number;
+  } else {
+    return null;
+  }
+};
+
+export const getResults = (searchableEntities: string): number | null => {
+  const resultsNumber = (searchableEntities as string) + 'Results';
+  const savedResults = localStorage.getItem(resultsNumber);
+  if (savedResults) {
+    return JSON.parse(savedResults) as number;
+  } else {
+    return null;
+  }
+};
 
 const storeDataView = (view: NonNullable<ViewsType>): void => {
   localStorage.setItem('dataView', view);

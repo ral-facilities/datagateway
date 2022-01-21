@@ -20,20 +20,27 @@ import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
 import {
-  FiltersType,
   parseSearchToQuery,
-  SortType,
   useDatafileCount,
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
-  useClearQueryParam,
-  useAddQueryParam,
+  useUpdateQueryParam,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
 import { useLocation } from 'react-router-dom';
 import { useIsFetching } from 'react-query';
+import {
+  getFilters,
+  getPage,
+  getResults,
+  getSorts,
+  storeFilters,
+  storePage,
+  storeResults,
+  storeSorts,
+} from './searchPageContainer.component';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -160,111 +167,15 @@ const SearchPageCardView = (
   });
   const loading = isFetchingNum > 0;
 
-  const storeFilters = (
-    filters: FiltersType,
-    searchableEntities: string
-  ): void => {
-    const filter = (searchableEntities as string) + 'Filters';
-
-    localStorage.setItem(filter, JSON.stringify(filters));
-  };
-
-  const storeSort = (sorts: SortType, searchableEntities: string): void => {
-    const sort = (searchableEntities as string) + 'Sort';
-
-    localStorage.setItem(sort, JSON.stringify(sorts));
-  };
-
-  const storePage = (page: number, searchableEntities: string): void => {
-    const pageNumber = (searchableEntities as string) + 'Page';
-
-    localStorage.setItem(pageNumber, JSON.stringify(page));
-  };
-
-  const storeResults = (results: number, searchableEntities: string): void => {
-    const resultsNumber = (searchableEntities as string) + 'Results';
-
-    localStorage.setItem(resultsNumber, JSON.stringify(results));
-  };
-
-  const getFilters = (searchableEntities: string): FiltersType | null => {
-    const filter = (searchableEntities as string) + 'Filters';
-    const savedFilters = localStorage.getItem(filter);
-    if (savedFilters) {
-      return JSON.parse(savedFilters) as FiltersType;
-    } else {
-      return null;
-    }
-  };
-
-  const getSort = (searchableEntities: string): SortType | null => {
-    const sort = (searchableEntities as string) + 'Sort';
-    const savedSort = localStorage.getItem(sort);
-    if (savedSort) {
-      return JSON.parse(savedSort) as SortType;
-    } else {
-      return null;
-    }
-  };
-
-  const getPage = (searchableEntities: string): number | null => {
-    const pageNumber = (searchableEntities as string) + 'Page';
-    const savedPage = localStorage.getItem(pageNumber);
-    if (savedPage) {
-      return JSON.parse(savedPage) as number;
-    } else {
-      return null;
-    }
-  };
-
-  const getResults = (searchableEntities: string): number | null => {
-    const resultsNumber = (searchableEntities as string) + 'Results';
-    const savedResults = localStorage.getItem(resultsNumber);
-    if (savedResults) {
-      return JSON.parse(savedResults) as number;
-    } else {
-      return null;
-    }
-  };
-
   const { filters, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
 
-  const clearFilters = useClearQueryParam('filters');
-  const clearSort = useClearQueryParam('sort');
-  const clearPage = useClearQueryParam('page');
-  const clearResults = useClearQueryParam('results');
-
-  const replaceFilters = useAddQueryParam('filters');
-  const replaceSorts = useAddQueryParam('sort');
-  const replacePage = useAddQueryParam('page');
-  const replaceResults = useAddQueryParam('results');
-
-  const updateFilters = (filter: FiltersType | null): void => {
-    if (filter) {
-      replaceFilters(filter);
-    }
-  };
-
-  const updateSort = (sort: SortType | null): void => {
-    if (sort) {
-      replaceSorts(sort);
-    }
-  };
-
-  const updatePage = (page: number | null): void => {
-    if (page) {
-      replacePage(page);
-    }
-  };
-
-  const updateResults = (results: number | null): void => {
-    if (results) {
-      replaceResults(results);
-    }
-  };
+  const updateFilters = useUpdateQueryParam('filters');
+  const updateSorts = useUpdateQueryParam('sort');
+  const updatePage = useUpdateQueryParam('page');
+  const updateResults = useUpdateQueryParam('results');
 
   useEffect(() => {
     if (currentTab === 'investigation') {
@@ -302,36 +213,26 @@ const SearchPageCardView = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    if (currentTab !== 'datafile') {
-      storeFilters(filters, currentTab);
-      storeSort(sort, currentTab);
-      if (page) {
-        storePage(page, currentTab);
-      }
-      if (results) {
-        storeResults(results, currentTab);
-      } else {
-        storeFilters(filters, currentTab);
-        storeSort(sort, currentTab);
-      }
+    storeFilters(filters, currentTab);
+    storeSorts(sort, currentTab);
+    if (page) {
+      storePage(page, currentTab);
+    }
+    if (results) {
+      storeResults(results, currentTab);
     }
 
     setCurrentTab(newValue);
 
-    clearFilters();
-    clearSort();
-    clearPage();
-    clearResults();
+    updateFilters({});
+    updateSorts({});
+    updatePage(null);
+    updateResults(null);
 
-    if (newValue !== 'datafile') {
-      updateFilters(getFilters(newValue));
-      updateSort(getSort(newValue));
-      updatePage(getPage(newValue));
-      updateResults(getResults(newValue));
-    } else {
-      updateFilters(getFilters(newValue));
-      updateSort(getSort(newValue));
-    }
+    updateFilters(getFilters(newValue));
+    updateSorts(getSorts(newValue));
+    updatePage(getPage(newValue));
+    updateResults(getResults(newValue));
   };
 
   const { data: investigationDataCount } = useInvestigationCount([
