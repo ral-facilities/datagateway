@@ -7,6 +7,7 @@ import {
   useInvestigationsPaginated,
   useInvestigationsDatasetCount,
   Investigation,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -19,7 +20,6 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import DLSVisitsCardView from './dlsVisitsCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -191,13 +191,13 @@ describe('DLS Visits - Card View', () => {
 
   it('displays details panel when more information is expanded', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(VisitDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(wrapper.find(VisitDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders fine with incomplete data', () => {

@@ -56,10 +56,41 @@
     "dataset_count": "Dataset Count",
     "size": "Size",
     "details": {
+      "tabs_label": "Investigation Details",
+      "label": "Investigation Details",
+      "title": "Title",
       "name": "Name",
-      "summary": "Summary",
+      "end_date": "End Date",
       "start_date": "Start Date",
-      "end_date": "End Date"
+      "visit_id": "Experiment Part",
+      "pid": "Part DOI",
+      "summary": "Summary",
+      "doi": "DOI",
+      "size": "Size",
+      "calculate": "Calculate",
+      "datasets": "View Datasets",
+      "facility": "Facility",
+      "users": {
+        "label": "Investigation Users",
+        "name": "Name",
+        "name_plural": "Names",
+        "no_name": "No Users"
+      },
+      "samples": {
+        "label": "Investigation Samples",
+        "name": "Sample",
+        "name_plural": "Samples",
+        "no_samples": "No Samples"
+      },
+      "publications": {
+        "label": "Publications",
+        "reference": "Reference",
+        "reference_plural": "References",
+        "no_publications": "No publications"
+      },
+      "type": {
+        "id": "Type ID"
+      }
     },
     "facility": {
       "id": "Facility ID"
@@ -77,7 +108,21 @@
     "description": "Description",
     "investigation": "Investigation",
     "details": {
-      "description": "Description"
+      "tabs_label": "Dataset Details",
+      "label": "Dataset Details",
+      "name": "Name",
+      "description": "Description",
+      "size": "Size",
+      "end_date": "End Date",
+      "start_date": "Start Date",
+      "calculate": "Calculate",
+      "datafiles": "View Datafiles",
+      "type": {
+        "label": "Dataset Types",
+        "name": "Name",
+        "description": "Description",
+        "id": "Type ID"
+      }
     }
   },
   "datafiles": {
@@ -85,7 +130,18 @@
     "modified_time": "Modified Time",
     "location": "Location",
     "size": "Size",
-    "dataset": "Dataset"
+    "dataset": "Dataset",
+    "details": {
+      "tabs_label": "Datafile Details",
+      "label": "Datafile Details",
+      "name": "Name",
+      "description": "Description",
+      "size": "Size",
+      "location": "Location",
+      "parameters": {
+        "label": "Datafile Parameters"
+      }
+    }
   },
   "buttons": {
     "add_to_cart": "Add to selection",

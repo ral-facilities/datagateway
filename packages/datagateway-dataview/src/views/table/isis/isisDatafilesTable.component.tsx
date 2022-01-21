@@ -20,13 +20,13 @@ import {
   useAddToCart,
   useRemoveFromCart,
   DownloadButton,
+  ISISDatafileDetailsPanel,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';
-import DatafileDetailsPanel from '../../detailsPanels/isis/datafileDetailsPanel.component';
 
 interface ISISDatafilesTableProps {
   datasetId: string;
@@ -176,7 +176,7 @@ const ISISDatafilesTable = (
       onCheck={addToCart}
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
-      detailsPanel={DatafileDetailsPanel}
+      detailsPanel={ISISDatafileDetailsPanel}
       actions={[
         ({ rowData }: TableActionProps) => (
           <DownloadButton

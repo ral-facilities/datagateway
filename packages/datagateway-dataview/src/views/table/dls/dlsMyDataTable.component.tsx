@@ -13,11 +13,11 @@ import {
   usePushFilter,
   useSort,
   useTextFilter,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
@@ -167,7 +167,7 @@ const DLSMyDataTable = (): React.ReactElement => {
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
       onSort={handleSort}
-      detailsPanel={VisitDetailsPanel}
+      detailsPanel={DLSVisitDetailsPanel}
       columns={columns}
     />
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import ISISInvestigationsTable from './isisInvestigationsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -17,6 +17,7 @@ import {
   useInvestigationDetails,
   Table,
   DownloadButton,
+  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -43,7 +44,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Investigations table component', () => {
-  let shallow;
   let mount;
   let mockStore;
   let state: StateType;
@@ -51,17 +51,21 @@ describe('ISIS Investigations table component', () => {
   let history: History;
   let replaceSpy: jest.SpyInstance;
 
-  const createWrapper = (): ReactWrapper => {
+  const createWrapper = (
+    element: React.ReactElement = (
+      <ISISInvestigationsTable
+        studyHierarchy={false}
+        instrumentId="4"
+        instrumentChildId="5"
+      />
+    )
+  ): ReactWrapper => {
     const store = mockStore(state);
     return mount(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInvestigationsTable
-              studyHierarchy={false}
-              instrumentId="4"
-              instrumentChildId="5"
-            />
+            {element}
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -69,7 +73,6 @@ describe('ISIS Investigations table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     rowData = [
       {
@@ -370,26 +373,28 @@ describe('ISIS Investigations table component', () => {
     expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
-  it('renders details panel correctly and it fetches data and can navigate', () => {
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('renders details panel with datasets link and can navigate', () => {
     const wrapper = createWrapper();
 
-    const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')({
-        rowData: rowData[0],
-      })
-    );
-    expect(detailsPanelWrapper).toMatchSnapshot();
-
-    mount(
+    const detailsPanelWrapper = createWrapper(
       wrapper.find(Table).prop('detailsPanel')({
         rowData: rowData[0],
         detailsPanelResize: jest.fn(),
       })
     );
 
-    expect(useInvestigationDetails).toHaveBeenCalledWith(1);
-
-    detailsPanelWrapper.find('#investigation-datasets-tab').simulate('click');
+    detailsPanelWrapper
+      .find('#investigation-datasets-tab')
+      .first()
+      .simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
     );

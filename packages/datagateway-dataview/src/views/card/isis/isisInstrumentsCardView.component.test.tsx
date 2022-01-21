@@ -6,6 +6,7 @@ import {
   useInstrumentsPaginated,
   useInstrumentCount,
   Instrument,
+  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -18,7 +19,6 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISInstrumentsCardView from './isisInstrumentsCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -169,13 +169,13 @@ describe('ISIS Instruments - Card View', () => {
 
   it('displays details panel when more information is expanded', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders fine with incomplete data', () => {
