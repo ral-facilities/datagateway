@@ -166,9 +166,6 @@ const SearchPageTable = (
     [location.search]
   );
 
-  const clearFilters = {};
-  const clearSorts = {};
-
   const updateFilters = useUpdateQueryParam('filters');
   const updateSorts = useUpdateQueryParam('sort');
 
@@ -214,8 +211,8 @@ const SearchPageTable = (
 
     setCurrentTab(newValue);
 
-    updateFilters(clearFilters);
-    updateSorts(clearSorts);
+    updateFilters({});
+    updateSorts({});
 
     updateFilters(getFilters(newValue));
     updateSorts(getSorts(newValue));
