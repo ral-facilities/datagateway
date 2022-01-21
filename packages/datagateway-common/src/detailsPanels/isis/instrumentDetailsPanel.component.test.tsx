@@ -1,19 +1,12 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
 import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
-import { Instrument, useInstrumentDetails } from 'datagateway-common';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
+import { Instrument } from '../../app.types';
+import { useInstrumentDetails } from '../../api/instruments';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useInstrumentDetails: jest.fn(),
-  };
-});
+jest.mock('../../api/instruments');
 
 describe('Instrument details panel component', () => {
   let mount;

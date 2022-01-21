@@ -25,10 +25,10 @@ import {
   useTextFilter,
   AddToCartButton,
   DownloadButton,
+  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
 
@@ -214,7 +214,7 @@ const ISISInvestigationsCardView = (
 
   const moreInformation = React.useCallback(
     (investigation: Investigation) => (
-      <InvestigationDetailsPanel
+      <ISISInvestigationDetailsPanel
         rowData={investigation}
         viewDatasets={(id: number) => {
           const url = view

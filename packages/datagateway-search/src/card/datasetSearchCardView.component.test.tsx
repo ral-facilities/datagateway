@@ -11,6 +11,9 @@ import {
   useDatasetSizes,
   useDatasetsDatafileCount,
   CardView,
+  DLSDatasetDetailsPanel,
+  ISISDatasetDetailsPanel,
+  DatasetDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -457,5 +460,65 @@ describe('Dataset - Card View', () => {
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Dataset test name');
+  });
+
+  it('displays generic details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper
+      .find('[aria-label="card-more-info-expand"]')
+      .first()
+      .simulate('click');
+
+    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for ISIS when expanded', () => {
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper
+      .find('[aria-label="card-more-info-expand"]')
+      .first()
+      .simulate('click');
+
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 4,
+          name: 'facility cycle name',
+          startDate: '2000-06-10',
+          endDate: '2020-06-11',
+        },
+      ],
+    });
+
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper
+      .find('[aria-label="card-more-info-expand"]')
+      .first()
+      .simulate('click');
+
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+
+    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
+    );
+  });
+
+  it('displays correct details panel for DLS when expanded', () => {
+    const wrapper = createWrapper('dls');
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper
+      .find('[aria-label="card-more-info-expand"]')
+      .first()
+      .simulate('click');
+
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
   });
 });

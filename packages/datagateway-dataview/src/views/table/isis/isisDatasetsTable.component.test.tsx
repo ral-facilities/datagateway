@@ -15,6 +15,8 @@ import {
   Dataset,
   useDatasetSizes,
   DownloadButton,
+  ISISDatasetDetailsPanel,
+  Table,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -46,18 +48,22 @@ describe('ISIS Dataset table component', () => {
   let rowData: Dataset[];
   let history: History;
 
-  const createWrapper = (): ReactWrapper => {
+  const createWrapper = (
+    element: React.ReactElement = (
+      <ISISDatasetsTable
+        studyHierarchy={false}
+        instrumentId="1"
+        instrumentChildId="2"
+        investigationId="3"
+      />
+    )
+  ): ReactWrapper => {
     const store = mockStore(state);
     return mount(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetsTable
-              studyHierarchy={false}
-              instrumentId="1"
-              instrumentChildId="2"
-              investigationId="3"
-            />
+            {element}
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -321,6 +327,33 @@ describe('ISIS Dataset table component', () => {
     expect(useIds).toHaveBeenCalledWith('dataset', expect.anything(), false);
     expect(useIds).not.toHaveBeenCalledWith('dataset', expect.anything(), true);
     expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+  });
+
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('renders details panel with datasets link and can navigate', () => {
+    const wrapper = createWrapper();
+
+    const detailsPanelWrapper = createWrapper(
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: rowData[0],
+        detailsPanelResize: jest.fn(),
+      })
+    );
+
+    detailsPanelWrapper
+      .find('#dataset-datafiles-tab')
+      .first()
+      .simulate('click');
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile'
+    );
   });
 
   it('renders dataset name as a link', () => {

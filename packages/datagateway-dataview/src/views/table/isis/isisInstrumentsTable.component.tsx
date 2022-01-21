@@ -8,11 +8,11 @@ import {
   useInstrumentsInfinite,
   useSort,
   useTextFilter,
+  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 import TitleIcon from '@material-ui/icons/Title';
 import { useLocation } from 'react-router-dom';
 
@@ -85,7 +85,7 @@ const ISISInstrumentsTable = (
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
       onSort={handleSort}
-      detailsPanel={InstrumentDetailsPanel}
+      detailsPanel={ISISInstrumentDetailsPanel}
       columns={columns}
     />
   );

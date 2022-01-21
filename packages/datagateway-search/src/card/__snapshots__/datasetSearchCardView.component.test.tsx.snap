@@ -122,6 +122,7 @@ Object {
   ],
   "loadedCount": true,
   "loadedData": true,
+  "moreInformation": [Function],
   "onFilter": [Function],
   "onPageChange": [Function],
   "onResultsChange": [Function],

@@ -8,6 +8,7 @@ import {
   useInstrumentCount,
   useInstrumentsInfinite,
   dGCommonInitialState,
+  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
@@ -16,7 +17,6 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router';
 import { createMemoryHistory, History } from 'history';
-import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -167,10 +167,10 @@ describe('ISIS Instruments table component', () => {
 
   it('displays details panel when expanded', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeFalsy();
     wrapper.find('[aria-label="Show details"]').first().simulate('click');
 
-    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders names as links when NOT in studyHierarchy', () => {

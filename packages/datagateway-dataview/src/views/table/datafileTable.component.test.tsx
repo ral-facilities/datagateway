@@ -1,4 +1,4 @@
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import {
   Datafile,
   dGCommonInitialState,
@@ -9,6 +9,7 @@ import {
   useRemoveFromCart,
   useDatafilesInfinite,
   DownloadButton,
+  DatafileDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -17,7 +18,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
-import DatafileTable, { DatafileDetailsPanel } from './datafileTable.component';
+import DatafileTable from './datafileTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
@@ -38,7 +39,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Datafile table component', () => {
-  let shallow;
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -59,7 +59,6 @@ describe('Datafile table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     rowData = [
       {
@@ -327,13 +326,11 @@ describe('Datafile table component', () => {
     expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <DatafileDetailsPanel
-        rowData={rowData[0]}
-        detailsPanelResize={jest.fn()}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DatafileDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(DatafileDetailsPanel).exists()).toBeTruthy();
   });
 });
