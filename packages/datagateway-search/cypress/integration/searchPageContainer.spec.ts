@@ -131,7 +131,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
         'have.length',
-        15
+        14
       );
     });
 
