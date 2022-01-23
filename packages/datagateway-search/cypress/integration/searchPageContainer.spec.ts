@@ -129,10 +129,11 @@ describe('SearchPageContainer Component', () => {
       cy.get('[id="simple-tab-dataset"]').click();
       cy.get('[id="simple-tab-investigation"]').click();
 
-      cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
-        'have.length',
-        14
-      );
+      cy.get('[data-testid="card"]')
+        .first()
+        .contains(
+          'Night with subject fall in daughter together. Term would just back. Despite air skill people. Race especially ask look suggest east might. Situation note appear.'
+        );
     });
 
     it('should have the correct url for the DOI link (Cardview) ', () => {
