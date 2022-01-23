@@ -254,44 +254,6 @@ describe('SearchPageContainer Component', () => {
         .contains('Including spend increase ability music skill former.');
     });
 
-    //This test appears to get a different number of results locally compared to the automated tests
-    //on github meaning the test fails
-    it.skip('should be able to navigate through tabs without losing the filters (Card)', () => {
-      cy.title().should('equal', 'DataGateway Search');
-
-      cy.get('[aria-label="Search text input"]').find('#filled-search').clear();
-
-      cy.get('[aria-label="Submit search"]')
-        .click()
-        .wait(['@investigations', '@investigations', '@investigationsCount'], {
-          timeout: 10000,
-        });
-
-      cy.get('#container-search-filters').should('exist');
-
-      cy.get('[aria-label="container-view-button"]').click();
-      cy.get('[data-testid="advanced-filters-link"]').click();
-      cy.get('[aria-label="Filter by Title"]').type('spe');
-
-      cy.get('[data-testid="advanced-filters-link"]').click();
-      cy.get('[aria-label="sort-by-list"]')
-        .get('[aria-label="Sort by VISIT ID"]')
-        .click({ force: true });
-      cy.get('select[id="select-max-results"]', {
-        timeout: 10000,
-      }).select('20');
-      cy.get('[aria-label="Go to next page"]').first().click({ force: true });
-
-      cy.get('[id="simple-tab-dataset"]').click();
-      cy.get('[id="simple-tab-investigation"]').click();
-
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains(
-          'Night with subject fall in daughter together. Term would just back. Despite air skill people. Race especially ask look suggest east might. Situation note appear.'
-        );
-    });
-
     it('should display selection alert banner correctly', () => {
       cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`)
         .click()
