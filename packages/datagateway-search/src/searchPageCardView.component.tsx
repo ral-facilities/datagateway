@@ -177,6 +177,7 @@ const SearchPageCardView = (
   const updatePage = useUpdateQueryParam('page');
   const updateResults = useUpdateQueryParam('results');
 
+  // Setting a tab based on user selection and what tabs are available
   useEffect(() => {
     if (currentTab === 'investigation') {
       if (!investigationTab) {
