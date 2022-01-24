@@ -156,7 +156,7 @@ describe('SearchPageCardView', () => {
   });
 
   it('changes selected tab value on click of a new tab', () => {
-    props = { page: 1, results: 10 };
+    props = { page: 5, results: 20 };
 
     state.dgsearch = {
       ...state.dgsearch,
@@ -167,23 +167,19 @@ describe('SearchPageCardView', () => {
         currentTab: 'investigation',
       },
     };
-
-    const createWrapper = (store: Store = mockStore(state)): ReactWrapper => {
-      return mount(
-        <Provider store={store}>
-          <MemoryRouter
-            initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
-          >
-            <QueryClientProvider client={new QueryClient()}>
-              <SearchPageCardView {...props} />
-            </QueryClientProvider>
-          </MemoryRouter>
-        </Provider>
-      );
-    };
-
     const testStore = mockStore(state);
-    const wrapper = createWrapper(testStore);
+
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter
+          initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
+        >
+          <QueryClientProvider client={new QueryClient()}>
+            <SearchPageCardView {...props} />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
 
     expect(testStore.getState().dgsearch.tabs.currentTab).toEqual(
       'investigation'
