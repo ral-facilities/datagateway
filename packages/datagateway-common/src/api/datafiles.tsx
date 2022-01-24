@@ -163,11 +163,9 @@ export const useDatafileCount = (
   const location = useLocation();
 
   const filters =
-    currentTab === 'datafile'
+    currentTab === 'datafile' || !storedFilters
       ? parseSearchToQuery(location.search).filters
-      : storedFilters
-      ? storedFilters
-      : parseSearchToQuery(location.search).filters;
+      : storedFilters;
 
   return useQuery<
     number,

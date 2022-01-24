@@ -750,6 +750,52 @@ describe('investigation api functions', () => {
       expect(result.current.data).toEqual(mockData.length);
     });
 
+    it('sends axios request to fetch investigation count and returns successful response using stored filters', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData.length,
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useInvestigationCount(
+            [
+              {
+                filterType: 'distinct',
+                filterValue: JSON.stringify(['name', 'title']),
+              },
+            ],
+            {
+              name: { value: 'test2', type: 'include' },
+            },
+            'datafile'
+          ),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test2' },
+        })
+      );
+      params.append('distinct', JSON.stringify(['name', 'title']));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/investigations/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData.length);
+    });
+
     it('sends axios request to fetch investigation count and calls handleICATError on failure', async () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',

@@ -407,11 +407,9 @@ export const useDatasetCount = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const filters =
-    currentTab === 'dataset'
+    currentTab === 'dataset' || !storedFilters
       ? parseSearchToQuery(location.search).filters
-      : storedFilters
-      ? storedFilters
-      : parseSearchToQuery(location.search).filters;
+      : storedFilters;
 
   return useQuery<
     number,
