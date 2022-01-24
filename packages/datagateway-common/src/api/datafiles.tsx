@@ -156,7 +156,7 @@ export const fetchDatafileCountQuery = (
 
 export const useDatafileCount = (
   additionalFilters?: AdditionalFilters,
-  filter?: FiltersType,
+  storedFilters?: FiltersType,
   currentTab?: string
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
@@ -165,8 +165,8 @@ export const useDatafileCount = (
   const filters =
     currentTab === 'datafile'
       ? parseSearchToQuery(location.search).filters
-      : filter
-      ? filter
+      : storedFilters
+      ? storedFilters
       : parseSearchToQuery(location.search).filters;
 
   return useQuery<

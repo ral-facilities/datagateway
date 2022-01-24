@@ -407,7 +407,7 @@ const fetchInvestigationCount = (
 
 export const useInvestigationCount = (
   additionalFilters?: AdditionalFilters,
-  filter?: FiltersType,
+  storedFilters?: FiltersType,
   currentTab?: string
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
@@ -415,8 +415,8 @@ export const useInvestigationCount = (
   const filters =
     currentTab === 'investigation'
       ? parseSearchToQuery(location.search).filters
-      : filter
-      ? filter
+      : storedFilters
+      ? storedFilters
       : parseSearchToQuery(location.search).filters;
 
   return useQuery<
