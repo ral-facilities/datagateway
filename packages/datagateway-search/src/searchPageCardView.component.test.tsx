@@ -16,6 +16,7 @@ import axios from 'axios';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Store } from 'redux';
 import InvestigationSearchCardView from './card/investigationSearchCardView.component';
+import { CardViewProps } from 'datagateway-common/lib/card/cardView.component';
 
 jest.mock('datagateway-common', () => ({
   ...jest.requireActual('datagateway-common'),
@@ -27,6 +28,7 @@ jest.mock('datagateway-common', () => ({
 describe('SearchPageCardView', () => {
   let mount: typeof enzymeMount;
   let state: StateType;
+  let props: CardViewProps;
   const mockStore = configureStore([thunk]);
 
   const createWrapper = (store: Store = mockStore(state)): ReactWrapper => {
@@ -154,6 +156,8 @@ describe('SearchPageCardView', () => {
   });
 
   it('changes selected tab value on click of a new tab', () => {
+    props = { page: 1, results: 10 };
+
     state.dgsearch = {
       ...state.dgsearch,
       tabs: {
@@ -163,6 +167,21 @@ describe('SearchPageCardView', () => {
         currentTab: 'investigation',
       },
     };
+
+    const createWrapper = (store: Store = mockStore(state)): ReactWrapper => {
+      return mount(
+        <Provider store={store}>
+          <MemoryRouter
+            initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
+          >
+            <QueryClientProvider client={new QueryClient()}>
+              <SearchPageCardView {...props} />
+            </QueryClientProvider>
+          </MemoryRouter>
+        </Provider>
+      );
+    };
+
     const testStore = mockStore(state);
     const wrapper = createWrapper(testStore);
 
