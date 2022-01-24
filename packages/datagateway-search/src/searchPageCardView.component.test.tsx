@@ -164,24 +164,9 @@ describe('SearchPageCardView', () => {
         currentTab: 'investigation',
       },
     };
-    const testStore = mockStore(state);
 
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter
-          initialEntries={[
-            {
-              key: 'testKey',
-              pathname: '/search/data?view=card&page=3&results=20',
-            },
-          ]}
-        >
-          <QueryClientProvider client={new QueryClient()}>
-            <SearchPageCardView />
-          </QueryClientProvider>
-        </MemoryRouter>
-      </Provider>
-    );
+    const testStore = mockStore(state);
+    const wrapper = createWrapper(testStore);
 
     expect(testStore.getState().dgsearch.tabs.currentTab).toEqual(
       'investigation'
