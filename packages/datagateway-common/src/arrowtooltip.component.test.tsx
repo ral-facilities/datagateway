@@ -19,7 +19,6 @@ describe('ArrowTooltip component', () => {
       <ArrowTooltip
         title={'test'}
         percentageWidth={percentageWidth}
-        maxEnabledHeight={maxEnabledHeight}
         disableHoverListener={disableHoverListener}
         open={open}
       >
