@@ -277,7 +277,7 @@ describe('datafile api functions', () => {
       expect(result.current.data).toEqual(mockData.length);
     });
 
-    it.only('sends axios request to fetch datafile count and returns successful response using the stored filters', async () => {
+    it('sends axios request to fetch datafile count and returns successful response using the stored filters', async () => {
       (axios.get as jest.Mock).mockResolvedValue({
         data: mockData.length,
       });
