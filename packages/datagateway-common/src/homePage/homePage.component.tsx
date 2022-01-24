@@ -56,8 +56,8 @@ const useStyles = (props: HomePageProps) => {
         },
         contentBox: {
           transform: 'translate(0px, -20px)',
-          marginLeft: '10%',
-          marginRight: '10%',
+          marginLeft: '8%',
+          marginRight: '8%',
         },
         paper: {
           borderRadius: '4px',
