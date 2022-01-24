@@ -236,32 +236,44 @@ const SearchPageCardView = (
     updateResults(getResults(newValue));
   };
 
-  const { data: investigationDataCount } = useInvestigationCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: investigation || [] },
-      }),
-    },
-  ]);
+  const { data: investigationDataCount } = useInvestigationCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: investigation || [] },
+        }),
+      },
+    ],
+    getFilters('investigation'),
+    currentTab
+  );
 
-  const { data: datasetDataCount } = useDatasetCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: dataset || [] },
-      }),
-    },
-  ]);
+  const { data: datasetDataCount } = useDatasetCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: dataset || [] },
+        }),
+      },
+    ],
+    getFilters('dataset'),
+    currentTab
+  );
 
-  const { data: datafileDataCount } = useDatafileCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: datafile || [] },
-      }),
-    },
-  ]);
+  const { data: datafileDataCount } = useDatafileCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: datafile || [] },
+        }),
+      },
+    ],
+    getFilters('datafile'),
+    currentTab
+  );
 
   const badgeDigits = (length?: number): 3 | 2 | 1 => {
     return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
