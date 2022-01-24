@@ -9,6 +9,7 @@ import {
   useInvestigationsInfinite,
   useInvestigationsDatasetCount,
   dGCommonInitialState,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
@@ -17,7 +18,6 @@ import thunk from 'redux-thunk';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router';
 import { createMemoryHistory, History } from 'history';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -218,10 +218,10 @@ describe('DLS Visits table component', () => {
 
   it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(VisitDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
     wrapper.find('[aria-label="Show details"]').first().simulate('click');
 
-    expect(wrapper.find(VisitDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders visit ID as links', () => {

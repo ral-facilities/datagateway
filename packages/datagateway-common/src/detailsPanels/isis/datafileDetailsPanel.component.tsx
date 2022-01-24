@@ -1,5 +1,4 @@
 import React from 'react';
-import { Entity, Datafile, useDatafileDetails } from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -11,6 +10,8 @@ import {
   Tab,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { Datafile, Entity } from '../../app.types';
+import { useDatafileDetails } from '../../api/datafiles';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

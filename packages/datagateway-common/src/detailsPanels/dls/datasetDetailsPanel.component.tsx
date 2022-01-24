@@ -1,5 +1,4 @@
 import React from 'react';
-import { Entity, Dataset, useDatasetDetails } from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -9,8 +8,12 @@ import {
   Divider,
   Tabs,
   Tab,
+  Button,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { useDatasetDetails, useDatasetSize } from '../../api/datasets';
+import { Dataset, Entity } from '../../app.types';
+import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,19 +29,23 @@ const useStyles = makeStyles((theme: Theme) =>
 interface DatasetDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize?: () => void;
-  viewDatafiles?: (id: number) => void;
 }
 
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize, viewDatafiles } = props;
+  const { rowData, detailsPanelResize } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
   const classes = useStyles();
 
   const { data } = useDatasetDetails(rowData.id);
-  const datasetData: Dataset = { ...data, ...(rowData as Dataset) };
+  const { data: size, refetch: fetchSize } = useDatasetSize(rowData.id);
+  const datasetData: Dataset = {
+    ...data,
+    ...(rowData as Dataset),
+    size,
+  };
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();
@@ -67,13 +74,6 @@ const DatasetDetailsPanel = (
             value="type"
           />
         )}
-        {viewDatafiles && (
-          <Tab
-            id="dataset-datafiles-tab"
-            label={t('datasets.details.datafiles')}
-            onClick={() => viewDatafiles(datasetData.id)}
-          />
-        )}
       </Tabs>
       <div
         id="dataset-details-panel"
@@ -97,6 +97,54 @@ const DatasetDetailsPanel = (
                 {datasetData.description && datasetData.description !== 'null'
                   ? datasetData.description
                   : `${t('datasets.details.description')} not provided`}
+              </b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datasets.details.start_date')}
+            </Typography>
+            <Typography>
+              <b>
+                {datasetData.startDate && datasetData.startDate !== 'null'
+                  ? datasetData.startDate
+                  : `${t('datasets.details.start_date')} not provided`}
+              </b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datasets.details.end_date')}
+            </Typography>
+            <Typography>
+              <b>
+                {datasetData.endDate && datasetData.endDate !== 'null'
+                  ? datasetData.endDate
+                  : `${t('datasets.details.end_date')} not provided`}
+              </b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datasets.details.size')}
+            </Typography>
+            <Typography>
+              <b>
+                {datasetData.size ? (
+                  formatBytes(datasetData.size)
+                ) : (
+                  <Button
+                    onClick={() => {
+                      fetchSize();
+                    }}
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    id="calculate-size-btn"
+                  >
+                    {t('datasets.details.calculate')}
+                  </Button>
+                )}
               </b>
             </Typography>
           </Grid>

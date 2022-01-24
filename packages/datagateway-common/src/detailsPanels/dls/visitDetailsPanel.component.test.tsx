@@ -1,30 +1,24 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
-import InvestigationDetailsPanel from './investigationDetailsPanel.component';
-import { Investigation, useInvestigationDetails } from 'datagateway-common';
+import VisitDetailsPanel from './visitDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
+import {
+  useInvestigationDetails,
+  useInvestigationSize,
+} from '../../api/investigations';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+jest.mock('../../api/investigations');
 
-  return {
-    __esModule: true,
-    ...originalModule,
-    useInvestigationDetails: jest.fn(),
-  };
-});
-
-describe('Investigation details panel component', () => {
+describe('Visit details panel component', () => {
   let mount;
   let rowData: Investigation;
   const detailsPanelResize = jest.fn();
-  const viewDatasets = jest.fn();
 
   const createWrapper = (): ReactWrapper => {
     return mount(
       <QueryClientProvider client={new QueryClient()}>
-        <InvestigationDetailsPanel
+        <VisitDetailsPanel
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
         />
@@ -51,21 +45,16 @@ describe('Investigation details panel component', () => {
           },
         },
       ],
-      studyInvestigations: [
-        {
-          id: 11,
-          study: {
-            id: 12,
-            pid: 'study pid',
-          },
-        },
-      ],
       startDate: '2019-06-10',
       endDate: '2019-06-11',
     };
 
     (useInvestigationDetails as jest.Mock).mockReturnValue({
       data: rowData,
+    });
+    (useInvestigationSize as jest.Mock).mockReturnValue({
+      data: 1,
+      refetch: jest.fn(),
     });
   });
 
@@ -76,7 +65,7 @@ describe('Investigation details panel component', () => {
 
   it('renders correctly', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+    expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('renders user, sample and publication tabs when present in the data', () => {
@@ -115,7 +104,7 @@ describe('Investigation details panel component', () => {
     ];
 
     const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+    expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('checks if multiple samples result in change of title to plural version', () => {
@@ -131,7 +120,7 @@ describe('Investigation details panel component', () => {
     ];
 
     const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+    expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('checks if multiple publications result in change of title to plural version', () => {
@@ -147,7 +136,7 @@ describe('Investigation details panel component', () => {
     ];
 
     const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+    expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('renders publication tab and text "No Publications" when no data is prsent', () => {
@@ -155,7 +144,7 @@ describe('Investigation details panel component', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-testid="investigation-details-panel-no-publications"]')
+        .find('[data-testid="visit-details-panel-no-publications"]')
         .exists()
     ).toBeTruthy();
   });
@@ -164,9 +153,7 @@ describe('Investigation details panel component', () => {
     rowData.samples = [];
     const wrapper = createWrapper();
     expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-no-samples"]')
-        .exists()
+      wrapper.find('[data-testid="visit-details-panel-no-samples"]').exists()
     ).toBeTruthy();
   });
 
@@ -174,15 +161,31 @@ describe('Investigation details panel component', () => {
     rowData.investigationUsers = [];
     const wrapper = createWrapper();
     expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-no-name"]')
-        .exists()
+      wrapper.find('[data-testid="visit-details-panel-no-name"]').exists()
     ).toBeTruthy();
   });
 
-  it('calls useInvestigationDetails hook on load', () => {
+  it('calls useInvestigationDetails and useInvestigationSize hooks on load', () => {
     createWrapper();
     expect(useInvestigationDetails).toHaveBeenCalledWith(rowData.id);
+    expect(useInvestigationSize).toHaveBeenCalledWith(rowData.id);
+  });
+
+  it('renders calculate size button when size has not been calculated', () => {
+    (useInvestigationSize as jest.Mock).mockReturnValueOnce({});
+    const wrapper = createWrapper();
+    expect(wrapper.find('#calculate-size-btn').exists()).toBeTruthy();
+  });
+
+  it('calculates size when button is clicked', () => {
+    const fetchSize = jest.fn();
+    (useInvestigationSize as jest.Mock).mockReturnValueOnce({
+      refetch: fetchSize,
+    });
+
+    const wrapper = createWrapper();
+    wrapper.find('#calculate-size-btn').hostNodes().simulate('click');
+    expect(fetchSize).toHaveBeenCalled();
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
@@ -197,10 +200,7 @@ describe('Investigation details panel component', () => {
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
-    wrapper
-      .find('#investigation-publications-tab')
-      .hostNodes()
-      .simulate('click');
+    wrapper.find('#visit-publications-tab').hostNodes().simulate('click');
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
   });
@@ -215,43 +215,18 @@ describe('Investigation details panel component', () => {
 
     const wrapper = mount(
       <QueryClientProvider client={new QueryClient()}>
-        <InvestigationDetailsPanel rowData={rowData} />
+        <VisitDetailsPanel rowData={rowData} />
       </QueryClientProvider>
     );
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
 
-    wrapper
-      .find('#investigation-publications-tab')
-      .hostNodes()
-      .simulate('click');
+    wrapper.find('#visit-publications-tab').hostNodes().simulate('click');
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
   });
 
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('doi 1');
-    expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
-  });
-
-  it('gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users', () => {
-    rowData.studyInvestigations = [
-      {
-        id: 11,
-      },
-    ];
-
+  it('gracefully handles InvestigationUsers without Users', () => {
     rowData.investigationUsers = [
       {
         id: 4,
@@ -264,27 +239,11 @@ describe('Investigation details panel component', () => {
     });
 
     const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
-  });
-
-  it('calls dataset view if view datasets tab clicked', () => {
-    const wrapper = mount(
-      <QueryClientProvider client={new QueryClient()}>
-        <InvestigationDetailsPanel
-          rowData={rowData}
-          detailsPanelResize={detailsPanelResize}
-          viewDatasets={viewDatasets}
-        />
-      </QueryClientProvider>
-    );
-
-    expect(viewDatasets).not.toHaveBeenCalled();
-    wrapper.find('#investigation-datasets-tab').hostNodes().simulate('click');
-    expect(viewDatasets).toHaveBeenCalled();
+    expect(wrapper.find('VisitDetailsPanel').props()).toMatchSnapshot();
   });
 
   it('Shows "No <field> provided" incase of a null field', () => {
-    const { summary, doi, startDate, endDate, ...amendedRowData } = rowData;
+    const { summary, startDate, endDate, ...amendedRowData } = rowData;
 
     (useInvestigationDetails as jest.Mock).mockReturnValueOnce({
       data: amendedRowData,
@@ -292,7 +251,7 @@ describe('Investigation details panel component', () => {
 
     const wrapper = mount(
       <QueryClientProvider client={new QueryClient()}>
-        <InvestigationDetailsPanel
+        <VisitDetailsPanel
           rowData={amendedRowData}
           detailsPanelResize={detailsPanelResize}
         />
@@ -300,16 +259,13 @@ describe('Investigation details panel component', () => {
     );
 
     expect(wrapper.html()).toContain(
-      '<b>investigations.details.summary not provided</b>'
-    );
-    expect(wrapper.html()).toContain(
-      '<b>investigations.details.doi not provided</b>'
-    );
-    expect(wrapper.html()).toContain(
       '<b>investigations.details.start_date not provided</b>'
     );
     expect(wrapper.html()).toContain(
       '<b>investigations.details.end_date not provided</b>'
+    );
+    expect(wrapper.html()).toContain(
+      '<b>investigations.details.summary not provided</b>'
     );
   });
 });

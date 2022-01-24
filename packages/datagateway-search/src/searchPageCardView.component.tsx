@@ -45,24 +45,35 @@ import {
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
     badge: {
-      backgroundColor: '#fff',
-      color: '#000000',
-      fontSize: 'inherit',
+      backgroundColor: '#CCCCCC',
+      //Increase contrast on high contrast modes by using black text
+      color:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (theme as any).colours?.type === 'contrast' ? '#000000' : '#333333',
+      fontSize: '14px',
+      fontWeight: 'bold',
       lineHeight: 'inherit',
-      top: '0.875em',
+      top: '1em',
     },
   });
 
 const tabStyles = (theme: Theme): StyleRules =>
   createStyles({
-    indicator: {
-      //Use white for all modes except use red for dark high contrast mode as this is much clearer
-      backgroundColor:
-        theme.palette.type === 'dark' &&
+    root: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      backgroundColor: (theme as any).colours?.tabsGrey,
+      //Fixes contrast issue for unselected tabs in darkmode
+      color:
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).colours?.type === 'contrast'
-          ? '#FF0000'
-          : '#FFFFFF',
+        (theme as any).palette.type === 'dark'
+          ? '#FFFFFF'
+          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (theme as any).colours?.blue,
+      boxShadow: 'none',
+    },
+    indicator: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      backgroundColor: (theme as any).colours?.blue,
     },
   });
 
@@ -283,7 +294,7 @@ const SearchPageCardView = (
     <div>
       {/* Show loading progress if data is still being loaded */}
       {loading && <LinearProgress color="secondary" />}
-      <AppBar position="static">
+      <AppBar position="static" elevation={0}>
         <StyledTabs
           className="tour-search-tab-select"
           value={currentTab}
@@ -308,6 +319,8 @@ const SearchPageCardView = (
                       marginLeft: `calc(-0.5 * ${badgeDigits(
                         investigation?.length
                       )}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
                     }}
                   >
                     {t('tabs.investigation')}
@@ -338,6 +351,8 @@ const SearchPageCardView = (
                       marginLeft: `calc(-0.5 * ${badgeDigits(
                         dataset?.length
                       )}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
                     }}
                   >
                     {t('tabs.dataset')}
@@ -368,6 +383,8 @@ const SearchPageCardView = (
                       marginLeft: `calc(-0.5 * ${badgeDigits(
                         datafile?.length
                       )}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
                     }}
                   >
                     {t('tabs.datafile')}

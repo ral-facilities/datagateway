@@ -17,10 +17,10 @@ import {
   useTextFilter,
   AddToCartButton,
   DownloadButton,
+  ISISDatasetDetailsPanel,
 } from 'datagateway-common';
 import { Save, CalendarToday } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
-import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
 
@@ -168,7 +168,7 @@ const ISISDatasetsCardView = (
 
   const moreInformation = React.useCallback(
     (dataset: Dataset) => (
-      <DatasetDetailsPanel
+      <ISISDatasetDetailsPanel
         rowData={dataset}
         viewDatafiles={(id: number) => {
           const url = view

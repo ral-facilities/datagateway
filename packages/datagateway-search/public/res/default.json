@@ -1,19 +1,20 @@
 {
   "searchBox": {
-    "search_text": "Search for title, name, instrument",
-    "search_textbox_label": "e.g. <1>\"instrument calibration\"</1>, or <4>neutron AND scattering</4>.",
-    "search_textbox_label_link1": "?searchText=\"instrument+calibration\"",
-    "search_textbox_label_link2": "?searchText=neutron+AND+scattering",
-    "start_date": "Start Date",
-    "end_date": "End Date",
+    "search_text": "Search for investigations, datasets and datafiles",
+    "examples_label": "For example <1>\"instrument calibration\"</1> or <4>neutron AND scattering</4>.",
+    "examples_label_link1": "?searchText=\"instrument+calibration\"",
+    "examples_label_link2": "?searchText=neutron+AND+scattering",
+    "start_date": "Start date",
+    "end_date": "End date",
     "checkboxes": {
-      "text": "Please select at least one",
       "investigation": "Investigation",
       "dataset": "Dataset",
       "datafile": "Datafile",
       "investigation_arialabel": "Investigation checkbox",
       "dataset_arialabel": "Dataset checkbox",
-      "datafile_arialabel": "Datafile checkbox"
+      "datafile_arialabel": "Datafile checkbox",
+      "types": "Types",
+      "types_error": "At least one required"
     },
     "search_button": "Search",
     "search_text_arialabel": "Search text input",
@@ -22,14 +23,14 @@
     "end_date_arialabel": "End date input",
     "end_date_button_arialabel": "End date picker",
     "search_button_arialabel": "Submit search",
-    "invalid_date_message": "Please enter the date in the format yyyy-MM-dd.",
+    "invalid_date_message": "Date format: yyyy-MM-dd.",
     "invalid_date_range_message": "Invalid date range",
     "date_picker": {
       "ok": "OK",
       "cancel": "Cancel",
       "clear": "Clear"
     },
-    "limited_results_message": "Please note: Only the top {{maxNumResults}} results will be displayed for each entity type i.e. Investigation, Dataset or Datafile. Click 'Advanced' to learn more."
+    "limited_results_message": "Only the top {{maxNumResults}} results will be displayed for each type"
   },
   "searchPageTable": {
     "tabs_arialabel": "Search table",
@@ -55,10 +56,41 @@
     "dataset_count": "Dataset Count",
     "size": "Size",
     "details": {
+      "tabs_label": "Investigation Details",
+      "label": "Investigation Details",
+      "title": "Title",
       "name": "Name",
-      "summary": "Summary",
+      "end_date": "End Date",
       "start_date": "Start Date",
-      "end_date": "End Date"
+      "visit_id": "Experiment Part",
+      "pid": "Part DOI",
+      "summary": "Summary",
+      "doi": "DOI",
+      "size": "Size",
+      "calculate": "Calculate",
+      "datasets": "View Datasets",
+      "facility": "Facility",
+      "users": {
+        "label": "Investigation Users",
+        "name": "Name",
+        "name_plural": "Names",
+        "no_name": "No Users"
+      },
+      "samples": {
+        "label": "Investigation Samples",
+        "name": "Sample",
+        "name_plural": "Samples",
+        "no_samples": "No Samples"
+      },
+      "publications": {
+        "label": "Publications",
+        "reference": "Reference",
+        "reference_plural": "References",
+        "no_publications": "No publications"
+      },
+      "type": {
+        "id": "Type ID"
+      }
     },
     "facility": {
       "id": "Facility ID"
@@ -76,7 +108,21 @@
     "description": "Description",
     "investigation": "Investigation",
     "details": {
-      "description": "Description"
+      "tabs_label": "Dataset Details",
+      "label": "Dataset Details",
+      "name": "Name",
+      "description": "Description",
+      "size": "Size",
+      "end_date": "End Date",
+      "start_date": "Start Date",
+      "calculate": "Calculate",
+      "datafiles": "View Datafiles",
+      "type": {
+        "label": "Dataset Types",
+        "name": "Name",
+        "description": "Description",
+        "id": "Type ID"
+      }
     }
   },
   "datafiles": {
@@ -84,7 +130,18 @@
     "modified_time": "Modified Time",
     "location": "Location",
     "size": "Size",
-    "dataset": "Dataset"
+    "dataset": "Dataset",
+    "details": {
+      "tabs_label": "Datafile Details",
+      "label": "Datafile Details",
+      "name": "Name",
+      "description": "Description",
+      "size": "Size",
+      "location": "Location",
+      "parameters": {
+        "label": "Datafile Parameters"
+      }
+    }
   },
   "buttons": {
     "add_to_cart": "Add to selection",
@@ -137,8 +194,7 @@
     "show_less": "Show less"
   },
   "advanced_search_help": {
-    "advanced_button": "Advanced",
-    "advanced_button_arialabel": "Advanced help",
+    "search_options_arialabel": "Search options",
     "close_button_arialabel": "Close",
     "title": "Advanced Search Tips",
     "description": "When you search for a word e.g. 'calibration', we will search for any records containing this word. But, sometimes you may wish to be more specific. Here we show you how.",

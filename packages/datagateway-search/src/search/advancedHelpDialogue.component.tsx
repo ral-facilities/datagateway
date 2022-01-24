@@ -5,7 +5,6 @@ import {
   Theme,
   withStyles,
 } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
@@ -24,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) => {
       padding: theme.spacing(2),
     },
     advancedButton: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.blue,
+      fontSize: '14px',
+      fontWeight: 'bold',
     },
     closeButton: {
       position: 'absolute',
@@ -76,15 +75,17 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
   };
 
   return (
-    <div>
-      <Button
-        variant="text"
+    <React.Fragment>
+      See all{' '}
+      <Link
+        component="button"
         className={classes.advancedButton}
-        aria-label={t('advanced_search_help.advanced_button_arialabel')}
+        aria-label={t('advanced_search_help.search_options_arialabel')}
         onClick={handleClickOpen}
       >
-        {t('advanced_search_help.advanced_button')}
-      </Button>
+        search options
+      </Link>
+      .
       <Dialog
         onClose={handleClose}
         aria-labelledby="advanced-search-dialog-title"
@@ -201,7 +202,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
           </Trans>
         </Typography>
       </Dialog>
-    </div>
+    </React.Fragment>
   );
 };
 
