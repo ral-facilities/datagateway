@@ -127,52 +127,58 @@ const DatafileDetailsPanel = (
             className={classes.root}
             direction="column"
           >
-            {datafileData.parameters.map((parameter) => {
-              if (parameter.type) {
-                switch (parameter.type.valueType) {
-                  case 'STRING':
-                    return (
-                      <Grid key={parameter.id} item xs>
-                        <Typography variant="overline">
-                          {parameter.type.name}
-                        </Typography>
-                        <Typography>
-                          <b>{parameter.stringValue}</b>
-                        </Typography>
-                      </Grid>
-                    );
-                  case 'NUMERIC':
-                    return (
-                      <Grid key={parameter.id} item xs>
-                        <Typography variant="overline">
-                          {parameter.type.name}
-                        </Typography>
-                        <Typography>
-                          <b>{parameter.numericValue}</b>
-                        </Typography>
-                      </Grid>
-                    );
-                  case 'DATE_AND_TIME':
-                    return (
-                      <Grid key={parameter.id} item xs>
-                        <Typography variant="overline">
-                          {parameter.type.name}
-                        </Typography>
-                        <Typography>
-                          <b>
-                            {parameter.dateTimeValue &&
-                              parameter.dateTimeValue.split(' ')[0]}
-                          </b>
-                        </Typography>
-                      </Grid>
-                    );
-                  default:
-                    return null;
+            {datafileData.parameters.length > 0 ? (
+              datafileData.parameters.map((parameter) => {
+                if (parameter.type) {
+                  switch (parameter.type.valueType) {
+                    case 'STRING':
+                      return (
+                        <Grid key={parameter.id} item xs>
+                          <Typography variant="overline">
+                            {parameter.type.name}
+                          </Typography>
+                          <Typography>
+                            <b>{parameter.stringValue}</b>
+                          </Typography>
+                        </Grid>
+                      );
+                    case 'NUMERIC':
+                      return (
+                        <Grid key={parameter.id} item xs>
+                          <Typography variant="overline">
+                            {parameter.type.name}
+                          </Typography>
+                          <Typography>
+                            <b>{parameter.numericValue}</b>
+                          </Typography>
+                        </Grid>
+                      );
+                    case 'DATE_AND_TIME':
+                      return (
+                        <Grid key={parameter.id} item xs>
+                          <Typography variant="overline">
+                            {parameter.type.name}
+                          </Typography>
+                          <Typography>
+                            <b>
+                              {parameter.dateTimeValue &&
+                                parameter.dateTimeValue.split(' ')[0]}
+                            </b>
+                          </Typography>
+                        </Grid>
+                      );
+                    default:
+                      return null;
+                  }
+                } else {
+                  return null;
                 }
-              } else {
-                return null;
-              }
-            })}
+              })
+            ) : (
+              <Typography data-testid="datafile-details-panel-no-parameters">
+                <b>{t('datafiles.details.parameters.no_parameters')}</b>
+              </Typography>
+            )}
           </Grid>
         </div>
       )}

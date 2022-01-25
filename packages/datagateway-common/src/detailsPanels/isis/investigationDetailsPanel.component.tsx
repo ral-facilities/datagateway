@@ -241,7 +241,7 @@ const InvestigationDetailsPanel = (
               })
             ) : (
               <Typography data-testid="investigation-details-panel-no-name">
-                {t('investigations.details.users.no_name')}
+                <b>{t('investigations.details.users.no_name')}</b>
               </Typography>
             )}
           </Grid>
@@ -272,7 +272,7 @@ const InvestigationDetailsPanel = (
               })
             ) : (
               <Typography data-testid="investigation-details-panel-no-samples">
-                {t('investigations.details.samples.no_samples')}
+                <b>{t('investigations.details.samples.no_samples')}</b>
               </Typography>
             )}
           </Grid>
@@ -303,7 +303,9 @@ const InvestigationDetailsPanel = (
               })
             ) : (
               <Typography data-testid="investigation-details-panel-no-publications">
-                {t('investigations.details.publications.no_publications')}
+                <b>
+                  {t('investigations.details.publications.no_publications')}
+                </b>
               </Typography>
             )}
           </Grid>

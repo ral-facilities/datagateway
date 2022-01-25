@@ -180,4 +180,14 @@ describe('Datafile details panel component', () => {
       '<b>datafiles.details.description not provided</b>'
     );
   });
+
+  it('renders datafile parameters tab and text "No parameters" when no data is present', () => {
+    rowData.parameters = [];
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="datafile-details-panel-no-parameters"]')
+        .exists()
+    ).toBeTruthy();
+  });
 });
