@@ -338,7 +338,7 @@ describe('Date filter component', () => {
 
     expect(wrapper.find('p.Mui-error')).toHaveLength(2);
     expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-      'Please enter the date in the format yyyy-MM-dd.'
+      'Date format: yyyy-MM-dd.'
     );
   });
 

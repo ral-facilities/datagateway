@@ -100,10 +100,16 @@ const AdminDownloadStatusTable: React.FC = () => {
           }
 
           if ('type' in filter && filter.type) {
+            // As UPPER is used need to pass text filters in upper case to avoid case sensitivity
+            const filterValue =
+              typeof filter.value === 'string'
+                ? (filter.value as string).toUpperCase()
+                : filter.value;
+
             if (filter.type === 'include') {
-              queryOffset += ` AND UPPER(download.${column}) LIKE CONCAT('%', '${filter.value}', '%')`;
+              queryOffset += ` AND UPPER(download.${column}) LIKE CONCAT('%', '${filterValue}', '%')`;
             } else {
-              queryOffset += ` AND UPPER(download.${column}) NOT LIKE CONCAT('%', '${filter.value}', '%')`;
+              queryOffset += ` AND UPPER(download.${column}) NOT LIKE CONCAT('%', '${filterValue}', '%')`;
             }
           }
         }
