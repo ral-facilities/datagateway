@@ -97,6 +97,7 @@ const ViewButton = (props: {
   viewCards: boolean;
   handleButtonChange: () => void;
   disabled: boolean;
+  handleFilterClearButton: () => void;
 }): React.ReactElement => {
   const [t] = useTranslation();
   const classes = viewButtonStyles();
@@ -116,6 +117,16 @@ const ViewButton = (props: {
         {props.viewCards && !props.disabled
           ? t('app.view_table')
           : t('app.view_cards')}
+      </Button>
+      <Button
+        className="tour-dataview-clear-filter-button"
+        style={{ margin: '5px' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => props.handleFilterClearButton()}
+      >
+        Clear Filters
       </Button>
     </div>
   );
@@ -448,8 +459,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                           viewCards={view === 'card'}
                           handleButtonChange={handleButtonChange}
                           disabled={false}
-                        />
-                        <ClearButton
                           handleFilterClearButton={handleFilterClearButton}
                         />
                       </>
