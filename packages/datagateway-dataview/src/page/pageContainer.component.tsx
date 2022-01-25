@@ -409,27 +409,6 @@ const ViewButton = (props: {
   );
 };
 
-const ClearButton = (props: {
-  handleFilterClearButton: () => void;
-}): React.ReactElement => {
-  const classes = viewButtonStyles();
-
-  return (
-    <div className={classes.root}>
-      <Button
-        className="tour-dataview-clear-filter-button"
-        style={{ margin: '5px' }}
-        variant="contained"
-        color="primary"
-        size="small"
-        onClick={() => props.handleFilterClearButton()}
-      >
-        Clear Filters
-      </Button>
-    </div>
-  );
-};
-
 const StyledRouting = (props: {
   viewStyle: ViewsType;
   view: ViewsType;
