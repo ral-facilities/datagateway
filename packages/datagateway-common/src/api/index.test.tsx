@@ -282,6 +282,39 @@ describe('generic api functions', () => {
         params.toString()
       );
     });
+
+    it('parses all filter types to api params successfully when ignoreIDSort is true', () => {
+      const sortAndFilters: { sort: SortType; filters: FiltersType } = {
+        filters: {
+          name: { value: 'test', type: 'include' },
+          title: { value: 'test', type: 'exclude' },
+          startDate: {
+            startDate: '2021-08-05',
+            endDate: '2021-08-06',
+          },
+          type: ['1', '2', '3'],
+        },
+        sort: { name: 'asc' },
+      };
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('name asc'));
+      params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
+      params.append('where', JSON.stringify({ title: { nilike: 'test' } }));
+      params.append(
+        'where',
+        JSON.stringify({ startDate: { gte: '2021-08-05 00:00:00' } })
+      );
+      params.append(
+        'where',
+        JSON.stringify({ startDate: { lte: '2021-08-06 23:59:59' } })
+      );
+      params.append('where', JSON.stringify({ type: { in: ['1', '2', '3'] } }));
+
+      expect(getApiParams(sortAndFilters, true).toString()).toEqual(
+        params.toString()
+      );
+    });
   });
 
   describe('push functions', () => {
