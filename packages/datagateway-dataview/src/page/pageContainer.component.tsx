@@ -199,6 +199,15 @@ const NavBar = React.memo(
         ...Object.values(paths.studyHierarchy.toggle),
         ...Object.values(paths.studyHierarchy.standard),
       ]) !== null;
+    const isISISRoute = useRouteMatch(isisPaths) !== null;
+    const landingPages = isStudyHierarchy
+      ? paths.studyHierarchy.landing
+      : isISISRoute
+      ? paths.landing
+      : [];
+    const landingPageEntities = Object.values(landingPages).map(
+      (x) => x.split('/')[x.split('/').length - 2]
+    );
 
     return (
       <Sticky>
@@ -211,10 +220,9 @@ const NavBar = React.memo(
             aria-label="page-breadcrumbs"
           >
             {/* don't show breadcrumbs on /my-data - only on browse */}
-            <Route
-              path={[paths.root, paths.studyHierarchy.root]}
-              component={PageBreadcrumbs}
-            />
+            <Route path={[paths.root, paths.studyHierarchy.root]}>
+              <PageBreadcrumbs landingPageEntities={landingPageEntities} />
+            </Route>
           </Grid>
 
           {props.loggedInAnonymously || isStudyHierarchy ? (

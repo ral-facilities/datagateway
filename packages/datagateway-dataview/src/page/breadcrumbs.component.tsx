@@ -290,7 +290,14 @@ const useEntityInformation = (
 
 const StyledBreadcrumbs = withStyles(breadcrumbsStyles)(Breadcrumbs);
 
-const PageBreadcrumbs: React.FC = () => {
+interface PageBreadcrumbsProps {
+  landingPageEntities: string[];
+}
+
+const PageBreadcrumbs: React.FC<PageBreadcrumbsProps> = (
+  props: PageBreadcrumbsProps
+) => {
+  const { landingPageEntities } = props;
   const { pathname, search } = useLocation();
   const view = parseSearchToQuery(search).view;
 
@@ -339,8 +346,10 @@ const PageBreadcrumbs: React.FC = () => {
               ) => {
                 const { data } = query;
 
-                // Return the correct type of breadcrumb with the entity name
-                // depending on if it is at the end of the hierarchy or not.
+                // Return the breadcrumb with the entity name
+                // and either a link up the hierarchy,
+                // or if it's the last breadcrumb either a link
+                // to the landing page or no link
                 return data ? (
                   <Breadcrumb
                     displayName={data.displayName}
@@ -348,6 +357,14 @@ const PageBreadcrumbs: React.FC = () => {
                     url={
                       index + 1 !== queries.length
                         ? data.url + viewString
+                        : // this covers the case of looking at a view just below a landing page
+                        // i.e. /browse/investigation/1/dataset - third last item is investigation
+                        // which is what we check has a landing page
+                        landingPageEntities.includes(
+                            currentPathnames[currentPathnames.length - 3]
+                          )
+                        ? data.url.split('/').slice(0, -1).join('/') +
+                          viewString
                         : undefined
                     }
                     key={`breadcrumb-${index + 1}`}

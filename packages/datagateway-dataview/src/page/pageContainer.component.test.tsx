@@ -350,4 +350,20 @@ describe('PageContainer - Tests', () => {
 
     expect(history.location.pathname).toBe('/download');
   });
+
+  it('passes correct landing page entities to breadcrumbs', () => {
+    history.replace(paths.toggle.isisInvestigation);
+    let wrapper = createWrapper();
+
+    expect(
+      wrapper.find('PageBreadcrumbs').prop('landingPageEntities')
+    ).toEqual(['investigation', 'dataset']);
+
+    history.replace(paths.studyHierarchy.toggle.isisInvestigation);
+    wrapper = createWrapper();
+
+    expect(
+      wrapper.find('PageBreadcrumbs').prop('landingPageEntities')
+    ).toEqual(['study', 'investigation', 'dataset']);
+  });
 });

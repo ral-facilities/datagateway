@@ -48,13 +48,16 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   let state: StateType;
   let history: History;
 
-  const createWrapper = (state: StateType): ReactWrapper => {
+  const createWrapper = (
+    state: StateType,
+    landingPageEntities: string[] = []
+  ): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     return mount(
       <Provider store={mockStore(state)}>
         <QueryClientProvider client={new QueryClient()}>
           <Router history={history}>
-            <PageBreadcrumbs />
+            <PageBreadcrumbs landingPageEntities={landingPageEntities} />
           </Router>
         </QueryClientProvider>
       </Provider>
@@ -399,7 +402,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['instruments']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
+    const wrapper = createWrapper(state, ['investigation', 'dataset']);
 
     // Flush promises and update the re-render the wrapper.
     await flushPromises();
@@ -421,7 +424,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['facilityCycles']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
+    const wrapper = createWrapper(state, ['investigation', 'dataset']);
 
     // Flush promises and update the re-render the wrapper.
     await flushPromises();
@@ -457,7 +460,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['investigations']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
+    const wrapper = createWrapper(state, ['investigation', 'dataset']);
 
     // Flush promises and update the re-render the wrapper.
     await flushPromises();
@@ -504,7 +507,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['datasets']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
+    const wrapper = createWrapper(state, ['investigation', 'dataset']);
 
     // Flush promises and update the re-render the wrapper.
     await flushPromises();
@@ -549,8 +552,11 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').prop('href')
     ).toEqual('/browse/instrument/1/facilityCycle/1/investigation');
     expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] p').text()
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').text()
     ).toEqual('Title 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').prop('href')
+    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1');
     expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
       'breadcrumbs.dataset'
     );
@@ -561,7 +567,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['datafiles']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
+    const wrapper = createWrapper(state, ['investigation', 'dataset']);
 
     // Flush promises and update the re-render the wrapper.
     await flushPromises();
@@ -618,8 +624,11 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').prop('href')
     ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1/dataset');
     expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-4"] p').text()
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-4"] a').text()
     ).toEqual('Name 1');
+    expect(
+      wrapper.find('[data-testid="Breadcrumb-hierarchy-4"] a').prop('href')
+    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1');
     expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
       'breadcrumbs.datafile'
     );
