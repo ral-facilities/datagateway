@@ -349,7 +349,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.userName) LIKE CONCAT('%', 'test user', '%') ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
     usernameFilterInput.instance().value = '';
     usernameFilterInput.simulate('change');
