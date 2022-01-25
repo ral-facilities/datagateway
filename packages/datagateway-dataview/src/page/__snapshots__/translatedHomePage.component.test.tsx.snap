@@ -148,8 +148,8 @@ exports[`HomePage translated homepage renders correctly 1`] = `
     >
       <WithStyles(ForwardRef(Grid))
         item={true}
-        sm={4}
-        xs={12}
+        md={4}
+        sm={12}
       >
         <WithStyles(ForwardRef(Paper))
           className="makeStyles-paper-5"
@@ -208,8 +208,8 @@ exports[`HomePage translated homepage renders correctly 1`] = `
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
         item={true}
-        sm={4}
-        xs={12}
+        md={4}
+        sm={12}
       >
         <WithStyles(ForwardRef(Paper))
           className="makeStyles-paper-5"
@@ -268,8 +268,8 @@ exports[`HomePage translated homepage renders correctly 1`] = `
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
         item={true}
-        sm={4}
-        xs={12}
+        md={4}
+        sm={12}
       >
         <WithStyles(ForwardRef(Paper))
           className="makeStyles-bluePaper-6"
