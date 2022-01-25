@@ -16,6 +16,7 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "title",
+      "defaultSort": "asc",
       "disableSort": true,
       "filterComponent": [Function],
       "icon": Object {
@@ -68,7 +69,9 @@ Object {
   ],
   "loadMoreRows": [Function],
   "onSort": [Function],
-  "sort": Object {},
+  "sort": Object {
+    "title": "asc",
+  },
   "totalRowCount": 1,
 }
 `;
