@@ -186,10 +186,13 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
 /**
  * Convert Sort and Filter types to datagateway-api compatible URLSearchParams
  */
-export const getApiParams = (props: {
-  sort: SortType;
-  filters: FiltersType;
-}): URLSearchParams => {
+export const getApiParams = (
+  props: {
+    sort: SortType;
+    filters: FiltersType;
+  },
+  ignoreIDSort?: boolean
+): URLSearchParams => {
   const { sort, filters } = props;
   const searchParams = new URLSearchParams();
 
@@ -197,8 +200,9 @@ export const getApiParams = (props: {
     searchParams.append('order', JSON.stringify(`${key} ${value}`));
   }
 
-  // sort by ID first to guarantee order
-  searchParams.append('order', JSON.stringify(`id asc`));
+  if (!ignoreIDSort)
+    // sort by ID first to guarantee order
+    searchParams.append('order', JSON.stringify(`id asc`));
 
   for (const [column, filter] of Object.entries(filters)) {
     if (typeof filter === 'object') {

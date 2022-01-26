@@ -16,7 +16,7 @@ describe('DLS - Proposals Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation'
+      '/browse/proposal/INVESTIGATION%2030/investigation'
     );
   });
 

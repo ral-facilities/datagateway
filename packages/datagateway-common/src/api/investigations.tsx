@@ -32,9 +32,10 @@ const fetchInvestigations = (
     filters: FiltersType;
   },
   additionalFilters?: AdditionalFilters,
-  offsetParams?: IndexRange
+  offsetParams?: IndexRange,
+  ignoreIDSort?: boolean
 ): Promise<Investigation[]> => {
-  const params = getApiParams(sortAndFilters);
+  const params = getApiParams(sortAndFilters, ignoreIDSort);
 
   if (offsetParams) {
     params.append('skip', JSON.stringify(offsetParams.startIndex));
@@ -70,7 +71,7 @@ export const useInvestigation = (
     Investigation[],
     AxiosError,
     Investigation[],
-    [string, number, AdditionalFilters?]
+    [string, number, AdditionalFilters?, boolean?]
   >(
     ['investigation', investigationId, additionalFilters],
     (params) => {
@@ -93,7 +94,8 @@ export const useInvestigation = (
 };
 
 export const useInvestigationsPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  ignoreIDSort?: boolean
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -111,22 +113,30 @@ export const useInvestigationsPaginated = (
         page: number;
         results: number;
       },
-      AdditionalFilters?
+      AdditionalFilters?,
+      boolean?
     ]
   >(
     [
       'investigation',
       { sort, filters, page: page ?? 1, results: results ?? 10 },
       additionalFilters,
+      ignoreIDSort,
     ],
     (params) => {
       const { sort, filters, page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return fetchInvestigations(apiUrl, { sort, filters }, additionalFilters, {
-        startIndex,
-        stopIndex,
-      });
+      return fetchInvestigations(
+        apiUrl,
+        { sort, filters },
+        additionalFilters,
+        {
+          startIndex,
+          stopIndex,
+        },
+        ignoreIDSort
+      );
     },
     {
       onError: (error) => {
@@ -137,7 +147,8 @@ export const useInvestigationsPaginated = (
 };
 
 export const useInvestigationsInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  ignoreIDSort?: boolean
 ): UseInfiniteQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -147,9 +158,14 @@ export const useInvestigationsInfinite = (
     Investigation[],
     AxiosError,
     Investigation[],
-    [string, { sort: SortType; filters: FiltersType }, AdditionalFilters?]
+    [
+      string,
+      { sort: SortType; filters: FiltersType },
+      AdditionalFilters?,
+      boolean?
+    ]
   >(
-    ['investigation', { sort, filters }, additionalFilters],
+    ['investigation', { sort, filters }, additionalFilters, ignoreIDSort],
     (params) => {
       const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
@@ -157,7 +173,8 @@ export const useInvestigationsInfinite = (
         apiUrl,
         { sort, filters },
         additionalFilters,
-        offsetParams
+        offsetParams,
+        ignoreIDSort
       );
     },
     {
