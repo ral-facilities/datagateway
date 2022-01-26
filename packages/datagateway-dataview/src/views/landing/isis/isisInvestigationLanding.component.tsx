@@ -365,6 +365,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.users.label')}
                 </Typography>
+                {formattedUsers.length > 0 ? '' : 'No Users'}
                 {formattedUsers.map((user, i) => (
                   <Typography
                     aria-label={`landing-investigation-user-${i}`}
@@ -404,6 +405,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.samples.label')}
                 </Typography>
+                {formattedSamples.length > 0 ? '' : 'No Samples'}
                 {formattedSamples.map((name, i) => (
                   <Typography
                     aria-label={`landing-investigation-sample-${i}`}
