@@ -425,6 +425,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.publications.label')}
                 </Typography>
+                {formattedPublications.length > 0 ? '' : 'No Publications'}
                 {formattedPublications.map((reference, i) => (
                   <Typography
                     aria-label={`landing-investigation-reference-${i}`}
