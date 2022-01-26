@@ -37,8 +37,8 @@ const DLSProposalsTable = (): React.ReactElement => {
         filterValue: JSON.stringify(['name', 'title']),
       },
     ],
-    //Do not add order by id as id is not a distinct field above and will otherwise
-    //cause missing results
+    // Do not add order by id as id is not a distinct field above and will otherwise
+    // cause missing results
     true
   );
 
@@ -71,8 +71,8 @@ const DLSProposalsTable = (): React.ReactElement => {
           );
         },
         filterComponent: textFilter,
-        //Sort to ensure a deterministic order for pagination (ignoreIDSort: true is
-        //used above in useInvestigationsInfinite)
+        // Sort to ensure a deterministic order for pagination (ignoreIDSort: true is
+        // used above in useInvestigationsInfinite)
         defaultSort: 'asc',
         disableSort: true,
       },
