@@ -221,6 +221,9 @@ const SearchPageTable = (
     storeSorts(sort, currentTab);
 
     setCurrentTab(newValue);
+
+    updateFilters({});
+    updateSorts({});
   };
 
   React.useEffect(() => {
