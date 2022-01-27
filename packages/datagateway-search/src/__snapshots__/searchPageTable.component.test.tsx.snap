@@ -4058,12 +4058,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
       >
         <Connect(SearchPageTable)>
           <SearchPageTable
-            currentTab="investigation"
             datafileTab={true}
             datasetTab={true}
+            dispatch={[Function]}
             investigationTab={true}
             maxNumResults={300}
-            setCurrentTab={[Function]}
+            searchableEntities={
+              Array [
+                "investigation",
+                "dataset",
+                "datafile",
+              ]
+            }
           >
             <div>
               <WithStyles(ForwardRef(AppBar))

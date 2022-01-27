@@ -241,7 +241,6 @@ interface SearchPageContainerStoreProps {
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
-  currentTab: string;
 }
 
 interface SearchPageContainerDispatchProps {
@@ -263,14 +262,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     sideLayout,
     searchableEntities,
     maxNumResults,
-    currentTab,
   } = props;
 
   const location = useLocation();
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const { view, startDate, endDate } = queryParams;
+  const { view, startDate, endDate, currentTab } = queryParams;
+
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
 
   //Do not allow these to be searched if they are not searchable (prevents URL
@@ -367,7 +366,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     localStorage.removeItem('datasetPage');
     localStorage.removeItem('investigationResults');
     localStorage.removeItem('datasetResults');
-  }, [searchText, pushSearchText]);
+  }, [pushSearchText, searchText]);
 
   React.useEffect(() => {
     if (searchOnNextRender) {
@@ -566,7 +565,6 @@ const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,
   investigationTab: state.dgsearch.tabs.investigationTab,
-  currentTab: state.dgsearch.tabs.currentTab,
 });
 
 export default connect(

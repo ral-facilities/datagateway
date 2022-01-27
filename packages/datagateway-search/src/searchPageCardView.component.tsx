@@ -16,9 +16,6 @@ import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { setCurrentTab } from './state/actions/actions';
 import {
   parseSearchToQuery,
   useDatafileCount,
@@ -26,6 +23,7 @@ import {
   useInvestigationCount,
   useLuceneSearch,
   useUpdateQueryParam,
+  usePushCurrentTab,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
@@ -86,13 +84,10 @@ interface SearchCardViewStoreProps {
   maxNumResults: number;
   datasetTab: boolean;
   datafileTab: boolean;
+  searchableEntities: string[];
   investigationTab: boolean;
-  currentTab: string;
 }
 
-interface SearchCardViewDispatchProps {
-  setCurrentTab: (newValue: string) => Action;
-}
 interface TabPanelProps {
   children?: React.ReactNode;
   index: string;
@@ -128,17 +123,14 @@ const StyledBadge = withStyles(badgeStyles)(Badge);
 const StyledTabs = withStyles(tabStyles)(Tabs);
 
 const SearchPageCardView = (
-  props: SearchCardViewProps &
-    SearchCardViewStoreProps &
-    SearchCardViewDispatchProps
+  props: SearchCardViewProps & SearchCardViewStoreProps
 ): React.ReactElement => {
   const {
     maxNumResults,
     investigationTab,
     datasetTab,
     datafileTab,
-    currentTab,
-    setCurrentTab,
+    searchableEntities,
     containerHeight,
     hierarchy,
   } = props;
@@ -178,76 +170,86 @@ const SearchPageCardView = (
   });
   const loading = isFetchingNum > 0;
 
-  const { filters, sort, page, results } = React.useMemo(
+  const { filters, sort, page, results, currentTab } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
+
+  const searchCurrentTab =
+    currentTab && searchableEntities.includes(currentTab)
+      ? currentTab
+      : searchableEntities[0];
 
   const updateFilters = useUpdateQueryParam('filters');
   const updateSorts = useUpdateQueryParam('sort');
   const updatePage = useUpdateQueryParam('page');
   const updateResults = useUpdateQueryParam('results');
+  const pushCurrentTab = usePushCurrentTab();
 
   // Setting a tab based on user selection and what tabs are available
   useEffect(() => {
-    if (currentTab === 'investigation') {
+    if (searchCurrentTab === 'investigation') {
       if (!investigationTab) {
         if (datasetTab) {
-          setCurrentTab('dataset');
+          pushCurrentTab('dataset');
         } else if (datafileTab) {
-          setCurrentTab('datafile');
+          pushCurrentTab('datafile');
         }
       }
-    } else if (currentTab === 'dataset') {
+    } else if (searchCurrentTab === 'dataset') {
       if (!datasetTab) {
         if (investigationTab) {
-          setCurrentTab('investigation');
+          pushCurrentTab('investigation');
         } else if (datafileTab) {
-          setCurrentTab('datafile');
+          pushCurrentTab('datafile');
         } else {
-          setCurrentTab('investigation');
+          pushCurrentTab('investigation');
         }
       }
     } else {
       if (!datafileTab) {
-        if (investigationTab) {
-          setCurrentTab('investigation');
+        if (searchCurrentTab) {
+          pushCurrentTab('investigation');
         } else if (datasetTab) {
-          setCurrentTab('dataset');
+          pushCurrentTab('dataset');
         } else {
-          setCurrentTab('investigation');
+          pushCurrentTab('investigation');
         }
       }
     }
-  }, [setCurrentTab, investigationTab, datasetTab, datafileTab, currentTab]);
+  }, [
+    investigationTab,
+    datasetTab,
+    datafileTab,
+    pushCurrentTab,
+    searchCurrentTab,
+  ]);
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    storeFilters(filters, currentTab);
-    storeSorts(sort, currentTab);
+    storeFilters(filters, searchCurrentTab);
+    storeSorts(sort, searchCurrentTab);
     if (page) {
-      storePage(page, currentTab);
+      storePage(page, searchCurrentTab);
     }
     if (results) {
-      storeResults(results, currentTab);
+      storeResults(results, searchCurrentTab);
     }
 
-    setCurrentTab(newValue);
+    pushCurrentTab(newValue);
 
     updateFilters({});
     updateSorts({});
     updatePage(null);
     updateResults(null);
-  };
 
-  React.useEffect(() => {
-    updateFilters(getFilters(currentTab));
-    updateSorts(getSorts(currentTab));
-    updatePage(getPage(currentTab));
-    updateResults(getResults(currentTab));
-  }, [currentTab, updateFilters, updatePage, updateResults, updateSorts]);
+    updateFilters(getFilters(newValue));
+    updateSorts(getSorts(newValue));
+    updatePage(getPage(newValue));
+    updateResults(getResults(newValue));
+  };
 
   const { data: investigationDataCount } = useInvestigationCount(
     [
@@ -259,7 +261,7 @@ const SearchPageCardView = (
       },
     ],
     getFilters('investigation'),
-    currentTab
+    searchCurrentTab
   );
 
   const { data: datasetDataCount } = useDatasetCount(
@@ -272,7 +274,7 @@ const SearchPageCardView = (
       },
     ],
     getFilters('dataset'),
-    currentTab
+    searchCurrentTab
   );
 
   const { data: datafileDataCount } = useDatafileCount(
@@ -285,7 +287,7 @@ const SearchPageCardView = (
       },
     ],
     getFilters('datafile'),
-    currentTab
+    searchCurrentTab
   );
 
   const badgeDigits = (length?: number): 3 | 2 | 1 => {
@@ -299,7 +301,7 @@ const SearchPageCardView = (
       <AppBar position="static" elevation={0}>
         <StyledTabs
           className="tour-search-tab-select"
-          value={currentTab}
+          value={searchCurrentTab}
           onChange={handleChange}
           aria-label={t('searchPageCardView.tabs_arialabel')}
         >
@@ -402,20 +404,20 @@ const SearchPageCardView = (
         </StyledTabs>
       </AppBar>
 
-      {currentTab === 'investigation' && (
-        <TabPanel value={currentTab} index={'investigation'}>
+      {searchCurrentTab === 'investigation' && (
+        <TabPanel value={searchCurrentTab} index={'investigation'}>
           <InvestigationCardView hierarchy={hierarchy} />
         </TabPanel>
       )}
 
-      {currentTab === 'dataset' && (
-        <TabPanel value={currentTab} index={'dataset'}>
+      {searchCurrentTab === 'dataset' && (
+        <TabPanel value={searchCurrentTab} index={'dataset'}>
           <DatasetCardView hierarchy={hierarchy} />
         </TabPanel>
       )}
 
-      {currentTab === 'datafile' && (
-        <TabPanel value={currentTab} index={'datafile'}>
+      {searchCurrentTab === 'datafile' && (
+        <TabPanel value={searchCurrentTab} index={'datafile'}>
           <Paper
             style={{
               height: `calc(${containerHeight} - 56px)`,
@@ -439,14 +441,8 @@ const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,
-    currentTab: state.dgsearch.tabs.currentTab,
+    searchableEntities: state.dgsearch.searchableEntities,
   };
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): SearchCardViewDispatchProps => ({
-  setCurrentTab: (newValue: string) => dispatch(setCurrentTab(newValue)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchPageCardView);
+export default connect(mapStateToProps)(SearchPageCardView);

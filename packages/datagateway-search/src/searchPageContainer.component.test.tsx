@@ -91,7 +91,6 @@ describe('SearchPageContainer - Tests', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
-        currentTab: 'investigation',
       },
       sideLayout: false,
       searchableEntities: ['investigation', 'dataset', 'datafile'],

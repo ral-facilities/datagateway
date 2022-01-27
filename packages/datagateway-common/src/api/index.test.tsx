@@ -10,6 +10,7 @@ import {
   usePushPage,
   usePushResults,
   useSort,
+  usePushCurrentTab,
   useUpdateView,
 } from './index';
 import {
@@ -117,6 +118,7 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: null,
         endDate: null,
+        currentTab: null,
       });
     });
 
@@ -137,6 +139,7 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-17T00:00:00Z'),
         endDate: new Date('2021-10-25T00:00:00Z'),
+        currentTab: null,
       });
     });
 
@@ -159,6 +162,7 @@ describe('generic api functions', () => {
           investigation: true,
           startDate: new Date(NaN),
           endDate: new Date(NaN),
+          currentTab: null,
         })
       );
     });
@@ -193,10 +197,11 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: null,
         endDate: null,
+        currentTab: 'investigation',
       };
 
       const params = new URLSearchParams(
-        '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}'
+        '?view=table&search=test&page=1&results=10&currentTab=investigation&filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D&sort=%7B%22name%22%3A%22asc%22%7D'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -216,10 +221,11 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-17T00:00:00Z'),
         endDate: new Date('2021-10-25T00:00:00Z'),
+        currentTab: 'investigation',
       };
 
       const params = new URLSearchParams(
-        '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
+        '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25&currentTab=investigation'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -239,10 +245,11 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-34T00:00:00Z'),
         endDate: new Date('2021-14-25T00:00:00Z'),
+        currentTab: 'investigation',
       };
 
       const params = new URLSearchParams(
-        '?view=table&searchText=testText&datafile=false&startDate=Invalid+Date&endDate=Invalid+Date'
+        '?view=table&searchText=testText&datafile=false&startDate=Invalid+Date&endDate=Invalid+Date&currentTab=investigation'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -453,6 +460,20 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?page=1');
+      });
+    });
+
+    describe('usePushCurrentTab', () => {
+      it('returns callback that when called pushes a new tab to the url query', () => {
+        const { result } = renderHook(() => usePushCurrentTab(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('dataset');
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith('?currentTab=dataset');
       });
     });
 

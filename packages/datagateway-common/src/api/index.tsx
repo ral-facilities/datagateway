@@ -69,6 +69,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const investigation = query.get('investigation');
   const startDateString = query.get('startDate');
   const endDateString = query.get('endDate');
+  const currentTab = query.get('currentTab');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -126,6 +127,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     investigation: investigation !== null ? investigation === 'true' : true,
     startDate: startDate,
     endDate: endDate,
+    currentTab: currentTab,
   };
 
   return params;
@@ -374,6 +376,21 @@ export const useUpdateQueryParam = (
       replace({ search: `?${parseQueryToSearch(query).toString()}` });
     },
     [type, replace]
+  );
+};
+
+export const usePushCurrentTab = (): ((currentTab: string) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (currentTab: string) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        currentTab,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
   );
 };
 
