@@ -117,19 +117,19 @@
         "label": "Investigation Users",
         "name": "Name",
         "name_plural": "Names",
-        "no_name": "No Users"
+        "no_name": "No users"
       },
       "samples": {
         "label": "Investigation Samples",
         "name": "Sample",
         "name_plural": "Samples",
-        "no_samples": "No Samples"
+        "no_samples": "No samples"
       },
       "publications": {
         "label": "Publications",
         "reference": "Reference",
         "reference_plural": "References",
-        "no_publications": "No Publications"
+        "no_publications": "No publications"
       },
       "type": {
         "id": "Type ID"

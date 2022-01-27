@@ -369,7 +369,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   ''
                 ) : (
                   <Typography data-testid="investigation-details-panel-no-name">
-                    <b>{t('investigations.details.users.no_name')}</b>
+                    {t('investigations.details.users.no_name')}
                   </Typography>
                 )}
                 {formattedUsers.map((user, i) => (
@@ -415,7 +415,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   ''
                 ) : (
                   <Typography data-testid="investigation-details-panel-no-samples">
-                    <b>{t('investigations.details.samples.no_samples')}</b>
+                    {t('investigations.details.samples.no_samples')}
                   </Typography>
                 )}
                 {formattedSamples.map((name, i) => (
@@ -443,9 +443,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   ''
                 ) : (
                   <Typography data-testid="investigation-details-panel-no-publications">
-                    <b>
-                      {t('investigations.details.publications.no_publications')}
-                    </b>
+                    {t('investigations.details.publications.no_publications')}
                   </Typography>
                 )}
                 {formattedPublications.map((reference, i) => (
