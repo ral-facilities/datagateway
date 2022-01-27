@@ -229,10 +229,14 @@ const SearchPageTable = (
 
     updateFilters({});
     updateSorts({});
-
-    updateFilters(getFilters(newValue));
-    updateSorts(getSorts(newValue));
   };
+
+  React.useEffect(() => {
+    if (currentTab) {
+      updateFilters(getFilters(currentTab));
+      updateSorts(getSorts(currentTab));
+    }
+  }, [currentTab, updateFilters, updateSorts]);
 
   const { data: investigationDataCount } = useInvestigationCount(
     [

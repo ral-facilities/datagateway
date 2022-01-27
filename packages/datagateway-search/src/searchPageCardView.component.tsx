@@ -244,12 +244,16 @@ const SearchPageCardView = (
     updateSorts({});
     updatePage(null);
     updateResults(null);
-
-    updateFilters(getFilters(newValue));
-    updateSorts(getSorts(newValue));
-    updatePage(getPage(newValue));
-    updateResults(getResults(newValue));
   };
+
+  React.useEffect(() => {
+    if (currentTab) {
+      updateFilters(getFilters(currentTab));
+      updateSorts(getSorts(currentTab));
+      updatePage(getPage(currentTab));
+      updateResults(getResults(currentTab));
+    }
+  }, [currentTab, updateFilters, updatePage, updateResults, updateSorts]);
 
   const { data: investigationDataCount } = useInvestigationCount(
     [
