@@ -143,7 +143,7 @@ describe('Investigation details panel component', () => {
     expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
   });
 
-  it('renders publication tab and text "No Publications" when no data is prsent', () => {
+  it('renders publications tab and text "No publications" when no data is present', () => {
     rowData.publications = [];
     const wrapper = createWrapper();
     expect(
@@ -153,7 +153,7 @@ describe('Investigation details panel component', () => {
     ).toBeTruthy();
   });
 
-  it('renders publication tab and text "No Samples" when no data is prsent', () => {
+  it('renders samples tab and text "No samples" when no data is present', () => {
     rowData.samples = [];
     const wrapper = createWrapper();
     expect(
@@ -163,7 +163,7 @@ describe('Investigation details panel component', () => {
     ).toBeTruthy();
   });
 
-  it('renders publication tab and text "No Users" when no data is prsent', () => {
+  it('renders users tab and text "No users" when no data is present', () => {
     rowData.investigationUsers = [];
     const wrapper = createWrapper();
     expect(

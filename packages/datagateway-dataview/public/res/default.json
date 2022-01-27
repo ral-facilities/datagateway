@@ -38,7 +38,7 @@
         "label": "Instrument Scientists",
         "name": "Name",
         "name_plural": "Names",
-        "no_name": "No Scientists"
+        "no_name": "No scientists"
       }
     }
   },
@@ -117,13 +117,13 @@
         "label": "Investigation Users",
         "name": "Name",
         "name_plural": "Names",
-        "no_name": "No Users"
+        "no_name": "No users"
       },
       "samples": {
         "label": "Investigation Samples",
         "name": "Sample",
         "name_plural": "Samples",
-        "no_samples": "No Samples"
+        "no_samples": "No samples"
       },
       "publications": {
         "label": "Publications",
@@ -190,7 +190,8 @@
       "size": "Size",
       "location": "Location",
       "parameters": {
-        "label": "Datafile Parameters"
+        "label": "Datafile Parameters",
+        "no_parameters": "No parameters"
       }
     }
   },
