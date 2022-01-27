@@ -1570,7 +1570,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                         "queryKey": Array [
                           "investigation",
                           Object {
@@ -1587,7 +1587,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                               "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
-                          undefined,
                         ],
                       },
                       "currentResultState": Object {
@@ -1617,7 +1616,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                         "queryKey": Array [
                           "investigation",
                           Object {
@@ -1634,7 +1633,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                               "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
-                          undefined,
                         ],
                       },
                       "previousQueryResult": undefined,
@@ -1654,7 +1652,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                     "queryKey": Array [
                       "investigation",
                       Object {
@@ -1671,11 +1669,10 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                           "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                         },
                       ],
-                      undefined,
                     ],
                   },
                   "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                   "queryKey": Array [
                     "investigation",
                     Object {
@@ -1692,7 +1689,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                       },
                     ],
-                    undefined,
                   ],
                   "retryer": Retryer {
                     "cancel": [Function],
@@ -3027,7 +3023,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                 },
-                "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]": Query {
+                "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -3100,7 +3096,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                         "queryKey": Array [
                           "investigation",
                           Object {
@@ -3117,7 +3113,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                               "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
-                          undefined,
                         ],
                       },
                       "currentResultState": Object {
@@ -3147,7 +3142,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                         "queryKey": Array [
                           "investigation",
                           Object {
@@ -3164,7 +3159,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                               "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
-                          undefined,
                         ],
                       },
                       "previousQueryResult": undefined,
@@ -3184,7 +3178,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                     "queryKey": Array [
                       "investigation",
                       Object {
@@ -3201,11 +3195,10 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                           "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                         },
                       ],
-                      undefined,
                     ],
                   },
                   "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
                   "queryKey": Array [
                     "investigation",
                     Object {
@@ -3222,7 +3215,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                       },
                     ],
-                    undefined,
                   ],
                   "retryer": Retryer {
                     "cancel": [Function],
