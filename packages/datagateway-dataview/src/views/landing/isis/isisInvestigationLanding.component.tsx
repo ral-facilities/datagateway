@@ -354,6 +354,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 ? data[0].summary
                 : 'Description not provided'}
             </Typography>
+            {formattedUsers.length > 0 ? (
+              ''
+            ) : (
+              <Typography data-testid="investigation-details-panel-no-name">
+                {t('investigations.details.users.no_name')}
+              </Typography>
+            )}
 
             {formattedUsers.length > 0 && (
               <div>
@@ -365,13 +372,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.users.label')}
                 </Typography>
-                {formattedUsers.length > 0 ? (
-                  ''
-                ) : (
-                  <Typography data-testid="investigation-details-panel-no-name">
-                    {t('investigations.details.users.no_name')}
-                  </Typography>
-                )}
                 {formattedUsers.map((user, i) => (
                   <Typography
                     aria-label={`landing-investigation-user-${i}`}

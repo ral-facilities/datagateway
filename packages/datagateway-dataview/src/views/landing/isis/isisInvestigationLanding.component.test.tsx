@@ -164,6 +164,9 @@ describe('ISIS Investigation Landing page', () => {
       fullReference: 'Journal, Author, Date, DOI',
     },
   ];
+  const noUsers: never[] = [];
+  const noSamples: never[] = [];
+  const noPublication: never[] = [];
 
   beforeEach(() => {
     mount = createMount();
@@ -269,6 +272,48 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       wrapper.find('[aria-label="landing-investigation-user-3"]')
     ).toHaveLength(0);
+  });
+
+  it('renders text "No users" when no data is present', () => {
+    let wrapper = createWrapper();
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], investigationUsers: noUsers }],
+    });
+    wrapper = createWrapper();
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-details-panel-no-name"]')
+        .exists()
+    ).toBeTruthy();
+  });
+
+  it('renders text "No samples" when no data is present', () => {
+    let wrapper = createWrapper();
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], samples: noSamples }],
+    });
+    wrapper = createWrapper();
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-details-panel-no-samples"]')
+        .exists()
+    ).toBeTruthy();
+  });
+
+  it('renders text "No publications" when no data is present', () => {
+    let wrapper = createWrapper();
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], publications: noPublication }],
+    });
+    wrapper = createWrapper();
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-details-panel-no-publications"]')
+        .exists()
+    ).toBeTruthy();
   });
 
   it('publications displayed correctly', () => {
