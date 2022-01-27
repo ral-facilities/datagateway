@@ -365,7 +365,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.users.label')}
                 </Typography>
-                {formattedUsers.length > 0 ? '' : 'No Users'}
+                {formattedUsers.length > 0 ? (
+                  ''
+                ) : (
+                  <Typography data-testid="investigation-details-panel-no-name">
+                    <b>{t('investigations.details.users.no_name')}</b>
+                  </Typography>
+                )}
                 {formattedUsers.map((user, i) => (
                   <Typography
                     aria-label={`landing-investigation-user-${i}`}
@@ -405,7 +411,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.samples.label')}
                 </Typography>
-                {formattedSamples.length > 0 ? '' : 'No Samples'}
+                {formattedSamples.length > 0 ? (
+                  ''
+                ) : (
+                  <Typography data-testid="investigation-details-panel-no-samples">
+                    <b>{t('investigations.details.samples.no_samples')}</b>
+                  </Typography>
+                )}
                 {formattedSamples.map((name, i) => (
                   <Typography
                     aria-label={`landing-investigation-sample-${i}`}
@@ -427,7 +439,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.publications.label')}
                 </Typography>
-                {formattedPublications.length > 0 ? '' : 'No Publications'}
+                {formattedPublications.length > 0 ? (
+                  ''
+                ) : (
+                  <Typography data-testid="investigation-details-panel-no-publications">
+                    <b>
+                      {t('investigations.details.publications.no_publications')}
+                    </b>
+                  </Typography>
+                )}
                 {formattedPublications.map((reference, i) => (
                   <Typography
                     aria-label={`landing-investigation-reference-${i}`}
