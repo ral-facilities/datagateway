@@ -354,7 +354,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 ? data[0].summary
                 : 'Description not provided'}
             </Typography>
-
             {formattedUsers.length > 0 && (
               <div>
                 <Typography
@@ -404,6 +403,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.samples.label')}
                 </Typography>
+                {formattedSamples.length === 0 && (
+                  <Typography data-testid="investigation-details-panel-no-samples">
+                    {t('investigations.details.samples.no_samples')}
+                  </Typography>
+                )}
                 {formattedSamples.map((name, i) => (
                   <Typography
                     aria-label={`landing-investigation-sample-${i}`}
@@ -425,6 +429,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.publications.label')}
                 </Typography>
+                {formattedPublications.length === 0 && (
+                  <Typography data-testid="investigation-details-panel-no-publications">
+                    {t('investigations.details.publications.no_publications')}
+                  </Typography>
+                )}
                 {formattedPublications.map((reference, i) => (
                   <Typography
                     aria-label={`landing-investigation-reference-${i}`}
