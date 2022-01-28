@@ -9,8 +9,15 @@ import './index.css';
 import App from './App';
 import singleSpaReact from 'single-spa-react';
 import * as log from 'loglevel';
-
-import { RequestPluginRerenderType, MicroFrontendId } from 'datagateway-common';
+import {
+  MicroFrontendId,
+  PluginRoute,
+  RegisterRouteType,
+} from 'datagateway-common';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
+import axios from 'axios';
+import { setSettings } from './settings';
 
 const pluginName = 'datagateway-dataview';
 
@@ -39,17 +46,17 @@ function domElementGetter(): HTMLElement {
   return el;
 }
 
-window.addEventListener('single-spa:routing-event', () => {
-  render();
-});
+// window.addEventListener('single-spa:routing-event', () => {
+//   render();
+// });
 
-// Handle plugin re-render messages from the parent app.
-document.addEventListener(MicroFrontendId, (e) => {
-  const action = (e as CustomEvent).detail;
-  if (action.type === RequestPluginRerenderType) {
-    render();
-  }
-});
+// // Handle plugin re-render messages from the parent app.
+// document.addEventListener(MicroFrontendId, (e) => {
+//   const action = (e as CustomEvent).detail;
+//   if (action.type === RequestPluginRerenderType) {
+//     render();
+//   }
+// });
 
 const reactLifecycles = singleSpaReact({
   React,
@@ -92,3 +99,60 @@ export function unmount(props: unknown): Promise<void> {
       log.error(`${pluginName} failed whilst unmounting: ${error}`);
     });
 }
+
+const fetchSettings = (): Promise<void> => {
+  const settingsPath = process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY
+    ? process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY +
+      'datagateway-dataview-settings.json'
+    : '/datagateway-dataview-settings.json';
+  return axios
+    .get(settingsPath)
+    .then((res) => {
+      const settings = res.data;
+
+      if (Array.isArray(settings['routes']) && settings['routes'].length) {
+        settings['routes'].forEach((route: PluginRoute, index: number) => {
+          if ('section' in route && 'link' in route && 'displayName' in route) {
+            const registerRouteAction = {
+              type: RegisterRouteType,
+              payload: {
+                section: route['section'],
+                link: route['link'],
+                plugin: 'datagateway-dataview',
+                displayName: route['displayName'],
+                order: route['order'] ? route['order'] : 0,
+                helpSteps:
+                  index === 0 && 'helpSteps' in settings
+                    ? settings['helpSteps']
+                    : [],
+                logoLightMode: settings['pluginHost']
+                  ? settings['pluginHost'] + LogoLight
+                  : undefined,
+                logoDarkMode: settings['pluginHost']
+                  ? settings['pluginHost'] + LogoDark
+                  : undefined,
+                logoAltText: 'DataGateway',
+              },
+            };
+            document.dispatchEvent(
+              new CustomEvent(MicroFrontendId, {
+                detail: registerRouteAction,
+              })
+            );
+          } else {
+            throw new Error(
+              'Route provided does not have all the required entries (section, link, displayName)'
+            );
+          }
+        });
+      } else {
+        throw new Error('No routes provided in the settings');
+      }
+      setSettings(settings);
+    })
+    .catch((error) => {
+      log.error(`Error loading ${settingsPath}: ${error.message}`);
+    });
+};
+
+fetchSettings();
