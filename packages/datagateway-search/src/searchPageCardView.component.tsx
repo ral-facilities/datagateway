@@ -23,7 +23,6 @@ import {
   useInvestigationCount,
   useLuceneSearch,
   useUpdateQueryParam,
-  usePushCurrentTab,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
@@ -75,9 +74,11 @@ const tabStyles = (theme: Theme): StyleRules =>
     },
   });
 
-interface SearchCardViewProps {
+export interface SearchCardViewProps {
   containerHeight: string;
   hierarchy: string;
+  onCurrentTab: (currentTab: string) => void;
+  currentTab: string | null;
 }
 
 interface SearchCardViewStoreProps {
@@ -133,6 +134,8 @@ const SearchPageCardView = (
     searchableEntities,
     containerHeight,
     hierarchy,
+    onCurrentTab,
+    currentTab,
   } = props;
   const [t] = useTranslation();
 
@@ -170,58 +173,42 @@ const SearchPageCardView = (
   });
   const loading = isFetchingNum > 0;
 
-  const { filters, sort, page, results, currentTab } = React.useMemo(
+  const { filters, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
 
+  const boolSearchableEntities = [investigationTab, datasetTab, datafileTab];
+
+  const checkedBoxes = boolSearchableEntities.flatMap((b, i) =>
+    b ? searchableEntities[i] : []
+  );
   const searchCurrentTab =
-    currentTab && searchableEntities.includes(currentTab)
+    currentTab && checkedBoxes.includes(currentTab)
       ? currentTab
+      : checkedBoxes.length !== 0
+      ? checkedBoxes[0]
       : searchableEntities[0];
 
   const updateFilters = useUpdateQueryParam('filters');
   const updateSorts = useUpdateQueryParam('sort');
   const updatePage = useUpdateQueryParam('page');
   const updateResults = useUpdateQueryParam('results');
-  const pushCurrentTab = usePushCurrentTab();
 
   // Setting a tab based on user selection and what tabs are available
   useEffect(() => {
     if (searchCurrentTab === 'investigation') {
-      if (!investigationTab) {
-        if (datasetTab) {
-          pushCurrentTab('dataset');
-        } else if (datafileTab) {
-          pushCurrentTab('datafile');
-        }
-      }
+      onCurrentTab('investigation');
     } else if (searchCurrentTab === 'dataset') {
-      if (!datasetTab) {
-        if (investigationTab) {
-          pushCurrentTab('investigation');
-        } else if (datafileTab) {
-          pushCurrentTab('datafile');
-        } else {
-          pushCurrentTab('investigation');
-        }
-      }
+      onCurrentTab('dataset');
     } else {
-      if (!datafileTab) {
-        if (searchCurrentTab) {
-          pushCurrentTab('investigation');
-        } else if (datasetTab) {
-          pushCurrentTab('dataset');
-        } else {
-          pushCurrentTab('investigation');
-        }
-      }
+      onCurrentTab('datafile');
     }
   }, [
     investigationTab,
     datasetTab,
     datafileTab,
-    pushCurrentTab,
+    onCurrentTab,
     searchCurrentTab,
   ]);
 
@@ -238,7 +225,7 @@ const SearchPageCardView = (
       storeResults(results, searchCurrentTab);
     }
 
-    pushCurrentTab(newValue);
+    onCurrentTab(newValue);
 
     updateFilters({});
     updateSorts({});

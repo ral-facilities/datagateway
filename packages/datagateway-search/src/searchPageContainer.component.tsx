@@ -32,6 +32,7 @@ import {
   readSciGatewayToken,
   FiltersType,
   SortType,
+  usePushCurrentTab,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -271,6 +272,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const { view, startDate, endDate, currentTab } = queryParams;
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
+
+  const pushCurrentTab = usePushCurrentTab();
 
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
@@ -529,11 +532,15 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                       <SearchPageCardView
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
+                        onCurrentTab={pushCurrentTab}
+                        currentTab={currentTab}
                       />
                     ) : (
                       <SearchPageTable
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
+                        onCurrentTab={pushCurrentTab}
+                        currentTab={currentTab}
                       />
                     )}
                   </Paper>
