@@ -223,7 +223,7 @@ const VisitDetailsPanel = (
               })
             ) : (
               <Typography data-testid="visit-details-panel-no-name">
-                {t('investigations.details.users.no_name')}
+                <b>{t('investigations.details.users.no_name')}</b>
               </Typography>
             )}
           </Grid>
@@ -254,7 +254,7 @@ const VisitDetailsPanel = (
               })
             ) : (
               <Typography data-testid="visit-details-panel-no-samples">
-                {t('investigations.details.samples.no_samples')}
+                <b>{t('investigations.details.samples.no_samples')}</b>
               </Typography>
             )}
           </Grid>
@@ -285,7 +285,9 @@ const VisitDetailsPanel = (
               })
             ) : (
               <Typography data-testid="visit-details-panel-no-publications">
-                {t('investigations.details.publications.no_publications')}
+                <b>
+                  {t('investigations.details.publications.no_publications')}
+                </b>
               </Typography>
             )}
           </Grid>

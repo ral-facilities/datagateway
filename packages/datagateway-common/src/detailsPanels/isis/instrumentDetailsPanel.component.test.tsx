@@ -139,7 +139,7 @@ describe('Instrument details panel component', () => {
     expect(wrapper.find('InstrumentDetailsPanel').props()).toMatchSnapshot();
   });
 
-  it('renders publication tab and text "No Scientists" when no data is prsent', () => {
+  it('renders users tab and text "No Scientists" when no data is present', () => {
     rowData.instrumentScientists = [];
     const wrapper = createWrapper();
     expect(

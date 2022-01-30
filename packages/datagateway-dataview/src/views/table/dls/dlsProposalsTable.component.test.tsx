@@ -110,12 +110,15 @@ describe('DLS Proposals table component', () => {
         filterValue: JSON.stringify(['name', 'title']),
       },
     ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'distinct',
-        filterValue: JSON.stringify(['name', 'title']),
-      },
-    ]);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify(['name', 'title']),
+        },
+      ],
+      true
+    );
   });
 
   it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
@@ -155,6 +158,16 @@ describe('DLS Proposals table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+    );
   });
 
   it('renders title and name as links', () => {

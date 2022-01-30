@@ -155,7 +155,7 @@ const InstrumentDetailsPanel = (
               })
             ) : (
               <Typography data-testid="instrument-details-panel-no-name">
-                {t('instruments.details.instrument_scientists.no_name')}
+                <b>{t('instruments.details.instrument_scientists.no_name')}</b>
               </Typography>
             )}
           </Grid>
