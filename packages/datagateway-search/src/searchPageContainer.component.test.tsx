@@ -798,20 +798,4 @@ describe('SearchPageContainer - Tests', () => {
       wrapper.find('[aria-label="container-view-button"]').first().text()
     ).toEqual('app.view_table');
   });
-
-  it('does not search when there are no searchable entities', async () => {
-    state.dgsearch.searchableEntities = [];
-
-    const wrapper = createWrapper();
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect((axios.get as jest.Mock).mock.calls.length).toBe(0);
-  });
 });

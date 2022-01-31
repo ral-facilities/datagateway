@@ -118,7 +118,7 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: null,
         endDate: null,
-        currentTab: null,
+        currentTab: 'investigation',
       });
     });
 
@@ -139,7 +139,7 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-17T00:00:00Z'),
         endDate: new Date('2021-10-25T00:00:00Z'),
-        currentTab: null,
+        currentTab: 'investigation',
       });
     });
 
@@ -162,7 +162,7 @@ describe('generic api functions', () => {
           investigation: true,
           startDate: new Date(NaN),
           endDate: new Date(NaN),
-          currentTab: null,
+          currentTab: 'investigation',
         })
       );
     });
@@ -201,7 +201,7 @@ describe('generic api functions', () => {
       };
 
       const params = new URLSearchParams(
-        '?view=table&search=test&page=1&results=10&currentTab=investigation&filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D&sort=%7B%22name%22%3A%22asc%22%7D'
+        '?view=table&search=test&page=1&results=10&filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D&sort=%7B%22name%22%3A%22asc%22%7D'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -225,7 +225,7 @@ describe('generic api functions', () => {
       };
 
       const params = new URLSearchParams(
-        '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25&currentTab=investigation'
+        '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -249,7 +249,7 @@ describe('generic api functions', () => {
       };
 
       const params = new URLSearchParams(
-        '?view=table&searchText=testText&datafile=false&startDate=Invalid+Date&endDate=Invalid+Date&currentTab=investigation'
+        '?view=table&searchText=testText&datafile=false&startDate=Invalid+Date&endDate=Invalid+Date'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
