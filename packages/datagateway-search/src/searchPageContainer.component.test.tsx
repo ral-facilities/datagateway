@@ -798,4 +798,53 @@ describe('SearchPageContainer - Tests', () => {
       wrapper.find('[aria-label="container-view-button"]').first().text()
     ).toEqual('app.view_table');
   });
+
+  it('defaults to dataset when investigation is false ', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: false,
+      },
+    };
+
+    const wrapper = createWrapper();
+
+    wrapper.update();
+    expect(history.location.search).toEqual('?currentTab=dataset');
+  });
+
+  it('defaults to datafile if when investigation and dataset are false ', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: true,
+        investigationTab: false,
+      },
+    };
+
+    const wrapper = createWrapper();
+
+    wrapper.update();
+    expect(history.location.search).toEqual('?currentTab=datafile');
+  });
+
+  it('defaults to investigation if when investigation ,dataset and datafile are false ', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: false,
+        investigationTab: false,
+      },
+    };
+
+    const wrapper = createWrapper();
+
+    wrapper.update();
+    // '' i.e default value is investigation it set in the searchPageContainer
+    expect(history.location.search).toEqual('');
+  });
 });

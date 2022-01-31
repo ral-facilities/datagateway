@@ -118,14 +118,7 @@ describe('SearchPageCardView', () => {
   });
 
   it('changes selected tab value on click of a new tab', () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-      },
-    };
+    history.replace('/search/data?view=card&page=2&results=20&searchText=');
 
     const testStore = mockStore(state);
     const wrapper = createWrapper(testStore, props);
@@ -139,122 +132,6 @@ describe('SearchPageCardView', () => {
 
     expect(onCurrentTab).toHaveBeenNthCalledWith(1, 'dataset');
   });
-
-  // it('sets the current tab based on selected tabs', () => {
-  //   state.dgsearch = {
-  //     ...state.dgsearch,
-  //     tabs: {
-  //       datasetTab: true,
-  //       datafileTab: true,
-  //       investigationTab: false,
-  //     },
-  //   };
-
-  //   let updatedProps = {
-  //     ...props,
-  //     currentTab: 'investigation',
-  //   };
-
-  //   let testStore = mockStore(state);
-  //   createWrapper(testStore, updatedProps);
-
-  //   expect(onCurrentTab).toHaveBeenNthCalledWith(1, 'dataset');
-
-  //   state.dgsearch = {
-  //     ...state.dgsearch,
-  //     tabs: {
-  //       datasetTab: false,
-  //       datafileTab: true,
-  //       investigationTab: false,
-  //     },
-  //   };
-
-  //   updatedProps = {
-  //     ...props,
-  //     currentTab: 'investigation',
-  //   };
-
-  //   testStore = mockStore(state);
-  //   createWrapper(testStore, updatedProps);
-
-  //   expect(onCurrentTab).toHaveBeenNthCalledWith(2, 'datafile');
-
-  //   state.dgsearch = {
-  //     ...state.dgsearch,
-  //     tabs: {
-  //       datasetTab: false,
-  //       datafileTab: true,
-  //       investigationTab: false,
-  //     },
-  //   };
-
-  //   updatedProps = {
-  //     ...props,
-  //     currentTab: 'dataset',
-  //   };
-
-  //   testStore = mockStore(state);
-  //   createWrapper(testStore, updatedProps);
-
-  //   expect(onCurrentTab).toHaveBeenNthCalledWith(3, 'datafile');
-
-  //   state.dgsearch = {
-  //     ...state.dgsearch,
-  //     tabs: {
-  //       datasetTab: true,
-  //       datafileTab: false,
-  //       investigationTab: false,
-  //     },
-  //   };
-
-  //   updatedProps = {
-  //     ...props,
-  //     currentTab: 'datafile',
-  //   };
-
-  //   testStore = mockStore(state);
-  //   createWrapper(testStore, updatedProps);
-
-  //   expect(onCurrentTab).toHaveBeenNthCalledWith(4, 'dataset');
-
-  //   state.dgsearch = {
-  //     ...state.dgsearch,
-  //     tabs: {
-  //       datasetTab: false,
-  //       datafileTab: true,
-  //       investigationTab: true,
-  //     },
-  //   };
-
-  //   updatedProps = {
-  //     ...props,
-  //     currentTab: 'dataset',
-  //   };
-
-  //   testStore = mockStore(state);
-  //   createWrapper(testStore, updatedProps);
-
-  //   expect(onCurrentTab).toHaveBeenNthCalledWith(5, 'investigation');
-
-  //   state.dgsearch = {
-  //     ...state.dgsearch,
-  //     tabs: {
-  //       datasetTab: true,
-  //       datafileTab: false,
-  //       investigationTab: true,
-  //     },
-  //   };
-
-  //   updatedProps = {
-  //     ...props,
-  //     currentTab: 'datafile',
-  //   };
-
-  //   testStore = mockStore(state);
-  //   createWrapper(testStore, updatedProps);
-
-  //   expect(onCurrentTab).toHaveBeenNthCalledWith(6, 'investigation');
-  // });
 
   it('has the investigation search card view component when on the investigation tab', () => {
     const updatedProps = {
