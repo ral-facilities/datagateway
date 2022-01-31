@@ -781,12 +781,6 @@ describe('SearchPageContainer - Tests', () => {
       wrapper.find('[aria-label="container-view-button"]').first().text()
     ).toEqual('app.view_cards');
 
-    console.log(null === 'datafile');
-
-    console.log(
-      wrapper.find('[aria-label="container-view-button"]').first().debug()
-    );
-
     // Click view button
     wrapper
       .find('[aria-label="container-view-button"]')
@@ -798,10 +792,6 @@ describe('SearchPageContainer - Tests', () => {
       await flushPromises();
       wrapper.update();
     });
-
-    console.log(
-      wrapper.find('[aria-label="container-view-button"]').first().debug()
-    );
 
     // Check that the text on the button has changed
     expect(

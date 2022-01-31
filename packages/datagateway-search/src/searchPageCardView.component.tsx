@@ -186,6 +186,7 @@ const SearchPageCardView = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
+    console.log('HANDLE CHANGE');
     storeFilters(filters, currentTab);
     storeSort(sort, currentTab);
     if (page) {
@@ -204,10 +205,14 @@ const SearchPageCardView = (
   };
 
   React.useEffect(() => {
-    updateFilters(getFilters(currentTab));
-    updateSorts(getSorts(currentTab));
-    updatePage(getPage(currentTab));
-    updateResults(getResults(currentTab));
+    const filters = getFilters(currentTab);
+    const sorts = getSorts(currentTab);
+    const page = getPage(currentTab);
+    const results = getResults(currentTab);
+    if (filters) updateFilters(filters);
+    if (sorts) updateSorts(sorts);
+    if (page) updatePage(page);
+    if (results) updateResults(results);
   }, [currentTab, updateFilters, updatePage, updateResults, updateSorts]);
 
   const { data: investigationDataCount } = useInvestigationCount(
@@ -219,7 +224,7 @@ const SearchPageCardView = (
         }),
       },
     ],
-    getFilters('investigation'),
+    getFilters('investigation') ?? {},
     currentTab
   );
 
@@ -232,7 +237,7 @@ const SearchPageCardView = (
         }),
       },
     ],
-    getFilters('dataset'),
+    getFilters('dataset') ?? {},
     currentTab
   );
 
@@ -245,7 +250,7 @@ const SearchPageCardView = (
         }),
       },
     ],
-    getFilters('datafile'),
+    getFilters('datafile') ?? {},
     currentTab
   );
 

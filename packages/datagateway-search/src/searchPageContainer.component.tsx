@@ -79,23 +79,23 @@ export const storeResults = (
   localStorage.setItem(resultsNumber, JSON.stringify(results));
 };
 
-export const getFilters = (searchableEntities: string): FiltersType => {
+export const getFilters = (searchableEntities: string): FiltersType | null => {
   const filter = (searchableEntities as string) + 'Filters';
   const savedFilters = localStorage.getItem(filter);
   if (savedFilters) {
     return JSON.parse(savedFilters) as FiltersType;
   } else {
-    return {};
+    return null;
   }
 };
 
-export const getSorts = (searchableEntities: string): SortType => {
+export const getSorts = (searchableEntities: string): SortType | null => {
   const sort = (searchableEntities as string) + 'Sort';
   const savedSort = localStorage.getItem(sort);
   if (savedSort) {
     return JSON.parse(savedSort) as SortType;
   } else {
-    return {};
+    return null;
   }
 };
 
@@ -175,7 +175,7 @@ const ViewButton = (props: {
 }): React.ReactElement => {
   const [t] = useTranslation();
   const classes = viewButtonStyles();
-
+  console.log('BUTTON ' + props.viewCards);
   return (
     <div className={classes.root}>
       <Button
@@ -260,6 +260,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setDatafileTab,
     setDatasetTab,
     setInvestigationTab,
+    investigationTab,
+    datasetTab,
+    datafileTab,
     sideLayout,
     searchableEntities,
     maxNumResults,
@@ -269,9 +272,22 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const { view, startDate, endDate, currentTab } = queryParams;
+  const { view, startDate, endDate } = queryParams;
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
+
+  const boolSearchableEntities = [investigationTab, datasetTab, datafileTab];
+  const checkedBoxes = boolSearchableEntities.flatMap((b, i) =>
+    b ? searchableEntities[i] : []
+  );
+  const currentTab =
+    queryParams.currentTab && checkedBoxes.includes(queryParams.currentTab)
+      ? queryParams.currentTab
+      : checkedBoxes.length !== 0
+      ? checkedBoxes[0]
+      : searchableEntities[0];
+
+  console.log(location.pathname + '  ' + location.search);
 
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)

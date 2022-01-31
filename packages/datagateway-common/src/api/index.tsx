@@ -152,7 +152,8 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
         !(
           (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
           v === true
-        )
+        ) &&
+        !(q === 'currentTab' && v === 'investigation')
       )
         queryParams.append(q, v);
     }

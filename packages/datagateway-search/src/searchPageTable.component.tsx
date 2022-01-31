@@ -180,6 +180,8 @@ const SearchPageTable = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
+    console.log('HANDLE CHANGE');
+
     storeFilters(filters, currentTab);
     storeSort(sort, currentTab);
 
@@ -191,8 +193,10 @@ const SearchPageTable = (
 
   React.useEffect(() => {
     if (currentTab) {
-      updateFilters(getFilters(currentTab));
-      updateSorts(getSorts(currentTab));
+      const filters = getFilters(currentTab);
+      const sorts = getSorts(currentTab);
+      if (filters) updateFilters(filters);
+      if (sorts) updateSorts(sorts);
     }
   }, [currentTab, updateFilters, updateSorts]);
 
@@ -205,7 +209,7 @@ const SearchPageTable = (
         }),
       },
     ],
-    getFilters('investigation'),
+    getFilters('investigation') ?? {},
     currentTab
   );
 
@@ -218,7 +222,7 @@ const SearchPageTable = (
         }),
       },
     ],
-    getFilters('dataset'),
+    getFilters('dataset') ?? {},
     currentTab
   );
 
@@ -231,7 +235,7 @@ const SearchPageTable = (
         }),
       },
     ],
-    getFilters('datafile'),
+    getFilters('datafile') ?? {},
     currentTab
   );
 
