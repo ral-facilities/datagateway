@@ -293,7 +293,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.location().should((loc) => {
         expect(loc.search).to.eq(
-          '?searchText=dog&datafile=false&investigation=false'
+          '?searchText=dog&datafile=false&investigation=false&currentTab=dataset'
         );
       });
 
