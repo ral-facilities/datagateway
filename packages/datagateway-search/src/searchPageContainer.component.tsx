@@ -55,7 +55,7 @@ export const storeFilters = (
   localStorage.setItem(filter, JSON.stringify(filters));
 };
 
-export const storeSorts = (
+export const storeSort = (
   sorts: SortType,
   searchableEntities: string
 ): void => {
@@ -273,8 +273,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
 
-  const pushCurrentTab = usePushCurrentTab();
-
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
   const investigation = searchableEntities.includes('investigation')
@@ -290,6 +288,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
+  const pushCurrentTab = usePushCurrentTab();
 
   const [searchText, setSearchText] = React.useState(searchTextURL);
   const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
@@ -369,7 +368,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     localStorage.removeItem('datasetPage');
     localStorage.removeItem('investigationResults');
     localStorage.removeItem('datasetResults');
-  }, [pushSearchText, searchText]);
+  }, [searchText, pushSearchText]);
 
   React.useEffect(() => {
     if (searchOnNextRender) {

@@ -127,7 +127,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     investigation: investigation !== null ? investigation === 'true' : true,
     startDate: startDate,
     endDate: endDate,
-    currentTab: currentTab,
+    currentTab: currentTab ? currentTab : 'investigation',
   };
 
   return params;

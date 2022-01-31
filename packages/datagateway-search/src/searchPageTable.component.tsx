@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -32,7 +32,7 @@ import {
   getFilters,
   getSorts,
   storeFilters,
-  storeSorts,
+  storeSort,
 } from './searchPageContainer.component';
 
 const badgeStyles = (theme: Theme): StyleRules =>
@@ -74,7 +74,7 @@ export interface SearchTableProps {
   containerHeight: string;
   hierarchy: string;
   onCurrentTab: (currentTab: string) => void;
-  currentTab: string | null;
+  currentTab: string;
 }
 
 interface SearchTableStoreProps {
@@ -129,7 +129,6 @@ const SearchPageTable = (
     datafileTab,
     containerHeight,
     hierarchy,
-    searchableEntities,
     onCurrentTab,
     currentTab,
   } = props;
@@ -174,43 +173,15 @@ const SearchPageTable = (
     [location.search]
   );
 
-  const boolSearchableEntities = [investigationTab, datasetTab, datafileTab];
-
-  const checkedBoxes = boolSearchableEntities.flatMap((b, i) =>
-    b ? searchableEntities[i] : []
-  );
-  const searchCurrentTab =
-    currentTab && checkedBoxes.includes(currentTab)
-      ? currentTab
-      : checkedBoxes.length !== 0
-      ? checkedBoxes[0]
-      : searchableEntities[0];
-
   const updateFilters = useUpdateQueryParam('filters');
   const updateSorts = useUpdateQueryParam('sort');
 
-  // Setting a tab based on user selection and what tabs are available
-  useEffect(() => {
-    if (searchCurrentTab === 'investigation') {
-      onCurrentTab('investigation');
-    } else if (searchCurrentTab === 'dataset') {
-      onCurrentTab('dataset');
-    } else {
-      onCurrentTab('datafile');
-    }
-  }, [
-    investigationTab,
-    datasetTab,
-    datafileTab,
-    onCurrentTab,
-    searchCurrentTab,
-  ]);
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    storeFilters(filters, searchCurrentTab);
-    storeSorts(sort, searchCurrentTab);
+    storeFilters(filters, currentTab);
+    storeSort(sort, currentTab);
 
     onCurrentTab(newValue);
 
@@ -235,7 +206,7 @@ const SearchPageTable = (
       },
     ],
     getFilters('investigation'),
-    searchCurrentTab
+    currentTab
   );
 
   const { data: datasetDataCount } = useDatasetCount(
@@ -248,7 +219,7 @@ const SearchPageTable = (
       },
     ],
     getFilters('dataset'),
-    searchCurrentTab
+    currentTab
   );
 
   const { data: datafileDataCount } = useDatafileCount(
@@ -261,7 +232,7 @@ const SearchPageTable = (
       },
     ],
     getFilters('datafile'),
-    searchCurrentTab
+    currentTab
   );
 
   const badgeDigits = (length?: number): 3 | 2 | 1 => {
@@ -275,7 +246,7 @@ const SearchPageTable = (
       <AppBar position="static" elevation={0}>
         <StyledTabs
           className="tour-search-tab-select"
-          value={searchCurrentTab}
+          value={currentTab}
           onChange={handleChange}
           aria-label={t('searchPageTable.tabs_arialabel')}
         >
@@ -387,8 +358,8 @@ const SearchPageTable = (
           )}
         </StyledTabs>
       </AppBar>
-      {searchCurrentTab === 'investigation' && (
-        <TabPanel value={searchCurrentTab} index={'investigation'}>
+      {currentTab === 'investigation' && (
+        <TabPanel value={currentTab} index={'investigation'}>
           <Paper
             style={{
               height: `calc(${containerHeight} - 56px)`,
@@ -402,8 +373,8 @@ const SearchPageTable = (
           </Paper>
         </TabPanel>
       )}
-      {searchCurrentTab === 'dataset' && (
-        <TabPanel value={searchCurrentTab} index={'dataset'}>
+      {currentTab === 'dataset' && (
+        <TabPanel value={currentTab} index={'dataset'}>
           <Paper
             style={{
               height: `calc(${containerHeight} - 56px)`,
@@ -417,8 +388,8 @@ const SearchPageTable = (
           </Paper>
         </TabPanel>
       )}
-      {searchCurrentTab === 'datafile' && (
-        <TabPanel value={searchCurrentTab} index={'datafile'}>
+      {currentTab === 'datafile' && (
+        <TabPanel value={currentTab} index={'datafile'}>
           <Paper
             style={{
               height: `calc(${containerHeight} - 56px)`,

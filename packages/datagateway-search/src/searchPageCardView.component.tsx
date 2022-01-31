@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -36,7 +36,7 @@ import {
   storeFilters,
   storePage,
   storeResults,
-  storeSorts,
+  storeSort,
 } from './searchPageContainer.component';
 
 const badgeStyles = (theme: Theme): StyleRules =>
@@ -78,7 +78,7 @@ export interface SearchCardViewProps {
   containerHeight: string;
   hierarchy: string;
   onCurrentTab: (currentTab: string) => void;
-  currentTab: string | null;
+  currentTab: string;
 }
 
 interface SearchCardViewStoreProps {
@@ -131,7 +131,6 @@ const SearchPageCardView = (
     investigationTab,
     datasetTab,
     datafileTab,
-    searchableEntities,
     containerHeight,
     hierarchy,
     onCurrentTab,
@@ -178,51 +177,22 @@ const SearchPageCardView = (
     [location.search]
   );
 
-  const boolSearchableEntities = [investigationTab, datasetTab, datafileTab];
-
-  const checkedBoxes = boolSearchableEntities.flatMap((b, i) =>
-    b ? searchableEntities[i] : []
-  );
-  const searchCurrentTab =
-    currentTab && checkedBoxes.includes(currentTab)
-      ? currentTab
-      : checkedBoxes.length !== 0
-      ? checkedBoxes[0]
-      : searchableEntities[0];
-
   const updateFilters = useUpdateQueryParam('filters');
   const updateSorts = useUpdateQueryParam('sort');
   const updatePage = useUpdateQueryParam('page');
   const updateResults = useUpdateQueryParam('results');
 
-  // Setting a tab based on user selection and what tabs are available
-  useEffect(() => {
-    if (searchCurrentTab === 'investigation') {
-      onCurrentTab('investigation');
-    } else if (searchCurrentTab === 'dataset') {
-      onCurrentTab('dataset');
-    } else {
-      onCurrentTab('datafile');
-    }
-  }, [
-    investigationTab,
-    datasetTab,
-    datafileTab,
-    onCurrentTab,
-    searchCurrentTab,
-  ]);
-
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    storeFilters(filters, searchCurrentTab);
-    storeSorts(sort, searchCurrentTab);
+    storeFilters(filters, currentTab);
+    storeSort(sort, currentTab);
     if (page) {
-      storePage(page, searchCurrentTab);
+      storePage(page, currentTab);
     }
     if (results) {
-      storeResults(results, searchCurrentTab);
+      storeResults(results, currentTab);
     }
 
     onCurrentTab(newValue);
@@ -234,12 +204,10 @@ const SearchPageCardView = (
   };
 
   React.useEffect(() => {
-    if (currentTab) {
-      updateFilters(getFilters(currentTab));
-      updateSorts(getSorts(currentTab));
-      updatePage(getPage(currentTab));
-      updateResults(getResults(currentTab));
-    }
+    updateFilters(getFilters(currentTab));
+    updateSorts(getSorts(currentTab));
+    updatePage(getPage(currentTab));
+    updateResults(getResults(currentTab));
   }, [currentTab, updateFilters, updatePage, updateResults, updateSorts]);
 
   const { data: investigationDataCount } = useInvestigationCount(
@@ -252,7 +220,7 @@ const SearchPageCardView = (
       },
     ],
     getFilters('investigation'),
-    searchCurrentTab
+    currentTab
   );
 
   const { data: datasetDataCount } = useDatasetCount(
@@ -265,7 +233,7 @@ const SearchPageCardView = (
       },
     ],
     getFilters('dataset'),
-    searchCurrentTab
+    currentTab
   );
 
   const { data: datafileDataCount } = useDatafileCount(
@@ -278,7 +246,7 @@ const SearchPageCardView = (
       },
     ],
     getFilters('datafile'),
-    searchCurrentTab
+    currentTab
   );
 
   const badgeDigits = (length?: number): 3 | 2 | 1 => {
@@ -292,7 +260,7 @@ const SearchPageCardView = (
       <AppBar position="static" elevation={0}>
         <StyledTabs
           className="tour-search-tab-select"
-          value={searchCurrentTab}
+          value={currentTab}
           onChange={handleChange}
           aria-label={t('searchPageCardView.tabs_arialabel')}
         >
@@ -395,20 +363,20 @@ const SearchPageCardView = (
         </StyledTabs>
       </AppBar>
 
-      {searchCurrentTab === 'investigation' && (
-        <TabPanel value={searchCurrentTab} index={'investigation'}>
+      {currentTab === 'investigation' && (
+        <TabPanel value={currentTab} index={'investigation'}>
           <InvestigationCardView hierarchy={hierarchy} />
         </TabPanel>
       )}
 
-      {searchCurrentTab === 'dataset' && (
-        <TabPanel value={searchCurrentTab} index={'dataset'}>
+      {currentTab === 'dataset' && (
+        <TabPanel value={currentTab} index={'dataset'}>
           <DatasetCardView hierarchy={hierarchy} />
         </TabPanel>
       )}
 
-      {searchCurrentTab === 'datafile' && (
-        <TabPanel value={searchCurrentTab} index={'datafile'}>
+      {currentTab === 'datafile' && (
+        <TabPanel value={currentTab} index={'datafile'}>
           <Paper
             style={{
               height: `calc(${containerHeight} - 56px)`,

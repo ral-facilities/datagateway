@@ -29,7 +29,7 @@ import {
   storeFilters,
   storePage,
   storeResults,
-  storeSorts,
+  storeSort,
 } from './searchPageContainer.component';
 
 jest.mock('loglevel');
@@ -555,7 +555,7 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('stores the previous sorts in the local storage', () => {
-    storeSorts({ name: 'asc' }, 'investigation');
+    storeSort({ name: 'asc' }, 'investigation');
 
     expect(localStorage.setItem).toBeCalledWith(
       'investigationSort',
@@ -762,7 +762,7 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('switches view button display name when clicked', async () => {
+  it.only('switches view button display name when clicked', async () => {
     const wrapper = createWrapper();
 
     wrapper
@@ -781,12 +781,27 @@ describe('SearchPageContainer - Tests', () => {
       wrapper.find('[aria-label="container-view-button"]').first().text()
     ).toEqual('app.view_cards');
 
+    console.log(null === 'datafile');
+
+    console.log(
+      wrapper.find('[aria-label="container-view-button"]').first().debug()
+    );
+
     // Click view button
     wrapper
       .find('[aria-label="container-view-button"]')
       .first()
       .simulate('click');
     wrapper.update();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    console.log(
+      wrapper.find('[aria-label="container-view-button"]').first().debug()
+    );
 
     // Check that the text on the button has changed
     expect(
