@@ -59,10 +59,11 @@ class ConfigProvider extends React.Component<
   }
 
   private updateConfigurationState = async (): Promise<void> => {
-    if (settings) {
+    const settingsResult = await settings;
+    if (settingsResult) {
       this.setState({
         loading: false,
-        settings: settings,
+        settings: settingsResult,
       });
     }
   };

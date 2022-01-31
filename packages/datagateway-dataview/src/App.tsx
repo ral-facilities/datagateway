@@ -152,7 +152,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
   }
 
   handler(e: Event): void {
-    // attempt to re-render the plugin if the corresponding div is present
+    // attempt to re-render the plugin if we get told to
     const action = (e as CustomEvent).detail;
     if (action.type === RequestPluginRerenderType) {
       this.forceUpdate();

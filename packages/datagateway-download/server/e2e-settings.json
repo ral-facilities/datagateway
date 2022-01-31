@@ -3,7 +3,6 @@
   "apiUrl": "http://localhost:5000",
   "downloadApiUrl": "https://localhost:8181/topcat",
   "idsUrl": "https://localhost:8181/ids",
-  "icatUrl": "https://localhost:8181/icat",
   "fileCountMax": 5000,
   "totalSizeMax": 1000000000000,
   "accessMethods": {
@@ -21,8 +20,7 @@
   "helpSteps": [
     {
       "target": "#plugin-link--download",
-      "content":
-        "DataGateway Download allows you to view and manage items in the current download selection as well see previous downloads"
+      "content": "DataGateway Download allows you to view and manage items in the current download selection as well see previous downloads"
     },
     {
       "target": ".tour-download-cart-tab",

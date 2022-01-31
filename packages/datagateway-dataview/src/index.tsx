@@ -11,13 +11,14 @@ import singleSpaReact from 'single-spa-react';
 import * as log from 'loglevel';
 import {
   MicroFrontendId,
+  MicroFrontendToken,
   PluginRoute,
   RegisterRouteType,
 } from 'datagateway-common';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import axios from 'axios';
-import { setSettings } from './settings';
+import { DataviewSettings, setSettings } from './settings';
 
 const pluginName = 'datagateway-dataview';
 
@@ -28,16 +29,6 @@ const render = (): void => {
   }
 };
 
-if (
-  process.env.NODE_ENV === `development` ||
-  process.env.REACT_APP_E2E_TESTING
-) {
-  render();
-  log.setDefaultLevel(log.levels.DEBUG);
-} else {
-  log.setDefaultLevel(log.levels.ERROR);
-}
-
 function domElementGetter(): HTMLElement {
   // Make sure there is a div for us to render into
   let el = document.getElementById(pluginName);
@@ -45,18 +36,6 @@ function domElementGetter(): HTMLElement {
 
   return el;
 }
-
-// window.addEventListener('single-spa:routing-event', () => {
-//   render();
-// });
-
-// // Handle plugin re-render messages from the parent app.
-// document.addEventListener(MicroFrontendId, (e) => {
-//   const action = (e as CustomEvent).detail;
-//   if (action.type === RequestPluginRerenderType) {
-//     render();
-//   }
-// });
 
 const reactLifecycles = singleSpaReact({
   React,
@@ -100,15 +79,39 @@ export function unmount(props: unknown): Promise<void> {
     });
 }
 
-const fetchSettings = (): Promise<void> => {
+// only export this for testing
+export const fetchSettings = (): Promise<DataviewSettings | void> => {
   const settingsPath = process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY
     ? process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY +
       'datagateway-dataview-settings.json'
     : '/datagateway-dataview-settings.json';
   return axios
-    .get(settingsPath)
+    .get<DataviewSettings>(settingsPath)
     .then((res) => {
       const settings = res.data;
+
+      // invalid settings.json
+      if (typeof settings !== 'object') {
+        throw Error('Invalid format');
+      }
+
+      // Ensure the facility name exists.
+      if (!('facilityName' in settings)) {
+        throw new Error('facilityName is undefined in settings');
+      }
+
+      // Ensure all API related URLs are present.
+      if (
+        !(
+          'idsUrl' in settings &&
+          'apiUrl' in settings &&
+          'downloadApiUrl' in settings
+        )
+      ) {
+        throw new Error(
+          'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+        );
+      }
 
       if (Array.isArray(settings['routes']) && settings['routes'].length) {
         settings['routes'].forEach((route: PluginRoute, index: number) => {
@@ -148,11 +151,79 @@ const fetchSettings = (): Promise<void> => {
       } else {
         throw new Error('No routes provided in the settings');
       }
-      setSettings(settings);
+      return settings;
     })
     .catch((error) => {
       log.error(`Error loading ${settingsPath}: ${error.message}`);
     });
 };
 
-fetchSettings();
+const settings = fetchSettings();
+setSettings(settings);
+
+if (
+  process.env.NODE_ENV === `development` ||
+  process.env.REACT_APP_E2E_TESTING
+) {
+  render();
+  log.setDefaultLevel(log.levels.DEBUG);
+
+  if (process.env.NODE_ENV === `development`) {
+    settings.then((settingsResult) => {
+      if (settingsResult) {
+        const splitUrl = settingsResult.downloadApiUrl.split('/');
+        const icatUrl = `${splitUrl
+          .slice(0, splitUrl.length - 1)
+          .join('/')}/icat`;
+        axios
+          .post(
+            `${icatUrl}/session`,
+            `json=${JSON.stringify({
+              plugin: 'simple',
+              credentials: [{ username: 'root' }, { password: 'pw' }],
+            })}`,
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            }
+          )
+          .then((response) => {
+            axios
+              .get(`${settingsResult['apiUrl']}/sessions`, {
+                headers: {
+                  Authorization: `Bearer ${response.data.sessionId}`,
+                },
+              })
+              .then(() => {
+                const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+                const payload = {
+                  sessionId: response.data.sessionId,
+                  username: 'Thomas409',
+                };
+                const jwt = jsrsasign.KJUR.jws.JWS.sign(
+                  'HS256',
+                  jwtHeader,
+                  payload,
+                  'shh'
+                );
+
+                window.localStorage.setItem(MicroFrontendToken, jwt);
+              })
+              .catch((error) => {
+                log.error(
+                  `datagateway-api cannot verify ICAT session id: ${error.message}.
+                     This is likely caused if datagateway-api is pointing to a
+                     different ICAT than the one used by the IDS/TopCAT`
+                );
+              });
+          })
+          .catch((error) =>
+            log.error(`Can't log in to ICAT: ${error.message}`)
+          );
+      }
+    });
+  }
+} else {
+  log.setDefaultLevel(log.levels.ERROR);
+}
