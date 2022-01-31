@@ -119,6 +119,14 @@ describe('SearchPageCardView', () => {
 
   it('changes selected tab value on click of a new tab', () => {
     history.replace('/search/data?view=card&page=2&results=20&searchText=');
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+    };
 
     const testStore = mockStore(state);
     const wrapper = createWrapper(testStore, props);
@@ -173,18 +181,4 @@ describe('SearchPageCardView', () => {
     expect(wrapper.exists(DatafileSearchTable)).toBeTruthy();
     spy.mockRestore();
   });
-
-  // it('currentTab reverts to investigation if no tabs are selected', () => {
-  //   state.dgsearch = {
-  //     ...state.dgsearch,
-  //     tabs: {
-  //       datasetTab: false,
-  //       datafileTab: false,
-  //       investigationTab: false,
-  //     },
-  //   };
-  //   const testStore = mockStore(state);
-  //   const wrapper = createWrapper(testStore, props);
-  //   expect(wrapper.exists(InvestigationSearchCardView)).toBeTruthy();
-  // });
 });

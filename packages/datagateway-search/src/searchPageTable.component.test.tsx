@@ -177,19 +177,4 @@ describe('SearchPageTable', () => {
     expect(wrapper.exists(DatafileSearchTable)).toBeTruthy();
     spy.mockRestore();
   });
-
-  // it('currentTab reverts to investigation if no tabs are selected', () => {
-  //   state.dgsearch = {
-  //     ...state.dgsearch,
-  //     tabs: {
-  //       datasetTab: false,
-  //       datafileTab: false,
-  //       investigationTab: false,
-  //     },
-  //   };
-
-  //   const testStore = mockStore(state);
-  //   const wrapper1 = createWrapper(testStore, props);
-  //   expect(wrapper1.exists(InvestigationSearchTable)).toBeTruthy();
-  // });
 });
