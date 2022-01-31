@@ -186,7 +186,6 @@ const SearchPageCardView = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    console.log('HANDLE CHANGE');
     storeFilters(filters, currentTab);
     storeSort(sort, currentTab);
     if (page) {

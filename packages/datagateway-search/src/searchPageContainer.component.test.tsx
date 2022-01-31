@@ -762,7 +762,7 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it.only('switches view button display name when clicked', async () => {
+  it('switches view button display name when clicked', async () => {
     const wrapper = createWrapper();
 
     wrapper

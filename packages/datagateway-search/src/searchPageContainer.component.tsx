@@ -175,7 +175,6 @@ const ViewButton = (props: {
 }): React.ReactElement => {
   const [t] = useTranslation();
   const classes = viewButtonStyles();
-  console.log('BUTTON ' + props.viewCards);
   return (
     <div className={classes.root}>
       <Button
@@ -287,8 +286,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       ? checkedBoxes[0]
       : searchableEntities[0];
 
-  console.log(location.pathname + '  ' + location.search);
-
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
   const investigation = searchableEntities.includes('investigation')
@@ -305,6 +302,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
   const pushCurrentTab = usePushCurrentTab();
+
+  React.useEffect(() => {
+    if (currentTab !== queryParams.currentTab) pushCurrentTab(currentTab);
+  }, [checkedBoxes, currentTab, pushCurrentTab, queryParams.currentTab]);
 
   const [searchText, setSearchText] = React.useState(searchTextURL);
   const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);

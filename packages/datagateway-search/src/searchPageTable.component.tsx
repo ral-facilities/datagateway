@@ -180,8 +180,6 @@ const SearchPageTable = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    console.log('HANDLE CHANGE');
-
     storeFilters(filters, currentTab);
     storeSort(sort, currentTab);
 
@@ -246,6 +244,7 @@ const SearchPageTable = (
   return (
     <div>
       {/* Show loading progress if data is still being loaded */}
+
       {loading && <LinearProgress color="secondary" />}
       <AppBar position="static" elevation={0}>
         <StyledTabs
