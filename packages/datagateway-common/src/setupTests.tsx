@@ -24,6 +24,9 @@ if (typeof window.URL.createObjectURL === 'undefined') {
   Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
 }
 
+// Add in ResizeObserver as it's not in Jest's environment
+global.ResizeObserver = require('resize-observer-polyfill');
+
 // these are used for testing async actions
 export let actions: Action[] = [];
 export const resetActions = (): void => {

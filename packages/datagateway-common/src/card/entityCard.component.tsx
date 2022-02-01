@@ -311,8 +311,6 @@ const EntityCard = React.memo(
                     title.content ? getTooltipText(title.content) : title.label
                   }
                   enterDelay={500}
-                  percentageWidth={30}
-                  maxEnabledHeight={32}
                 >
                   <Typography
                     className={classes.title}

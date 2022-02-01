@@ -106,10 +106,6 @@ const DataHeader = React.memo(
         <Draggable
           axis="none"
           onDrag={(event, { deltaX }) => resizeColumn(dataKey, deltaX)}
-          onStop={() => {
-            const event = new Event('columnResize');
-            window.dispatchEvent(event);
-          }}
         >
           <div
             style={{
