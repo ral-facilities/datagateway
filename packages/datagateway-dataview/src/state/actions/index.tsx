@@ -14,20 +14,9 @@ import {
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
 } from './actions.types';
-import {
-  loadUrls,
-  loadFacilityName,
-  MicroFrontendToken,
-  MicroFrontendId,
-  PluginRoute,
-  RegisterRouteType,
-} from 'datagateway-common';
-import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
-import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
+import { loadUrls, loadFacilityName } from 'datagateway-common';
 import { Action } from 'redux';
-import axios from 'axios';
-import * as log from 'loglevel';
-import jsrsasign from 'jsrsasign';
+import { settings } from '../../settings';
 
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
@@ -79,170 +68,43 @@ export const loadFacilityImageSetting = (
 });
 
 export const configureApp = (): ThunkResult<Promise<void>> => {
-  const settingsPath = process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY
-    ? process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY +
-      'datagateway-dataview-settings.json'
-    : '/datagateway-dataview-settings.json';
   return async (dispatch) => {
-    await axios
-      .get(settingsPath)
-      .then((res) => {
-        const settings = res.data;
+    const settingsResult = await settings;
+    if (settingsResult) {
+      dispatch(loadFacilityName(settingsResult['facilityName']));
 
-        // invalid settings.json
-        if (typeof settings !== 'object') {
-          throw Error('Invalid format');
-        }
+      // features is an optional setting
+      if (settingsResult?.['features'] !== undefined) {
+        dispatch(loadFeatureSwitches(settingsResult['features']));
+      }
 
-        // Get the facility name from settings.
-        if ('facilityName' in settings) {
-          dispatch(loadFacilityName(settings['facilityName']));
-        } else {
-          throw new Error('facilityName is undefined in settings');
-        }
+      dispatch(
+        loadUrls({
+          idsUrl: settingsResult['idsUrl'],
+          apiUrl: settingsResult['apiUrl'],
+          downloadApiUrl: settingsResult['downloadApiUrl'],
+          icatUrl: '', // we currently don't need icatUrl in dataview so just pass empty string for now
+        })
+      );
 
-        // features is an optional setting
-        if ('features' in settings) {
-          dispatch(loadFeatureSwitches(settings['features']));
-        }
+      // Dispatch the action to load the breadcrumb settings (optional settings).
+      if (settingsResult?.['breadcrumbs'] !== undefined) {
+        dispatch(loadBreadcrumbSettings(settingsResult['breadcrumbs']));
+      }
 
-        if (
-          'idsUrl' in settings &&
-          'apiUrl' in settings &&
-          'downloadApiUrl' in settings
-        ) {
-          dispatch(
-            loadUrls({
-              idsUrl: settings['idsUrl'],
-              apiUrl: settings['apiUrl'],
-              downloadApiUrl: settings['downloadApiUrl'],
-              icatUrl: '', // we currently don't need icatUrl in dataview so just pass empty string for now
-            })
-          );
-        } else {
-          throw new Error(
-            'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
-          );
-        }
+      if (settingsResult?.['selectAllSetting'] !== undefined) {
+        dispatch(loadSelectAllSetting(settingsResult['selectAllSetting']));
+      }
 
-        // Dispatch the action to load the breadcrumb settings (optional settings).
-        if ('breadcrumbs' in settings) {
-          dispatch(loadBreadcrumbSettings(settings['breadcrumbs']));
-        }
+      if (settingsResult?.['pluginHost'] !== undefined) {
+        dispatch(loadPluginHostSetting(settingsResult['pluginHost']));
+      }
 
-        if ('selectAllSetting' in settings) {
-          dispatch(loadSelectAllSetting(settings['selectAllSetting']));
-        }
+      if (settingsResult?.['facilityImageURL'] !== undefined) {
+        dispatch(loadFacilityImageSetting(settingsResult['facilityImageURL']));
+      }
 
-        if ('pluginHost' in settings) {
-          dispatch(loadPluginHostSetting(settings['pluginHost']));
-        }
-
-        if ('facilityImageURL' in settings) {
-          dispatch(loadFacilityImageSetting(settings['facilityImageURL']));
-        }
-
-        if (Array.isArray(settings['routes']) && settings['routes'].length) {
-          settings['routes'].forEach((route: PluginRoute, index: number) => {
-            if (
-              'section' in route &&
-              'link' in route &&
-              'displayName' in route
-            ) {
-              const registerRouteAction = {
-                type: RegisterRouteType,
-                payload: {
-                  section: route['section'],
-                  link: route['link'],
-                  plugin: 'datagateway-dataview',
-                  displayName: route['displayName'],
-                  order: route['order'] ? route['order'] : 0,
-                  helpSteps:
-                    index === 0 && 'helpSteps' in settings
-                      ? settings['helpSteps']
-                      : [],
-                  logoLightMode: settings['pluginHost']
-                    ? settings['pluginHost'] + LogoLight
-                    : undefined,
-                  logoDarkMode: settings['pluginHost']
-                    ? settings['pluginHost'] + LogoDark
-                    : undefined,
-                  logoAltText: 'DataGateway',
-                },
-              };
-              document.dispatchEvent(
-                new CustomEvent(MicroFrontendId, {
-                  detail: registerRouteAction,
-                })
-              );
-            } else {
-              throw new Error(
-                'Route provided does not have all the required entries (section, link, displayName)'
-              );
-            }
-          });
-        } else {
-          throw new Error('No routes provided in the settings');
-        }
-
-        /* istanbul ignore if */
-        if (process.env.NODE_ENV === `development`) {
-          const splitUrl = settings.downloadApiUrl.split('/');
-          const icatUrl = `${splitUrl
-            .slice(0, splitUrl.length - 1)
-            .join('/')}/icat`;
-          axios
-            .post(
-              `${icatUrl}/session`,
-              `json=${JSON.stringify({
-                plugin: 'simple',
-                credentials: [{ username: 'root' }, { password: 'pw' }],
-              })}`,
-              {
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-              }
-            )
-            .then((response) => {
-              axios
-                .get(`${settings['apiUrl']}/sessions`, {
-                  headers: {
-                    Authorization: `Bearer ${response.data.sessionId}`,
-                  },
-                })
-                .then(() => {
-                  const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-                  const payload = {
-                    sessionId: response.data.sessionId,
-                    username: 'Thomas409',
-                  };
-                  const jwt = jsrsasign.KJUR.jws.JWS.sign(
-                    'HS256',
-                    jwtHeader,
-                    payload,
-                    'shh'
-                  );
-
-                  window.localStorage.setItem(MicroFrontendToken, jwt);
-                })
-                .catch((error) => {
-                  log.error(
-                    `datagateway-api cannot verify ICAT session id: ${error.message}.
-                     This is likely caused if datagateway-api is pointing to a
-                     different ICAT than the one used by the IDS/TopCAT`
-                  );
-                });
-            })
-            .catch((error) =>
-              log.error(`Can't log in to ICAT: ${error.message}`)
-            );
-        }
-
-        dispatch(settingsLoaded());
-      })
-      .catch((error) => {
-        log.error(`Error loading ${settingsPath}: ${error.message}`);
-      });
+      dispatch(settingsLoaded());
+    }
   };
 };
