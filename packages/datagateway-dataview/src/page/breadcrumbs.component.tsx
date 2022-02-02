@@ -181,7 +181,8 @@ const fetchEntityInformation = async (
 };
 
 const useEntityInformation = (
-  currentPathnames: string[]
+  currentPathnames: string[],
+  landingPageEntities?: string[]
 ): UseQueryResult<{ displayName: string; url: string }, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const breadcrumbSettings = useSelector(
@@ -201,7 +202,10 @@ const useEntityInformation = (
       if (index < pathLength - 1) {
         const entity = currentPathnames[index];
 
-        const link = `/${currentPathnames.slice(0, index + 3).join('/')}`;
+        let link = '';
+        if (landingPageEntities?.includes(entity))
+          link = `/${currentPathnames.slice(0, index + 2).join('/')}`;
+        else link = `/${currentPathnames.slice(0, index + 3).join('/')}`;
 
         const entityId = currentPathnames[index + 1];
 
@@ -277,7 +281,7 @@ const useEntityInformation = (
     }
 
     return queryConfigs;
-  }, [currentPathnames, breadcrumbSettings, apiUrl]);
+  }, [currentPathnames, landingPageEntities, breadcrumbSettings, apiUrl]);
 
   // useQueries doesn't allow us to specify type info, so ignore this line
   // since we strongly type the queries object anyway
@@ -308,7 +312,7 @@ const PageBreadcrumbs: React.FC<PageBreadcrumbsProps> = (
     [pathname]
   );
 
-  const queries = useEntityInformation(currentPathnames);
+  const queries = useEntityInformation(currentPathnames, landingPageEntities);
 
   const viewString = view ? `?view=${view}` : '';
   return (
@@ -355,16 +359,14 @@ const PageBreadcrumbs: React.FC<PageBreadcrumbsProps> = (
                     displayName={data.displayName}
                     data-testid={`Breadcrumb-hierarchy-${index + 1}`}
                     url={
-                      index + 1 !== queries.length
+                      // this covers the case of looking at a view just below a landing page
+                      // i.e. /browse/investigation/1/dataset - third last item is investigation
+                      // which is what we check has a landing page
+                      index + 1 !== queries.length ||
+                      landingPageEntities.includes(
+                        currentPathnames[currentPathnames.length - 3]
+                      )
                         ? data.url + viewString
-                        : // this covers the case of looking at a view just below a landing page
-                        // i.e. /browse/investigation/1/dataset - third last item is investigation
-                        // which is what we check has a landing page
-                        landingPageEntities.includes(
-                            currentPathnames[currentPathnames.length - 3]
-                          )
-                        ? data.url.split('/').slice(0, -1).join('/') +
-                          viewString
                         : undefined
                     }
                     key={`breadcrumb-${index + 1}`}

@@ -622,7 +622,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     ).toEqual('Title 1');
     expect(
       wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').prop('href')
-    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1/dataset');
+    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1');
     expect(
       wrapper.find('[data-testid="Breadcrumb-hierarchy-4"] a').text()
     ).toEqual('Name 1');
