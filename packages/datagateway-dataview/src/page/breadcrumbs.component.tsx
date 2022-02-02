@@ -31,23 +31,24 @@ interface BreadcrumbProps {
 
 const Breadcrumb: React.FC<BreadcrumbProps> = (props: BreadcrumbProps) => {
   const { displayName, isLast, url, ...restProps } = props;
-  return (
-    // We give the tooltip component the content (title) as the display content.
-    // Passing the 20 as it is the viewport width we allow text to be shown before displaying the tooltip.
-    <ArrowTooltip title={displayName} percentageWidth={20}>
-      <div>
-        {url ? (
-          <MaterialLink component={Link} to={url} {...restProps}>
-            <span>{displayName}</span>
-          </MaterialLink>
-        ) : (
-          <Typography color="textPrimary" {...restProps}>
-            <span>{isLast ? <i>{displayName}</i> : displayName}</span>
-          </Typography>
-        )}
-      </div>
-    </ArrowTooltip>
-  );
+
+  if (url) {
+    return (
+      <MaterialLink component={Link} to={url} {...restProps}>
+        <ArrowTooltip title={displayName}>
+          <span>{displayName}</span>
+        </ArrowTooltip>
+      </MaterialLink>
+    );
+  } else {
+    return (
+      <Typography color="textPrimary" {...restProps}>
+        <ArrowTooltip title={displayName}>
+          <span>{isLast ? <i>{displayName}</i> : displayName}</span>
+        </ArrowTooltip>
+      </Typography>
+    );
+  }
 };
 
 const breadcrumbsStyles = (theme: Theme): StyleRules =>
@@ -65,22 +66,22 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
           /* Positions breadcrumb */
           height: '30px',
           lineHeight: '30px',
-          padding: '0 10px 0 5px',
+          padding: '0 5px 0 0px',
           textAlign: 'center',
 
           /* Adds between breadcrumbs */
-          marginRight: '7px',
+          marginRight: '1px',
           '&:before, &:after': {
             content: '""',
             position: 'absolute',
             top: 0,
             border: `0 solid ${theme.palette.primary.light}`,
-            borderWidth: '15px 10px',
+            borderWidth: '15px 7px',
             width: 0,
             height: 0,
           },
           '&:before': {
-            left: '-20px',
+            left: '-14px',
             borderLeftColor: 'transparent',
           },
           '&:after': {
@@ -135,7 +136,7 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
       },
       '& li:last-child': {
         '& a, p': {
-          paddingRight: '15px',
+          paddingRight: '10px',
 
           /* Curve the last breadcrumb border */
           borderRadius: '0 4px 4px 0',
