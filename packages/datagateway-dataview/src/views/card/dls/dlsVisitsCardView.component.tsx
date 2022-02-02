@@ -18,8 +18,8 @@ import {
   useInvestigationsDatasetCount,
   nestedValue,
   ArrowTooltip,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import {
   Assessment,
   CalendarToday,
@@ -164,7 +164,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
       description={description}
       information={information}
       moreInformation={(investigation: Investigation) => (
-        <VisitDetailsPanel rowData={investigation} />
+        <DLSVisitDetailsPanel rowData={investigation} />
       )}
     />
   );

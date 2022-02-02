@@ -1,19 +1,12 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
 import InvestigationDetailsPanel from './investigationDetailsPanel.component';
-import { Investigation, useInvestigationDetails } from 'datagateway-common';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
+import { Investigation } from '../../app.types';
+import { useInvestigationDetails } from '../../api/investigations';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useInvestigationDetails: jest.fn(),
-  };
-});
+jest.mock('../../api/investigations');
 
 describe('Investigation details panel component', () => {
   let mount;
@@ -150,7 +143,7 @@ describe('Investigation details panel component', () => {
     expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
   });
 
-  it('renders publication tab and text "No Publications" when no data is prsent', () => {
+  it('renders publications tab and text "No publications" when no data is present', () => {
     rowData.publications = [];
     const wrapper = createWrapper();
     expect(
@@ -160,7 +153,7 @@ describe('Investigation details panel component', () => {
     ).toBeTruthy();
   });
 
-  it('renders publication tab and text "No Samples" when no data is prsent', () => {
+  it('renders samples tab and text "No samples" when no data is present', () => {
     rowData.samples = [];
     const wrapper = createWrapper();
     expect(
@@ -170,7 +163,7 @@ describe('Investigation details panel component', () => {
     ).toBeTruthy();
   });
 
-  it('renders publication tab and text "No Users" when no data is prsent', () => {
+  it('renders users tab and text "No users" when no data is present', () => {
     rowData.investigationUsers = [];
     const wrapper = createWrapper();
     expect(

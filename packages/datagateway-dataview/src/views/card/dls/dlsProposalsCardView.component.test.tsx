@@ -101,12 +101,15 @@ describe('DLS Proposals - Card View', () => {
         filterValue: JSON.stringify(['name', 'title']),
       },
     ]);
-    expect(useInvestigationsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'distinct',
-        filterValue: JSON.stringify(['name', 'title']),
-      },
-    ]);
+    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify(['name', 'title']),
+        },
+      ],
+      true
+    );
   });
 
   it('updates filter query params on text filter', () => {
@@ -131,6 +134,16 @@ describe('DLS Proposals - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+    );
   });
 
   it('renders fine with incomplete data', () => {

@@ -24,8 +24,6 @@ exports[`Card renders correctly 1`] = `
         >
           <ArrowTooltip
             enterDelay={500}
-            maxEnabledHeight={32}
-            percentageWidth={30}
             title="Title"
           >
             <WithStyles(ForwardRef(Typography))

@@ -223,6 +223,8 @@ describe('Citation formatter component tests', () => {
   });
 
   it('displays error message when axios request to fetch a formatted citation fails', async () => {
+    console.error = jest.fn();
+
     (axios.get as jest.Mock).mockRejectedValueOnce({
       message: 'error',
     });

@@ -1,7 +1,8 @@
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
   Investigation,
+  ISISInvestigationDetailsPanel,
   readSciGatewayToken,
   Table,
   useAddToCart,
@@ -47,7 +48,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS MyData table component', () => {
-  let shallow;
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -55,13 +55,15 @@ describe('ISIS MyData table component', () => {
   let history: History;
   let events: CustomEvent<AnyAction>[] = [];
 
-  const createWrapper = (): ReactWrapper => {
+  const createWrapper = (
+    element: React.ReactElement = <ISISMyDataTable />
+  ): ReactWrapper => {
     const store = mockStore(state);
     return mount(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISMyDataTable />
+            {element}
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -69,7 +71,6 @@ describe('ISIS MyData table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     events = [];
     history = createMemoryHistory();
@@ -410,30 +411,33 @@ describe('ISIS MyData table component', () => {
     expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
-  it('renders details panel correctly and it fetches data and can navigate', () => {
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays details panel when more information is expanded and navigates to datasets view when tab clicked', () => {
     const wrapper = createWrapper();
 
-    const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')({
-        rowData: rowData[0],
-      })
-    );
-    expect(detailsPanelWrapper).toMatchSnapshot();
-
-    mount(
+    const detailsPanelWrapper = createWrapper(
       wrapper.find(Table).prop('detailsPanel')({
         rowData: rowData[0],
         detailsPanelResize: jest.fn(),
       })
     );
 
-    expect(useInvestigationDetails).toHaveBeenCalledWith(1);
-
-    detailsPanelWrapper.find('#investigation-datasets-tab').simulate('click');
+    detailsPanelWrapper
+      .find('#investigation-datasets-tab')
+      .first()
+      .simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/3/facilityCycle/8/investigation/1/dataset'
     );
   });
+
   it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
     expect(
@@ -455,7 +459,7 @@ describe('ISIS MyData table component', () => {
 
     const wrapper = createWrapper();
 
-    const detailsPanelWrapper = shallow(
+    const detailsPanelWrapper = createWrapper(
       wrapper.find(Table).prop('detailsPanel')({
         rowData: rowData[0],
       })

@@ -3,14 +3,6 @@ import TitleIcon from '@material-ui/icons/Title';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import {
-  Typography,
-  Grid,
-  createStyles,
-  makeStyles,
-  Theme,
-  Divider,
-} from '@material-ui/core';
-import {
   Table,
   datasetLink,
   Dataset,
@@ -26,7 +18,7 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  DetailsPanelProps,
+  DatasetDetailsPanel,
   useDatasetsDatafileCount,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
@@ -34,48 +26,6 @@ import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
 import { TableCellProps, IndexRange } from 'react-virtualized';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-export const DatasetDetailsPanel = (
-  props: DetailsPanelProps
-): React.ReactElement => {
-  const classes = useStyles();
-  const [t] = useTranslation();
-  const datasetData = props.rowData as Dataset;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{datasetData.name}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('datasets.details.description')}
-        </Typography>
-        <Typography>
-          <b>{datasetData.name}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
 
 interface DatasetTableProps {
   investigationId: string;

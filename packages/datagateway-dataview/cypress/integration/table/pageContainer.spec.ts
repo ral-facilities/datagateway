@@ -20,7 +20,7 @@ describe('PageContainer Component', () => {
   });
 
   it('should disable the hover tool tip by pressing escape (open data warning)', () => {
-    // The hover tool tip has a enter delay of 500ms.
+    // The hover tool tip has an enter delay of 500ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="arrow-tooltip-component-false"]')
       .eq(2)
@@ -110,5 +110,67 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="selection-alert"]', { timeout: 10000 }).should(
       'not.exist'
     );
+  });
+
+  it('should display tooltips correctly', () => {
+    // The hover tool tip has an enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="investigation-table-title"]')
+      .first()
+      .trigger('mouseover', { force: true })
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
+  });
+
+  it('should not display tooltips after column resizing', () => {
+    let columnWidth = 0;
+
+    cy.window()
+      .then((window) => {
+        const windowWidth = window.innerWidth;
+        // Account for select and details column widths
+        columnWidth = (windowWidth - 40 - 40) / 8;
+      })
+      .then(() => expect(columnWidth).to.not.equal(0));
+
+    cy.get('[role="columnheader"]').eq(2).as('titleColumn');
+
+    cy.get('@titleColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 1500 })
+      .trigger('mouseup');
+
+    cy.get('@titleColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.greaterThan(columnWidth);
+    });
+
+    // The hover tool tip has an enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="investigation-table-title"]')
+      .first()
+      .trigger('mouseover', { force: true })
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('not.exist');
+  });
+
+  it('should not display tooltips after making the window bigger', () => {
+    cy.viewport(10000, 750);
+    // The hover tool tip has an enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="investigation-table-title"]')
+      .first()
+      .trigger('mouseover', { force: true })
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('not.exist');
   });
 });

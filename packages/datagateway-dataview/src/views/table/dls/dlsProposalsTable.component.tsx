@@ -30,12 +30,17 @@ const DLSProposalsTable = (): React.ReactElement => {
       filterValue: JSON.stringify(['name', 'title']),
     },
   ]);
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    {
-      filterType: 'distinct',
-      filterValue: JSON.stringify(['name', 'title']),
-    },
-  ]);
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['name', 'title']),
+      },
+    ],
+    // Do not add order by id as id is not a distinct field above and will otherwise
+    // cause missing results
+    true
+  );
 
   const aggregatedData: Investigation[] = React.useMemo(
     () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
@@ -66,6 +71,9 @@ const DLSProposalsTable = (): React.ReactElement => {
           );
         },
         filterComponent: textFilter,
+        // Sort to ensure a deterministic order for pagination (ignoreIDSort: true is
+        // used above in useInvestigationsInfinite)
+        defaultSort: 'asc',
         disableSort: true,
       },
       {

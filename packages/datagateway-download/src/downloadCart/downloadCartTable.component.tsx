@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     noSelectionsMessage: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.homePage?.description,
+      color: (theme as any).colours?.contrastGrey,
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
     },

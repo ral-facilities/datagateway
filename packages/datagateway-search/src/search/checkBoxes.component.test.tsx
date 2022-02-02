@@ -59,22 +59,36 @@ describe('Checkbox component tests', () => {
   it('renders correctly', () => {
     history.replace('/?searchText=&investigation=false');
     const wrapper = createWrapper();
+
+    expect(wrapper.find('#search-entities-menu').last().text()).toEqual(
+      'searchBox.checkboxes.types (2)'
+    );
+
+    wrapper
+      .find('#search-entities-menu')
+      .find('[role="button"]')
+      .simulate('mousedown', { button: 0 });
+
     const investigationCheckbox = wrapper.find(
-      '[aria-label="Investigation checkbox"]'
+      '[aria-label="searchBox.checkboxes.investigation_arialabel"]'
     );
     expect(investigationCheckbox.exists());
     investigationCheckbox.find('input').forEach((node) => {
       expect(node.props().checked).toEqual(false);
     });
 
-    const datasetCheckbox = wrapper.find('[aria-label="Dataset checkbox"]');
+    const datasetCheckbox = wrapper.find(
+      '[aria-label="searchBox.checkboxes.dataset_arialabel"]'
+    );
     expect(datasetCheckbox.exists());
     datasetCheckbox.find('input').forEach((node) => {
       expect(node.props().checked).toEqual(true);
     });
 
-    const datafileCheckbox = wrapper.find('[aria-label="Datafile checkbox"]');
-    expect(datafileCheckbox.exists());
+    const datafileCheckbox = wrapper.find(
+      '[aria-label="searchBox.checkboxes.datafile_arialabel"]'
+    );
+    expect(datafileCheckbox.exists()).toEqual(true);
     datafileCheckbox.find('input').forEach((node) => {
       expect(node.props().checked).toEqual(true);
     });
@@ -84,22 +98,51 @@ describe('Checkbox component tests', () => {
     state.dgsearch.searchableEntities = ['investigation', 'dataset'];
     history.replace('/?searchText=&investigation=false');
     const wrapper = createWrapper();
+
+    expect(wrapper.find('#search-entities-menu').last().text()).toEqual(
+      'searchBox.checkboxes.types (1)'
+    );
+
+    wrapper
+      .find('#search-entities-menu')
+      .find('[role="button"]')
+      .simulate('mousedown', { button: 0 });
+
     const investigationCheckbox = wrapper.find(
-      '[aria-label="Investigation checkbox"]'
+      '[aria-label="searchBox.checkboxes.investigation_arialabel"]'
     );
     expect(investigationCheckbox.exists());
     investigationCheckbox.find('input').forEach((node) => {
       expect(node.props().checked).toEqual(false);
     });
 
-    const datasetCheckbox = wrapper.find('[aria-label="Dataset checkbox"]');
+    const datasetCheckbox = wrapper.find(
+      '[aria-label="searchBox.checkboxes.dataset_arialabel"]'
+    );
     expect(datasetCheckbox.exists());
     datasetCheckbox.find('input').forEach((node) => {
       expect(node.props().checked).toEqual(true);
     });
 
-    expect(wrapper.find('[aria-label="Datafile checkbox"]').exists()).toEqual(
-      false
+    expect(
+      wrapper
+        .find('[aria-label="searchBox.checkboxes.datafile_arialabel"]')
+        .exists()
+    ).toEqual(false);
+  });
+
+  it('renders an error message when nothing is selected', () => {
+    history.replace(
+      '/?searchText=&investigation=false&dataset=false&datafile=false'
+    );
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper.find('#search-entities-checkbox-label').first().text()
+    ).toContain('searchBox.checkboxes.types');
+
+    expect(wrapper.find('.MuiFormHelperText-root').last().text()).toEqual(
+      'searchBox.checkboxes.types_error'
     );
   });
 
@@ -108,8 +151,13 @@ describe('Checkbox component tests', () => {
     const wrapper = createWrapper();
 
     wrapper
+      .find('#search-entities-menu')
+      .find('[role="button"]')
+      .simulate('mousedown', { button: 0 });
+
+    wrapper
       .find('[aria-label="searchBox.checkboxes.dataset_arialabel"]')
-      .simulate('change');
+      .simulate('click');
 
     expect(pushSpy).toHaveBeenCalledWith('?dataset=false&investigation=false');
   });
@@ -119,8 +167,13 @@ describe('Checkbox component tests', () => {
     const wrapper = createWrapper();
 
     wrapper
+      .find('#search-entities-menu')
+      .find('[role="button"]')
+      .simulate('mousedown', { button: 0 });
+
+    wrapper
       .find('[aria-label="searchBox.checkboxes.datafile_arialabel"]')
-      .simulate('change');
+      .simulate('click');
 
     expect(pushSpy).toHaveBeenCalledWith('?datafile=false&investigation=false');
   });
@@ -130,8 +183,13 @@ describe('Checkbox component tests', () => {
     const wrapper = createWrapper();
 
     wrapper
+      .find('#search-entities-menu')
+      .find('[role="button"]')
+      .simulate('mousedown', { button: 0 });
+
+    wrapper
       .find('[aria-label="searchBox.checkboxes.investigation_arialabel"]')
-      .simulate('change');
+      .simulate('click');
 
     expect(pushSpy).toHaveBeenCalledWith('?');
   });

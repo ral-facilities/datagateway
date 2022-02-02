@@ -1,13 +1,5 @@
 import React from 'react';
 import {
-  createStyles,
-  Divider,
-  Grid,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
-import {
   Table,
   formatBytes,
   Datafile,
@@ -15,7 +7,6 @@ import {
   FacilityCycle,
   ColumnType,
   Dataset,
-  DetailsPanelProps,
   parseSearchToQuery,
   useAddToCart,
   useAllFacilityCycles,
@@ -28,58 +19,15 @@ import {
   useSort,
   useRemoveFromCart,
   useTextFilter,
+  DatafileDetailsPanel,
+  ISISDatafileDetailsPanel,
+  DLSDatafileDetailsPanel,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-export const DatafileDetailsPanel = (
-  props: DetailsPanelProps
-): React.ReactElement => {
-  const classes = useStyles();
-  const [t] = useTranslation();
-  const datafileData = props.rowData as Datafile;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{datafileData.name}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">{t('datafiles.size')}</Typography>
-        <Typography>
-          <b>{formatBytes(datafileData.fileSize)}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">{t('datafiles.location')}</Typography>
-        <Typography>
-          <b>{datafileData.location}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
 
 interface DatafileSearchTableProps {
   hierarchy: string;
@@ -333,6 +281,10 @@ const DatafileSearchTable = (
     [t, textFilter, dateFilter, hierarchyLink]
   );
 
+  let detailsPanel = DatafileDetailsPanel;
+  if (hierarchy === 'isis') detailsPanel = ISISDatafileDetailsPanel;
+  else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
+
   return (
     <Table
       loading={addToCartLoading || removeFromCartLoading}
@@ -346,7 +298,7 @@ const DatafileSearchTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      detailsPanel={DatafileDetailsPanel}
+      detailsPanel={detailsPanel}
       columns={columns}
     />
   );

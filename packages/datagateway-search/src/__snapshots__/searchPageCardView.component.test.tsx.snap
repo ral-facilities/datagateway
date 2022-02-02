@@ -1561,7 +1561,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
                         "queryKey": Array [
                           "investigation",
                           Object {
@@ -1580,6 +1580,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                               "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
+                          undefined,
                         ],
                       },
                       "currentResultState": Object {
@@ -1604,7 +1605,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
                         "queryKey": Array [
                           "investigation",
                           Object {
@@ -1623,6 +1624,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                               "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
+                          undefined,
                         ],
                       },
                       "previousQueryResult": undefined,
@@ -1639,7 +1641,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
+                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
                     "queryKey": Array [
                       "investigation",
                       Object {
@@ -1658,10 +1660,11 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                           "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                         },
                       ],
+                      undefined,
                     ],
                   },
                   "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
+                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
                   "queryKey": Array [
                     "investigation",
                     Object {
@@ -1680,6 +1683,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                       },
                     ],
+                    undefined,
                   ],
                   "retryer": Retryer {
                     "cancel": [Function],
@@ -2552,7 +2556,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                 },
-                "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]": Query {
+                "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -2616,7 +2620,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
                         "queryKey": Array [
                           "investigation",
                           Object {
@@ -2635,6 +2639,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                               "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
+                          undefined,
                         ],
                       },
                       "currentResultState": Object {
@@ -2659,7 +2664,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
+                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
                         "queryKey": Array [
                           "investigation",
                           Object {
@@ -2678,6 +2683,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                               "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                             },
                           ],
+                          undefined,
                         ],
                       },
                       "previousQueryResult": undefined,
@@ -2694,7 +2700,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
+                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
                     "queryKey": Array [
                       "investigation",
                       Object {
@@ -2713,10 +2719,11 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                           "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                         },
                       ],
+                      undefined,
                     ],
                   },
                   "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}]]",
+                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"page\\":1,\\"results\\":10,\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
                   "queryKey": Array [
                     "investigation",
                     Object {
@@ -2735,6 +2742,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
                       },
                     ],
+                    undefined,
                   ],
                   "retryer": Retryer {
                     "cancel": [Function],
@@ -3389,6 +3397,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
           >
             <div>
               <WithStyles(ForwardRef(AppBar))
+                elevation={0}
                 position="static"
               >
                 <ForwardRef(AppBar)
@@ -3407,12 +3416,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                       "root": "MuiAppBar-root",
                     }
                   }
+                  elevation={0}
                   position="static"
                 >
                   <WithStyles(ForwardRef(Paper))
                     className="MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary"
                     component="header"
-                    elevation={4}
+                    elevation={0}
                     square={true}
                   >
                     <ForwardRef(Paper)
@@ -3450,11 +3460,11 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                         }
                       }
                       component="header"
-                      elevation={4}
+                      elevation={0}
                       square={true}
                     >
                       <header
-                        className="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary MuiPaper-elevation4"
+                        className="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary MuiPaper-elevation0"
                       >
                         <WithStyles(WithStyles(ForwardRef(Tabs)))
                           aria-label="searchPageCardView.tabs_arialabel"
@@ -3467,7 +3477,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                             className="tour-search-tab-select"
                             classes={
                               Object {
-                                "indicator": "WithStyles(ForwardRef(Tabs))-indicator-1",
+                                "indicator": "WithStyles(ForwardRef(Tabs))-indicator-2",
+                                "root": "WithStyles(ForwardRef(Tabs))-root-1",
                               }
                             }
                             onChange={[Function]}
@@ -3482,8 +3493,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                   "fixed": "MuiTabs-fixed",
                                   "flexContainer": "MuiTabs-flexContainer",
                                   "flexContainerVertical": "MuiTabs-flexContainerVertical",
-                                  "indicator": "MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-1",
-                                  "root": "MuiTabs-root",
+                                  "indicator": "MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-2",
+                                  "root": "MuiTabs-root WithStyles(ForwardRef(Tabs))-root-1",
                                   "scrollButtons": "MuiTabs-scrollButtons",
                                   "scrollButtonsDesktop": "MuiTabs-scrollButtonsDesktop",
                                   "scrollable": "MuiTabs-scrollable",
@@ -3495,7 +3506,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                               value="investigation"
                             >
                               <div
-                                className="MuiTabs-root tour-search-tab-select"
+                                className="MuiTabs-root WithStyles(ForwardRef(Tabs))-root-1 tour-search-tab-select"
                               >
                                 <div
                                   className="MuiTabs-scroller MuiTabs-fixed"
@@ -3529,6 +3540,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                           <span
                                             style={
                                               Object {
+                                                "fontSize": "16px",
+                                                "fontWeight": "bold",
                                                 "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                 "marginRight": "calc(0.5 * 1ch + 6px)",
                                                 "paddingRight": "1ch",
@@ -3573,6 +3586,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                             <span
                                               style={
                                                 Object {
+                                                  "fontSize": "16px",
+                                                  "fontWeight": "bold",
                                                   "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                   "marginRight": "calc(0.5 * 1ch + 6px)",
                                                   "paddingRight": "1ch",
@@ -3654,7 +3669,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                     badgeContent={0}
                                                     classes={
                                                       Object {
-                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-2",
+                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-3",
                                                       }
                                                     }
                                                     id="investigation-badge"
@@ -3673,7 +3688,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
                                                           "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
                                                           "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
-                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2",
+                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3",
                                                           "colorError": "MuiBadge-colorError",
                                                           "colorPrimary": "MuiBadge-colorPrimary",
                                                           "colorSecondary": "MuiBadge-colorSecondary",
@@ -3693,6 +3708,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                         <span
                                                           style={
                                                             Object {
+                                                              "fontSize": "16px",
+                                                              "fontWeight": "bold",
                                                               "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                               "marginRight": "calc(0.5 * 1ch + 6px)",
                                                               "paddingRight": "1ch",
@@ -3702,7 +3719,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           tabs.investigation
                                                         </span>
                                                         <span
-                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2 MuiBadge-anchorOriginTopRightRectangle"
+                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3 MuiBadge-anchorOriginTopRightRectangle"
                                                         >
                                                           0
                                                         </span>
@@ -3760,6 +3777,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                           <span
                                             style={
                                               Object {
+                                                "fontSize": "16px",
+                                                "fontWeight": "bold",
                                                 "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                 "marginRight": "calc(0.5 * 1ch + 6px)",
                                                 "paddingRight": "1ch",
@@ -3804,6 +3823,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                             <span
                                               style={
                                                 Object {
+                                                  "fontSize": "16px",
+                                                  "fontWeight": "bold",
                                                   "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                   "marginRight": "calc(0.5 * 1ch + 6px)",
                                                   "paddingRight": "1ch",
@@ -3885,7 +3906,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                     badgeContent={0}
                                                     classes={
                                                       Object {
-                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-2",
+                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-3",
                                                       }
                                                     }
                                                     id="dataset-badge"
@@ -3904,7 +3925,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
                                                           "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
                                                           "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
-                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2",
+                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3",
                                                           "colorError": "MuiBadge-colorError",
                                                           "colorPrimary": "MuiBadge-colorPrimary",
                                                           "colorSecondary": "MuiBadge-colorSecondary",
@@ -3924,6 +3945,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                         <span
                                                           style={
                                                             Object {
+                                                              "fontSize": "16px",
+                                                              "fontWeight": "bold",
                                                               "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                               "marginRight": "calc(0.5 * 1ch + 6px)",
                                                               "paddingRight": "1ch",
@@ -3933,7 +3956,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           tabs.dataset
                                                         </span>
                                                         <span
-                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2 MuiBadge-anchorOriginTopRightRectangle"
+                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3 MuiBadge-anchorOriginTopRightRectangle"
                                                         >
                                                           0
                                                         </span>
@@ -3991,6 +4014,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                           <span
                                             style={
                                               Object {
+                                                "fontSize": "16px",
+                                                "fontWeight": "bold",
                                                 "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                 "marginRight": "calc(0.5 * 1ch + 6px)",
                                                 "paddingRight": "1ch",
@@ -4035,6 +4060,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                             <span
                                               style={
                                                 Object {
+                                                  "fontSize": "16px",
+                                                  "fontWeight": "bold",
                                                   "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                   "marginRight": "calc(0.5 * 1ch + 6px)",
                                                   "paddingRight": "1ch",
@@ -4116,7 +4143,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                     badgeContent={0}
                                                     classes={
                                                       Object {
-                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-2",
+                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-3",
                                                       }
                                                     }
                                                     id="datafile-badge"
@@ -4135,7 +4162,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
                                                           "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
                                                           "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
-                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2",
+                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3",
                                                           "colorError": "MuiBadge-colorError",
                                                           "colorPrimary": "MuiBadge-colorPrimary",
                                                           "colorSecondary": "MuiBadge-colorSecondary",
@@ -4155,6 +4182,8 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                         <span
                                                           style={
                                                             Object {
+                                                              "fontSize": "16px",
+                                                              "fontWeight": "bold",
                                                               "marginLeft": "calc(-0.5 * 1ch - 6px)",
                                                               "marginRight": "calc(0.5 * 1ch + 6px)",
                                                               "paddingRight": "1ch",
@@ -4164,7 +4193,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                                           tabs.datafile
                                                         </span>
                                                         <span
-                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-2 MuiBadge-anchorOriginTopRightRectangle"
+                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3 MuiBadge-anchorOriginTopRightRectangle"
                                                         >
                                                           0
                                                         </span>
@@ -4208,7 +4237,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                     </WithStyles(ForwardRef(Tab))>
                                   </div>
                                   <WithStyles(ForwardRef(TabIndicator))
-                                    className="MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-1"
+                                    className="MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-2"
                                     color="secondary"
                                     orientation="horizontal"
                                     style={
@@ -4219,13 +4248,13 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                     }
                                   >
                                     <ForwardRef(TabIndicator)
-                                      className="MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-1"
+                                      className="MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-2"
                                       classes={
                                         Object {
-                                          "colorPrimary": "PrivateTabIndicator-colorPrimary-4",
-                                          "colorSecondary": "PrivateTabIndicator-colorSecondary-5",
-                                          "root": "PrivateTabIndicator-root-3",
-                                          "vertical": "PrivateTabIndicator-vertical-6",
+                                          "colorPrimary": "PrivateTabIndicator-colorPrimary-5",
+                                          "colorSecondary": "PrivateTabIndicator-colorSecondary-6",
+                                          "root": "PrivateTabIndicator-root-4",
+                                          "vertical": "PrivateTabIndicator-vertical-7",
                                         }
                                       }
                                       color="secondary"
@@ -4238,7 +4267,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                                       }
                                     >
                                       <span
-                                        className="PrivateTabIndicator-root-3 PrivateTabIndicator-colorSecondary-5 MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-1"
+                                        className="PrivateTabIndicator-root-4 PrivateTabIndicator-colorSecondary-6 MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-2"
                                         style={
                                           Object {
                                             "left": 0,
@@ -4272,7 +4301,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                 >
                   <div
                     aria-labelledby="simple-tab-investigation"
-                    className="MuiBox-root MuiBox-root-7"
+                    className="MuiBox-root MuiBox-root-8"
                     hidden={false}
                     id="simple-tabpanel-investigation"
                     role="tabpanel"
@@ -4281,7 +4310,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                       p={3}
                     >
                       <div
-                        className="MuiBox-root MuiBox-root-8"
+                        className="MuiBox-root MuiBox-root-9"
                       >
                         <InvestigationCardView>
                           <mockConstructor
@@ -4401,6 +4430,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
                             }
                             loadedCount={false}
                             loadedData={false}
+                            moreInformation={[Function]}
                             onFilter={[Function]}
                             onPageChange={[Function]}
                             onResultsChange={[Function]}

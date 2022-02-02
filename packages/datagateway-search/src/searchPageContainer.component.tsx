@@ -29,6 +29,7 @@ import {
   usePushSearchText,
   useCart,
   SelectionAlert,
+  readSciGatewayToken,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -132,9 +133,9 @@ const searchPageStyles = makeStyles<
       height: '100%',
       // make width of box bigger on smaller screens to prevent overflow
       // decreasing the space for the search results
-      width: '95%',
-      '@media (min-width: 1600px) and (min-height: 700px)': {
-        width: '70%',
+      width: '100%',
+      '@media (min-width: 1000px) and (min-height: 700px)': {
+        width: '98%',
       },
       margin: '0 auto',
     },
@@ -195,6 +196,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     location.search,
   ]);
   const { view, startDate, endDate } = queryParams;
+  const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
+
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
   const investigation = searchableEntities.includes('investigation')
@@ -211,9 +214,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
 
-  const [searchText, setSearchText] = React.useState(
-    queryParams.searchText ? queryParams.searchText : ''
-  );
+  const [searchText, setSearchText] = React.useState(searchTextURL);
+  const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
 
   const handleSearchTextChange = (searchText: string): void => {
     setSearchText(searchText);
@@ -244,7 +246,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     isIdle: investigationsIdle,
     isFetching: investigationsFetching,
   } = useLuceneSearch('Investigation', {
-    searchText,
+    searchText: searchTextURL,
     startDate,
     endDate,
     maxCount: maxNumResults,
@@ -254,7 +256,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     isIdle: datasetsIdle,
     isFetching: datasetsFetching,
   } = useLuceneSearch('Dataset', {
-    searchText,
+    searchText: searchTextURL,
     startDate,
     endDate,
     maxCount: maxNumResults,
@@ -264,7 +266,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     isIdle: datafilesIdle,
     isFetching: datafilesFetching,
   } = useLuceneSearch('Datafile', {
-    searchText,
+    searchText: searchTextURL,
     startDate,
     endDate,
     maxCount: maxNumResults,
@@ -278,35 +280,41 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
+    setSearchOnNextRender(true);
+  }, [searchText, pushSearchText]);
 
-    if (dataset) {
-      // Fetch lucene datasets
-      searchDatasets();
-    }
+  React.useEffect(() => {
+    if (searchOnNextRender) {
+      if (dataset) {
+        // Fetch lucene datasets
+        searchDatasets();
+      }
 
-    if (datafile) {
-      // Fetch lucene datafiles
-      searchDatafiles();
-    }
-    if (investigation) {
-      // Fetch lucene investigations
-      searchInvestigations();
-    }
+      if (datafile) {
+        // Fetch lucene datafiles
+        searchDatafiles();
+      }
+      if (investigation) {
+        // Fetch lucene investigations
+        searchInvestigations();
+      }
 
-    if (dataset || datafile || investigation) {
-      // Set the appropriate tabs.
-      setDatafileTab(datafile);
-      setDatasetTab(dataset);
-      setInvestigationTab(investigation);
+      if (dataset || datafile || investigation) {
+        // Set the appropriate tabs.
+        setDatafileTab(datafile);
+        setDatasetTab(dataset);
+        setInvestigationTab(investigation);
+      }
+
+      setSearchOnNextRender(false);
     }
   }, [
-    searchText,
-    datafile,
+    searchOnNextRender,
     dataset,
+    datafile,
     investigation,
-    pushSearchText,
-    searchDatafiles,
     searchDatasets,
+    searchDatafiles,
     searchInvestigations,
     setDatafileTab,
     setDatasetTab,
@@ -320,25 +328,30 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       queryParams.startDate ||
       queryParams.endDate
     )
-      initiateSearch();
+      setSearchOnNextRender(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const searchBoxRef = React.useRef<HTMLDivElement>(null);
   const [searchBoxHeight, setSearchBoxHeight] = React.useState(0);
 
-  React.useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
+  const searchBoxResizeObserver = React.useRef<ResizeObserver>(
+    new ResizeObserver((entries) => {
       if (entries[0].contentRect.height)
         setSearchBoxHeight(entries[0].contentRect.height);
-    });
-    const curr = searchBoxRef.current;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    observer.observe(curr);
-    return () => {
-      curr && observer.unobserve(curr);
-    };
+    })
+  );
+
+  // need to use a useCallback instead of a useRef for this
+  // see https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
+  const searchBoxRef = React.useCallback((container: HTMLDivElement) => {
+    if (container !== null) {
+      searchBoxResizeObserver.current.observe(container);
+    }
+    // When element is unmounted we know container is null so time to clean up
+    else {
+      if (searchBoxResizeObserver.current)
+        searchBoxResizeObserver.current.disconnect();
+    }
   }, []);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
@@ -352,6 +365,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously = username === null || username === 'anon/anon';
   const classes = searchPageStyles({ view, containerHeight });
 
   return (
@@ -412,6 +427,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                       <SelectionAlert
                         selectedItems={cartItems ?? []}
                         navigateToSelection={navigateToDownload}
+                        loggedInAnonymously={loggedInAnonymously}
                       />
                     </Grid>
                   </Grid>

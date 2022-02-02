@@ -120,4 +120,34 @@ describe('Breadcrumbs Component', () => {
 
     cy.get('[data-testid="Breadcrumb-last"]').contains('Datasets');
   });
+
+  it.only('should display tooltips correctly', () => {
+    // Load pages into the history.
+    cy.visit('/browse/investigation/1/dataset').wait('@getInvestigation');
+
+    // Click on the first link with Dataset 1.
+    cy.contains('DATASET 1').click({ force: true }).wait('@getDataset');
+
+    // Check to ensure the location is the datafile.
+    cy.location('pathname').should(
+      'eq',
+      '/browse/investigation/1/dataset/1/datafile'
+    );
+
+    // The hover tool tip has an enter delay of 100ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.contains('DATASET 1')
+      .trigger('mouseover', { force: true })
+      .wait(300)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('not.exist');
+
+    // The hover tool tip has an enter delay of 100ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.contains('Including spend')
+      .trigger('mouseover', { force: true })
+      .wait(300)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
+  });
 });

@@ -52,7 +52,7 @@ describe('Advanced help dialogue component tests', () => {
   it('can open and close help dialogue', () => {
     const wrapper = createWrapper();
     wrapper
-      .find('[aria-label="advanced_search_help.advanced_button_arialabel"]')
+      .find('[aria-label="advanced_search_help.search_options_arialabel"]')
       .first()
       .simulate('click');
     expect(

@@ -1,19 +1,11 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
 import DatafilesDetailsPanel from './datafileDetailsPanel.component';
-import { Datafile, useDatafileDetails } from 'datagateway-common';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
+import { useDatafileDetails } from '../../api/datafiles';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useDatafileDetails: jest.fn(),
-  };
-});
+jest.mock('../../api/datafiles');
 
 describe('Datafile details panel component', () => {
   let mount;
@@ -187,5 +179,15 @@ describe('Datafile details panel component', () => {
     expect(wrapper.html()).toContain(
       '<b>datafiles.details.description not provided</b>'
     );
+  });
+
+  it('renders datafile parameters tab and text "No parameters" when no data is present', () => {
+    rowData.parameters = [];
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="datafile-details-panel-no-parameters"]')
+        .exists()
+    ).toBeTruthy();
   });
 });

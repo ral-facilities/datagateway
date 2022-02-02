@@ -3,7 +3,6 @@
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
   "idsUrl": "example.ids.url",
-  "icatUrl": "example.icat.url",
   "fileCountMax": 5000,
   "totalSizeMax": 1000000000000,
   "accessMethods": {

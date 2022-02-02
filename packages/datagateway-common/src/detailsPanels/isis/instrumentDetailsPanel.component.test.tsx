@@ -1,19 +1,12 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
 import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
-import { Instrument, useInstrumentDetails } from 'datagateway-common';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
+import { Instrument } from '../../app.types';
+import { useInstrumentDetails } from '../../api/instruments';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useInstrumentDetails: jest.fn(),
-  };
-});
+jest.mock('../../api/instruments');
 
 describe('Instrument details panel component', () => {
   let mount;
@@ -146,7 +139,7 @@ describe('Instrument details panel component', () => {
     expect(wrapper.find('InstrumentDetailsPanel').props()).toMatchSnapshot();
   });
 
-  it('renders publication tab and text "No Scientists" when no data is prsent', () => {
+  it('renders users tab and text "No Scientists" when no data is present', () => {
     rowData.instrumentScientists = [];
     const wrapper = createWrapper();
     expect(

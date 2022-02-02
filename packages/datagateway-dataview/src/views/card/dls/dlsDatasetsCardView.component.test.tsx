@@ -7,6 +7,7 @@ import {
   useDatasetCount,
   Dataset,
   AddToCartButton,
+  DLSDatasetDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -18,7 +19,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDatasetsCardView from './dlsDatasetsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { createMemoryHistory, History } from 'history';
 
 jest.mock('datagateway-common', () => {
@@ -186,13 +186,13 @@ describe('DLS Datasets - Card View', () => {
 
   it('displays details panel when more information is expanded', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders buttons correctly', () => {

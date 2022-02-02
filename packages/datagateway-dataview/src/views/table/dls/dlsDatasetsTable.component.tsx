@@ -19,9 +19,9 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useDatasetsDatafileCount,
+  DLSDatasetDetailsPanel,
 } from 'datagateway-common';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -178,7 +178,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       onCheck={addToCart}
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
-      detailsPanel={DatasetDetailsPanel}
+      detailsPanel={DLSDatasetDetailsPanel}
       columns={columns}
     />
   );

@@ -1,12 +1,5 @@
 import React from 'react';
 import {
-  Entity,
-  Investigation,
-  formatBytes,
-  useInvestigationDetails,
-  useInvestigationSize,
-} from 'datagateway-common';
-import {
   Typography,
   Grid,
   createStyles,
@@ -15,9 +8,11 @@ import {
   Divider,
   Tabs,
   Tab,
-  Button,
+  Link as MuiLink,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { useInvestigationDetails } from '../../api/investigations';
+import { Entity, Investigation } from '../../app.types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,28 +25,28 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface VisitDetailsPanelProps {
+interface InvestigationDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize?: () => void;
+  viewDatasets?: (id: number) => void;
 }
 
-const VisitDetailsPanel = (
-  props: VisitDetailsPanelProps
+const InvestigationDetailsPanel = (
+  props: InvestigationDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize } = props;
+  const { rowData, viewDatasets, detailsPanelResize } = props;
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
+
   const [t] = useTranslation();
 
   const classes = useStyles();
 
   const { data } = useInvestigationDetails(rowData.id);
-  const { data: size, refetch: fetchSize } = useInvestigationSize(rowData.id);
   const investigationData: Investigation = {
     ...data,
     ...(rowData as Investigation),
-    size,
   };
 
   React.useLayoutEffect(() => {
@@ -68,39 +63,46 @@ const VisitDetailsPanel = (
         aria-label={t('investigations.details.tabs_label')}
       >
         <Tab
-          id="visit-details-tab"
-          aria-controls="visit-details-panel"
+          id="investigation-details-tab"
+          aria-controls="investigation-details-panel"
           label={t('investigations.details.label')}
           value="details"
         />
         {investigationData.investigationUsers && (
           <Tab
-            id="visit-users-tab"
-            aria-controls="visit-users-panel"
+            id="investigation-users-tab"
+            aria-controls="investigation-users-panel"
             label={t('investigations.details.users.label')}
             value="users"
           />
         )}
         {investigationData.samples && (
           <Tab
-            id="visit-samples-tab"
-            aria-controls="visit-samples-panel"
+            id="investigation-samples-tab"
+            aria-controls="investigation-samples-panel"
             label={t('investigations.details.samples.label')}
             value="samples"
           />
         )}
         {investigationData.publications && (
           <Tab
-            id="visit-publications-tab"
-            aria-controls="visit-publications-panel"
+            id="investigation-publications-tab"
+            aria-controls="investigation-publications-panel"
             label={t('investigations.details.publications.label')}
             value="publications"
           />
         )}
+        {viewDatasets && (
+          <Tab
+            id="investigation-datasets-tab"
+            label={t('investigations.details.datasets')}
+            onClick={() => viewDatasets(investigationData.id)}
+          />
+        )}
       </Tabs>
       <div
-        id="visit-details-panel"
-        aria-labelledby="visit-details-tab"
+        id="investigation-details-panel"
+        aria-labelledby="investigation-details-tab"
         role="tabpanel"
         hidden={value !== 'details'}
       >
@@ -140,6 +142,45 @@ const VisitDetailsPanel = (
               </b>
             </Typography>
           </Grid>
+          {investigationData.studyInvestigations &&
+            investigationData.studyInvestigations.map((studyInvestigation) => {
+              if (studyInvestigation.study) {
+                return (
+                  <Grid key={studyInvestigation.id} item xs>
+                    <Typography variant="overline">
+                      {t('investigations.details.pid')}
+                    </Typography>
+                    <Typography>
+                      <MuiLink
+                        href={`https://doi.org/${studyInvestigation.study.pid}`}
+                        data-testid="investigation-details-panel-pid-link"
+                      >
+                        {studyInvestigation.study.pid}
+                      </MuiLink>
+                    </Typography>
+                  </Grid>
+                );
+              } else {
+                return null;
+              }
+            })}
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.doi')}
+            </Typography>
+            <Typography>
+              {investigationData.doi && investigationData.doi !== 'null' ? (
+                <MuiLink
+                  href={`https://doi.org/${investigationData.doi}`}
+                  data-testid="investigation-details-panel-doi-link"
+                >
+                  {investigationData.doi}
+                </MuiLink>
+              ) : (
+                <b>{`${t('investigations.details.doi')} not provided`}</b>
+              )}
+            </Typography>
+          </Grid>
           <Grid item xs>
             <Typography variant="overline">
               {t('investigations.details.start_date')}
@@ -166,36 +207,12 @@ const VisitDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-          <Grid item xs>
-            <Typography variant="overline">
-              {t('investigations.details.size')}
-            </Typography>
-            <Typography>
-              <b>
-                {investigationData.size ? (
-                  formatBytes(investigationData.size)
-                ) : (
-                  <Button
-                    onClick={() => {
-                      fetchSize();
-                    }}
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    id="calculate-size-btn"
-                  >
-                    {t('investigations.details.calculate')}
-                  </Button>
-                )}
-              </b>
-            </Typography>
-          </Grid>
         </Grid>
       </div>
       {investigationData.investigationUsers && (
         <div
-          id="visit-users-panel"
-          aria-labelledby="visit-users-tab"
+          id="investigation-users-panel"
+          aria-labelledby="investigation-users-tab"
           role="tabpanel"
           hidden={value !== 'users'}
         >
@@ -223,8 +240,8 @@ const VisitDetailsPanel = (
                 }
               })
             ) : (
-              <Typography data-testid="visit-details-panel-no-name">
-                {t('investigations.details.users.no_name')}
+              <Typography data-testid="investigation-details-panel-no-name">
+                <b>{t('investigations.details.users.no_name')}</b>
               </Typography>
             )}
           </Grid>
@@ -232,8 +249,8 @@ const VisitDetailsPanel = (
       )}
       {investigationData.samples && (
         <div
-          id="visit-samples-panel"
-          aria-labelledby="visit-samples-tab"
+          id="investigation-samples-panel"
+          aria-labelledby="investigation-samples-tab"
           role="tabpanel"
           hidden={value !== 'samples'}
         >
@@ -254,8 +271,8 @@ const VisitDetailsPanel = (
                 );
               })
             ) : (
-              <Typography data-testid="visit-details-panel-no-samples">
-                {t('investigations.details.samples.no_samples')}
+              <Typography data-testid="investigation-details-panel-no-samples">
+                <b>{t('investigations.details.samples.no_samples')}</b>
               </Typography>
             )}
           </Grid>
@@ -263,8 +280,8 @@ const VisitDetailsPanel = (
       )}
       {investigationData.publications && (
         <div
-          id="visit-publications-panel"
-          aria-labelledby="visit-publications-tab"
+          id="investigation-publications-panel"
+          aria-labelledby="investigation-publications-tab"
           role="tabpanel"
           hidden={value !== 'publications'}
         >
@@ -285,8 +302,10 @@ const VisitDetailsPanel = (
                 );
               })
             ) : (
-              <Typography data-testid="visit-details-panel-no-publications">
-                {t('investigations.details.publications.no_publications')}
+              <Typography data-testid="investigation-details-panel-no-publications">
+                <b>
+                  {t('investigations.details.publications.no_publications')}
+                </b>
               </Typography>
             )}
           </Grid>
@@ -296,4 +315,4 @@ const VisitDetailsPanel = (
   );
 };
 
-export default VisitDetailsPanel;
+export default InvestigationDetailsPanel;
