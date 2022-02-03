@@ -9,6 +9,7 @@ import {
   MicroFrontendId,
   Preloader,
   BroadcastSignOutType,
+  RequestPluginRerenderType,
 } from 'datagateway-common';
 import {
   createBrowserHistory,
@@ -123,6 +124,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
   public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
+    this.handler = this.handler.bind(this);
 
     // set up store in constructor to isolate from SciGateway redux store: https://redux.js.org/recipes/isolating-redux-sub-apps
     this.store = createStore(
@@ -136,6 +138,22 @@ class App extends React.Component<unknown, { hasError: boolean }> {
       AnyAction
     >;
     dispatch(configureApp());
+  }
+
+  handler(e: Event): void {
+    // attempt to re-render the plugin if we get told to
+    const action = (e as CustomEvent).detail;
+    if (action.type === RequestPluginRerenderType) {
+      this.forceUpdate();
+    }
+  }
+
+  public componentDidMount(): void {
+    document.addEventListener(MicroFrontendId, this.handler);
+  }
+
+  public componentWillUnmount(): void {
+    document.removeEventListener(MicroFrontendId, this.handler);
   }
 
   public componentDidCatch(error: Error | null): void {
