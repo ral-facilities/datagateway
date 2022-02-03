@@ -28,11 +28,10 @@ export const getTooltipText = (node: React.ReactNode): string => {
 
 const ArrowTooltip = (
   props: TooltipProps & {
-    percentageWidth?: number;
     disableHoverListener?: boolean;
   }
 ): React.ReactElement => {
-  const { percentageWidth, disableHoverListener, ...tooltipProps } = props;
+  const { disableHoverListener, ...tooltipProps } = props;
 
   const { ...classes } = useStylesArrow();
 
@@ -55,25 +54,11 @@ const ArrowTooltip = (
           entries[0].borderBoxSize[0].inlineSize
         );
 
-        // We pass in a percentage width (as a prop) of the viewport width,
-        // which is set as the max width the tooltip will allow content which
-        // is wrapped within it until it makes the tooltip visible.
-        if (percentageWidth) {
-          // Check to ensure whether the tooltip should be visible given the width provided.
-          if (
-            tooltipElement &&
-            borderBoxWidth / window.innerWidth >= percentageWidth / 100
-          )
-            setTooltipVisible(true);
-          else setTooltipVisible(false);
+        // have tooltip appear only when visible text width is smaller than full text width.
+        if (tooltipElement && borderBoxWidth < tooltipElement.scrollWidth) {
+          setTooltipVisible(true);
         } else {
-          // If props haven't been given, have tooltip appear only when visible
-          // text width is smaller than full text width.
-          if (tooltipElement && borderBoxWidth < tooltipElement.scrollWidth) {
-            setTooltipVisible(true);
-          } else {
-            setTooltipVisible(false);
-          }
+          setTooltipVisible(false);
         }
       }
     })
