@@ -33,7 +33,7 @@ describe('SearchPageTable', () => {
   let props: SearchTableProps;
   const mockStore = configureStore([thunk]);
 
-  const onCurrentTab = jest.fn();
+  const onTabChange = jest.fn();
 
   const createWrapper = (
     store: Store = mockStore(state),
@@ -61,7 +61,7 @@ describe('SearchPageTable', () => {
     );
 
     props = {
-      onCurrentTab: onCurrentTab,
+      onTabChange: onTabChange,
       currentTab: 'investigation',
     };
 
@@ -75,7 +75,7 @@ describe('SearchPageTable', () => {
   });
 
   afterEach(() => {
-    onCurrentTab.mockClear();
+    onTabChange.mockClear();
   });
 
   it('renders correctly when request received', () => {
@@ -134,7 +134,7 @@ describe('SearchPageTable', () => {
       .first()
       .simulate('click');
 
-    expect(onCurrentTab).toHaveBeenNthCalledWith(1, 'dataset');
+    expect(onTabChange).toHaveBeenNthCalledWith(1, 'dataset');
   });
 
   it('has the investigation search table component when on the investigation tab', () => {

@@ -35,7 +35,7 @@ describe('SearchPageCardView', () => {
   let props: SearchCardViewProps;
 
   const mockStore = configureStore([thunk]);
-  const onCurrentTab = jest.fn();
+  const onTabChange = jest.fn();
 
   const createWrapper = (
     store: Store = mockStore(state),
@@ -65,7 +65,7 @@ describe('SearchPageCardView', () => {
     );
 
     props = {
-      onCurrentTab: onCurrentTab,
+      onTabChange: onTabChange,
       currentTab: 'investigation',
     };
 
@@ -79,7 +79,7 @@ describe('SearchPageCardView', () => {
   });
 
   afterEach(() => {
-    onCurrentTab.mockClear();
+    onTabChange.mockClear();
   });
 
   it('renders correctly when request received', () => {
@@ -138,7 +138,7 @@ describe('SearchPageCardView', () => {
       .first()
       .simulate('click');
 
-    expect(onCurrentTab).toHaveBeenNthCalledWith(1, 'dataset');
+    expect(onTabChange).toHaveBeenNthCalledWith(1, 'dataset');
   });
 
   it('has the investigation search card view component when on the investigation tab', () => {

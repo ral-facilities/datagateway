@@ -564,15 +564,15 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('stores the previous page in the local storage', () => {
-    storePage(1, 'investigation');
+    storePage(4, 'investigation');
 
-    expect(localStorage.setItem).toBeCalledWith('investigationPage', '1');
+    expect(localStorage.setItem).toBeCalledWith('investigationPage', '4');
   });
 
   it('stores the previous results in the local storage', () => {
-    storeResults(10, 'investigation');
+    storeResults(20, 'investigation');
 
-    expect(localStorage.setItem).toBeCalledWith('investigationResults', '10');
+    expect(localStorage.setItem).toBeCalledWith('investigationResults', '20');
   });
 
   it('sends actions to update tabs when user clicks search button', async () => {
