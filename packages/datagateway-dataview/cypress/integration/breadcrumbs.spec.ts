@@ -121,7 +121,7 @@ describe('Breadcrumbs Component', () => {
     cy.get('[data-testid="Breadcrumb-last"]').contains('Datasets');
   });
 
-  it.only('should display tooltips correctly', () => {
+  it('should display tooltips correctly', () => {
     // Load pages into the history.
     cy.visit('/browse/investigation/1/dataset').wait('@getInvestigation');
 
@@ -136,7 +136,7 @@ describe('Breadcrumbs Component', () => {
 
     // The hover tool tip has an enter delay of 100ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.contains('DATASET 1')
+    cy.contains('span', 'DATASET 1')
       .trigger('mouseover', { force: true })
       .wait(300)
       .get('[data-testid="arrow-tooltip-component-true"]')
@@ -144,7 +144,7 @@ describe('Breadcrumbs Component', () => {
 
     // The hover tool tip has an enter delay of 100ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.contains('Including spend')
+    cy.contains('span', 'Including spend')
       .trigger('mouseover', { force: true })
       .wait(300)
       .get('[data-testid="arrow-tooltip-component-true"]')
