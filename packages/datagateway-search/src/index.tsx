@@ -10,6 +10,7 @@ import App from './App';
 import * as log from 'loglevel';
 import singleSpaReact from 'single-spa-react';
 import axios from 'axios';
+import jsrsasign from 'jsrsasign';
 import { SearchSettings, setSettings } from './settings';
 import {
   MicroFrontendId,

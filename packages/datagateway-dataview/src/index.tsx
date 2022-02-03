@@ -18,6 +18,7 @@ import {
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import axios from 'axios';
+import jsrsasign from 'jsrsasign';
 import { DataviewSettings, setSettings } from './settings';
 
 const pluginName = 'datagateway-dataview';

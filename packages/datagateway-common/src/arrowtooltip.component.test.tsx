@@ -10,15 +10,12 @@ describe('ArrowTooltip component', () => {
   let mount;
 
   const createWrapper = (
-    percentageWidth?: number,
-    maxEnabledHeight?: number,
     disableHoverListener?: boolean,
     open?: boolean
   ): ReactWrapper => {
     return mount(
       <ArrowTooltip
         title={'test'}
-        percentageWidth={percentageWidth}
         disableHoverListener={disableHoverListener}
         open={open}
       >
@@ -81,14 +78,22 @@ describe('ArrowTooltip component', () => {
       .spyOn(React, 'createRef')
       .mockReturnValueOnce(null);
 
-    const wrapper = createWrapper(undefined, undefined);
+    const wrapper = createWrapper();
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
 
     spyCreateRef.mockRestore();
   });
 
+  it('can override disableHoverListener', () => {
+    let wrapper = createWrapper(true);
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
+
+    wrapper = createWrapper(false);
+    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(false);
+  });
+
   it('check if the tooltip is false when onClose is invoked', () => {
-    const wrapper = createWrapper(undefined, undefined, undefined, true);
+    const wrapper = createWrapper(undefined, true);
     act(() => {
       wrapper.find(Tooltip)?.invoke('onClose')();
     });
@@ -105,7 +110,7 @@ describe('ArrowTooltip component', () => {
         handleKeydown = f;
         return f;
       });
-    const wrapper = createWrapper(undefined, undefined, undefined, false);
+    const wrapper = createWrapper(undefined, false);
 
     act(() => {
       wrapper.find(Tooltip)?.invoke('onOpen')();
