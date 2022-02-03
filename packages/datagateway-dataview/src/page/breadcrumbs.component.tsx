@@ -66,7 +66,7 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
           /* Positions breadcrumb */
           height: '30px',
           lineHeight: '30px',
-          padding: '0 5px 0 0px',
+          padding: '0 5px 0 2px',
           textAlign: 'center',
 
           /* Adds between breadcrumbs */
@@ -128,7 +128,7 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
       },
       '& li:first-child': {
         '& a, p': {
-          paddingLeft: theme.spacing(1),
+          paddingLeft: '4px',
           '&:before': {
             border: 'none',
           },
@@ -136,7 +136,7 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
       },
       '& li:last-child': {
         '& a, p': {
-          paddingRight: '10px',
+          paddingRight: '7px',
 
           /* Curve the last breadcrumb border */
           borderRadius: '0 4px 4px 0',
