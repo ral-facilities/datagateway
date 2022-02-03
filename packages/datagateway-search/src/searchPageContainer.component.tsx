@@ -33,6 +33,7 @@ import {
   FiltersType,
   SortType,
   usePushCurrentTab,
+  useUpdateQueryParam,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -52,7 +53,8 @@ export const storeFilters = (
 ): void => {
   const filter = (searchableEntities as string) + 'Filters';
 
-  localStorage.setItem(filter, JSON.stringify(filters));
+  if (Object.keys(filters).length !== 0)
+    localStorage.setItem(filter, JSON.stringify(filters));
 };
 
 export const storeSort = (
@@ -61,13 +63,14 @@ export const storeSort = (
 ): void => {
   const sort = (searchableEntities as string) + 'Sort';
 
-  localStorage.setItem(sort, JSON.stringify(sorts));
+  if (Object.keys(sorts).length !== 0)
+    localStorage.setItem(sort, JSON.stringify(sorts));
 };
 
 export const storePage = (page: number, searchableEntities: string): void => {
   const pageNumber = (searchableEntities as string) + 'Page';
 
-  localStorage.setItem(pageNumber, JSON.stringify(page));
+  if (page !== 1) localStorage.setItem(pageNumber, JSON.stringify(page));
 };
 
 export const storeResults = (
@@ -76,7 +79,8 @@ export const storeResults = (
 ): void => {
   const resultsNumber = (searchableEntities as string) + 'Results';
 
-  localStorage.setItem(resultsNumber, JSON.stringify(results));
+  if (results !== 10)
+    localStorage.setItem(resultsNumber, JSON.stringify(results));
 };
 
 export const getFilters = (searchableEntities: string): FiltersType | null => {
@@ -302,6 +306,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
   const pushCurrentTab = usePushCurrentTab();
+  const updateFilters = useUpdateQueryParam('filters');
+  const updateSorts = useUpdateQueryParam('sort');
+  const updatePage = useUpdateQueryParam('page');
+  const updateResults = useUpdateQueryParam('results');
 
   React.useEffect(() => {
     if (currentTab !== queryParams.currentTab) pushCurrentTab(currentTab);
@@ -385,7 +393,22 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     localStorage.removeItem('datasetPage');
     localStorage.removeItem('investigationResults');
     localStorage.removeItem('datasetResults');
-  }, [searchText, pushSearchText]);
+    if (Object.keys(queryParams.filters).length !== 0) updateFilters({});
+    if (Object.keys(queryParams.sort).length !== 0) updateSorts({});
+    if (queryParams.page !== null) updatePage(null);
+    if (queryParams.results !== null) updateResults(null);
+  }, [
+    pushSearchText,
+    searchText,
+    queryParams.filters,
+    queryParams.sort,
+    queryParams.page,
+    queryParams.results,
+    updateFilters,
+    updateSorts,
+    updatePage,
+    updateResults,
+  ]);
 
   React.useEffect(() => {
     if (searchOnNextRender) {
@@ -548,14 +571,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                       <SearchPageCardView
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
-                        onCurrentTab={pushCurrentTab}
+                        onTabChange={pushCurrentTab}
                         currentTab={currentTab}
                       />
                     ) : (
                       <SearchPageTable
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
-                        onCurrentTab={pushCurrentTab}
+                        onTabChange={pushCurrentTab}
                         currentTab={currentTab}
                       />
                     )}

@@ -77,7 +77,7 @@ const tabStyles = (theme: Theme): StyleRules =>
 export interface SearchCardViewProps {
   containerHeight: string;
   hierarchy: string;
-  onCurrentTab: (currentTab: string) => void;
+  onTabChange: (currentTab: string) => void;
   currentTab: string;
 }
 
@@ -85,7 +85,6 @@ interface SearchCardViewStoreProps {
   maxNumResults: number;
   datasetTab: boolean;
   datafileTab: boolean;
-  searchableEntities: string[];
   investigationTab: boolean;
 }
 
@@ -133,7 +132,7 @@ const SearchPageCardView = (
     datafileTab,
     containerHeight,
     hierarchy,
-    onCurrentTab,
+    onTabChange,
     currentTab,
   } = props;
   const [t] = useTranslation();
@@ -195,7 +194,7 @@ const SearchPageCardView = (
       storeResults(results, currentTab);
     }
 
-    onCurrentTab(newValue);
+    onTabChange(newValue);
 
     updateFilters({});
     updateSorts({});
@@ -404,7 +403,6 @@ const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,
-    searchableEntities: state.dgsearch.searchableEntities,
   };
 };
 

@@ -73,14 +73,13 @@ const tabStyles = (theme: Theme): StyleRules =>
 export interface SearchTableProps {
   containerHeight: string;
   hierarchy: string;
-  onCurrentTab: (currentTab: string) => void;
+  onTabChange: (currentTab: string) => void;
   currentTab: string;
 }
 
 interface SearchTableStoreProps {
   maxNumResults: number;
   datasetTab: boolean;
-  searchableEntities: string[];
   datafileTab: boolean;
   investigationTab: boolean;
 }
@@ -129,7 +128,7 @@ const SearchPageTable = (
     datafileTab,
     containerHeight,
     hierarchy,
-    onCurrentTab,
+    onTabChange,
     currentTab,
   } = props;
   const [t] = useTranslation();
@@ -183,19 +182,17 @@ const SearchPageTable = (
     storeFilters(filters, currentTab);
     storeSort(sort, currentTab);
 
-    onCurrentTab(newValue);
+    onTabChange(newValue);
 
     updateFilters({});
     updateSorts({});
   };
 
   React.useEffect(() => {
-    if (currentTab) {
-      const filters = getFilters(currentTab);
-      const sorts = getSorts(currentTab);
-      if (filters) updateFilters(filters);
-      if (sorts) updateSorts(sorts);
-    }
+    const filters = getFilters(currentTab);
+    const sorts = getSorts(currentTab);
+    if (filters) updateFilters(filters);
+    if (sorts) updateSorts(sorts);
   }, [currentTab, updateFilters, updateSorts]);
 
   const { data: investigationDataCount } = useInvestigationCount(
@@ -414,7 +411,6 @@ const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   return {
     maxNumResults: state.dgsearch.maxNumResults,
     datasetTab: state.dgsearch.tabs.datasetTab,
-    searchableEntities: state.dgsearch.searchableEntities,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,
   };
