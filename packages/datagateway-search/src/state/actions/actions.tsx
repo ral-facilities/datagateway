@@ -4,8 +4,6 @@ import {
   SetDatasetTabType,
   SetInvestigationTabType,
   TogglePayload,
-  CurrentTabPayload,
-  SetCurrentTabType,
 } from './actions.types';
 
 export const setDatasetTab = (
@@ -32,14 +30,5 @@ export const setInvestigationTab = (
   type: SetInvestigationTabType,
   payload: {
     toggleOption,
-  },
-});
-
-export const setCurrentTab = (
-  currentTab: string
-): ActionType<CurrentTabPayload> => ({
-  type: SetCurrentTabType,
-  payload: {
-    currentTab,
   },
 });

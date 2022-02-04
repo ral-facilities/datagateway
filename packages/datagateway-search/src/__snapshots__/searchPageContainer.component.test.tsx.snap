@@ -1336,7 +1336,6 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
       >
         <Connect(SearchPageContainer)>
           <SearchPageContainer
-            currentTab="investigation"
             datafileTab={true}
             datasetTab={true}
             investigationTab={true}

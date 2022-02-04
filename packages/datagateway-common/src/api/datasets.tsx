@@ -400,11 +400,16 @@ export const fetchDatasetCountQuery = (
 };
 
 export const useDatasetCount = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  storedFilters?: FiltersType,
+  currentTab?: string
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters } = parseSearchToQuery(location.search);
+  const filters =
+    currentTab === 'dataset' || !storedFilters
+      ? parseSearchToQuery(location.search).filters
+      : storedFilters;
 
   return useQuery<
     number,

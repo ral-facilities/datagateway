@@ -10,6 +10,7 @@ import {
   usePushPage,
   usePushResults,
   useSort,
+  usePushCurrentTab,
   useUpdateView,
 } from './index';
 import {
@@ -36,6 +37,7 @@ import {
   usePushSearchToggles,
   usePushSearchEndDate,
   usePushSearchStartDate,
+  useUpdateQueryParam,
 } from '..';
 
 jest.mock('../handleICATError');
@@ -116,6 +118,7 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: null,
         endDate: null,
+        currentTab: 'investigation',
       });
     });
 
@@ -136,6 +139,7 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-17T00:00:00Z'),
         endDate: new Date('2021-10-25T00:00:00Z'),
+        currentTab: 'investigation',
       });
     });
 
@@ -158,6 +162,7 @@ describe('generic api functions', () => {
           investigation: true,
           startDate: new Date(NaN),
           endDate: new Date(NaN),
+          currentTab: 'investigation',
         })
       );
     });
@@ -192,10 +197,11 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: null,
         endDate: null,
+        currentTab: 'investigation',
       };
 
       const params = new URLSearchParams(
-        '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}'
+        '?view=table&search=test&page=1&results=10&filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D&sort=%7B%22name%22%3A%22asc%22%7D'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -215,6 +221,7 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-17T00:00:00Z'),
         endDate: new Date('2021-10-25T00:00:00Z'),
+        currentTab: 'investigation',
       };
 
       const params = new URLSearchParams(
@@ -238,6 +245,7 @@ describe('generic api functions', () => {
         investigation: true,
         startDate: new Date('2021-10-34T00:00:00Z'),
         endDate: new Date('2021-14-25T00:00:00Z'),
+        currentTab: 'investigation',
       };
 
       const params = new URLSearchParams(
@@ -488,6 +496,20 @@ describe('generic api functions', () => {
       });
     });
 
+    describe('usePushCurrentTab', () => {
+      it('returns callback that when called pushes a new tab to the url query', () => {
+        const { result } = renderHook(() => usePushCurrentTab(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('dataset');
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith('?currentTab=dataset');
+      });
+    });
+
     describe('usePushResults', () => {
       it('returns callback that when called pushes a new page to the url query', () => {
         const { result } = renderHook(() => usePushResults(), {
@@ -499,6 +521,88 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?results=10');
+      });
+    });
+
+    describe('useUpdateQueryParam', () => {
+      it('returns callback that when called removes all filters from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(() => useUpdateQueryParam('filters'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current({
+            name: { value: 'test', type: 'include' },
+            title: { value: 'test2', type: 'include' },
+          });
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search:
+            '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
+        });
+      });
+
+      it('returns callback that when called removes all sorts from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(() => useUpdateQueryParam('sort'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current({ name: 'asc' });
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?sort=%7B%22name%22%3A%22asc%22%7D',
+        });
+      });
+
+      it('returns callback that when called removes page number from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(() => useUpdateQueryParam('page'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(2);
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?page=2',
+        });
+      });
+
+      it('returns callback that when called removes results number from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(() => useUpdateQueryParam('results'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(10);
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: '?results=10',
+        });
       });
     });
 

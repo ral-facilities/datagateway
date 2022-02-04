@@ -307,4 +307,5 @@ export interface QueryParams {
   investigation: boolean;
   startDate: Date | null;
   endDate: Date | null;
+  currentTab: string;
 }

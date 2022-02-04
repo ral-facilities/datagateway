@@ -21,6 +21,16 @@ import {
   setDatafileTab,
 } from './state/actions/actions';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import {
+  getFilters,
+  getPage,
+  getResults,
+  getSorts,
+  storeFilters,
+  storePage,
+  storeResults,
+  storeSort,
+} from './searchPageContainer.component';
 
 jest.mock('loglevel');
 
@@ -43,6 +53,11 @@ describe('SearchPageContainer - Tests', () => {
   let queryClient: QueryClient;
   let history: History;
   let pushSpy;
+
+  const localStorageGetItemMock = jest.spyOn(
+    window.localStorage.__proto__,
+    'getItem'
+  );
 
   const createWrapper = (
     h: History = history,
@@ -68,12 +83,14 @@ describe('SearchPageContainer - Tests', () => {
     });
     pushSpy = jest.spyOn(history, 'push');
 
+    window.localStorage.__proto__.removeItem = jest.fn();
+    window.localStorage.__proto__.setItem = jest.fn();
+
     const dGSearchInitialState = {
       tabs: {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
-        currentTab: 'investigation',
       },
       sideLayout: false,
       searchableEntities: ['investigation', 'dataset', 'datafile'],
@@ -492,6 +509,72 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
+  it('gets the filters stored in the local storage', () => {
+    localStorageGetItemMock.mockImplementationOnce(
+      () => '{"investigation.title":{"value":"test","type":"include"}}'
+    );
+    const result = getFilters('dataset');
+    expect(result).toEqual({
+      'investigation.title': {
+        type: 'include',
+        value: 'test',
+      },
+    });
+  });
+
+  it('gets the sorts stored in the local storage', () => {
+    localStorageGetItemMock.mockImplementationOnce(() => '{"name":"asc"}');
+    const result = getSorts('dataset');
+    expect(result).toEqual({
+      name: 'asc',
+    });
+  });
+
+  it('gets the page stored in the local storage', () => {
+    localStorageGetItemMock.mockImplementationOnce(() => 2);
+    const result = getPage('dataset');
+    expect(result).toEqual(2);
+  });
+
+  it('gets the results stored in the local storage', () => {
+    localStorageGetItemMock.mockImplementationOnce(() => 10);
+    const result = getResults('dataset');
+    expect(result).toEqual(10);
+  });
+
+  it('stores the previous filters in the local storage', () => {
+    storeFilters(
+      { title: { value: 'test', type: 'include' } },
+      'investigation'
+    );
+
+    expect(localStorage.setItem).toBeCalledWith(
+      'investigationFilters',
+      '{"title":{"value":"test","type":"include"}}'
+    );
+  });
+
+  it('stores the previous sorts in the local storage', () => {
+    storeSort({ name: 'asc' }, 'investigation');
+
+    expect(localStorage.setItem).toBeCalledWith(
+      'investigationSort',
+      '{"name":"asc"}'
+    );
+  });
+
+  it('stores the previous page in the local storage', () => {
+    storePage(4, 'investigation');
+
+    expect(localStorage.setItem).toBeCalledWith('investigationPage', '4');
+  });
+
+  it('stores the previous results in the local storage', () => {
+    storeResults(20, 'investigation');
+
+    expect(localStorage.setItem).toBeCalledWith('investigationResults', '20');
+  });
+
   it('sends actions to update tabs when user clicks search button', async () => {
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false'
@@ -705,25 +788,63 @@ describe('SearchPageContainer - Tests', () => {
       .simulate('click');
     wrapper.update();
 
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
     // Check that the text on the button has changed
     expect(
       wrapper.find('[aria-label="container-view-button"]').first().text()
     ).toEqual('app.view_table');
   });
 
-  it('does not search when there are no searchable entities', async () => {
-    state.dgsearch.searchableEntities = [];
+  it('defaults to dataset when investigation is false ', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: false,
+      },
+    };
 
     const wrapper = createWrapper();
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    wrapper.update();
+    expect(history.location.search).toEqual('?currentTab=dataset');
+  });
 
-    expect((axios.get as jest.Mock).mock.calls.length).toBe(0);
+  it('defaults to datafile if when investigation and dataset are false ', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: true,
+        investigationTab: false,
+      },
+    };
+
+    const wrapper = createWrapper();
+
+    wrapper.update();
+    expect(history.location.search).toEqual('?currentTab=datafile');
+  });
+
+  it('defaults to investigation if when investigation ,dataset and datafile are false ', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: false,
+        investigationTab: false,
+      },
+    };
+
+    const wrapper = createWrapper();
+
+    wrapper.update();
+    // '' i.e default value is investigation it set in the searchPageContainer
+    expect(history.location.search).toEqual('');
   });
 });

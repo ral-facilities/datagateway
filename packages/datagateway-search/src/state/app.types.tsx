@@ -7,7 +7,6 @@ export interface DGSearchState {
     datasetTab: boolean;
     datafileTab: boolean;
     investigationTab: boolean;
-    currentTab: string;
   };
   selectAllSetting: boolean;
   settingsLoaded: boolean;

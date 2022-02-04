@@ -30,6 +30,10 @@ import {
   useCart,
   SelectionAlert,
   readSciGatewayToken,
+  FiltersType,
+  SortType,
+  usePushCurrentTab,
+  useUpdateQueryParam,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -42,6 +46,82 @@ import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import { StyleRules } from '@material-ui/core/styles';
+
+export const storeFilters = (
+  filters: FiltersType,
+  searchableEntities: string
+): void => {
+  const filter = (searchableEntities as string) + 'Filters';
+
+  if (Object.keys(filters).length !== 0)
+    localStorage.setItem(filter, JSON.stringify(filters));
+};
+
+export const storeSort = (
+  sorts: SortType,
+  searchableEntities: string
+): void => {
+  const sort = (searchableEntities as string) + 'Sort';
+
+  if (Object.keys(sorts).length !== 0)
+    localStorage.setItem(sort, JSON.stringify(sorts));
+};
+
+export const storePage = (page: number, searchableEntities: string): void => {
+  const pageNumber = (searchableEntities as string) + 'Page';
+
+  if (page !== 1) localStorage.setItem(pageNumber, JSON.stringify(page));
+};
+
+export const storeResults = (
+  results: number,
+  searchableEntities: string
+): void => {
+  const resultsNumber = (searchableEntities as string) + 'Results';
+
+  if (results !== 10)
+    localStorage.setItem(resultsNumber, JSON.stringify(results));
+};
+
+export const getFilters = (searchableEntities: string): FiltersType | null => {
+  const filter = (searchableEntities as string) + 'Filters';
+  const savedFilters = localStorage.getItem(filter);
+  if (savedFilters) {
+    return JSON.parse(savedFilters) as FiltersType;
+  } else {
+    return null;
+  }
+};
+
+export const getSorts = (searchableEntities: string): SortType | null => {
+  const sort = (searchableEntities as string) + 'Sort';
+  const savedSort = localStorage.getItem(sort);
+  if (savedSort) {
+    return JSON.parse(savedSort) as SortType;
+  } else {
+    return null;
+  }
+};
+
+export const getPage = (searchableEntities: string): number | null => {
+  const pageNumber = (searchableEntities as string) + 'Page';
+  const savedPage = localStorage.getItem(pageNumber);
+  if (savedPage) {
+    return JSON.parse(savedPage) as number;
+  } else {
+    return null;
+  }
+};
+
+export const getResults = (searchableEntities: string): number | null => {
+  const resultsNumber = (searchableEntities as string) + 'Results';
+  const savedResults = localStorage.getItem(resultsNumber);
+  if (savedResults) {
+    return JSON.parse(savedResults) as number;
+  } else {
+    return null;
+  }
+};
 
 const storeDataView = (view: NonNullable<ViewsType>): void => {
   localStorage.setItem('dataView', view);
@@ -99,7 +179,6 @@ const ViewButton = (props: {
 }): React.ReactElement => {
   const [t] = useTranslation();
   const classes = viewButtonStyles();
-
   return (
     <div className={classes.root}>
       <Button
@@ -166,7 +245,6 @@ interface SearchPageContainerStoreProps {
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
-  currentTab: string;
 }
 
 interface SearchPageContainerDispatchProps {
@@ -185,10 +263,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     setDatafileTab,
     setDatasetTab,
     setInvestigationTab,
+    investigationTab,
+    datasetTab,
+    datafileTab,
     sideLayout,
     searchableEntities,
     maxNumResults,
-    currentTab,
   } = props;
 
   const location = useLocation();
@@ -196,7 +276,19 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     location.search,
   ]);
   const { view, startDate, endDate } = queryParams;
+
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
+
+  const boolSearchableEntities = [investigationTab, datasetTab, datafileTab];
+  const checkedBoxes = boolSearchableEntities.flatMap((b, i) =>
+    b ? searchableEntities[i] : []
+  );
+  const currentTab =
+    queryParams.currentTab && checkedBoxes.includes(queryParams.currentTab)
+      ? queryParams.currentTab
+      : checkedBoxes.length !== 0
+      ? checkedBoxes[0]
+      : searchableEntities[0];
 
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
@@ -213,6 +305,15 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
+  const pushCurrentTab = usePushCurrentTab();
+  const updateFilters = useUpdateQueryParam('filters');
+  const updateSorts = useUpdateQueryParam('sort');
+  const updatePage = useUpdateQueryParam('page');
+  const updateResults = useUpdateQueryParam('results');
+
+  React.useEffect(() => {
+    if (currentTab !== queryParams.currentTab) pushCurrentTab(currentTab);
+  }, [checkedBoxes, currentTab, pushCurrentTab, queryParams.currentTab]);
 
   const [searchText, setSearchText] = React.useState(searchTextURL);
   const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
@@ -281,7 +382,33 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
     setSearchOnNextRender(true);
-  }, [searchText, pushSearchText]);
+
+    localStorage.removeItem('investigationFilters');
+    localStorage.removeItem('datasetFilters');
+    localStorage.removeItem('datafileFilters');
+    localStorage.removeItem('investigationSort');
+    localStorage.removeItem('datasetSort');
+    localStorage.removeItem('datafileSort');
+    localStorage.removeItem('investigationPage');
+    localStorage.removeItem('datasetPage');
+    localStorage.removeItem('investigationResults');
+    localStorage.removeItem('datasetResults');
+    if (Object.keys(queryParams.filters).length !== 0) updateFilters({});
+    if (Object.keys(queryParams.sort).length !== 0) updateSorts({});
+    if (queryParams.page !== null) updatePage(null);
+    if (queryParams.results !== null) updateResults(null);
+  }, [
+    pushSearchText,
+    searchText,
+    queryParams.filters,
+    queryParams.sort,
+    queryParams.page,
+    queryParams.results,
+    updateFilters,
+    updateSorts,
+    updatePage,
+    updateResults,
+  ]);
 
   React.useEffect(() => {
     if (searchOnNextRender) {
@@ -444,11 +571,15 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                       <SearchPageCardView
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
+                        onTabChange={pushCurrentTab}
+                        currentTab={currentTab}
                       />
                     ) : (
                       <SearchPageTable
                         containerHeight={containerHeight}
                         hierarchy={match.params.hierarchy}
+                        onTabChange={pushCurrentTab}
+                        currentTab={currentTab}
                       />
                     )}
                   </Paper>
@@ -480,7 +611,6 @@ const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,
   investigationTab: state.dgsearch.tabs.investigationTab,
-  currentTab: state.dgsearch.tabs.currentTab,
 });
 
 export default connect(

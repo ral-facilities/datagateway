@@ -69,6 +69,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const investigation = query.get('investigation');
   const startDateString = query.get('startDate');
   const endDateString = query.get('endDate');
+  const currentTab = query.get('currentTab');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -126,6 +127,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     investigation: investigation !== null ? investigation === 'true' : true,
     startDate: startDate,
     endDate: endDate,
+    currentTab: currentTab ? currentTab : 'investigation',
   };
 
   return params;
@@ -150,7 +152,8 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
         !(
           (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
           v === true
-        )
+        ) &&
+        !(q === 'currentTab' && v === 'investigation')
       )
         queryParams.append(q, v);
     }
@@ -293,6 +296,7 @@ export const usePushFilter = (): ((
   filter: Filter | null
 ) => void) => {
   const { push } = useHistory();
+
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
       let query = parseSearchToQuery(window.location.search);
@@ -351,6 +355,45 @@ export const usePushFilters = (): ((
         }
       });
       push({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [push]
+  );
+};
+
+export const useUpdateQueryParam = (
+  type: 'filters' | 'sort' | 'page' | 'results'
+): ((param: FiltersType | SortType | number | null) => void) => {
+  const { replace } = useHistory();
+  return React.useCallback(
+    (param: FiltersType | SortType | number | null) => {
+      const query = parseSearchToQuery(window.location.search);
+
+      if (type === 'filters') {
+        query.filters = param as FiltersType;
+      } else if (type === 'sort') {
+        query.sort = param as SortType;
+      } else if (type === 'page') {
+        query.page = param as number | null;
+      } else if (type === 'results') {
+        query.results = param as number | null;
+      }
+
+      replace({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [type, replace]
+  );
+};
+
+export const usePushCurrentTab = (): ((currentTab: string) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (currentTab: string) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        currentTab,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
     },
     [push]
   );

@@ -83,6 +83,23 @@ describe('SearchPageContainer Component', () => {
         });
     });
 
+    it('should be able to navigate through tabs without losing the filters (Table)', () => {
+      cy.title().should('equal', 'DataGateway Search');
+
+      cy.get('#container-search-filters').should('exist');
+      cy.get('[aria-label="Filter by Title"]').type('ba');
+      cy.contains('Visit ID').first().click();
+
+      cy.get('[id="simple-tab-dataset"]').click();
+      cy.get('[id="simple-tab-investigation"]').click();
+
+      cy.get('[aria-rowcount="3"]').should('exist');
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Energy place money bad authority. Poor community technology against happy. Detail customer management together dog. Put name war sometimes rise sport your. Imagine across mother herself then.'
+      );
+    });
+
     it('should have the correct url for the DOI link (Cardview) ', () => {
       // DOI
 
@@ -276,7 +293,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.location().should((loc) => {
         expect(loc.search).to.eq(
-          '?searchText=dog&datafile=false&investigation=false'
+          '?searchText=dog&datafile=false&investigation=false&currentTab=dataset'
         );
       });
 

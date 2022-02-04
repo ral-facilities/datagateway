@@ -4,7 +4,6 @@ import {
   setDatasetTab,
   setDatafileTab,
   setInvestigationTab,
-  setCurrentTab,
 } from '../actions/actions';
 import {
   loadMaxNumResults,
@@ -56,14 +55,6 @@ describe('dgsearch reducer', () => {
     const updatedState = DGSearchReducer(state, setInvestigationTab(true));
 
     expect(updatedState.tabs.investigationTab).toEqual(true);
-  });
-
-  it('should set currentTab property when setCurrentTab action is sent', () => {
-    expect(state.tabs.currentTab).toEqual('investigation');
-
-    const updatedState = DGSearchReducer(state, setCurrentTab('dataset'));
-
-    expect(updatedState.tabs.currentTab).toEqual('dataset');
   });
 
   it('should set selectAllSetting when configuring action is sent', () => {

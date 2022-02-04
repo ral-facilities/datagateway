@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -18,18 +18,22 @@ import InvestigationSearchTable from './table/investigationSearchTable.component
 import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { setCurrentTab } from './state/actions/actions';
 import {
   parseSearchToQuery,
   useDatafileCount,
   useDatasetCount,
   useInvestigationCount,
   useLuceneSearch,
+  useUpdateQueryParam,
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { useIsFetching } from 'react-query';
+import {
+  getFilters,
+  getSorts,
+  storeFilters,
+  storeSort,
+} from './searchPageContainer.component';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -66,9 +70,11 @@ const tabStyles = (theme: Theme): StyleRules =>
     },
   });
 
-interface SearchTableProps {
+export interface SearchTableProps {
   containerHeight: string;
   hierarchy: string;
+  onTabChange: (currentTab: string) => void;
+  currentTab: string;
 }
 
 interface SearchTableStoreProps {
@@ -76,12 +82,8 @@ interface SearchTableStoreProps {
   datasetTab: boolean;
   datafileTab: boolean;
   investigationTab: boolean;
-  currentTab: string;
 }
 
-interface SearchTableDispatchProps {
-  setCurrentTab: (newValue: string) => Action;
-}
 interface TabPanelProps {
   children?: React.ReactNode;
   index: string;
@@ -117,17 +119,17 @@ const StyledBadge = withStyles(badgeStyles)(Badge);
 const StyledTabs = withStyles(tabStyles)(Tabs);
 
 const SearchPageTable = (
-  props: SearchTableProps & SearchTableStoreProps & SearchTableDispatchProps
+  props: SearchTableProps & SearchTableStoreProps
 ): React.ReactElement => {
   const {
     maxNumResults,
     investigationTab,
     datasetTab,
     datafileTab,
-    currentTab,
-    setCurrentTab,
     containerHeight,
     hierarchy,
+    onTabChange,
+    currentTab,
   } = props;
   const [t] = useTranslation();
 
@@ -165,72 +167,72 @@ const SearchPageTable = (
   });
   const loading = isFetchingNum > 0;
 
-  // Setting a tab based on user selection and what tabs are available
-  useEffect(() => {
-    if (currentTab === 'investigation') {
-      if (!investigationTab) {
-        if (datasetTab) {
-          setCurrentTab('dataset');
-        } else if (datafileTab) {
-          setCurrentTab('datafile');
-        }
-      }
-    } else if (currentTab === 'dataset') {
-      if (!datasetTab) {
-        if (investigationTab) {
-          setCurrentTab('investigation');
-        } else if (datafileTab) {
-          setCurrentTab('datafile');
-        } else {
-          setCurrentTab('investigation');
-        }
-      }
-    } else {
-      if (!datafileTab) {
-        if (investigationTab) {
-          setCurrentTab('investigation');
-        } else if (datasetTab) {
-          setCurrentTab('dataset');
-        } else {
-          setCurrentTab('investigation');
-        }
-      }
-    }
-  }, [setCurrentTab, investigationTab, datasetTab, datafileTab, currentTab]);
+  const { filters, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  const updateFilters = useUpdateQueryParam('filters');
+  const updateSorts = useUpdateQueryParam('sort');
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    setCurrentTab(newValue);
+    storeFilters(filters, currentTab);
+    storeSort(sort, currentTab);
+
+    onTabChange(newValue);
+
+    updateFilters({});
+    updateSorts({});
   };
 
-  const { data: investigationDataCount } = useInvestigationCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: investigation || [] },
-      }),
-    },
-  ]);
+  React.useEffect(() => {
+    const filters = getFilters(currentTab);
+    const sorts = getSorts(currentTab);
+    if (filters) updateFilters(filters);
+    if (sorts) updateSorts(sorts);
+  }, [currentTab, updateFilters, updateSorts]);
 
-  const { data: datasetDataCount } = useDatasetCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: dataset || [] },
-      }),
-    },
-  ]);
+  const { data: investigationDataCount } = useInvestigationCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: investigation || [] },
+        }),
+      },
+    ],
+    getFilters('investigation') ?? {},
+    currentTab
+  );
 
-  const { data: datafileDataCount } = useDatafileCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: datafile || [] },
-      }),
-    },
-  ]);
+  const { data: datasetDataCount } = useDatasetCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: dataset || [] },
+        }),
+      },
+    ],
+    getFilters('dataset') ?? {},
+    currentTab
+  );
+
+  const { data: datafileDataCount } = useDatafileCount(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: datafile || [] },
+        }),
+      },
+    ],
+    getFilters('datafile') ?? {},
+    currentTab
+  );
 
   const badgeDigits = (length?: number): 3 | 2 | 1 => {
     return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
@@ -239,6 +241,7 @@ const SearchPageTable = (
   return (
     <div>
       {/* Show loading progress if data is still being loaded */}
+
       {loading && <LinearProgress color="secondary" />}
       <AppBar position="static" elevation={0}>
         <StyledTabs
@@ -410,14 +413,7 @@ const mapStateToProps = (state: StateType): SearchTableStoreProps => {
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,
-    currentTab: state.dgsearch.tabs.currentTab,
   };
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): SearchTableDispatchProps => ({
-  setCurrentTab: (newValue: string) => dispatch(setCurrentTab(newValue)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchPageTable);
+export default connect(mapStateToProps)(SearchPageTable);
