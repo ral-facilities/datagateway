@@ -29,6 +29,7 @@ import {
   usePushSearchText,
   useCart,
   SelectionAlert,
+  useClearFilters,
   readSciGatewayToken,
   useClearFilters,
 } from 'datagateway-common';
