@@ -8,8 +8,12 @@
   "main": "./lib/index.js",
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.3.10",
+    "@mui/icons-material": "^5.3.1",
+    "@mui/lab": "^5.0.0-alpha.67",
     "@types/lodash.debounce": "^4.0.6",
     "axios": "^0.24.0",
     "clsx": "^1.1.1",
@@ -35,6 +39,9 @@
   "peerDependencies": {
     "@material-ui/core": ">=  4.0.0 < 5",
     "@material-ui/icons": ">=  4.0.0 < 5",
+    "@mui/lab": "^5.0.0-alpha.67",
+    "@mui/material": "^5.4.0",
+    "@mui/styles": "^5.3.0",
     "react": ">= 17.0.2",
     "react-dom": ">= 17.0.2",
     "react-router-dom": ">= 5.2.0 < 6"
@@ -42,6 +49,8 @@
   "devDependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
+    "@mui/material": "^5.4.0",
+    "@mui/styles": "^5.3.0",
     "@testing-library/react-hooks": "^7.0.1",
     "@types/enzyme": "^3.10.10",
     "@types/jest": "^27.0.2",
