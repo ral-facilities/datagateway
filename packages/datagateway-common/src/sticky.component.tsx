@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Paper, makeStyles } from '@material-ui/core';
+import { Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import debounce from 'lodash.debounce';
 import clsx from 'clsx';
 

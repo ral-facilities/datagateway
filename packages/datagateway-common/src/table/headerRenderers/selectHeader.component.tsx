@@ -1,11 +1,11 @@
 import React from 'react';
 import { TableHeaderProps } from 'react-virtualized';
-import { TableCell, Checkbox } from '@material-ui/core';
+import { TableCell, Checkbox } from '@mui/material';
 import {
   CheckBoxOutlineBlank,
   CheckBox as CheckBoxIcon,
   IndeterminateCheckBox,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 type SelectHeaderProps = TableHeaderProps & {
   className: string;

@@ -1,14 +1,14 @@
 import {
   Theme,
-  createStyles,
   IconButton,
-  makeStyles,
   Grid,
   Paper,
   Typography,
   darken,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from '@mui/icons-material/Close';
 import { DownloadCartItem, MicroFrontendId } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

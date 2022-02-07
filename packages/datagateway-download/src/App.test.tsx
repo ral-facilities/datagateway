@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@mui/material/test-utils';
 import { mount as enzymeMount } from 'enzyme';
 import * as log from 'loglevel';
 import { act } from 'react-dom/test-utils';
-import { StylesProvider } from '@material-ui/core/styles';
+import StylesProvider from '@mui/styles/StylesProvider';
 import { flushPromises } from './setupTests';
 
 jest.mock('loglevel');

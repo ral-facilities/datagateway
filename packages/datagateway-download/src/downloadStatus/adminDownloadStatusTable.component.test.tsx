@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount, createShallow } from '@mui/material/test-utils';
 import { Download } from 'datagateway-common';
 import {
   adminDownloadDeleted,
@@ -9,7 +9,7 @@ import {
 import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
-import { Select } from '@material-ui/core';
+import { Select } from '@mui/material';
 
 jest.mock('../downloadApi');
 

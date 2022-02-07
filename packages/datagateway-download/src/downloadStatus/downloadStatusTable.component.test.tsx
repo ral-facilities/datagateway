@@ -1,6 +1,6 @@
 import React from 'react';
 import DownloadStatusTable from './downloadStatusTable.component';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createShallow, createMount } from '@mui/material/test-utils';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';

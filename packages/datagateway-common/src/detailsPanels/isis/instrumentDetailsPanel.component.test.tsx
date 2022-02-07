@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@mui/material/test-utils';
 import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';

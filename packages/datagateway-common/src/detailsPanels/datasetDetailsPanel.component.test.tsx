@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { createShallow } from '@mui/material/test-utils';
 import { Dataset } from '../app.types';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
 
