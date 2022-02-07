@@ -1,7 +1,7 @@
 import React from 'react';
 import { StateType } from './state/app.types';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Router } from 'react-router';
+import { MemoryRouter, Router } from 'react-router-dom';
 
 import SearchPageCardView, {
   SearchCardViewProps,

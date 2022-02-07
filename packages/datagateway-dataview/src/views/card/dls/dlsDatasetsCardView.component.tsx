@@ -21,7 +21,7 @@ import {
 import { CalendarToday } from '@material-ui/icons';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 interface DLSDatasetsCVProps {
   proposalName: string;

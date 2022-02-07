@@ -5,7 +5,6 @@ exports[`Cell content renderers datasetLink renders correctly 1`] = `
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -27,7 +26,6 @@ exports[`Cell content renderers investigationLink renders correctly 1`] = `
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -49,7 +47,6 @@ exports[`Cell content renderers tableLink renders correctly 1`] = `
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],

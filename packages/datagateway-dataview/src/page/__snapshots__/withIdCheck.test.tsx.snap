@@ -49,7 +49,6 @@ exports[`withIdCheck renders error when checkingPromise does not resolve to be t
           component={
             Object {
               "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
               "propTypes": Object {
                 "innerRef": [Function],
                 "onClick": [Function],
@@ -114,7 +113,6 @@ exports[`withIdCheck renders error when checkingPromise is rejected 1`] = `
           component={
             Object {
               "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
               "propTypes": Object {
                 "innerRef": [Function],
                 "onClick": [Function],

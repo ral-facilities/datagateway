@@ -125,7 +125,6 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -152,7 +151,6 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -171,7 +169,6 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -227,7 +224,6 @@ exports[`Investigation Search Table component renders title, visit ID, Name and 
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],

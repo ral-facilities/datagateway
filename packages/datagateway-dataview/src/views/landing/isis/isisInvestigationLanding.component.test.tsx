@@ -14,7 +14,7 @@ import thunk from 'redux-thunk';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { flushPromises } from '../../../setupTests';
 import { act } from 'react-dom/test-utils';
 

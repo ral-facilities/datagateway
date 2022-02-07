@@ -104,7 +104,6 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -131,7 +130,6 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -150,7 +148,6 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -206,7 +203,6 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],
@@ -257,7 +253,6 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -284,7 +279,6 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -303,7 +297,6 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -359,7 +352,6 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],

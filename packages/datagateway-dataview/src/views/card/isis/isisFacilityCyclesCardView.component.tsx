@@ -16,7 +16,7 @@ import {
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 interface ISISFacilityCyclesCVProps {
   instrumentId: string;

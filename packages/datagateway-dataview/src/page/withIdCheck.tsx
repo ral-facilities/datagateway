@@ -11,7 +11,7 @@ import {
   Link,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
-import { withRouter, RouteComponentProps } from 'react-router';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import { compose } from 'redux';
 import { useTranslation, Trans } from 'react-i18next';

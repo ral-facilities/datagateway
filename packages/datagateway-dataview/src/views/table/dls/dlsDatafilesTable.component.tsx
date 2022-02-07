@@ -21,7 +21,7 @@ import {
   DLSDatafileDetailsPanel,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';

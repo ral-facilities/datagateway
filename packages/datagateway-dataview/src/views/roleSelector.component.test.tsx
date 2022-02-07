@@ -13,7 +13,7 @@ import {
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import RoleSelector from './roleSelector.component';

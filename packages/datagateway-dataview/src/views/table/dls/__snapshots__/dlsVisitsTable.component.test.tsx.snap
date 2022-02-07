@@ -120,7 +120,6 @@ exports[`DLS Visits table component renders visit ID as links 1`] = `
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -147,7 +146,6 @@ exports[`DLS Visits table component renders visit ID as links 1`] = `
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -166,7 +164,6 @@ exports[`DLS Visits table component renders visit ID as links 1`] = `
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -222,7 +219,6 @@ exports[`DLS Visits table component renders visit ID as links 1`] = `
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],

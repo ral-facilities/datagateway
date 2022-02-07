@@ -18,7 +18,7 @@ import {
   usePushSearchEndDate,
   usePushSearchStartDate,
 } from 'datagateway-common';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { isValid } from 'date-fns';
 

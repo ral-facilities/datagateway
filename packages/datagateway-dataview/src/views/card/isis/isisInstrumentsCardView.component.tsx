@@ -17,7 +17,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 interface ISISInstrumentsCVProps {
   studyHierarchy: boolean;

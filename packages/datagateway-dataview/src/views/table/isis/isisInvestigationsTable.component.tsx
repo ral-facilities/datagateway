@@ -33,7 +33,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import PersonIcon from '@material-ui/icons/Person';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;

@@ -71,7 +71,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                 },
                 "render": [Function],
               },
-              "displayName": "WithStyles(ForwardRef(Backdrop))",
               "options": Object {
                 "defaultTheme": Object {
                   "breakpoints": Object {
@@ -3473,7 +3472,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                 },
                 "render": [Function],
               },
-              "displayName": "WithStyles(ForwardRef(Backdrop))",
               "options": Object {
                 "defaultTheme": Object {
                   "breakpoints": Object {

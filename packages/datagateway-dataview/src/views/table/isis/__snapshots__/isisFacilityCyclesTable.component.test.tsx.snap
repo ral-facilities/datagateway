@@ -78,7 +78,6 @@ exports[`ISIS FacilityCycles table component renders facilitycycle name as a lin
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -105,7 +104,6 @@ exports[`ISIS FacilityCycles table component renders facilitycycle name as a lin
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -124,7 +122,6 @@ exports[`ISIS FacilityCycles table component renders facilitycycle name as a lin
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -180,7 +177,6 @@ exports[`ISIS FacilityCycles table component renders facilitycycle name as a lin
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],

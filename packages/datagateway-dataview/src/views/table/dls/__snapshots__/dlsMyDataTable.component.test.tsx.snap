@@ -132,7 +132,6 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -160,7 +159,6 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -180,7 +178,6 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -237,7 +234,6 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],
@@ -292,7 +288,6 @@ exports[`DLS MyData table component renders title and visit ID as a links 2`] = 
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -319,7 +314,6 @@ exports[`DLS MyData table component renders title and visit ID as a links 2`] = 
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -338,7 +332,6 @@ exports[`DLS MyData table component renders title and visit ID as a links 2`] = 
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -394,7 +387,6 @@ exports[`DLS MyData table component renders title and visit ID as a links 2`] = 
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],

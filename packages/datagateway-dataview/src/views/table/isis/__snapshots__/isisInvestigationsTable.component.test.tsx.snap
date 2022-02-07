@@ -179,7 +179,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -207,7 +206,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -227,7 +225,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -284,7 +281,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],
@@ -429,7 +425,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -457,7 +452,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -477,7 +471,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -534,7 +527,6 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],

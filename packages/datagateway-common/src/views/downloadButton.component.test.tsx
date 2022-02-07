@@ -11,7 +11,7 @@ import { downloadInvestigation } from '../api/investigations';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 

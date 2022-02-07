@@ -186,7 +186,6 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -214,7 +213,6 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -234,7 +232,6 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -291,7 +288,6 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],
@@ -346,7 +342,6 @@ exports[`ISIS MyData table component renders title and name as links 2`] = `
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
-      "displayName": "Link",
       "propTypes": Object {
         "innerRef": [Function],
         "onClick": [Function],
@@ -373,7 +368,6 @@ exports[`ISIS MyData table component renders title and name as links 2`] = `
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
-        "displayName": "Link",
         "propTypes": Object {
           "innerRef": [Function],
           "onClick": [Function],
@@ -392,7 +386,6 @@ exports[`ISIS MyData table component renders title and name as links 2`] = `
       component={
         Object {
           "$$typeof": Symbol(react.forward_ref),
-          "displayName": "Link",
           "propTypes": Object {
             "innerRef": [Function],
             "onClick": [Function],
@@ -448,7 +441,6 @@ exports[`ISIS MyData table component renders title and name as links 2`] = `
         component={
           Object {
             "$$typeof": Symbol(react.forward_ref),
-            "displayName": "Link",
             "propTypes": Object {
               "innerRef": [Function],
               "onClick": [Function],
