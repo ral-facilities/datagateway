@@ -1,6 +1,6 @@
 import React from 'react';
 import Preloader from './preloader.component';
-import { createMount } from '@mui/material/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 
 describe('Preloader component', () => {
   let mount;

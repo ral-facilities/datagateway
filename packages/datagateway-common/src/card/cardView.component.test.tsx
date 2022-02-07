@@ -5,9 +5,9 @@ import {
   Select,
   SvgIcon,
   Typography,
-} from '@mui/material';
-import { createMount, createShallow } from '@mui/material/test-utils';
-import { Pagination } from '@mui/material';
+} from '@material-ui/core';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { Pagination } from '@material-ui/lab';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
 import axios from 'axios';

@@ -1,17 +1,16 @@
 import React, { useCallback, useMemo } from 'react';
 import {
   CircularProgress,
+  createStyles,
   Grid,
   IconButton,
   LinearProgress,
   Paper,
   Typography,
   Theme,
-} from '@mui/material';
-
-import { StyleRules } from '@mui/styles';
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+  StyleRules,
+  withStyles,
+} from '@material-ui/core';
 
 import {
   DateColumnFilter,
@@ -39,8 +38,8 @@ import {
   PlayCircleFilled,
   RemoveCircle,
   Restore,
-} from '@mui/icons-material';
-import RefreshIcon from '@mui/icons-material/Refresh';
+} from '@material-ui/icons';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import BlackTooltip from '../tooltip.component';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
@@ -290,7 +289,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                     'downloadTab.refresh_download_status_arialabel'
                   )}
                   onClick={() => setRefreshDownloads(true)}
-                  size="large"
                 >
                   <RefreshIcon />
                 </IconButton>

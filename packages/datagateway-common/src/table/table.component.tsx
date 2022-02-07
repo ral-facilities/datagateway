@@ -1,9 +1,12 @@
 import React from 'react';
-import TableCell from '@mui/material/TableCell';
-import { Theme } from '@mui/material/styles';
-import { StyleRules, WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import createStyles from '@mui/styles/createStyles';
+import TableCell from '@material-ui/core/TableCell';
+import {
+  withStyles,
+  createStyles,
+  Theme,
+  StyleRules,
+  WithStyles,
+} from '@material-ui/core/styles';
 import {
   AutoSizer,
   Column,

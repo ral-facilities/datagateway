@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { createShallow } from '@material-ui/core/test-utils';
 import HomePage, { HomePageProps } from './homePage.component';
 
 describe('Home page component', () => {

@@ -9,18 +9,16 @@ import {
   IconButton,
   CircularProgress,
   Theme,
-} from '@mui/material';
-import Tab from '@mui/material/Tab';
+} from '@material-ui/core';
+import Tab from '@material-ui/core/Tab';
 
 import DownloadCartTable from '../downloadCart/downloadCartTable.component';
 import DownloadStatusTable from '../downloadStatus/downloadStatusTable.component';
 
-import RefreshIcon from '@mui/icons-material/Refresh';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import BlackTooltip from '../tooltip.component';
 import { useTranslation } from 'react-i18next';
-import { StyleRules } from '@mui/styles';
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import { StyleRules, createStyles, withStyles } from '@material-ui/core/styles';
 
 const paperStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -152,7 +150,6 @@ const DownloadTabs: React.FC = () => {
                       'downloadTab.refresh_download_status_arialabel'
                     )}
                     onClick={() => setRefreshDownloads(true)}
-                    size="large"
                   >
                     <RefreshIcon />
                   </IconButton>

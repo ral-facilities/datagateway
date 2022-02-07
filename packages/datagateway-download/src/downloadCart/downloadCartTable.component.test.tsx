@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@mui/material/test-utils';
+import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DownloadCartTable from './downloadCartTable.component';
 import { DownloadCartItem } from 'datagateway-common';
 import { flushPromises } from '../setupTests';

@@ -1,8 +1,8 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import { ReactWrapper } from 'enzyme';
 import { ArrowTooltip } from '.';
-import { Tooltip } from '@mui/material';
+import { Tooltip } from '@material-ui/core';
 import { getTooltipText } from './arrowtooltip.component';
 import { act } from 'react-dom/test-utils';
 

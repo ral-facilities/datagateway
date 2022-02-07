@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { createShallow } from '@material-ui/core/test-utils';
 import SelectHeader from './selectHeader.component';
 
 describe('Select column header component', () => {

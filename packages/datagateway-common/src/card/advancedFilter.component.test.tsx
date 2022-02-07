@@ -1,16 +1,16 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
-import TitleIcon from '@mui/icons-material/Title';
-import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import PublicIcon from '@mui/icons-material/Public';
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import ExploreIcon from '@mui/icons-material/Explore';
-import SaveIcon from '@mui/icons-material/Save';
-import DescriptionIcon from '@mui/icons-material/Description';
-import LinkIcon from '@mui/icons-material/Link';
-import PersonIcon from '@mui/icons-material/Person';
+import { createShallow } from '@material-ui/core/test-utils';
+import TitleIcon from '@material-ui/icons/Title';
+import FingerprintIcon from '@material-ui/icons/Fingerprint';
+import PublicIcon from '@material-ui/icons/Public';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import ExploreIcon from '@material-ui/icons/Explore';
+import SaveIcon from '@material-ui/icons/Save';
+import DescriptionIcon from '@material-ui/icons/Description';
+import LinkIcon from '@material-ui/icons/Link';
+import PersonIcon from '@material-ui/icons/Person';
 import AdvancedFilter, {
   UnmemoisedAdvancedFilter,
 } from './advancedFilter.component';

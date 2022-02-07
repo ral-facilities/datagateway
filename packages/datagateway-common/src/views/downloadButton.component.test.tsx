@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import DownloadButton, {
   DownloadButtonProps,
 } from './downloadButton.component';

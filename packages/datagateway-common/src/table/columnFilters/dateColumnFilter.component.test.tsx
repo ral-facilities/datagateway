@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@mui/material/test-utils';
+import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DateColumnFilter, {
   datesEqual,
   updateFilter,

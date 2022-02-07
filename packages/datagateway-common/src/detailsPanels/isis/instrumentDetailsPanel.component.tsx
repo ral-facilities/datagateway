@@ -2,14 +2,14 @@ import React from 'react';
 import {
   Typography,
   Grid,
+  createStyles,
+  makeStyles,
   Theme,
   Divider,
   Tabs,
   Tab,
   Link,
-} from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { Entity, Instrument } from '../../app.types';
 import { useInstrumentDetails } from '../../api/instruments';

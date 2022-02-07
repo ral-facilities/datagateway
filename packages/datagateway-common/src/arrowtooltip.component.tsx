@@ -1,10 +1,7 @@
 import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
-import Tooltip, { TooltipProps } from '@mui/material/Tooltip';
-import { Theme } from '@mui/material/styles';
-
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
+import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 const useStylesArrow = makeStyles((theme: Theme) =>
   createStyles({

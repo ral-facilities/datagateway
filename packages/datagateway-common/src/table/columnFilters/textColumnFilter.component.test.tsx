@@ -1,10 +1,10 @@
 import React from 'react';
-import { createShallow, createMount } from '@mui/material/test-utils';
+import { createShallow, createMount } from '@material-ui/core/test-utils';
 import TextColumnFilter, {
   usePrincipalExperimenterFilter,
   useTextFilter,
 } from './textColumnFilter.component';
-import { Select } from '@mui/material';
+import { Select } from '@material-ui/core';
 import { act } from 'react-dom/test-utils';
 import { usePushFilter, usePushFilters } from '../../api';
 import { renderHook } from '@testing-library/react-hooks';

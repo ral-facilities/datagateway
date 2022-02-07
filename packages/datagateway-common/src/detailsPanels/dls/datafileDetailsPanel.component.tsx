@@ -1,7 +1,12 @@
 import React from 'react';
-import { Typography, Grid, Theme, Divider } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useDatafileDetails } from '../../api/datafiles';
 import { Datafile, Entity } from '../../app.types';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableCellProps, TableCellRenderer } from 'react-virtualized';
-import { Divider, TableCell, Typography } from '@mui/material';
+import { Divider, TableCell, Typography } from '@material-ui/core';
 import ArrowTooltip, { getTooltipText } from '../../arrowtooltip.component';
 
 type CellRendererProps = TableCellProps & {

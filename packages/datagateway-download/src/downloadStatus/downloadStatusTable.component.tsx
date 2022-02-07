@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Paper, IconButton, LinearProgress } from '@mui/material';
+import { Grid, Paper, IconButton, LinearProgress } from '@material-ui/core';
 
 import {
   Table,
@@ -13,7 +13,7 @@ import {
 } from 'datagateway-common';
 import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
-import { RemoveCircle, GetApp } from '@mui/icons-material';
+import { RemoveCircle, GetApp } from '@material-ui/icons';
 import BlackTooltip from '../tooltip.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';

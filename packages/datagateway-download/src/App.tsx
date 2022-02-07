@@ -4,8 +4,10 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import DownloadTabs from './downloadTab/downloadTab.component';
 
-import createGenerateClassName from '@mui/styles/createGenerateClassName';
-import StylesProvider from '@mui/styles/StylesProvider';
+import {
+  createGenerateClassName,
+  StylesProvider,
+} from '@material-ui/core/styles';
 import ConfigProvider from './ConfigProvider';
 import {
   MicroFrontendId,

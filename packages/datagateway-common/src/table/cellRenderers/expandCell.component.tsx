@@ -1,7 +1,7 @@
 import React from 'react';
 import { TableCellProps } from 'react-virtualized';
-import { TableCell, IconButton } from '@mui/material';
-import { ExpandMore, ExpandLess } from '@mui/icons-material';
+import { TableCell, IconButton } from '@material-ui/core';
+import { ExpandMore, ExpandLess } from '@material-ui/icons';
 
 type ExpandCellProps = TableCellProps & {
   expandedIndex: number;
@@ -26,7 +26,6 @@ const ExpandCell = React.memo(
             className={`tour-dataview-expand-${props.rowIndex}`}
             aria-label="Show details"
             onClick={() => setExpandedIndex(props.rowIndex)}
-            size="large"
           >
             <ExpandMore />
           </IconButton>
@@ -34,7 +33,6 @@ const ExpandCell = React.memo(
           <IconButton
             aria-label="Hide details"
             onClick={() => setExpandedIndex(-1)}
-            size="large"
           >
             <ExpandLess />
           </IconButton>

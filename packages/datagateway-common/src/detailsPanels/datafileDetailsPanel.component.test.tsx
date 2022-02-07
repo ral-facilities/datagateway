@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { createShallow } from '@material-ui/core/test-utils';
 import { Datafile } from '../app.types';
 import DatafileDetailsPanel from './datafileDetailsPanel.component';
 

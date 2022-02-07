@@ -1,7 +1,7 @@
 import React from 'react';
-import { createTheme, adaptV4Theme } from '@mui/material/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 import DGThemeProvider from './dgThemeProvider.component';
-import { createShallow } from '@mui/material/test-utils';
+import { createShallow } from '@material-ui/core/test-utils';
 import { MicroFrontendId } from './app.types';
 import { SendThemeOptionsType } from './state/actions/actions.types';
 
@@ -14,13 +14,11 @@ describe('DGThemeProvider', () => {
 
   it('receives and uses the theme options', () => {
     // Create a basic theme.
-    const theme = createTheme(
-      adaptV4Theme({
-        palette: {
-          mode: 'dark',
-        },
-      })
-    );
+    const theme = createMuiTheme({
+      palette: {
+        type: 'dark',
+      },
+    });
 
     const wrapper = shallow(
       <DGThemeProvider>

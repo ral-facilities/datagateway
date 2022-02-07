@@ -10,11 +10,9 @@ import {
   AccordionSummary,
   Link,
   Typography,
-} from '@mui/material';
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+} from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowTooltip, { getTooltipText } from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -337,7 +335,7 @@ const EntityCard = React.memo(
                     show for each card */}
                   <Collapse
                     in={isDescriptionCollapsed}
-                    collapsedSize={defaultCollapsedHeight}
+                    collapsedHeight={defaultCollapsedHeight}
                   >
                     <Typography
                       aria-label="card-description"

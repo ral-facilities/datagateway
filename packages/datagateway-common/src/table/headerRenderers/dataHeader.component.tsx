@@ -7,7 +7,7 @@ import {
   Box,
   Typography,
   Divider,
-} from '@mui/material';
+} from '@material-ui/core';
 import Draggable from 'react-draggable';
 
 const DataHeader = React.memo(

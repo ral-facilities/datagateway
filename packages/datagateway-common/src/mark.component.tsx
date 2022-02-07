@@ -1,5 +1,5 @@
 import React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 
 // TypeScript linting will need us to define the return type,
 // but as classes may change, there is no need.

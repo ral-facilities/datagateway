@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import AddToCartButton, {
   AddToCartButtonProps,
 } from './addToCartButton.component';

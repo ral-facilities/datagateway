@@ -1,17 +1,15 @@
 import React from 'react';
 import {
-  ThemeProvider,
-  StyledEngineProvider,
+  MuiThemeProvider,
   Theme,
-  createTheme,
-  adaptV4Theme,
-} from '@mui/material/styles';
+  createMuiTheme,
+} from '@material-ui/core/styles';
 import { MicroFrontendId } from './app.types';
 import { SendThemeOptionsType } from './state/actions/actions.types';
 
 // Store the parent theme options when received.
 // Otherwise, set to an empty theme.
-let parentThemeOptions: Theme = createTheme(adaptV4Theme({}));
+let parentThemeOptions: Theme = createMuiTheme({});
 
 // Handle theme options sent from the parent app.
 document.addEventListener(MicroFrontendId, (e) => {
@@ -32,11 +30,9 @@ class DGThemeProvider extends React.Component<{ children: React.ReactNode }> {
 
   public render(): React.ReactElement {
     return (
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={parentThemeOptions}>
-          {this.props.children}
-        </ThemeProvider>
-      </StyledEngineProvider>
+      <MuiThemeProvider theme={parentThemeOptions}>
+        {this.props.children}
+      </MuiThemeProvider>
     );
   }
 }

@@ -1,10 +1,10 @@
 import React from 'react';
 import { TableCellProps } from 'react-virtualized';
-import { TableCell, Checkbox } from '@mui/material';
+import { TableCell, Checkbox } from '@material-ui/core';
 import {
   CheckBoxOutlineBlank,
   CheckBox as CheckBoxIcon,
-} from '@mui/icons-material';
+} from '@material-ui/icons';
 import { Entity, ICATEntity } from '../../app.types';
 
 type SelectCellProps = TableCellProps & {

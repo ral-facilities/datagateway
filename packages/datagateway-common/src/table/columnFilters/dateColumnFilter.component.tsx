@@ -8,7 +8,7 @@ import {
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { FiltersType, DateFilter } from '../../app.types';
 import { usePushFilter } from '../../api';
-import { useTheme } from '@mui/material';
+import { useTheme } from '@material-ui/core';
 
 export function datesEqual(
   date1: MaterialUiPickersDate,

@@ -1,5 +1,5 @@
-import { Button, IconButton } from '@mui/material';
-import { GetApp } from '@mui/icons-material';
+import { Button, IconButton } from '@material-ui/core';
+import { GetApp } from '@material-ui/icons';
 import { downloadDatafile } from '../api/datafiles';
 import { downloadDataset } from '../api/datasets';
 import { downloadInvestigation } from '../api/investigations';

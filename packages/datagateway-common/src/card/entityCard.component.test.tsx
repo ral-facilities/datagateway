@@ -1,5 +1,5 @@
-import { Link } from '@mui/material';
-import { createMount, createShallow } from '@mui/material/test-utils';
+import { Link } from '@material-ui/core';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
 import React from 'react';
 import { Investigation } from '../app.types';
 import EntityCard from './entityCard.component';
