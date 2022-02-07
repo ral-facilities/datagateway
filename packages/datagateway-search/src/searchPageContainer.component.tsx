@@ -573,6 +573,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         hierarchy={match.params.hierarchy}
                         onTabChange={pushCurrentTab}
                         currentTab={currentTab}
+                        cartItems={cartItems ?? []}
+                        navigateToDownload={navigateToDownload}
                       />
                     ) : (
                       <SearchPageTable
@@ -580,6 +582,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         hierarchy={match.params.hierarchy}
                         onTabChange={pushCurrentTab}
                         currentTab={currentTab}
+                        cartItems={cartItems ?? []}
+                        navigateToDownload={navigateToDownload}
                       />
                     )}
                   </Paper>
