@@ -1,6 +1,6 @@
 import React from 'react';
 import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Action } from 'redux';
 import { StateType } from './state/app.types';
 import { initialState } from './state/reducers/dgcommon.reducer';
@@ -8,12 +8,12 @@ import { setLogger } from 'react-query';
 import { WrapperComponent } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { createMemoryHistory, History } from 'history';
 
-// React 16 Enzyme adapter
+// Unofficial React 17 Enzyme adapter
 Enzyme.configure({ adapter: new Adapter() });
 
 function noOp(): void {

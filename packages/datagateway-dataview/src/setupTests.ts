@@ -1,11 +1,11 @@
 import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Action } from 'redux';
 import { StateType } from './state/app.types';
 import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 
-// React 16 Enzyme adapter
+// Unofficial React 17 Enzyme adapter
 Enzyme.configure({ adapter: new Adapter() });
 
 function noOp(): void {
