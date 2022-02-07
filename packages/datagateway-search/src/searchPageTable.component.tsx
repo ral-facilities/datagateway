@@ -99,7 +99,7 @@ interface TabPanelProps {
   value: string;
 }
 
-interface SearchCartProps {
+export interface SearchCartProps {
   cartItems: DownloadCartItem[];
   navigateToDownload: () => void;
 }

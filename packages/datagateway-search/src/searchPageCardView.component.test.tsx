@@ -5,6 +5,7 @@ import { MemoryRouter, Router } from 'react-router';
 
 import SearchPageCardView, {
   SearchCardViewProps,
+  SearchCartProps,
 } from './searchPageCardView.component';
 
 import { mount as enzymeMount, ReactWrapper } from 'enzyme';
@@ -32,10 +33,12 @@ describe('SearchPageCardView', () => {
   let mount: typeof enzymeMount;
   let state: StateType;
   let history: History;
-  let props: SearchCardViewProps;
+  let props: SearchCardViewProps & SearchCartProps;
 
   const mockStore = configureStore([thunk]);
   const onTabChange = jest.fn();
+  const useCart = jest.fn();
+  const navigateToDownload = jest.fn();
 
   const createWrapper = (
     store: Store = mockStore(state),
@@ -67,6 +70,8 @@ describe('SearchPageCardView', () => {
     props = {
       onTabChange: onTabChange,
       currentTab: 'investigation',
+      cartItems: useCart,
+      navigateToDownload: navigateToDownload,
     };
 
     (axios.get as jest.Mock).mockImplementation((url) => {
@@ -80,6 +85,8 @@ describe('SearchPageCardView', () => {
 
   afterEach(() => {
     onTabChange.mockClear();
+    useCart.mockClear();
+    navigateToDownload.mockClear();
   });
 
   it('renders correctly when request received', () => {
@@ -165,6 +172,16 @@ describe('SearchPageCardView', () => {
 
     expect(wrapper.exists(DatasetCardView)).toBeTruthy();
     spy.mockRestore();
+  });
+
+  it('opens download plugin when Download Cart clicked', () => {
+    const testStore = mockStore(state);
+
+    const wrapper = createWrapper(testStore, props);
+
+    wrapper.find('[aria-label="view-cart"]').first().simulate('click');
+
+    expect(navigateToDownload).toHaveBeenCalledTimes(1);
   });
 
   it('has the datafile search table component when on the datafile tab', () => {

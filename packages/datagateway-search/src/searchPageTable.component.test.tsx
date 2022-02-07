@@ -3,7 +3,10 @@ import { StateType } from './state/app.types';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Router } from 'react-router';
 
-import SearchPageTable, { SearchTableProps } from './searchPageTable.component';
+import SearchPageTable, {
+  SearchCartProps,
+  SearchTableProps,
+} from './searchPageTable.component';
 
 import { mount as enzymeMount, ReactWrapper } from 'enzyme';
 import { createMount } from '@material-ui/core/test-utils';
@@ -30,10 +33,12 @@ describe('SearchPageTable', () => {
   let mount: typeof enzymeMount;
   let state: StateType;
   let history: History;
-  let props: SearchTableProps;
+  let props: SearchTableProps & SearchCartProps;
   const mockStore = configureStore([thunk]);
 
   const onTabChange = jest.fn();
+  const useCart = jest.fn();
+  const navigateToDownload = jest.fn();
 
   const createWrapper = (
     store: Store = mockStore(state),
@@ -63,6 +68,8 @@ describe('SearchPageTable', () => {
     props = {
       onTabChange: onTabChange,
       currentTab: 'investigation',
+      cartItems: useCart,
+      navigateToDownload: navigateToDownload,
     };
 
     (axios.get as jest.Mock).mockImplementation((url) => {
@@ -76,6 +83,8 @@ describe('SearchPageTable', () => {
 
   afterEach(() => {
     onTabChange.mockClear();
+    useCart.mockClear();
+    navigateToDownload.mockClear();
   });
 
   it('renders correctly when request received', () => {
@@ -146,6 +155,16 @@ describe('SearchPageTable', () => {
     const testStore = mockStore(state);
     const wrapper = createWrapper(testStore, updatedProps);
     expect(wrapper.exists(InvestigationSearchTable)).toBeTruthy();
+  });
+
+  it('opens download plugin when Download Cart clicked', () => {
+    const testStore = mockStore(state);
+
+    const wrapper = createWrapper(testStore, props);
+
+    wrapper.find('[aria-label="view-cart"]').first().simulate('click');
+
+    expect(navigateToDownload).toHaveBeenCalledTimes(1);
   });
 
   it('has the dataset search table component when on the dataset tab', () => {
