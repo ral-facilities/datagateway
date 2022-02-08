@@ -16,12 +16,12 @@ import {
   Typography,
   Button,
   LinearProgress,
-  createStyles,
-  makeStyles,
   Theme,
   Link,
-} from '@material-ui/core';
-import { RemoveCircle } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { RemoveCircle } from '@mui/icons-material';
 import {
   fetchDownloadCartItems,
   removeAllDownloadCartItems,
@@ -260,7 +260,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       }}
     >
       <Paper>
-        <Grid container direction="column" alignItems="center" justify="center">
+        <Grid
+          container
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+        >
           <Grid item>
             <Typography className={classes.noSelectionsMessage}>
               <Trans i18nKey="downloadCart.no_selections">
@@ -390,7 +395,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           item
           direction="column"
           alignItems="flex-end"
-          justify="space-between"
+          justifyContent="space-between"
         >
           <Grid
             container
@@ -414,7 +419,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           <Grid
             container
             item
-            justify="flex-end"
+            justifyContent="flex-end"
             spacing={1}
             xs
             style={{ marginRight: '1em' }}

@@ -16,10 +16,12 @@ import {
   Typography,
   Select,
   Divider,
-} from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Pagination } from '@material-ui/lab';
+} from '@mui/material';
+import { Theme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Pagination } from '@mui/material';
 import ArrowTooltip from '../arrowtooltip.component';
 import {
   Entity,
@@ -480,7 +482,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         container
         item
         direction="row"
-        justify="center"
+        justifyContent="center"
         alignItems="center"
         xs={12}
       >
@@ -503,7 +505,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             item
             direction="row"
             alignItems="center"
-            justify="space-around"
+            justifyContent="space-around"
             xs={12}
             className={classes.paginationGrid}
           >
@@ -523,7 +525,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                 Do not show if the number of data is smaller than the 
                 smallest amount of results to display (10) or the smallest amount available. */}
             {totalDataCount > resOptions[0] && (
-              <Grid container item xs={12} md={1} justify="flex-end">
+              <Grid container item xs={12} md={1} justifyContent="flex-end">
                 <FormControl className={classes.formControl} variant="standard">
                   <InputLabel htmlFor="select-max-results">
                     {t('app.max_results')}
@@ -567,14 +569,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      <Grid container direction="row" justify="center">
+      <Grid container direction="row" justifyContent="center">
         {(hasSort || customFilters || !hasFilteredResults) && (
           <Grid item xs={12} md={3}>
             <Grid
               item
               container
               direction="column"
-              justify="flex-start"
+              justifyContent="flex-start"
               alignItems="stretch"
               spacing={5}
               xs={12}

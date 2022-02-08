@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { createShallow } from '@mui/material/test-utils';
 import ExpandCell from './expandCell.component';
 
 describe('Expand cell component', () => {

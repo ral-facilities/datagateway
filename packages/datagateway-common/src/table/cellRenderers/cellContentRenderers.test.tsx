@@ -1,7 +1,7 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { createShallow } from '@mui/material/test-utils';
 import { MemoryRouter } from 'react-router-dom';
-import { Link } from '@material-ui/core';
+import { Link } from '@mui/material';
 import {
   formatBytes,
   datasetLink,

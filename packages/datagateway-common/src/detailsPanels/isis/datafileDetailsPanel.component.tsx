@@ -1,14 +1,7 @@
 import React from 'react';
-import {
-  Typography,
-  Grid,
-  createStyles,
-  makeStyles,
-  Theme,
-  Divider,
-  Tabs,
-  Tab,
-} from '@material-ui/core';
+import { Typography, Grid, Theme, Divider, Tabs, Tab } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useTranslation } from 'react-i18next';
 import { Datafile, Entity } from '../../app.types';
 import { useDatafileDetails } from '../../api/datafiles';

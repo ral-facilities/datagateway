@@ -1,8 +1,8 @@
 import React from 'react';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount, createShallow } from '@mui/material/test-utils';
 import DataHeader from './dataHeader.component';
 import TextColumnFilter from '../columnFilters/textColumnFilter.component';
-import { TableSortLabel } from '@material-ui/core';
+import { TableSortLabel } from '@mui/material';
 
 describe('Data column header component', () => {
   let shallow;

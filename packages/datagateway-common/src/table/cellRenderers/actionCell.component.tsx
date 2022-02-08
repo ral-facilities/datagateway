@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableCellProps } from 'react-virtualized';
-import { TableCell } from '@material-ui/core';
+import { TableCell } from '@mui/material';
 import { TableActionProps } from '../table.component';
 
 type CellRendererProps = TableCellProps & {

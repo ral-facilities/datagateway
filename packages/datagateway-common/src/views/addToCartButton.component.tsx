@@ -1,8 +1,8 @@
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { useAddToCart, useCart, useRemoveFromCart } from '../api/cart';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

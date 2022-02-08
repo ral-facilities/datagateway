@@ -1,5 +1,5 @@
-import { MenuItem } from '@material-ui/core';
-import { createMount } from '@material-ui/core/test-utils';
+import { MenuItem } from '@mui/material';
+import { createMount } from '@mui/material/test-utils';
 import axios from 'axios';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';

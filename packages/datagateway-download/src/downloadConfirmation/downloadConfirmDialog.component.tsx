@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
+import Dialog from '@mui/material/Dialog';
+import MuiDialogTitle from '@mui/material/DialogTitle';
+import MuiDialogContent from '@mui/material/DialogContent';
+import MuiDialogActions from '@mui/material/DialogActions';
 
 import {
   Typography,
@@ -16,8 +16,8 @@ import {
   InputLabel,
   FormHelperText,
   CircularProgress,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 import {
   formatBytes,
@@ -32,13 +32,10 @@ import {
   getDownloadTypeStatus,
 } from '../downloadApi';
 
-import {
-  Theme,
-  createStyles,
-  withStyles,
-  WithStyles,
-  StyleRules,
-} from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import { WithStyles, StyleRules } from '@mui/styles';
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation, Trans } from 'react-i18next';
 
@@ -84,13 +81,14 @@ const DialogTitle = withStyles(dialogTitleStyles)((props: DialogTitleProps) => {
   const [t] = useTranslation();
 
   return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+    <MuiDialogTitle className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
       {onClose && (
         <IconButton
           aria-label={t('downloadConfirmDialog.close_arialabel')}
           className={classes.closeButton}
           onClick={onClose}
+          size="large"
         >
           <CloseIcon />
         </IconButton>
@@ -725,7 +723,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               spacing={4}
               direction="column"
               alignItems="center"
-              justify="center"
+              justifyContent="center"
               style={{ paddingBottom: '25px' }}
             >
               <Grid item xs>

@@ -1,19 +1,11 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import {
-  Theme,
-  Grid,
-  createStyles,
-  Box,
-  Paper,
-  Button,
-  Avatar,
-  makeStyles,
-  fade,
-} from '@material-ui/core';
-import { StyleRules } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
-import DownloadIcon from '@material-ui/icons/GetApp';
+import Typography from '@mui/material/Typography';
+import { Theme, Grid, Box, Paper, Button, Avatar, alpha } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { StyleRules } from '@mui/styles';
+import SearchIcon from '@mui/icons-material/Search';
+import DownloadIcon from '@mui/icons-material/GetApp';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -131,7 +123,7 @@ const useStyles = (props: HomePageProps) => {
         },
         browseDecal: {
           backgroundImage:
-            theme.palette.type === 'light'
+            theme.palette.mode === 'light'
               ? `url(${props.decal2Image})`
               : // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (theme as any).colours?.type === 'default'
@@ -157,7 +149,7 @@ const useStyles = (props: HomePageProps) => {
             //Check if null to avoid error when loading
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             backgroundColor: (theme as any).colours?.homePage?.blueButton
-              ? fade(
+              ? alpha(
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   (theme as any).colours?.homePage?.blueButton,
                   0.8

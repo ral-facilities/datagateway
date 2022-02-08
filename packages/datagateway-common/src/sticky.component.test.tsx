@@ -1,8 +1,8 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { createShallow } from '@mui/material/test-utils';
 import { ReactWrapper } from 'enzyme';
 import Sticky from './sticky.component';
-import { Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
 
 describe('Sticky component', () => {
   let shallow;
