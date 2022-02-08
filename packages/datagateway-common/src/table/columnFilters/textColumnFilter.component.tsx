@@ -83,6 +83,7 @@ const TextColumnFilter = (props: {
               SelectDisplayProps={{
                 'aria-label': `include or exclude`,
               }}
+              variant="standard"
             >
               <MenuItem
                 key="include"

@@ -506,6 +506,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     helperText={t(
                       'downloadConfirmDialog.download_name_helpertext'
                     )}
+                    variant="standard"
                   />
                 </Grid>
 
@@ -517,6 +518,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       statusMethods[selectedMethod].disabled ||
                       methodsUnavailable
                     }
+                    variant="standard"
                   >
                     <InputLabel htmlFor="confirm-access-method">
                       {t('downloadConfirmDialog.access_method_label')}
@@ -533,6 +535,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                           // Material UI select is not a real select element, so needs casting.
                           setSelectedMethod(e.target.value as string);
                       }}
+                      variant="standard"
                     >
                       {/* Access methods from settings as items for selection */}
                       {sortedMethods.map(([type, methodInfo], index) => {
@@ -686,6 +689,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                         setEmailValid(true);
                       }
                     }}
+                    variant="standard"
                   />
                 </Grid>
               </Grid>

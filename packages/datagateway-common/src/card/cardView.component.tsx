@@ -524,7 +524,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                 smallest amount of results to display (10) or the smallest amount available. */}
             {totalDataCount > resOptions[0] && (
               <Grid container item xs={12} md={1} justify="flex-end">
-                <FormControl className={classes.formControl}>
+                <FormControl className={classes.formControl} variant="standard">
                   <InputLabel htmlFor="select-max-results">
                     {t('app.max_results')}
                   </InputLabel>
@@ -546,6 +546,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                         onPageChange(1);
                       }
                     }}
+                    variant="standard"
                   >
                     {resOptions
                       .filter(
