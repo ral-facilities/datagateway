@@ -144,7 +144,7 @@ const CitationFormatter = (
             : '')}
       </Typography>
       {doi && (
-        <FormControl id="citation-formatter" error={error}>
+        <FormControl id="citation-formatter" error={error} variant="standard">
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Select
               className={classes.formatSelect}
@@ -154,6 +154,7 @@ const CitationFormatter = (
                 'studies.details.citation_formatter.select_arialabel'
               )}
               aria-describedby="citation-formatter-error-message"
+              variant="standard"
             >
               <MenuItem value="default">
                 {t('studies.details.citation_formatter.default_format')}

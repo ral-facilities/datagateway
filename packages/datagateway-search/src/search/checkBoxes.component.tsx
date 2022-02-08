@@ -117,6 +117,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         required
         error={error}
         className={`${classes.formControl} tour-search-checkbox`}
+        variant="standard"
       >
         {error && (
           <InputLabel
