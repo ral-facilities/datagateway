@@ -35,7 +35,15 @@ class App extends Component<unknown, { hasError: boolean }> {
   handler(e: Event): void {
     // attempt to re-render the plugin if we get told to
     const action = (e as CustomEvent).detail;
-    if (action.type === RequestPluginRerenderType) this.forceUpdate();
+    if (action.type === RequestPluginRerenderType) {
+      // This is a temporary fix for the current issue with the tab indicator
+      // not updating after the size of the page has been altered.
+      // This is issue is being tracked by material-ui (https://github.com/mui-org/material-ui/issues/9337).
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('resize'));
+      }, 125);
+      this.forceUpdate();
+    }
   }
 
   public componentDidMount(): void {
