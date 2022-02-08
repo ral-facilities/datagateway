@@ -11,7 +11,6 @@
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@material-ui/lab": "^4.0.0-alpha.58",
-    "@material-ui/pickers": "^3.3.10",
     "@mui/icons-material": "^5.3.1",
     "@mui/lab": "^5.0.0-alpha.67",
     "@types/lodash.debounce": "^4.0.6",

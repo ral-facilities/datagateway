@@ -4,14 +4,13 @@ import {
   StyledEngineProvider,
   Theme,
   createTheme,
-  adaptV4Theme,
 } from '@mui/material/styles';
 import { MicroFrontendId } from './app.types';
 import { SendThemeOptionsType } from './state/actions/actions.types';
 
 // Store the parent theme options when received.
 // Otherwise, set to an empty theme.
-let parentThemeOptions: Theme = createTheme(adaptV4Theme({}));
+let parentThemeOptions: Theme = createTheme();
 
 // Handle theme options sent from the parent app.
 document.addEventListener(MicroFrontendId, (e) => {

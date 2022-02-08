@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
-import DateFnsUtils from '@date-io/date-fns';
-import { format, isValid, isEqual } from 'date-fns';
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { format, isValid, isEqual, isBefore } from 'date-fns';
 import { FiltersType, DateFilter } from '../../app.types';
 import { usePushFilter } from '../../api';
-import { useTheme } from '@mui/material';
+import { TextField } from '@mui/material';
+import DatePicker from '@mui/lab/DatePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
-export function datesEqual(
-  date1: MaterialUiPickersDate,
-  date2: MaterialUiPickersDate
-): boolean {
+export function datesEqual(date1: Date | null, date2: Date | null): boolean {
   if (date1 === date2) {
     return true;
   } else if (!isValid(date1) && !isValid(date2)) {
@@ -26,9 +20,9 @@ export function datesEqual(
 }
 
 interface UpdateFilterParams {
-  date: MaterialUiPickersDate;
-  prevDate: MaterialUiPickersDate;
-  otherDate: MaterialUiPickersDate;
+  date: Date | null;
+  prevDate: Date | null;
+  otherDate: Date | null;
   startDateOrEndDateChanged: 'startDate' | 'endDate';
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
 }
@@ -72,81 +66,97 @@ const DateColumnFilter = (props: {
     props.value?.endDate ? new Date(props.value.endDate) : null
   );
 
-  //Obtain a contrast friendly button colour
-  const theme = useTheme();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const buttonColour = (theme as any).colours?.blue;
+  const invalidDateRange =
+    startDate && endDate && isBefore(endDate, startDate) ? true : false;
 
   return (
     <form>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DatePicker
+          //Clearable does not work at the moment https://github.com/mui/material-ui/issues/30676
           clearable
-          allowKeyboardControl
-          style={{ whiteSpace: 'nowrap' }}
-          inputProps={{ 'aria-label': `${props.label} filter` }}
-          invalidDateMessage="Date format: yyyy-MM-dd."
-          KeyboardButtonProps={{
-            size: 'small',
-            'aria-label': `${props.label} filter from, date picker`,
-          }}
-          id={props.label + ' filter from'}
           aria-hidden="true"
-          format="yyyy-MM-dd"
-          placeholder="From..."
+          inputFormat="yyyy-MM-dd"
+          mask="____-__-__"
           value={startDate}
-          views={['year', 'month', 'date']}
           maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
-          maxDateMessage="Invalid date range"
-          color="secondary"
+          clearText={'Clear'}
           onChange={(date) => {
-            setStartDate(date);
+            setStartDate(date as Date);
             updateFilter({
-              date,
+              date: date as Date,
               prevDate: startDate,
               otherDate: endDate,
               startDateOrEndDateChanged: 'startDate',
               onChange: props.onChange,
             });
           }}
-          okLabel={<span style={{ color: buttonColour }}>OK</span>}
-          cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
-          clearLabel={<span style={{ color: buttonColour }}>Clear</span>}
-        />
-        <KeyboardDatePicker
-          clearable
-          allowKeyboardControl
-          style={{ whiteSpace: 'nowrap' }}
-          inputProps={{ 'aria-label': `${props.label} filter` }}
-          invalidDateMessage="Date format: yyyy-MM-dd."
-          KeyboardButtonProps={{
-            size: 'small',
-            'aria-label': `${props.label} filter to, date picker`,
+          renderInput={(props) => {
+            const error =
+              // eslint-disable-next-line react/prop-types
+              props.error || invalidDateRange;
+            let helperText = 'Date format: yyyy-MM-dd.';
+            if (invalidDateRange) helperText = 'Invalid date range';
+
+            return (
+              <TextField
+                {...props}
+                inputProps={{
+                  // eslint-disable-next-line react/prop-types
+                  ...props.inputProps,
+                  placeholder: 'From...',
+                  'aria-label': `${props.label} filter`,
+                }}
+                variant="standard"
+                error={error}
+                // eslint-disable-next-line react/prop-types
+                {...(error && { helperText: helperText })}
+              />
+            );
           }}
-          id={props.label + ' filter to'}
+        />
+        <DatePicker
+          clearable
           aria-hidden="true"
-          format="yyyy-MM-dd"
-          placeholder="To..."
+          inputFormat="yyyy-MM-dd"
+          mask="____-__-__"
           value={endDate}
-          views={['year', 'month', 'date']}
           minDate={startDate || new Date('1984-01-01T00:00:00Z')}
-          minDateMessage="Invalid date range"
-          color="secondary"
           onChange={(date) => {
-            setEndDate(date);
+            setEndDate(date as Date);
             updateFilter({
-              date,
+              date: date as Date,
               prevDate: endDate,
               otherDate: startDate,
               startDateOrEndDateChanged: 'endDate',
               onChange: props.onChange,
             });
           }}
-          okLabel={<span style={{ color: buttonColour }}>OK</span>}
-          cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
-          clearLabel={<span style={{ color: buttonColour }}>Clear</span>}
+          renderInput={(props) => {
+            const error =
+              // eslint-disable-next-line react/prop-types
+              props.error || invalidDateRange;
+            let helperText = 'Date format: yyyy-MM-dd.';
+            if (invalidDateRange) helperText = 'Invalid date range';
+
+            return (
+              <TextField
+                {...props}
+                inputProps={{
+                  // eslint-disable-next-line react/prop-types
+                  ...props.inputProps,
+                  placeholder: 'To...',
+                  'aria-label': `${props.label} filter`,
+                }}
+                variant="standard"
+                error={error}
+                // eslint-disable-next-line react/prop-types
+                {...(error && { helperText: helperText })}
+              />
+            );
+          }}
         />
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
     </form>
   );
 };
