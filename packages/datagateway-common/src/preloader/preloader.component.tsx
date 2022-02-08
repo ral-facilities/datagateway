@@ -1,42 +1,10 @@
 import React from 'react';
-import { Theme } from '@mui/material/styles';
-
-import { StyleRules, WithStyles } from '@mui/styles';
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import { Box } from '@mui/material';
 
 const colors = ['#8C4799', '#1D4F91', '#C34613', '#008275', '#63666A'];
 const innerRadius = 140;
 const border = 8;
 const spacing = 1;
-
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    spinner: {
-      display: 'block',
-      margin: 'auto',
-      width: innerRadius + colors.length * 2 * (border + spacing),
-      height: innerRadius + colors.length * 2 * (border + spacing),
-      animation: 'rotate 10s infinite linear',
-    },
-    wrapper: {
-      boxSizing: 'border-box' as const,
-      padding: '10px 0',
-    },
-    container: {
-      zIndex: 1000,
-      width: '100%',
-      height: '100%',
-      backgroundColor: theme.palette.background.default,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: {
-      color: theme.palette.text.primary,
-    },
-  });
 
 interface PreloaderProps {
   loading: boolean;
@@ -51,7 +19,7 @@ const spinnerStyle = (index: number): SpinnerStyle => {
   const size = innerRadius + index * 2 * (border + spacing);
 
   return {
-    position: 'absolute' as const,
+    position: 'absolute',
     display: 'inline-block',
     top: '50%',
     left: '50%',
@@ -71,18 +39,35 @@ const spinnerStyle = (index: number): SpinnerStyle => {
       0.12 * index
     }, .03)`,
     transformOrigin: '50% 100% 0',
-    boxSizing: 'border-box' as const,
+    boxSizing: 'border-box',
   };
 };
 
-const Preloader: React.FC<PreloaderProps & WithStyles<typeof styles>> = (
-  props: PreloaderProps & WithStyles<typeof styles>
-) => (
+const Preloader: React.FC<PreloaderProps> = (props: PreloaderProps) => (
   <div>
     {props.loading ? (
-      <div className={props.classes.container}>
-        <div className={props.classes.wrapper}>
-          <div className={props.classes.spinner}>
+      <Box
+        sx={{
+          zIndex: 1000,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'background.default',
+          display: 'flex',
+          flexDirection: 'column' as const,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <div style={{ boxSizing: 'border-box', padding: '10px 0' }}>
+          <div
+            style={{
+              display: 'block',
+              margin: 'auto',
+              width: innerRadius + colors.length * 2 * (border + spacing),
+              height: innerRadius + colors.length * 2 * (border + spacing),
+              animation: 'rotate 10s infinite linear',
+            }}
+          >
             <i style={spinnerStyle(0)} />
             <i style={spinnerStyle(1)} />
             <i style={spinnerStyle(2)} />
@@ -90,12 +75,12 @@ const Preloader: React.FC<PreloaderProps & WithStyles<typeof styles>> = (
             <i style={spinnerStyle(4)} />
           </div>
         </div>
-        <div className={props.classes.text}>Loading...</div>
-      </div>
+        <Box sx={{ color: 'text.primary' }}>Loading...</Box>
+      </Box>
     ) : (
       props.children
     )}
   </div>
 );
 
-export default withStyles(styles)(Preloader);
+export default Preloader;

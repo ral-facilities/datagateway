@@ -15,6 +15,7 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  SelectChangeEvent,
 } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -101,7 +102,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
       ariaLabel: t('searchBox.checkboxes.datafile_arialabel'),
     });
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const handleChange = (event: SelectChangeEvent<string[]>): void => {
     const newValues = event.target.value as string[];
 
     pushSearchToggles(

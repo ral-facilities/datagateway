@@ -91,7 +91,6 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
         PaperProps={{ className: classes.dialogueBackground }}
       >
         <MuiDialogTitle
-          disableTypography
           className={classes.root}
           id="advanced-search-dialog-title"
         >
