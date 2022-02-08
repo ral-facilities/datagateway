@@ -525,15 +525,110 @@ describe('generic api functions', () => {
     });
 
     describe('useUpdateQueryParam', () => {
-      it('returns callback that when called removes all filters from the url query', () => {
+      it('returns callback that when called removes all filters from the url query (push)', () => {
         jest.mock('./index.tsx', () => ({
           ...jest.requireActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
-        const { result } = renderHook(() => useUpdateQueryParam('filters'), {
-          wrapper,
+        const { result } = renderHook(
+          () => useUpdateQueryParam('filters', 'push'),
+          {
+            wrapper,
+          }
+        );
+
+        act(() => {
+          result.current({
+            name: { value: 'test', type: 'include' },
+            title: { value: 'test2', type: 'include' },
+          });
         });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search:
+            '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
+        });
+      });
+
+      it('returns callback that when called removes all sorts from the url query (push)', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(
+          () => useUpdateQueryParam('sort', 'push'),
+          {
+            wrapper,
+          }
+        );
+
+        act(() => {
+          result.current({ name: 'asc' });
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: '?sort=%7B%22name%22%3A%22asc%22%7D',
+        });
+      });
+
+      it('returns callback that when called removes page number from the url query (push)', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(
+          () => useUpdateQueryParam('page', 'push'),
+          {
+            wrapper,
+          }
+        );
+
+        act(() => {
+          result.current(2);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: '?page=2',
+        });
+      });
+
+      it('returns callback that when called removes results number from the url query (push)', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(
+          () => useUpdateQueryParam('results', 'push'),
+          {
+            wrapper,
+          }
+        );
+
+        act(() => {
+          result.current(10);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: '?results=10',
+        });
+      });
+
+      it('returns callback that when called removes all filters from the url query (replace)', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(() => '?'),
+        }));
+
+        const { result } = renderHook(
+          () => useUpdateQueryParam('filters', 'replace'),
+          {
+            wrapper,
+          }
+        );
 
         act(() => {
           result.current({
@@ -548,15 +643,18 @@ describe('generic api functions', () => {
         });
       });
 
-      it('returns callback that when called removes all sorts from the url query', () => {
+      it('returns callback that when called removes all sorts from the url query (replace)', () => {
         jest.mock('./index.tsx', () => ({
           ...jest.requireActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
-        const { result } = renderHook(() => useUpdateQueryParam('sort'), {
-          wrapper,
-        });
+        const { result } = renderHook(
+          () => useUpdateQueryParam('sort', 'replace'),
+          {
+            wrapper,
+          }
+        );
 
         act(() => {
           result.current({ name: 'asc' });
@@ -567,15 +665,18 @@ describe('generic api functions', () => {
         });
       });
 
-      it('returns callback that when called removes page number from the url query', () => {
+      it('returns callback that when called removes page number from the url query (replace)', () => {
         jest.mock('./index.tsx', () => ({
           ...jest.requireActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
-        const { result } = renderHook(() => useUpdateQueryParam('page'), {
-          wrapper,
-        });
+        const { result } = renderHook(
+          () => useUpdateQueryParam('page', 'replace'),
+          {
+            wrapper,
+          }
+        );
 
         act(() => {
           result.current(2);
@@ -586,15 +687,18 @@ describe('generic api functions', () => {
         });
       });
 
-      it('returns callback that when called removes results number from the url query', () => {
+      it('returns callback that when called removes results number from the url query (replace)', () => {
         jest.mock('./index.tsx', () => ({
           ...jest.requireActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
-        const { result } = renderHook(() => useUpdateQueryParam('results'), {
-          wrapper,
-        });
+        const { result } = renderHook(
+          () => useUpdateQueryParam('results', 'replace'),
+          {
+            wrapper,
+          }
+        );
 
         act(() => {
           result.current(10);

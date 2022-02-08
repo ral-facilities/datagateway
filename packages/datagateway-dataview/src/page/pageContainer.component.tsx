@@ -25,6 +25,7 @@ import {
   readSciGatewayToken,
   ArrowTooltip,
   SelectionAlert,
+  useUpdateQueryParam,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +44,7 @@ import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
+import { Clear } from '@material-ui/icons';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -362,11 +364,12 @@ const NavBar = React.memo(
 );
 NavBar.displayName = 'NavBar';
 
-const viewButtonStyles = makeStyles(
+const buttonStyles = makeStyles(
   (theme: Theme): StyleRules =>
     createStyles({
       root: {
-        padding: theme.spacing(1),
+        padding: theme.spacing(0.5),
+        display: 'inline-block',
       },
     })
 );
@@ -376,7 +379,7 @@ const ViewButton = (props: {
   handleButtonChange: () => void;
 }): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = viewButtonStyles();
+  const classes = buttonStyles();
 
   return (
     <div className={classes.root}>
@@ -392,6 +395,35 @@ const ViewButton = (props: {
         onClick={() => props.handleButtonChange()}
       >
         {props.viewCards ? t('app.view_table') : t('app.view_cards')}
+      </Button>
+    </div>
+  );
+};
+
+export const ClearFiltersButton = (props: {
+  handleButtonClearFilters: () => void;
+  disabled: boolean;
+}): React.ReactElement => {
+  const [t] = useTranslation();
+  const classes = buttonStyles();
+
+  return (
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-clear-filter-button"
+        data-testid="clear-filters-button"
+        style={{ margin: '5px' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => {
+          props.handleButtonClearFilters();
+          console.log('CLICKED');
+        }}
+        startIcon={<Clear />}
+        disabled={props.disabled}
+      >
+        {t('app.clear_filters')}
       </Button>
     </div>
   );
@@ -636,6 +668,17 @@ const PageContainer: React.FC = () => {
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
 
+  const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const disabled = Object.keys(filters).length !== 0 ? false : true;
+
+  const pushFilters = useUpdateQueryParam('filters', 'push');
+
+  const handleButtonClearFilters = (): void => {
+    pushFilters({});
+  };
+
   return (
     <SwitchRouting location={location}>
       {/* Load the homepage */}
@@ -665,10 +708,16 @@ const PageContainer: React.FC = () => {
                       exact
                       path={togglePaths}
                       render={() => (
-                        <ViewButton
-                          viewCards={view === 'card'}
-                          handleButtonChange={handleButtonChange}
-                        />
+                        <div>
+                          <ViewButton
+                            viewCards={view === 'card'}
+                            handleButtonChange={handleButtonChange}
+                          />
+                          <ClearFiltersButton
+                            handleButtonClearFilters={handleButtonClearFilters}
+                            disabled={disabled}
+                          />
+                        </div>
                       )}
                     />
                     <Route

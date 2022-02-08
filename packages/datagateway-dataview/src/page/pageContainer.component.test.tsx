@@ -15,7 +15,10 @@ import { LinearProgress } from '@material-ui/core';
 import { createLocation, createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 
-import PageContainer, { paths } from './pageContainer.component';
+import PageContainer, {
+  ClearFiltersButton,
+  paths,
+} from './pageContainer.component';
 import { checkInstrumentId, checkInvestigationId } from './idCheckFunctions';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
@@ -173,6 +176,32 @@ describe('PageContainer - Tests', () => {
     const wrapper = createWrapper();
 
     expect(wrapper.exists(LinearProgress)).toBeTruthy();
+  });
+
+  it('display clear filters button and clear for filters onClick', () => {
+    history.replace(
+      `/browse/investigation?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D`
+    );
+    const wrapper = createWrapper();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(false);
+
+    wrapper
+      .find('[data-testid="clear-filters-button"]')
+      .first()
+      .simulate('click');
+
+    wrapper.update();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
+    expect(history.location.search).toEqual('?');
+  });
+
+  it('display disabled clear filters button', () => {
+    history.replace(paths.toggle.investigation);
+    const wrapper = createWrapper();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
   });
 
   it('display filter warning on datafile table', async () => {

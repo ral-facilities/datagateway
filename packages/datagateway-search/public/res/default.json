@@ -40,6 +40,9 @@
   "searchPageCardView": {
     "tabs_arialabel": "Search table"
   },
+  "searchPageContainer": {
+    "clear_filters": "Clear filters"
+  },
   "tabs": {
     "investigation": "Investigation",
     "dataset": "Dataset",

@@ -9,7 +9,9 @@ import { dGCommonInitialState, useCart } from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
 import { createMount } from '@material-ui/core/test-utils';
 import { MemoryRouter, Router } from 'react-router-dom';
-import SearchPageContainer from './searchPageContainer.component';
+import SearchPageContainer, {
+  ClearFiltersButton,
+} from './searchPageContainer.component';
 import { LinearProgress } from '@material-ui/core';
 import { Provider } from 'react-redux';
 import axios from 'axios';
@@ -528,6 +530,52 @@ describe('SearchPageContainer - Tests', () => {
     expect(result).toEqual({
       name: 'asc',
     });
+  });
+
+  it('display clear filters button and clear for filters onClick', async () => {
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    history.replace(
+      `/search/data?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D`
+    );
+
+    wrapper.update();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(false);
+
+    wrapper
+      .find('[data-testid="clear-filters-button"]')
+      .first()
+      .simulate('click');
+
+    wrapper.update();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
+    expect(history.location.search).toEqual('?');
+  });
+
+  it('display disabled clear filters button', async () => {
+    const wrapper = createWrapper();
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
   });
 
   it('gets the page stored in the local storage', () => {
