@@ -246,7 +246,6 @@ describe('Download cart table component', () => {
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
-    jest.useFakeTimers();
     const wrapper = createWrapper();
 
     await act(async () => {
@@ -273,7 +272,6 @@ describe('Download cart table component', () => {
     ).toEqual('error');
 
     await act(async () => {
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });

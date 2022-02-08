@@ -354,24 +354,20 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                       // Remove the download when clicked.
                       onClick={() => {
                         setIsDeleting(true);
-                        setTimeout(
-                          () =>
-                            removeDownloadCartItem(
-                              cartItem.entityId,
-                              cartItem.entityType,
-                              {
-                                facilityName: settings.facilityName,
-                                downloadApiUrl: settings.downloadApiUrl,
-                              }
-                            ).then(() => {
-                              setData(
-                                data.filter(
-                                  (item) => item.entityId !== cartItem.entityId
-                                )
-                              );
-                            }),
-                          100
-                        );
+                        removeDownloadCartItem(
+                          cartItem.entityId,
+                          cartItem.entityType,
+                          {
+                            facilityName: settings.facilityName,
+                            downloadApiUrl: settings.downloadApiUrl,
+                          }
+                        ).then(() => {
+                          setData(
+                            data.filter(
+                              (item) => item.entityId !== cartItem.entityId
+                            )
+                          );
+                        });
                       }}
                     >
                       <RemoveCircle
