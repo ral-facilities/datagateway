@@ -138,19 +138,19 @@ const StyledTabs = withStyles(tabStyles)(Tabs);
 const StyledBox = withStyles(boxStyles)(Box);
 
 const ViewCart = (props: SearchCartProps): React.ReactElement => {
+  const [t] = useTranslation();
   return (
     <div>
       <IconButton
         className="tour-dataview-cart-icon"
         onClick={props.navigateToDownload}
-        aria-label="view-cart"
+        aria-label={t('searchPageCardView.cart_arialabel')}
       >
         <Badge
           badgeContent={
             props.cartItems.length > 0 ? props.cartItems.length : null
           }
           color="primary"
-          aria-label="view-cart-badge"
         >
           <ShoppingCartIcon />
         </Badge>

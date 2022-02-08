@@ -162,7 +162,10 @@ describe('SearchPageTable', () => {
 
     const wrapper = createWrapper(testStore, props);
 
-    wrapper.find('[aria-label="view-cart"]').first().simulate('click');
+    wrapper
+      .find('[aria-label="searchPageTable.cart_arialabel"]')
+      .first()
+      .simulate('click');
 
     expect(navigateToDownload).toHaveBeenCalledTimes(1);
   });

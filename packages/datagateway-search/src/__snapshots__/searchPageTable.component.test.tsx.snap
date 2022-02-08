@@ -5090,12 +5090,12 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                     >
                                       <div>
                                         <WithStyles(ForwardRef(IconButton))
-                                          aria-label="view-cart"
+                                          aria-label="searchPageTable.cart_arialabel"
                                           className="tour-dataview-cart-icon"
                                           onClick={[MockFunction]}
                                         >
                                           <ForwardRef(IconButton)
-                                            aria-label="view-cart"
+                                            aria-label="searchPageTable.cart_arialabel"
                                             className="tour-dataview-cart-icon"
                                             classes={
                                               Object {
@@ -5113,7 +5113,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                             onClick={[MockFunction]}
                                           >
                                             <WithStyles(ForwardRef(ButtonBase))
-                                              aria-label="view-cart"
+                                              aria-label="searchPageTable.cart_arialabel"
                                               centerRipple={true}
                                               className="MuiIconButton-root tour-dataview-cart-icon"
                                               disabled={false}
@@ -5121,7 +5121,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                               onClick={[MockFunction]}
                                             >
                                               <ForwardRef(ButtonBase)
-                                                aria-label="view-cart"
+                                                aria-label="searchPageTable.cart_arialabel"
                                                 centerRipple={true}
                                                 className="MuiIconButton-root tour-dataview-cart-icon"
                                                 classes={
@@ -5136,7 +5136,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                 onClick={[MockFunction]}
                                               >
                                                 <button
-                                                  aria-label="view-cart"
+                                                  aria-label="searchPageTable.cart_arialabel"
                                                   className="MuiButtonBase-root MuiIconButton-root tour-dataview-cart-icon"
                                                   disabled={false}
                                                   onBlur={[Function]}
@@ -5158,12 +5158,10 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                     className="MuiIconButton-label"
                                                   >
                                                     <WithStyles(ForwardRef(Badge))
-                                                      aria-label="view-cart-badge"
                                                       badgeContent={null}
                                                       color="primary"
                                                     >
                                                       <ForwardRef(Badge)
-                                                        aria-label="view-cart-badge"
                                                         badgeContent={null}
                                                         classes={
                                                           Object {
@@ -5187,7 +5185,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                         color="primary"
                                                       >
                                                         <span
-                                                          aria-label="view-cart-badge"
                                                           className="MuiBadge-root"
                                                         >
                                                           <ForwardRef(ShoppingCartIcon)>
