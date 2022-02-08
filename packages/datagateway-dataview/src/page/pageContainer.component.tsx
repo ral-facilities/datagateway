@@ -237,7 +237,6 @@ const NavBar = React.memo(
                 >
                   <Grid item>
                     <ArrowTooltip
-                      interactive
                       title={
                         <h4>
                           {isStudyHierarchy

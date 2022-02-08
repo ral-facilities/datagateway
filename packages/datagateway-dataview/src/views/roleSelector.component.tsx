@@ -3,6 +3,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Theme,
 } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
@@ -88,7 +89,7 @@ const RoleSelector: React.FC = () => {
   const { data: roles } = useRoles(username);
   const pushFilter = usePushFilter();
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const handleChange = (event: SelectChangeEvent<string>): void => {
     pushFilter(
       'investigationUsers.role',
       event.target.value

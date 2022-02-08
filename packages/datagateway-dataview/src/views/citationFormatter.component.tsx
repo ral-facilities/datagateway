@@ -5,6 +5,7 @@ import {
   FormHelperText,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Theme,
   Typography,
 } from '@mui/material';
@@ -111,7 +112,7 @@ const CitationFormatter = (
     t('studies.details.citation_formatter.locale')
   );
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const handleChange = (event: SelectChangeEvent<string>): void => {
     setFormat(event.target.value as string);
   };
 
