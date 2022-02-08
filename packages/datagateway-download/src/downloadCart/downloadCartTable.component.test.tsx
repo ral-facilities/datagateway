@@ -242,7 +242,7 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    expect(wrapper.exists('[data-testid="no-selections-messsage"]')).toBe(true);
+    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
   });
 
   it("removes an item when said item's remove button is clicked", async () => {

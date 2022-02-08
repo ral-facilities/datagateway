@@ -126,7 +126,7 @@ describe('Download Cart', () => {
     cy.contains(/^DATASET 1$/).should('not.exist');
 
     //Check no selections message is displayed
-    cy.get('[data-testid="no-selections-messsage"]').should('exist');
+    cy.get('[data-testid="no-selections-message"]').should('exist');
 
     cy.wait('@removeFromCart').then(
       (xhr) => expect(xhr.response.body.cartItems).to.be.empty
