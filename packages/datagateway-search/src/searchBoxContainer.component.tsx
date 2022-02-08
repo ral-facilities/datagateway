@@ -1,14 +1,9 @@
 import React from 'react';
 
-import {
-  Grid,
-  Typography,
-  Link,
-  makeStyles,
-  createStyles,
-  Theme,
-  Box,
-} from '@material-ui/core';
+import { Grid, Typography, Link, Theme, Box } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
@@ -18,7 +13,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import AdvancedHelpDialogue from './search/advancedHelpDialogue.component';
 import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,7 +67,12 @@ const SearchBoxContainer = (
 
   return (
     <Box className={classes.containerBox}>
-      <Grid container direction="row" justify="center" id="container-searchbox">
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        id="container-searchbox"
+      >
         <Grid item xs="auto" style={{ flexGrow: 1 }}>
           <SearchTextBox
             searchText={searchText}

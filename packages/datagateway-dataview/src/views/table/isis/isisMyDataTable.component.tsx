@@ -25,12 +25,12 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-import TitleIcon from '@material-ui/icons/Title';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import PublicIcon from '@material-ui/icons/Public';
-import SaveIcon from '@material-ui/icons/Save';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import TitleIcon from '@mui/icons-material/Title';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
+import PublicIcon from '@mui/icons-material/Public';
+import SaveIcon from '@mui/icons-material/Save';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useSelector } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
 

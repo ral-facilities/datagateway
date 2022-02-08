@@ -1,19 +1,19 @@
 import {
   Box,
   CircularProgress,
-  createStyles,
   FormControl,
   FormHelperText,
-  makeStyles,
   MenuItem,
   Select,
   Theme,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Mark } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import axios, { AxiosError } from 'axios';
 import { FormattedUser } from './landing/isis/isisStudyLanding.component';
 import { useQuery, UseQueryResult } from 'react-query';

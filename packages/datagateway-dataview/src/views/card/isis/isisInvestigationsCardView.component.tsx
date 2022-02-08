@@ -1,11 +1,11 @@
-import { Link as MuiLink } from '@material-ui/core';
+import { Link as MuiLink } from '@mui/material';
 import {
   Fingerprint,
   Public,
   Save,
   Person,
   CalendarToday,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import {
   CardView,
   CardViewDetails,
@@ -30,7 +30,10 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
+
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -1,16 +1,9 @@
 import React from 'react';
-import { BugReport } from '@material-ui/icons';
-import {
-  Typography,
-  withStyles,
-  WithStyles,
-  Theme,
-  createStyles,
-  Grid,
-  CircularProgress,
-  Link,
-} from '@material-ui/core';
-import { StyleRules } from '@material-ui/core/styles';
+import { BugReport } from '@mui/icons-material';
+import { Typography, Theme, Grid, CircularProgress, Link } from '@mui/material';
+import { WithStyles, StyleRules } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
+import createStyles from '@mui/styles/createStyles';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import { compose } from 'redux';
@@ -76,7 +69,7 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
             container
             item
             direction="column"
-            justify="center"
+            justifyContent="center"
             alignItems="center"
             className={classes.container}
           >
@@ -93,16 +86,16 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
               container
               item
               direction="column"
-              justify="center"
+              justifyContent="center"
               className={classes.container}
             >
-              <Grid container item justify="center" alignItems="center">
+              <Grid container item justifyContent="center" alignItems="center">
                 <BugReport className={classes.bugIcon} />
                 <Typography variant="h1" className={classes.titleText}>
                   {t('loading.oops')}
                 </Typography>
               </Grid>
-              <Grid container item justify="center">
+              <Grid container item justifyContent="center">
                 <Typography variant="body1" className={classes.message}>
                   <Trans t={t} i18nKey="loading.message">
                     We&#39;re sorry, it seems as though the URL you requested is

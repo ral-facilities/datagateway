@@ -1,5 +1,5 @@
-import { Link } from '@material-ui/core';
-import { createMount } from '@material-ui/core/test-utils';
+import { Link } from '@mui/material';
+import { createMount } from '@mui/material/test-utils';
 import {
   AdvancedFilter,
   dGCommonInitialState,

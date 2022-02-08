@@ -1,8 +1,8 @@
 import React from 'react';
-import TitleIcon from '@material-ui/icons/Title';
-import ExploreIcon from '@material-ui/icons/Explore';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import TitleIcon from '@mui/icons-material/Title';
+import ExploreIcon from '@mui/icons-material/Explore';
+import SaveIcon from '@mui/icons-material/Save';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import {
   Table,
   formatBytes,

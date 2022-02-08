@@ -1,7 +1,7 @@
 import React from 'react';
-import TitleIcon from '@material-ui/icons/Title';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import TitleIcon from '@mui/icons-material/Title';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import {
   Table,
   tableLink,

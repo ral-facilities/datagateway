@@ -4,17 +4,17 @@ import {
   Paper,
   Typography,
   Theme,
-  withStyles,
-  createStyles,
   IconButton,
   Badge,
-  makeStyles,
   Button,
-} from '@material-ui/core';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import SearchIcon from '@material-ui/icons/Search';
-import InfoIcon from '@material-ui/icons/Info';
-import { StyleRules } from '@material-ui/core/styles';
+} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import SearchIcon from '@mui/icons-material/Search';
+import InfoIcon from '@mui/icons-material/Info';
+import { StyleRules } from '@mui/styles';
 import {
   DownloadCartItem,
   Sticky,
@@ -38,8 +38,8 @@ import {
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
@@ -232,7 +232,7 @@ const NavBar = React.memo(
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                   aria-label="open-data-warning"
                 >
                   <Grid item>
@@ -258,6 +258,7 @@ const NavBar = React.memo(
                       <IconButton
                         disableRipple
                         style={{ backgroundColor: 'transparent' }}
+                        size="large"
                       >
                         <InfoIcon className={classes.openDataInfoIcon} />
                       </IconButton>
@@ -325,6 +326,7 @@ const NavBar = React.memo(
               onClick={props.navigateToSearch}
               aria-label="view-search"
               style={{ margin: 'auto' }}
+              size="large"
             >
               <SearchIcon />
             </IconButton>
@@ -343,6 +345,7 @@ const NavBar = React.memo(
               onClick={props.navigateToDownload}
               aria-label="view-cart"
               style={{ margin: 'auto' }}
+              size="large"
             >
               <Badge
                 badgeContent={

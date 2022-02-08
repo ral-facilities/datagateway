@@ -15,12 +15,12 @@ import {
   useStudyCount,
   useTextFilter,
 } from 'datagateway-common';
-import PublicIcon from '@material-ui/icons/Public';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import PublicIcon from '@mui/icons-material/Public';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { format, set } from 'date-fns';
-import { Link as MuiLink } from '@material-ui/core';
+import { Link as MuiLink } from '@mui/material';
 
 interface ISISStudiesCVProps {
   instrumentId: string;

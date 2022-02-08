@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount, createShallow } from '@mui/material/test-utils';
 import AdvancedHelpDialogue from './advancedHelpDialogue.component';
 import { Provider, useSelector } from 'react-redux';
 import thunk from 'redux-thunk';

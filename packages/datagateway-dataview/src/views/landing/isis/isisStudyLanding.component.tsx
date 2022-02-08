@@ -1,22 +1,22 @@
 import {
-  createStyles,
   Divider,
   Grid,
   Link as MuiLink,
-  makeStyles,
   Paper,
   Tab,
   Tabs,
   Theme,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Assessment,
   CalendarToday,
   Fingerprint,
   Public,
   Storage,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import {
   Investigation,
   InvestigationUser,

@@ -14,8 +14,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import TitleIcon from '@material-ui/icons/Title';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import TitleIcon from '@mui/icons-material/Title';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 interface ISISFacilityCyclesTableProps {
   instrumentId: string;

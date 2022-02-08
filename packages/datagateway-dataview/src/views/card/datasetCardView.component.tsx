@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConfirmationNumber, CalendarToday } from '@material-ui/icons';
+import { ConfirmationNumber, CalendarToday } from '@mui/icons-material';
 import {
   CardView,
   Dataset,

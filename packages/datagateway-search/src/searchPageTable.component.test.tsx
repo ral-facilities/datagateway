@@ -6,7 +6,7 @@ import { MemoryRouter, Router } from 'react-router-dom';
 import SearchPageTable, { SearchTableProps } from './searchPageTable.component';
 
 import { mount as enzymeMount, ReactWrapper } from 'enzyme';
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@mui/material/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';

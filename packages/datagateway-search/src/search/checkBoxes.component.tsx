@@ -1,7 +1,9 @@
 import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
-import Checkbox from '@material-ui/core/Checkbox';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import FormControl from '@mui/material/FormControl';
+import Checkbox from '@mui/material/Checkbox';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +15,7 @@ import {
   ListItemText,
   MenuItem,
   Select,
-} from '@material-ui/core';
+} from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

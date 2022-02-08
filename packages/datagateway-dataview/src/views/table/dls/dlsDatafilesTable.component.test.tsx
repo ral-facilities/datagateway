@@ -1,4 +1,4 @@
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@mui/material/test-utils';
 import {
   dGCommonInitialState,
   useDatafileCount,

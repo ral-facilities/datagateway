@@ -13,7 +13,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import TitleIcon from '@material-ui/icons/Title';
+import TitleIcon from '@mui/icons-material/Title';
 
 const DLSProposalsTable = (): React.ReactElement => {
   const location = useLocation();

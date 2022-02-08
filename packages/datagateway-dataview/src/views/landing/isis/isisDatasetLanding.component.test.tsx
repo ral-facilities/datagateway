@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@mui/material/test-utils';
 import ISISDatasetLanding from './isisDatasetLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -12,7 +12,7 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';

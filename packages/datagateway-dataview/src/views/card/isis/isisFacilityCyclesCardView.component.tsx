@@ -14,7 +14,7 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
-import { CalendarToday } from '@material-ui/icons';
+import { CalendarToday } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 

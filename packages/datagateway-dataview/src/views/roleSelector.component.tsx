@@ -1,12 +1,12 @@
 import {
-  createStyles,
   FormControl,
   InputLabel,
-  makeStyles,
   MenuItem,
   Select,
   Theme,
-} from '@material-ui/core';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import axios, { AxiosError } from 'axios';
 import {
   handleICATError,

@@ -4,7 +4,7 @@ import {
   Fingerprint,
   Public,
   Assessment,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import {
   CardView,
   formatCountOrSize,
@@ -35,13 +35,9 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import {
-  Typography,
-  Link as MuiLink,
-  makeStyles,
-  createStyles,
-  Theme,
-} from '@material-ui/core';
+import { Typography, Link as MuiLink, Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createShallow, createMount } from '@mui/material/test-utils';
 import SearchButton from './searchButton.component';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 
 jest.mock('loglevel');
 

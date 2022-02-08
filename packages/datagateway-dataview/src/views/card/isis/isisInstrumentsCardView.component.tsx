@@ -1,5 +1,5 @@
-import { Link } from '@material-ui/core';
-import { Title, Link as LinkIcon } from '@material-ui/icons';
+import { Link } from '@mui/material';
+import { Title, Link as LinkIcon } from '@mui/icons-material';
 import {
   CardView,
   CardViewDetails,

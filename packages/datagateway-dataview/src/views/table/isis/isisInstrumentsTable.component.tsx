@@ -13,7 +13,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import TitleIcon from '@material-ui/icons/Title';
+import TitleIcon from '@mui/icons-material/Title';
 import { useLocation } from 'react-router-dom';
 
 interface ISISInstrumentsTableProps {

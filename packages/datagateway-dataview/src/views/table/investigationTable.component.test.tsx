@@ -1,4 +1,4 @@
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount, createShallow } from '@mui/material/test-utils';
 // import axios from 'axios';
 import {
   Investigation,

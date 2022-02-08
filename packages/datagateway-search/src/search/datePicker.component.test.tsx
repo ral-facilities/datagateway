@@ -1,7 +1,7 @@
 import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@mui/material/test-utils';
 import configureStore from 'redux-mock-store';
 import SelectDates from './datePicker.component';
 import thunk from 'redux-thunk';

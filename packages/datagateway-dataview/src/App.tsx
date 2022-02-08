@@ -1,7 +1,5 @@
-import {
-  createGenerateClassName,
-  StylesProvider,
-} from '@material-ui/core/styles';
+import createGenerateClassName from '@mui/styles/createGenerateClassName';
+import StylesProvider from '@mui/styles/StylesProvider';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import {
   DGCommonMiddleware,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReactWrapper } from 'enzyme';
 
-import { createShallow } from '@material-ui/core/test-utils';
+import { createShallow } from '@mui/material/test-utils';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 import { useSelector } from 'react-redux';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@mui/material/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';

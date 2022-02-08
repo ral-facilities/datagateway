@@ -1,6 +1,6 @@
 import React from 'react';
 import withIdCheck from './withIdCheck';
-import { createShallow } from '@material-ui/core/test-utils';
+import { createShallow } from '@mui/material/test-utils';
 import { shallow as enzymeShallow } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';

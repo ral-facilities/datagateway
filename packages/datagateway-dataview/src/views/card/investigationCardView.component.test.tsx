@@ -4,9 +4,9 @@ import {
   Link,
   ListItemText,
   // SvgIcon,
-} from '@material-ui/core';
+} from '@mui/material';
 
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@mui/material/test-utils';
 import {
   AdvancedFilter,
   dGCommonInitialState,

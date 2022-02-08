@@ -1,7 +1,7 @@
 /* Currently unused, commented out to bypass codecov
 import React from 'react';
-import { TextField, InputAdornment } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+import { TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType, pushPageSearch } from 'datagateway-common';
 import { AnyAction } from 'redux';

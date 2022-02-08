@@ -10,15 +10,10 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import {
-  Grid,
-  Paper,
-  LinearProgress,
-  Button,
-  makeStyles,
-  createStyles,
-  Theme,
-} from '@material-ui/core';
+import { Grid, Paper, LinearProgress, Button, Theme } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 
 import SearchPageTable from './searchPageTable.component';
 import SearchPageCardView from './searchPageCardView.component';
@@ -48,9 +43,9 @@ import {
   setInvestigationTab,
 } from './state/actions/actions';
 import { useTranslation } from 'react-i18next';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
-import { StyleRules } from '@material-ui/core/styles';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
+import { StyleRules } from '@mui/styles';
 
 export const storeFilters = (
   filters: FiltersType,
@@ -171,7 +166,7 @@ const viewButtonStyles = makeStyles(
   (theme: Theme): StyleRules =>
     createStyles({
       root: {
-        padding: `${theme.spacing(1)}px 0px ${theme.spacing(1)}px 0px`,
+        padding: `${theme.spacing(1)} 0px ${theme.spacing(1)} 0px`,
         marginRight: theme.spacing(1),
       },
     })
@@ -514,7 +509,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
           <Grid
             container
             direction={sideLayout ? 'row' : 'column'}
-            justify="center"
+            justifyContent="center"
             alignItems="center"
             spacing={1}
             className={classes.root}
@@ -546,7 +541,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
             {requestReceived && (
               <div style={{ width: '100%' }}>
-                <Grid container justify="center">
+                <Grid container justifyContent="center">
                   <Grid container className={classes.dataViewTopBar}>
                     <Grid item xs={'auto'}>
                       <ViewButton
@@ -564,7 +559,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid container justify="center" id="container-search-table">
+                <Grid
+                  container
+                  justifyContent="center"
+                  id="container-search-table"
+                >
                   <Paper className={classes.dataView}>
                     {/* Show loading progress if data is still being loaded */}
                     {loading && (

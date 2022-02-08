@@ -1,13 +1,13 @@
 import {
   Breadcrumbs,
-  createStyles,
   Link as MaterialLink,
   Paper,
   Theme,
   Typography,
-  withStyles,
-} from '@material-ui/core';
-import { StyleRules } from '@material-ui/core/styles';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
+import { StyleRules } from '@mui/styles';
 import axios, { AxiosError } from 'axios';
 import {
   ArrowTooltip,

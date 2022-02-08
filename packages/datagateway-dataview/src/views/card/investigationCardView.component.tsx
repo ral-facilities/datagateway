@@ -3,8 +3,8 @@ import {
   ConfirmationNumber,
   Fingerprint,
   Public,
-} from '@material-ui/icons';
-import { Link as MuiLink } from '@material-ui/core';
+} from '@mui/icons-material';
+import { Link as MuiLink } from '@mui/material';
 import {
   CardView,
   formatCountOrSize,

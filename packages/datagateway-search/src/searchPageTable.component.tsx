@@ -1,17 +1,12 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import {
-  Badge,
-  Paper,
-  Theme,
-  createStyles,
-  withStyles,
-  LinearProgress,
-} from '@material-ui/core';
-import { StyleRules } from '@material-ui/core/styles';
+import AppBar from '@mui/material/AppBar';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import { Badge, Paper, Theme, LinearProgress } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
+import { StyleRules } from '@mui/styles';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import InvestigationSearchTable from './table/investigationSearchTable.component';
@@ -58,7 +53,7 @@ const tabStyles = (theme: Theme): StyleRules =>
       //Fixes contrast issue for unselected tabs in darkmode
       color:
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).palette.type === 'dark'
+        (theme as any).palette.mode === 'dark'
           ? '#FFFFFF'
           : // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (theme as any).colours?.blue,

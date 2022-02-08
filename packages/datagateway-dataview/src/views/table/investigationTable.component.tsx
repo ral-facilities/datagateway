@@ -1,12 +1,7 @@
 import React from 'react';
-import {
-  Typography,
-  Grid,
-  createStyles,
-  makeStyles,
-  Theme,
-  Divider,
-} from '@material-ui/core';
+import { Typography, Grid, Theme, Divider } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Table,
   investigationLink,
@@ -32,12 +27,12 @@ import { useSelector } from 'react-redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import TitleIcon from '@material-ui/icons/Title';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import PublicIcon from '@material-ui/icons/Public';
-import SaveIcon from '@material-ui/icons/Save';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import TitleIcon from '@mui/icons-material/Title';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
+import PublicIcon from '@mui/icons-material/Public';
+import SaveIcon from '@mui/icons-material/Save';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

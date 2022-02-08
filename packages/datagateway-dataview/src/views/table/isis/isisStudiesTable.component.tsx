@@ -16,10 +16,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import PublicIcon from '@material-ui/icons/Public';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import TitleIcon from '@material-ui/icons/Title';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import PublicIcon from '@mui/icons-material/Public';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
+import TitleIcon from '@mui/icons-material/Title';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useLocation } from 'react-router-dom';
 import { format, set } from 'date-fns';
 

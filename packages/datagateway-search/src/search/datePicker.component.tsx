@@ -4,12 +4,9 @@ import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
-import {
-  Theme,
-  createStyles,
-  makeStyles,
-  useTheme,
-} from '@material-ui/core/styles';
+import { Theme, useTheme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';

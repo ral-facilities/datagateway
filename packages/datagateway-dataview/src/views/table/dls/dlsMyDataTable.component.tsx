@@ -19,11 +19,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import TitleIcon from '@material-ui/icons/Title';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import TitleIcon from '@mui/icons-material/Title';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useLocation } from 'react-router-dom';
 
 const DLSMyDataTable = (): React.ReactElement => {

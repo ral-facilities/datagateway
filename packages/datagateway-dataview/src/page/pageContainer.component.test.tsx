@@ -11,7 +11,7 @@ import {
   useCart,
 } from 'datagateway-common';
 
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 import { createLocation, createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 

@@ -3,7 +3,7 @@ import {
   ConfirmationNumber,
   CalendarToday,
   Fingerprint,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import {
   CardView,
   Dataset,
@@ -31,7 +31,9 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 

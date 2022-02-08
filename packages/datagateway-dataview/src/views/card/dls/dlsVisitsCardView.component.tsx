@@ -24,10 +24,10 @@ import {
   Assessment,
   CalendarToday,
   ConfirmationNumber,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 interface DLSVisitsCVProps {
   proposalName: string;

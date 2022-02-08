@@ -1,16 +1,16 @@
 import {
-  createStyles,
   Divider,
   Grid,
-  makeStyles,
   Link as MuiLink,
   Paper,
   Tab,
   Tabs,
   Theme,
   Typography,
-} from '@material-ui/core';
-import { CalendarToday, CheckCircle, Public, Save } from '@material-ui/icons';
+} from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { CalendarToday, CheckCircle, Public, Save } from '@mui/icons-material';
 import {
   Dataset,
   formatCountOrSize,

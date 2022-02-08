@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@mui/material/test-utils';
 import { Router } from 'react-router-dom';
 import PageRouting from './pageRouting.component';
 import { Provider } from 'react-redux';
