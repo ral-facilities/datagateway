@@ -704,22 +704,33 @@ const PageContainer: React.FC = () => {
                 <StyledGrid container>
                   {/* Toggle between the table and card view */}
                   <Grid item xs={'auto'}>
-                    <Route
-                      exact
-                      path={togglePaths}
-                      render={() => (
-                        <div>
+                    <div>
+                      <Route
+                        exact
+                        path={togglePaths}
+                        render={() => (
                           <ViewButton
                             viewCards={view === 'card'}
                             handleButtonChange={handleButtonChange}
                           />
+                        )}
+                      />
+                      <Route
+                        exact
+                        path={Object.values(paths.myData).concat(
+                          Object.values(paths.toggle),
+                          Object.values(paths.standard),
+                          Object.values(paths.studyHierarchy.toggle),
+                          Object.values(paths.studyHierarchy.standard)
+                        )}
+                        render={() => (
                           <ClearFiltersButton
                             handleButtonClearFilters={handleButtonClearFilters}
                             disabled={disabled}
                           />
-                        </div>
-                      )}
-                    />
+                        )}
+                      />
+                    </div>
                     <Route
                       exact
                       path={Object.values(paths.myData)}
