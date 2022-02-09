@@ -418,7 +418,6 @@ export const ClearFiltersButton = (props: {
         size="small"
         onClick={() => {
           props.handleButtonClearFilters();
-          console.log('CLICKED');
         }}
         startIcon={<Clear />}
         disabled={props.disabled}
