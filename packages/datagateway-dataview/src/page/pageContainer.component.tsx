@@ -671,12 +671,30 @@ const PageContainer: React.FC = () => {
   const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const disabled = Object.keys(filters).length !== 0 ? false : true;
+
+  const dlsDefaultFilters = {
+    startDate: {
+      endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
+    },
+  };
+
+  const disabled =
+    Object.keys(filters).length !== 0
+      ? location.pathname !== paths.myData.dls
+        ? false
+        : JSON.stringify(filters) === JSON.stringify(dlsDefaultFilters)
+        ? true
+        : false
+      : true;
 
   const pushFilters = useUpdateQueryParam('filters', 'push');
 
   const handleButtonClearFilters = (): void => {
-    pushFilters({});
+    if (location.pathname === paths.myData.dls) {
+      pushFilters(dlsDefaultFilters);
+    } else {
+      pushFilters({});
+    }
   };
 
   return (
