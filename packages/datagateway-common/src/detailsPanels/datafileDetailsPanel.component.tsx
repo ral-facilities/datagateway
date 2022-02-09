@@ -1,21 +1,16 @@
 import React from 'react';
-import { Typography, Grid, Theme, Divider } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Typography, Grid, Divider, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Datafile, Entity } from '../app.types';
 import { formatBytes } from '../table/cellRenderers/cellContentRenderers';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface DatafileDetailsPanelProps {
   rowData: Entity;
@@ -27,7 +22,6 @@ const DatafileDetailsPanel = (
 ): React.ReactElement => {
   const { detailsPanelResize } = props;
 
-  const classes = useStyles();
   const [t] = useTranslation();
   const datafileData = props.rowData as Datafile;
 
@@ -36,17 +30,12 @@ const DatafileDetailsPanel = (
   }, [detailsPanelResize]);
 
   return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
+    <StyledGrid id="details-panel" container direction="column">
       <Grid item xs>
         <Typography variant="h6">
           <b>{datafileData.name}</b>
         </Typography>
-        <Divider className={classes.divider} />
+        <StyledDivider />
       </Grid>
       <Grid item xs>
         <Typography variant="overline">{t('datafiles.size')}</Typography>
@@ -60,7 +49,7 @@ const DatafileDetailsPanel = (
           <b>{datafileData.location}</b>
         </Typography>
       </Grid>
-    </Grid>
+    </StyledGrid>
   );
 };
 

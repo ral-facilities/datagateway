@@ -2,28 +2,23 @@ import React from 'react';
 import {
   Typography,
   Grid,
-  Theme,
   Divider,
   Tabs,
   Tab,
   Link,
+  styled,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { useTranslation } from 'react-i18next';
 import { Entity, Instrument } from '../../app.types';
 import { useInstrumentDetails } from '../../api/instruments';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface InstrumentDetailsPanelProps {
   rowData: Entity;
@@ -36,7 +31,6 @@ const InstrumentDetailsPanel = (
   const { rowData, detailsPanelResize } = props;
   const [value, setValue] = React.useState<'details' | 'users'>('details');
   const [t] = useTranslation();
-  const classes = useStyles();
 
   const { data } = useInstrumentDetails(rowData.id);
   const instrumentData: Instrument = { ...data, ...(rowData as Instrument) };
@@ -75,12 +69,12 @@ const InstrumentDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{instrumentData.fullName || instrumentData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -121,7 +115,7 @@ const InstrumentDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {instrumentData.instrumentScientists && (
         <div
@@ -130,7 +124,7 @@ const InstrumentDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'users'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('instruments.details.instrument_scientists.name', {
                 count: instrumentData.instrumentScientists.length,
@@ -158,7 +152,7 @@ const InstrumentDetailsPanel = (
                 <b>{t('instruments.details.instrument_scientists.no_name')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

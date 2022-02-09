@@ -1,14 +1,12 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import DatafilesDetailsPanel from './datafileDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { useDatafileDetails } from '../../api/datafiles';
 
 jest.mock('../../api/datafiles');
 
 describe('Datafile details panel component', () => {
-  let mount;
   let rowData: Datafile;
   const detailsPanelResize = jest.fn();
 
@@ -24,7 +22,6 @@ describe('Datafile details panel component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = {
       id: 1,
       name: 'Test 1',
@@ -40,7 +37,6 @@ describe('Datafile details panel component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 

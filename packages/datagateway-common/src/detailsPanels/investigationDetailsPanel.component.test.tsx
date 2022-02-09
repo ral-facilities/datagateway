@@ -1,15 +1,13 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { shallow } from 'enzyme';
 import InvestigationDetailsPanel from './investigationDetailsPanel.component';
 import { Investigation } from '../app.types';
 
 describe('Investigation details panel component', () => {
-  let shallow;
   let rowData: Investigation;
   const detailsPanelResize = jest.fn();
 
   beforeEach(() => {
-    shallow = createShallow();
     rowData = {
       id: 1,
       title: 'Test 1',

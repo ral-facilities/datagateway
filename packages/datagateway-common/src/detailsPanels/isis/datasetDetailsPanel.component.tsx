@@ -1,21 +1,16 @@
 import React from 'react';
-import { Typography, Grid, Theme, Divider, Tabs, Tab } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Typography, Grid, Divider, Tabs, Tab, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useDatasetDetails } from '../../api/datasets';
 import { Dataset, Entity } from '../../app.types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;
@@ -29,7 +24,6 @@ const DatasetDetailsPanel = (
   const { rowData, detailsPanelResize, viewDatafiles } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
-  const classes = useStyles();
 
   const { data } = useDatasetDetails(rowData.id);
   const datasetData: Dataset = { ...data, ...(rowData as Dataset) };
@@ -75,12 +69,12 @@ const DatasetDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{datasetData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -94,7 +88,7 @@ const DatasetDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {datasetData.type && (
         <div
@@ -103,12 +97,12 @@ const DatasetDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'type'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Grid item xs>
               <Typography variant="h6">
                 <b>{datasetData.type.name}</b>
               </Typography>
-              <Divider className={classes.divider} />
+              <StyledDivider />
             </Grid>
             <Grid item xs>
               <Typography variant="overline">
@@ -123,7 +117,7 @@ const DatasetDetailsPanel = (
                 </b>
               </Typography>
             </Grid>
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

@@ -2,28 +2,23 @@ import React from 'react';
 import {
   Typography,
   Grid,
-  Theme,
   Divider,
   Tabs,
   Tab,
   Link as MuiLink,
+  styled,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { useTranslation } from 'react-i18next';
 import { useInvestigationDetails } from '../../api/investigations';
 import { Entity, Investigation } from '../../app.types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface InvestigationDetailsPanelProps {
   rowData: Entity;
@@ -40,8 +35,6 @@ const InvestigationDetailsPanel = (
   >('details');
 
   const [t] = useTranslation();
-
-  const classes = useStyles();
 
   const { data } = useInvestigationDetails(rowData.id);
   const investigationData: Investigation = {
@@ -106,12 +99,12 @@ const InvestigationDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{investigationData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -207,7 +200,7 @@ const InvestigationDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {investigationData.investigationUsers && (
         <div
@@ -216,7 +209,7 @@ const InvestigationDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'users'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.users.name', {
                 count: investigationData.investigationUsers.length,
@@ -244,7 +237,7 @@ const InvestigationDetailsPanel = (
                 <b>{t('investigations.details.users.no_name')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
       {investigationData.samples && (
@@ -254,7 +247,7 @@ const InvestigationDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'samples'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.samples.name', {
                 count: investigationData.samples.length,
@@ -275,7 +268,7 @@ const InvestigationDetailsPanel = (
                 <b>{t('investigations.details.samples.no_samples')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
       {investigationData.publications && (
@@ -285,7 +278,7 @@ const InvestigationDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'publications'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.publications.reference', {
                 count: investigationData.publications.length,
@@ -308,7 +301,7 @@ const InvestigationDetailsPanel = (
                 </b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

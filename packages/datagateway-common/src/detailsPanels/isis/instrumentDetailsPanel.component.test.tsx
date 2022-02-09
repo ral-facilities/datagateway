@@ -1,15 +1,13 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { Instrument } from '../../app.types';
 import { useInstrumentDetails } from '../../api/instruments';
 
 jest.mock('../../api/instruments');
 
 describe('Instrument details panel component', () => {
-  let mount;
   let rowData: Instrument;
   const detailsPanelResize = jest.fn();
 
@@ -25,7 +23,6 @@ describe('Instrument details panel component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = {
       id: 1,
       name: 'Test',
@@ -41,7 +38,6 @@ describe('Instrument details panel component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 

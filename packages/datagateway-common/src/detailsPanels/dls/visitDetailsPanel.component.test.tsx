@@ -1,8 +1,7 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import VisitDetailsPanel from './visitDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import {
   useInvestigationDetails,
   useInvestigationSize,
@@ -11,7 +10,6 @@ import {
 jest.mock('../../api/investigations');
 
 describe('Visit details panel component', () => {
-  let mount;
   let rowData: Investigation;
   const detailsPanelResize = jest.fn();
 
@@ -27,7 +25,6 @@ describe('Visit details panel component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = {
       id: 1,
       title: 'Test 1',
@@ -59,7 +56,6 @@ describe('Visit details panel component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
