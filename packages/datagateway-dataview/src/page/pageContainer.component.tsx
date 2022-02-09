@@ -679,13 +679,11 @@ const PageContainer: React.FC = () => {
   };
 
   const disabled =
-    Object.keys(filters).length !== 0
-      ? location.pathname !== paths.myData.dls
-        ? false
-        : JSON.stringify(filters) === JSON.stringify(dlsDefaultFilters)
-        ? true
-        : false
-      : true;
+    Object.keys(filters).length === 0 ||
+    (location.pathname === paths.myData.dls &&
+      JSON.stringify(filters) === JSON.stringify(dlsDefaultFilters))
+      ? true
+      : false;
 
   const pushFilters = useUpdateQueryParam('filters', 'push');
 
