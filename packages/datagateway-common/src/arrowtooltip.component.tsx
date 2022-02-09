@@ -1,23 +1,6 @@
 import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import Tooltip, { TooltipProps } from '@mui/material/Tooltip';
-import { Theme } from '@mui/material/styles';
-
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
-
-const useStylesArrow = makeStyles((theme: Theme) =>
-  createStyles({
-    tooltip: {
-      position: 'relative',
-      backgroundColor: theme.palette.common.black,
-      fontSize: '0.875rem',
-    },
-    arrow: {
-      color: theme.palette.common.black,
-    },
-  })
-);
 
 export const getTooltipText = (node: React.ReactNode): string => {
   if (typeof node === 'string') return node;
@@ -29,14 +12,27 @@ export const getTooltipText = (node: React.ReactNode): string => {
   return '';
 };
 
+const tooltipComponentProps = {
+  tooltip: {
+    sx: {
+      position: 'relative',
+      backgroundColor: 'common.black',
+      fontSize: '0.875rem',
+    },
+  },
+  arrow: {
+    sx: {
+      color: 'common.black',
+    },
+  },
+};
+
 const ArrowTooltip = (
   props: TooltipProps & {
     disableHoverListener?: boolean;
   }
 ): React.ReactElement => {
   const { disableHoverListener, ...tooltipProps } = props;
-
-  const { ...classes } = useStylesArrow();
 
   const [isTooltipVisible, setTooltipVisible] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -105,7 +101,7 @@ const ArrowTooltip = (
   return (
     <Tooltip
       ref={tooltipRef}
-      classes={classes}
+      componentsProps={tooltipComponentProps}
       {...tooltipProps}
       disableHoverListener={shouldDisableHoverListener}
       arrow={true}

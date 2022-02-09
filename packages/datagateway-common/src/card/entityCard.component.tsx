@@ -10,10 +10,9 @@ import {
   AccordionSummary,
   Link,
   Typography,
+  Box,
 } from '@mui/material';
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowTooltip, { getTooltipText } from '../arrowtooltip.component';
 import React from 'react';
@@ -23,143 +22,114 @@ import { nestedValue } from '../api';
 import { Entity } from '../app.types';
 import { CardViewDetails, CVCustomFilters } from './cardView.component';
 
-const useCardStyles = makeStyles((theme: Theme) => {
+// TODO: Remove use of "vw" here?
+// NOTE: This is width of the main content
+//       (this also matches the description shadow width).
+//       Change this width in accordance with the maxWidth in root class.
+const mainWidth = '45vw';
+
+// Expected width of info labels to prevent misalignment due to newlines
+const labelWidth = '15ch';
+// TODO: Remove use of "vw" here?
+const infoDataMaxWidth = '10vw';
+
+const mainStyle = {
+  display: 'flex',
+  // Have contents arranged in columns.
+  flexDirection: 'column',
+  flexGrow: 1,
+  flexShrink: 1,
+  flexBasis: mainWidth,
   // TODO: Remove use of "vw" here?
-  // NOTE: This is width of the main content
-  //       (this also matches the description shadow width).
-  //       Change this width in accordance with the maxWidth in root class.
-  const mainWidth = '45vw';
-  // Expected width of info labels to prevent misalignment due to newlines
-  const labelWidth = '15ch';
-  // TODO: Remove use of "vw" here?
-  const infoDataMaxWidth = '10vw';
+  minWidth: '30vw',
+  paddingRight: '10px',
+};
 
-  // Transparent and opaque values for the background theme (used in the 'show more' shadow gradient)
-  const paperZero = hexToRbga(theme.palette.background.paper, 0);
-  const paperOne = hexToRbga(theme.palette.background.paper, 1);
+// NOTE: Styling specifically for the title as we want
+//       the text to take up only the width it needs so we
+//       know when to show the arrow toolip when the text has
+//       overflowed the maximum width given for the title.
+const titleStyle = {
+  display: 'inline-block',
+  maxWidth: '100%',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+};
 
-  const styles = createStyles({
-    root: {
-      display: 'flex',
-      // NOTE: This is the maximum width for the card (it will only use this even if you set the mainWidth to a greater value).
-      // maxWidth: 1500,
-      backgroundColor: theme.palette.background.paper,
-      width: '100%',
-    },
+const ShadowDiv = styled('div', {
+  shouldForwardProp: (prop) =>
+    prop !== 'isDescriptionCollapsed' && prop !== 'shadowWidth',
+})<{ isDescriptionCollapsed: boolean; shadowWidth: number }>(
+  ({ theme, isDescriptionCollapsed, shadowWidth }) => {
+    // Transparent and opaque values for the background theme (used in the 'show more' shadow gradient)
+    const paperZero = hexToRbga(theme.palette.background.paper, 0);
+    const paperOne = hexToRbga(theme.palette.background.paper, 1);
 
-    cardImage: {
-      width: 150,
-      height: 150,
-    },
+    if (isDescriptionCollapsed) {
+      return {
+        width: `${shadowWidth}px`,
+        visibility: 'hidden',
+        opacity: 0,
+        transition: 'visibility 0s, opacity 0.5s linear',
+      };
+    } else {
+      return {
+        width: `${shadowWidth}px`,
+        position: 'absolute',
+        height: 30,
+        top: 130,
+        background: `linear-gradient(${paperZero}, ${paperOne})`,
 
-    highlight: {
-      display: 'flex',
-      flexDirection: 'row',
-    },
+        // Transition showing the shadow.
+        visibility: 'visible',
+        opacity: 1,
+        transition: 'visibility 0s, opacity 0.5s linear',
+      };
+    }
+  }
+);
 
-    main: {
-      display: 'flex',
-      // Have contents arranged in columns.
-      flexDirection: 'column',
-      flexGrow: 1,
-      flexShrink: 1,
-      flexBasis: mainWidth,
-      // TODO: Remove use of "vw" here?
-      minWidth: '30vw',
-      paddingRight: '10px',
-    },
+const InformationDiv = styled('div')({
+  display: 'flex',
 
-    // NOTE: Styling specifically for the title as we want
-    //       the text to take up only the width it needs so we
-    //       know when to show the arrow toolip when the text has
-    //       overflowed the maximum width given for the title.
-    title: {
-      display: 'inline-block',
-      maxWidth: '100%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
+  // Apply a small space for each Typography component (p).
+  '& p': {
+    paddingTop: '5px',
+  },
+});
 
-    description: {
-      '& a': {
-        cursor: 'pointer',
-      },
-    },
+const InformationLabelDiv = styled('div')({
+  float: 'left',
+  '& p': {
+    // Support aligning icons and label.
+    display: 'flex',
+    minWidth: labelWidth,
+  },
+});
 
-    shadowVisible: {
-      position: 'absolute',
-      height: 30,
-      top: 130,
-      background: `linear-gradient(${paperZero}, ${paperOne})`,
+const InformationDataDiv = styled('div')({
+  float: 'right',
+  textAlign: 'left',
+  paddingLeft: '5px',
 
-      // Transition showing the shadow.
-      visibility: 'visible',
-      opacity: 1,
-      transition: 'visibility 0s, opacity 0.5s linear',
-    },
+  '& p': {
+    display: 'block',
+    whiteSpace: 'nowrap',
+    maxWidth: infoDataMaxWidth,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+});
 
-    shadowInvisible: {
-      visibility: 'hidden',
-      opacity: 0,
-      transition: 'visibility 0s, opacity 0.5s linear',
-    },
-
-    information: {
-      display: 'flex',
-
-      // Apply a small space for each Typography component (p).
-      '& p': {
-        paddingTop: '5px',
-      },
-    },
-
-    informationLabel: {
-      float: 'left',
-      '& p': {
-        // Support aligning icons and label.
-        display: 'flex',
-        minWidth: labelWidth,
-      },
-    },
-
-    informationData: {
-      float: 'right',
-      textAlign: 'left',
-      paddingLeft: '5px',
-
-      '& p': {
-        display: 'block',
-        whiteSpace: 'nowrap',
-        maxWidth: infoDataMaxWidth,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-      },
-    },
-
-    buttons: {
-      // Prevent misalignment caused by buttons being wider than information
-      maxWidth: `calc(${labelWidth} + ${infoDataMaxWidth} - 20px)`,
-      margin: 'auto',
-      padding: '10px',
-      textAlign: 'center',
-      '& div': {
-        paddingTop: '10px',
-      },
-    },
-
-    moreInformation: {
-      paddingTop: '10px',
-    },
-
-    tags: {
-      paddingTop: '10px',
-    },
-
-    chip: {
-      margin: theme.spacing(0.5),
-    },
-  });
-  return styles;
+const ButtonsDiv = styled('div')({
+  // Prevent misalignment caused by buttons being wider than information
+  maxWidth: `calc(${labelWidth} + ${infoDataMaxWidth} - 20px)`,
+  margin: 'auto',
+  padding: '10px',
+  textAlign: 'center',
+  '& div': {
+    paddingTop: '10px',
+  },
 });
 
 export interface EntityImageDetails {
@@ -189,7 +159,6 @@ interface EntityCardProps {
 
 const EntityCard = React.memo(
   (props: EntityCardProps): React.ReactElement => {
-    const classes = useCardStyles();
     const { entity, image } = props;
     const [shadowWidth, setShadowWidth] = React.useState<number>(0);
 
@@ -279,14 +248,23 @@ const EntityCard = React.memo(
     const [t] = useTranslation();
 
     return (
-      <Card data-testid="card" className={classes.root}>
+      <Card
+        data-testid="card"
+        sx={{
+          display: 'flex',
+          // NOTE: This is the maximum width for the card (it will only use this even if you set the mainWidth to a greater value).
+          // maxWidth: 1500,
+          backgroundColor: 'background.paper',
+          width: '100%',
+        }}
+      >
         {/* TODO: Check width and sizing of having image on card under different circumstances */}
         {/* We allow for additional width when having an image in the card (see card styles). */}
         {image && (
           <CardMedia
             aria-label="card-image"
             component="img"
-            className={classes.cardImage}
+            sx={{ width: '150px', height: '150px' }}
             image={image.url}
             title={image.title}
           />
@@ -302,8 +280,8 @@ const EntityCard = React.memo(
               - more information (optional and custom)
               - buttons (custom)
         */}
-          <div className={classes.highlight}>
-            <div className={classes.main}>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <Box sx={mainStyle}>
               {/* column:
                 - title/description 
             */}
@@ -314,11 +292,7 @@ const EntityCard = React.memo(
                   }
                   enterDelay={500}
                 >
-                  <Typography
-                    className={classes.title}
-                    component="h5"
-                    variant="h5"
-                  >
+                  <Typography sx={titleStyle} component="h5" variant="h5">
                     <span
                       aria-label="card-title"
                       style={{
@@ -332,7 +306,13 @@ const EntityCard = React.memo(
                   </Typography>
                 </ArrowTooltip>
 
-                <div className={classes.description}>
+                <Box
+                  sx={{
+                    '& a': {
+                      cursor: 'pointer',
+                    },
+                  }}
+                >
                   {/* Collapsed height is the minimum description content to
                     show for each card */}
                   <Collapse
@@ -354,15 +334,9 @@ const EntityCard = React.memo(
                   {/* Button to show more/less */}
                   {collapsibleInteraction && (
                     <div aria-label="card-description-link">
-                      <div
-                        className={
-                          isDescriptionCollapsed
-                            ? classes.shadowInvisible
-                            : classes.shadowVisible
-                        }
-                        style={{
-                          width: `${shadowWidth}px`,
-                        }}
+                      <ShadowDiv
+                        isDescriptionCollapsed={isDescriptionCollapsed}
+                        shadowWidth={shadowWidth}
                       />
                       <Link
                         onClick={() => setDescriptionCollapsed((prev) => !prev)}
@@ -373,9 +347,9 @@ const EntityCard = React.memo(
                       </Link>
                     </div>
                   )}
-                </div>
+                </Box>
               </div>
-            </div>
+            </Box>
 
             {/* Divider is optional based on if there is information/buttons. */}
             {((information && information.length > 0) ||
@@ -386,8 +360,8 @@ const EntityCard = React.memo(
 
             <div style={{ paddingLeft: 15 }}>
               {information && (
-                <div className={classes.information}>
-                  <div className={classes.informationLabel}>
+                <InformationDiv>
+                  <InformationLabelDiv>
                     {information.map(
                       (info: EntityCardDetails, index: number) => {
                         const { label, icon: Icon } = info;
@@ -402,9 +376,9 @@ const EntityCard = React.memo(
                         );
                       }
                     )}
-                  </div>
+                  </InformationLabelDiv>
 
-                  <div className={classes.informationData}>
+                  <InformationDataDiv>
                     {information.map(
                       (info: EntityCardDetails, index: number) => (
                         <div
@@ -415,18 +389,18 @@ const EntityCard = React.memo(
                         </div>
                       )
                     )}
-                  </div>
-                </div>
+                  </InformationDataDiv>
+                </InformationDiv>
               )}
 
               {buttons && (
-                <div aria-label="card-buttons" className={classes.buttons}>
+                <ButtonsDiv aria-label="card-buttons">
                   {buttons.map((button, index) => (
                     <div aria-label={`card-button-${index + 1}`} key={index}>
                       {button}
                     </div>
                   ))}
-                </div>
+                </ButtonsDiv>
               )}
             </div>
           </div>
@@ -438,11 +412,10 @@ const EntityCard = React.memo(
 
               <div
                 aria-label="card-more-information"
-                className={classes.moreInformation}
+                style={{ paddingTop: '10px' }}
               >
                 <Accordion
                   square
-                  elevation={1}
                   variant="outlined"
                   expanded={isMoreInfoCollapsed}
                   onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
@@ -463,7 +436,7 @@ const EntityCard = React.memo(
           )}
 
           {tags && (
-            <div aria-label="card-tags" className={classes.tags}>
+            <div aria-label="card-tags" style={{ paddingTop: '10px' }}>
               <Divider />
 
               {/* Render the array of tags passed through */}
@@ -472,7 +445,7 @@ const EntityCard = React.memo(
                   <Chip
                     aria-label={`card-tag-${v.data}`}
                     key={i}
-                    className={classes.chip}
+                    sx={{ margin: 0.5 }}
                     label={v.prefixLabel ? `${v.label} - ${v.data}` : v.data}
                   />
                 ))}

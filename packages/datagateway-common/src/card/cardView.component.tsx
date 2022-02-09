@@ -17,9 +17,7 @@ import {
   Select,
   Divider,
 } from '@mui/material';
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Pagination } from '@mui/material';
 import ArrowTooltip from '../arrowtooltip.component';
@@ -36,34 +34,13 @@ import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
 import EntityCard, { EntityImageDetails } from './entityCard.component';
 
-const useCardViewStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    expandDetails: {
-      width: '100%',
-    },
-    selectedChips: {
-      display: 'inline-flex',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      listStyle: 'none',
-      padding: theme.spacing(1),
-    },
-    chip: {
-      margin: theme.spacing(0.5),
-    },
-    paginationGrid: {
-      padding: theme.spacing(2),
-    },
-    noResultsPaper: {
-      padding: theme.spacing(2),
-      margin: theme.spacing(2),
-    },
-  })
-);
+const SelectedChips = styled('ul')(({ theme }) => ({
+  display: 'inline-flex',
+  justifyContent: 'center',
+  flexWrap: 'wrap',
+  listStyle: 'none',
+  padding: theme.spacing(1),
+}));
 
 export interface CardViewDetails {
   dataKey: string;
@@ -181,8 +158,6 @@ function CVPagination(
 }
 
 const CardView = (props: CardViewProps): React.ReactElement => {
-  const classes = useCardViewStyles();
-
   // Props.
   const {
     data,
@@ -507,7 +482,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             alignItems="center"
             justifyContent="space-around"
             xs={12}
-            className={classes.paginationGrid}
+            sx={{ padding: 2 }}
           >
             {/* Fake box to mirror Max Results selector */}
             {totalDataCount > resOptions[0] && (
@@ -526,7 +501,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                 smallest amount of results to display (10) or the smallest amount available. */}
             {totalDataCount > resOptions[0] && (
               <Grid container item xs={12} md={1} justifyContent="flex-end">
-                <FormControl className={classes.formControl} variant="standard">
+                <FormControl
+                  variant="standard"
+                  sx={{ margin: 1, minWidth: 120 }}
+                >
                   <InputLabel htmlFor="select-max-results">
                     {t('app.max_results')}
                   </InputLabel>
@@ -661,7 +639,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                   <Typography>{filter.label}</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                  <div className={classes.expandDetails}>
+                                  <div style={{ width: '100%' }}>
                                     <List
                                       component="nav"
                                       aria-label="filter-by-list"
@@ -725,13 +703,13 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         <Grid item xs={12} md={9}>
           {/* Selected filters array */}
           {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
-            <ul className={classes.selectedChips}>
+            <SelectedChips>
               {selectedFilters.map((filter, filterIndex) => (
                 <li key={filterIndex}>
                   {filter.items.map((item, itemIndex) => (
                     <Chip
                       key={itemIndex}
-                      className={classes.chip}
+                      sx={{ margin: 0.5 }}
                       label={`${filter.label} - ${item}`}
                       onDelete={() => {
                         changeFilter(filter.filterKey, item, true);
@@ -741,7 +719,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   ))}
                 </li>
               ))}
-            </ul>
+            </SelectedChips>
           )}
 
           {/* List of cards */}
@@ -769,7 +747,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             </List>
           ) : (
             <Grid item xs={12} md={8}>
-              <Paper className={classes.noResultsPaper}>
+              <Paper sx={{ padding: 2, margin: 2 }}>
                 <Typography align="center" variant="h6" component="h6">
                   {t('loading.filter_message')}
                 </Typography>

@@ -3,12 +3,10 @@ import {
   Accordion,
   ListItemText,
   Select,
-  SvgIcon,
   Typography,
 } from '@mui/material';
-import { createMount, createShallow } from '@mui/material/test-utils';
 import { Pagination } from '@mui/material';
-import { ReactWrapper } from 'enzyme';
+import { mount, shallow, ReactWrapper } from 'enzyme';
 import React from 'react';
 import axios from 'axios';
 import { default as CardView, CardViewProps } from './cardView.component';
@@ -16,8 +14,6 @@ import { AdvancedFilter, TextColumnFilter } from '..';
 import { Entity, Investigation } from '../app.types';
 
 describe('Card View', () => {
-  let mount;
-  let shallow;
   let props: CardViewProps;
 
   const createWrapper = (props: CardViewProps): ReactWrapper => {
@@ -31,8 +27,6 @@ describe('Card View', () => {
   const onResultsChange = jest.fn();
 
   beforeEach(() => {
-    mount = createMount();
-    shallow = createShallow();
     const data: Investigation[] = [
       {
         id: 1,
@@ -85,7 +79,6 @@ describe('Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     loadData.mockClear();
     onFilter.mockClear();
     onPageChange.mockClear();
@@ -125,12 +118,12 @@ describe('Card View', () => {
 
     // Open custom filters
     const typePanel = wrapper.find(Accordion).first();
-    typePanel.simulate('click');
+    typePanel.find('div').at(1).simulate('click');
     expect(typePanel.find(Chip).first().text()).toEqual('1');
     expect(typePanel.find(Chip).last().text()).toEqual('2');
 
     // Apply custom filters
-    typePanel.find(Chip).first().simulate('click');
+    typePanel.find(Chip).first().find('div').simulate('click');
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
     expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
 
@@ -147,7 +140,7 @@ describe('Card View', () => {
     wrapper.setProps(updatedProps);
 
     // Apply second filter
-    typePanel.find(Chip).last().simulate('click');
+    typePanel.find(Chip).last().find('div').simulate('click');
     expect(onPageChange).toHaveBeenNthCalledWith(2, 1);
 
     expect(onFilter).toHaveBeenNthCalledWith(2, 'type.id', ['1', '2']);
@@ -161,7 +154,7 @@ describe('Card View', () => {
 
     // Remove filter
     expect(wrapper.find(Chip).at(2).text()).toEqual('Type ID - 1');
-    wrapper.find(Chip).at(2).find(SvgIcon).simulate('click');
+    wrapper.find(Chip).at(2).find('svg').simulate('click');
     expect(onPageChange).toHaveBeenNthCalledWith(3, 1);
     expect(onFilter).toHaveBeenNthCalledWith(3, 'type.id', ['2']);
 
@@ -174,7 +167,7 @@ describe('Card View', () => {
 
     // Remove second filter
     expect(wrapper.find(Chip).at(2).text()).toEqual('Type ID - 2');
-    wrapper.find(Chip).at(2).find(SvgIcon).simulate('click');
+    wrapper.find(Chip).at(2).find('svg').simulate('click');
     expect(onPageChange).toHaveBeenNthCalledWith(4, 1);
     expect(onFilter).toHaveBeenNthCalledWith(4, 'type.id', null);
   });
@@ -207,12 +200,12 @@ describe('Card View', () => {
 
     // Open custom filters
     const typePanel = wrapper.find(Accordion).first();
-    typePanel.simulate('click');
+    typePanel.find('div').at(1).simulate('click');
     expect(typePanel.find(Chip).first().text()).toEqual('1');
     expect(typePanel.find(Chip).last().text()).toEqual('2');
 
     // Apply custom filters
-    typePanel.find(Chip).first().simulate('click');
+    typePanel.find(Chip).first().find('div').simulate('click');
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
     expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
   });
@@ -284,10 +277,11 @@ describe('Card View', () => {
     let updatedProps = { ...props, page: 1 };
     const wrapper = createWrapper(props);
     const button = wrapper.find(ListItemText).first();
+    const clickableButton = button.find('div');
     expect(button.text()).toEqual('title');
 
     // Click to sort ascending
-    button.simulate('click');
+    clickableButton.simulate('click');
     expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc', 'push');
     updatedProps = {
       ...updatedProps,
@@ -296,7 +290,7 @@ describe('Card View', () => {
     wrapper.setProps(updatedProps);
 
     // Click to sort descending
-    button.simulate('click');
+    clickableButton.simulate('click');
     expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc', 'push');
     updatedProps = {
       ...updatedProps,
@@ -305,7 +299,7 @@ describe('Card View', () => {
     wrapper.setProps(updatedProps);
 
     // Click to clear sorting
-    button.simulate('click');
+    clickableButton.simulate('click');
     expect(onSort).toHaveBeenNthCalledWith(3, 'title', null, 'push');
   });
 
@@ -343,7 +337,7 @@ describe('Card View', () => {
     expect(button.text()).toEqual('Name');
 
     // Click to sort ascending
-    button.simulate('click');
+    button.find('div').simulate('click');
     expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
   });
 
@@ -359,7 +353,7 @@ describe('Card View', () => {
     expect(button.text()).toEqual('name');
 
     // Click to sort ascending
-    button.simulate('click');
+    button.find('div').simulate('click');
     expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
   });
 
@@ -370,7 +364,7 @@ describe('Card View', () => {
     expect(button.text()).toEqual('title');
 
     // Click to sort ascending
-    button.simulate('click');
+    button.find('div').simulate('click');
     expect(onSort).toHaveBeenCalledWith('title', 'asc', 'push');
     expect(onPageChange).toHaveBeenCalledWith(1);
   });
@@ -407,7 +401,7 @@ describe('Card View', () => {
     // Click to sort ascending
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('visitId');
-    button.simulate('click');
+    button.find('div').simulate('click');
     expect(onSort).toHaveBeenCalledWith('visitId', 'asc', 'push');
   });
 

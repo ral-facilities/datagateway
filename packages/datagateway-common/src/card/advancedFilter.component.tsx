@@ -1,7 +1,5 @@
 import React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import { Collapse, Typography, Link, Grid, Theme } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
+import { Collapse, Typography, Link, Grid, Box, styled } from '@mui/material';
 import { CardViewDetails } from './cardView.component';
 import TitleIcon from '@mui/icons-material/Title';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
@@ -16,28 +14,15 @@ import LinkIcon from '@mui/icons-material/Link';
 import PersonIcon from '@mui/icons-material/Person';
 import { useTranslation } from 'react-i18next';
 
-const useAdvancedFilterStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    filterGrid: {
-      display: 'grid',
-      gridGap: '1rem',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      padding: '20px',
-    },
-    filter: {
-      padding: '5px',
-    },
-    link: {
-      textAlign: 'center',
-      '& a': { cursor: 'pointer' },
-    },
-    icon: {
-      marginTop: 'auto',
-      marginBottom: 'auto',
-      marginRight: theme.spacing(1),
-    },
-  })
-);
+const FilterDiv = styled('div')({
+  padding: '5px',
+});
+
+const iconStyle = {
+  marginTop: 'auto',
+  marginBottom: 'auto',
+  marginRight: 1,
+};
 
 interface AdvancedFilterProps {
   title: CardViewDetails;
@@ -52,7 +37,6 @@ export const UnmemoisedAdvancedFilter = (
   props: AdvancedFilterProps
 ): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = useAdvancedFilterStyles();
 
   const { title, description, information } = props;
 
@@ -65,67 +49,67 @@ export const UnmemoisedAdvancedFilter = (
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <TitleIcon className={classes.icon} />;
+      return <TitleIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.fingerprint', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <FingerprintIcon className={classes.icon} />;
+      return <FingerprintIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.public', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <PublicIcon className={classes.icon} />;
+      return <PublicIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.confirmation_number', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <ConfirmationNumberIcon className={classes.icon} />;
+      return <ConfirmationNumberIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.assessment', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <AssessmentIcon className={classes.icon} />;
+      return <AssessmentIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.calendar_today', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <CalendarTodayIcon className={classes.icon} />;
+      return <CalendarTodayIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.explore', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <ExploreIcon className={classes.icon} />;
+      return <ExploreIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.save', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <SaveIcon className={classes.icon} />;
+      return <SaveIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.description', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <DescriptionIcon className={classes.icon} />;
+      return <DescriptionIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.link', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <LinkIcon className={classes.icon} />;
+      return <LinkIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.person', {
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <PersonIcon className={classes.icon} />;
+      return <PersonIcon sx={iconStyle} />;
     } else {
       return null;
     }
@@ -134,10 +118,17 @@ export const UnmemoisedAdvancedFilter = (
   return (
     <div>
       <Collapse in={advSearchCollapsed}>
-        <div className={classes.filterGrid}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridGap: '1rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            padding: '20px',
+          }}
+        >
           {/* Filters for title and description provided on card */}
           {title && title.filterComponent && (
-            <div className={classes.filter}>
+            <FilterDiv>
               <Grid container>
                 {title.label && chooseIcon(title.label)}
                 <Typography variant="subtitle1">
@@ -149,10 +140,10 @@ export const UnmemoisedAdvancedFilter = (
                   title.label ? title.label : title.dataKey,
                   title.dataKey
                 )}
-            </div>
+            </FilterDiv>
           )}
           {description && description.filterComponent && (
-            <div className={classes.filter}>
+            <FilterDiv>
               <Grid container>
                 {description.label && chooseIcon(description.label)}
                 <Typography variant="subtitle1">
@@ -163,7 +154,7 @@ export const UnmemoisedAdvancedFilter = (
                 description.label ? description.label : description.dataKey,
                 description.dataKey
               )}
-            </div>
+            </FilterDiv>
           )}
 
           {/* Filters for other information provided on card */}
@@ -171,7 +162,7 @@ export const UnmemoisedAdvancedFilter = (
             information.map(
               (info, index) =>
                 info.filterComponent && (
-                  <div key={index} className={classes.filter}>
+                  <FilterDiv key={index}>
                     <Grid container>
                       {info.label && chooseIcon(info.label)}
                       <Typography variant="subtitle1">
@@ -182,14 +173,14 @@ export const UnmemoisedAdvancedFilter = (
                       info.label ? info.label : info.dataKey,
                       info.dataKey
                     )}
-                  </div>
+                  </FilterDiv>
                 )
             )}
-        </div>
+        </Box>
       </Collapse>
 
       {/* Advanced filters link */}
-      <div className={classes.link}>
+      <Box sx={{ textAlign: 'center' }}>
         <Link
           component="button"
           variant="body1"
@@ -200,7 +191,7 @@ export const UnmemoisedAdvancedFilter = (
             ? t('advanced_filters.show')
             : t('advanced_filters.hide')}
         </Link>
-      </div>
+      </Box>
     </div>
   );
 };

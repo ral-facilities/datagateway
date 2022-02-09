@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { shallow } from 'enzyme';
 import TitleIcon from '@mui/icons-material/Title';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import PublicIcon from '@mui/icons-material/Public';
@@ -16,12 +16,6 @@ import AdvancedFilter, {
 } from './advancedFilter.component';
 
 describe('AdvancedFilter', () => {
-  let shallow;
-
-  beforeEach(() => {
-    shallow = createShallow();
-  });
-
   it('shows title correctly', () => {
     const wrapper = shallow(
       <UnmemoisedAdvancedFilter

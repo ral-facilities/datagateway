@@ -1,14 +1,11 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { ArrowTooltip } from '.';
 import { Tooltip } from '@mui/material';
 import { getTooltipText } from './arrowtooltip.component';
 import { act } from 'react-dom/test-utils';
 
 describe('ArrowTooltip component', () => {
-  let mount;
-
   const createWrapper = (
     disableHoverListener?: boolean,
     open?: boolean
@@ -23,14 +20,6 @@ describe('ArrowTooltip component', () => {
       </ArrowTooltip>
     );
   };
-
-  beforeEach(() => {
-    mount = createMount({});
-  });
-
-  afterEach(() => {
-    mount.cleanUp();
-  });
 
   describe('getTooltipText', () => {
     it('returns empty string for anything null-ish', () => {
