@@ -569,7 +569,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      <Grid container direction="row" justifyContent="center">
+      <Grid container direction="row" justifyContent="center" spacing={2}>
         {(hasSort || customFilters || !hasFilteredResults) && (
           <Grid item xs={12} md={3}>
             <Grid
@@ -580,7 +580,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               alignItems="stretch"
               spacing={5}
               xs={12}
-              style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
             >
               {/* Sorting options */}
               {hasSort && (filterUpdate || totalDataCount > 0) && (
