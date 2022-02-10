@@ -77,7 +77,7 @@ describe('PageContainer Component', () => {
       cy.get('[data-testid="card"]')
         .first()
         .contains(
-          'Season identify professor happen third. Beat professional blue clear style have. Light final summer.'
+          'Security down response daughter line. Maybe course head per. South heart authority.'
         );
 
       cy.get('[data-testid="clear-filters-button"]').click();
