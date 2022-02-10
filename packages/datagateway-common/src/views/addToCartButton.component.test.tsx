@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
+import { mount } from 'enzyme';
 import AddToCartButton, {
   AddToCartButtonProps,
 } from './addToCartButton.component';
@@ -26,7 +26,6 @@ jest.mock('../api/cart', () => {
 });
 
 describe('Generic add to cart button', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
 
@@ -44,8 +43,6 @@ describe('Generic add to cart button', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: {}, //Dont need to fill, since not part of the test
@@ -69,7 +66,6 @@ describe('Generic add to cart button', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -90,7 +86,7 @@ describe('Generic add to cart button', () => {
       entityType,
     });
 
-    wrapper.find('#add-to-cart-btn-investigation-1').first().simulate('click');
+    wrapper.find('#add-to-cart-btn-investigation-1').last().simulate('click');
 
     expect(useAddToCart).toHaveBeenCalledWith(entityType);
   });
@@ -117,7 +113,7 @@ describe('Generic add to cart button', () => {
 
     wrapper
       .find('#remove-from-cart-btn-investigation-1')
-      .first()
+      .last()
       .simulate('click');
     expect(useRemoveFromCart).toHaveBeenCalledWith(entityType);
   });

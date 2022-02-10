@@ -1,9 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import { Theme, Grid, Box, Paper, Button, Avatar, alpha } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-import { StyleRules } from '@mui/styles';
+import { Grid, Box, Paper, Button, Avatar, alpha, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DownloadIcon from '@mui/icons-material/GetApp';
 import { Trans, useTranslation } from 'react-i18next';
@@ -21,154 +18,136 @@ export interface HomePageProps {
   facilityImage: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useStyles = (props: HomePageProps) => {
-  return makeStyles<Theme>(
-    (theme: Theme): StyleRules =>
-      createStyles({
-        backgroundImage: {
+const backgroundTitleStyles = {
+  color: '#FFFFFF',
+  margin: 'auto',
+  fontSize: '48px',
+  fontWeight: 'lighter',
+  textAlign: 'center',
+};
+
+const paperStyles = {
+  borderRadius: '4px',
+  marginBottom: 2,
+  height: '100%',
+};
+
+const avatarStyles = {
+  backgroundColor: '#1E5DF8',
+  color: '#FFFFFF',
+  width: '60px',
+  height: '60px',
+  marginBottom: 2,
+};
+
+const paperContentStyles = {
+  padding: 2,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+  height: '100%',
+  boxSizing: 'border-box',
+};
+
+const avatarIconStyles = {
+  transform: 'scale(1.75)',
+};
+
+const PaperHeading = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '24px',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  color: (theme as any).colours?.homePage?.heading,
+  marginBottom: theme.spacing(2),
+}));
+
+const PaperDescription = styled(Typography)(({ theme }) => ({
+  textAlign: 'left',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  color: (theme as any).colours?.contrastGrey,
+  marginBottom: theme.spacing(2),
+}));
+
+const BluePaperHeading = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  fontSize: '24px',
+  color: '#FFFFFF',
+  marginBottom: theme.spacing(2),
+}));
+
+const BluePaperDescription = styled(Typography)(({ theme }) => ({
+  textAlign: 'left',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  color: (theme as any).colours?.homePage?.blueDescription,
+  marginBottom: theme.spacing(2),
+}));
+
+interface BrowseDecalProps {
+  decal2Image: string;
+  decal2DarkImage: string;
+  decal2DarkHCImage: string;
+}
+
+const BrowseDecal = styled('div', {
+  shouldForwardProp: (prop) =>
+    prop !== 'decal2Image' &&
+    prop !== 'decal2DarkImage' &&
+    prop !== 'decal2DarkHCImage',
+})<BrowseDecalProps>(
+  ({ theme, decal2Image, decal2DarkImage, decal2DarkHCImage }) => ({
+    backgroundImage:
+      theme.palette.mode === 'light'
+        ? `url(${decal2Image})`
+        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (theme as any).colours?.type === 'default'
+        ? `url(${decal2DarkImage})`
+        : `url(${decal2DarkHCImage})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'top left',
+    backgroundSize: 'auto 100%',
+    height: '100%',
+  })
+);
+
+const LightBlueButton = styled(Button)(({ theme }) => ({
+  color: '#FFFFFF',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  backgroundColor: (theme as any).colours?.homePage?.blueButton,
+  '&:hover': {
+    //Check if null to avoid error when loading
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    backgroundColor: (theme as any).colours?.homePage?.blueButton
+      ? alpha(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (theme as any).colours?.homePage?.blueButton,
+          0.8
+        )
+      : '#FFFFFF',
+  },
+}));
+
+const HomePage = (props: HomePageProps): React.ReactElement => {
+  const [t] = useTranslation();
+
+  return (
+    <div id="dg-homepage">
+      <div
+        style={{
           backgroundImage: `url(${props.backgroundImage})`,
           backgroundPosition: 'center 40%',
           width: '100%',
           height: 250,
-        },
-        backgroundDecals: {
-          backgroundImage: `url(${props.greenSwirl1Image}), url(${props.decal1Image})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'top left, top right',
-          width: '100%',
-          height: 250,
-        },
-        backgroundTitle: {
-          color: '#FFFFFF',
-          margin: 'auto',
-          fontSize: '48px',
-          fontWeight: 'lighter',
-          textAlign: 'center',
-        },
-        contentBox: {
-          transform: 'translate(0px, -20px)',
-          marginLeft: '8%',
-          marginRight: '8%',
-        },
-        paper: {
-          borderRadius: '4px',
-          marginBottom: theme.spacing(2),
-          height: '100%',
-        },
-        bluePaper: {
-          borderRadius: '4px',
-          marginBottom: theme.spacing(2),
-          backgroundColor: '#003088',
-          height: '100%',
-        },
-        paperContent: {
-          padding: theme.spacing(2),
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          height: '100%',
-          boxSizing: 'border-box',
-        },
-        avatar: {
-          backgroundColor: '#1E5DF8',
-          color: '#FFFFFF',
-          width: '60px',
-          height: '60px',
-          marginBottom: theme.spacing(2),
-        },
-        avatarIcon: {
-          transform: 'scale(1.75)',
-        },
-        paperMainHeading: {
-          fontWeight: 'bold',
-          fontSize: '32px',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          color: (theme as any).colours?.homePage?.heading,
-          marginBottom: theme.spacing(2),
-        },
-        paperHeading: {
-          fontWeight: 'bold',
-          fontSize: '24px',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          color: (theme as any).colours?.homePage?.heading,
-          marginBottom: theme.spacing(2),
-        },
-        paperDescription: {
-          textAlign: 'left',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          color: (theme as any).colours?.contrastGrey,
-          marginBottom: theme.spacing(2),
-        },
-        bluePaperHeading: {
-          fontWeight: 'bold',
-          fontSize: '24px',
-          color: '#FFFFFF',
-          marginBottom: theme.spacing(2),
-        },
-        bluePaperDescription: {
-          textAlign: 'left',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          color: (theme as any).colours?.homePage?.blueDescription,
-          marginBottom: theme.spacing(2),
-        },
-        browseBackground: {
-          backgroundImage: `url(${props.facilityImage})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'bottom right',
-          backgroundSize: 'cover',
-          width: '100%',
-          height: '100%',
-          borderRadius: '4px',
-        },
-        browseDecal: {
-          backgroundImage:
-            theme.palette.mode === 'light'
-              ? `url(${props.decal2Image})`
-              : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (theme as any).colours?.type === 'default'
-              ? `url(${props.decal2DarkImage})`
-              : `url(${props.decal2DarkHCImage})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'top left',
-          backgroundSize: 'auto 100%',
-          height: '100%',
-        },
-        facilityDecal: {
-          backgroundImage: `url(${props.greenSwirl2Image})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'top right',
-          backgroundSize: 'auto 100%',
-          height: '100%',
-        },
-        lightBlueButton: {
-          color: '#FFFFFF',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          backgroundColor: (theme as any).colours?.homePage?.blueButton,
-          '&:hover': {
-            //Check if null to avoid error when loading
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            backgroundColor: (theme as any).colours?.homePage?.blueButton
-              ? alpha(
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  (theme as any).colours?.homePage?.blueButton,
-                  0.8
-                )
-              : '#FFFFFF',
-          },
-        },
-      })
-  );
-};
-
-const HomePage = (props: HomePageProps): React.ReactElement => {
-  const [t] = useTranslation();
-  const classes = useStyles(props)();
-
-  return (
-    <div id="dg-homepage">
-      <div className={classes.backgroundImage}>
-        <div className={classes.backgroundDecals}>
+        }}
+      >
+        <div
+          style={{
+            backgroundImage: `url(${props.greenSwirl1Image}), url(${props.decal1Image})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'top left, top right',
+            width: '100%',
+            height: 250,
+          }}
+        >
           <Box
             style={{
               position: 'relative',
@@ -177,12 +156,12 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
               transform: 'translate(-50%)',
             }}
           >
-            <Typography variant="h2" className={classes.backgroundTitle}>
+            <Typography variant="h2" sx={backgroundTitleStyles}>
               <Trans i18nKey="home_page.title_line1">
                 <strong>Data discovery</strong> and <strong>access</strong>
               </Trans>
             </Typography>
-            <Typography variant="h2" className={classes.backgroundTitle}>
+            <Typography variant="h2" sx={backgroundTitleStyles}>
               <Trans i18nKey="home_page.title_line2">
                 for <strong>large-scale</strong>
                 science facilities
@@ -191,29 +170,38 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
           </Box>
         </div>
       </div>
-      <Box className={classes.contentBox}>
-        <Paper className={classes.paper} elevation={1}>
+      <Box
+        sx={{
+          transform: 'translate(0px, -20px)',
+          marginLeft: '8%',
+          marginRight: '8%',
+        }}
+      >
+        <Paper sx={paperStyles} elevation={1}>
           <Grid container style={{ height: '100%' }}>
             <Grid item xs={6}>
-              <Box className={classes.paperContent}>
-                <Typography variant="h3" className={classes.paperMainHeading}>
+              <Box sx={paperContentStyles}>
+                <Typography
+                  variant="h3"
+                  sx={(theme) => ({
+                    fontWeight: 'bold',
+                    fontSize: '32px',
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    color: (theme as any).colours?.homePage?.heading,
+                    marginBottom: theme.spacing(2),
+                  })}
+                >
                   {t('home_page.browse.title')}
                 </Typography>
-                <Typography
-                  variant="body1"
-                  className={classes.paperDescription}
-                >
+                <PaperDescription variant="body1">
                   {t('home_page.browse.description1')}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  className={classes.paperDescription}
-                >
+                </PaperDescription>
+                <PaperDescription variant="body1">
                   <Trans i18nKey="home_page.browse.description2">
                     <strong>DataGateway</strong> focuses on providing data
                     discovery and data access functionality to the data.
                   </Trans>
-                </Typography>
+                </PaperDescription>
                 <Box marginTop="16px">
                   <Button
                     color="primary"
@@ -228,28 +216,39 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
               </Box>
             </Grid>
             <Grid item xs={6}>
-              <div className={classes.browseBackground}>
-                <div className={classes.browseDecal}></div>
+              <div
+                style={{
+                  backgroundImage: `url(${props.facilityImage})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'bottom right',
+                  backgroundSize: 'cover',
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '4px',
+                }}
+              >
+                <BrowseDecal
+                  decal2Image={props.decal2Image}
+                  decal2DarkImage={props.decal2DarkImage}
+                  decal2DarkHCImage={props.decal2DarkHCImage}
+                />
               </div>
             </Grid>
           </Grid>
         </Paper>
         <Grid container spacing={2}>
           <Grid item sm={12} md={4}>
-            <Paper className={classes.paper} elevation={1}>
-              <Box className={classes.paperContent}>
-                <Avatar className={classes.avatar}>
-                  <SearchIcon className={classes.avatarIcon} />
+            <Paper sx={paperStyles} elevation={1}>
+              <Box sx={paperContentStyles}>
+                <Avatar sx={avatarStyles}>
+                  <SearchIcon sx={avatarIconStyles} />
                 </Avatar>
-                <Typography variant="h4" className={classes.paperHeading}>
+                <PaperHeading variant="h4">
                   {t('home_page.search.title')}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  className={classes.paperDescription}
-                >
+                </PaperHeading>
+                <PaperDescription variant="body1">
                   {t('home_page.search.description')}
-                </Typography>
+                </PaperDescription>
                 <Box marginTop="auto">
                   <Button
                     color="primary"
@@ -265,20 +264,17 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
             </Paper>
           </Grid>
           <Grid item sm={12} md={4}>
-            <Paper className={classes.paper} elevation={1}>
-              <Box className={classes.paperContent}>
-                <Avatar className={classes.avatar}>
-                  <DownloadIcon className={classes.avatarIcon} />
+            <Paper sx={paperStyles} elevation={1}>
+              <Box sx={paperContentStyles}>
+                <Avatar sx={avatarStyles}>
+                  <DownloadIcon sx={avatarIconStyles} />
                 </Avatar>
-                <Typography variant="h4" className={classes.paperHeading}>
+                <PaperHeading variant="h4">
                   {t('home_page.download.title')}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  className={classes.paperDescription}
-                >
+                </PaperHeading>
+                <PaperDescription variant="body1">
                   {t('home_page.download.description')}
-                </Typography>
+                </PaperDescription>
                 <Box marginTop="auto">
                   <Button
                     color="primary"
@@ -294,28 +290,35 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
             </Paper>
           </Grid>
           <Grid item sm={12} md={4}>
-            <Paper className={classes.bluePaper} elevation={1}>
-              <div className={classes.facilityDecal}>
-                <Box className={classes.paperContent}>
-                  <Typography variant="h4" className={classes.bluePaperHeading}>
+            <Paper
+              sx={{ ...paperStyles, backgroundColor: '#003088' }}
+              elevation={1}
+            >
+              <div
+                style={{
+                  backgroundImage: `url(${props.greenSwirl2Image})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'top right',
+                  backgroundSize: 'auto 100%',
+                  height: '100%',
+                }}
+              >
+                <Box sx={paperContentStyles}>
+                  <BluePaperHeading variant="h4">
                     {t('home_page.facility.title')}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    className={classes.bluePaperDescription}
-                  >
+                  </BluePaperHeading>
+                  <BluePaperDescription variant="body1">
                     {t('home_page.facility.description')}
-                  </Typography>
+                  </BluePaperDescription>
                   <Box marginTop="auto">
-                    <Button
+                    <LightBlueButton
                       color="primary"
                       variant="contained"
-                      className={classes.lightBlueButton}
                       href={t('home_page.facility.link')}
                       data-testid="facility-button"
                     >
                       {t('home_page.facility.button')}
-                    </Button>
+                    </LightBlueButton>
                   </Box>
                 </Box>
               </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
+import { mount } from 'enzyme';
 import DownloadButton, {
   DownloadButtonProps,
 } from './downloadButton.component';
@@ -20,7 +20,6 @@ jest.mock('../api/datasets');
 jest.mock('../api/investigations');
 
 describe('Generic download button', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
 
@@ -38,8 +37,6 @@ describe('Generic download button', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: {}, //Dont need to fill, since not part of the test
@@ -55,7 +52,6 @@ describe('Generic download button', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -83,7 +79,7 @@ describe('Generic download button', () => {
       entityId: 1,
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadInvestigation).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -99,7 +95,7 @@ describe('Generic download button', () => {
       variant: 'icon',
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadInvestigation).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -114,7 +110,7 @@ describe('Generic download button', () => {
       entityId: 1,
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDataset).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -130,7 +126,7 @@ describe('Generic download button', () => {
       variant: 'icon',
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDataset).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -145,7 +141,7 @@ describe('Generic download button', () => {
       entityId: 1,
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -161,7 +157,7 @@ describe('Generic download button', () => {
       variant: 'icon',
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDataset).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,

@@ -1,13 +1,12 @@
 import {
-  Theme,
   IconButton,
   Grid,
   Paper,
   Typography,
   darken,
+  styled,
+  keyframes,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import { DownloadCartItem, MicroFrontendId } from '../app.types';
 import React from 'react';
@@ -30,66 +29,61 @@ type SelectionAlertProps = {
   marginSide?: string;
 };
 
-const selectionAlertStyles = makeStyles<Theme, SelectionAlertProps>(
-  (theme: Theme) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const selectionAlertColor = (theme as any).colours?.warning;
-    //Only have conditional as test will fail when null and the above comes from SciGateway
-    const selectionAlertColorDark = selectionAlertColor
-      ? darken(selectionAlertColor, 0.2)
-      : 'orange';
-    return createStyles({
-      root: {
-        backgroundColor: selectionAlertColor,
-        color: 'black',
-        width: ({ width }) => (width === undefined ? 'auto' : width),
-        marginTop: '8px',
-        marginLeft: ({ marginSide }) =>
-          marginSide === undefined ? '0px' : marginSide,
-        marginRight: ({ marginSide }) =>
-          marginSide === undefined ? '0px' : marginSide,
-        paddingTop: '2px',
-        paddingBottom: '2px',
-      },
-      animate: {
-        backgroundColor: selectionAlertColor,
-        color: 'black',
-        width: ({ width }) => (width === undefined ? 'auto' : `${width}`),
-        marginTop: '8px',
-        marginLeft: ({ marginSide }) =>
-          marginSide === undefined ? '0px' : marginSide,
-        marginRight: ({ marginSide }) =>
-          marginSide === undefined ? '0px' : marginSide,
-        paddingTop: '2px',
-        paddingBottom: '2px',
-        animation: `$pulsate 700ms ${theme.transitions.easing.easeInOut}`,
-      },
-      '@keyframes pulsate': {
-        '0%': {
-          backgroundColor: selectionAlertColor,
-        },
-        '25%': {
-          backgroundColor: selectionAlertColorDark,
-        },
-        '50%': {
-          backgroundColor: selectionAlertColor,
-        },
-        '75%': {
-          backgroundColor: selectionAlertColorDark,
-        },
-        '100%': {
-          backgroundColor: selectionAlertColor,
-        },
-      },
-      text: {
-        textAlign: 'center',
-        justifyItems: 'center',
-        alignItems: 'center',
-        flex: '1',
-      },
-    });
+const AnimatedPaper = styled(Paper, {
+  shouldForwardProp: (prop) => prop !== 'props' && prop !== 'animating',
+})<{
+  props: SelectionAlertProps;
+  animating: boolean;
+}>(({ theme, props, animating }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const selectionAlertColor = (theme as any).colours?.warning;
+  //Only have conditional as test will fail when null and the above comes from SciGateway
+  const selectionAlertColorDark = selectionAlertColor
+    ? darken(selectionAlertColor, 0.2)
+    : 'orange';
+
+  const pulsate = keyframes`
+    0% {
+      background-color: ${selectionAlertColor};
+    }
+    25% {
+      background-color: ${selectionAlertColorDark};
+    }
+    50% {
+      background-color: ${selectionAlertColor};
+    }
+    75% {
+      background-color: ${selectionAlertColorDark};
+    }
+    100% {
+      background-color: ${selectionAlertColor};
+    }`;
+
+  if (animating) {
+    return {
+      backgroundColor: selectionAlertColor,
+      color: 'black',
+      width: props.width === undefined ? 'auto' : `${props.width}`,
+      marginTop: '8px',
+      marginLeft: props.marginSide === undefined ? '0px' : props.marginSide,
+      marginRight: props.marginSide === undefined ? '0px' : props.marginSide,
+      paddingTop: '2px',
+      paddingBottom: '2px',
+      animation: `${pulsate} 700ms ${theme.transitions.easing.easeInOut}`,
+    };
+  } else {
+    return {
+      backgroundColor: selectionAlertColor,
+      color: 'black',
+      width: props.width === undefined ? 'auto' : props.width,
+      marginTop: '8px',
+      marginLeft: props.marginSide === undefined ? '0px' : props.marginSide,
+      marginRight: props.marginSide === undefined ? '0px' : props.marginSide,
+      paddingTop: '2px',
+      paddingBottom: '2px',
+    };
   }
-);
+});
 
 const SelectionAlert = React.memo(
   (props: {
@@ -99,10 +93,6 @@ const SelectionAlert = React.memo(
     width?: string;
     marginSide?: string;
   }): React.ReactElement | null => {
-    const classes = selectionAlertStyles({
-      width: props.width,
-      marginSide: props.marginSide,
-    });
     const [t] = useTranslation();
     const [alertOpen, setAlertOpen] = React.useState(false);
     const [animating, setAnimating] = React.useState(false);
@@ -159,13 +149,22 @@ const SelectionAlert = React.memo(
       storeHasSentExpireMessage(null);
 
     return alertOpen ? (
-      <Paper
+      <AnimatedPaper
         aria-label="selection-alert"
-        className={animating ? classes.animate : classes.root}
+        animating={animating}
+        props={props}
         onAnimationEnd={() => setAnimating(false)}
       >
         <Grid container>
-          <Grid item className={classes.text}>
+          <Grid
+            item
+            sx={{
+              flex: '1',
+              textAlign: 'center',
+              justifyItems: 'center',
+              alignItems: 'center',
+            }}
+          >
             <Typography aria-label="selection-alert-text" display="inline">
               {alertText}
             </Typography>{' '}
@@ -197,7 +196,7 @@ const SelectionAlert = React.memo(
             </IconButton>
           </Grid>
         </Grid>
-      </Paper>
+      </AnimatedPaper>
     ) : null;
   }
 );

@@ -1,14 +1,11 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { shallow } from 'enzyme';
 import HomePage, { HomePageProps } from './homePage.component';
 
 describe('Home page component', () => {
-  let shallow;
   let props: HomePageProps;
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-
     props = {
       logo: 'test-logo',
       backgroundImage: 'test-bakcgroundImage',

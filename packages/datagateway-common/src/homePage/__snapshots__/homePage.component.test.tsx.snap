@@ -5,12 +5,27 @@ exports[`Home page component homepage renders correctly 1`] = `
   id="dg-homepage"
 >
   <div
-    className="makeStyles-backgroundImage-1"
+    style={
+      Object {
+        "backgroundImage": "url(test-bakcgroundImage)",
+        "backgroundPosition": "center 40%",
+        "height": 250,
+        "width": "100%",
+      }
+    }
   >
     <div
-      className="makeStyles-backgroundDecals-2"
+      style={
+        Object {
+          "backgroundImage": "url(test-greenSwirl1Image), url(test-decal1Image)",
+          "backgroundPosition": "top left, top right",
+          "backgroundRepeat": "no-repeat",
+          "height": 250,
+          "width": "100%",
+        }
+      }
     >
-      <Styled(MuiBox)
+      <ForwardRef(Box)
         style={
           Object {
             "left": "50%",
@@ -20,8 +35,16 @@ exports[`Home page component homepage renders correctly 1`] = `
           }
         }
       >
-        <WithStyles(ForwardRef(Typography))
-          className="makeStyles-backgroundTitle-3"
+        <ForwardRef(Typography)
+          sx={
+            Object {
+              "color": "#FFFFFF",
+              "fontSize": "48px",
+              "fontWeight": "lighter",
+              "margin": "auto",
+              "textAlign": "center",
+            }
+          }
           variant="h2"
         >
           <Trans
@@ -35,9 +58,17 @@ exports[`Home page component homepage renders correctly 1`] = `
               access
             </strong>
           </Trans>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))
-          className="makeStyles-backgroundTitle-3"
+        </ForwardRef(Typography)>
+        <ForwardRef(Typography)
+          sx={
+            Object {
+              "color": "#FFFFFF",
+              "fontSize": "48px",
+              "fontWeight": "lighter",
+              "margin": "auto",
+              "textAlign": "center",
+            }
+          }
           variant="h2"
         >
           <Trans
@@ -49,18 +80,30 @@ exports[`Home page component homepage renders correctly 1`] = `
             </strong>
             science facilities
           </Trans>
-        </WithStyles(ForwardRef(Typography))>
-      </Styled(MuiBox)>
+        </ForwardRef(Typography)>
+      </ForwardRef(Box)>
     </div>
   </div>
-  <Styled(MuiBox)
-    className="makeStyles-contentBox-4"
+  <ForwardRef(Box)
+    sx={
+      Object {
+        "marginLeft": "8%",
+        "marginRight": "8%",
+        "transform": "translate(0px, -20px)",
+      }
+    }
   >
-    <WithStyles(ForwardRef(Paper))
-      className="makeStyles-paper-5"
+    <ForwardRef(Paper)
       elevation={1}
+      sx={
+        Object {
+          "borderRadius": "4px",
+          "height": "100%",
+          "marginBottom": 2,
+        }
+      }
     >
-      <WithStyles(ForwardRef(Grid))
+      <ForwardRef(Grid)
         container={true}
         style={
           Object {
@@ -68,27 +111,34 @@ exports[`Home page component homepage renders correctly 1`] = `
           }
         }
       >
-        <WithStyles(ForwardRef(Grid))
+        <ForwardRef(Grid)
           item={true}
           xs={6}
         >
-          <Styled(MuiBox)
-            className="makeStyles-paperContent-7"
+          <ForwardRef(Box)
+            sx={
+              Object {
+                "boxSizing": "border-box",
+                "display": "flex",
+                "flexDirection": "column",
+                "height": "100%",
+                "justifyContent": "flex-start",
+                "padding": 2,
+              }
+            }
           >
-            <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperMainHeading-10"
+            <ForwardRef(Typography)
+              sx={[Function]}
               variant="h3"
             >
               home_page.browse.title
-            </WithStyles(ForwardRef(Typography))>
-            <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperDescription-12"
+            </ForwardRef(Typography)>
+            <Styled(ForwardRef(Typography))
               variant="body1"
             >
               home_page.browse.description1
-            </WithStyles(ForwardRef(Typography))>
-            <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperDescription-12"
+            </Styled(ForwardRef(Typography))>
+            <Styled(ForwardRef(Typography))
               variant="body1"
             >
               <Trans
@@ -99,11 +149,11 @@ exports[`Home page component homepage renders correctly 1`] = `
                 </strong>
                  focuses on providing data discovery and data access functionality to the data.
               </Trans>
-            </WithStyles(ForwardRef(Typography))>
-            <Styled(MuiBox)
+            </Styled(ForwardRef(Typography))>
+            <ForwardRef(Box)
               marginTop="16px"
             >
-              <WithStyles(ForwardRef(Button))
+              <ForwardRef(Button)
                 color="primary"
                 component={
                   Object {
@@ -123,63 +173,100 @@ exports[`Home page component homepage renders correctly 1`] = `
                 variant="contained"
               >
                 home_page.browse.button
-              </WithStyles(ForwardRef(Button))>
-            </Styled(MuiBox)>
-          </Styled(MuiBox)>
-        </WithStyles(ForwardRef(Grid))>
-        <WithStyles(ForwardRef(Grid))
+              </ForwardRef(Button)>
+            </ForwardRef(Box)>
+          </ForwardRef(Box)>
+        </ForwardRef(Grid)>
+        <ForwardRef(Grid)
           item={true}
           xs={6}
         >
           <div
-            className="makeStyles-browseBackground-15"
+            style={
+              Object {
+                "backgroundImage": "url(test-facilityImage)",
+                "backgroundPosition": "bottom right",
+                "backgroundRepeat": "no-repeat",
+                "backgroundSize": "cover",
+                "borderRadius": "4px",
+                "height": "100%",
+                "width": "100%",
+              }
+            }
           >
-            <div
-              className="makeStyles-browseDecal-16"
+            <Styled(div)
+              decal2DarkHCImage="test-Decal2DarkHCImage"
+              decal2DarkImage="test-decal2DarkImage"
+              decal2Image="test-decal2Image"
             />
           </div>
-        </WithStyles(ForwardRef(Grid))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Paper))>
-    <WithStyles(ForwardRef(Grid))
+        </ForwardRef(Grid)>
+      </ForwardRef(Grid)>
+    </ForwardRef(Paper)>
+    <ForwardRef(Grid)
       container={true}
       spacing={2}
     >
-      <WithStyles(ForwardRef(Grid))
+      <ForwardRef(Grid)
         item={true}
         md={4}
         sm={12}
       >
-        <WithStyles(ForwardRef(Paper))
-          className="makeStyles-paper-5"
+        <ForwardRef(Paper)
           elevation={1}
+          sx={
+            Object {
+              "borderRadius": "4px",
+              "height": "100%",
+              "marginBottom": 2,
+            }
+          }
         >
-          <Styled(MuiBox)
-            className="makeStyles-paperContent-7"
+          <ForwardRef(Box)
+            sx={
+              Object {
+                "boxSizing": "border-box",
+                "display": "flex",
+                "flexDirection": "column",
+                "height": "100%",
+                "justifyContent": "flex-start",
+                "padding": 2,
+              }
+            }
           >
-            <WithStyles(ForwardRef(Avatar))
-              className="makeStyles-avatar-8"
+            <ForwardRef(Avatar)
+              sx={
+                Object {
+                  "backgroundColor": "#1E5DF8",
+                  "color": "#FFFFFF",
+                  "height": "60px",
+                  "marginBottom": 2,
+                  "width": "60px",
+                }
+              }
             >
               <Memo(ForwardRef(SearchIcon))
-                className="makeStyles-avatarIcon-9"
+                sx={
+                  Object {
+                    "transform": "scale(1.75)",
+                  }
+                }
               />
-            </WithStyles(ForwardRef(Avatar))>
-            <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperHeading-11"
+            </ForwardRef(Avatar)>
+            <Styled(ForwardRef(Typography))
               variant="h4"
             >
               home_page.search.title
-            </WithStyles(ForwardRef(Typography))>
-            <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperDescription-12"
+            </Styled(ForwardRef(Typography))>
+            <Styled(ForwardRef(Typography))
               variant="body1"
             >
               home_page.search.description
-            </WithStyles(ForwardRef(Typography))>
-            <Styled(MuiBox)
+            </Styled(ForwardRef(Typography))>
+            <ForwardRef(Box)
               marginTop="auto"
             >
-              <WithStyles(ForwardRef(Button))
+              <ForwardRef(Button)
                 color="primary"
                 component={
                   Object {
@@ -199,46 +286,71 @@ exports[`Home page component homepage renders correctly 1`] = `
                 variant="contained"
               >
                 home_page.search.button
-              </WithStyles(ForwardRef(Button))>
-            </Styled(MuiBox)>
-          </Styled(MuiBox)>
-        </WithStyles(ForwardRef(Paper))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
+              </ForwardRef(Button)>
+            </ForwardRef(Box)>
+          </ForwardRef(Box)>
+        </ForwardRef(Paper)>
+      </ForwardRef(Grid)>
+      <ForwardRef(Grid)
         item={true}
         md={4}
         sm={12}
       >
-        <WithStyles(ForwardRef(Paper))
-          className="makeStyles-paper-5"
+        <ForwardRef(Paper)
           elevation={1}
+          sx={
+            Object {
+              "borderRadius": "4px",
+              "height": "100%",
+              "marginBottom": 2,
+            }
+          }
         >
-          <Styled(MuiBox)
-            className="makeStyles-paperContent-7"
+          <ForwardRef(Box)
+            sx={
+              Object {
+                "boxSizing": "border-box",
+                "display": "flex",
+                "flexDirection": "column",
+                "height": "100%",
+                "justifyContent": "flex-start",
+                "padding": 2,
+              }
+            }
           >
-            <WithStyles(ForwardRef(Avatar))
-              className="makeStyles-avatar-8"
+            <ForwardRef(Avatar)
+              sx={
+                Object {
+                  "backgroundColor": "#1E5DF8",
+                  "color": "#FFFFFF",
+                  "height": "60px",
+                  "marginBottom": 2,
+                  "width": "60px",
+                }
+              }
             >
               <Memo(ForwardRef(GetAppIcon))
-                className="makeStyles-avatarIcon-9"
+                sx={
+                  Object {
+                    "transform": "scale(1.75)",
+                  }
+                }
               />
-            </WithStyles(ForwardRef(Avatar))>
-            <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperHeading-11"
+            </ForwardRef(Avatar)>
+            <Styled(ForwardRef(Typography))
               variant="h4"
             >
               home_page.download.title
-            </WithStyles(ForwardRef(Typography))>
-            <WithStyles(ForwardRef(Typography))
-              className="makeStyles-paperDescription-12"
+            </Styled(ForwardRef(Typography))>
+            <Styled(ForwardRef(Typography))
               variant="body1"
             >
               home_page.download.description
-            </WithStyles(ForwardRef(Typography))>
-            <Styled(MuiBox)
+            </Styled(ForwardRef(Typography))>
+            <ForwardRef(Box)
               marginTop="auto"
             >
-              <WithStyles(ForwardRef(Button))
+              <ForwardRef(Button)
                 color="primary"
                 component={
                   Object {
@@ -258,56 +370,77 @@ exports[`Home page component homepage renders correctly 1`] = `
                 variant="contained"
               >
                 home_page.download.button
-              </WithStyles(ForwardRef(Button))>
-            </Styled(MuiBox)>
-          </Styled(MuiBox)>
-        </WithStyles(ForwardRef(Paper))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
+              </ForwardRef(Button)>
+            </ForwardRef(Box)>
+          </ForwardRef(Box)>
+        </ForwardRef(Paper)>
+      </ForwardRef(Grid)>
+      <ForwardRef(Grid)
         item={true}
         md={4}
         sm={12}
       >
-        <WithStyles(ForwardRef(Paper))
-          className="makeStyles-bluePaper-6"
+        <ForwardRef(Paper)
           elevation={1}
+          sx={
+            Object {
+              "backgroundColor": "#003088",
+              "borderRadius": "4px",
+              "height": "100%",
+              "marginBottom": 2,
+            }
+          }
         >
           <div
-            className="makeStyles-facilityDecal-17"
+            style={
+              Object {
+                "backgroundImage": "url(test-greenSwirl2Image)",
+                "backgroundPosition": "top right",
+                "backgroundRepeat": "no-repeat",
+                "backgroundSize": "auto 100%",
+                "height": "100%",
+              }
+            }
           >
-            <Styled(MuiBox)
-              className="makeStyles-paperContent-7"
+            <ForwardRef(Box)
+              sx={
+                Object {
+                  "boxSizing": "border-box",
+                  "display": "flex",
+                  "flexDirection": "column",
+                  "height": "100%",
+                  "justifyContent": "flex-start",
+                  "padding": 2,
+                }
+              }
             >
-              <WithStyles(ForwardRef(Typography))
-                className="makeStyles-bluePaperHeading-13"
+              <Styled(ForwardRef(Typography))
                 variant="h4"
               >
                 home_page.facility.title
-              </WithStyles(ForwardRef(Typography))>
-              <WithStyles(ForwardRef(Typography))
-                className="makeStyles-bluePaperDescription-14"
+              </Styled(ForwardRef(Typography))>
+              <Styled(ForwardRef(Typography))
                 variant="body1"
               >
                 home_page.facility.description
-              </WithStyles(ForwardRef(Typography))>
-              <Styled(MuiBox)
+              </Styled(ForwardRef(Typography))>
+              <ForwardRef(Box)
                 marginTop="auto"
               >
-                <WithStyles(ForwardRef(Button))
-                  className="makeStyles-lightBlueButton-18"
+                <Styled(ForwardRef(Button))
                   color="primary"
                   data-testid="facility-button"
                   href="home_page.facility.link"
                   variant="contained"
                 >
                   home_page.facility.button
-                </WithStyles(ForwardRef(Button))>
-              </Styled(MuiBox)>
-            </Styled(MuiBox)>
+                </Styled(ForwardRef(Button))>
+              </ForwardRef(Box)>
+            </ForwardRef(Box)>
           </div>
-        </WithStyles(ForwardRef(Paper))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </Styled(MuiBox)>
+        </ForwardRef(Paper)>
+      </ForwardRef(Grid)>
+    </ForwardRef(Grid)>
+  </ForwardRef(Box)>
 </div>
 `;

@@ -1,12 +1,10 @@
-import { createMount } from '@mui/material/test-utils';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { DownloadCartItem } from '../app.types';
 import { NotificationType } from '../state/actions/actions.types';
 import SelectionAlert from './selectionAlert.component';
 
 describe('SelectionAlert', () => {
-  let mount;
   let events: CustomEvent<AnyAction>[] = [];
   const cartItems: DownloadCartItem[] = [
     {
@@ -51,7 +49,6 @@ describe('SelectionAlert', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     events = [];
     document.dispatchEvent = (e: Event) => {
       events.push(e as CustomEvent<AnyAction>);
@@ -68,7 +65,6 @@ describe('SelectionAlert', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -169,7 +165,7 @@ describe('SelectionAlert', () => {
     const wrapper = createWrapper(cartItems, false);
     wrapper
       .find('[aria-label="selection-alert-close"]')
-      .first()
+      .last()
       .simulate('click');
     wrapper.update();
 
@@ -180,7 +176,7 @@ describe('SelectionAlert', () => {
     const wrapper = createWrapper(cartItems, false);
     wrapper
       .find('[aria-label="selection-alert"]')
-      .first()
+      .last()
       .simulate('animationEnd');
     wrapper.update();
 
