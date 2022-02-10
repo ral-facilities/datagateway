@@ -35,7 +35,6 @@ const ArrowTooltip = (
   const { disableHoverListener, ...tooltipProps } = props;
 
   const [isTooltipVisible, setTooltipVisible] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
 
   const tooltipResizeObserver = React.useRef<ResizeObserver>(
     new ResizeObserver((entries) => {
@@ -76,23 +75,6 @@ const ArrowTooltip = (
     }
   }, []);
 
-  const handleKeyDown = React.useCallback((e) => {
-    if (e.key === 'Escape') {
-      onClose();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onClose = (): void => {
-    window.removeEventListener('keydown', handleKeyDown);
-    setOpen(false);
-  };
-
-  const onOpen = (): void => {
-    window.addEventListener('keydown', handleKeyDown);
-    setOpen(true);
-  };
-
   let shouldDisableHoverListener = !isTooltipVisible;
   //Allow disableHoverListener to be overidden
   if (disableHoverListener !== undefined)
@@ -105,10 +87,6 @@ const ArrowTooltip = (
       {...tooltipProps}
       disableHoverListener={shouldDisableHoverListener}
       arrow={true}
-      onOpen={onOpen}
-      onClose={onClose}
-      open={open}
-      data-testid={`arrow-tooltip-component-${open}`}
     />
   );
 };

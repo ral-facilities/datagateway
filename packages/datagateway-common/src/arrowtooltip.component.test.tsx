@@ -3,7 +3,6 @@ import { mount, ReactWrapper } from 'enzyme';
 import { ArrowTooltip } from '.';
 import { Tooltip } from '@mui/material';
 import { getTooltipText } from './arrowtooltip.component';
-import { act } from 'react-dom/test-utils';
 
 describe('ArrowTooltip component', () => {
   const createWrapper = (
@@ -79,43 +78,5 @@ describe('ArrowTooltip component', () => {
 
     wrapper = createWrapper(false);
     expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(false);
-  });
-
-  it('check if the tooltip is false when onClose is invoked', () => {
-    const wrapper = createWrapper(undefined, true);
-    act(() => {
-      wrapper.find(Tooltip)?.invoke('onClose')();
-    });
-    wrapper.update();
-
-    expect(wrapper.find(Tooltip).props().open).toEqual(false);
-  });
-
-  it('check if the tooltip is true when onOpen is invoked and check when escape is press the tooltip is false', () => {
-    let handleKeydown;
-    const spyUseCallback = jest
-      .spyOn(React, 'useCallback')
-      .mockImplementation((f) => {
-        handleKeydown = f;
-        return f;
-      });
-    const wrapper = createWrapper(undefined, false);
-
-    act(() => {
-      wrapper.find(Tooltip)?.invoke('onOpen')();
-    });
-    wrapper.update();
-    expect(wrapper.find(Tooltip).props().open).toEqual(true);
-
-    act(() => {
-      const e = new KeyboardEvent('keydown', { key: 'Escape' });
-      handleKeydown(e);
-    });
-
-    wrapper.update();
-
-    expect(wrapper.find(Tooltip).props().open).toEqual(false);
-
-    spyUseCallback.mockRestore();
   });
 });
