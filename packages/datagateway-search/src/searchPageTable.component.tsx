@@ -10,9 +10,8 @@ import {
   createStyles,
   withStyles,
   LinearProgress,
-  IconButton,
 } from '@material-ui/core';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+
 import { StyleRules } from '@material-ui/core/styles';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
@@ -21,7 +20,8 @@ import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
 import {
-  DownloadCartItem,
+  ViewCartButton,
+  CartProps,
   parseSearchToQuery,
   useDatafileCount,
   useDatasetCount,
@@ -99,11 +99,6 @@ interface TabPanelProps {
   value: string;
 }
 
-export interface SearchCartProps {
-  cartItems: DownloadCartItem[];
-  navigateToDownload: () => void;
-}
-
 function TabPanel(props: TabPanelProps): React.ReactElement {
   const { children, value, index, ...other } = props;
 
@@ -133,30 +128,8 @@ const StyledBadge = withStyles(badgeStyles)(Badge);
 const StyledTabs = withStyles(tabStyles)(Tabs);
 const StyledBox = withStyles(boxStyles)(Box);
 
-const ViewCart = (props: SearchCartProps): React.ReactElement => {
-  const [t] = useTranslation();
-  return (
-    <div>
-      <IconButton
-        className="tour-dataview-cart-icon"
-        onClick={props.navigateToDownload}
-        aria-label={t('searchPageTable.cart_arialabel')}
-      >
-        <Badge
-          badgeContent={
-            props.cartItems.length > 0 ? props.cartItems.length : null
-          }
-          color="primary"
-        >
-          <ShoppingCartIcon />
-        </Badge>
-      </IconButton>
-    </div>
-  );
-};
-
 const SearchPageTable = (
-  props: SearchTableProps & SearchTableStoreProps & SearchCartProps
+  props: SearchTableProps & SearchTableStoreProps & CartProps
 ): React.ReactElement => {
   const {
     maxNumResults,
@@ -169,6 +142,7 @@ const SearchPageTable = (
     currentTab,
     cartItems,
     navigateToDownload,
+    cartAriaLabel,
   } = props;
   const [t] = useTranslation();
 
@@ -404,9 +378,10 @@ const SearchPageTable = (
             )}
           </StyledTabs>
           <StyledBox marginLeft="auto">
-            <ViewCart
+            <ViewCartButton
               cartItems={cartItems}
               navigateToDownload={navigateToDownload}
+              cartAriaLabel={cartAriaLabel}
             />
           </StyledBox>
         </StyledBox>

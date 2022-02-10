@@ -1,0 +1,286 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Generic cart button renders correctly 1`] = `
+<Provider
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+>
+  <MemoryRouter
+    initialEntries={
+      Array [
+        Object {
+          "key": "testKey",
+          "pathname": "/",
+        },
+      ]
+    }
+  >
+    <Router
+      history={
+        Object {
+          "action": "POP",
+          "block": [Function],
+          "canGo": [Function],
+          "createHref": [Function],
+          "entries": Array [
+            Object {
+              "hash": "",
+              "key": "testKey",
+              "pathname": "/",
+              "search": "",
+            },
+          ],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "index": 0,
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "key": "testKey",
+            "pathname": "/",
+            "search": "",
+          },
+          "push": [Function],
+          "replace": [Function],
+        }
+      }
+    >
+      <QueryClientProvider
+        client={
+          QueryClient {
+            "defaultOptions": Object {},
+            "mutationCache": MutationCache {
+              "config": Object {},
+              "listeners": Array [],
+              "mutationId": 0,
+              "mutations": Array [],
+            },
+            "mutationDefaults": Array [],
+            "queryCache": QueryCache {
+              "config": Object {},
+              "listeners": Array [],
+              "queries": Array [],
+              "queriesMap": Object {},
+            },
+            "queryDefaults": Array [],
+            "unsubscribeFocus": [Function],
+            "unsubscribeOnline": [Function],
+          }
+        }
+      >
+        <ViewCartButton
+          cartAriaLabel="test aria-label"
+          cartItems={Array []}
+          navigateToDownload={[MockFunction]}
+        >
+          <div>
+            <WithStyles(ForwardRef(IconButton))
+              aria-label="test aria-label"
+              className="tour-dataview-cart-icon"
+              onClick={[MockFunction]}
+              style={
+                Object {
+                  "margin": "auto",
+                }
+              }
+            >
+              <ForwardRef(IconButton)
+                aria-label="test aria-label"
+                className="tour-dataview-cart-icon"
+                classes={
+                  Object {
+                    "colorInherit": "MuiIconButton-colorInherit",
+                    "colorPrimary": "MuiIconButton-colorPrimary",
+                    "colorSecondary": "MuiIconButton-colorSecondary",
+                    "disabled": "Mui-disabled",
+                    "edgeEnd": "MuiIconButton-edgeEnd",
+                    "edgeStart": "MuiIconButton-edgeStart",
+                    "label": "MuiIconButton-label",
+                    "root": "MuiIconButton-root",
+                    "sizeSmall": "MuiIconButton-sizeSmall",
+                  }
+                }
+                onClick={[MockFunction]}
+                style={
+                  Object {
+                    "margin": "auto",
+                  }
+                }
+              >
+                <WithStyles(ForwardRef(ButtonBase))
+                  aria-label="test aria-label"
+                  centerRipple={true}
+                  className="MuiIconButton-root tour-dataview-cart-icon"
+                  disabled={false}
+                  focusRipple={true}
+                  onClick={[MockFunction]}
+                  style={
+                    Object {
+                      "margin": "auto",
+                    }
+                  }
+                >
+                  <ForwardRef(ButtonBase)
+                    aria-label="test aria-label"
+                    centerRipple={true}
+                    className="MuiIconButton-root tour-dataview-cart-icon"
+                    classes={
+                      Object {
+                        "disabled": "Mui-disabled",
+                        "focusVisible": "Mui-focusVisible",
+                        "root": "MuiButtonBase-root",
+                      }
+                    }
+                    disabled={false}
+                    focusRipple={true}
+                    onClick={[MockFunction]}
+                    style={
+                      Object {
+                        "margin": "auto",
+                      }
+                    }
+                  >
+                    <button
+                      aria-label="test aria-label"
+                      className="MuiButtonBase-root MuiIconButton-root tour-dataview-cart-icon"
+                      disabled={false}
+                      onBlur={[Function]}
+                      onClick={[MockFunction]}
+                      onDragLeave={[Function]}
+                      onFocus={[Function]}
+                      onKeyDown={[Function]}
+                      onKeyUp={[Function]}
+                      onMouseDown={[Function]}
+                      onMouseLeave={[Function]}
+                      onMouseUp={[Function]}
+                      onTouchEnd={[Function]}
+                      onTouchMove={[Function]}
+                      onTouchStart={[Function]}
+                      style={
+                        Object {
+                          "margin": "auto",
+                        }
+                      }
+                      tabIndex={0}
+                      type="button"
+                    >
+                      <span
+                        className="MuiIconButton-label"
+                      >
+                        <WithStyles(ForwardRef(Badge))
+                          badgeContent={null}
+                          color="primary"
+                        >
+                          <ForwardRef(Badge)
+                            badgeContent={null}
+                            classes={
+                              Object {
+                                "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
+                                "anchorOriginBottomLeftRectangle": "MuiBadge-anchorOriginBottomLeftRectangle",
+                                "anchorOriginBottomRightCircle": "MuiBadge-anchorOriginBottomRightCircle",
+                                "anchorOriginBottomRightRectangle": "MuiBadge-anchorOriginBottomRightRectangle",
+                                "anchorOriginTopLeftCircle": "MuiBadge-anchorOriginTopLeftCircle",
+                                "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
+                                "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
+                                "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
+                                "badge": "MuiBadge-badge",
+                                "colorError": "MuiBadge-colorError",
+                                "colorPrimary": "MuiBadge-colorPrimary",
+                                "colorSecondary": "MuiBadge-colorSecondary",
+                                "dot": "MuiBadge-dot",
+                                "invisible": "MuiBadge-invisible",
+                                "root": "MuiBadge-root",
+                              }
+                            }
+                            color="primary"
+                          >
+                            <span
+                              className="MuiBadge-root"
+                            >
+                              <ForwardRef(ShoppingCartIcon)>
+                                <WithStyles(ForwardRef(SvgIcon))>
+                                  <ForwardRef(SvgIcon)
+                                    classes={
+                                      Object {
+                                        "colorAction": "MuiSvgIcon-colorAction",
+                                        "colorDisabled": "MuiSvgIcon-colorDisabled",
+                                        "colorError": "MuiSvgIcon-colorError",
+                                        "colorPrimary": "MuiSvgIcon-colorPrimary",
+                                        "colorSecondary": "MuiSvgIcon-colorSecondary",
+                                        "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                                        "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                                        "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                                        "root": "MuiSvgIcon-root",
+                                      }
+                                    }
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      className="MuiSvgIcon-root"
+                                      focusable="false"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
+                                      />
+                                    </svg>
+                                  </ForwardRef(SvgIcon)>
+                                </WithStyles(ForwardRef(SvgIcon))>
+                              </ForwardRef(ShoppingCartIcon)>
+                              <span
+                                className="MuiBadge-badge MuiBadge-anchorOriginTopRightRectangle MuiBadge-colorPrimary MuiBadge-invisible"
+                              />
+                            </span>
+                          </ForwardRef(Badge)>
+                        </WithStyles(ForwardRef(Badge))>
+                      </span>
+                      <WithStyles(memo)
+                        center={true}
+                      >
+                        <ForwardRef(TouchRipple)
+                          center={true}
+                          classes={
+                            Object {
+                              "child": "MuiTouchRipple-child",
+                              "childLeaving": "MuiTouchRipple-childLeaving",
+                              "childPulsate": "MuiTouchRipple-childPulsate",
+                              "ripple": "MuiTouchRipple-ripple",
+                              "ripplePulsate": "MuiTouchRipple-ripplePulsate",
+                              "rippleVisible": "MuiTouchRipple-rippleVisible",
+                              "root": "MuiTouchRipple-root",
+                            }
+                          }
+                        >
+                          <span
+                            className="MuiTouchRipple-root"
+                          >
+                            <TransitionGroup
+                              childFactory={[Function]}
+                              component={null}
+                              exit={true}
+                            />
+                          </span>
+                        </ForwardRef(TouchRipple)>
+                      </WithStyles(memo)>
+                    </button>
+                  </ForwardRef(ButtonBase)>
+                </WithStyles(ForwardRef(ButtonBase))>
+              </ForwardRef(IconButton)>
+            </WithStyles(ForwardRef(IconButton))>
+          </div>
+        </ViewCartButton>
+      </QueryClientProvider>
+    </Router>
+  </MemoryRouter>
+</Provider>
+`;

@@ -60,6 +60,8 @@ export { default as Mark } from './mark.component';
 export { default as HomePage } from './homePage/homePage.component';
 
 export { default as AddToCartButton } from './views/addToCartButton.component';
+export { default as ViewCartButton } from './views/viewCartButton.component';
+export type { CartProps } from './views/viewCartButton.component';
 export { default as DownloadButton } from './views/downloadButton.component';
 export { default as SelectionAlert } from './views/selectionAlert.component';
 

@@ -5,7 +5,6 @@ import { MemoryRouter, Router } from 'react-router';
 
 import SearchPageCardView, {
   SearchCardViewProps,
-  SearchCartProps,
 } from './searchPageCardView.component';
 
 import { mount as enzymeMount, ReactWrapper } from 'enzyme';
@@ -13,7 +12,7 @@ import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';
-import { dGCommonInitialState } from 'datagateway-common';
+import { dGCommonInitialState, CartProps } from 'datagateway-common';
 import axios from 'axios';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Store } from 'redux';
@@ -33,16 +32,15 @@ describe('SearchPageCardView', () => {
   let mount: typeof enzymeMount;
   let state: StateType;
   let history: History;
-  let props: SearchCardViewProps & SearchCartProps;
+  let props: SearchCardViewProps & CartProps;
 
   const mockStore = configureStore([thunk]);
   const onTabChange = jest.fn();
-  const useCart = jest.fn();
   const navigateToDownload = jest.fn();
 
   const createWrapper = (
     store: Store = mockStore(state),
-    props: SearchCardViewProps
+    props: SearchCardViewProps & CartProps
   ): ReactWrapper => {
     return mount(
       <Provider store={store}>
@@ -70,7 +68,7 @@ describe('SearchPageCardView', () => {
     props = {
       onTabChange: onTabChange,
       currentTab: 'investigation',
-      cartItems: useCart,
+      cartItems: [],
       navigateToDownload: navigateToDownload,
     };
 
@@ -85,7 +83,6 @@ describe('SearchPageCardView', () => {
 
   afterEach(() => {
     onTabChange.mockClear();
-    useCart.mockClear();
     navigateToDownload.mockClear();
   });
 
@@ -172,19 +169,6 @@ describe('SearchPageCardView', () => {
 
     expect(wrapper.exists(DatasetCardView)).toBeTruthy();
     spy.mockRestore();
-  });
-
-  it('opens download plugin when Download Cart clicked', () => {
-    const testStore = mockStore(state);
-
-    const wrapper = createWrapper(testStore, props);
-
-    wrapper
-      .find('[aria-label="searchPageCardView.cart_arialabel"]')
-      .first()
-      .simulate('click');
-
-    expect(navigateToDownload).toHaveBeenCalledTimes(1);
   });
 
   it('has the datafile search table component when on the datafile tab', () => {

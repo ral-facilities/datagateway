@@ -10,9 +10,8 @@ import {
   createStyles,
   withStyles,
   LinearProgress,
-  IconButton,
 } from '@material-ui/core';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+
 import { StyleRules } from '@material-ui/core/styles';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
@@ -25,7 +24,8 @@ import {
   useInvestigationCount,
   useLuceneSearch,
   useUpdateQueryParam,
-  DownloadCartItem,
+  ViewCartButton,
+  CartProps,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
@@ -103,11 +103,6 @@ interface TabPanelProps {
   value: string;
 }
 
-export interface SearchCartProps {
-  cartItems: DownloadCartItem[];
-  navigateToDownload: () => void;
-}
-
 function TabPanel(props: TabPanelProps): React.ReactElement {
   const { children, value, index, ...other } = props;
 
@@ -137,30 +132,8 @@ const StyledBadge = withStyles(badgeStyles)(Badge);
 const StyledTabs = withStyles(tabStyles)(Tabs);
 const StyledBox = withStyles(boxStyles)(Box);
 
-const ViewCart = (props: SearchCartProps): React.ReactElement => {
-  const [t] = useTranslation();
-  return (
-    <div>
-      <IconButton
-        className="tour-dataview-cart-icon"
-        onClick={props.navigateToDownload}
-        aria-label={t('searchPageCardView.cart_arialabel')}
-      >
-        <Badge
-          badgeContent={
-            props.cartItems.length > 0 ? props.cartItems.length : null
-          }
-          color="primary"
-        >
-          <ShoppingCartIcon />
-        </Badge>
-      </IconButton>
-    </div>
-  );
-};
-
 const SearchPageCardView = (
-  props: SearchCardViewProps & SearchCardViewStoreProps & SearchCartProps
+  props: SearchCardViewProps & SearchCardViewStoreProps & CartProps
 ): React.ReactElement => {
   const {
     maxNumResults,
@@ -173,6 +146,7 @@ const SearchPageCardView = (
     currentTab,
     cartItems,
     navigateToDownload,
+    cartAriaLabel,
   } = props;
   const [t] = useTranslation();
 
@@ -411,9 +385,10 @@ const SearchPageCardView = (
             )}
           </StyledTabs>
           <StyledBox marginLeft="auto">
-            <ViewCart
+            <ViewCartButton
               cartItems={cartItems}
               navigateToDownload={navigateToDownload}
+              cartAriaLabel={cartAriaLabel}
             />
           </StyledBox>
         </StyledBox>

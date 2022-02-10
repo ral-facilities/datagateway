@@ -4065,13 +4065,13 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
         }
       >
         <Connect(SearchPageTable)
-          cartItems={[MockFunction]}
+          cartItems={Array []}
           currentTab="investigation"
           navigateToDownload={[MockFunction]}
           onTabChange={[MockFunction]}
         >
           <SearchPageTable
-            cartItems={[MockFunction]}
+            cartItems={Array []}
             currentTab="investigation"
             datafileTab={true}
             datasetTab={true}
@@ -5084,18 +5084,21 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                       }
                                     }
                                   >
-                                    <ViewCart
-                                      cartItems={[MockFunction]}
+                                    <ViewCartButton
+                                      cartItems={Array []}
                                       navigateToDownload={[MockFunction]}
                                     >
                                       <div>
                                         <WithStyles(ForwardRef(IconButton))
-                                          aria-label="searchPageTable.cart_arialabel"
                                           className="tour-dataview-cart-icon"
                                           onClick={[MockFunction]}
+                                          style={
+                                            Object {
+                                              "margin": "auto",
+                                            }
+                                          }
                                         >
                                           <ForwardRef(IconButton)
-                                            aria-label="searchPageTable.cart_arialabel"
                                             className="tour-dataview-cart-icon"
                                             classes={
                                               Object {
@@ -5111,17 +5114,25 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                               }
                                             }
                                             onClick={[MockFunction]}
+                                            style={
+                                              Object {
+                                                "margin": "auto",
+                                              }
+                                            }
                                           >
                                             <WithStyles(ForwardRef(ButtonBase))
-                                              aria-label="searchPageTable.cart_arialabel"
                                               centerRipple={true}
                                               className="MuiIconButton-root tour-dataview-cart-icon"
                                               disabled={false}
                                               focusRipple={true}
                                               onClick={[MockFunction]}
+                                              style={
+                                                Object {
+                                                  "margin": "auto",
+                                                }
+                                              }
                                             >
                                               <ForwardRef(ButtonBase)
-                                                aria-label="searchPageTable.cart_arialabel"
                                                 centerRipple={true}
                                                 className="MuiIconButton-root tour-dataview-cart-icon"
                                                 classes={
@@ -5134,9 +5145,13 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                 disabled={false}
                                                 focusRipple={true}
                                                 onClick={[MockFunction]}
+                                                style={
+                                                  Object {
+                                                    "margin": "auto",
+                                                  }
+                                                }
                                               >
                                                 <button
-                                                  aria-label="searchPageTable.cart_arialabel"
                                                   className="MuiButtonBase-root MuiIconButton-root tour-dataview-cart-icon"
                                                   disabled={false}
                                                   onBlur={[Function]}
@@ -5151,6 +5166,11 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                   onTouchEnd={[Function]}
                                                   onTouchMove={[Function]}
                                                   onTouchStart={[Function]}
+                                                  style={
+                                                    Object {
+                                                      "margin": "auto",
+                                                    }
+                                                  }
                                                   tabIndex={0}
                                                   type="button"
                                                 >
@@ -5258,7 +5278,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                           </ForwardRef(IconButton)>
                                         </WithStyles(ForwardRef(IconButton))>
                                       </div>
-                                    </ViewCart>
+                                    </ViewCartButton>
                                   </div>
                                 </Styled(MuiBox)>
                               </WithStyles(Styled(MuiBox))>

@@ -7,16 +7,14 @@ import {
   withStyles,
   createStyles,
   IconButton,
-  Badge,
   makeStyles,
   Button,
 } from '@material-ui/core';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+
 import SearchIcon from '@material-ui/icons/Search';
 import InfoIcon from '@material-ui/icons/Info';
 import { StyleRules } from '@material-ui/core/styles';
 import {
-  DownloadCartItem,
   Sticky,
   ViewsType,
   useCart,
@@ -25,6 +23,8 @@ import {
   readSciGatewayToken,
   ArrowTooltip,
   SelectionAlert,
+  ViewCartButton,
+  CartProps,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -185,13 +185,13 @@ const BlackTextTypography = withStyles({
 })(Typography);
 
 const NavBar = React.memo(
-  (props: {
-    entityCount: number;
-    cartItems: DownloadCartItem[];
-    navigateToSearch: () => void;
-    navigateToDownload: () => void;
-    loggedInAnonymously: boolean;
-  }): React.ReactElement => {
+  (
+    props: {
+      entityCount: number;
+      navigateToSearch: () => void;
+      loggedInAnonymously: boolean;
+    } & CartProps
+  ): React.ReactElement => {
     const [t] = useTranslation();
     const classes = useNavBarStyles();
     const isStudyHierarchy =
@@ -338,22 +338,11 @@ const NavBar = React.memo(
               paddingRight: 6,
             }}
           >
-            <IconButton
-              className="tour-dataview-cart-icon"
-              onClick={props.navigateToDownload}
-              aria-label="view-cart"
-              style={{ margin: 'auto' }}
-            >
-              <Badge
-                badgeContent={
-                  props.cartItems.length > 0 ? props.cartItems.length : null
-                }
-                color="primary"
-                aria-label="view-cart-badge"
-              >
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
+            <ViewCartButton
+              cartItems={props.cartItems}
+              navigateToDownload={props.navigateToDownload}
+              cartAriaLabel={props.cartAriaLabel}
+            />
           </Paper>
         </StyledGrid>
       </Sticky>
@@ -631,6 +620,7 @@ const PageContainer: React.FC = () => {
       replaceView('card');
     }
   }, [location.pathname, view, prevView, prevLocation.pathname, replaceView]);
+  const [t] = useTranslation();
 
   //Determine whether logged in anonymously (assume this if username is null)
   const username = readSciGatewayToken().username;
@@ -649,6 +639,7 @@ const PageContainer: React.FC = () => {
               cartItems={cartItems ?? []}
               navigateToSearch={navigateToSearch}
               navigateToDownload={navigateToDownload}
+              cartAriaLabel={t('app.cart_arialabel')}
               loggedInAnonymously={loggedInAnonymously}
             />
 
