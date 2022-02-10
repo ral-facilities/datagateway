@@ -1,5 +1,6 @@
 describe('PageContainer Component', () => {
   beforeEach(() => {
+    cy.intercept('/investigations/').as('getInvestigations');
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
@@ -8,6 +9,7 @@ describe('PageContainer Component', () => {
         '@getInvestigationsCount',
         '@getInvestigationsOrder',
         '@getInvestigationsOrder',
+        '@getInvestigations',
       ],
       { timeout: 10000 }
     );
@@ -59,19 +61,28 @@ describe('PageContainer Component', () => {
   });
 
   it('should be able to click clear filters button to clear filters', () => {
-    const url = 'http://127.0.0.1:3000/browse/investigation/?view=card';
-    cy.visit(url);
-    cy.get('[data-testid="advanced-filters-link"]').click();
-    cy.get('input[id="Title-filter"]').type('South');
-
-    cy.get('[data-testid="card"]')
-      .first()
-      .contains(
-        'Season identify professor happen third. Beat professional blue clear style have. Light final summer.'
+    cy.url().then((url) => {
+      cy.get('[data-testid="advanced-filters-link"]').click();
+      cy.get('input[id="Title-filter"]').type('South');
+      cy.wait(
+        [
+          '@getInvestigationsCount',
+          '@getInvestigationsOrder',
+          '@getInvestigationsOrder',
+          '@getInvestigations',
+        ],
+        { timeout: 10000 }
       );
 
-    cy.get('[data-testid="clear-filters-button"]').click();
-    cy.url().should('eq', url);
+      cy.get('[data-testid="card"]')
+        .first()
+        .contains(
+          'Season identify professor happen third. Beat professional blue clear style have. Light final summer.'
+        );
+
+      cy.get('[data-testid="clear-filters-button"]').click();
+      cy.url().should('eq', url);
+    });
   });
 
   it('Should default to 10 when the results value is not a vaild result ([10,20,30]) when manually changed in the url ', () => {

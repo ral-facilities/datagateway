@@ -8,12 +8,13 @@ describe('DLS - MyData Table', () => {
   describe('Logged in tests', () => {
     beforeEach(() => {
       cy.intercept('/investigations/count').as('getInvestigationCount');
+      cy.intercept('/investigations/').as('getInvestigations');
       cy.login({
         username: 'root',
         password: 'pw',
         mechanism: 'simple',
       });
-      cy.visit('/my-data/DLS');
+      cy.visit('/my-data/DLS').wait('@getInvestigations');
     });
 
     it('should load correctly', () => {
@@ -31,6 +32,8 @@ describe('DLS - MyData Table', () => {
       cy.url().then((url) => {
         cy.get('[aria-rowcount="4"]').should('exist');
         cy.get('input[id="Title-filter"]').type('night');
+
+        cy.wait('@getInvestigations');
 
         cy.get('[aria-rowcount="1"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('56');
