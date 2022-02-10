@@ -7,13 +7,14 @@ import {
   Box,
   Typography,
   Divider,
+  SxProps,
 } from '@mui/material';
 import Draggable from 'react-draggable';
 
 const DataHeader = React.memo(
   (
     props: TableHeaderProps & {
-      className: string;
+      sx: SxProps;
       sort: { [column: string]: Order };
       onSort: (
         column: string,
@@ -28,7 +29,7 @@ const DataHeader = React.memo(
     }
   ): React.ReactElement => {
     const {
-      className,
+      sx,
       dataKey,
       sort,
       onSort,
@@ -87,7 +88,7 @@ const DataHeader = React.memo(
       <TableCell
         size="small"
         component="div"
-        className={className}
+        sx={sx}
         variant="head"
         sortDirection={currSortDirection}
       >

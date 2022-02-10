@@ -1,16 +1,16 @@
 import React from 'react';
 import { TableCellProps, TableCellRenderer } from 'react-virtualized';
-import { Divider, TableCell, Typography } from '@mui/material';
+import { Divider, SxProps, TableCell, Typography } from '@mui/material';
 import ArrowTooltip, { getTooltipText } from '../../arrowtooltip.component';
 
 type CellRendererProps = TableCellProps & {
-  className: string;
+  sx: SxProps;
   cellContentRenderer?: TableCellRenderer;
 };
 
 const DataCell = React.memo(
   (props: CellRendererProps): React.ReactElement => {
-    const { className, dataKey, rowData, cellContentRenderer } = props;
+    const { sx, dataKey, rowData, cellContentRenderer } = props;
 
     // use . in dataKey name to drill down into nested row data
     // if cellContentRenderer not provided
@@ -21,12 +21,7 @@ const DataCell = React.memo(
         }, rowData);
 
     return (
-      <TableCell
-        size="small"
-        component="div"
-        className={className}
-        variant="body"
-      >
+      <TableCell size="small" component="div" sx={sx} variant="body">
         <ArrowTooltip
           title={getTooltipText(cellContent)}
           enterDelay={500}

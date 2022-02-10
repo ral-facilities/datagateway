@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import React from 'react';
 import { TableRowProps, defaultTableRowRenderer } from 'react-virtualized';
 import { DetailsPanelProps } from '../table.component';
@@ -12,8 +13,8 @@ const ExpandableRow = (
   const { height, width, paddingRight, ...otherStyles } = props.style;
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         ...otherStyles,
         height,
         display: 'flex',
@@ -39,7 +40,7 @@ const ExpandableRow = (
           detailsPanelResize={props.detailsPanelResize}
         />
       </div>
-    </div>
+    </Box>
   );
 };
 

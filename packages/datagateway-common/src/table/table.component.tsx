@@ -1,9 +1,6 @@
 import React from 'react';
 import TableCell from '@mui/material/TableCell';
-import { Theme } from '@mui/material/styles';
-import { StyleRules, WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import createStyles from '@mui/styles/createStyles';
+import { SxProps, Theme, useTheme } from '@mui/material/styles';
 import {
   AutoSizer,
   Column,
@@ -33,52 +30,57 @@ const actionsColumnDefaultWidth = 70;
 const scrollBarHeight = 17;
 const dataColumnMinWidth = 84;
 
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    table: {
-      fontFamily: theme.typography.fontFamily,
-    },
-    flexContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      boxSizing: 'border-box',
-    },
-    headerFlexContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      boxSizing: 'border-box',
-      overflow: 'hidden',
-    },
-    tableRow: {},
-    tableRowHover: {
-      '&:hover': {
-        backgroundColor: theme.palette.action.hover,
-      },
-    },
-    tableCell: {
-      flex: 1,
-      overflow: 'hidden',
-      height: rowHeight,
-      padding: 0,
-      paddingLeft: 16,
-      '&:last-child': {
-        paddingRight: 0,
-      },
-    },
-    tableNoPadding: {
-      paddingLeft: 0,
-    },
-    headerTableCell: {
-      flex: 1,
-      height: headerHeight,
-      justifyContent: 'space-between',
-      padding: 0,
-      paddingLeft: 16,
-      '&:last-child': {
-        paddingRight: 0,
-      },
-    },
-  });
+const tableStyle = (theme: Theme): SxProps => ({
+  fontFamily: theme.typography.fontFamily,
+});
+
+const flexContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  boxSizing: 'border-box' as const,
+};
+
+const headerFlexContainerStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+  boxSizing: 'border-box',
+  overflow: 'hidden',
+};
+
+const tableRowStyle = {};
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const getTableRowHoverStyle = (theme: Theme) => ({
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+});
+
+const tableCellStyle = {
+  flex: 1,
+  overflow: 'hidden',
+  height: rowHeight,
+  padding: 0,
+  paddingLeft: '16px',
+  '&:last-child': {
+    paddingRight: 0,
+  },
+};
+
+const tableNoPaddingStyle = {
+  paddingLeft: 0,
+};
+
+const headerTableCellStyle = {
+  flex: 1,
+  height: headerHeight,
+  justifyContent: 'space-between',
+  padding: 0,
+  paddingLeft: '16px',
+  '&:last-child': {
+    paddingRight: 0,
+  },
+};
 
 export interface ColumnType {
   label: string;
@@ -123,12 +125,11 @@ interface VirtualizedTableProps {
 }
 
 const VirtualizedTable = React.memo(
-  (
-    props: VirtualizedTableProps & WithStyles<typeof styles>
-  ): React.ReactElement => {
+  (props: VirtualizedTableProps): React.ReactElement => {
     const [expandedIndex, setExpandedIndex] = React.useState(-1);
     const [detailPanelHeight, setDetailPanelHeight] = React.useState(rowHeight);
     const [lastChecked, setLastChecked] = React.useState(-1);
+    const theme = useTheme();
 
     let tableRef: Table | null = null;
     const detailPanelRef = React.useRef<HTMLDivElement>(null);
@@ -136,7 +137,6 @@ const VirtualizedTable = React.memo(
     const {
       actions,
       actionsWidth,
-      classes,
       columns,
       data,
       selectedRows,
@@ -221,14 +221,17 @@ const VirtualizedTable = React.memo(
       [detailPanelHeight, expandedIndex]
     );
 
-    const getRowClassName = React.useCallback(
-      ({ index }: Index): string =>
-        clsx(
-          classes.tableRow,
-          classes.flexContainer,
-          index > -1 && classes.tableRowHover
-        ),
-      [classes]
+    const getRowStyle = React.useCallback(
+      ({ index }: Index): React.CSSProperties => {
+        const tableRowHoverStyle =
+          index > -1 ? getTableRowHoverStyle(theme) : {};
+        return {
+          ...tableRowStyle,
+          ...flexContainerStyle,
+          ...tableRowHoverStyle,
+        };
+      },
+      [theme]
     );
     const getRow = React.useCallback(
       ({ index }: Index): Entity => data[index],
@@ -236,6 +239,7 @@ const VirtualizedTable = React.memo(
     );
     const renderRow: TableRowRenderer = React.useCallback(
       (props) => {
+        // eslint-disable-next-line react/prop-types
         if (detailsPanel && props.index === expandedIndex) {
           return (
             <DetailsPanelRow
@@ -269,16 +273,16 @@ const VirtualizedTable = React.memo(
       [widthProps, setWidthProps]
     );
 
-    const tableCellClass = clsx(classes.tableCell, classes.flexContainer);
-    const tableCellNoPaddingClass = clsx(
-      classes.tableCell,
-      classes.tableNoPadding,
-      classes.flexContainer
-    );
-    const headerTableCellClass = clsx(
-      classes.headerTableCell,
-      classes.headerFlexContainer
-    );
+    const tableCellStyleCombined = { ...tableCellStyle, ...flexContainerStyle };
+    const tableCellNoPaddingStyleCombined = {
+      ...tableCellStyle,
+      ...tableNoPaddingStyle,
+      ...flexContainerStyle,
+    };
+    const headerTableCellStyleCombined = {
+      ...headerTableCellStyle,
+      ...headerFlexContainerStyle,
+    };
 
     return (
       <AutoSizer>
@@ -314,14 +318,14 @@ const VirtualizedTable = React.memo(
                     }
                     return registerChild(ref);
                   }}
-                  className={classes.table}
+                  sx={tableStyle}
                   height={(height || 500) - scrollBarHeight}
                   width={Math.max(width, min_table_width)}
                   rowCount={data.length}
                   onRowsRendered={onRowsRendered}
                   headerHeight={headerHeight}
                   rowHeight={getRowHeight}
-                  rowClassName={getRowClassName}
+                  rowStyle={getRowStyle}
                   rowGetter={getRow}
                   rowRenderer={renderRow}
                   // Disable tab focus on whole table for accessibility;
@@ -338,7 +342,7 @@ const VirtualizedTable = React.memo(
                         !disableSelectAll && (
                           <SelectHeader
                             {...props}
-                            className={headerTableCellClass}
+                            sx={headerTableCellStyleCombined as SxProps}
                             selectedRows={selectedRows}
                             totalRowCount={rowCount}
                             allIds={
@@ -354,14 +358,16 @@ const VirtualizedTable = React.memo(
                           />
                         )
                       }
-                      className={classes.flexContainer}
-                      headerClassName={classes.headerFlexContainer}
+                      style={flexContainerStyle as React.CSSProperties}
+                      headerStyle={
+                        headerFlexContainerStyle as React.CSSProperties
+                      }
                       cellRenderer={(props) => (
                         <SelectCell
                           {...props}
                           selectedRows={selectedRows}
                           data={data}
-                          className={tableCellClass}
+                          sx={tableCellStyleCombined as SxProps}
                           onCheck={onCheck}
                           onUncheck={onUncheck}
                           lastChecked={lastChecked}
@@ -382,21 +388,25 @@ const VirtualizedTable = React.memo(
                           size="small"
                           padding="checkbox"
                           component="div"
-                          className={clsx(
-                            classes.headerTableCell,
-                            classes.flexContainer
-                          )}
+                          style={
+                            {
+                              ...headerTableCellStyleCombined,
+                              ...flexContainerStyle,
+                            } as React.CSSProperties
+                          }
                           variant="head"
                         />
                       )}
-                      className={classes.flexContainer}
-                      headerClassName={classes.headerFlexContainer}
+                      style={flexContainerStyle as React.CSSProperties}
+                      headerStyle={
+                        headerFlexContainerStyle as React.CSSProperties
+                      }
                       cellRenderer={(props) => (
                         <ExpandCell
                           {...props}
                           expandedIndex={expandedIndex}
                           setExpandedIndex={setExpandedIndex}
-                          className={tableCellClass}
+                          sx={tableCellStyleCombined}
                         />
                       )}
                     />
@@ -421,11 +431,14 @@ const VirtualizedTable = React.memo(
                           dataKey={dataKey}
                           label={label}
                           disableSort={disableSort}
-                          headerClassName={`${classes.headerFlexContainer} tour-dataview-filter`}
+                          headerStyle={
+                            headerFlexContainerStyle as React.CSSProperties
+                          }
+                          headerClassName={`tour-dataview-filter`}
                           headerRenderer={(headerProps) => (
                             <DataHeader
                               {...headerProps}
-                              className={headerTableCellClass}
+                              sx={headerTableCellStyleCombined as SxProps}
                               sort={sort}
                               onSort={onSort}
                               icon={icon}
@@ -435,18 +448,18 @@ const VirtualizedTable = React.memo(
                               defaultSort={defaultSort}
                             />
                           )}
-                          className={clsx(classes.flexContainer, className)}
+                          className={clsx(flexContainerStyle, className)}
                           cellRenderer={(props) => (
                             <DataCell
                               {...props}
                               cellContentRenderer={cellContentRenderer}
-                              className={
+                              sx={
                                 //Remove padding only when in the first column and there is another element displayed before it e.g. a checkbox
                                 ((selectedRows && onCheck && onUncheck) ||
                                   detailsPanel) &&
                                 index === 0
-                                  ? tableCellNoPaddingClass
-                                  : tableCellClass
+                                  ? tableCellNoPaddingStyleCombined
+                                  : tableCellStyleCombined
                               }
                             />
                           )}
@@ -462,13 +475,17 @@ const VirtualizedTable = React.memo(
                       flexShrink={0}
                       key="Actions"
                       dataKey="actions"
-                      className={classes.flexContainer}
-                      headerClassName={classes.headerFlexContainer}
+                      style={flexContainerStyle as React.CSSProperties}
+                      headerStyle={
+                        headerFlexContainerStyle as React.CSSProperties
+                      }
                       headerRenderer={(headerProps) => (
                         <TableCell
                           size="small"
                           component="div"
-                          className={headerTableCellClass}
+                          style={
+                            headerTableCellStyleCombined as React.CSSProperties
+                          }
                           variant="head"
                         >
                           Actions
@@ -478,7 +495,7 @@ const VirtualizedTable = React.memo(
                         <ActionCell
                           {...props}
                           actions={actions}
-                          className={tableCellClass}
+                          sx={tableCellStyleCombined as SxProps}
                         />
                       )}
                     />
@@ -494,4 +511,4 @@ const VirtualizedTable = React.memo(
 );
 VirtualizedTable.displayName = 'VirtualizedTable';
 
-export default withStyles(styles)(VirtualizedTable);
+export default VirtualizedTable;
