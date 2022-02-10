@@ -616,7 +616,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         currentTab={currentTab}
                         cartItems={cartItems ?? []}
                         navigateToDownload={navigateToDownload}
-                        cartAriaLabel={t('searchPageCardView.cart_arialabel')}
+                        cartAriaLabel={t('searchPageContainer.cart_arialabel')}
                       />
                     ) : (
                       <SearchPageTable
@@ -626,7 +626,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         currentTab={currentTab}
                         cartItems={cartItems ?? []}
                         navigateToDownload={navigateToDownload}
-                        cartAriaLabel={t('searchPageTable.cart_arialabel')}
+                        cartAriaLabel={t('searchPageContainer.cart_arialabel')}
                       />
                     )}
                   </Paper>
