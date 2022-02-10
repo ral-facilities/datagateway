@@ -23,8 +23,6 @@ describe('PageContainer Component', () => {
     cy.url().then((url) => {
       cy.get('input[id="Title-filter"]').type('South');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('42');
-
       cy.get('[data-testid="clear-filters-button"]').click();
       cy.url().should('eq', url);
     });

@@ -198,8 +198,11 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display clear filters button and clear for filters onClick (/my-data/DLS)', () => {
+    const dateNow = `${new Date(Date.now()).toISOString().split('T')[0]}`;
     history.replace(
-      '/my-data/DLS?filters=%7B"startDate"%3A%7B"endDate"%3A"2022-02-09"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B"startDate"%3A"desc"%7D'
+      '/my-data/DLS?filters=%7B"startDate"%3A%7B"endDate"%3A" ' +
+        dateNow +
+        '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B"startDate"%3A"desc"%7D'
     );
     const response = { username: 'SomePerson' };
     (readSciGatewayToken as jest.Mock).mockReturnValue(response);
@@ -217,7 +220,9 @@ describe('PageContainer - Tests', () => {
     expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
 
     expect(history.location.search).toEqual(
-      '?filters=%7B%22startDate%22%3A%7B%22endDate%22%3A%222022-02-09%22%7D%7D'
+      '?filters=%7B%22startDate%22%3A%7B%22endDate%22%3A%22' +
+        dateNow +
+        '%22%7D%7D'
     );
 
     (readSciGatewayToken as jest.Mock).mockClear();

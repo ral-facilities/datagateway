@@ -62,13 +62,6 @@ describe('PageContainer Component', () => {
     cy.url().then((url) => {
       cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('input[id="Title-filter"]').type('South');
-
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains(
-          'Season identify professor happen third. Beat professional blue clear style have. Light final summer.'
-        );
-
       cy.get('[data-testid="clear-filters-button"]').click();
       cy.url().should('eq', url);
     });

@@ -105,15 +105,6 @@ describe('SearchPageContainer Component', () => {
         cy.get('#container-search-filters').should('exist');
         cy.get('[aria-label="Filter by Title"]').type('ba');
 
-        cy.get('[id="simple-tab-dataset"]').click();
-        cy.get('[id="simple-tab-investigation"]').click();
-
-        cy.get('[aria-rowcount="3"]').should('exist');
-
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Energy place money bad authority. Poor community technology against happy. Detail customer management together dog. Put name war sometimes rise sport your. Imagine across mother herself then.'
-        );
-
         cy.get('[data-testid="clear-filters-button"]').click();
         cy.url().should('eq', url);
       });
