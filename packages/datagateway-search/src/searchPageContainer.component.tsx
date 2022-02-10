@@ -46,6 +46,7 @@ import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import { StyleRules } from '@material-ui/core/styles';
+import { Clear } from '@material-ui/icons';
 
 export const storeFilters = (
   filters: FiltersType,
@@ -162,12 +163,13 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
     : false;
 };
 
-const viewButtonStyles = makeStyles(
+const buttonStyles = makeStyles(
   (theme: Theme): StyleRules =>
     createStyles({
       root: {
-        padding: `${theme.spacing(1)}px 0px ${theme.spacing(1)}px 0px`,
-        marginRight: theme.spacing(1),
+        padding: `${theme.spacing(0.5)}px 0px ${theme.spacing(0.5)}px 0px`,
+        marginRight: theme.spacing(0.5),
+        display: 'inline-block',
       },
     })
 );
@@ -178,7 +180,7 @@ const ViewButton = (props: {
   disabled: boolean;
 }): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = viewButtonStyles();
+  const classes = buttonStyles();
   return (
     <div className={classes.root}>
       <Button
@@ -194,6 +196,32 @@ const ViewButton = (props: {
         {props.viewCards && !props.disabled
           ? t('app.view_table')
           : t('app.view_cards')}
+      </Button>
+    </div>
+  );
+};
+
+export const ClearFiltersButton = (props: {
+  handleButtonClearFilters: () => void;
+  disabled: boolean;
+}): React.ReactElement => {
+  const [t] = useTranslation();
+  const classes = buttonStyles();
+
+  return (
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-clear-filter-button"
+        data-testid="clear-filters-button"
+        style={{ margin: '5px' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => props.handleButtonClearFilters()}
+        startIcon={<Clear />}
+        disabled={props.disabled}
+      >
+        {t('searchPageContainer.clear_filters')}
       </Button>
     </div>
   );
@@ -306,10 +334,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
   const pushCurrentTab = usePushCurrentTab();
-  const updateFilters = useUpdateQueryParam('filters');
-  const updateSorts = useUpdateQueryParam('sort');
-  const updatePage = useUpdateQueryParam('page');
-  const updateResults = useUpdateQueryParam('results');
+  const replaceFilters = useUpdateQueryParam('filters', 'replace');
+  const replaceSorts = useUpdateQueryParam('sort', 'replace');
+  const replacePage = useUpdateQueryParam('page', 'replace');
+  const replaceResults = useUpdateQueryParam('results', 'replace');
 
   React.useEffect(() => {
     if (currentTab !== queryParams.currentTab) pushCurrentTab(currentTab);
@@ -393,10 +421,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     localStorage.removeItem('datasetPage');
     localStorage.removeItem('investigationResults');
     localStorage.removeItem('datasetResults');
-    if (Object.keys(queryParams.filters).length !== 0) updateFilters({});
-    if (Object.keys(queryParams.sort).length !== 0) updateSorts({});
-    if (queryParams.page !== null) updatePage(null);
-    if (queryParams.results !== null) updateResults(null);
+    if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
+    if (Object.keys(queryParams.sort).length !== 0) replaceSorts({});
+    if (queryParams.page !== null) replacePage(null);
+    if (queryParams.results !== null) replaceResults(null);
   }, [
     pushSearchText,
     searchText,
@@ -404,10 +432,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     queryParams.sort,
     queryParams.page,
     queryParams.results,
-    updateFilters,
-    updateSorts,
-    updatePage,
-    updateResults,
+    replaceFilters,
+    replaceSorts,
+    replacePage,
+    replaceResults,
   ]);
 
   React.useEffect(() => {
@@ -497,6 +525,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const loggedInAnonymously = username === null || username === 'anon/anon';
   const classes = searchPageStyles({ view, containerHeight });
 
+  const disabled = Object.keys(queryParams.filters).length !== 0 ? false : true;
+
+  const pushFilters = useUpdateQueryParam('filters', 'push');
+
+  const handleButtonClearFilters = (): void => {
+    pushFilters({});
+  };
+
   return (
     <Switch>
       <Route
@@ -549,6 +585,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         viewCards={view === 'card'}
                         handleButtonChange={handleButtonChange}
                         disabled={currentTab === 'datafile'}
+                      />
+                      <ClearFiltersButton
+                        handleButtonClearFilters={handleButtonClearFilters}
+                        disabled={disabled}
                       />
                     </Grid>
                     <Grid item xs={true}>

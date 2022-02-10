@@ -42,6 +42,9 @@
     "tabs_arialabel": "Search table",
     "cart_arialabel": "Go to selections"
   },
+  "searchPageContainer": {
+    "clear_filters": "Clear filters"
+  },
   "tabs": {
     "investigation": "Investigation",
     "dataset": "Dataset",

@@ -303,7 +303,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                   ? true
                   : false;
 
-                const [clicked, setClicked] = React.useState(false);
                 return (
                   <BlackTooltip
                     title={
@@ -331,14 +330,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                           })}
                           key="download"
                           size="small"
-                          onClick={() => {
-                            setClicked(true);
-                            setTimeout(() => {
-                              setClicked(false);
-                            }, 100);
-                          }}
                         >
-                          <GetApp color={clicked ? 'primary' : 'inherit'} />
+                          <GetApp />
                         </IconButton>
                       ) : (
                         <IconButton
@@ -376,17 +369,13 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                     size="small"
                     onClick={() => {
                       setIsDeleting(true);
-                      setTimeout(
-                        () =>
-                          downloadDeleted(downloadItem.id as number, true, {
-                            facilityName: settings.facilityName,
-                            downloadApiUrl: settings.downloadApiUrl,
-                          }).then(() =>
-                            setData(
-                              data.filter((item) => item.id !== downloadItem.id)
-                            )
-                          ),
-                        100
+                      downloadDeleted(downloadItem.id as number, true, {
+                        facilityName: settings.facilityName,
+                        downloadApiUrl: settings.downloadApiUrl,
+                      }).then(() =>
+                        setData(
+                          data.filter((item) => item.id !== downloadItem.id)
+                        )
                       );
                     }}
                   >

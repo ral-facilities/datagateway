@@ -414,42 +414,37 @@ const AdminDownloadStatusTable: React.FC = () => {
                           key="restore"
                           size="small"
                           onClick={() => {
-                            setTimeout(
-                              () =>
-                                adminDownloadDeleted(
-                                  downloadItem.id as number,
-                                  false,
-                                  {
-                                    facilityName: settings.facilityName,
-                                    downloadApiUrl: settings.downloadApiUrl,
-                                  }
-                                ).then(() => {
-                                  // Get the new status and isDeleted state of the download item
-                                  fetchAdminDownloads(
-                                    {
-                                      facilityName: settings.facilityName,
-                                      downloadApiUrl: settings.downloadApiUrl,
-                                    },
-                                    `WHERE UPPER(download.id) = ${downloadItem.id}`
-                                  ).then((downloads) => {
-                                    const formattedDownload = formatDownloads(
-                                      downloads
-                                    )[0];
-                                    downloadItem.status =
-                                      formattedDownload.status;
-                                    downloadItem.isDeleted =
-                                      formattedDownload.isDeleted;
-                                    setData(
-                                      data.map((download) =>
-                                        download.id === downloadItem.id
-                                          ? { ...download, ...downloadItem }
-                                          : download
-                                      )
-                                    );
-                                  });
-                                }),
-                              100
-                            );
+                            adminDownloadDeleted(
+                              downloadItem.id as number,
+                              false,
+                              {
+                                facilityName: settings.facilityName,
+                                downloadApiUrl: settings.downloadApiUrl,
+                              }
+                            ).then(() => {
+                              // Get the new status and isDeleted state of the download item
+                              fetchAdminDownloads(
+                                {
+                                  facilityName: settings.facilityName,
+                                  downloadApiUrl: settings.downloadApiUrl,
+                                },
+                                `WHERE UPPER(download.id) = ${downloadItem.id}`
+                              ).then((downloads) => {
+                                const formattedDownload = formatDownloads(
+                                  downloads
+                                )[0];
+                                downloadItem.status = formattedDownload.status;
+                                downloadItem.isDeleted =
+                                  formattedDownload.isDeleted;
+                                setData(
+                                  data.map((download) =>
+                                    download.id === downloadItem.id
+                                      ? { ...download, ...downloadItem }
+                                      : download
+                                  )
+                                );
+                              });
+                            });
                           }}
                         >
                           <Restore />
@@ -475,27 +470,23 @@ const AdminDownloadStatusTable: React.FC = () => {
                           key="delete"
                           size="small"
                           onClick={() => {
-                            setTimeout(
-                              () =>
-                                adminDownloadDeleted(
-                                  downloadItem.id as number,
-                                  true,
-                                  {
-                                    facilityName: settings.facilityName,
-                                    downloadApiUrl: settings.downloadApiUrl,
-                                  }
-                                ).then(() => {
-                                  downloadItem.isDeleted = 'Yes';
-                                  setData(
-                                    data.map((download) =>
-                                      download.id === downloadItem.id
-                                        ? { ...download, ...downloadItem }
-                                        : download
-                                    )
-                                  );
-                                }),
-                              100
-                            );
+                            adminDownloadDeleted(
+                              downloadItem.id as number,
+                              true,
+                              {
+                                facilityName: settings.facilityName,
+                                downloadApiUrl: settings.downloadApiUrl,
+                              }
+                            ).then(() => {
+                              downloadItem.isDeleted = 'Yes';
+                              setData(
+                                data.map((download) =>
+                                  download.id === downloadItem.id
+                                    ? { ...download, ...downloadItem }
+                                    : download
+                                )
+                              );
+                            });
                           }}
                         >
                           <RemoveCircle />
@@ -526,29 +517,25 @@ const AdminDownloadStatusTable: React.FC = () => {
                           key="resume"
                           size="small"
                           onClick={() => {
-                            setTimeout(
-                              () =>
-                                adminDownloadStatus(
-                                  downloadItem.id as number,
-                                  'RESTORING',
-                                  {
-                                    facilityName: settings.facilityName,
-                                    downloadApiUrl: settings.downloadApiUrl,
-                                  }
-                                ).then(() => {
-                                  downloadItem.status = t(
-                                    'downloadStatus.restoring'
-                                  );
-                                  setData(
-                                    data.map((download) =>
-                                      download.id === downloadItem.id
-                                        ? { ...download, ...downloadItem }
-                                        : download
-                                    )
-                                  );
-                                }),
-                              100
-                            );
+                            adminDownloadStatus(
+                              downloadItem.id as number,
+                              'RESTORING',
+                              {
+                                facilityName: settings.facilityName,
+                                downloadApiUrl: settings.downloadApiUrl,
+                              }
+                            ).then(() => {
+                              downloadItem.status = t(
+                                'downloadStatus.restoring'
+                              );
+                              setData(
+                                data.map((download) =>
+                                  download.id === downloadItem.id
+                                    ? { ...download, ...downloadItem }
+                                    : download
+                                )
+                              );
+                            });
                           }}
                         >
                           <PlayCircleFilled />
@@ -579,29 +566,23 @@ const AdminDownloadStatusTable: React.FC = () => {
                           key="pause"
                           size="small"
                           onClick={() => {
-                            setTimeout(
-                              () =>
-                                adminDownloadStatus(
-                                  downloadItem.id as number,
-                                  'PAUSED',
-                                  {
-                                    facilityName: settings.facilityName,
-                                    downloadApiUrl: settings.downloadApiUrl,
-                                  }
-                                ).then(() => {
-                                  downloadItem.status = t(
-                                    'downloadStatus.paused'
-                                  );
-                                  setData(
-                                    data.map((download) =>
-                                      download.id === downloadItem.id
-                                        ? { ...download, ...downloadItem }
-                                        : download
-                                    )
-                                  );
-                                }),
-                              100
-                            );
+                            adminDownloadStatus(
+                              downloadItem.id as number,
+                              'PAUSED',
+                              {
+                                facilityName: settings.facilityName,
+                                downloadApiUrl: settings.downloadApiUrl,
+                              }
+                            ).then(() => {
+                              downloadItem.status = t('downloadStatus.paused');
+                              setData(
+                                data.map((download) =>
+                                  download.id === downloadItem.id
+                                    ? { ...download, ...downloadItem }
+                                    : download
+                                )
+                              );
+                            });
                           }}
                         >
                           <PauseCircleFilled />
