@@ -1,10 +1,9 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { shallow } from 'enzyme';
 import DetailsPanelRow from './detailsPanelRow.component';
 import { DetailsPanelProps } from '../table.component';
 
 describe('Details panel row component', () => {
-  let shallow;
   const detailsPanelRowProps = {
     index: 1,
     columns: [],
@@ -21,10 +20,6 @@ describe('Details panel row component', () => {
     },
     detailPanelRef: React.createRef<HTMLDivElement>(),
   };
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-  });
 
   it('renders correctly', () => {
     const wrapper = shallow(<DetailsPanelRow {...detailsPanelRowProps} />);

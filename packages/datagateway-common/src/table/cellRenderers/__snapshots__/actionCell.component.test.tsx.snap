@@ -1,22 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Action cell component renders an action correctly 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  size="medium"
+  variant="body"
 >
   <testAction
     key="0"
     rowData="test"
   />
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Action cell component renders no actions correctly 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  size="medium"
+  variant="body"
 />
 `;

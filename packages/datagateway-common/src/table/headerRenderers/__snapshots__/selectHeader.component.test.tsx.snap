@@ -1,12 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Select column header component renders correctly when checked 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="head"
 >
-  <WithStyles(ForwardRef(Checkbox))
+  <ForwardRef(Checkbox)
     checked={true}
     checkedIcon={
       <Memo
@@ -38,16 +39,17 @@ exports[`Select column header component renders correctly when checked 1`] = `
       }
     }
   />
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Select column header component renders correctly when indeterminate 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="head"
 >
-  <WithStyles(ForwardRef(Checkbox))
+  <ForwardRef(Checkbox)
     checked={false}
     checkedIcon={
       <Memo
@@ -79,16 +81,17 @@ exports[`Select column header component renders correctly when indeterminate 1`]
       }
     }
   />
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Select column header component renders correctly when unchecked 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="head"
 >
-  <WithStyles(ForwardRef(Checkbox))
+  <ForwardRef(Checkbox)
     checked={false}
     checkedIcon={
       <Memo
@@ -120,5 +123,5 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
       }
     }
   />
-</div>
+</ForwardRef(TableCell)>
 `;

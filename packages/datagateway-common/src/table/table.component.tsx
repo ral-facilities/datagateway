@@ -62,7 +62,7 @@ const tableCellStyle = {
   height: rowHeight,
   padding: 0,
   paddingLeft: '16px',
-  '&:last-child': {
+  '&:lastChild': {
     paddingRight: 0,
   },
 };
@@ -77,7 +77,7 @@ const headerTableCellStyle = {
   justifyContent: 'space-between',
   padding: 0,
   paddingLeft: '16px',
-  '&:last-child': {
+  '&:lastChild': {
     paddingRight: 0,
   },
 };

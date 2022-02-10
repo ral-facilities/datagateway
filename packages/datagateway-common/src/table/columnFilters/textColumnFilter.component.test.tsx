@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@mui/material/test-utils';
+import { shallow, mount } from 'enzyme';
 import TextColumnFilter, {
   usePrincipalExperimenterFilter,
   useTextFilter,
@@ -14,18 +14,6 @@ jest.useFakeTimers('modern');
 const DEBOUNCE_DELAY = 250;
 
 describe('Text filter component', () => {
-  let shallow;
-  let mount;
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-    mount = createMount();
-  });
-
-  afterEach(() => {
-    mount.cleanUp();
-  });
-
   it('renders correctly', () => {
     const wrapper = shallow(
       <TextColumnFilter

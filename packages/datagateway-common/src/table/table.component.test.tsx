@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
+import { mount } from 'enzyme';
 import Table, { ColumnType } from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { TableCellProps } from 'react-virtualized';
@@ -8,8 +8,6 @@ import SelectHeader from './headerRenderers/selectHeader.component';
 import ReactTestUtils from 'react-dom/test-utils';
 
 describe('Table component', () => {
-  let mount;
-
   const onSort = jest.fn();
 
   const tableProps = {
@@ -51,12 +49,7 @@ describe('Table component', () => {
     ] as ColumnType[],
   };
 
-  beforeEach(() => {
-    mount = createMount();
-  });
-
   afterEach(() => {
-    mount.cleanUp();
     onSort.mockClear();
   });
 
@@ -256,11 +249,11 @@ describe('Table component', () => {
       />
     );
 
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.exists('#details-panel')).toBe(true);
 
-    wrapper.find('[aria-label="Hide details"]').first().simulate('click');
+    wrapper.find('[aria-label="Hide details"]').last().simulate('click');
 
     expect(wrapper.exists('#details-panel')).toBe(false);
   });

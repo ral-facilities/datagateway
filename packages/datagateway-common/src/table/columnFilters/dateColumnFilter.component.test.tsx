@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
-import { createShallow, createMount } from '@mui/material/test-utils';
+import { shallow, mount } from 'enzyme';
 import DateColumnFilter, {
   datesEqual,
   updateFilter,
@@ -8,19 +9,34 @@ import DateColumnFilter, {
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-test-renderer';
 import { usePushFilter } from '../../api';
+
 jest.mock('../../api');
 
 describe('Date filter component', () => {
-  let shallow;
-  let mount;
-
   beforeEach(() => {
-    shallow = createShallow();
-    mount = createMount();
+    //https://github.com/mui/material-ui-pickers/issues/2073
+
+    // add window.matchMedia
+    // this is necessary for the date picker to be rendered in desktop mode.
+    // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: (query) => ({
+        media: query,
+        // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
+        matches: query === '(pointer: fine)',
+        onchange: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
   });
 
   afterEach(() => {
-    mount.cleanUp();
+    delete window.matchMedia;
   });
 
   it('renders correctly', () => {
@@ -206,32 +222,25 @@ describe('Date filter component', () => {
 
   it('calls the onChange method correctly when filling out the date inputs', () => {
     const onChange = jest.fn();
-
     const baseProps = {
       label: 'test',
       onChange,
     };
-
     const wrapper = mount(<DateColumnFilter {...baseProps} />);
-
     const startDateFilterInput = wrapper.find('input').first();
     startDateFilterInput.instance().value = '2019-08-06';
     startDateFilterInput.simulate('change');
-
     expect(onChange).toHaveBeenLastCalledWith({
       startDate: '2019-08-06',
     });
-
     wrapper.setProps({ ...baseProps, value: { startDate: '2019-08-06' } });
     const endDateFilterInput = wrapper.find('input').last();
     endDateFilterInput.instance().value = '2019-08-06';
     endDateFilterInput.simulate('change');
-
     expect(onChange).toHaveBeenLastCalledWith({
       startDate: '2019-08-06',
       endDate: '2019-08-06',
     });
-
     wrapper.setProps({
       ...baseProps,
       value: {
@@ -241,11 +250,9 @@ describe('Date filter component', () => {
     });
     startDateFilterInput.instance().value = '';
     startDateFilterInput.simulate('change');
-
     expect(onChange).toHaveBeenLastCalledWith({
       endDate: '2019-08-06',
     });
-
     wrapper.setProps({
       ...baseProps,
       value: {
@@ -254,7 +261,6 @@ describe('Date filter component', () => {
     });
     endDateFilterInput.instance().value = '';
     endDateFilterInput.simulate('change');
-
     expect(onChange).toHaveBeenLastCalledWith(null);
   });
 

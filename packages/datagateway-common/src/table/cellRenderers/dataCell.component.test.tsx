@@ -1,9 +1,8 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { shallow } from 'enzyme';
 import DataCell from './dataCell.component';
 
 describe('Data cell component', () => {
-  let shallow;
   const dataCellProps = {
     columnIndex: 1,
     dataKey: 'test',
@@ -15,10 +14,6 @@ describe('Data cell component', () => {
     },
     className: 'test-class',
   };
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-  });
 
   it('renders correctly', () => {
     const wrapper = shallow(<DataCell {...dataCellProps} />);

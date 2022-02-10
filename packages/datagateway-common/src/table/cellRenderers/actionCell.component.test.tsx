@@ -1,10 +1,9 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { shallow } from 'enzyme';
 import ActionCell from './actionCell.component';
 import { TableActionProps } from '../table.component';
 
 describe('Action cell component', () => {
-  let shallow;
   const actionCellProps = {
     columnIndex: 1,
     dataKey: 'action',
@@ -13,10 +12,6 @@ describe('Action cell component', () => {
     rowData: 'test',
     className: 'test-class',
   };
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-  });
 
   it('renders no actions correctly', () => {
     const wrapper = shallow(<ActionCell {...actionCellProps} actions={[]} />);

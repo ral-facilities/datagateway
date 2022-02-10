@@ -1,9 +1,8 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { shallow } from 'enzyme';
 import SelectHeader from './selectHeader.component';
 
 describe('Select column header component', () => {
-  let shallow;
   const setLastChecked = jest.fn();
   const onCheck = jest.fn();
   const onUncheck = jest.fn();
@@ -16,10 +15,6 @@ describe('Select column header component', () => {
     onUncheck,
     allIds: [1, 2, 3],
   };
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-  });
 
   afterEach(() => {
     setLastChecked.mockClear();

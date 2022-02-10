@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Cell content renderers datasetLink renders correctly 1`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -18,11 +18,11 @@ exports[`Cell content renderers datasetLink renders correctly 1`] = `
   to="/browse/investigation/1/dataset/2/datafile?view=card"
 >
   test
-</WithStyles(ForwardRef(Link))>
+</ForwardRef(Link)>
 `;
 
 exports[`Cell content renderers investigationLink renders correctly 1`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -39,11 +39,11 @@ exports[`Cell content renderers investigationLink renders correctly 1`] = `
   to="/browse/investigation/1/dataset?view=card"
 >
   test
-</WithStyles(ForwardRef(Link))>
+</ForwardRef(Link)>
 `;
 
 exports[`Cell content renderers tableLink renders correctly 1`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -60,5 +60,5 @@ exports[`Cell content renderers tableLink renders correctly 1`] = `
   to="/test/url"
 >
   test text
-</WithStyles(ForwardRef(Link))>
+</ForwardRef(Link)>
 `;
