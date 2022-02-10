@@ -25,6 +25,7 @@ import {
   readSciGatewayToken,
   ArrowTooltip,
   SelectionAlert,
+  useUpdateQueryParam,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +44,7 @@ import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
+import { Clear } from '@material-ui/icons';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -362,11 +364,12 @@ const NavBar = React.memo(
 );
 NavBar.displayName = 'NavBar';
 
-const viewButtonStyles = makeStyles(
+const buttonStyles = makeStyles(
   (theme: Theme): StyleRules =>
     createStyles({
       root: {
-        padding: theme.spacing(1),
+        padding: theme.spacing(0.5),
+        display: 'inline-block',
       },
     })
 );
@@ -376,7 +379,7 @@ const ViewButton = (props: {
   handleButtonChange: () => void;
 }): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = viewButtonStyles();
+  const classes = buttonStyles();
 
   return (
     <div className={classes.root}>
@@ -392,6 +395,34 @@ const ViewButton = (props: {
         onClick={() => props.handleButtonChange()}
       >
         {props.viewCards ? t('app.view_table') : t('app.view_cards')}
+      </Button>
+    </div>
+  );
+};
+
+export const ClearFiltersButton = (props: {
+  handleButtonClearFilters: () => void;
+  disabled: boolean;
+}): React.ReactElement => {
+  const [t] = useTranslation();
+  const classes = buttonStyles();
+
+  return (
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-clear-filter-button"
+        data-testid="clear-filters-button"
+        style={{ margin: '5px' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => {
+          props.handleButtonClearFilters();
+        }}
+        startIcon={<Clear />}
+        disabled={props.disabled}
+      >
+        {t('app.clear_filters')}
       </Button>
     </div>
   );
@@ -636,6 +667,33 @@ const PageContainer: React.FC = () => {
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
 
+  const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+
+  const dlsDefaultFilters = {
+    startDate: {
+      endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
+    },
+  };
+
+  const disabled =
+    Object.keys(filters).length === 0 ||
+    (location.pathname === paths.myData.dls &&
+      JSON.stringify(filters) === JSON.stringify(dlsDefaultFilters))
+      ? true
+      : false;
+
+  const pushFilters = useUpdateQueryParam('filters', 'push');
+
+  const handleButtonClearFilters = (): void => {
+    if (location.pathname === paths.myData.dls) {
+      pushFilters(dlsDefaultFilters);
+    } else {
+      pushFilters({});
+    }
+  };
+
   return (
     <SwitchRouting location={location}>
       {/* Load the homepage */}
@@ -661,16 +719,33 @@ const PageContainer: React.FC = () => {
                 <StyledGrid container>
                   {/* Toggle between the table and card view */}
                   <Grid item xs={'auto'}>
-                    <Route
-                      exact
-                      path={togglePaths}
-                      render={() => (
-                        <ViewButton
-                          viewCards={view === 'card'}
-                          handleButtonChange={handleButtonChange}
-                        />
-                      )}
-                    />
+                    <div>
+                      <Route
+                        exact
+                        path={togglePaths}
+                        render={() => (
+                          <ViewButton
+                            viewCards={view === 'card'}
+                            handleButtonChange={handleButtonChange}
+                          />
+                        )}
+                      />
+                      <Route
+                        exact
+                        path={Object.values(paths.myData).concat(
+                          Object.values(paths.toggle),
+                          Object.values(paths.standard),
+                          Object.values(paths.studyHierarchy.toggle),
+                          Object.values(paths.studyHierarchy.standard)
+                        )}
+                        render={() => (
+                          <ClearFiltersButton
+                            handleButtonClearFilters={handleButtonClearFilters}
+                            disabled={disabled}
+                          />
+                        )}
+                      />
+                    </div>
                     <Route
                       exact
                       path={Object.values(paths.myData)}

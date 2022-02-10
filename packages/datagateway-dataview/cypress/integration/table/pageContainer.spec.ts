@@ -19,6 +19,17 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="open-data-warning"]').should('exist');
   });
 
+  it('should be able to click clear filters button to clear filters', () => {
+    cy.url().then((url) => {
+      cy.get('input[id="Title-filter"]').type('South');
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('42');
+
+      cy.get('[data-testid="clear-filters-button"]').click();
+      cy.url().should('eq', url);
+    });
+  });
+
   it('should disable the hover tool tip by pressing escape (open data warning)', () => {
     // The hover tool tip has an enter delay of 500ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting

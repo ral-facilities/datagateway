@@ -25,6 +25,21 @@ describe('DLS - MyData Table', () => {
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
     });
 
+    it('should be able to click clear filters button to clear filters', () => {
+      cy.url().should('include', 'filters');
+
+      cy.url().then((url) => {
+        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('input[id="Title-filter"]').type('night');
+
+        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('56');
+
+        cy.get('[data-testid="clear-filters-button"]').click();
+        cy.url().should('eq', url);
+      });
+    });
+
     it('should be able to click an investigation to see its datasets', () => {
       cy.get('[role="gridcell"] a').first().click({ force: true });
 
