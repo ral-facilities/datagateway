@@ -104,9 +104,12 @@ describe('SearchPageContainer Component', () => {
       cy.url().then((url) => {
         cy.get('#container-search-filters').should('exist');
         cy.get('[aria-label="Filter by Title"]').type('ba');
-
-        cy.get('[id="simple-tab-dataset"]').click();
-        cy.get('[id="simple-tab-investigation"]').click();
+        cy.wait(
+          ['@investigations', '@investigations', '@investigationsCount'],
+          {
+            timeout: 10000,
+          }
+        );
 
         cy.get('[aria-rowcount="3"]').should('exist');
 
