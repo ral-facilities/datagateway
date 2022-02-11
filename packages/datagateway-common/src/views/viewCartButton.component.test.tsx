@@ -1,6 +1,5 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
-
 import configureStore from 'redux-mock-store';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import { StateType } from '../state/app.types';
@@ -11,10 +10,6 @@ import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import ViewCartButton, { CartProps } from './viewCartButton.component';
 import { Badge } from '@material-ui/core';
-
-jest.mock('../api/datafiles');
-jest.mock('../api/datasets');
-jest.mock('../api/investigations');
 
 describe('Generic cart button', () => {
   let mount;
