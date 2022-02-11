@@ -15,7 +15,10 @@ import { LinearProgress } from '@mui/material';
 import { createLocation, createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 
-import PageContainer, { paths } from './pageContainer.component';
+import PageContainer, {
+  ClearFiltersButton,
+  paths,
+} from './pageContainer.component';
 import { checkInstrumentId, checkInvestigationId } from './idCheckFunctions';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
@@ -173,6 +176,63 @@ describe('PageContainer - Tests', () => {
     const wrapper = createWrapper();
 
     expect(wrapper.exists(LinearProgress)).toBeTruthy();
+  });
+
+  it('display clear filters button and clear for filters onClick', () => {
+    history.replace(
+      '/browse/investigation?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D'
+    );
+    const wrapper = createWrapper();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(false);
+
+    wrapper
+      .find('[data-testid="clear-filters-button"]')
+      .first()
+      .simulate('click');
+
+    wrapper.update();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
+    expect(history.location.search).toEqual('?');
+  });
+
+  it('display clear filters button and clear for filters onClick (/my-data/DLS)', () => {
+    const dateNow = `${new Date(Date.now()).toISOString().split('T')[0]}`;
+    history.replace(
+      '/my-data/DLS?filters=%7B"startDate"%3A%7B"endDate"%3A" ' +
+        dateNow +
+        '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B"startDate"%3A"desc"%7D'
+    );
+    const response = { username: 'SomePerson' };
+    (readSciGatewayToken as jest.Mock).mockReturnValue(response);
+    const wrapper = createWrapper();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(false);
+
+    wrapper
+      .find('[data-testid="clear-filters-button"]')
+      .first()
+      .simulate('click');
+
+    wrapper.update();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
+
+    expect(history.location.search).toEqual(
+      '?filters=%7B%22startDate%22%3A%7B%22endDate%22%3A%22' +
+        dateNow +
+        '%22%7D%7D'
+    );
+
+    (readSciGatewayToken as jest.Mock).mockClear();
+  });
+
+  it('display disabled clear filters button', () => {
+    history.replace(paths.toggle.investigation);
+    const wrapper = createWrapper();
+
+    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
   });
 
   it('display filter warning on datafile table', async () => {

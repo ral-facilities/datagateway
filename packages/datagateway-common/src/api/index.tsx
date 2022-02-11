@@ -361,9 +361,11 @@ export const usePushFilters = (): ((
 };
 
 export const useUpdateQueryParam = (
-  type: 'filters' | 'sort' | 'page' | 'results'
+  type: 'filters' | 'sort' | 'page' | 'results',
+  updateMethod: 'push' | 'replace'
 ): ((param: FiltersType | SortType | number | null) => void) => {
-  const { replace } = useHistory();
+  const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
   return React.useCallback(
     (param: FiltersType | SortType | number | null) => {
       const query = parseSearchToQuery(window.location.search);
@@ -378,9 +380,9 @@ export const useUpdateQueryParam = (
         query.results = param as number | null;
       }
 
-      replace({ search: `?${parseQueryToSearch(query).toString()}` });
+      functionToUse({ search: `?${parseQueryToSearch(query).toString()}` });
     },
-    [type, replace]
+    [type, functionToUse]
   );
 };
 

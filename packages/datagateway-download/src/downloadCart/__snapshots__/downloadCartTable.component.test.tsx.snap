@@ -3,7 +3,7 @@
 exports[`Download cart table component renders correctly 1`] = `
 <div
   className="tour-download-results"
-  data-testid="no-selections-messsage"
+  data-testid="no-selections-message"
   style={
     Object {
       "height": "calc(100vh - 64px - 36px - 48px - 48px)",

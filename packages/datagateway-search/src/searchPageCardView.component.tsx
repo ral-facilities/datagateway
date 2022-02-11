@@ -171,10 +171,10 @@ const SearchPageCardView = (
     [location.search]
   );
 
-  const updateFilters = useUpdateQueryParam('filters');
-  const updateSorts = useUpdateQueryParam('sort');
-  const updatePage = useUpdateQueryParam('page');
-  const updateResults = useUpdateQueryParam('results');
+  const replaceFilters = useUpdateQueryParam('filters', 'replace');
+  const replaceSorts = useUpdateQueryParam('sort', 'replace');
+  const replacePage = useUpdateQueryParam('page', 'replace');
+  const replaceResults = useUpdateQueryParam('results', 'replace');
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -191,10 +191,10 @@ const SearchPageCardView = (
 
     onTabChange(newValue);
 
-    updateFilters({});
-    updateSorts({});
-    updatePage(null);
-    updateResults(null);
+    replaceFilters({});
+    replaceSorts({});
+    replacePage(null);
+    replaceResults(null);
   };
 
   React.useEffect(() => {
@@ -202,11 +202,11 @@ const SearchPageCardView = (
     const sorts = getSorts(currentTab);
     const page = getPage(currentTab);
     const results = getResults(currentTab);
-    if (filters) updateFilters(filters);
-    if (sorts) updateSorts(sorts);
-    if (page) updatePage(page);
-    if (results) updateResults(results);
-  }, [currentTab, updateFilters, updatePage, updateResults, updateSorts]);
+    if (filters) replaceFilters(filters);
+    if (sorts) replaceSorts(sorts);
+    if (page) replacePage(page);
+    if (results) replaceResults(results);
+  }, [currentTab, replaceFilters, replacePage, replaceResults, replaceSorts]);
 
   const { data: investigationDataCount } = useInvestigationCount(
     [

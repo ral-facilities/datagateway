@@ -8,12 +8,13 @@ describe('DLS - MyData Table', () => {
   describe('Logged in tests', () => {
     beforeEach(() => {
       cy.intercept('/investigations/count').as('getInvestigationCount');
+      cy.intercept('/investigations/').as('getInvestigations');
       cy.login({
         username: 'root',
         password: 'pw',
         mechanism: 'simple',
       });
-      cy.visit('/my-data/DLS');
+      cy.visit('/my-data/DLS').wait('@getInvestigations');
     });
 
     it('should load correctly', () => {
@@ -23,6 +24,23 @@ describe('DLS - MyData Table', () => {
       //Default sort
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
+    });
+
+    it('should be able to click clear filters button to clear filters', () => {
+      cy.url().should('include', 'filters');
+
+      cy.url().then((url) => {
+        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('input[id="Title-filter"]').type('night');
+
+        cy.wait('@getInvestigations');
+
+        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('56');
+
+        cy.get('[data-testid="clear-filters-button"]').click();
+        cy.url().should('eq', url);
+      });
     });
 
     it('should be able to click an investigation to see its datasets', () => {

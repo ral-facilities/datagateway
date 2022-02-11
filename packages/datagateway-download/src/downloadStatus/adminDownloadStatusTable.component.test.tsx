@@ -458,8 +458,6 @@ describe('Admin Download Status Table', () => {
   }, 10000);
 
   it('sends restore item and item status requests when restore button is clicked', async () => {
-    jest.useFakeTimers();
-
     const wrapper = mount(
       <div id="datagateway-download">
         <AdminDownloadStatusTable />
@@ -483,7 +481,6 @@ describe('Admin Download Status Table', () => {
           'button[aria-label="downloadStatus.restore {filename:test-file-4}"]'
         )
         .simulate('click');
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });
@@ -504,7 +501,6 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends pause restore request when pause button is clicked', async () => {
-    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <AdminDownloadStatusTable />
@@ -522,7 +518,6 @@ describe('Admin Download Status Table', () => {
           'button[aria-label="downloadStatus.pause {filename:test-file-3}"]'
         )
         .simulate('click');
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });
@@ -539,7 +534,6 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends resume restore request when resume button is clicked', async () => {
-    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <AdminDownloadStatusTable />
@@ -557,7 +551,6 @@ describe('Admin Download Status Table', () => {
           'button[aria-label="downloadStatus.resume {filename:test-file-5}"]'
         )
         .simulate('click');
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });
@@ -574,7 +567,6 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends delete item request when delete button is clicked', async () => {
-    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <AdminDownloadStatusTable />
@@ -591,7 +583,6 @@ describe('Admin Download Status Table', () => {
       .simulate('click');
 
     await act(async () => {
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });

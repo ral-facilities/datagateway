@@ -167,8 +167,8 @@ const SearchPageTable = (
     [location.search]
   );
 
-  const updateFilters = useUpdateQueryParam('filters');
-  const updateSorts = useUpdateQueryParam('sort');
+  const replaceFilters = useUpdateQueryParam('filters', 'replace');
+  const replaceSorts = useUpdateQueryParam('sort', 'replace');
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -179,16 +179,16 @@ const SearchPageTable = (
 
     onTabChange(newValue);
 
-    updateFilters({});
-    updateSorts({});
+    replaceFilters({});
+    replaceSorts({});
   };
 
   React.useEffect(() => {
     const filters = getFilters(currentTab);
     const sorts = getSorts(currentTab);
-    if (filters) updateFilters(filters);
-    if (sorts) updateSorts(sorts);
-  }, [currentTab, updateFilters, updateSorts]);
+    if (filters) replaceFilters(filters);
+    if (sorts) replaceSorts(sorts);
+  }, [currentTab, replaceFilters, replaceSorts]);
 
   const { data: investigationDataCount } = useInvestigationCount(
     [

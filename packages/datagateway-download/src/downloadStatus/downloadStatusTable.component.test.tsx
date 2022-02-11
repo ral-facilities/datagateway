@@ -140,7 +140,6 @@ describe('Download Status Table', () => {
     (fetchDownloads as jest.Mock).mockClear();
     (downloadDeleted as jest.Mock).mockClear();
     (getDataUrl as jest.Mock).mockClear();
-    jest.useRealTimers();
   });
 
   it('renders correctly', () => {
@@ -234,7 +233,6 @@ describe('Download Status Table', () => {
   });
 
   it('should have a link for a download item', async () => {
-    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <DownloadStatusTable
@@ -271,29 +269,9 @@ describe('Download Status Table', () => {
         .at(0)
         .props().href
     ).toContain('/getData');
-
-    wrapper
-      .find('a[aria-label="downloadStatus.download {filename:test-file-3}"]')
-      .simulate('click');
-
-    expect(
-      wrapper
-        .find(
-          'a[aria-label="downloadStatus.download {filename:test-file-3}"] svg'
-        )
-        .parent()
-        .prop('color')
-    ).toEqual('primary');
-
-    await act(async () => {
-      jest.runAllTimers();
-      await flushPromises();
-      wrapper.update();
-    });
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
-    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <DownloadStatusTable
@@ -323,7 +301,6 @@ describe('Download Status Table', () => {
     ).toEqual('error');
 
     await act(async () => {
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });

@@ -250,7 +250,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   return data.length === 0 ? (
     <div
       className="tour-download-results"
-      data-testid="no-selections-messsage"
+      data-testid="no-selections-message"
       style={{
         //Table should take up page but leave room for: SG appbar, SG footer,
         //tabs, table padding.
@@ -359,24 +359,20 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                       // Remove the download when clicked.
                       onClick={() => {
                         setIsDeleting(true);
-                        setTimeout(
-                          () =>
-                            removeDownloadCartItem(
-                              cartItem.entityId,
-                              cartItem.entityType,
-                              {
-                                facilityName: settings.facilityName,
-                                downloadApiUrl: settings.downloadApiUrl,
-                              }
-                            ).then(() => {
-                              setData(
-                                data.filter(
-                                  (item) => item.entityId !== cartItem.entityId
-                                )
-                              );
-                            }),
-                          100
-                        );
+                        removeDownloadCartItem(
+                          cartItem.entityId,
+                          cartItem.entityType,
+                          {
+                            facilityName: settings.facilityName,
+                            downloadApiUrl: settings.downloadApiUrl,
+                          }
+                        ).then(() => {
+                          setData(
+                            data.filter(
+                              (item) => item.entityId !== cartItem.entityId
+                            )
+                          );
+                        });
                       }}
                     >
                       <RemoveCircle

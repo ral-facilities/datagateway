@@ -1,5 +1,6 @@
 describe('PageContainer Component', () => {
   beforeEach(() => {
+    cy.intercept('/investigations/').as('getInvestigations');
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
@@ -8,6 +9,7 @@ describe('PageContainer Component', () => {
         '@getInvestigationsCount',
         '@getInvestigationsOrder',
         '@getInvestigationsOrder',
+        '@getInvestigations',
       ],
       { timeout: 10000 }
     );
@@ -34,6 +36,31 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="view-count"]')
       .should('be.visible')
       .contains('Results: 239');
+  });
+
+  it('should be able to click clear filters button to clear filters', () => {
+    cy.url().then((url) => {
+      cy.get('[data-testid="advanced-filters-link"]').click();
+      cy.get('input[id="Title-filter"]').type('South');
+      cy.wait(
+        [
+          '@getInvestigationsCount',
+          '@getInvestigationsOrder',
+          '@getInvestigationsOrder',
+          '@getInvestigations',
+        ],
+        { timeout: 10000 }
+      );
+
+      cy.get('[data-testid="card"]')
+        .first()
+        .contains(
+          'Security down response daughter line. Maybe course head per. South heart authority.'
+        );
+
+      cy.get('[data-testid="clear-filters-button"]').click();
+      cy.url().should('eq', url);
+    });
   });
 
   it('Should default to 10 when the results value is not a vaild result ([10,20,30]) when manually changed in the url ', () => {

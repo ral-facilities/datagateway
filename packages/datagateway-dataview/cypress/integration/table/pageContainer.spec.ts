@@ -11,12 +11,25 @@ describe('PageContainer Component', () => {
 
   beforeEach(() => {
     cy.login();
-    cy.visit('/browse/investigation/');
+    cy.intercept('/investigations/').as('getInvestigations');
+    cy.visit('/browse/investigation/').wait('@getInvestigations');
     cy.clearDownloadCart();
   });
 
   it('should display the open data warning when not logged in', () => {
     cy.get('[aria-label="open-data-warning"]').should('exist');
+  });
+
+  it('should be able to click clear filters button to clear filters', () => {
+    cy.url().then((url) => {
+      cy.get('input[id="Title-filter"]').type('South');
+      cy.wait('@getInvestigations');
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('36');
+
+      cy.url().should('eq', url);
+      cy.get('[data-testid="clear-filters-button"]').click();
+    });
   });
 
   it('should load correctly', () => {
