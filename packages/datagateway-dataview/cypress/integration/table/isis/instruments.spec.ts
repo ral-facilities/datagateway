@@ -32,7 +32,7 @@ describe('ISIS - Instruments Table', () => {
       .eq(2)
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -41,9 +41,8 @@ describe('ISIS - Instruments Table', () => {
     cy.get('[data-testid="isis-instrument-table-name"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('notexist');
   });
 
   describe('should be able to sort by', () => {

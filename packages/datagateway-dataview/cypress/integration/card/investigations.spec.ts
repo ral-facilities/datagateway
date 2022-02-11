@@ -53,7 +53,7 @@ describe('Investigations Cards', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -63,9 +63,8 @@ describe('Investigations Cards', () => {
       .get('[data-testid="investigation-card-title"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   it('should be able to sort by one field', () => {

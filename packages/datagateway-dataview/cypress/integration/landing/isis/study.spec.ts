@@ -108,7 +108,7 @@ describe('ISIS - Study Landing', () => {
       .first()
       .trigger('mouseover')
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -117,9 +117,8 @@ describe('ISIS - Study Landing', () => {
     cy.get('[data-testid="landing-study-pid-link"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   it('should be able to use the citation formatter', () => {

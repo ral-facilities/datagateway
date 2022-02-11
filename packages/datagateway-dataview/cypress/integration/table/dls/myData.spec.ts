@@ -41,7 +41,7 @@ describe('DLS - MyData Table', () => {
         .first()
         .trigger('mouseover', { force: true })
         .wait(700)
-        .get('[data-testid="arrow-tooltip-component-true"]')
+        .get('[role="tooltip"]')
         .should('exist');
 
       cy.get('body').type('{esc}');
@@ -50,9 +50,8 @@ describe('DLS - MyData Table', () => {
       cy.get('[data-testid="dls-mydata-table-name"]')
         .wait(700)
         .first()
-        .get('[data-testid="arrow-tooltip-component-false"]')
-        .first()
-        .should('exist');
+        .get('[role="tooltip"]')
+        .should('not.exist');
     });
 
     it('should be able to resize a column', () => {

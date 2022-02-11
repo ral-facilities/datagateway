@@ -38,7 +38,7 @@ describe('DLS - Proposals Cards', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -48,9 +48,8 @@ describe('DLS - Proposals Cards', () => {
       .get('[data-testid="dls-proposal-card-title"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   describe('should be able to filter by', () => {

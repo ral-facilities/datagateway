@@ -139,7 +139,7 @@ describe('Breadcrumbs Component', () => {
     cy.contains('span', 'DATASET 1')
       .trigger('mouseover', { force: true })
       .wait(300)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('not.exist');
 
     // The hover tool tip has an enter delay of 100ms.
@@ -147,7 +147,22 @@ describe('Breadcrumbs Component', () => {
     cy.contains('span', 'Including spend')
       .trigger('mouseover', { force: true })
       .wait(300)
-      .get('[data-testid="arrow-tooltip-component-true"]')
-      .should('exist');
+      .get('[role="tooltip"]')
+      .contains('Including spend');
+  });
+
+  it('breadcrumbs should be sticky', () => {
+    // Go onto card view
+    cy.get('[aria-label="page-view Display as cards"]').click();
+
+    cy.get('[data-testid="Breadcrumb-base"]').should(
+      'have.text',
+      'Investigations'
+    );
+
+    cy.get('[data-testid="card"]').eq(5).scrollIntoView().should('be.visible');
+
+    // Check the breadcrumbs are still visible
+    cy.get('[data-testid="Breadcrumb-base"]').isScrolledTo();
   });
 });

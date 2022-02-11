@@ -42,7 +42,7 @@ describe('ISIS - Investigations Table', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -51,9 +51,8 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[data-testid="isis-investigations-table-title"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   // Not enough investigations to test scrolling.

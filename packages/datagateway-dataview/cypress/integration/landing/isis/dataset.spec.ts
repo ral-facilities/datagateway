@@ -44,7 +44,7 @@ describe('ISIS - Dataset Landing', () => {
       .first()
       .trigger('mouseover')
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -53,9 +53,8 @@ describe('ISIS - Dataset Landing', () => {
     cy.get('[data-testid="isis-dataset-landing-doi-link"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   it('should have the correct url for the DOI link', () => {
