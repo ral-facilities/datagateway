@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@mui/material/test-utils';
+import { shallow, mount, ReactWrapper } from 'enzyme';
 import DownloadCartTable from './downloadCartTable.component';
 import { DownloadCartItem } from 'datagateway-common';
 import { flushPromises } from '../setupTests';
@@ -13,15 +13,13 @@ import {
 import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { Router } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory } from 'history';
 
 jest.mock('../downloadApi');
 
 describe('Download cart table component', () => {
-  let shallow;
-  let mount;
   let history;
+  let holder;
 
   const cartItems: DownloadCartItem[] = [
     {
@@ -78,20 +76,23 @@ describe('Download cart table component', () => {
 
   const createWrapper = (): ReactWrapper => {
     return mount(
-      <div id="datagateway-download">
-        <Router history={history}>
-          <DownloadSettingsContext.Provider value={mockedSettings}>
-            <DownloadCartTable statusTabRedirect={jest.fn()} />
-          </DownloadSettingsContext.Provider>
-        </Router>
-      </div>
+      <Router history={history}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </Router>,
+      { attachTo: holder }
     );
   };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-    mount = createMount();
     history = createMemoryHistory();
+
+    //https://stackoverflow.com/questions/43694975/jest-enzyme-using-mount-document-getelementbyid-returns-null-on-componen
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-download');
+    document.body.appendChild(holder);
+
     (fetchDownloadCartItems as jest.Mock).mockImplementation(() =>
       Promise.resolve(cartItems)
     );
@@ -108,7 +109,10 @@ describe('Download cart table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
+    if (holder) {
+      document.body.removeChild(holder);
+    }
+
     (fetchDownloadCartItems as jest.Mock).mockClear();
     (getSize as jest.Mock).mockClear();
     (getDatafileCount as jest.Mock).mockClear();
@@ -138,13 +142,8 @@ describe('Download cart table component', () => {
   });
 
   it('does not fetch the download cart on load if no dg-download element exists', async () => {
-    const wrapper = mount(
-      <Router history={history}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </Router>
-    );
+    holder.setAttribute('id', 'test');
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -254,24 +253,15 @@ describe('Download cart table component', () => {
     });
 
     await act(async () => {
-      wrapper.update();
       await flushPromises();
+      wrapper.update();
     });
 
-    wrapper
-      .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`)
-      .simulate('click');
-
-    expect(
-      wrapper
-        .find(
-          `button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"] svg`
-        )
-        .parent()
-        .prop('color')
-    ).toEqual('error');
-
     await act(async () => {
+      wrapper
+        .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`)
+        .simulate('click');
+
       await flushPromises();
       wrapper.update();
     });
@@ -348,7 +338,7 @@ describe('Download cart table component', () => {
 
     const nameFilterInput = wrapper
       .find('[aria-label="Filter by downloadCart.name"]')
-      .first();
+      .last();
     nameFilterInput.instance().value = '1';
     nameFilterInput.simulate('change');
 
@@ -361,7 +351,7 @@ describe('Download cart table component', () => {
 
     const typeFilterInput = wrapper
       .find('[aria-label="Filter by downloadCart.type"]')
-      .first();
+      .last();
     typeFilterInput.instance().value = 'data';
     typeFilterInput.simulate('change');
 

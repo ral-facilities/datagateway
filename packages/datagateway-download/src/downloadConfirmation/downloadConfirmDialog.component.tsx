@@ -32,61 +32,42 @@ import {
   getDownloadTypeStatus,
 } from '../downloadApi';
 
-import { Theme } from '@mui/material/styles';
-import { WithStyles, StyleRules } from '@mui/styles';
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import { styled } from '@mui/material/styles';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation, Trans } from 'react-i18next';
 
-const dialogTitleStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  });
+const TableContentDiv = styled('div')(({ theme }) => ({
+  paddingTop: '10px',
+  '& table': {
+    borderCollapse: 'collapse',
+    width: '100%',
+  },
+  '& th': {
+    border: '1px solid #dddddd',
+  },
+  '& td': {
+    border: '1px solid #dddddd',
+    textAlign: 'center',
+  },
+}));
 
-const dialogContentStyles = (): StyleRules =>
-  createStyles({
-    tableContent: {
-      '& table': {
-        borderCollapse: 'collapse',
-        width: '100%',
-      },
-      '& th': {
-        border: '1px solid #dddddd',
-      },
-      '& td': {
-        border: '1px solid #dddddd',
-        textAlign: 'center',
-      },
-    },
-  });
-
-interface DialogTitleProps extends WithStyles<typeof dialogTitleStyles> {
+interface DialogTitleProps {
   id: string;
   onClose: () => void;
   children?: React.ReactNode;
 }
 
-const DialogTitle = withStyles(dialogTitleStyles)((props: DialogTitleProps) => {
-  const { classes, children, onClose, ...other } = props;
+const DialogTitle = (props: DialogTitleProps): React.ReactElement => {
+  const { children, onClose, ...other } = props;
   const [t] = useTranslation();
 
   return (
-    <MuiDialogTitle className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
+    <MuiDialogTitle sx={{ margin: 0, padding: 2 }} {...other}>
+      <Typography sx={{ fontSize: '1.25rem' }}>{children}</Typography>
       {onClose && (
         <IconButton
           aria-label={t('downloadConfirmDialog.close_arialabel')}
-          className={classes.closeButton}
+          sx={{ position: 'absolute', right: 2, top: 2, color: 'grey[500]' }}
           onClick={onClose}
           size="large"
         >
@@ -95,23 +76,18 @@ const DialogTitle = withStyles(dialogTitleStyles)((props: DialogTitleProps) => {
       )}
     </MuiDialogTitle>
   );
-});
+};
 
-const DialogContent = withStyles((theme: Theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
+const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
 
-const DialogActions = withStyles((theme: Theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
+const DialogActions = styled(MuiDialogActions)(({ theme }) => ({
+  margin: 0,
+  padding: theme.spacing(1),
+}));
 
-interface DownloadConfirmDialogProps
-  extends WithStyles<typeof dialogContentStyles> {
+interface DownloadConfirmDialogProps {
   totalSize: number;
   isTwoLevel: boolean;
   open: boolean;
@@ -137,7 +113,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const {
     totalSize,
     isTwoLevel,
-    classes,
     redirectToStatusTab,
     setClose,
     clearCart,
@@ -621,10 +596,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     <Typography id="estimated-download-times">
                       {t('downloadConfirmDialog.estimated_download_times')}:
                     </Typography>
-                    <div
-                      style={{ paddingTop: '10px' }}
-                      className={classes.tableContent}
-                    >
+                    <TableContentDiv>
                       <table
                         id="download-table"
                         aria-labelledby="estimated-download-times"
@@ -648,7 +620,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                           </tr>
                         </tbody>
                       </table>
-                    </div>
+                    </TableContentDiv>
                   </Grid>
                 )}
 
@@ -832,4 +804,4 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   );
 };
 
-export default withStyles(dialogContentStyles)(DownloadConfirmDialog);
+export default DownloadConfirmDialog;

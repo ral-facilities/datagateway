@@ -12,25 +12,31 @@ exports[`Download cart table component renders correctly 1`] = `
     }
   }
 >
-  <WithStyles(ForwardRef(Paper))>
-    <WithStyles(ForwardRef(Grid))
+  <ForwardRef(Paper)>
+    <ForwardRef(Grid)
       alignItems="center"
       container={true}
       direction="column"
-      justify="center"
+      justifyContent="center"
     >
-      <WithStyles(ForwardRef(Grid))
+      <ForwardRef(Grid)
         item={true}
       >
-        <WithStyles(ForwardRef(Typography))
-          className="makeStyles-noSelectionsMessage-1"
+        <ForwardRef(Typography)
+          sx={
+            Object {
+              "color": [Function],
+              "paddingBottom": 2,
+              "paddingTop": 2,
+            }
+          }
         >
           <Trans
             i18nKey="downloadCart.no_selections"
           >
             No data selected.
              
-            <WithStyles(ForwardRef(Link))
+            <ForwardRef(Link)
               component={
                 Object {
                   "$$typeof": Symbol(react.forward_ref),
@@ -52,11 +58,11 @@ exports[`Download cart table component renders correctly 1`] = `
               to="downloadCart.browse_link"
             >
               Browse
-            </WithStyles(ForwardRef(Link))>
+            </ForwardRef(Link)>
              
             or
              
-            <WithStyles(ForwardRef(Link))
+            <ForwardRef(Link)
               component={
                 Object {
                   "$$typeof": Symbol(react.forward_ref),
@@ -78,13 +84,13 @@ exports[`Download cart table component renders correctly 1`] = `
               to="downloadCart.search_link"
             >
               search
-            </WithStyles(ForwardRef(Link))>
+            </ForwardRef(Link)>
              
             for data.
           </Trans>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </WithStyles(ForwardRef(Paper))>
+        </ForwardRef(Typography)>
+      </ForwardRef(Grid)>
+    </ForwardRef(Grid)>
+  </ForwardRef(Paper)>
 </div>
 `;

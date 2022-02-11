@@ -19,8 +19,6 @@ import {
   Theme,
   Link,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { RemoveCircle } from '@mui/icons-material';
 import {
   fetchDownloadCartItems,
@@ -37,17 +35,6 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    noSelectionsMessage: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-    },
-  })
-);
-
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
 }
@@ -55,7 +42,6 @@ interface DownloadCartTableProps {
 const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   props: DownloadCartTableProps
 ) => {
-  const classes = useStyles();
   const settings = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
@@ -267,7 +253,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           justifyContent="center"
         >
           <Grid item>
-            <Typography className={classes.noSelectionsMessage}>
+            <Typography
+              sx={{
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                color: (theme: Theme) => (theme as any).colours?.contrastGrey,
+                paddingTop: 2,
+                paddingBottom: 2,
+              }}
+            >
               <Trans i18nKey="downloadCart.no_selections">
                 No data selected.{' '}
                 <Link
