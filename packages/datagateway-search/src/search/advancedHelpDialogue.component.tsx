@@ -1,8 +1,5 @@
 import React from 'react';
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-import withStyles from '@mui/styles/withStyles';
+import { styled, Theme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import MuiDialogTitle from '@mui/material/DialogTitle';
 import MuiDialogContent from '@mui/material/DialogContent';
@@ -14,50 +11,27 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 
-const useStyles = makeStyles((theme: Theme) => {
-  return createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2),
-    },
-    advancedButton: {
-      fontSize: '14px',
-      fontWeight: 'bold',
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-    paper: {
-      margin: theme.spacing(2),
-      padding: theme.spacing(2),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      backgroundColor: (theme as any).colours?.paper,
-    },
-    dialogueBackground: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      backgroundColor: (theme as any).colours?.background,
-    },
-  });
-});
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  margin: theme.spacing(2),
+  padding: theme.spacing(2),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  backgroundColor: (theme as any).colours?.paper,
+}));
 
-const DialogueContent = withStyles((theme: Theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
+const DialogueContentTypography = styled(Typography)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
 
-const DialogueHeading = withStyles((theme: Theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogTitle);
+const DialogueContent = styled(MuiDialogContent)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const DialogueHeading = styled(MuiDialogTitle)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
 
 const AdvancedHelpDialogue = (): React.ReactElement => {
   const [open, setOpen] = React.useState(false);
-  const classes = useStyles();
   const [t] = useTranslation();
 
   const maxNumResults = useSelector(
@@ -77,7 +51,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
       See all{' '}
       <Link
         component="button"
-        className={classes.advancedButton}
+        sx={{ fontSize: '14px', fontWeight: 'bold' }}
         aria-label={t('advanced_search_help.search_options_arialabel')}
         onClick={handleClickOpen}
       >
@@ -88,26 +62,34 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
         onClose={handleClose}
         aria-labelledby="advanced-search-dialog-title"
         open={open}
-        PaperProps={{ className: classes.dialogueBackground }}
+        PaperProps={{
+          sx: {
+            backgroundColor: (theme: Theme) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (theme as any).colours?.background,
+          },
+        }}
       >
-        <MuiDialogTitle
-          className={classes.root}
-          id="advanced-search-dialog-title"
-        >
+        <DialogueHeading id="advanced-search-dialog-title">
           <Typography variant="h6">Advanced Search Tips</Typography>
           <IconButton
             aria-label={t('advanced_search_help.close_button_arialabel')}
-            className={classes.closeButton}
+            sx={{
+              position: 'absolute',
+              right: 1,
+              top: 1,
+              color: 'grey[500]',
+            }}
             onClick={handleClose}
             size="large"
           >
             <CloseIcon />
           </IconButton>
-        </MuiDialogTitle>
-        <Typography className={classes.root} gutterBottom>
+        </DialogueHeading>
+        <DialogueContentTypography gutterBottom>
           {t('advanced_search_help.description')}
-        </Typography>
-        <Paper className={classes.paper}>
+        </DialogueContentTypography>
+        <StyledPaper>
           <DialogueHeading>
             {t('advanced_search_help.exact_phrase.title')}
           </DialogueHeading>
@@ -124,8 +106,8 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               .
             </Trans>
           </DialogueContent>
-        </Paper>
-        <Paper className={classes.paper}>
+        </StyledPaper>
+        <StyledPaper>
           <DialogueHeading>
             {t('advanced_search_help.logic_operators.title')}
           </DialogueHeading>
@@ -160,8 +142,8 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               &#39;.
             </Trans>
           </DialogueContent>
-        </Paper>
-        <Paper className={classes.paper}>
+        </StyledPaper>
+        <StyledPaper>
           <DialogueHeading>
             {t('advanced_search_help.wildcards.title')}
           </DialogueHeading>
@@ -179,8 +161,8 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               and &#39;vanadium&#39;.
             </Trans>
           </DialogueContent>
-        </Paper>
-        <Paper className={classes.paper}>
+        </StyledPaper>
+        <StyledPaper>
           <DialogueHeading>
             {t('advanced_search_help.limited_search_results.title')}
           </DialogueHeading>
@@ -189,8 +171,8 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               maxNumResults,
             })}
           </DialogueContent>
-        </Paper>
-        <Typography className={classes.root} gutterBottom>
+        </StyledPaper>
+        <DialogueContentTypography gutterBottom>
           <Trans t={t} i18nKey="advanced_search_help.footer">
             Further information on searching can be found{' '}
             <Link href="https://lucene.apache.org/core/4_10_2/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">
@@ -198,7 +180,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
             </Link>
             .
           </Trans>
-        </Typography>
+        </DialogueContentTypography>
       </Dialog>
     </React.Fragment>
   );

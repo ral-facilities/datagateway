@@ -1,7 +1,5 @@
 import React from 'react';
 import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import FormControl from '@mui/material/FormControl';
 import Checkbox from '@mui/material/Checkbox';
 import { connect } from 'react-redux';
@@ -17,27 +15,6 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      maxWidth: 300,
-    },
-    formLabel: {
-      margin: 'auto',
-      marginRight: theme.spacing(2),
-    },
-    select: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-    },
-  })
-);
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -63,7 +40,6 @@ interface SearchToggle {
 }
 
 const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
-  const classes = useStyles();
   const [t] = useTranslation();
   const { searchableEntities } = props;
 
@@ -115,11 +91,12 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
   const error = searchToggles.filter((toggle) => toggle.value).length === 0;
 
   return (
-    <div className={classes.root}>
+    <div style={{ display: 'flex' }}>
       <FormControl
         required
         error={error}
-        className={`${classes.formControl} tour-search-checkbox`}
+        className="tour-search-checkbox"
+        sx={{ margin: 1, minWidth: '120px', maxWidth: '300px' }}
         variant="standard"
       >
         {error && (
@@ -134,7 +111,10 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         <Select
           {...(error ? { labelId: 'search-entities-checkbox-label' } : {})}
           id="search-entities-menu"
-          className={classes.select}
+          sx={{
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            color: (theme: Theme) => (theme as any).colours?.contrastGrey,
+          }}
           multiple
           value={searchToggles
             .filter((toggle) => toggle.value)

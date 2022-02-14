@@ -1,7 +1,7 @@
 import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import { createMount } from '@mui/material/test-utils';
+import { mount } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import CheckBoxesGroup from './checkBoxes.component';
 import thunk from 'redux-thunk';
@@ -12,7 +12,6 @@ import { Router } from 'react-router-dom';
 jest.mock('loglevel');
 
 describe('Checkbox component tests', () => {
-  let mount;
   let state: StateType;
   let mockStore;
   let testStore;
@@ -30,7 +29,6 @@ describe('Checkbox component tests', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory();
     pushSpy = jest.spyOn(history, 'push');
 
@@ -67,6 +65,7 @@ describe('Checkbox component tests', () => {
     wrapper
       .find('#search-entities-menu')
       .find('[role="button"]')
+      .last()
       .simulate('mousedown', { button: 0 });
 
     const investigationCheckbox = wrapper.find(
@@ -106,6 +105,7 @@ describe('Checkbox component tests', () => {
     wrapper
       .find('#search-entities-menu')
       .find('[role="button"]')
+      .last()
       .simulate('mousedown', { button: 0 });
 
     const investigationCheckbox = wrapper.find(
@@ -153,10 +153,12 @@ describe('Checkbox component tests', () => {
     wrapper
       .find('#search-entities-menu')
       .find('[role="button"]')
+      .last()
       .simulate('mousedown', { button: 0 });
 
     wrapper
       .find('[aria-label="searchBox.checkboxes.dataset_arialabel"]')
+      .last()
       .simulate('click');
 
     expect(pushSpy).toHaveBeenCalledWith('?dataset=false&investigation=false');
@@ -169,10 +171,12 @@ describe('Checkbox component tests', () => {
     wrapper
       .find('#search-entities-menu')
       .find('[role="button"]')
+      .last()
       .simulate('mousedown', { button: 0 });
 
     wrapper
       .find('[aria-label="searchBox.checkboxes.datafile_arialabel"]')
+      .last()
       .simulate('click');
 
     expect(pushSpy).toHaveBeenCalledWith('?datafile=false&investigation=false');
@@ -185,10 +189,12 @@ describe('Checkbox component tests', () => {
     wrapper
       .find('#search-entities-menu')
       .find('[role="button"]')
+      .last()
       .simulate('mousedown', { button: 0 });
 
     wrapper
       .find('[aria-label="searchBox.checkboxes.investigation_arialabel"]')
+      .last()
       .simulate('click');
 
     expect(pushSpy).toHaveBeenCalledWith('?');
