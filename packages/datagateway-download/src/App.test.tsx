@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { createMount } from '@mui/material/test-utils';
-import { mount as enzymeMount } from 'enzyme';
+import { mount } from 'enzyme';
 import * as log from 'loglevel';
 import { act } from 'react-dom/test-utils';
 import StylesProvider from '@mui/styles/StylesProvider';
@@ -12,16 +11,6 @@ jest.mock('loglevel');
 jest.mock('./ConfigProvider');
 
 describe('App', () => {
-  let mount: typeof enzymeMount;
-
-  beforeAll(() => {
-    mount = createMount();
-  });
-
-  afterAll(() => {
-    mount.cleanUp();
-  });
-
   it('renders without crashing', async () => {
     const div = document.createElement('div');
 
