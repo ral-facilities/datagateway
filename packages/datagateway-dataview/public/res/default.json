@@ -5,6 +5,7 @@
     "view_cards": "Display as cards",
     "max_results": "Max Results",
     "error": "Something went wrong...",
+    "cart_arialabel": "Go to selections",
     "clear_filters": "Clear filters",
     "open_data_warning": {
       "message": "Open data",
