@@ -104,8 +104,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
             >
               <div
-                class="MuiFormControl-root css-1nrlq1o-MuiFormControl-root"
-                style="min-width: 120px;"
+                class="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
               >
                 <label
                   class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
@@ -364,8 +363,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
             >
               <div
-                class="MuiFormControl-root css-1nrlq1o-MuiFormControl-root"
-                style="min-width: 120px;"
+                class="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
               >
                 <label
                   class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"

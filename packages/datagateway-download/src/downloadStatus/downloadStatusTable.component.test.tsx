@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import DownloadStatusTable from './downloadStatusTable.component';
-import { createShallow, createMount } from '@mui/material/test-utils';
+import { mount, shallow } from 'enzyme';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
@@ -29,9 +30,7 @@ const RefreshHOC: React.FC<{ refresh: boolean }> = (props: {
 };
 
 describe('Download Status Table', () => {
-  let shallow;
-  let mount;
-
+  let holder;
   const downloadItems: Download[] = [
     {
       createdAt: '2020-02-25T15:05:29Z',
@@ -126,8 +125,11 @@ describe('Download Status Table', () => {
   ];
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-    mount = createMount();
+    //https://stackoverflow.com/questions/43694975/jest-enzyme-using-mount-document-getelementbyid-returns-null-on-componen
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-download');
+    document.body.appendChild(holder);
+
     (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
     (fetchDownloads as jest.Mock).mockImplementation(() =>
       Promise.resolve(downloadItems)
@@ -136,7 +138,6 @@ describe('Download Status Table', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     (fetchDownloads as jest.Mock).mockClear();
     (downloadDeleted as jest.Mock).mockClear();
     (getDataUrl as jest.Mock).mockClear();
@@ -155,13 +156,12 @@ describe('Download Status Table', () => {
 
   it('translates the status strings correctly', async () => {
     const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
+      <DownloadStatusTable
+        refreshTable={false}
+        setRefreshTable={jest.fn()}
+        setLastChecked={jest.fn()}
+      />,
+      { attachTo: holder }
     );
 
     await act(async () => {
@@ -188,13 +188,12 @@ describe('Download Status Table', () => {
 
   it('fetches the download items on load', async () => {
     const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
+      <DownloadStatusTable
+        refreshTable={false}
+        setRefreshTable={jest.fn()}
+        setLastChecked={jest.fn()}
+      />,
+      { attachTo: holder }
     );
 
     await act(async () => {
@@ -234,13 +233,12 @@ describe('Download Status Table', () => {
 
   it('should have a link for a download item', async () => {
     const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
+      <DownloadStatusTable
+        refreshTable={false}
+        setRefreshTable={jest.fn()}
+        setLastChecked={jest.fn()}
+      />,
+      { attachTo: holder }
     );
 
     await act(async () => {
@@ -273,13 +271,12 @@ describe('Download Status Table', () => {
 
   it("removes an item when said item's remove button is clicked", async () => {
     const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
+      <DownloadStatusTable
+        refreshTable={false}
+        setRefreshTable={jest.fn()}
+        setLastChecked={jest.fn()}
+      />,
+      { attachTo: holder }
     );
 
     await act(async () => {
@@ -290,15 +287,6 @@ describe('Download Status Table', () => {
     wrapper
       .find('button[aria-label="downloadStatus.remove {filename:test-file-1}"]')
       .simulate('click');
-
-    expect(
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.remove {filename:test-file-1}"] svg'
-        )
-        .parent()
-        .prop('color')
-    ).toEqual('error');
 
     await act(async () => {
       await flushPromises();
@@ -320,13 +308,12 @@ describe('Download Status Table', () => {
 
   it('sorts data when headers are clicked', async () => {
     const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
+      <DownloadStatusTable
+        refreshTable={false}
+        setRefreshTable={jest.fn()}
+        setLastChecked={jest.fn()}
+      />,
+      { attachTo: holder }
     );
 
     await act(async () => {
@@ -369,13 +356,12 @@ describe('Download Status Table', () => {
 
   it('filters data when text fields are typed into', async () => {
     const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
+      <DownloadStatusTable
+        refreshTable={false}
+        setRefreshTable={jest.fn()}
+        setLastChecked={jest.fn()}
+      />,
+      { attachTo: holder }
     );
 
     await act(async () => {
@@ -385,7 +371,7 @@ describe('Download Status Table', () => {
 
     const downloadNameFilterInput = wrapper
       .find('[aria-label="Filter by downloadStatus.filename"]')
-      .first();
+      .last();
     downloadNameFilterInput.instance().value = '1';
     downloadNameFilterInput.simulate('change');
 
@@ -398,7 +384,7 @@ describe('Download Status Table', () => {
 
     const accessMethodFilterInput = wrapper
       .find('[aria-label="Filter by downloadStatus.transport"]')
-      .first();
+      .last();
 
     downloadNameFilterInput.instance().value = '';
     downloadNameFilterInput.simulate('change');
@@ -423,7 +409,7 @@ describe('Download Status Table', () => {
     // Test varying download availabilities.
     const availabilityFilterInput = wrapper
       .find('[aria-label="Filter by downloadStatus.status"]')
-      .first();
+      .last();
 
     availabilityFilterInput.instance().value = 'downloadStatus.complete';
     availabilityFilterInput.simulate('change');
@@ -442,14 +428,33 @@ describe('Download Status Table', () => {
   });
 
   it('filters data when date filter is altered', async () => {
+    //https://github.com/mui/material-ui-pickers/issues/2073
+
+    // add window.matchMedia
+    // this is necessary for the date picker to be rendered in desktop mode.
+    // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: (query) => ({
+        media: query,
+        // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
+        matches: query === '(pointer: fine)',
+        onchange: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+
     const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
+      <DownloadStatusTable
+        refreshTable={false}
+        setRefreshTable={jest.fn()}
+        setLastChecked={jest.fn()}
+      />,
+      { attachTo: holder }
     );
 
     await act(async () => {
@@ -500,5 +505,7 @@ describe('Download Status Table', () => {
     dateToFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+
+    delete window.matchMedia;
   });
 });

@@ -1,22 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Download Status Table renders correctly 1`] = `
-<div
-  className="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+<ForwardRef(Grid)
+  container={true}
+  direction="column"
 >
-  <WithStyles(ForwardRef(Grid))
+  <ForwardRef(Grid)
     item={true}
     xs={12}
   >
-    <WithStyles(ForwardRef(LinearProgress))
+    <ForwardRef(LinearProgress)
       color="secondary"
     />
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
+  </ForwardRef(Grid)>
+  <ForwardRef(Grid)
     item={true}
   >
-    <WithStyles(ForwardRef(Paper))
-      style={
+    <ForwardRef(Paper)
+      sx={
         Object {
           "height": "calc(100vh - 64px - 36px - 48px - 48px - (1.75rem + 40px))",
           "minHeight": 230,
@@ -24,7 +25,7 @@ exports[`Download Status Table renders correctly 1`] = `
         }
       }
     >
-      <WithStyles(VirtualizedTable)
+      <VirtualizedTable
         actions={
           Array [
             [Function],
@@ -62,7 +63,7 @@ exports[`Download Status Table renders correctly 1`] = `
         onSort={[Function]}
         sort={Object {}}
       />
-    </WithStyles(ForwardRef(Paper))>
-  </WithStyles(ForwardRef(Grid))>
-</div>
+    </ForwardRef(Paper)>
+  </ForwardRef(Grid)>
+</ForwardRef(Grid)>
 `;

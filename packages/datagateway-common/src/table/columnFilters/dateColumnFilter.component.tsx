@@ -91,21 +91,22 @@ const DateColumnFilter = (props: {
               onChange: props.onChange,
             });
           }}
-          renderInput={(props) => {
+          renderInput={(renderProps) => {
             const error =
               // eslint-disable-next-line react/prop-types
-              props.error || invalidDateRange;
+              renderProps.error || invalidDateRange;
             let helperText = 'Date format: yyyy-MM-dd.';
             if (invalidDateRange) helperText = 'Invalid date range';
 
             return (
               <TextField
-                {...props}
+                {...renderProps}
+                id={props.label + ' filter from'}
                 inputProps={{
                   // eslint-disable-next-line react/prop-types
-                  ...props.inputProps,
+                  ...renderProps.inputProps,
                   placeholder: 'From...',
-                  'aria-label': `${props.label} filter`,
+                  'aria-label': `${props.label} filter from`,
                 }}
                 variant="standard"
                 error={error}
@@ -132,21 +133,22 @@ const DateColumnFilter = (props: {
               onChange: props.onChange,
             });
           }}
-          renderInput={(props) => {
+          renderInput={(renderProps) => {
             const error =
               // eslint-disable-next-line react/prop-types
-              props.error || invalidDateRange;
+              renderProps.error || invalidDateRange;
             let helperText = 'Date format: yyyy-MM-dd.';
             if (invalidDateRange) helperText = 'Invalid date range';
 
             return (
               <TextField
-                {...props}
+                {...renderProps}
+                id={props.label + ' filter to'}
                 inputProps={{
                   // eslint-disable-next-line react/prop-types
-                  ...props.inputProps,
+                  ...renderProps.inputProps,
                   placeholder: 'To...',
-                  'aria-label': `${props.label} filter`,
+                  'aria-label': `${props.label} filter to`,
                 }}
                 variant="standard"
                 error={error}

@@ -486,7 +486,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 {/* Select the access method */}
                 <Grid item xs={12}>
                   <FormControl
-                    style={{ minWidth: 120 }}
+                    sx={{ minWidth: 120 }}
                     error={
                       statusMethods[selectedMethod].disabled ||
                       methodsUnavailable

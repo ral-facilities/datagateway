@@ -5,13 +5,9 @@ import {
   IconButton,
   LinearProgress,
   Paper,
+  styled,
   Typography,
-  Theme,
 } from '@mui/material';
-
-import { StyleRules } from '@mui/styles';
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
 
 import {
   DateColumnFilter,
@@ -45,16 +41,11 @@ import BlackTooltip from '../tooltip.component';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
 
-const paperStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.default,
-      overflow: 'hidden',
-    },
-  });
-
-const StyledPaper = withStyles(paperStyles)(Paper);
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  flexGrow: 1,
+  backgroundColor: theme.palette.background.default,
+  overflow: 'hidden',
+}));
 
 const AdminDownloadStatusTable: React.FC = () => {
   // Load the settings for use

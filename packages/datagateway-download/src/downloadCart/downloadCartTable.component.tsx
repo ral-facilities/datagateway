@@ -266,7 +266,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 <Link
                   component={RouterLink}
                   to={t('downloadCart.browse_link')}
-                  style={{ fontWeight: 'bold' }}
+                  sx={{ fontWeight: 'bold' }}
                 >
                   Browse
                 </Link>{' '}
@@ -274,7 +274,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 <Link
                   component={RouterLink}
                   to={t('downloadCart.search_link')}
-                  style={{ fontWeight: 'bold' }}
+                  sx={{ fontWeight: 'bold' }}
                 >
                   search
                 </Link>{' '}
@@ -300,7 +300,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               (respectively). */}
           <Paper
             className="tour-download-results"
-            style={{
+            sx={{
               height:
                 'calc(100vh - 64px - 48px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
               minHeight: 230,
@@ -392,7 +392,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             direction="column"
             xs
             alignContent="flex-end"
-            style={{ marginRight: '1.2em' }}
+            sx={{ marginRight: '1.2em' }}
           >
             <Typography id="fileCountDisplay">
               {t('downloadCart.number_of_files')}:{' '}
@@ -411,7 +411,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             justifyContent="flex-end"
             spacing={1}
             xs
-            style={{ marginRight: '1em' }}
+            sx={{ marginRight: '1em' }}
           >
             <Grid item>
               <Button

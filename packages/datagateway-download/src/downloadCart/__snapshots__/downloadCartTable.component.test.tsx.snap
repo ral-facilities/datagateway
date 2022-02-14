@@ -50,7 +50,7 @@ exports[`Download cart table component renders correctly 1`] = `
                   "render": [Function],
                 }
               }
-              style={
+              sx={
                 Object {
                   "fontWeight": "bold",
                 }
@@ -76,7 +76,7 @@ exports[`Download cart table component renders correctly 1`] = `
                   "render": [Function],
                 }
               }
-              style={
+              sx={
                 Object {
                   "fontWeight": "bold",
                 }
