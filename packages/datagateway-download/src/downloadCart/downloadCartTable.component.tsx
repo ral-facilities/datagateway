@@ -302,7 +302,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             className="tour-download-results"
             sx={{
               height:
-                'calc(100vh - 64px - 48px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
+                'calc(100vh - 64px - 48px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px))',
               minHeight: 230,
               overflowX: 'auto',
             }}
