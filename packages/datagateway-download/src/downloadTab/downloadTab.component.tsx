@@ -8,7 +8,7 @@ import {
   Grid,
   IconButton,
   CircularProgress,
-  Theme,
+  styled,
 } from '@mui/material';
 import Tab from '@mui/material/Tab';
 
@@ -18,19 +18,11 @@ import DownloadStatusTable from '../downloadStatus/downloadStatusTable.component
 import RefreshIcon from '@mui/icons-material/Refresh';
 import BlackTooltip from '../tooltip.component';
 import { useTranslation } from 'react-i18next';
-import { StyleRules } from '@mui/styles';
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
 
-const paperStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.default,
-    },
-  });
-
-const StyledPaper = withStyles(paperStyles)(Paper);
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  flexGrow: 1,
+  backgroundColor: theme.palette.background.default,
+}));
 
 interface TabPanelProps {
   children?: React.ReactNode;

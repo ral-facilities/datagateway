@@ -8,7 +8,7 @@ exports[`Data cell component renders correctly 1`] = `
 >
   <ArrowTooltip
     enterDelay={500}
-    style={
+    sx={
       Object {
         "flex": 1,
       }
@@ -35,7 +35,7 @@ exports[`Data cell component renders correctly 1`] = `
     <ForwardRef(Divider)
       flexItem={true}
       orientation="vertical"
-      style={
+      sx={
         Object {
           "height": "100%",
         }
@@ -53,7 +53,7 @@ exports[`Data cell component renders nested cell data correctly 1`] = `
 >
   <ArrowTooltip
     enterDelay={500}
-    style={
+    sx={
       Object {
         "flex": 1,
       }
@@ -80,7 +80,7 @@ exports[`Data cell component renders nested cell data correctly 1`] = `
     <ForwardRef(Divider)
       flexItem={true}
       orientation="vertical"
-      style={
+      sx={
         Object {
           "height": "100%",
         }
@@ -98,7 +98,7 @@ exports[`Data cell component renders provided cell data correctly 1`] = `
 >
   <ArrowTooltip
     enterDelay={500}
-    style={
+    sx={
       Object {
         "flex": 1,
       }
@@ -127,7 +127,7 @@ exports[`Data cell component renders provided cell data correctly 1`] = `
     <ForwardRef(Divider)
       flexItem={true}
       orientation="vertical"
-      style={
+      sx={
         Object {
           "height": "100%",
         }

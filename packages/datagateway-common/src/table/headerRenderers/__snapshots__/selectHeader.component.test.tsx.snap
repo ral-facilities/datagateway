@@ -32,9 +32,9 @@ exports[`Select column header component renders correctly when checked 1`] = `
     }
     onClick={[Function]}
     size="small"
-    style={
+    sx={
       Object {
-        "height": 20,
+        "height": "20px",
         "margin": "auto",
       }
     }
@@ -74,9 +74,9 @@ exports[`Select column header component renders correctly when indeterminate 1`]
     }
     onClick={[Function]}
     size="small"
-    style={
+    sx={
       Object {
-        "height": 20,
+        "height": "20px",
         "margin": "auto",
       }
     }
@@ -116,9 +116,9 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
     }
     onClick={[Function]}
     size="small"
-    style={
+    sx={
       Object {
-        "height": 20,
+        "height": "20px",
         "margin": "auto",
       }
     }

@@ -25,7 +25,7 @@ exports[`Data column header component renders correctly with filter but no sort 
       <ForwardRef(Box)>
         <ForwardRef(Typography)
           noWrap={true}
-          style={
+          sx={
             Object {
               "fontSize": "inherit",
               "lineHeight": "inherit",
@@ -81,7 +81,7 @@ exports[`Data column header component renders correctly with filter but no sort 
       <ForwardRef(Divider)
         flexItem={true}
         orientation="vertical"
-        style={
+        sx={
           Object {
             "height": "100%",
           }
@@ -122,7 +122,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
         >
           <ForwardRef(Typography)
             noWrap={true}
-            style={
+            sx={
               Object {
                 "fontSize": "inherit",
                 "lineHeight": "inherit",
@@ -179,7 +179,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       <ForwardRef(Divider)
         flexItem={true}
         orientation="vertical"
-        style={
+        sx={
           Object {
             "height": "100%",
           }
@@ -220,7 +220,7 @@ exports[`Data column header component renders correctly with sort but no filter 
         >
           <ForwardRef(Typography)
             noWrap={true}
-            style={
+            sx={
               Object {
                 "fontSize": "inherit",
                 "lineHeight": "inherit",
@@ -273,7 +273,7 @@ exports[`Data column header component renders correctly with sort but no filter 
       <ForwardRef(Divider)
         flexItem={true}
         orientation="vertical"
-        style={
+        sx={
           Object {
             "height": "100%",
           }
@@ -309,7 +309,7 @@ exports[`Data column header component renders correctly without sort or filter 1
       <ForwardRef(Box)>
         <ForwardRef(Typography)
           noWrap={true}
-          style={
+          sx={
             Object {
               "fontSize": "inherit",
               "lineHeight": "inherit",
@@ -361,7 +361,7 @@ exports[`Data column header component renders correctly without sort or filter 1
       <ForwardRef(Divider)
         flexItem={true}
         orientation="vertical"
-        style={
+        sx={
           Object {
             "height": "100%",
           }

@@ -388,11 +388,11 @@ const VirtualizedTable = React.memo(
                           size="small"
                           padding="checkbox"
                           component="div"
-                          style={
+                          sx={
                             {
                               ...headerTableCellStyleCombined,
                               ...flexContainerStyle,
-                            } as React.CSSProperties
+                            } as SxProps
                           }
                           variant="head"
                         />
@@ -483,9 +483,7 @@ const VirtualizedTable = React.memo(
                         <TableCell
                           size="small"
                           component="div"
-                          style={
-                            headerTableCellStyleCombined as React.CSSProperties
-                          }
+                          sx={headerTableCellStyleCombined as SxProps}
                           variant="head"
                         >
                           Actions

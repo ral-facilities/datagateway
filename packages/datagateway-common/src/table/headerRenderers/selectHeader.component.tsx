@@ -55,7 +55,7 @@ const SelectHeader = React.memo(
               onCheck(allIds);
             }
           }}
-          style={{ height: 20, margin: 'auto' }}
+          sx={{ height: '20px', margin: 'auto' }}
         />
       </TableCell>
     );

@@ -71,15 +71,12 @@ const DataHeader = React.memo(
         direction={currSortDirection}
         onClick={() => onSort(dataKey, nextSortDirection, 'push')}
       >
-        <Typography
-          noWrap
-          style={{ fontSize: 'inherit', lineHeight: 'inherit' }}
-        >
+        <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
           {label}
         </Typography>
       </TableSortLabel>
     ) : (
-      <Typography noWrap style={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
+      <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
         {label}
       </Typography>
     );
@@ -119,7 +116,7 @@ const DataHeader = React.memo(
             <Divider
               orientation="vertical"
               flexItem
-              style={{
+              sx={{
                 height: '100%',
               }}
             />

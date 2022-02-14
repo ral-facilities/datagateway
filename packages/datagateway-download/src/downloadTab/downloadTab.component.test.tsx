@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@mui/material/test-utils';
+import { mount, shallow } from 'enzyme';
 import DownloadTabs from './downloadTab.component';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
@@ -28,19 +28,13 @@ const mockedSettings = {
 };
 
 describe('DownloadTab', () => {
-  let shallow;
-  let mount;
   let history;
 
   beforeEach(() => {
-    shallow = createShallow();
-    mount = createMount();
     history = createMemoryHistory();
   });
 
   afterEach(() => {
-    mount.cleanUp();
-
     // Clear the session storage.
     sessionStorage.clear();
   });

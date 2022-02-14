@@ -25,7 +25,7 @@ const DataCell = React.memo(
         <ArrowTooltip
           title={getTooltipText(cellContent)}
           enterDelay={500}
-          style={{ flex: 1 }}
+          sx={{ flex: 1 }}
         >
           <Typography variant="body2" noWrap>
             {cellContent}
@@ -42,7 +42,7 @@ const DataCell = React.memo(
           <Divider
             orientation="vertical"
             flexItem
-            style={{
+            sx={{
               height: '100%',
             }}
           />
