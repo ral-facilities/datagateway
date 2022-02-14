@@ -25,7 +25,7 @@
     "loglevel": "^1.7.1",
     "p-limit": "^4.0.0",
     "react": "^16.13.1",
-    "react-app-polyfill": "^2.0.0",
+    "react-app-polyfill": "^3.0.0",
     "react-dom": "^16.11.0",
     "react-i18next": "^11.15.4",
     "react-query": "^3.18.1",
