@@ -4,8 +4,8 @@ import App from './App';
 import { mount } from 'enzyme';
 import * as log from 'loglevel';
 import { act } from 'react-dom/test-utils';
-import StylesProvider from '@mui/styles/StylesProvider';
 import { flushPromises } from './setupTests';
+import { StyledEngineProvider } from '@mui/material/styles';
 
 jest.mock('loglevel');
 jest.mock('./ConfigProvider');
@@ -31,7 +31,7 @@ describe('App', () => {
       await flushPromises();
     });
 
-    wrapper.find(StylesProvider).simulateError(error);
+    wrapper.find(StyledEngineProvider).simulateError(error);
 
     expect(wrapper.exists('.error')).toBe(true);
 
