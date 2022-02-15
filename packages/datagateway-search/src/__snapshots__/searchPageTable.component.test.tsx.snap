@@ -4065,16 +4065,20 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
         }
       >
         <Connect(SearchPageTable)
+          cartItems={Array []}
           currentTab="investigation"
+          navigateToDownload={[MockFunction]}
           onTabChange={[MockFunction]}
         >
           <SearchPageTable
+            cartItems={Array []}
             currentTab="investigation"
             datafileTab={true}
             datasetTab={true}
             dispatch={[Function]}
             investigationTab={true}
             maxNumResults={300}
+            navigateToDownload={[MockFunction]}
             onTabChange={[MockFunction]}
           >
             <div>
@@ -4148,223 +4152,156 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       <header
                         className="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary MuiPaper-elevation0"
                       >
-                        <WithStyles(WithStyles(ForwardRef(Tabs)))
-                          aria-label="searchPageTable.tabs_arialabel"
-                          className="tour-search-tab-select"
-                          onChange={[Function]}
-                          value="investigation"
+                        <WithStyles(Styled(MuiBox))
+                          boxSizing="border-box"
+                          display="flex"
+                          flexDirection="row"
+                          height="100%"
+                          justifyContent="flex-end"
                         >
-                          <WithStyles(ForwardRef(Tabs))
-                            aria-label="searchPageTable.tabs_arialabel"
-                            className="tour-search-tab-select"
+                          <Styled(MuiBox)
+                            boxSizing="border-box"
                             classes={
                               Object {
-                                "indicator": "WithStyles(ForwardRef(Tabs))-indicator-2",
-                                "root": "WithStyles(ForwardRef(Tabs))-root-1",
+                                "root": "Styled(MuiBox)-root-1",
                               }
                             }
-                            onChange={[Function]}
-                            value="investigation"
+                            display="flex"
+                            flexDirection="row"
+                            height="100%"
+                            justifyContent="flex-end"
                           >
-                            <ForwardRef(Tabs)
-                              aria-label="searchPageTable.tabs_arialabel"
-                              className="tour-search-tab-select"
+                            <div
+                              className="MuiBox-root MuiBox-root-2 Styled(MuiBox)-root-1"
                               classes={
                                 Object {
-                                  "centered": "MuiTabs-centered",
-                                  "fixed": "MuiTabs-fixed",
-                                  "flexContainer": "MuiTabs-flexContainer",
-                                  "flexContainerVertical": "MuiTabs-flexContainerVertical",
-                                  "indicator": "MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-2",
-                                  "root": "MuiTabs-root WithStyles(ForwardRef(Tabs))-root-1",
-                                  "scrollButtons": "MuiTabs-scrollButtons",
-                                  "scrollButtonsDesktop": "MuiTabs-scrollButtonsDesktop",
-                                  "scrollable": "MuiTabs-scrollable",
-                                  "scroller": "MuiTabs-scroller",
-                                  "vertical": "MuiTabs-vertical",
+                                  "root": "Styled(MuiBox)-root-1",
                                 }
                               }
-                              onChange={[Function]}
-                              value="investigation"
                             >
-                              <div
-                                className="MuiTabs-root WithStyles(ForwardRef(Tabs))-root-1 tour-search-tab-select"
+                              <WithStyles(WithStyles(ForwardRef(Tabs)))
+                                aria-label="searchPageTable.tabs_arialabel"
+                                className="tour-search-tab-select"
+                                onChange={[Function]}
+                                value="investigation"
                               >
-                                <div
-                                  className="MuiTabs-scroller MuiTabs-fixed"
-                                  onScroll={[Function]}
-                                  style={
+                                <WithStyles(ForwardRef(Tabs))
+                                  aria-label="searchPageTable.tabs_arialabel"
+                                  className="tour-search-tab-select"
+                                  classes={
                                     Object {
-                                      "marginBottom": null,
-                                      "overflow": "hidden",
+                                      "indicator": "WithStyles(ForwardRef(Tabs))-indicator-4",
+                                      "root": "WithStyles(ForwardRef(Tabs))-root-3",
                                     }
                                   }
+                                  onChange={[Function]}
+                                  value="investigation"
                                 >
-                                  <div
+                                  <ForwardRef(Tabs)
                                     aria-label="searchPageTable.tabs_arialabel"
-                                    className="MuiTabs-flexContainer"
-                                    onKeyDown={[Function]}
-                                    role="tablist"
-                                  >
-                                    <WithStyles(ForwardRef(Tab))
-                                      aria-controls="simple-tabpanel-investigation"
-                                      fullWidth={false}
-                                      id="simple-tab-investigation"
-                                      indicator={false}
-                                      key=".0"
-                                      label={
-                                        <WithStyles(WithStyles(ForwardRef(Badge)))
-                                          badgeContent={
-                                            <span
-                                              style={
-                                                Object {
-                                                  "fontSize": "14px",
-                                                  "fontWeight": "bold",
-                                                  "marginTop": "1px",
-                                                }
-                                              }
-                                            >
-                                              0
-                                            </span>
-                                          }
-                                          id="investigation-badge"
-                                          max={999}
-                                          showZero={true}
-                                        >
-                                          <span
-                                            style={
-                                              Object {
-                                                "fontSize": "16px",
-                                                "fontWeight": "bold",
-                                                "marginLeft": "calc(-0.5 * 1ch - 6px)",
-                                                "marginRight": "calc(0.5 * 1ch + 6px)",
-                                                "paddingRight": "1ch",
-                                              }
-                                            }
-                                          >
-                                            tabs.investigation
-                                          </span>
-                                        </WithStyles(WithStyles(ForwardRef(Badge)))>
+                                    className="tour-search-tab-select"
+                                    classes={
+                                      Object {
+                                        "centered": "MuiTabs-centered",
+                                        "fixed": "MuiTabs-fixed",
+                                        "flexContainer": "MuiTabs-flexContainer",
+                                        "flexContainerVertical": "MuiTabs-flexContainerVertical",
+                                        "indicator": "MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-4",
+                                        "root": "MuiTabs-root WithStyles(ForwardRef(Tabs))-root-3",
+                                        "scrollButtons": "MuiTabs-scrollButtons",
+                                        "scrollButtonsDesktop": "MuiTabs-scrollButtonsDesktop",
+                                        "scrollable": "MuiTabs-scrollable",
+                                        "scroller": "MuiTabs-scroller",
+                                        "vertical": "MuiTabs-vertical",
                                       }
-                                      onChange={[Function]}
-                                      selected={true}
-                                      textColor="inherit"
-                                      value="investigation"
+                                    }
+                                    onChange={[Function]}
+                                    value="investigation"
+                                  >
+                                    <div
+                                      className="MuiTabs-root WithStyles(ForwardRef(Tabs))-root-3 tour-search-tab-select"
                                     >
-                                      <ForwardRef(Tab)
-                                        aria-controls="simple-tabpanel-investigation"
-                                        classes={
+                                      <div
+                                        className="MuiTabs-scroller MuiTabs-fixed"
+                                        onScroll={[Function]}
+                                        style={
                                           Object {
-                                            "disabled": "Mui-disabled",
-                                            "fullWidth": "MuiTab-fullWidth",
-                                            "labelIcon": "MuiTab-labelIcon",
-                                            "root": "MuiTab-root",
-                                            "selected": "Mui-selected",
-                                            "textColorInherit": "MuiTab-textColorInherit",
-                                            "textColorPrimary": "MuiTab-textColorPrimary",
-                                            "textColorSecondary": "MuiTab-textColorSecondary",
-                                            "wrapped": "MuiTab-wrapped",
-                                            "wrapper": "MuiTab-wrapper",
+                                            "marginBottom": null,
+                                            "overflow": "hidden",
                                           }
                                         }
-                                        fullWidth={false}
-                                        id="simple-tab-investigation"
-                                        indicator={false}
-                                        label={
-                                          <WithStyles(WithStyles(ForwardRef(Badge)))
-                                            badgeContent={
-                                              <span
-                                                style={
-                                                  Object {
-                                                    "fontSize": "14px",
-                                                    "fontWeight": "bold",
-                                                    "marginTop": "1px",
-                                                  }
-                                                }
-                                              >
-                                                0
-                                              </span>
-                                            }
-                                            id="investigation-badge"
-                                            max={999}
-                                            showZero={true}
-                                          >
-                                            <span
-                                              style={
-                                                Object {
-                                                  "fontSize": "16px",
-                                                  "fontWeight": "bold",
-                                                  "marginLeft": "calc(-0.5 * 1ch - 6px)",
-                                                  "marginRight": "calc(0.5 * 1ch + 6px)",
-                                                  "paddingRight": "1ch",
-                                                }
-                                              }
-                                            >
-                                              tabs.investigation
-                                            </span>
-                                          </WithStyles(WithStyles(ForwardRef(Badge)))>
-                                        }
-                                        onChange={[Function]}
-                                        selected={true}
-                                        textColor="inherit"
-                                        value="investigation"
                                       >
-                                        <WithStyles(ForwardRef(ButtonBase))
-                                          aria-controls="simple-tabpanel-investigation"
-                                          aria-selected={true}
-                                          className="MuiTab-root MuiTab-textColorInherit Mui-selected"
-                                          disabled={false}
-                                          focusRipple={true}
-                                          id="simple-tab-investigation"
-                                          onClick={[Function]}
-                                          onFocus={[Function]}
-                                          role="tab"
-                                          tabIndex={0}
+                                        <div
+                                          aria-label="searchPageTable.tabs_arialabel"
+                                          className="MuiTabs-flexContainer"
+                                          onKeyDown={[Function]}
+                                          role="tablist"
                                         >
-                                          <ForwardRef(ButtonBase)
+                                          <WithStyles(ForwardRef(Tab))
                                             aria-controls="simple-tabpanel-investigation"
-                                            aria-selected={true}
-                                            className="MuiTab-root MuiTab-textColorInherit Mui-selected"
-                                            classes={
-                                              Object {
-                                                "disabled": "Mui-disabled",
-                                                "focusVisible": "Mui-focusVisible",
-                                                "root": "MuiButtonBase-root",
-                                              }
-                                            }
-                                            disabled={false}
-                                            focusRipple={true}
+                                            fullWidth={false}
                                             id="simple-tab-investigation"
-                                            onClick={[Function]}
-                                            onFocus={[Function]}
-                                            role="tab"
-                                            tabIndex={0}
-                                          >
-                                            <button
-                                              aria-controls="simple-tabpanel-investigation"
-                                              aria-selected={true}
-                                              className="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit Mui-selected"
-                                              disabled={false}
-                                              id="simple-tab-investigation"
-                                              onBlur={[Function]}
-                                              onClick={[Function]}
-                                              onDragLeave={[Function]}
-                                              onFocus={[Function]}
-                                              onKeyDown={[Function]}
-                                              onKeyUp={[Function]}
-                                              onMouseDown={[Function]}
-                                              onMouseLeave={[Function]}
-                                              onMouseUp={[Function]}
-                                              onTouchEnd={[Function]}
-                                              onTouchMove={[Function]}
-                                              onTouchStart={[Function]}
-                                              role="tab"
-                                              tabIndex={0}
-                                              type="button"
-                                            >
-                                              <span
-                                                className="MuiTab-wrapper"
+                                            indicator={false}
+                                            key=".0"
+                                            label={
+                                              <WithStyles(WithStyles(ForwardRef(Badge)))
+                                                badgeContent={
+                                                  <span
+                                                    style={
+                                                      Object {
+                                                        "fontSize": "14px",
+                                                        "fontWeight": "bold",
+                                                        "marginTop": "1px",
+                                                      }
+                                                    }
+                                                  >
+                                                    0
+                                                  </span>
+                                                }
+                                                id="investigation-badge"
+                                                max={999}
+                                                showZero={true}
                                               >
+                                                <span
+                                                  style={
+                                                    Object {
+                                                      "fontSize": "16px",
+                                                      "fontWeight": "bold",
+                                                      "marginLeft": "calc(-0.5 * 1ch - 6px)",
+                                                      "marginRight": "calc(0.5 * 1ch + 6px)",
+                                                      "paddingRight": "1ch",
+                                                    }
+                                                  }
+                                                >
+                                                  tabs.investigation
+                                                </span>
+                                              </WithStyles(WithStyles(ForwardRef(Badge)))>
+                                            }
+                                            onChange={[Function]}
+                                            selected={true}
+                                            textColor="inherit"
+                                            value="investigation"
+                                          >
+                                            <ForwardRef(Tab)
+                                              aria-controls="simple-tabpanel-investigation"
+                                              classes={
+                                                Object {
+                                                  "disabled": "Mui-disabled",
+                                                  "fullWidth": "MuiTab-fullWidth",
+                                                  "labelIcon": "MuiTab-labelIcon",
+                                                  "root": "MuiTab-root",
+                                                  "selected": "Mui-selected",
+                                                  "textColorInherit": "MuiTab-textColorInherit",
+                                                  "textColorPrimary": "MuiTab-textColorPrimary",
+                                                  "textColorSecondary": "MuiTab-textColorSecondary",
+                                                  "wrapped": "MuiTab-wrapped",
+                                                  "wrapper": "MuiTab-wrapper",
+                                                }
+                                              }
+                                              fullWidth={false}
+                                              id="simple-tab-investigation"
+                                              indicator={false}
+                                              label={
                                                 <WithStyles(WithStyles(ForwardRef(Badge)))
                                                   badgeContent={
                                                     <span
@@ -4383,86 +4320,84 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                   max={999}
                                                   showZero={true}
                                                 >
-                                                  <WithStyles(ForwardRef(Badge))
-                                                    badgeContent={
-                                                      <span
-                                                        style={
-                                                          Object {
-                                                            "fontSize": "14px",
-                                                            "fontWeight": "bold",
-                                                            "marginTop": "1px",
-                                                          }
-                                                        }
-                                                      >
-                                                        0
-                                                      </span>
-                                                    }
-                                                    classes={
+                                                  <span
+                                                    style={
                                                       Object {
-                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-3",
+                                                        "fontSize": "16px",
+                                                        "fontWeight": "bold",
+                                                        "marginLeft": "calc(-0.5 * 1ch - 6px)",
+                                                        "marginRight": "calc(0.5 * 1ch + 6px)",
+                                                        "paddingRight": "1ch",
                                                       }
                                                     }
-                                                    id="investigation-badge"
-                                                    max={999}
-                                                    showZero={true}
                                                   >
-                                                    <ForwardRef(Badge)
-                                                      badgeContent={
-                                                        <span
-                                                          style={
-                                                            Object {
-                                                              "fontSize": "14px",
-                                                              "fontWeight": "bold",
-                                                              "marginTop": "1px",
-                                                            }
-                                                          }
-                                                        >
-                                                          0
-                                                        </span>
-                                                      }
-                                                      classes={
-                                                        Object {
-                                                          "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
-                                                          "anchorOriginBottomLeftRectangle": "MuiBadge-anchorOriginBottomLeftRectangle",
-                                                          "anchorOriginBottomRightCircle": "MuiBadge-anchorOriginBottomRightCircle",
-                                                          "anchorOriginBottomRightRectangle": "MuiBadge-anchorOriginBottomRightRectangle",
-                                                          "anchorOriginTopLeftCircle": "MuiBadge-anchorOriginTopLeftCircle",
-                                                          "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
-                                                          "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
-                                                          "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
-                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3",
-                                                          "colorError": "MuiBadge-colorError",
-                                                          "colorPrimary": "MuiBadge-colorPrimary",
-                                                          "colorSecondary": "MuiBadge-colorSecondary",
-                                                          "dot": "MuiBadge-dot",
-                                                          "invisible": "MuiBadge-invisible",
-                                                          "root": "MuiBadge-root",
-                                                        }
-                                                      }
-                                                      id="investigation-badge"
-                                                      max={999}
-                                                      showZero={true}
+                                                    tabs.investigation
+                                                  </span>
+                                                </WithStyles(WithStyles(ForwardRef(Badge)))>
+                                              }
+                                              onChange={[Function]}
+                                              selected={true}
+                                              textColor="inherit"
+                                              value="investigation"
+                                            >
+                                              <WithStyles(ForwardRef(ButtonBase))
+                                                aria-controls="simple-tabpanel-investigation"
+                                                aria-selected={true}
+                                                className="MuiTab-root MuiTab-textColorInherit Mui-selected"
+                                                disabled={false}
+                                                focusRipple={true}
+                                                id="simple-tab-investigation"
+                                                onClick={[Function]}
+                                                onFocus={[Function]}
+                                                role="tab"
+                                                tabIndex={0}
+                                              >
+                                                <ForwardRef(ButtonBase)
+                                                  aria-controls="simple-tabpanel-investigation"
+                                                  aria-selected={true}
+                                                  className="MuiTab-root MuiTab-textColorInherit Mui-selected"
+                                                  classes={
+                                                    Object {
+                                                      "disabled": "Mui-disabled",
+                                                      "focusVisible": "Mui-focusVisible",
+                                                      "root": "MuiButtonBase-root",
+                                                    }
+                                                  }
+                                                  disabled={false}
+                                                  focusRipple={true}
+                                                  id="simple-tab-investigation"
+                                                  onClick={[Function]}
+                                                  onFocus={[Function]}
+                                                  role="tab"
+                                                  tabIndex={0}
+                                                >
+                                                  <button
+                                                    aria-controls="simple-tabpanel-investigation"
+                                                    aria-selected={true}
+                                                    className="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit Mui-selected"
+                                                    disabled={false}
+                                                    id="simple-tab-investigation"
+                                                    onBlur={[Function]}
+                                                    onClick={[Function]}
+                                                    onDragLeave={[Function]}
+                                                    onFocus={[Function]}
+                                                    onKeyDown={[Function]}
+                                                    onKeyUp={[Function]}
+                                                    onMouseDown={[Function]}
+                                                    onMouseLeave={[Function]}
+                                                    onMouseUp={[Function]}
+                                                    onTouchEnd={[Function]}
+                                                    onTouchMove={[Function]}
+                                                    onTouchStart={[Function]}
+                                                    role="tab"
+                                                    tabIndex={0}
+                                                    type="button"
+                                                  >
+                                                    <span
+                                                      className="MuiTab-wrapper"
                                                     >
-                                                      <span
-                                                        className="MuiBadge-root"
-                                                        id="investigation-badge"
-                                                      >
-                                                        <span
-                                                          style={
-                                                            Object {
-                                                              "fontSize": "16px",
-                                                              "fontWeight": "bold",
-                                                              "marginLeft": "calc(-0.5 * 1ch - 6px)",
-                                                              "marginRight": "calc(0.5 * 1ch + 6px)",
-                                                              "paddingRight": "1ch",
-                                                            }
-                                                          }
-                                                        >
-                                                          tabs.investigation
-                                                        </span>
-                                                        <span
-                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3 MuiBadge-anchorOriginTopRightRectangle"
-                                                        >
+                                                      <WithStyles(WithStyles(ForwardRef(Badge)))
+                                                        badgeContent={
                                                           <span
                                                             style={
                                                               Object {
@@ -4474,566 +4409,882 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                           >
                                                             0
                                                           </span>
+                                                        }
+                                                        id="investigation-badge"
+                                                        max={999}
+                                                        showZero={true}
+                                                      >
+                                                        <WithStyles(ForwardRef(Badge))
+                                                          badgeContent={
+                                                            <span
+                                                              style={
+                                                                Object {
+                                                                  "fontSize": "14px",
+                                                                  "fontWeight": "bold",
+                                                                  "marginTop": "1px",
+                                                                }
+                                                              }
+                                                            >
+                                                              0
+                                                            </span>
+                                                          }
+                                                          classes={
+                                                            Object {
+                                                              "badge": "WithStyles(ForwardRef(Badge))-badge-5",
+                                                            }
+                                                          }
+                                                          id="investigation-badge"
+                                                          max={999}
+                                                          showZero={true}
+                                                        >
+                                                          <ForwardRef(Badge)
+                                                            badgeContent={
+                                                              <span
+                                                                style={
+                                                                  Object {
+                                                                    "fontSize": "14px",
+                                                                    "fontWeight": "bold",
+                                                                    "marginTop": "1px",
+                                                                  }
+                                                                }
+                                                              >
+                                                                0
+                                                              </span>
+                                                            }
+                                                            classes={
+                                                              Object {
+                                                                "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
+                                                                "anchorOriginBottomLeftRectangle": "MuiBadge-anchorOriginBottomLeftRectangle",
+                                                                "anchorOriginBottomRightCircle": "MuiBadge-anchorOriginBottomRightCircle",
+                                                                "anchorOriginBottomRightRectangle": "MuiBadge-anchorOriginBottomRightRectangle",
+                                                                "anchorOriginTopLeftCircle": "MuiBadge-anchorOriginTopLeftCircle",
+                                                                "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
+                                                                "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
+                                                                "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
+                                                                "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5",
+                                                                "colorError": "MuiBadge-colorError",
+                                                                "colorPrimary": "MuiBadge-colorPrimary",
+                                                                "colorSecondary": "MuiBadge-colorSecondary",
+                                                                "dot": "MuiBadge-dot",
+                                                                "invisible": "MuiBadge-invisible",
+                                                                "root": "MuiBadge-root",
+                                                              }
+                                                            }
+                                                            id="investigation-badge"
+                                                            max={999}
+                                                            showZero={true}
+                                                          >
+                                                            <span
+                                                              className="MuiBadge-root"
+                                                              id="investigation-badge"
+                                                            >
+                                                              <span
+                                                                style={
+                                                                  Object {
+                                                                    "fontSize": "16px",
+                                                                    "fontWeight": "bold",
+                                                                    "marginLeft": "calc(-0.5 * 1ch - 6px)",
+                                                                    "marginRight": "calc(0.5 * 1ch + 6px)",
+                                                                    "paddingRight": "1ch",
+                                                                  }
+                                                                }
+                                                              >
+                                                                tabs.investigation
+                                                              </span>
+                                                              <span
+                                                                className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5 MuiBadge-anchorOriginTopRightRectangle"
+                                                              >
+                                                                <span
+                                                                  style={
+                                                                    Object {
+                                                                      "fontSize": "14px",
+                                                                      "fontWeight": "bold",
+                                                                      "marginTop": "1px",
+                                                                    }
+                                                                  }
+                                                                >
+                                                                  0
+                                                                </span>
+                                                              </span>
+                                                            </span>
+                                                          </ForwardRef(Badge)>
+                                                        </WithStyles(ForwardRef(Badge))>
+                                                      </WithStyles(WithStyles(ForwardRef(Badge)))>
+                                                    </span>
+                                                    <WithStyles(memo)
+                                                      center={false}
+                                                    >
+                                                      <ForwardRef(TouchRipple)
+                                                        center={false}
+                                                        classes={
+                                                          Object {
+                                                            "child": "MuiTouchRipple-child",
+                                                            "childLeaving": "MuiTouchRipple-childLeaving",
+                                                            "childPulsate": "MuiTouchRipple-childPulsate",
+                                                            "ripple": "MuiTouchRipple-ripple",
+                                                            "ripplePulsate": "MuiTouchRipple-ripplePulsate",
+                                                            "rippleVisible": "MuiTouchRipple-rippleVisible",
+                                                            "root": "MuiTouchRipple-root",
+                                                          }
+                                                        }
+                                                      >
+                                                        <span
+                                                          className="MuiTouchRipple-root"
+                                                        >
+                                                          <TransitionGroup
+                                                            childFactory={[Function]}
+                                                            component={null}
+                                                            exit={true}
+                                                          />
                                                         </span>
-                                                      </span>
-                                                    </ForwardRef(Badge)>
-                                                  </WithStyles(ForwardRef(Badge))>
-                                                </WithStyles(WithStyles(ForwardRef(Badge)))>
-                                              </span>
-                                              <WithStyles(memo)
-                                                center={false}
+                                                      </ForwardRef(TouchRipple)>
+                                                    </WithStyles(memo)>
+                                                  </button>
+                                                </ForwardRef(ButtonBase)>
+                                              </WithStyles(ForwardRef(ButtonBase))>
+                                            </ForwardRef(Tab)>
+                                          </WithStyles(ForwardRef(Tab))>
+                                          <WithStyles(ForwardRef(Tab))
+                                            aria-controls="simple-tabpanel-dataset"
+                                            fullWidth={false}
+                                            id="simple-tab-dataset"
+                                            indicator={false}
+                                            key=".1"
+                                            label={
+                                              <WithStyles(WithStyles(ForwardRef(Badge)))
+                                                badgeContent={0}
+                                                id="dataset-badge"
+                                                max={999}
+                                                showZero={true}
                                               >
-                                                <ForwardRef(TouchRipple)
-                                                  center={false}
-                                                  classes={
+                                                <span
+                                                  style={
                                                     Object {
-                                                      "child": "MuiTouchRipple-child",
-                                                      "childLeaving": "MuiTouchRipple-childLeaving",
-                                                      "childPulsate": "MuiTouchRipple-childPulsate",
-                                                      "ripple": "MuiTouchRipple-ripple",
-                                                      "ripplePulsate": "MuiTouchRipple-ripplePulsate",
-                                                      "rippleVisible": "MuiTouchRipple-rippleVisible",
-                                                      "root": "MuiTouchRipple-root",
+                                                      "fontSize": "16px",
+                                                      "fontWeight": "bold",
+                                                      "marginLeft": "calc(-0.5 * 1ch - 6px)",
+                                                      "marginRight": "calc(0.5 * 1ch + 6px)",
+                                                      "paddingRight": "1ch",
                                                     }
                                                   }
                                                 >
-                                                  <span
-                                                    className="MuiTouchRipple-root"
-                                                  >
-                                                    <TransitionGroup
-                                                      childFactory={[Function]}
-                                                      component={null}
-                                                      exit={true}
-                                                    />
-                                                  </span>
-                                                </ForwardRef(TouchRipple)>
-                                              </WithStyles(memo)>
-                                            </button>
-                                          </ForwardRef(ButtonBase)>
-                                        </WithStyles(ForwardRef(ButtonBase))>
-                                      </ForwardRef(Tab)>
-                                    </WithStyles(ForwardRef(Tab))>
-                                    <WithStyles(ForwardRef(Tab))
-                                      aria-controls="simple-tabpanel-dataset"
-                                      fullWidth={false}
-                                      id="simple-tab-dataset"
-                                      indicator={false}
-                                      key=".1"
-                                      label={
-                                        <WithStyles(WithStyles(ForwardRef(Badge)))
-                                          badgeContent={0}
-                                          id="dataset-badge"
-                                          max={999}
-                                          showZero={true}
-                                        >
-                                          <span
-                                            style={
-                                              Object {
-                                                "fontSize": "16px",
-                                                "fontWeight": "bold",
-                                                "marginLeft": "calc(-0.5 * 1ch - 6px)",
-                                                "marginRight": "calc(0.5 * 1ch + 6px)",
-                                                "paddingRight": "1ch",
-                                              }
+                                                  tabs.dataset
+                                                </span>
+                                              </WithStyles(WithStyles(ForwardRef(Badge)))>
                                             }
+                                            onChange={[Function]}
+                                            selected={false}
+                                            textColor="inherit"
+                                            value="dataset"
                                           >
-                                            tabs.dataset
-                                          </span>
-                                        </WithStyles(WithStyles(ForwardRef(Badge)))>
-                                      }
-                                      onChange={[Function]}
-                                      selected={false}
-                                      textColor="inherit"
-                                      value="dataset"
-                                    >
-                                      <ForwardRef(Tab)
-                                        aria-controls="simple-tabpanel-dataset"
-                                        classes={
-                                          Object {
-                                            "disabled": "Mui-disabled",
-                                            "fullWidth": "MuiTab-fullWidth",
-                                            "labelIcon": "MuiTab-labelIcon",
-                                            "root": "MuiTab-root",
-                                            "selected": "Mui-selected",
-                                            "textColorInherit": "MuiTab-textColorInherit",
-                                            "textColorPrimary": "MuiTab-textColorPrimary",
-                                            "textColorSecondary": "MuiTab-textColorSecondary",
-                                            "wrapped": "MuiTab-wrapped",
-                                            "wrapper": "MuiTab-wrapper",
-                                          }
-                                        }
-                                        fullWidth={false}
-                                        id="simple-tab-dataset"
-                                        indicator={false}
-                                        label={
-                                          <WithStyles(WithStyles(ForwardRef(Badge)))
-                                            badgeContent={0}
-                                            id="dataset-badge"
-                                            max={999}
-                                            showZero={true}
-                                          >
-                                            <span
-                                              style={
+                                            <ForwardRef(Tab)
+                                              aria-controls="simple-tabpanel-dataset"
+                                              classes={
                                                 Object {
-                                                  "fontSize": "16px",
-                                                  "fontWeight": "bold",
-                                                  "marginLeft": "calc(-0.5 * 1ch - 6px)",
-                                                  "marginRight": "calc(0.5 * 1ch + 6px)",
-                                                  "paddingRight": "1ch",
+                                                  "disabled": "Mui-disabled",
+                                                  "fullWidth": "MuiTab-fullWidth",
+                                                  "labelIcon": "MuiTab-labelIcon",
+                                                  "root": "MuiTab-root",
+                                                  "selected": "Mui-selected",
+                                                  "textColorInherit": "MuiTab-textColorInherit",
+                                                  "textColorPrimary": "MuiTab-textColorPrimary",
+                                                  "textColorSecondary": "MuiTab-textColorSecondary",
+                                                  "wrapped": "MuiTab-wrapped",
+                                                  "wrapper": "MuiTab-wrapper",
                                                 }
                                               }
-                                            >
-                                              tabs.dataset
-                                            </span>
-                                          </WithStyles(WithStyles(ForwardRef(Badge)))>
-                                        }
-                                        onChange={[Function]}
-                                        selected={false}
-                                        textColor="inherit"
-                                        value="dataset"
-                                      >
-                                        <WithStyles(ForwardRef(ButtonBase))
-                                          aria-controls="simple-tabpanel-dataset"
-                                          aria-selected={false}
-                                          className="MuiTab-root MuiTab-textColorInherit"
-                                          disabled={false}
-                                          focusRipple={true}
-                                          id="simple-tab-dataset"
-                                          onClick={[Function]}
-                                          onFocus={[Function]}
-                                          role="tab"
-                                          tabIndex={-1}
-                                        >
-                                          <ForwardRef(ButtonBase)
-                                            aria-controls="simple-tabpanel-dataset"
-                                            aria-selected={false}
-                                            className="MuiTab-root MuiTab-textColorInherit"
-                                            classes={
-                                              Object {
-                                                "disabled": "Mui-disabled",
-                                                "focusVisible": "Mui-focusVisible",
-                                                "root": "MuiButtonBase-root",
-                                              }
-                                            }
-                                            disabled={false}
-                                            focusRipple={true}
-                                            id="simple-tab-dataset"
-                                            onClick={[Function]}
-                                            onFocus={[Function]}
-                                            role="tab"
-                                            tabIndex={-1}
-                                          >
-                                            <button
-                                              aria-controls="simple-tabpanel-dataset"
-                                              aria-selected={false}
-                                              className="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit"
-                                              disabled={false}
+                                              fullWidth={false}
                                               id="simple-tab-dataset"
-                                              onBlur={[Function]}
-                                              onClick={[Function]}
-                                              onDragLeave={[Function]}
-                                              onFocus={[Function]}
-                                              onKeyDown={[Function]}
-                                              onKeyUp={[Function]}
-                                              onMouseDown={[Function]}
-                                              onMouseLeave={[Function]}
-                                              onMouseUp={[Function]}
-                                              onTouchEnd={[Function]}
-                                              onTouchMove={[Function]}
-                                              onTouchStart={[Function]}
-                                              role="tab"
-                                              tabIndex={-1}
-                                              type="button"
-                                            >
-                                              <span
-                                                className="MuiTab-wrapper"
-                                              >
+                                              indicator={false}
+                                              label={
                                                 <WithStyles(WithStyles(ForwardRef(Badge)))
                                                   badgeContent={0}
                                                   id="dataset-badge"
                                                   max={999}
                                                   showZero={true}
                                                 >
-                                                  <WithStyles(ForwardRef(Badge))
-                                                    badgeContent={0}
-                                                    classes={
+                                                  <span
+                                                    style={
                                                       Object {
-                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-3",
+                                                        "fontSize": "16px",
+                                                        "fontWeight": "bold",
+                                                        "marginLeft": "calc(-0.5 * 1ch - 6px)",
+                                                        "marginRight": "calc(0.5 * 1ch + 6px)",
+                                                        "paddingRight": "1ch",
                                                       }
                                                     }
-                                                    id="dataset-badge"
-                                                    max={999}
-                                                    showZero={true}
                                                   >
-                                                    <ForwardRef(Badge)
-                                                      badgeContent={0}
-                                                      classes={
-                                                        Object {
-                                                          "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
-                                                          "anchorOriginBottomLeftRectangle": "MuiBadge-anchorOriginBottomLeftRectangle",
-                                                          "anchorOriginBottomRightCircle": "MuiBadge-anchorOriginBottomRightCircle",
-                                                          "anchorOriginBottomRightRectangle": "MuiBadge-anchorOriginBottomRightRectangle",
-                                                          "anchorOriginTopLeftCircle": "MuiBadge-anchorOriginTopLeftCircle",
-                                                          "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
-                                                          "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
-                                                          "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
-                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3",
-                                                          "colorError": "MuiBadge-colorError",
-                                                          "colorPrimary": "MuiBadge-colorPrimary",
-                                                          "colorSecondary": "MuiBadge-colorSecondary",
-                                                          "dot": "MuiBadge-dot",
-                                                          "invisible": "MuiBadge-invisible",
-                                                          "root": "MuiBadge-root",
-                                                        }
-                                                      }
-                                                      id="dataset-badge"
-                                                      max={999}
-                                                      showZero={true}
-                                                    >
-                                                      <span
-                                                        className="MuiBadge-root"
-                                                        id="dataset-badge"
-                                                      >
-                                                        <span
-                                                          style={
-                                                            Object {
-                                                              "fontSize": "16px",
-                                                              "fontWeight": "bold",
-                                                              "marginLeft": "calc(-0.5 * 1ch - 6px)",
-                                                              "marginRight": "calc(0.5 * 1ch + 6px)",
-                                                              "paddingRight": "1ch",
-                                                            }
-                                                          }
-                                                        >
-                                                          tabs.dataset
-                                                        </span>
-                                                        <span
-                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3 MuiBadge-anchorOriginTopRightRectangle"
-                                                        >
-                                                          0
-                                                        </span>
-                                                      </span>
-                                                    </ForwardRef(Badge)>
-                                                  </WithStyles(ForwardRef(Badge))>
+                                                    tabs.dataset
+                                                  </span>
                                                 </WithStyles(WithStyles(ForwardRef(Badge)))>
-                                              </span>
-                                              <WithStyles(memo)
-                                                center={false}
+                                              }
+                                              onChange={[Function]}
+                                              selected={false}
+                                              textColor="inherit"
+                                              value="dataset"
+                                            >
+                                              <WithStyles(ForwardRef(ButtonBase))
+                                                aria-controls="simple-tabpanel-dataset"
+                                                aria-selected={false}
+                                                className="MuiTab-root MuiTab-textColorInherit"
+                                                disabled={false}
+                                                focusRipple={true}
+                                                id="simple-tab-dataset"
+                                                onClick={[Function]}
+                                                onFocus={[Function]}
+                                                role="tab"
+                                                tabIndex={-1}
                                               >
-                                                <ForwardRef(TouchRipple)
-                                                  center={false}
+                                                <ForwardRef(ButtonBase)
+                                                  aria-controls="simple-tabpanel-dataset"
+                                                  aria-selected={false}
+                                                  className="MuiTab-root MuiTab-textColorInherit"
                                                   classes={
                                                     Object {
-                                                      "child": "MuiTouchRipple-child",
-                                                      "childLeaving": "MuiTouchRipple-childLeaving",
-                                                      "childPulsate": "MuiTouchRipple-childPulsate",
-                                                      "ripple": "MuiTouchRipple-ripple",
-                                                      "ripplePulsate": "MuiTouchRipple-ripplePulsate",
-                                                      "rippleVisible": "MuiTouchRipple-rippleVisible",
-                                                      "root": "MuiTouchRipple-root",
+                                                      "disabled": "Mui-disabled",
+                                                      "focusVisible": "Mui-focusVisible",
+                                                      "root": "MuiButtonBase-root",
+                                                    }
+                                                  }
+                                                  disabled={false}
+                                                  focusRipple={true}
+                                                  id="simple-tab-dataset"
+                                                  onClick={[Function]}
+                                                  onFocus={[Function]}
+                                                  role="tab"
+                                                  tabIndex={-1}
+                                                >
+                                                  <button
+                                                    aria-controls="simple-tabpanel-dataset"
+                                                    aria-selected={false}
+                                                    className="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit"
+                                                    disabled={false}
+                                                    id="simple-tab-dataset"
+                                                    onBlur={[Function]}
+                                                    onClick={[Function]}
+                                                    onDragLeave={[Function]}
+                                                    onFocus={[Function]}
+                                                    onKeyDown={[Function]}
+                                                    onKeyUp={[Function]}
+                                                    onMouseDown={[Function]}
+                                                    onMouseLeave={[Function]}
+                                                    onMouseUp={[Function]}
+                                                    onTouchEnd={[Function]}
+                                                    onTouchMove={[Function]}
+                                                    onTouchStart={[Function]}
+                                                    role="tab"
+                                                    tabIndex={-1}
+                                                    type="button"
+                                                  >
+                                                    <span
+                                                      className="MuiTab-wrapper"
+                                                    >
+                                                      <WithStyles(WithStyles(ForwardRef(Badge)))
+                                                        badgeContent={0}
+                                                        id="dataset-badge"
+                                                        max={999}
+                                                        showZero={true}
+                                                      >
+                                                        <WithStyles(ForwardRef(Badge))
+                                                          badgeContent={0}
+                                                          classes={
+                                                            Object {
+                                                              "badge": "WithStyles(ForwardRef(Badge))-badge-5",
+                                                            }
+                                                          }
+                                                          id="dataset-badge"
+                                                          max={999}
+                                                          showZero={true}
+                                                        >
+                                                          <ForwardRef(Badge)
+                                                            badgeContent={0}
+                                                            classes={
+                                                              Object {
+                                                                "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
+                                                                "anchorOriginBottomLeftRectangle": "MuiBadge-anchorOriginBottomLeftRectangle",
+                                                                "anchorOriginBottomRightCircle": "MuiBadge-anchorOriginBottomRightCircle",
+                                                                "anchorOriginBottomRightRectangle": "MuiBadge-anchorOriginBottomRightRectangle",
+                                                                "anchorOriginTopLeftCircle": "MuiBadge-anchorOriginTopLeftCircle",
+                                                                "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
+                                                                "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
+                                                                "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
+                                                                "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5",
+                                                                "colorError": "MuiBadge-colorError",
+                                                                "colorPrimary": "MuiBadge-colorPrimary",
+                                                                "colorSecondary": "MuiBadge-colorSecondary",
+                                                                "dot": "MuiBadge-dot",
+                                                                "invisible": "MuiBadge-invisible",
+                                                                "root": "MuiBadge-root",
+                                                              }
+                                                            }
+                                                            id="dataset-badge"
+                                                            max={999}
+                                                            showZero={true}
+                                                          >
+                                                            <span
+                                                              className="MuiBadge-root"
+                                                              id="dataset-badge"
+                                                            >
+                                                              <span
+                                                                style={
+                                                                  Object {
+                                                                    "fontSize": "16px",
+                                                                    "fontWeight": "bold",
+                                                                    "marginLeft": "calc(-0.5 * 1ch - 6px)",
+                                                                    "marginRight": "calc(0.5 * 1ch + 6px)",
+                                                                    "paddingRight": "1ch",
+                                                                  }
+                                                                }
+                                                              >
+                                                                tabs.dataset
+                                                              </span>
+                                                              <span
+                                                                className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5 MuiBadge-anchorOriginTopRightRectangle"
+                                                              >
+                                                                0
+                                                              </span>
+                                                            </span>
+                                                          </ForwardRef(Badge)>
+                                                        </WithStyles(ForwardRef(Badge))>
+                                                      </WithStyles(WithStyles(ForwardRef(Badge)))>
+                                                    </span>
+                                                    <WithStyles(memo)
+                                                      center={false}
+                                                    >
+                                                      <ForwardRef(TouchRipple)
+                                                        center={false}
+                                                        classes={
+                                                          Object {
+                                                            "child": "MuiTouchRipple-child",
+                                                            "childLeaving": "MuiTouchRipple-childLeaving",
+                                                            "childPulsate": "MuiTouchRipple-childPulsate",
+                                                            "ripple": "MuiTouchRipple-ripple",
+                                                            "ripplePulsate": "MuiTouchRipple-ripplePulsate",
+                                                            "rippleVisible": "MuiTouchRipple-rippleVisible",
+                                                            "root": "MuiTouchRipple-root",
+                                                          }
+                                                        }
+                                                      >
+                                                        <span
+                                                          className="MuiTouchRipple-root"
+                                                        >
+                                                          <TransitionGroup
+                                                            childFactory={[Function]}
+                                                            component={null}
+                                                            exit={true}
+                                                          />
+                                                        </span>
+                                                      </ForwardRef(TouchRipple)>
+                                                    </WithStyles(memo)>
+                                                  </button>
+                                                </ForwardRef(ButtonBase)>
+                                              </WithStyles(ForwardRef(ButtonBase))>
+                                            </ForwardRef(Tab)>
+                                          </WithStyles(ForwardRef(Tab))>
+                                          <WithStyles(ForwardRef(Tab))
+                                            aria-controls="simple-tabpanel-datafile"
+                                            fullWidth={false}
+                                            id="simple-tab-datafile"
+                                            indicator={false}
+                                            key=".2"
+                                            label={
+                                              <WithStyles(WithStyles(ForwardRef(Badge)))
+                                                badgeContent={0}
+                                                id="datafile-badge"
+                                                max={999}
+                                                showZero={true}
+                                              >
+                                                <span
+                                                  style={
+                                                    Object {
+                                                      "fontSize": "16px",
+                                                      "fontWeight": "bold",
+                                                      "marginLeft": "calc(-0.5 * 1ch - 6px)",
+                                                      "marginRight": "calc(0.5 * 1ch + 6px)",
+                                                      "paddingRight": "1ch",
                                                     }
                                                   }
                                                 >
-                                                  <span
-                                                    className="MuiTouchRipple-root"
-                                                  >
-                                                    <TransitionGroup
-                                                      childFactory={[Function]}
-                                                      component={null}
-                                                      exit={true}
-                                                    />
-                                                  </span>
-                                                </ForwardRef(TouchRipple)>
-                                              </WithStyles(memo)>
-                                            </button>
-                                          </ForwardRef(ButtonBase)>
-                                        </WithStyles(ForwardRef(ButtonBase))>
-                                      </ForwardRef(Tab)>
-                                    </WithStyles(ForwardRef(Tab))>
-                                    <WithStyles(ForwardRef(Tab))
-                                      aria-controls="simple-tabpanel-datafile"
-                                      fullWidth={false}
-                                      id="simple-tab-datafile"
-                                      indicator={false}
-                                      key=".2"
-                                      label={
-                                        <WithStyles(WithStyles(ForwardRef(Badge)))
-                                          badgeContent={0}
-                                          id="datafile-badge"
-                                          max={999}
-                                          showZero={true}
-                                        >
-                                          <span
-                                            style={
-                                              Object {
-                                                "fontSize": "16px",
-                                                "fontWeight": "bold",
-                                                "marginLeft": "calc(-0.5 * 1ch - 6px)",
-                                                "marginRight": "calc(0.5 * 1ch + 6px)",
-                                                "paddingRight": "1ch",
-                                              }
+                                                  tabs.datafile
+                                                </span>
+                                              </WithStyles(WithStyles(ForwardRef(Badge)))>
                                             }
+                                            onChange={[Function]}
+                                            selected={false}
+                                            textColor="inherit"
+                                            value="datafile"
                                           >
-                                            tabs.datafile
-                                          </span>
-                                        </WithStyles(WithStyles(ForwardRef(Badge)))>
-                                      }
-                                      onChange={[Function]}
-                                      selected={false}
-                                      textColor="inherit"
-                                      value="datafile"
-                                    >
-                                      <ForwardRef(Tab)
-                                        aria-controls="simple-tabpanel-datafile"
-                                        classes={
-                                          Object {
-                                            "disabled": "Mui-disabled",
-                                            "fullWidth": "MuiTab-fullWidth",
-                                            "labelIcon": "MuiTab-labelIcon",
-                                            "root": "MuiTab-root",
-                                            "selected": "Mui-selected",
-                                            "textColorInherit": "MuiTab-textColorInherit",
-                                            "textColorPrimary": "MuiTab-textColorPrimary",
-                                            "textColorSecondary": "MuiTab-textColorSecondary",
-                                            "wrapped": "MuiTab-wrapped",
-                                            "wrapper": "MuiTab-wrapper",
-                                          }
-                                        }
-                                        fullWidth={false}
-                                        id="simple-tab-datafile"
-                                        indicator={false}
-                                        label={
-                                          <WithStyles(WithStyles(ForwardRef(Badge)))
-                                            badgeContent={0}
-                                            id="datafile-badge"
-                                            max={999}
-                                            showZero={true}
-                                          >
-                                            <span
-                                              style={
+                                            <ForwardRef(Tab)
+                                              aria-controls="simple-tabpanel-datafile"
+                                              classes={
                                                 Object {
-                                                  "fontSize": "16px",
-                                                  "fontWeight": "bold",
-                                                  "marginLeft": "calc(-0.5 * 1ch - 6px)",
-                                                  "marginRight": "calc(0.5 * 1ch + 6px)",
-                                                  "paddingRight": "1ch",
+                                                  "disabled": "Mui-disabled",
+                                                  "fullWidth": "MuiTab-fullWidth",
+                                                  "labelIcon": "MuiTab-labelIcon",
+                                                  "root": "MuiTab-root",
+                                                  "selected": "Mui-selected",
+                                                  "textColorInherit": "MuiTab-textColorInherit",
+                                                  "textColorPrimary": "MuiTab-textColorPrimary",
+                                                  "textColorSecondary": "MuiTab-textColorSecondary",
+                                                  "wrapped": "MuiTab-wrapped",
+                                                  "wrapper": "MuiTab-wrapper",
                                                 }
                                               }
-                                            >
-                                              tabs.datafile
-                                            </span>
-                                          </WithStyles(WithStyles(ForwardRef(Badge)))>
-                                        }
-                                        onChange={[Function]}
-                                        selected={false}
-                                        textColor="inherit"
-                                        value="datafile"
-                                      >
-                                        <WithStyles(ForwardRef(ButtonBase))
-                                          aria-controls="simple-tabpanel-datafile"
-                                          aria-selected={false}
-                                          className="MuiTab-root MuiTab-textColorInherit"
-                                          disabled={false}
-                                          focusRipple={true}
-                                          id="simple-tab-datafile"
-                                          onClick={[Function]}
-                                          onFocus={[Function]}
-                                          role="tab"
-                                          tabIndex={-1}
-                                        >
-                                          <ForwardRef(ButtonBase)
-                                            aria-controls="simple-tabpanel-datafile"
-                                            aria-selected={false}
-                                            className="MuiTab-root MuiTab-textColorInherit"
-                                            classes={
-                                              Object {
-                                                "disabled": "Mui-disabled",
-                                                "focusVisible": "Mui-focusVisible",
-                                                "root": "MuiButtonBase-root",
-                                              }
-                                            }
-                                            disabled={false}
-                                            focusRipple={true}
-                                            id="simple-tab-datafile"
-                                            onClick={[Function]}
-                                            onFocus={[Function]}
-                                            role="tab"
-                                            tabIndex={-1}
-                                          >
-                                            <button
-                                              aria-controls="simple-tabpanel-datafile"
-                                              aria-selected={false}
-                                              className="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit"
-                                              disabled={false}
+                                              fullWidth={false}
                                               id="simple-tab-datafile"
-                                              onBlur={[Function]}
-                                              onClick={[Function]}
-                                              onDragLeave={[Function]}
-                                              onFocus={[Function]}
-                                              onKeyDown={[Function]}
-                                              onKeyUp={[Function]}
-                                              onMouseDown={[Function]}
-                                              onMouseLeave={[Function]}
-                                              onMouseUp={[Function]}
-                                              onTouchEnd={[Function]}
-                                              onTouchMove={[Function]}
-                                              onTouchStart={[Function]}
-                                              role="tab"
-                                              tabIndex={-1}
-                                              type="button"
-                                            >
-                                              <span
-                                                className="MuiTab-wrapper"
-                                              >
+                                              indicator={false}
+                                              label={
                                                 <WithStyles(WithStyles(ForwardRef(Badge)))
                                                   badgeContent={0}
                                                   id="datafile-badge"
                                                   max={999}
                                                   showZero={true}
                                                 >
-                                                  <WithStyles(ForwardRef(Badge))
-                                                    badgeContent={0}
-                                                    classes={
+                                                  <span
+                                                    style={
                                                       Object {
-                                                        "badge": "WithStyles(ForwardRef(Badge))-badge-3",
+                                                        "fontSize": "16px",
+                                                        "fontWeight": "bold",
+                                                        "marginLeft": "calc(-0.5 * 1ch - 6px)",
+                                                        "marginRight": "calc(0.5 * 1ch + 6px)",
+                                                        "paddingRight": "1ch",
                                                       }
                                                     }
-                                                    id="datafile-badge"
-                                                    max={999}
-                                                    showZero={true}
                                                   >
-                                                    <ForwardRef(Badge)
-                                                      badgeContent={0}
-                                                      classes={
-                                                        Object {
-                                                          "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
-                                                          "anchorOriginBottomLeftRectangle": "MuiBadge-anchorOriginBottomLeftRectangle",
-                                                          "anchorOriginBottomRightCircle": "MuiBadge-anchorOriginBottomRightCircle",
-                                                          "anchorOriginBottomRightRectangle": "MuiBadge-anchorOriginBottomRightRectangle",
-                                                          "anchorOriginTopLeftCircle": "MuiBadge-anchorOriginTopLeftCircle",
-                                                          "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
-                                                          "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
-                                                          "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
-                                                          "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3",
-                                                          "colorError": "MuiBadge-colorError",
-                                                          "colorPrimary": "MuiBadge-colorPrimary",
-                                                          "colorSecondary": "MuiBadge-colorSecondary",
-                                                          "dot": "MuiBadge-dot",
-                                                          "invisible": "MuiBadge-invisible",
-                                                          "root": "MuiBadge-root",
-                                                        }
-                                                      }
-                                                      id="datafile-badge"
-                                                      max={999}
-                                                      showZero={true}
-                                                    >
-                                                      <span
-                                                        className="MuiBadge-root"
-                                                        id="datafile-badge"
-                                                      >
-                                                        <span
-                                                          style={
-                                                            Object {
-                                                              "fontSize": "16px",
-                                                              "fontWeight": "bold",
-                                                              "marginLeft": "calc(-0.5 * 1ch - 6px)",
-                                                              "marginRight": "calc(0.5 * 1ch + 6px)",
-                                                              "paddingRight": "1ch",
-                                                            }
-                                                          }
-                                                        >
-                                                          tabs.datafile
-                                                        </span>
-                                                        <span
-                                                          className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-3 MuiBadge-anchorOriginTopRightRectangle"
-                                                        >
-                                                          0
-                                                        </span>
-                                                      </span>
-                                                    </ForwardRef(Badge)>
-                                                  </WithStyles(ForwardRef(Badge))>
+                                                    tabs.datafile
+                                                  </span>
                                                 </WithStyles(WithStyles(ForwardRef(Badge)))>
-                                              </span>
-                                              <WithStyles(memo)
-                                                center={false}
+                                              }
+                                              onChange={[Function]}
+                                              selected={false}
+                                              textColor="inherit"
+                                              value="datafile"
+                                            >
+                                              <WithStyles(ForwardRef(ButtonBase))
+                                                aria-controls="simple-tabpanel-datafile"
+                                                aria-selected={false}
+                                                className="MuiTab-root MuiTab-textColorInherit"
+                                                disabled={false}
+                                                focusRipple={true}
+                                                id="simple-tab-datafile"
+                                                onClick={[Function]}
+                                                onFocus={[Function]}
+                                                role="tab"
+                                                tabIndex={-1}
                                               >
-                                                <ForwardRef(TouchRipple)
-                                                  center={false}
+                                                <ForwardRef(ButtonBase)
+                                                  aria-controls="simple-tabpanel-datafile"
+                                                  aria-selected={false}
+                                                  className="MuiTab-root MuiTab-textColorInherit"
                                                   classes={
                                                     Object {
-                                                      "child": "MuiTouchRipple-child",
-                                                      "childLeaving": "MuiTouchRipple-childLeaving",
-                                                      "childPulsate": "MuiTouchRipple-childPulsate",
-                                                      "ripple": "MuiTouchRipple-ripple",
-                                                      "ripplePulsate": "MuiTouchRipple-ripplePulsate",
-                                                      "rippleVisible": "MuiTouchRipple-rippleVisible",
-                                                      "root": "MuiTouchRipple-root",
+                                                      "disabled": "Mui-disabled",
+                                                      "focusVisible": "Mui-focusVisible",
+                                                      "root": "MuiButtonBase-root",
                                                     }
                                                   }
+                                                  disabled={false}
+                                                  focusRipple={true}
+                                                  id="simple-tab-datafile"
+                                                  onClick={[Function]}
+                                                  onFocus={[Function]}
+                                                  role="tab"
+                                                  tabIndex={-1}
                                                 >
-                                                  <span
-                                                    className="MuiTouchRipple-root"
+                                                  <button
+                                                    aria-controls="simple-tabpanel-datafile"
+                                                    aria-selected={false}
+                                                    className="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit"
+                                                    disabled={false}
+                                                    id="simple-tab-datafile"
+                                                    onBlur={[Function]}
+                                                    onClick={[Function]}
+                                                    onDragLeave={[Function]}
+                                                    onFocus={[Function]}
+                                                    onKeyDown={[Function]}
+                                                    onKeyUp={[Function]}
+                                                    onMouseDown={[Function]}
+                                                    onMouseLeave={[Function]}
+                                                    onMouseUp={[Function]}
+                                                    onTouchEnd={[Function]}
+                                                    onTouchMove={[Function]}
+                                                    onTouchStart={[Function]}
+                                                    role="tab"
+                                                    tabIndex={-1}
+                                                    type="button"
                                                   >
-                                                    <TransitionGroup
-                                                      childFactory={[Function]}
-                                                      component={null}
-                                                      exit={true}
-                                                    />
-                                                  </span>
-                                                </ForwardRef(TouchRipple)>
-                                              </WithStyles(memo)>
-                                            </button>
-                                          </ForwardRef(ButtonBase)>
-                                        </WithStyles(ForwardRef(ButtonBase))>
-                                      </ForwardRef(Tab)>
-                                    </WithStyles(ForwardRef(Tab))>
-                                  </div>
-                                  <WithStyles(ForwardRef(TabIndicator))
-                                    className="MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-2"
-                                    color="secondary"
-                                    orientation="horizontal"
-                                    style={
+                                                    <span
+                                                      className="MuiTab-wrapper"
+                                                    >
+                                                      <WithStyles(WithStyles(ForwardRef(Badge)))
+                                                        badgeContent={0}
+                                                        id="datafile-badge"
+                                                        max={999}
+                                                        showZero={true}
+                                                      >
+                                                        <WithStyles(ForwardRef(Badge))
+                                                          badgeContent={0}
+                                                          classes={
+                                                            Object {
+                                                              "badge": "WithStyles(ForwardRef(Badge))-badge-5",
+                                                            }
+                                                          }
+                                                          id="datafile-badge"
+                                                          max={999}
+                                                          showZero={true}
+                                                        >
+                                                          <ForwardRef(Badge)
+                                                            badgeContent={0}
+                                                            classes={
+                                                              Object {
+                                                                "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
+                                                                "anchorOriginBottomLeftRectangle": "MuiBadge-anchorOriginBottomLeftRectangle",
+                                                                "anchorOriginBottomRightCircle": "MuiBadge-anchorOriginBottomRightCircle",
+                                                                "anchorOriginBottomRightRectangle": "MuiBadge-anchorOriginBottomRightRectangle",
+                                                                "anchorOriginTopLeftCircle": "MuiBadge-anchorOriginTopLeftCircle",
+                                                                "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
+                                                                "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
+                                                                "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
+                                                                "badge": "MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5",
+                                                                "colorError": "MuiBadge-colorError",
+                                                                "colorPrimary": "MuiBadge-colorPrimary",
+                                                                "colorSecondary": "MuiBadge-colorSecondary",
+                                                                "dot": "MuiBadge-dot",
+                                                                "invisible": "MuiBadge-invisible",
+                                                                "root": "MuiBadge-root",
+                                                              }
+                                                            }
+                                                            id="datafile-badge"
+                                                            max={999}
+                                                            showZero={true}
+                                                          >
+                                                            <span
+                                                              className="MuiBadge-root"
+                                                              id="datafile-badge"
+                                                            >
+                                                              <span
+                                                                style={
+                                                                  Object {
+                                                                    "fontSize": "16px",
+                                                                    "fontWeight": "bold",
+                                                                    "marginLeft": "calc(-0.5 * 1ch - 6px)",
+                                                                    "marginRight": "calc(0.5 * 1ch + 6px)",
+                                                                    "paddingRight": "1ch",
+                                                                  }
+                                                                }
+                                                              >
+                                                                tabs.datafile
+                                                              </span>
+                                                              <span
+                                                                className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5 MuiBadge-anchorOriginTopRightRectangle"
+                                                              >
+                                                                0
+                                                              </span>
+                                                            </span>
+                                                          </ForwardRef(Badge)>
+                                                        </WithStyles(ForwardRef(Badge))>
+                                                      </WithStyles(WithStyles(ForwardRef(Badge)))>
+                                                    </span>
+                                                    <WithStyles(memo)
+                                                      center={false}
+                                                    >
+                                                      <ForwardRef(TouchRipple)
+                                                        center={false}
+                                                        classes={
+                                                          Object {
+                                                            "child": "MuiTouchRipple-child",
+                                                            "childLeaving": "MuiTouchRipple-childLeaving",
+                                                            "childPulsate": "MuiTouchRipple-childPulsate",
+                                                            "ripple": "MuiTouchRipple-ripple",
+                                                            "ripplePulsate": "MuiTouchRipple-ripplePulsate",
+                                                            "rippleVisible": "MuiTouchRipple-rippleVisible",
+                                                            "root": "MuiTouchRipple-root",
+                                                          }
+                                                        }
+                                                      >
+                                                        <span
+                                                          className="MuiTouchRipple-root"
+                                                        >
+                                                          <TransitionGroup
+                                                            childFactory={[Function]}
+                                                            component={null}
+                                                            exit={true}
+                                                          />
+                                                        </span>
+                                                      </ForwardRef(TouchRipple)>
+                                                    </WithStyles(memo)>
+                                                  </button>
+                                                </ForwardRef(ButtonBase)>
+                                              </WithStyles(ForwardRef(ButtonBase))>
+                                            </ForwardRef(Tab)>
+                                          </WithStyles(ForwardRef(Tab))>
+                                        </div>
+                                        <WithStyles(ForwardRef(TabIndicator))
+                                          className="MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-4"
+                                          color="secondary"
+                                          orientation="horizontal"
+                                          style={
+                                            Object {
+                                              "left": 0,
+                                              "width": 0,
+                                            }
+                                          }
+                                        >
+                                          <ForwardRef(TabIndicator)
+                                            className="MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-4"
+                                            classes={
+                                              Object {
+                                                "colorPrimary": "PrivateTabIndicator-colorPrimary-7",
+                                                "colorSecondary": "PrivateTabIndicator-colorSecondary-8",
+                                                "root": "PrivateTabIndicator-root-6",
+                                                "vertical": "PrivateTabIndicator-vertical-9",
+                                              }
+                                            }
+                                            color="secondary"
+                                            orientation="horizontal"
+                                            style={
+                                              Object {
+                                                "left": 0,
+                                                "width": 0,
+                                              }
+                                            }
+                                          >
+                                            <span
+                                              className="PrivateTabIndicator-root-6 PrivateTabIndicator-colorSecondary-8 MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-4"
+                                              style={
+                                                Object {
+                                                  "left": 0,
+                                                  "width": 0,
+                                                }
+                                              }
+                                            />
+                                          </ForwardRef(TabIndicator)>
+                                        </WithStyles(ForwardRef(TabIndicator))>
+                                      </div>
+                                    </div>
+                                  </ForwardRef(Tabs)>
+                                </WithStyles(ForwardRef(Tabs))>
+                              </WithStyles(WithStyles(ForwardRef(Tabs)))>
+                              <WithStyles(Styled(MuiBox))
+                                marginLeft="auto"
+                              >
+                                <Styled(MuiBox)
+                                  classes={
+                                    Object {
+                                      "root": "Styled(MuiBox)-root-1",
+                                    }
+                                  }
+                                  marginLeft="auto"
+                                >
+                                  <div
+                                    className="MuiBox-root MuiBox-root-10 Styled(MuiBox)-root-1"
+                                    classes={
                                       Object {
-                                        "left": 0,
-                                        "width": 0,
+                                        "root": "Styled(MuiBox)-root-1",
                                       }
                                     }
                                   >
-                                    <ForwardRef(TabIndicator)
-                                      className="MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-2"
-                                      classes={
-                                        Object {
-                                          "colorPrimary": "PrivateTabIndicator-colorPrimary-5",
-                                          "colorSecondary": "PrivateTabIndicator-colorSecondary-6",
-                                          "root": "PrivateTabIndicator-root-4",
-                                          "vertical": "PrivateTabIndicator-vertical-7",
-                                        }
-                                      }
-                                      color="secondary"
-                                      orientation="horizontal"
-                                      style={
-                                        Object {
-                                          "left": 0,
-                                          "width": 0,
-                                        }
-                                      }
+                                    <ViewCartButton
+                                      cartItems={Array []}
+                                      navigateToDownload={[MockFunction]}
                                     >
-                                      <span
-                                        className="PrivateTabIndicator-root-4 PrivateTabIndicator-colorSecondary-6 MuiTabs-indicator WithStyles(ForwardRef(Tabs))-indicator-2"
-                                        style={
-                                          Object {
-                                            "left": 0,
-                                            "width": 0,
+                                      <div>
+                                        <WithStyles(ForwardRef(IconButton))
+                                          className="tour-dataview-cart-icon"
+                                          onClick={[MockFunction]}
+                                          style={
+                                            Object {
+                                              "margin": "auto",
+                                            }
                                           }
-                                        }
-                                      />
-                                    </ForwardRef(TabIndicator)>
-                                  </WithStyles(ForwardRef(TabIndicator))>
-                                </div>
-                              </div>
-                            </ForwardRef(Tabs)>
-                          </WithStyles(ForwardRef(Tabs))>
-                        </WithStyles(WithStyles(ForwardRef(Tabs)))>
+                                        >
+                                          <ForwardRef(IconButton)
+                                            className="tour-dataview-cart-icon"
+                                            classes={
+                                              Object {
+                                                "colorInherit": "MuiIconButton-colorInherit",
+                                                "colorPrimary": "MuiIconButton-colorPrimary",
+                                                "colorSecondary": "MuiIconButton-colorSecondary",
+                                                "disabled": "Mui-disabled",
+                                                "edgeEnd": "MuiIconButton-edgeEnd",
+                                                "edgeStart": "MuiIconButton-edgeStart",
+                                                "label": "MuiIconButton-label",
+                                                "root": "MuiIconButton-root",
+                                                "sizeSmall": "MuiIconButton-sizeSmall",
+                                              }
+                                            }
+                                            onClick={[MockFunction]}
+                                            style={
+                                              Object {
+                                                "margin": "auto",
+                                              }
+                                            }
+                                          >
+                                            <WithStyles(ForwardRef(ButtonBase))
+                                              centerRipple={true}
+                                              className="MuiIconButton-root tour-dataview-cart-icon"
+                                              disabled={false}
+                                              focusRipple={true}
+                                              onClick={[MockFunction]}
+                                              style={
+                                                Object {
+                                                  "margin": "auto",
+                                                }
+                                              }
+                                            >
+                                              <ForwardRef(ButtonBase)
+                                                centerRipple={true}
+                                                className="MuiIconButton-root tour-dataview-cart-icon"
+                                                classes={
+                                                  Object {
+                                                    "disabled": "Mui-disabled",
+                                                    "focusVisible": "Mui-focusVisible",
+                                                    "root": "MuiButtonBase-root",
+                                                  }
+                                                }
+                                                disabled={false}
+                                                focusRipple={true}
+                                                onClick={[MockFunction]}
+                                                style={
+                                                  Object {
+                                                    "margin": "auto",
+                                                  }
+                                                }
+                                              >
+                                                <button
+                                                  className="MuiButtonBase-root MuiIconButton-root tour-dataview-cart-icon"
+                                                  disabled={false}
+                                                  onBlur={[Function]}
+                                                  onClick={[MockFunction]}
+                                                  onDragLeave={[Function]}
+                                                  onFocus={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  onKeyUp={[Function]}
+                                                  onMouseDown={[Function]}
+                                                  onMouseLeave={[Function]}
+                                                  onMouseUp={[Function]}
+                                                  onTouchEnd={[Function]}
+                                                  onTouchMove={[Function]}
+                                                  onTouchStart={[Function]}
+                                                  style={
+                                                    Object {
+                                                      "margin": "auto",
+                                                    }
+                                                  }
+                                                  tabIndex={0}
+                                                  type="button"
+                                                >
+                                                  <span
+                                                    className="MuiIconButton-label"
+                                                  >
+                                                    <WithStyles(ForwardRef(Badge))
+                                                      badgeContent={null}
+                                                      color="primary"
+                                                    >
+                                                      <ForwardRef(Badge)
+                                                        badgeContent={null}
+                                                        classes={
+                                                          Object {
+                                                            "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
+                                                            "anchorOriginBottomLeftRectangle": "MuiBadge-anchorOriginBottomLeftRectangle",
+                                                            "anchorOriginBottomRightCircle": "MuiBadge-anchorOriginBottomRightCircle",
+                                                            "anchorOriginBottomRightRectangle": "MuiBadge-anchorOriginBottomRightRectangle",
+                                                            "anchorOriginTopLeftCircle": "MuiBadge-anchorOriginTopLeftCircle",
+                                                            "anchorOriginTopLeftRectangle": "MuiBadge-anchorOriginTopLeftRectangle",
+                                                            "anchorOriginTopRightCircle": "MuiBadge-anchorOriginTopRightCircle",
+                                                            "anchorOriginTopRightRectangle": "MuiBadge-anchorOriginTopRightRectangle",
+                                                            "badge": "MuiBadge-badge",
+                                                            "colorError": "MuiBadge-colorError",
+                                                            "colorPrimary": "MuiBadge-colorPrimary",
+                                                            "colorSecondary": "MuiBadge-colorSecondary",
+                                                            "dot": "MuiBadge-dot",
+                                                            "invisible": "MuiBadge-invisible",
+                                                            "root": "MuiBadge-root",
+                                                          }
+                                                        }
+                                                        color="primary"
+                                                      >
+                                                        <span
+                                                          className="MuiBadge-root"
+                                                        >
+                                                          <ForwardRef(ShoppingCartIcon)>
+                                                            <WithStyles(ForwardRef(SvgIcon))>
+                                                              <ForwardRef(SvgIcon)
+                                                                classes={
+                                                                  Object {
+                                                                    "colorAction": "MuiSvgIcon-colorAction",
+                                                                    "colorDisabled": "MuiSvgIcon-colorDisabled",
+                                                                    "colorError": "MuiSvgIcon-colorError",
+                                                                    "colorPrimary": "MuiSvgIcon-colorPrimary",
+                                                                    "colorSecondary": "MuiSvgIcon-colorSecondary",
+                                                                    "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                                                                    "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                                                                    "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                                                                    "root": "MuiSvgIcon-root",
+                                                                  }
+                                                                }
+                                                              >
+                                                                <svg
+                                                                  aria-hidden={true}
+                                                                  className="MuiSvgIcon-root"
+                                                                  focusable="false"
+                                                                  viewBox="0 0 24 24"
+                                                                >
+                                                                  <path
+                                                                    d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
+                                                                  />
+                                                                </svg>
+                                                              </ForwardRef(SvgIcon)>
+                                                            </WithStyles(ForwardRef(SvgIcon))>
+                                                          </ForwardRef(ShoppingCartIcon)>
+                                                          <span
+                                                            className="MuiBadge-badge MuiBadge-anchorOriginTopRightRectangle MuiBadge-colorPrimary MuiBadge-invisible"
+                                                          />
+                                                        </span>
+                                                      </ForwardRef(Badge)>
+                                                    </WithStyles(ForwardRef(Badge))>
+                                                  </span>
+                                                  <WithStyles(memo)
+                                                    center={true}
+                                                  >
+                                                    <ForwardRef(TouchRipple)
+                                                      center={true}
+                                                      classes={
+                                                        Object {
+                                                          "child": "MuiTouchRipple-child",
+                                                          "childLeaving": "MuiTouchRipple-childLeaving",
+                                                          "childPulsate": "MuiTouchRipple-childPulsate",
+                                                          "ripple": "MuiTouchRipple-ripple",
+                                                          "ripplePulsate": "MuiTouchRipple-ripplePulsate",
+                                                          "rippleVisible": "MuiTouchRipple-rippleVisible",
+                                                          "root": "MuiTouchRipple-root",
+                                                        }
+                                                      }
+                                                    >
+                                                      <span
+                                                        className="MuiTouchRipple-root"
+                                                      >
+                                                        <TransitionGroup
+                                                          childFactory={[Function]}
+                                                          component={null}
+                                                          exit={true}
+                                                        />
+                                                      </span>
+                                                    </ForwardRef(TouchRipple)>
+                                                  </WithStyles(memo)>
+                                                </button>
+                                              </ForwardRef(ButtonBase)>
+                                            </WithStyles(ForwardRef(ButtonBase))>
+                                          </ForwardRef(IconButton)>
+                                        </WithStyles(ForwardRef(IconButton))>
+                                      </div>
+                                    </ViewCartButton>
+                                  </div>
+                                </Styled(MuiBox)>
+                              </WithStyles(Styled(MuiBox))>
+                            </div>
+                          </Styled(MuiBox)>
+                        </WithStyles(Styled(MuiBox))>
                       </header>
                     </ForwardRef(Paper)>
                   </WithStyles(ForwardRef(Paper))>
@@ -5053,7 +5304,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                 >
                   <div
                     aria-labelledby="simple-tab-investigation"
-                    className="MuiBox-root MuiBox-root-8"
+                    className="MuiBox-root MuiBox-root-11"
                     hidden={false}
                     id="simple-tabpanel-investigation"
                     role="tabpanel"
@@ -5062,7 +5313,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       pt={1}
                     >
                       <div
-                        className="MuiBox-root MuiBox-root-9"
+                        className="MuiBox-root MuiBox-root-12"
                       >
                         <WithStyles(ForwardRef(Paper))
                           elevation={0}

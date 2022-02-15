@@ -519,6 +519,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const { push } = useHistory();
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
+  const [t] = useTranslation();
 
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
@@ -617,6 +618,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         hierarchy={match.params.hierarchy}
                         onTabChange={pushCurrentTab}
                         currentTab={currentTab}
+                        cartItems={cartItems ?? []}
+                        navigateToDownload={navigateToDownload}
+                        cartAriaLabel={t('searchPageContainer.cart_arialabel')}
                       />
                     ) : (
                       <SearchPageTable
@@ -624,6 +628,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         hierarchy={match.params.hierarchy}
                         onTabChange={pushCurrentTab}
                         currentTab={currentTab}
+                        cartItems={cartItems ?? []}
+                        navigateToDownload={navigateToDownload}
+                        cartAriaLabel={t('searchPageContainer.cart_arialabel')}
                       />
                     )}
                   </Paper>

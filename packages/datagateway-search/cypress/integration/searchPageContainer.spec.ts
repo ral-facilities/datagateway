@@ -331,6 +331,53 @@ describe('SearchPageContainer Component', () => {
         .should('exist');
     });
 
+    it('should display number of items in cart correctly and go to the download page when clicked (Table)', () => {
+      // Check that the download cart has displayed correctly.
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+        // matches empty string i.e. no badge
+        /^$/
+      );
+
+      cy.get('[aria-label="select row 0"]', { timeout: 10000 }).eq(0).click();
+
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+        /^1/
+      );
+
+      cy.get('[aria-label="select row 1"]', { timeout: 10000 }).eq(0).click();
+
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+        /^2/
+      );
+
+      cy.get('[aria-label="Go to selections"]').click();
+      cy.url().should('include', '/download');
+    });
+
+    it('should display number of items in cart correctly and go to the download page when clicked (Card)', () => {
+      cy.get('[aria-label="container-view-button"]').click();
+      // Check that the download cart has displayed correctly.
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+        // matches empty string i.e. no badge
+        /^$/
+      );
+
+      cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(0).click();
+
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+        /^1/
+      );
+
+      cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(1).click();
+
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+        /^2/
+      );
+
+      cy.get('[aria-label="Go to selections"]').click();
+      cy.url().should('include', '/download');
+    });
+
     it('should be able to select a start date', () => {
       cy.get('[aria-label="Start date input"]').type('2009-01-01');
 

@@ -12,7 +12,7 @@ import { createMount } from '@mui/material/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';
-import { dGCommonInitialState } from 'datagateway-common';
+import { dGCommonInitialState, CartProps } from 'datagateway-common';
 import axios from 'axios';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Store } from 'redux';
@@ -32,14 +32,15 @@ describe('SearchPageCardView', () => {
   let mount: typeof enzymeMount;
   let state: StateType;
   let history: History;
-  let props: SearchCardViewProps;
+  let props: SearchCardViewProps & CartProps;
 
   const mockStore = configureStore([thunk]);
   const onTabChange = jest.fn();
+  const navigateToDownload = jest.fn();
 
   const createWrapper = (
     store: Store = mockStore(state),
-    props: SearchCardViewProps
+    props: SearchCardViewProps & CartProps
   ): ReactWrapper => {
     return mount(
       <Provider store={store}>
@@ -67,6 +68,8 @@ describe('SearchPageCardView', () => {
     props = {
       onTabChange: onTabChange,
       currentTab: 'investigation',
+      cartItems: [],
+      navigateToDownload: navigateToDownload,
     };
 
     (axios.get as jest.Mock).mockImplementation((url) => {
@@ -80,6 +83,7 @@ describe('SearchPageCardView', () => {
 
   afterEach(() => {
     onTabChange.mockClear();
+    navigateToDownload.mockClear();
   });
 
   it('renders correctly when request received', () => {

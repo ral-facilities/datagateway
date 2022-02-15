@@ -159,7 +159,7 @@ describe('PageContainer - Tests', () => {
   it('opens download plugin when Download Cart clicked', () => {
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="view-cart"]').first().simulate('click');
+    wrapper.find('[aria-label="app.cart_arialabel"]').first().simulate('click');
 
     expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/download');
