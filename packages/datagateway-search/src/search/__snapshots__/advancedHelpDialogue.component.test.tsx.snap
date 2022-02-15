@@ -33,11 +33,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
     <Styled(ForwardRef(DialogTitle))
       id="advanced-search-dialog-title"
     >
-      <ForwardRef(Typography)
-        variant="h6"
-      >
-        Advanced Search Tips
-      </ForwardRef(Typography)>
+      Advanced Search Tips
       <ForwardRef(IconButton)
         aria-label="advanced_search_help.close_button_arialabel"
         onClick={[Function]}

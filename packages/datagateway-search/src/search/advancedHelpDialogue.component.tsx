@@ -71,7 +71,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
         }}
       >
         <DialogueHeading id="advanced-search-dialog-title">
-          <Typography variant="h6">Advanced Search Tips</Typography>
+          Advanced Search Tips
           <IconButton
             aria-label={t('advanced_search_help.close_button_arialabel')}
             sx={{
