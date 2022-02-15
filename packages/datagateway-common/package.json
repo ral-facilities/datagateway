@@ -10,8 +10,6 @@
     "@date-io/date-fns": "^1.3.13",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
-    "@material-ui/lab": "^4.0.0-alpha.58",
-    "@mui/icons-material": "^5.3.1",
     "@mui/lab": "^5.0.0-alpha.67",
     "@types/lodash.debounce": "^4.0.6",
     "axios": "^0.26.0",
@@ -36,18 +34,15 @@
     "use-deep-compare-effect": "^1.6.1"
   },
   "peerDependencies": {
-    "@material-ui/core": ">=  4.0.0 < 5",
-    "@material-ui/icons": ">=  4.0.0 < 5",
-    "@mui/lab": "^5.0.0-alpha.67",
-    "@mui/material": "^5.4.0",
-    "react": ">= 17.0.2",
-    "react-dom": ">= 17.0.2",
+    "@mui/material": ">= 5.4.0 < 6",
+    "@mui/icons-material": ">= 5.3.1 < 6",
+    "react": ">= 17.0.2 < 18",
+    "react-dom": ">= 17.0.2 < 18",
     "react-router-dom": ">= 5.2.0 < 6"
   },
   "devDependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.11.2",
     "@mui/material": "^5.4.0",
+    "@mui/icons-material": "^5.3.1",
     "@testing-library/react-hooks": "^7.0.1",
     "@types/enzyme": "^3.10.10",
     "@types/jest": "^27.4.0",
