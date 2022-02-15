@@ -31,28 +31,22 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Theme } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import { styled } from '@mui/material';
 
 interface DatasetCardViewProps {
   hierarchy: string;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const ActionButtonDiv = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const { hierarchy } = props;
@@ -349,14 +343,12 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     [hierarchy, hierarchyLinkURL, push]
   );
 
-  const classes = useStyles();
-
   const buttons = React.useMemo(
     () =>
       hierarchy !== 'dls'
         ? [
             (dataset: Dataset) => (
-              <div className={classes.actionButtons}>
+              <ActionButtonDiv>
                 <AddToCartButton
                   entityType="dataset"
                   allIds={data?.map((dataset) => dataset.id) ?? []}
@@ -367,7 +359,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
                   entityId={dataset.id}
                   entityName={dataset.name}
                 />
-              </div>
+              </ActionButtonDiv>
             ),
           ]
         : [
@@ -379,8 +371,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
               />
             ),
           ],
-
-    [classes.actionButtons, data, hierarchy]
+    [data, hierarchy]
   );
 
   return (

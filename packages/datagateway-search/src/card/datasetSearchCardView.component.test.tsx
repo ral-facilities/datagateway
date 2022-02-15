@@ -1,5 +1,5 @@
-import { Link, ListItemText } from '@mui/material';
-import { createMount } from '@mui/material/test-utils';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { ListItemText } from '@mui/material';
 import {
   AdvancedFilter,
   dGCommonInitialState,
@@ -15,7 +15,7 @@ import {
   ISISDatasetDetailsPanel,
   DatasetDetailsPanel,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
@@ -45,7 +45,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Dataset - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: Dataset[];
@@ -64,7 +63,6 @@ describe('Dataset - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
@@ -171,7 +169,6 @@ describe('Dataset - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -224,7 +221,7 @@ describe('Dataset - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -245,10 +242,30 @@ describe('Dataset - Card View', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    //https://github.com/mui/material-ui-pickers/issues/2073
+
+    // add window.matchMedia
+    // this is necessary for the date picker to be rendered in desktop mode.
+    // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: (query) => ({
+        media: query,
+        // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
+        matches: query === '(pointer: fine)',
+        onchange: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').first().simulate('click');
     advancedFilter
       .find('input')
       .last()
@@ -264,6 +281,8 @@ describe('Dataset - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+
+    delete window.matchMedia;
   });
 
   it('updates sort query params on sort', () => {
@@ -271,7 +290,7 @@ describe('Dataset - Card View', () => {
 
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('datasets.name');
-    button.simulate('click');
+    button.find('div').simulate('click');
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
@@ -467,7 +486,7 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
@@ -478,7 +497,7 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
@@ -500,12 +519,12 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
 
-    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    wrapper.find('#dataset-datafiles-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
     );
@@ -516,7 +535,7 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
