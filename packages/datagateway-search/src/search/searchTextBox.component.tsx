@@ -34,7 +34,7 @@ const SearchTextBox = (props: SearchTextProps): React.ReactElement => {
       fullWidth
       variant="outlined"
       color="secondary"
-      InputProps={{
+      inputProps={{
         'aria-label': t('searchBox.search_text_arialabel'),
       }}
     />

@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
@@ -27,17 +24,8 @@ interface DatePickerStoreProps {
 
 type DatePickerCombinedProps = DatePickerProps & DatePickerStoreProps;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(1, 0),
-    },
-  })
-);
-
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { sideLayout, initiateSearch } = props;
-  const classes = useStyles();
 
   const [t] = useTranslation();
 
@@ -146,7 +134,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           {sideLayout ? <br></br> : null}
           <DatePicker
             clearable
-            className={classes.root}
             minDate={startDate || new Date('1984-01-01T00:00:00Z')}
             inputFormat="yyyy-MM-dd"
             mask="____-__-__"
@@ -173,7 +160,11 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
                   }}
                   onKeyDown={handleKeyDown}
                   variant="outlined"
-                  sx={sideLayout ? {} : { pl: 1, py: 1, width: '178px' }}
+                  sx={
+                    sideLayout
+                      ? { py: 1, px: 0 }
+                      : { pl: 1, py: 1, width: '178px' }
+                  }
                   error={error}
                   // eslint-disable-next-line react/prop-types
                   {...(error && { helperText: helperText })}

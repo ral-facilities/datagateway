@@ -1,37 +1,31 @@
 import React from 'react';
-import { createShallow, createMount } from '@mui/material/test-utils';
+import { fireEvent, render } from '@testing-library/react';
 import SearchButton from './searchButton.component';
-import Button from '@mui/material/Button';
 
 jest.mock('loglevel');
 
 describe('Search Button component tests', () => {
-  let shallow;
-  let mount;
-
   const testInitiateSearch = jest.fn();
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-    mount = createMount();
-  });
 
   afterEach(() => {
     testInitiateSearch.mockClear();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
-      <div>
-        <SearchButton initiateSearch={testInitiateSearch} />
-      </div>
+    const wrapper = render(
+      <SearchButton initiateSearch={testInitiateSearch} />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.asFragment()).toMatchSnapshot();
   });
 
-  it('initiates search when user clicks button', () => {
-    const wrapper = mount(<SearchButton initiateSearch={testInitiateSearch} />);
-    wrapper.find(Button).simulate('click');
+  it('initiates search when user clicks button', async () => {
+    const wrapper = render(
+      <SearchButton initiateSearch={testInitiateSearch} />
+    );
+    const button = await wrapper.findByLabelText(
+      'searchBox.search_button_arialabel'
+    );
+    fireEvent.click(button);
     expect(testInitiateSearch).toHaveBeenCalled();
   });
 });

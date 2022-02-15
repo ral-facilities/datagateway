@@ -20,7 +20,7 @@ const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
-    style: {
+    sx: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
     },
@@ -139,7 +139,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
           ))}
         </Select>
         {error && (
-          <FormHelperText style={{ marginLeft: '14px', marginRight: '14px' }}>
+          <FormHelperText sx={{ marginLeft: '14px', marginRight: '14px' }}>
             {t('searchBox.checkboxes.types_error')}
           </FormHelperText>
         )}

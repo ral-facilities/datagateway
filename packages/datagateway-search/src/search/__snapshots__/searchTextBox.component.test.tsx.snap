@@ -1,30 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Search text box component tests renders correctly 1`] = `
-<div
-  className="MuiFormControl-root MuiTextField-root tour-search-textfield MuiFormControl-marginNormal MuiFormControl-fullWidth"
-  onKeyDown={[Function]}
->
-  <WithStyles(ForwardRef(InputLabel))
-    htmlFor="filled-search"
-    id="filled-search-label"
+<DocumentFragment>
+  <div
+    class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root tour-search-textfield css-17vbkzs-MuiFormControl-root-MuiTextField-root"
   >
-    searchBox.search_text
-  </WithStyles(ForwardRef(InputLabel))>
-  <WithStyles(ForwardRef(OutlinedInput))
-    aria-label="searchBox.search_text_arialabel"
-    autoFocus={false}
-    fullWidth={true}
-    id="filled-search"
-    label={
-      <React.Fragment>
-        searchBox.search_text
-      </React.Fragment>
-    }
-    multiline={false}
-    onChange={[Function]}
-    type="search"
-    value="test"
-  />
-</div>
+    <label
+      class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorSecondary MuiFormLabel-filled css-19285mc-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="filled-search"
+      id="filled-search-label"
+    >
+      searchBox.search_text
+    </label>
+    <div
+      class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl css-1j0w0ul-MuiInputBase-root-MuiOutlinedInput-root"
+    >
+      <input
+        aria-invalid="false"
+        aria-label="searchBox.search_text_arialabel"
+        class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
+        id="filled-search"
+        type="search"
+        value="test"
+      />
+      <fieldset
+        aria-hidden="true"
+        class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+      >
+        <legend
+          class="css-1z7n62"
+        >
+          <span>
+            searchBox.search_text
+          </span>
+        </legend>
+      </fieldset>
+    </div>
+  </div>
+</DocumentFragment>
 `;
