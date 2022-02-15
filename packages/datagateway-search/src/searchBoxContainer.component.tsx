@@ -1,9 +1,6 @@
 import React from 'react';
 
-import { Grid, Typography, Link, Theme, Box } from '@mui/material';
-
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
+import { Grid, Typography, Link, Theme, Box, styled } from '@mui/material';
 
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
@@ -15,38 +12,14 @@ import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    infoIcon: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-    },
-    containerBox: {
-      maxWidth: '1920px',
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-      margin: 'auto',
-      justifyContent: 'center',
-    },
-    leftText: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-      textAlign: 'left',
-      fontSize: '14px',
-    },
-    rightText: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-      textAlign: 'right',
-      fontSize: '14px',
-      marginLeft: 'auto',
-    },
-    bold: {
-      fontWeight: 'bold',
-    },
-  })
-);
+const ContainerBox = styled(Box)(({ theme }) => ({
+  maxWidth: '1920px',
+  paddingLeft: theme.spacing(2),
+  paddingRight: theme.spacing(2),
+  paddingBottom: theme.spacing(2),
+  margin: 'auto',
+  justifyContent: 'center',
+}));
 
 interface SearchBoxContainerProps {
   searchText: string;
@@ -58,7 +31,6 @@ const SearchBoxContainer = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
   const { searchText, initiateSearch, onSearchTextChange } = props;
-  const classes = useStyles();
   const [t] = useTranslation();
 
   const maxNumResults = useSelector(
@@ -66,7 +38,7 @@ const SearchBoxContainer = (
   );
 
   return (
-    <Box className={classes.containerBox}>
+    <ContainerBox>
       <Grid
         container
         direction="row"
@@ -81,34 +53,41 @@ const SearchBoxContainer = (
           />
         </Grid>
 
-        <Grid item style={{ marginTop: '8px' }}>
+        <Grid item sx={{ marginTop: '8px' }}>
           <CheckboxesGroup />
         </Grid>
 
-        <Grid item style={{ marginTop: '8px' }}>
+        <Grid item sx={{ marginTop: '8px' }}>
           <SelectDates initiateSearch={initiateSearch} />
         </Grid>
 
         <Grid
           item
-          style={{ display: 'flex', marginTop: '24px', marginLeft: 6 }}
+          sx={{ display: 'flex', marginTop: '24px', marginLeft: '6px' }}
         >
           <SearchButton initiateSearch={initiateSearch} />
         </Grid>
       </Grid>
       <div style={{ display: 'flex' }}>
-        <Typography className={classes.leftText}>
+        <Typography
+          sx={{
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            color: (theme: Theme) => (theme as any).colours?.contrastGrey,
+            textAlign: 'left',
+            fontSize: '14px',
+          }}
+        >
           <Trans t={t} i18nKey="searchBox.examples_label">
             For example
             <Link
-              style={{ fontWeight: 'bold' }}
+              sx={{ fontWeight: 'bold' }}
               href={t('searchBox.examples_label_link1')}
             >
               &quot;instrument calibration&quot;
             </Link>
             or{' '}
             <Link
-              style={{ fontWeight: 'bold' }}
+              sx={{ fontWeight: 'bold' }}
               href={t('searchBox.examples_label_link2')}
             >
               neutron AND scattering
@@ -118,7 +97,15 @@ const SearchBoxContainer = (
           <AdvancedHelpDialogue />
         </Typography>
 
-        <div className={classes.rightText}>
+        <Box
+          sx={{
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            color: (theme: Theme) => (theme as any).colours?.contrastGrey,
+            textAlign: 'right',
+            fontSize: '14px',
+            marginLeft: 'auto',
+          }}
+        >
           <div
             style={{
               display: 'flex',
@@ -126,19 +113,25 @@ const SearchBoxContainer = (
               flexWrap: 'nowrap',
             }}
           >
-            <InfoOutlinedIcon className={classes.infoIcon} fontSize="small" />{' '}
+            <InfoOutlinedIcon
+              sx={{
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                color: (theme: Theme) => (theme as any).colours?.contrastGrey,
+              }}
+              fontSize="small"
+            />{' '}
             <Typography
               display="inline"
-              style={{ paddingLeft: '6px', fontSize: '14px' }}
+              sx={{ paddingLeft: '6px', fontSize: '14px' }}
             >
               {t('searchBox.limited_results_message', {
                 maxNumResults,
               })}
             </Typography>
           </div>
-        </div>
+        </Box>
       </div>
-    </Box>
+    </ContainerBox>
   );
 };
 

@@ -1,16 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
-<div
-  className="MuiBox-root MuiBox-root-6 makeStyles-containerBox-2"
->
-  <WithStyles(ForwardRef(Grid))
+<Styled(ForwardRef(Box))>
+  <ForwardRef(Grid)
     container={true}
     direction="row"
     id="container-searchbox"
-    justify="center"
+    justifyContent="center"
   >
-    <WithStyles(ForwardRef(Grid))
+    <ForwardRef(Grid)
       item={true}
       style={
         Object {
@@ -22,20 +20,20 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       <SearchTextBox
         initiateSearch={[MockFunction]}
       />
-    </WithStyles(ForwardRef(Grid))>
-    <WithStyles(ForwardRef(Grid))
+    </ForwardRef(Grid)>
+    <ForwardRef(Grid)
       item={true}
-      style={
+      sx={
         Object {
           "marginTop": "8px",
         }
       }
     >
       <Connect(CheckboxesGroup) />
-    </WithStyles(ForwardRef(Grid))>
-    <WithStyles(ForwardRef(Grid))
+    </ForwardRef(Grid)>
+    <ForwardRef(Grid)
       item={true}
-      style={
+      sx={
         Object {
           "marginTop": "8px",
         }
@@ -44,13 +42,13 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       <Connect(SelectDates)
         initiateSearch={[MockFunction]}
       />
-    </WithStyles(ForwardRef(Grid))>
-    <WithStyles(ForwardRef(Grid))
+    </ForwardRef(Grid)>
+    <ForwardRef(Grid)
       item={true}
-      style={
+      sx={
         Object {
           "display": "flex",
-          "marginLeft": 6,
+          "marginLeft": "6px",
           "marginTop": "24px",
         }
       }
@@ -58,8 +56,8 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       <TranslatedSearchButton
         initiateSearch={[MockFunction]}
       />
-    </WithStyles(ForwardRef(Grid))>
-  </WithStyles(ForwardRef(Grid))>
+    </ForwardRef(Grid)>
+  </ForwardRef(Grid)>
   <div
     style={
       Object {
@@ -67,43 +65,56 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       }
     }
   >
-    <WithStyles(ForwardRef(Typography))
-      className="makeStyles-leftText-3"
+    <ForwardRef(Typography)
+      sx={
+        Object {
+          "color": [Function],
+          "fontSize": "14px",
+          "textAlign": "left",
+        }
+      }
     >
       <Trans
         i18nKey="searchBox.examples_label"
         t={[Function]}
       >
         For example
-        <WithStyles(ForwardRef(Link))
+        <ForwardRef(Link)
           href="searchBox.examples_label_link1"
-          style={
+          sx={
             Object {
               "fontWeight": "bold",
             }
           }
         >
           "instrument calibration"
-        </WithStyles(ForwardRef(Link))>
+        </ForwardRef(Link)>
         or
          
-        <WithStyles(ForwardRef(Link))
+        <ForwardRef(Link)
           href="searchBox.examples_label_link2"
-          style={
+          sx={
             Object {
               "fontWeight": "bold",
             }
           }
         >
           neutron AND scattering
-        </WithStyles(ForwardRef(Link))>
+        </ForwardRef(Link)>
         .
       </Trans>
        
       <AdvancedHelpDialogue />
-    </WithStyles(ForwardRef(Typography))>
-    <div
-      className="makeStyles-rightText-4"
+    </ForwardRef(Typography)>
+    <ForwardRef(Box)
+      sx={
+        Object {
+          "color": [Function],
+          "fontSize": "14px",
+          "marginLeft": "auto",
+          "textAlign": "right",
+        }
+      }
     >
       <div
         style={
@@ -115,13 +126,17 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
         }
       >
         <Memo(ForwardRef(InfoOutlinedIcon))
-          className="makeStyles-infoIcon-1"
           fontSize="small"
+          sx={
+            Object {
+              "color": [Function],
+            }
+          }
         />
          
-        <WithStyles(ForwardRef(Typography))
+        <ForwardRef(Typography)
           display="inline"
-          style={
+          sx={
             Object {
               "fontSize": "14px",
               "paddingLeft": "6px",
@@ -129,56 +144,59 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
           }
         >
           searchBox.limited_results_message {maxNumResults:{tabs:{datasetTab:false,datafileTab:false,investigationTab:false},selectAllSetting:true,settingsLoaded:false,sideLayout:false,searchableEntities:[investigation,dataset,datafile],maxNumResults:300}}
-        </WithStyles(ForwardRef(Typography))>
+        </ForwardRef(Typography)>
       </div>
-    </div>
+    </ForwardRef(Box)>
   </div>
-</div>
+</Styled(ForwardRef(Box))>
 `;
 
 exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly 1`] = `
-<div
-  className="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+<ForwardRef(Grid)
+  alignItems="stretch"
+  container={true}
+  direction="column"
   id="container-searchbox"
+  justifyContent="flex-start"
 >
-  <WithStyles(ForwardRef(Grid))
+  <ForwardRef(Grid)
     item={true}
   >
-    <Styled(MuiBox)
+    <ForwardRef(Box)
       px={2}
     >
       <SearchTextBox
         initiateSearch={[MockFunction]}
       />
-    </Styled(MuiBox)>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
+    </ForwardRef(Box)>
+  </ForwardRef(Grid)>
+  <ForwardRef(Grid)
     item={true}
   >
-    <Styled(MuiBox)
+    <ForwardRef(Box)
       px={2}
     >
       <Connect(SelectDates)
         initiateSearch={[MockFunction]}
       />
-    </Styled(MuiBox)>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
+    </ForwardRef(Box)>
+  </ForwardRef(Grid)>
+  <ForwardRef(Grid)
     item={true}
   >
     <Connect(CheckboxesGroup) />
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
+  </ForwardRef(Grid)>
+  <ForwardRef(Grid)
     item={true}
   >
-    <Styled(MuiBox)
+    <ForwardRef(Box)
       mx={5}
       pb={2}
     >
       <TranslatedSearchButton
         initiateSearch={[MockFunction]}
       />
-    </Styled(MuiBox)>
-  </WithStyles(ForwardRef(Grid))>
-</div>
+    </ForwardRef(Box)>
+  </ForwardRef(Grid)>
+</ForwardRef(Grid)>
 `;

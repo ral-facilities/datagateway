@@ -1,7 +1,6 @@
 import React from 'react';
-import { ReactWrapper } from 'enzyme';
+import { ReactWrapper, shallow } from 'enzyme';
 
-import { createShallow } from '@mui/material/test-utils';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 import { useSelector } from 'react-redux';
@@ -15,8 +14,6 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('SearchBoxContainer - Tests', () => {
-  let shallow;
-
   const testInitiateSearch = jest.fn();
 
   const createWrapper = (path: string): ReactWrapper => {
@@ -24,7 +21,6 @@ describe('SearchBoxContainer - Tests', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'Grid' });
     useSelector.mockImplementation(() => {
       return initialState;
     });
@@ -38,8 +34,6 @@ describe('SearchBoxContainer - Tests', () => {
 });
 
 describe('SearchBoxContainerSide - Tests', () => {
-  let shallow;
-
   const testInitiateSearch = jest.fn();
 
   const createWrapper = (path: string): ReactWrapper => {
@@ -47,10 +41,6 @@ describe('SearchBoxContainerSide - Tests', () => {
       <SearchBoxContainerSide initiateSearch={testInitiateSearch} />
     );
   };
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'Grid' });
-  });
 
   it('renders searchBoxContainerSide correctly', () => {
     const wrapper = createWrapper('/');
