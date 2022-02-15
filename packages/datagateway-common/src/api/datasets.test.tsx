@@ -1,5 +1,5 @@
 import { Dataset } from '../app.types';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
@@ -412,12 +412,13 @@ describe('dataset api functions', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(
-        () => useDatasetSizes({ pages: [mockData], pageParams: null }),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const pagedData = {
+        pages: [mockData],
+        pageParams: null,
+      };
+      const { result, waitFor } = renderHook(() => useDatasetSizes(pagedData), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       await waitFor(() => result.current.every((query) => query.isSuccess));
 
@@ -475,15 +476,17 @@ describe('dataset api functions', () => {
     });
 
     it("doesn't send any requests if the array supplied is empty to undefined", () => {
-      const { result: emptyResult } = renderHook(() => useDatasetSizes([]), {
+      let data = [];
+      const { result: emptyResult } = renderHook(() => useDatasetSizes(data), {
         wrapper: createReactQueryWrapper(),
       });
 
       expect(emptyResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
 
+      data = undefined;
       const { result: undefinedResult } = renderHook(
-        () => useDatasetSizes(undefined),
+        () => useDatasetSizes(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -491,6 +494,111 @@ describe('dataset api functions', () => {
 
       expect(undefinedResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    it('batches updates correctly & updates results correctly when data updates', async () => {
+      jest.useFakeTimers();
+      mockData = [
+        {
+          id: 1,
+          name: 'Test 1',
+          modTime: '2019-06-10',
+          createTime: '2019-06-11',
+        },
+        {
+          id: 2,
+          name: 'Test 2',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 3,
+          name: 'Test 3',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 4,
+          name: 'Test 4',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 5,
+          name: 'Test 5',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 6,
+          name: 'Test 6',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 7,
+          name: 'Test 7',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+      ];
+      (axios.get as jest.Mock).mockImplementation(
+        (url, options) =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  data: options.params.entityId ?? 0,
+                }),
+              options.params.entityId * 10
+            )
+          )
+      );
+
+      const { result, rerender, waitForNextUpdate } = renderHook(
+        () => useDatasetSizes(mockData),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      jest.advanceTimersByTime(30);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual(
+        Array(7).fill(undefined)
+      );
+
+      jest.advanceTimersByTime(40);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual([
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+      ]);
+
+      mockData = [
+        {
+          id: 4,
+          name: 'Test 4',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+      ];
+
+      await act(async () => {
+        rerender();
+        await waitForNextUpdate();
+      });
+
+      expect(result.current.map((query) => query.data)).toEqual([4]);
     });
   });
 
@@ -572,12 +680,12 @@ describe('dataset api functions', () => {
         })
       );
 
+      const pagedData = {
+        pages: [mockData],
+        pageParams: null,
+      };
       const { result, waitFor } = renderHook(
-        () =>
-          useDatasetsDatafileCount({
-            pages: [mockData],
-            pageParams: null,
-          }),
+        () => useDatasetsDatafileCount(pagedData),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -660,8 +768,9 @@ describe('dataset api functions', () => {
     });
 
     it("doesn't send any requests if the array supplied is empty to undefined", () => {
+      let data = [];
       const { result: emptyResult } = renderHook(
-        () => useDatasetsDatafileCount([]),
+        () => useDatasetsDatafileCount(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -670,8 +779,9 @@ describe('dataset api functions', () => {
       expect(emptyResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
 
+      data = undefined;
       const { result: undefinedResult } = renderHook(
-        () => useDatasetsDatafileCount(undefined),
+        () => useDatasetsDatafileCount(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -679,6 +789,112 @@ describe('dataset api functions', () => {
 
       expect(undefinedResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    it('batches updates correctly & updates results correctly when data updates', async () => {
+      jest.useFakeTimers();
+      mockData = [
+        {
+          id: 1,
+          name: 'Test 1',
+          modTime: '2019-06-10',
+          createTime: '2019-06-11',
+        },
+        {
+          id: 2,
+          name: 'Test 2',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 3,
+          name: 'Test 3',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 4,
+          name: 'Test 4',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 5,
+          name: 'Test 5',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 6,
+          name: 'Test 6',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 7,
+          name: 'Test 7',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+      ];
+      (axios.get as jest.Mock).mockImplementation(
+        (url, options) =>
+          new Promise((resolve) => {
+            const id = JSON.parse(options.params.get('where'))['dataset.id'].eq;
+            return setTimeout(
+              () =>
+                resolve({
+                  data: id ?? 0,
+                }),
+              id * 10
+            );
+          })
+      );
+
+      const { result, rerender, waitForNextUpdate } = renderHook(
+        () => useDatasetsDatafileCount(mockData),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      jest.advanceTimersByTime(30);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual(
+        Array(7).fill(undefined)
+      );
+
+      jest.advanceTimersByTime(40);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual([
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+      ]);
+
+      mockData = [
+        {
+          id: 4,
+          name: 'Test 4',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+      ];
+
+      await act(async () => {
+        rerender();
+        await waitForNextUpdate();
+      });
+
+      expect(result.current.map((query) => query.data)).toEqual([4]);
     });
   });
 

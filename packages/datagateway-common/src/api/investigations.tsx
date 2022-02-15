@@ -293,9 +293,10 @@ export const useInvestigationSizes = (
   const countAppliedRef = React.useRef(0);
 
   // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process
+  // back to 0 so we can restart the process, as well as clear sizes
   React.useEffect(() => {
     countAppliedRef.current = 0;
+    setSizes([]);
   }, [data]);
 
   // need to use useDeepCompareEffect here because the array returned by useQueries
@@ -309,12 +310,13 @@ export const useInvestigationSizes = (
       sizes.length - currCountReturned < 5
         ? sizes.length - currCountReturned
         : 5;
+
     // this in effect batches our updates to only happen in batches >= 5
     if (currCountReturned - countAppliedRef.current >= batchMax) {
       setSizes(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [sizes, queries]);
 
   return sizes;
 };
@@ -372,9 +374,10 @@ export const useInvestigationsDatasetCount = (
   const countAppliedRef = React.useRef(0);
 
   // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process
+  // back to 0 so we can restart the process, as well as clear datasetCounts
   React.useEffect(() => {
     countAppliedRef.current = 0;
+    setDatasetCounts([]);
   }, [data]);
 
   // need to use useDeepCompareEffect here because the array returned by useQueries
@@ -388,12 +391,13 @@ export const useInvestigationsDatasetCount = (
       datasetCounts.length - currCountReturned < 5
         ? datasetCounts.length - currCountReturned
         : 5;
+
     // this in effect batches our updates to only happen in batches >= 5
     if (currCountReturned - countAppliedRef.current >= batchMax) {
       setDatasetCounts(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [datasetCounts, queries]);
 
   return datasetCounts;
 };

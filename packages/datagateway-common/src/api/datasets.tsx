@@ -270,9 +270,10 @@ export const useDatasetSizes = (
   const countAppliedRef = React.useRef(0);
 
   // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process
+  // back to 0 so we can restart the process, as well as clear sizes
   React.useEffect(() => {
     countAppliedRef.current = 0;
+    setSizes([]);
   }, [data]);
 
   // need to use useDeepCompareEffect here because the array returned by useQueries
@@ -291,7 +292,7 @@ export const useDatasetSizes = (
       setSizes(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [sizes, queries]);
 
   return sizes;
 };
@@ -342,16 +343,17 @@ export const useDatasetsDatafileCount = (
   // prettier-ignore
   const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
 
-  const [datasetCounts, setDatasetCounts] = React.useState<
+  const [datafileCounts, setDatafileCounts] = React.useState<
     UseQueryResult<number, AxiosError>[]
   >([]);
 
   const countAppliedRef = React.useRef(0);
 
   // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process
+  // back to 0 so we can restart the process, as well as clear datafileCounts
   React.useEffect(() => {
     countAppliedRef.current = 0;
+    setDatafileCounts([]);
   }, [data]);
 
   // need to use useDeepCompareEffect here because the array returned by useQueries
@@ -362,17 +364,17 @@ export const useDatasetsDatafileCount = (
       0
     );
     const batchMax =
-      datasetCounts.length - currCountReturned < 5
-        ? datasetCounts.length - currCountReturned
+      datafileCounts.length - currCountReturned < 5
+        ? datafileCounts.length - currCountReturned
         : 5;
     // this in effect batches our updates to only happen in batches >= 5
     if (currCountReturned - countAppliedRef.current >= batchMax) {
-      setDatasetCounts(queries);
+      setDatafileCounts(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [datafileCounts, queries]);
 
-  return datasetCounts;
+  return datafileCounts;
 };
 
 export const fetchDatasetCountQuery = (
