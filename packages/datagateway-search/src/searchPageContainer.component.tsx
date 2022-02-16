@@ -10,10 +10,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import { Grid, Paper, LinearProgress, Button, Theme } from '@mui/material';
-
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
+import { Grid, Paper, LinearProgress, Button, styled } from '@mui/material';
 
 import SearchPageTable from './searchPageTable.component';
 import SearchPageCardView from './searchPageCardView.component';
@@ -45,7 +42,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
-import { StyleRules } from '@mui/styles';
 import ClearIcon from '@mui/icons-material/Clear';
 
 export const storeFilters = (
@@ -163,16 +159,11 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
     : false;
 };
 
-const buttonStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      root: {
-        padding: `${theme.spacing(0.5)}px 0px ${theme.spacing(0.5)}px 0px`,
-        marginRight: theme.spacing(0.5),
-        display: 'inline-block',
-      },
-    })
-);
+const ButtonDiv = styled('div')(({ theme }) => ({
+  padding: `${theme.spacing(0.5)} 0px ${theme.spacing(0.5)} 0px`,
+  marginRight: theme.spacing(0.5),
+  display: 'inline-block',
+}));
 
 const ViewButton = (props: {
   viewCards: boolean;
@@ -180,9 +171,8 @@ const ViewButton = (props: {
   disabled: boolean;
 }): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = buttonStyles();
   return (
-    <div className={classes.root}>
+    <ButtonDiv>
       <Button
         className="tour-dataview-view-button"
         aria-label="container-view-button"
@@ -197,7 +187,7 @@ const ViewButton = (props: {
           ? t('app.view_table')
           : t('app.view_cards')}
       </Button>
-    </div>
+    </ButtonDiv>
   );
 };
 
@@ -206,10 +196,9 @@ export const ClearFiltersButton = (props: {
   disabled: boolean;
 }): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = buttonStyles();
 
   return (
-    <div className={classes.root}>
+    <ButtonDiv>
       <Button
         className="tour-dataview-clear-filter-button"
         data-testid="clear-filters-button"
@@ -223,48 +212,38 @@ export const ClearFiltersButton = (props: {
       >
         {t('searchPageContainer.clear_filters')}
       </Button>
-    </div>
+    </ButtonDiv>
   );
 };
 
-const searchPageStyles = makeStyles<
-  Theme,
-  { view: ViewsType; containerHeight: string }
->((theme: Theme) => {
-  return createStyles({
-    root: {
-      margin: 0,
-      width: '100%',
-    },
-    topLayout: {
-      height: '100%',
-      // make width of box bigger on smaller screens to prevent overflow
-      // decreasing the space for the search results
-      width: '100%',
-      '@media (min-width: 1000px) and (min-height: 700px)': {
-        width: '98%',
-      },
-      margin: '0 auto',
-    },
-    sideLayout: {
-      height: '100%',
-      width: '100%',
-    },
-    dataViewTopBar: {
-      width: '98%',
-      backgroundColor: '#00000000',
-    },
-    dataView: {
-      // Only use height for the paper component if the view is table.
-      // also ensure we account for the potential horizontal scrollbar
-      height: ({ view, containerHeight }) =>
-        view !== 'card' ? containerHeight : 'auto',
-      minHeight: 500,
-      width: '98%',
-      backgroundColor: '#00000000',
-    },
-  });
-});
+const TopSearchBoxPaper = styled(Paper)(({ theme }) => ({
+  height: '100%',
+  // make width of box bigger on smaller screens to prevent overflow
+  // decreasing the space for the search results
+  width: '100%',
+  '@media (min-width: 1000px) and (min-height: 700px)': {
+    width: '98%',
+  },
+  margin: '0 auto',
+}));
+
+const SideSearchBoxPaper = styled(Paper)(({ theme }) => ({
+  height: '100%',
+  width: '100%',
+}));
+
+const DataViewPaper = styled(Paper, {
+  shouldForwardProp: (prop) => prop !== 'view' && prop !== 'containerHeight',
+})<{ view: ViewsType; containerHeight: string }>(
+  ({ theme, view, containerHeight }) => ({
+    // Only use height for the paper component if the view is table.
+    // also ensure we account for the potential horizontal scrollbar
+    height: view !== 'card' ? containerHeight : 'auto',
+    minHeight: 500,
+    width: '98%',
+    backgroundColor: '#00000000',
+  })
+);
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
@@ -523,7 +502,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
-  const classes = searchPageStyles({ view, containerHeight });
 
   const disabled = Object.keys(queryParams.filters).length !== 0 ? false : true;
 
@@ -549,37 +527,40 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             justifyContent="center"
             alignItems="center"
             spacing={1}
-            className={classes.root}
+            sx={{ margin: 0, width: '100%' }}
           >
             <Grid
               item
               id="container-search-filters"
               ref={searchBoxRef}
-              style={{ width: '100%' }}
+              sx={{ width: '100%' }}
             >
               {sideLayout ? (
-                <Paper className={classes.sideLayout}>
+                <SideSearchBoxPaper>
                   <SearchBoxContainerSide
                     searchText={searchText}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
                   />
-                </Paper>
+                </SideSearchBoxPaper>
               ) : (
-                <Paper className={classes.topLayout}>
+                <TopSearchBoxPaper>
                   <SearchBoxContainer
                     searchText={searchText}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
                   />
-                </Paper>
+                </TopSearchBoxPaper>
               )}
             </Grid>
 
             {requestReceived && (
               <div style={{ width: '100%' }}>
                 <Grid container justifyContent="center">
-                  <Grid container className={classes.dataViewTopBar}>
+                  <Grid
+                    container
+                    sx={{ width: '98%', backgroundColor: '#00000000' }}
+                  >
                     <Grid item xs={'auto'}>
                       <ViewButton
                         viewCards={view === 'card'}
@@ -605,7 +586,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   justifyContent="center"
                   id="container-search-table"
                 >
-                  <Paper className={classes.dataView}>
+                  <DataViewPaper view={view} containerHeight={containerHeight}>
                     {/* Show loading progress if data is still being loaded */}
                     {loading && (
                       <Grid item xs={12}>
@@ -633,7 +614,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         cartAriaLabel={t('searchPageContainer.cart_arialabel')}
                       />
                     )}
-                  </Paper>
+                  </DataViewPaper>
                 </Grid>
               </div>
             )}
