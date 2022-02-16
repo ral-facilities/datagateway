@@ -5,8 +5,7 @@ import { MemoryRouter, Router } from 'react-router-dom';
 
 import SearchPageTable, { SearchTableProps } from './searchPageTable.component';
 
-import { mount as enzymeMount, ReactWrapper } from 'enzyme';
-import { createMount } from '@mui/material/test-utils';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';
@@ -18,6 +17,7 @@ import InvestigationSearchTable from './table/investigationSearchTable.component
 import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { createMemoryHistory, History } from 'history';
+import { render } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => ({
   ...jest.requireActual('datagateway-common'),
@@ -27,7 +27,6 @@ jest.mock('datagateway-common', () => ({
 }));
 
 describe('SearchPageTable', () => {
-  let mount: typeof enzymeMount;
   let state: StateType;
   let history: History;
   let props: SearchTableProps & CartProps;
@@ -52,7 +51,6 @@ describe('SearchPageTable', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory({
       initialEntries: ['/search/data'],
     });
@@ -99,23 +97,20 @@ describe('SearchPageTable', () => {
       }
     });
 
-    const createWrapper = (store: Store = mockStore(state)): ReactWrapper => {
-      return mount(
-        <Provider store={store}>
-          <MemoryRouter
-            initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
-          >
-            <QueryClientProvider client={new QueryClient()}>
-              <SearchPageTable {...props} />
-            </QueryClientProvider>
-          </MemoryRouter>
-        </Provider>
-      );
-    };
-
     const testStore = mockStore(state);
-    const wrapper = createWrapper(testStore);
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = render(
+      <Provider store={testStore}>
+        <MemoryRouter
+          initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
+        >
+          <QueryClientProvider client={new QueryClient()}>
+            <SearchPageTable {...props} />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.asFragment()).toMatchSnapshot();
   });
 
   it('changes selected tab value on click of a new tab', () => {
@@ -135,7 +130,7 @@ describe('SearchPageTable', () => {
 
     wrapper
       .find('[aria-controls="simple-tabpanel-dataset"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(onTabChange).toHaveBeenNthCalledWith(1, 'dataset');

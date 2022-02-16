@@ -1,12 +1,10 @@
 import React from 'react';
 import AppBar from '@mui/material/AppBar';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import Tabs, { tabsClasses } from '@mui/material/Tabs';
+import Tab, { tabClasses } from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { Badge, Paper, Theme, LinearProgress } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
-import { StyleRules } from '@mui/styles';
+import Badge, { badgeClasses } from '@mui/material/Badge';
+import { Paper, LinearProgress, styled } from '@mui/material';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import DatafileSearchTable from './table/datafileSearchTable.component';
@@ -35,47 +33,6 @@ import {
   storeResults,
   storeSort,
 } from './searchPageContainer.component';
-
-const badgeStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    badge: {
-      backgroundColor: '#CCCCCC',
-      //Increase contrast on high contrast modes by using black text
-      color:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).colours?.type === 'contrast' ? '#000000' : '#333333',
-      fontSize: '14px',
-      fontWeight: 'bold',
-      lineHeight: 'inherit',
-      top: '1em',
-    },
-  });
-
-const tabStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      backgroundColor: (theme as any).colours?.tabsGrey,
-      //Fixes contrast issue for unselected tabs in darkmode
-      color:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).palette.mode === 'dark'
-          ? '#FFFFFF'
-          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (theme as any).colours?.blue,
-      boxShadow: 'none',
-    },
-    indicator: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      backgroundColor: (theme as any).colours?.blue,
-    },
-  });
-
-const boxStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    root: { backgroundColor: (theme as any).colours?.tabsGrey },
-  });
 
 export interface SearchCardViewProps {
   containerHeight: string;
@@ -122,9 +79,49 @@ function a11yProps(index: string): React.ReactFragment {
   };
 }
 
-const StyledBadge = withStyles(badgeStyles)(Badge);
-const StyledTabs = withStyles(tabStyles)(Tabs);
-const StyledBox = withStyles(boxStyles)(Box);
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  [`& .${badgeClasses.badge}`]: {
+    backgroundColor: '#CCCCCC',
+    //Increase contrast on high contrast modes by using black text
+    color:
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (theme as any).colours?.type === 'contrast' ? '#000000' : '#333333',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    lineHeight: 'inherit',
+    top: '10px',
+  },
+}));
+
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  [`& .${tabsClasses.root}`]: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    backgroundColor: (theme as any).colours?.tabsGrey,
+    //Fixes contrast issue for unselected tabs in darkmode
+    color:
+      theme.palette.mode === 'dark'
+        ? '#FFFFFF'
+        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (theme as any).colours?.blue,
+    boxShadow: 'none',
+  },
+  [`& .${tabClasses.textColorPrimary}.${tabClasses.selected}`]: {
+    color:
+      theme.palette.mode === 'dark'
+        ? '#FFFFFF'
+        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (theme as any).colours?.blue,
+  },
+  [`& .${tabsClasses.indicator}`]: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    backgroundColor: (theme as any).colours?.blue,
+  },
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  backgroundColor: (theme as any).colours?.tabsGrey,
+}));
 
 const SearchPageCardView = (
   props: SearchCardViewProps & SearchCardViewStoreProps & CartProps
@@ -311,7 +308,7 @@ const SearchPageCardView = (
                 {...a11yProps('investigation')}
               />
             ) : (
-              <Tab value="investigation" style={{ display: 'none' }} />
+              <Tab value="investigation" sx={{ display: 'none' }} />
             )}
             {datasetTab ? (
               <Tab
@@ -343,7 +340,7 @@ const SearchPageCardView = (
                 {...a11yProps('dataset')}
               />
             ) : (
-              <Tab value="dataset" style={{ display: 'none' }} />
+              <Tab value="dataset" sx={{ display: 'none' }} />
             )}
             {datafileTab ? (
               <Tab
@@ -375,7 +372,7 @@ const SearchPageCardView = (
                 {...a11yProps('datafile')}
               />
             ) : (
-              <Tab value="datafile" style={{ display: 'none' }} />
+              <Tab value="datafile" sx={{ display: 'none' }} />
             )}
           </StyledTabs>
           <StyledBox marginLeft="auto">
@@ -403,7 +400,7 @@ const SearchPageCardView = (
       {currentTab === 'datafile' && (
         <TabPanel value={currentTab} index={'datafile'}>
           <Paper
-            style={{
+            sx={{
               height: `calc(${containerHeight} - 56px)`,
               minHeight: `calc(500px - 56px)`,
               overflowX: 'auto',
