@@ -104,7 +104,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const classes = useStyles();
 
   const { data } = useDatasetDetails(parseInt(datasetId));
-  const sizeQueries = useDatasetSizes(data ? [data] : []);
+  const sizeQueries = useDatasetSizes(data && [data]);
 
   const shortInfo = [
     {

@@ -147,7 +147,7 @@ describe('ISIS Dataset Landing page', () => {
       data: undefined,
     });
     createWrapper();
-    expect(useDatasetSizes).toHaveBeenCalledWith([]);
+    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('incomplete datasets render correctly', () => {
