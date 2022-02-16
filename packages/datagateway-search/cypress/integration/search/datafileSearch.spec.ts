@@ -43,9 +43,7 @@ describe('Datafile search tab', () => {
 
   it('should be able to search by text', () => {
     cy.clearDownloadCart();
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('2106');
+    cy.get('#filled-search').type('2106');
 
     cy.get('[aria-label="Submit search"]')
       .click()
@@ -116,9 +114,7 @@ describe('Datafile search tab', () => {
   });
 
   it('should link to a parent dataset', () => {
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('1956');
+    cy.get('#filled-search').type('1956');
 
     cy.get('[aria-label="Submit search"]')
       .click()

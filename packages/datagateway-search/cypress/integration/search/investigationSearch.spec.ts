@@ -43,9 +43,7 @@ describe('Investigation search tab', () => {
 
   it('should be able to search by title text', () => {
     cy.clearDownloadCart();
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('dog');
+    cy.get('#filled-search').type('dog');
 
     cy.get('[aria-label="Submit search"]')
       .click()
@@ -77,9 +75,7 @@ describe('Investigation search tab', () => {
   });
 
   it('should be able to search by instrument text', () => {
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('knowledge media');
+    cy.get('#filled-search').type('knowledge media');
 
     cy.get('[aria-label="Submit search"]')
       .click()
@@ -133,9 +129,7 @@ describe('Investigation search tab', () => {
   });
 
   it('should link to an investigation', () => {
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('dog');
+    cy.get('#filled-search').type('dog');
 
     cy.get('[aria-label="Submit search"]')
       .click()
