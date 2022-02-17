@@ -1,42 +1,18 @@
 import React from 'react';
 import { BugReport } from '@mui/icons-material';
-import { Typography, Theme, Grid, CircularProgress, Link } from '@mui/material';
-import { WithStyles, StyleRules } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import createStyles from '@mui/styles/createStyles';
+import { Typography, Grid, CircularProgress, Link } from '@mui/material';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import { compose } from 'redux';
 import { useTranslation, Trans } from 'react-i18next';
 
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    container: {
-      height: '100%',
-    },
-    bugIcon: {
-      width: '5rem',
-      height: '5rem',
-      color: theme.palette.primary.main,
-    },
-    titleText: {
-      fontWeight: 'bold',
-      fontSize: '3rem',
-      color: theme.palette.primary.main,
-    },
-    message: {
-      maxWidth: 600,
-      textAlign: 'center',
-    },
-  });
+const containerStyle = { height: '100%' };
 
 function withIdCheck(checkingPromise: Promise<boolean>) {
   return function WithIdCheck<T>(
     Component: React.ComponentType<T>
   ): React.ComponentType<T> {
-    const WithIdCheckComponent: React.FC<
-      T & WithStyles<typeof styles> & RouteComponentProps
-    > = (props) => {
+    const WithIdCheckComponent: React.FC<T & RouteComponentProps> = (props) => {
       const [loading, setLoading] = React.useState<boolean>(true);
       const [valid, setValid] = React.useState<boolean>(false);
       const [t] = useTranslation();
@@ -55,7 +31,6 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
       }, []);
 
       const {
-        classes,
         history,
         location,
         match,
@@ -71,7 +46,7 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
             direction="column"
             justifyContent="center"
             alignItems="center"
-            className={classes.container}
+            sx={containerStyle}
           >
             <CircularProgress />
             <Typography variant="body1">{t('loading.verifying')}</Typography>
@@ -87,16 +62,28 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
               item
               direction="column"
               justifyContent="center"
-              className={classes.container}
+              sx={containerStyle}
             >
               <Grid container item justifyContent="center" alignItems="center">
-                <BugReport className={classes.bugIcon} />
-                <Typography variant="h1" className={classes.titleText}>
+                <BugReport
+                  sx={{ width: '5rem', height: '5rem', color: 'primary.main' }}
+                />
+                <Typography
+                  variant="h1"
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '3rem',
+                    color: 'primary.main',
+                  }}
+                >
                   {t('loading.oops')}
                 </Typography>
               </Grid>
               <Grid container item justifyContent="center">
-                <Typography variant="body1" className={classes.message}>
+                <Typography
+                  variant="body1"
+                  sx={{ maxWidth: '600px', textAlign: 'center' }}
+                >
                   <Trans t={t} i18nKey="loading.message">
                     We&#39;re sorry, it seems as though the URL you requested is
                     attempting to fetch incorrect data. Please double check your
@@ -120,10 +107,7 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
       }
     };
 
-    return compose<React.ComponentType<T>>(
-      withRouter,
-      withStyles(styles)
-    )(WithIdCheckComponent);
+    return compose<React.ComponentType<T>>(withRouter)(WithIdCheckComponent);
   };
 }
 
