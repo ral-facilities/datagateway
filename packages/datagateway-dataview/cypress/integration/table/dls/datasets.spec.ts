@@ -264,6 +264,25 @@ describe('DLS - Datasets Table', () => {
       cy.contains('4.55 GB', { timeout: 10000 }).should('be.visible');
     });
 
+    it('and then calculate file size when the value is 0 ', () => {
+      // need to wait for counts to finish, otherwise cypress might interact with the details panel
+      // too quickly and it rerenders during the test
+      cy.intercept('/getSize', '0');
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '55').should(
+        'exist'
+      );
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '55').should(
+        'exist'
+      );
+
+      cy.get('[aria-label="Show details"]').first().click();
+
+      cy.contains('#calculate-size-btn', 'Calculate')
+        .should('exist')
+        .click({ force: true });
+      cy.contains('0 B', { timeout: 10000 }).should('be.visible');
+    });
+
     it('and view the dataset type panel', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test

@@ -171,7 +171,7 @@ const VisitDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                {investigationData.size ? (
+                {investigationData.size !== undefined ? (
                   formatBytes(investigationData.size)
                 ) : (
                   <Button

@@ -130,7 +130,7 @@ const DatasetDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                {datasetData.size ? (
+                {datasetData.size !== undefined ? (
                   formatBytes(datasetData.size)
                 ) : (
                   <Button
