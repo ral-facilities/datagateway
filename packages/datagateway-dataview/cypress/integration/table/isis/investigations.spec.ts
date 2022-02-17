@@ -2,6 +2,11 @@ describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
     cy.login();
     cy.visit('/browse/instrument/1/facilityCycle/16/investigation');
+    // Check that we have received the size from the API as this will produce
+    // a re-render which can prevent some interactions.
+    cy.contains('[aria-rowindex="2"] [aria-colindex="6"]', '10.96 GB').should(
+      'exist'
+    );
   });
 
   it('should load correctly', () => {
@@ -235,12 +240,6 @@ describe('ISIS - Investigations Table', () => {
     beforeEach(() => {
       //Revert the default sort
       cy.contains('[role="button"]', 'Start Date').click();
-
-      // Check that we have received the size from the API as this will produce
-      // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '10.96 GB').should(
-        'exist'
-      );
     });
 
     it('when not other row is showing details', () => {
