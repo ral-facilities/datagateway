@@ -1,6 +1,6 @@
 import React from 'react';
 import TableCell from '@mui/material/TableCell';
-import { SxProps, Theme, useTheme } from '@mui/material/styles';
+import { styled, SxProps, Theme, useTheme } from '@mui/material/styles';
 import {
   AutoSizer,
   Column,
@@ -30,9 +30,9 @@ const actionsColumnDefaultWidth = 70;
 const scrollBarHeight = 17;
 const dataColumnMinWidth = 84;
 
-const tableStyle = (theme: Theme): SxProps => ({
+const StyledTable = styled(Table)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily,
-});
+}));
 
 const flexContainerStyle = {
   display: 'flex',
@@ -67,8 +67,8 @@ const tableCellStyle = {
   },
 };
 
-const tableNoPaddingStyle = {
-  paddingLeft: 0,
+const tableReducedPaddingStyle = {
+  paddingLeft: '8px',
 };
 
 const headerTableCellStyle = {
@@ -274,9 +274,9 @@ const VirtualizedTable = React.memo(
     );
 
     const tableCellStyleCombined = { ...tableCellStyle, ...flexContainerStyle };
-    const tableCellNoPaddingStyleCombined = {
+    const tableCellReducedPaddingStyleCombined = {
       ...tableCellStyle,
-      ...tableNoPaddingStyle,
+      ...tableReducedPaddingStyle,
       ...flexContainerStyle,
     };
     const headerTableCellStyleCombined = {
@@ -311,14 +311,13 @@ const VirtualizedTable = React.memo(
               minimumBatchSize={25}
             >
               {({ onRowsRendered, registerChild }) => (
-                <Table
+                <StyledTable
                   ref={(ref) => {
                     if (ref !== null) {
                       tableRef = ref;
                     }
                     return registerChild(ref);
                   }}
-                  sx={tableStyle}
                   height={(height || 500) - scrollBarHeight}
                   width={Math.max(width, min_table_width)}
                   rowCount={data.length}
@@ -458,7 +457,7 @@ const VirtualizedTable = React.memo(
                                 ((selectedRows && onCheck && onUncheck) ||
                                   detailsPanel) &&
                                 index === 0
-                                  ? tableCellNoPaddingStyleCombined
+                                  ? tableCellReducedPaddingStyleCombined
                                   : tableCellStyleCombined
                               }
                             />
@@ -498,7 +497,7 @@ const VirtualizedTable = React.memo(
                       )}
                     />
                   )}
-                </Table>
+                </StyledTable>
               )}
             </InfiniteLoader>
           );

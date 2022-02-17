@@ -25,7 +25,7 @@ const ExpandableRow = (
     >
       {defaultTableRowRenderer({
         ...props,
-        style: { width, height, paddingRight },
+        style: { ...props.style, position: 'static' },
       })}
       <div
         ref={props.detailPanelRef}
