@@ -3,13 +3,11 @@ import {
   Grid,
   Link as MuiLink,
   Paper,
+  styled,
   Tab,
   Tabs,
-  Theme,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { CalendarToday, CheckCircle, Public, Save } from '@mui/icons-material';
 import {
   Dataset,
@@ -27,52 +25,40 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import Branding from './isisBranding.component';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      margin: theme.spacing(1),
-      padding: theme.spacing(1),
-    },
-    tabPaper: {
-      marginLeft: -theme.spacing(1.5),
-      marginRight: -theme.spacing(1.5),
-      paddingLeft: theme.spacing(1.5),
-      paddingRight: theme.spacing(1.5),
-    },
-    subHeading: {
-      marginTop: theme.spacing(1),
-    },
-    shortInfoRow: {
-      display: 'flex',
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    shortInfoIcon: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-    },
-    shortInfoLabel: {
-      display: 'flex',
-      width: '50%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-    shortInfoValue: {
-      width: '50%',
-      textAlign: 'right',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const Subheading = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));
+
+const ShortInfoRow = styled('div')(({ theme }) => ({
+  display: 'flex',
+  marginTop: theme.spacing(1),
+  marginBottom: theme.spacing(1),
+}));
+
+const shortInfoIconStyle = { mx: 1 };
+
+const ShortInfoLabel = styled(Typography)({
+  display: 'flex',
+  width: '50%',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+const ShortInfoValue = styled(Typography)({
+  width: '50%',
+  textAlign: 'right',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 interface LandingPageProps {
   instrumentId: string;
@@ -101,7 +87,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
-  const classes = useStyles();
 
   const { data } = useDatasetDetails(parseInt(datasetId));
   const sizeQueries = useDatasetSizes(data ? [data] : []);
@@ -121,41 +106,41 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         );
       },
       label: t('datasets.doi'),
-      icon: <Public className={classes.shortInfoIcon} />,
+      icon: <Public sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Dataset) => {
         return formatCountOrSize(sizeQueries[0], true);
       },
       label: t('datasets.size'),
-      icon: <Save className={classes.shortInfoIcon} />,
+      icon: <Save sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Dataset) => entity.startDate?.slice(0, 10),
       label: t('datasets.details.start_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Dataset) => entity.endDate?.slice(0, 10),
       label: t('datasets.details.end_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Dataset) =>
         entity.complete ? t('datasets.complete') : t('datasets.incomplete'),
       label: t('datasets.completion'),
-      icon: <CheckCircle className={classes.shortInfoIcon} />,
+      icon: <CheckCircle sx={shortInfoIconStyle} />,
     },
   ];
 
   return (
-    <Paper className={classes.paper}>
-      <Grid container style={{ padding: 4 }}>
+    <Paper sx={{ margin: 1, padding: 1 }}>
+      <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
           <Branding />
         </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.tabPaper} square elevation={0}>
+          <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
             <Tabs
               value={value}
               onChange={(event, newValue) => setValue(newValue)}
@@ -184,36 +169,21 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         <Grid item container xs={12} id="dataset-details-panel">
           {/* Long format information */}
           <Grid item xs>
-            <Typography
-              className={classes.subHeading}
-              component="h6"
-              variant="h6"
-              aria-label="landing-dataset-name"
-            >
+            <Subheading variant="h6" aria-label="landing-dataset-name">
               {data?.name}
-            </Typography>
+            </Subheading>
             <Typography aria-label="landing-dataset-description">
               {data?.description}
             </Typography>
-            <Typography
-              className={classes.subHeading}
-              component="h6"
-              variant="h6"
-              aria-label="landing-dataset-location"
-            >
+            <Subheading variant="h6" aria-label="landing-dataset-location">
               {t('datasets.location')}
-            </Typography>
+            </Subheading>
             <Typography aria-label="landing-dataset-description">
               {data?.location}
             </Typography>
-            <Typography
-              className={classes.subHeading}
-              component="h6"
-              variant="h6"
-              aria-label="landing-dataset-type"
-            >
+            <Subheading variant="h6" aria-label="landing-dataset-type">
               {data?.type?.name}
-            </Typography>
+            </Subheading>
             <Typography aria-label="landing-dataset-description">
               {data?.type?.description}
             </Typography>
@@ -225,23 +195,23 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               (field, i) =>
                 data &&
                 field.content(data as Dataset) && (
-                  <div className={classes.shortInfoRow} key={i}>
-                    <Typography className={classes.shortInfoLabel}>
+                  <ShortInfoRow key={i}>
+                    <ShortInfoLabel>
                       {field.icon}
                       {field.label}:
-                    </Typography>
+                    </ShortInfoLabel>
                     <ArrowTooltip
                       title={getTooltipText(field.content(data as Dataset))}
                     >
-                      <Typography className={classes.shortInfoValue}>
+                      <ShortInfoValue>
                         {field.content(data as Dataset)}
-                      </Typography>
+                      </ShortInfoValue>
                     </ArrowTooltip>
-                  </div>
+                  </ShortInfoRow>
                 )
             )}
             {/* Actions */}
-            <div className={classes.actionButtons}>
+            <ActionButtonsContainer>
               <AddToCartButton
                 entityType="dataset"
                 allIds={[parseInt(datasetId)]}
@@ -252,7 +222,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 entityId={parseInt(datasetId)}
                 entityName={data?.name ?? ''}
               />
-            </div>
+            </ActionButtonsContainer>
           </Grid>
         </Grid>
       </Grid>

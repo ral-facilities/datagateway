@@ -1,15 +1,14 @@
 import {
+  Box,
   Divider,
   Grid,
   Link as MuiLink,
   Paper,
+  styled,
   Tab,
   Tabs,
-  Theme,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import {
   Assessment,
   CalendarToday,
@@ -35,56 +34,40 @@ import { useHistory, useLocation } from 'react-router-dom';
 import Branding from './isisBranding.component';
 import CitationFormatter from '../../citationFormatter.component';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      margin: theme.spacing(1),
-      padding: theme.spacing(1),
-    },
-    tabPaper: {
-      marginLeft: -theme.spacing(1.5),
-      marginRight: -theme.spacing(1.5),
-      paddingLeft: theme.spacing(1.5),
-      paddingRight: theme.spacing(1.5),
-    },
-    subHeading: {
-      marginTop: theme.spacing(1),
-    },
-    shortInfoRow: {
-      display: 'flex',
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    shortInfoIcon: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-    },
-    shortInfoLabel: {
-      display: 'flex',
-      width: '50%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-    shortInfoValue: {
-      width: '50%',
-      textAlign: 'right',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-    shortInfoPart: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const Subheading = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));
+
+const ShortInfoRow = styled('div')(({ theme }) => ({
+  display: 'flex',
+  marginTop: theme.spacing(1),
+  marginBottom: theme.spacing(1),
+}));
+
+const shortInfoIconStyle = { mx: 1 };
+
+const ShortInfoLabel = styled(Typography)({
+  display: 'flex',
+  width: '50%',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+const ShortInfoValue = styled(Typography)({
+  width: '50%',
+  textAlign: 'right',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 export interface FormattedUser {
   role: string;
@@ -106,7 +89,6 @@ const LinkedInvestigation = (
   props: LinkedInvestigationProps
 ): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = useStyles();
 
   const investigation = props.investigation;
 
@@ -125,26 +107,24 @@ const LinkedInvestigation = (
         );
       },
       label: t('investigations.doi'),
-      icon: <Public className={classes.shortInfoIcon} />,
+      icon: <Public sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) =>
         entity.investigationInstruments?.[0]?.instrument?.name,
       label: t('investigations.instrument'),
-      icon: <Assessment className={classes.shortInfoIcon} />,
+      icon: <Assessment sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
       label: t('investigations.release_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
   ];
 
   return (
     <div>
-      <Typography
-        className={classes.subHeading}
-        component="h6"
+      <Subheading
         variant="h6"
         align="center"
         data-testid="landing-study-part-label"
@@ -154,27 +134,25 @@ const LinkedInvestigation = (
           `${t('investigations.visit_id')}: ${investigation.visitId}`,
           props.view
         )}
-      </Typography>
+      </Subheading>
       {shortInvestigationInfo.map((field, i) => (
-        <div className={classes.shortInfoRow} key={i}>
-          <Typography className={classes.shortInfoLabel}>
+        <ShortInfoRow key={i}>
+          <ShortInfoLabel>
             {field.icon}
             {field.label}:
-          </Typography>
+          </ShortInfoLabel>
           <ArrowTooltip title={getTooltipText(field.content(investigation))}>
-            <Typography className={classes.shortInfoValue}>
-              {field.content(investigation)}
-            </Typography>
+            <ShortInfoValue>{field.content(investigation)}</ShortInfoValue>
           </ArrowTooltip>
-        </div>
+        </ShortInfoRow>
       ))}
-      <div className={classes.actionButtons}>
+      <ActionButtonsContainer>
         <AddToCartButton
           entityType="investigation"
           allIds={[investigation.id]}
           entityId={investigation.id}
         />
-      </div>
+      </ActionButtonsContainer>
     </div>
   );
 };
@@ -193,7 +171,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const pathRoot = 'browseStudyHierarchy';
   const instrumentChild = 'study';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyId}`;
-  const classes = useStyles();
 
   const { data } = useStudy(parseInt(studyId));
 
@@ -321,12 +298,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         );
       },
       label: t('studies.pid'),
-      icon: <Public className={classes.shortInfoIcon} />,
+      icon: <Public sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Study) => entity.name,
       label: t('studies.name'),
-      icon: <Fingerprint className={classes.shortInfoIcon} />,
+      icon: <Fingerprint sx={shortInfoIconStyle} />,
     },
     {
       content: function distributionFormat(entity: Study) {
@@ -337,7 +314,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         );
       },
       label: t('studies.details.format'),
-      icon: <Storage className={classes.shortInfoIcon} />,
+      icon: <Storage sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Study) =>
@@ -346,24 +323,24 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           10
         ),
       label: t('studies.start_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Study) =>
         entity?.studyInvestigations?.[0]?.investigation?.endDate?.slice(0, 10),
       label: t('studies.end_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
   ];
 
   return (
-    <Paper className={classes.paper}>
-      <Grid container style={{ padding: 4 }}>
+    <Paper sx={{ margin: 1, padding: 1 }}>
+      <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
           <Branding />
         </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.tabPaper} square elevation={0}>
+          <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
             <Tabs
               value={value}
               onChange={(event, newValue) => setValue(newValue)}
@@ -392,28 +369,21 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         <Grid item container xs={12} id="study-details-panel">
           {/* Long format information */}
           <Grid item xs>
-            <Typography
-              className={classes.subHeading}
-              component="h5"
-              variant="h5"
-              data-testid="landing-investigation-title"
-            >
+            <Subheading variant="h5" data-testid="landing-investigation-title">
               {title}
-            </Typography>
+            </Subheading>
             <Typography data-testid="landing-study-description">
               {summary}
             </Typography>
 
             {formattedUsers.length > 0 && (
               <div>
-                <Typography
-                  className={classes.subHeading}
-                  component="h6"
+                <Subheading
                   variant="h6"
                   data-testid="landing-study-users-label"
                 >
                   {t('studies.details.users')}
-                </Typography>
+                </Subheading>
                 {formattedUsers.map((user, i) => (
                   <Typography data-testid={`landing-study-user-${i}`} key={i}>
                     <b>{user.role}:</b> {user.fullName}
@@ -422,14 +392,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               </div>
             )}
 
-            <Typography
-              className={classes.subHeading}
-              component="h6"
+            <Subheading
               variant="h6"
               data-testid="landing-study-publisher-label"
             >
               {t('studies.details.publisher')}
-            </Typography>
+            </Subheading>
             <Typography data-testid="landing-study-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
@@ -450,24 +418,24 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               (field, i) =>
                 data?.[0] &&
                 field.content(data[0] as Study) && (
-                  <div className={classes.shortInfoRow} key={i}>
-                    <Typography className={classes.shortInfoLabel}>
+                  <ShortInfoRow key={i}>
+                    <ShortInfoLabel>
                       {field.icon}
                       {field.label}:
-                    </Typography>
+                    </ShortInfoLabel>
                     <ArrowTooltip
                       title={getTooltipText(field.content(data[0] as Study))}
                     >
-                      <Typography className={classes.shortInfoValue}>
+                      <ShortInfoValue>
                         {field.content(data[0] as Study)}
-                      </Typography>
+                      </ShortInfoValue>
                     </ArrowTooltip>
-                  </div>
+                  </ShortInfoRow>
                 )
             )}
             {/* Parts */}
             {data?.map((study, i) => (
-              <div key={i} className={classes.shortInfoPart}>
+              <Box key={i} sx={{ my: 1 }}>
                 <Divider />
                 {study?.studyInvestigations?.[0]?.investigation && (
                   <LinkedInvestigation
@@ -476,7 +444,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     view={view}
                   />
                 )}
-              </div>
+              </Box>
             ))}
           </Grid>
         </Grid>

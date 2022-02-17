@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import ISISInvestigationLanding from './isisInvestigationLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -11,7 +10,7 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Router } from 'react-router-dom';
@@ -30,7 +29,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Investigation Landing page', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
@@ -168,8 +166,6 @@ describe('ISIS Investigation Landing page', () => {
   const noPublication: never[] = [];
 
   beforeEach(() => {
-    mount = createMount();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -189,7 +185,6 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 

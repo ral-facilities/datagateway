@@ -7,15 +7,12 @@ import {
   IconButton,
   Badge,
   Button,
+  styled,
 } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import ClearIcon from '@mui/icons-material/Clear';
-import { StyleRules } from '@mui/styles';
 import {
   DownloadCartItem,
   Sticky,
@@ -46,62 +43,44 @@ import TranslatedHomePage from './translatedHomePage.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
-const usePaperStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      cardPaper: { backgroundColor: 'inherit' },
-      tablePaper: {
-        //Footer is 36px
-        height: 'calc(100vh - 180px - 36px)',
-        width: '100%',
-        backgroundColor: 'inherit',
-        overflowX: 'auto',
-      },
-      tablePaperMessage: {
-        //Footer is 36px
-        height: 'calc(100vh - 244px - 4rem - 36px)',
-        width: '100%',
-        backgroundColor: 'inherit',
-        overflowX: 'auto',
-      },
-      noResultsPaper: {
-        padding: theme.spacing(2),
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        maxWidth: '960px',
-      },
-    })
-);
+const cardPaperStyle = { backgroundColor: 'inherit' };
+const tablePaperStyle = {
+  //Footer is 36px
+  height: 'calc(100vh - 180px - 36px)',
+  width: '100%',
+  backgroundColor: 'inherit',
+  overflowX: 'auto',
+};
+const tablePaperMessageStyle = {
+  //Footer is 36px
+  height: 'calc(100vh - 244px - 4rem - 36px)',
+  width: '100%',
+  backgroundColor: 'inherit',
+  overflowX: 'auto',
+};
 
-const useNavBarStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      openDataPaper: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        backgroundColor: (theme as any).colours?.warning,
-        display: 'flex',
-        flexDirection: 'column',
-        paddingLeft: 0,
-        paddingRight: 20,
-        justifyContent: 'center',
-      },
-      openDataInfoIcon: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        color: (theme as any).colours?.information,
-      },
-    })
-);
+const NoResultsPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  maxWidth: '960px',
+}));
 
-const gridStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.background.default,
-    },
-  });
+const OpenDataPaper = styled(Paper)(({ theme }) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  backgroundColor: (theme as any).colours?.warning,
+  display: 'flex',
+  flexDirection: 'column',
+  paddingLeft: 0,
+  paddingRight: 20,
+  justifyContent: 'center',
+}));
 
-const StyledGrid = withStyles(gridStyles)(Grid);
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+}));
 
 // Define all the supported paths for data-view.
 export const paths = {
@@ -179,12 +158,10 @@ const isisPaths = [
 // DLS base paths - required for linking to correct search view
 const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
 
-const BlackTextTypography = withStyles({
-  root: {
-    color: '#000000',
-    fontSize: '16px',
-  },
-})(Typography);
+const BlackTextTypography = styled(Typography)({
+  color: '#000000',
+  fontSize: '16px',
+});
 
 const NavBar = React.memo(
   (props: {
@@ -195,7 +172,6 @@ const NavBar = React.memo(
     loggedInAnonymously: boolean;
   }): React.ReactElement => {
     const [t] = useTranslation();
-    const classes = useNavBarStyles();
     const isStudyHierarchy =
       useRouteMatch([
         ...Object.values(paths.studyHierarchy.toggle),
@@ -229,7 +205,7 @@ const NavBar = React.memo(
 
           {props.loggedInAnonymously || isStudyHierarchy ? (
             <Grid item>
-              <Paper square className={classes.openDataPaper}>
+              <OpenDataPaper square>
                 <Grid
                   container
                   direction="row"
@@ -261,7 +237,13 @@ const NavBar = React.memo(
                         style={{ backgroundColor: 'transparent' }}
                         size="large"
                       >
-                        <InfoIcon className={classes.openDataInfoIcon} />
+                        <InfoIcon
+                          sx={{
+                            color: (theme: Theme) =>
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              (theme as any).colours?.information,
+                          }}
+                        />
                       </IconButton>
                     </ArrowTooltip>
                   </Grid>
@@ -271,7 +253,7 @@ const NavBar = React.memo(
                     </BlackTextTypography>
                   </Grid>
                 </Grid>
-              </Paper>
+              </OpenDataPaper>
             </Grid>
           ) : null}
 
@@ -366,25 +348,19 @@ const NavBar = React.memo(
 );
 NavBar.displayName = 'NavBar';
 
-const buttonStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      root: {
-        padding: theme.spacing(0.5),
-        display: 'inline-block',
-      },
-    })
-);
+const ButtonDiv = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0.5),
+  display: 'inline-block',
+}));
 
 const ViewButton = (props: {
   viewCards: boolean;
   handleButtonChange: () => void;
 }): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = buttonStyles();
 
   return (
-    <div className={classes.root}>
+    <ButtonDiv>
       <Button
         className="tour-dataview-view-button"
         aria-label={`page-view ${
@@ -398,7 +374,7 @@ const ViewButton = (props: {
       >
         {props.viewCards ? t('app.view_table') : t('app.view_cards')}
       </Button>
-    </div>
+    </ButtonDiv>
   );
 };
 
@@ -407,10 +383,9 @@ export const ClearFiltersButton = (props: {
   disabled: boolean;
 }): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = buttonStyles();
 
   return (
-    <div className={classes.root}>
+    <ButtonDiv>
       <Button
         className="tour-dataview-clear-filter-button"
         data-testid="clear-filters-button"
@@ -426,7 +401,7 @@ export const ClearFiltersButton = (props: {
       >
         {t('app.clear_filters')}
       </Button>
-    </div>
+    </ButtonDiv>
   );
 };
 
@@ -445,14 +420,13 @@ const StyledRouting = (props: {
     loggedInAnonymously,
   } = props;
   const [t] = useTranslation();
-  const paperClasses = usePaperStyles();
-  const tableClassName = displayFilterMessage
-    ? paperClasses.tablePaperMessage
-    : paperClasses.tablePaper;
+  const tableClassStyle = displayFilterMessage
+    ? tablePaperMessageStyle
+    : tablePaperStyle;
   return (
     <div>
       {viewStyle !== 'card' && displayFilterMessage && (
-        <Paper className={paperClasses.noResultsPaper}>
+        <NoResultsPaper>
           <Typography
             align="center"
             variant="h6"
@@ -461,13 +435,11 @@ const StyledRouting = (props: {
           >
             {t('loading.filter_message')}
           </Typography>
-        </Paper>
+        </NoResultsPaper>
       )}
       <Paper
         square
-        className={
-          viewStyle === 'card' ? paperClasses.cardPaper : tableClassName
-        }
+        sx={viewStyle === 'card' ? cardPaperStyle : tableClassStyle}
       >
         <PageRouting
           loggedInAnonymously={loggedInAnonymously}
