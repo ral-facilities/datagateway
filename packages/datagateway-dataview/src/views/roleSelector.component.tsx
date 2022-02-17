@@ -4,10 +4,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  Theme,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import axios, { AxiosError } from 'axios';
 import {
   handleICATError,
@@ -22,15 +19,6 @@ import { useTranslation } from 'react-i18next';
 import { UseQueryResult, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 100,
-    },
-  })
-);
 
 const fetchRoles = (apiUrl: string, username: string): Promise<string[]> => {
   const params = new URLSearchParams();
@@ -72,7 +60,6 @@ export const useRoles = (
 };
 
 const RoleSelector: React.FC = () => {
-  const classes = useStyles();
   const location = useLocation();
   const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
@@ -104,8 +91,8 @@ const RoleSelector: React.FC = () => {
   return (
     <FormControl
       id="role-selector"
-      className={classes.formControl}
       variant="standard"
+      sx={{ margin: 1, minWidth: '100px' }}
     >
       <InputLabel>{t('my_data_table.role_selector')}</InputLabel>
       <Select

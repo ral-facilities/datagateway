@@ -218,7 +218,7 @@ describe('ISIS Investigation Landing page', () => {
 
     facilityCycleWrapper
       .find('#investigation-datasets-tab')
-      .first()
+      .last()
       .simulate('click');
 
     expect(history.location.pathname).toBe(
@@ -228,7 +228,7 @@ describe('ISIS Investigation Landing page', () => {
     history.replace('/?view=card');
     const studyWrapper = createWrapper(true);
 
-    studyWrapper.find('#investigation-datasets-tab').first().simulate('click');
+    studyWrapper.find('#investigation-datasets-tab').last().simulate('click');
 
     expect(history.location.pathname).toBe(
       '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
@@ -253,7 +253,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       wrapper.find('[aria-label="landing-investigation-users-label"]')
-    ).toHaveLength(3);
+    ).toHaveLength(4);
     expect(
       wrapper.find('[aria-label="landing-investigation-user-0"]').first().text()
     ).toEqual('Principal Investigator: John Smith');
@@ -313,7 +313,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       wrapper.find('[aria-label="landing-investigation-publications-label"]')
-    ).toHaveLength(3);
+    ).toHaveLength(4);
     expect(
       wrapper
         .find('[aria-label="landing-investigation-reference-0"]')
@@ -339,7 +339,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       wrapper.find('[aria-label="landing-investigation-samples-label"]')
-    ).toHaveLength(3);
+    ).toHaveLength(4);
     expect(
       wrapper
         .find('[aria-label="landing-investigation-sample-0"]')

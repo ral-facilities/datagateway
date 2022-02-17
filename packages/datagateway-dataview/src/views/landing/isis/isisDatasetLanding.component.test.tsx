@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import ISISDatasetLanding from './isisDatasetLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -13,7 +12,7 @@ import {
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Typography } from '@mui/material';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Router } from 'react-router-dom';
@@ -30,7 +29,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Dataset Landing page', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
@@ -71,8 +69,6 @@ describe('ISIS Dataset Landing page', () => {
     },
   };
   beforeEach(() => {
-    mount = createMount();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -90,7 +86,6 @@ describe('ISIS Dataset Landing page', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -106,7 +101,7 @@ describe('ISIS Dataset Landing page', () => {
 
     facilityCycleWrapper
       .find('#dataset-datafiles-tab')
-      .first()
+      .last()
       .simulate('click');
 
     expect(history.location.pathname).toBe(
@@ -116,7 +111,7 @@ describe('ISIS Dataset Landing page', () => {
     history.replace('/?view=card');
     const studyWrapper = createWrapper(true);
 
-    studyWrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    studyWrapper.find('#dataset-datafiles-tab').last().simulate('click');
 
     expect(history.location.pathname).toBe(
       '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/87/datafile'

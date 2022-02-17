@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import axios from 'axios';
 import configureStore from 'redux-mock-store';
 import {
@@ -14,7 +13,7 @@ import { initialState as dgDataViewInitialState } from '../state/reducers/dgdata
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import RoleSelector from './roleSelector.component';
 import { flushPromises } from '../setupTests';
@@ -32,7 +31,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Role Selector', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let mockData: InvestigationUser[] = [];
@@ -52,8 +50,6 @@ describe('Role Selector', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -88,7 +84,6 @@ describe('Role Selector', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -116,6 +111,7 @@ describe('Role Selector', () => {
     wrapper
       .find('#role-selector')
       .find('[role="button"]')
+      .last()
       .simulate('mousedown', { button: 0 });
 
     // Flush promises and update the wrapper.

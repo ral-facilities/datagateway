@@ -1,17 +1,14 @@
 import React from 'react';
-import { createShallow } from '@mui/material/test-utils';
+import { shallow } from 'enzyme';
 import {
   TranslatedHomePage as HomePage,
   TranslatedHomePageStateProps,
 } from './translatedHomePage.component';
 
 describe('HomePage', () => {
-  let shallow;
   let props: TranslatedHomePageStateProps;
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-
     props = {
       pluginHost: 'test',
     };

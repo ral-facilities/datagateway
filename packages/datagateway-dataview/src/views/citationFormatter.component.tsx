@@ -6,11 +6,9 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  Theme,
+  styled,
   Typography,
 } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { Mark } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -19,20 +17,9 @@ import axios, { AxiosError } from 'axios';
 import { FormattedUser } from './landing/isis/isisStudyLanding.component';
 import { useQuery, UseQueryResult } from 'react-query';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    subHeading: {
-      marginTop: theme.spacing(1),
-    },
-    formatSelect: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    spinner: {
-      marginLeft: theme.spacing(1),
-    },
-  })
-);
+const Subheading = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));
 
 const fetchCitation = (
   doi: string,
@@ -102,7 +89,6 @@ const CitationFormatter = (
   const { doi } = props;
 
   const [t] = useTranslation();
-  const classes = useStyles();
   const [copiedCitation, setCopiedCitation] = React.useState(false);
   const [format, setFormat] = React.useState('default');
   const { data: citation, isFetching: fetching, isError: error } = useCitation(
@@ -128,14 +114,9 @@ const CitationFormatter = (
 
   return (
     <Box>
-      <Typography
-        className={classes.subHeading}
-        component="h6"
-        variant="h6"
-        data-testid="citation-formatter-title"
-      >
+      <Subheading variant="h6" data-testid="citation-formatter-title">
         {t('studies.details.citation_formatter.label')}
-      </Typography>
+      </Subheading>
       <Typography data-testid="citation-formatter-details">
         {t('studies.details.citation_formatter.details') +
           (doi
@@ -148,7 +129,7 @@ const CitationFormatter = (
         <FormControl id="citation-formatter" error={error} variant="standard">
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Select
-              className={classes.formatSelect}
+              sx={{ my: 1 }}
               defaultValue="default"
               onChange={handleChange}
               aria-label={t(
@@ -170,7 +151,7 @@ const CitationFormatter = (
               <CircularProgress
                 data-testid="loading-spinner"
                 size={24}
-                className={classes.spinner}
+                sx={{ marginLeft: 1 }}
               />
             )}
           </div>
