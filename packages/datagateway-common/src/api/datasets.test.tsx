@@ -54,6 +54,7 @@ describe('dataset api functions', () => {
   afterEach(() => {
     (handleICATError as jest.Mock).mockClear();
     (axios.get as jest.Mock).mockClear();
+    jest.useRealTimers();
   });
 
   describe('useDataset', () => {
@@ -462,13 +463,16 @@ describe('dataset api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useDatasetSizes(mockData), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () => useDatasetSizes(mockData[0]),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       await waitFor(() => result.current.every((query) => query.isError));
 
-      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith(
         { message: 'Test error' },
         false
@@ -747,20 +751,25 @@ describe('dataset api functions', () => {
       expect(result.current.map((query) => query.data)).toEqual([1, 2, 3]);
     });
 
-    it('sends axios request to fetch dataset dataset counts once refetch function is called and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch dataset dataset counts and calls handleICATError on failure', async () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
       const { result, waitFor } = renderHook(
-        () => useDatasetsDatafileCount(mockData),
+        () => useDatasetsDatafileCount(mockData[0]),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
+      // for some reason we need to flush promise queue in this test
+      await act(async () => {
+        await Promise.resolve();
+      });
+
       await waitFor(() => result.current.every((query) => query.isError));
 
-      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith(
         { message: 'Test error' },
         false

@@ -240,7 +240,11 @@ export const useInvestigationSize = (
 };
 
 export const useInvestigationSizes = (
-  data: Investigation[] | InfiniteData<Investigation[]> | undefined
+  data:
+    | Investigation[]
+    | InfiniteData<Investigation[]>
+    | Investigation
+    | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
@@ -255,11 +259,13 @@ export const useInvestigationSizes = (
     number,
     ['investigationSize', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((investigation) => {
@@ -322,7 +328,11 @@ export const useInvestigationSizes = (
 };
 
 export const useInvestigationsDatasetCount = (
-  data: Investigation[] | InfiniteData<Investigation[]> | undefined
+  data:
+    | Investigation[]
+    | InfiniteData<Investigation[]>
+    | Investigation
+    | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
@@ -332,11 +342,13 @@ export const useInvestigationsDatasetCount = (
     number,
     ['investigationDatasetCount', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((investigation) => {

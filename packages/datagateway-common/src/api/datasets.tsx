@@ -220,7 +220,7 @@ export const useDatasetSize = (
 };
 
 export const useDatasetSizes = (
-  data: Dataset[] | InfiniteData<Dataset[]> | undefined
+  data: Dataset[] | InfiniteData<Dataset[]> | Dataset | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
@@ -235,11 +235,13 @@ export const useDatasetSizes = (
     number,
     ['datasetSize', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((dataset) => {
@@ -298,7 +300,7 @@ export const useDatasetSizes = (
 };
 
 export const useDatasetsDatafileCount = (
-  data: Dataset[] | InfiniteData<Dataset[]> | undefined
+  data: Dataset[] | InfiniteData<Dataset[]> | Dataset | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
@@ -308,11 +310,13 @@ export const useDatasetsDatafileCount = (
     number,
     ['datasetDatafileCount', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((dataset) => {

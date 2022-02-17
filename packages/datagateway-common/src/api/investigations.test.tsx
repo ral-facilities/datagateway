@@ -617,7 +617,7 @@ describe('investigation api functions', () => {
         message: 'Test error',
       });
       const { result, waitFor } = renderHook(
-        () => useInvestigationSizes(mockData),
+        () => useInvestigationSizes(mockData[0]),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -625,7 +625,7 @@ describe('investigation api functions', () => {
 
       await waitFor(() => result.current.every((query) => query.isError));
 
-      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith(
         { message: 'Test error' },
         false
@@ -914,15 +914,20 @@ describe('investigation api functions', () => {
         message: 'Test error',
       });
       const { result, waitFor } = renderHook(
-        () => useInvestigationsDatasetCount(mockData),
+        () => useInvestigationsDatasetCount(mockData[0]),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
+      // for some reason we need to flush promise queue in this test
+      await act(async () => {
+        await Promise.resolve();
+      });
+
       await waitFor(() => result.current.every((query) => query.isError));
 
-      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith(
         { message: 'Test error' },
         false
