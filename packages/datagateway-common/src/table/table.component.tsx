@@ -12,7 +12,6 @@ import {
   Index,
   TableRowRenderer,
 } from 'react-virtualized';
-import clsx from 'clsx';
 import { Entity, Order, ICATEntity, UpdateMethod } from '../app.types';
 import ExpandCell from './cellRenderers/expandCell.component';
 import DataCell from './cellRenderers/dataCell.component';
@@ -447,7 +446,7 @@ const VirtualizedTable = React.memo(
                               defaultSort={defaultSort}
                             />
                           )}
-                          className={clsx(flexContainerStyle, className)}
+                          className={className}
                           cellRenderer={(props) => (
                             <DataCell
                               {...props}

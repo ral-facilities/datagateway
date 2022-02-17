@@ -13,7 +13,6 @@
     "@mui/lab": "^5.0.0-alpha.67",
     "@types/lodash.debounce": "^4.0.6",
     "axios": "^0.26.0",
-    "clsx": "^1.1.1",
     "connected-react-router": "^6.9.1",
     "date-fns": "^2.17.0",
     "hex-to-rgba": "^2.0.1",
@@ -34,15 +33,15 @@
     "use-deep-compare-effect": "^1.6.1"
   },
   "peerDependencies": {
-    "@mui/material": ">= 5.4.0 < 6",
     "@mui/icons-material": ">= 5.3.1 < 6",
+    "@mui/material": ">= 5.4.0 < 6",
     "react": ">= 17.0.2 < 18",
     "react-dom": ">= 17.0.2 < 18",
     "react-router-dom": ">= 5.2.0 < 6"
   },
   "devDependencies": {
-    "@mui/material": "^5.4.0",
     "@mui/icons-material": "^5.3.1",
+    "@mui/material": "^5.4.0",
     "@testing-library/react-hooks": "^7.0.1",
     "@types/enzyme": "^3.10.10",
     "@types/jest": "^27.4.0",
