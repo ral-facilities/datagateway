@@ -707,40 +707,38 @@ const PageContainer: React.FC = () => {
                 xs={12}
                 style={{ marginTop: '10px', marginBottom: '10px' }}
               >
-                <StyledGrid container>
+                <StyledGrid container alignItems="baseline">
                   {/* Toggle between the table and card view */}
-                  <Grid item xs={'auto'}>
-                    <div>
-                      <Route
-                        exact
-                        path={togglePaths}
-                        render={() => (
-                          <ViewButton
-                            viewCards={view === 'card'}
-                            handleButtonChange={handleButtonChange}
-                          />
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={Object.values(paths.myData).concat(
-                          Object.values(paths.toggle),
-                          Object.values(paths.standard),
-                          Object.values(paths.studyHierarchy.toggle),
-                          Object.values(paths.studyHierarchy.standard)
-                        )}
-                        render={() => (
-                          <ClearFiltersButton
-                            handleButtonClearFilters={handleButtonClearFilters}
-                            disabled={disabled}
-                          />
-                        )}
-                      />
-                    </div>
+                  <Grid item alignItems="baseline" style={{ display: 'flex' }}>
                     <Route
                       exact
                       path={Object.values(paths.myData)}
                       render={() => <RoleSelector />}
+                    />
+                    <Route
+                      exact
+                      path={togglePaths}
+                      render={() => (
+                        <ViewButton
+                          viewCards={view === 'card'}
+                          handleButtonChange={handleButtonChange}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path={Object.values(paths.myData).concat(
+                        Object.values(paths.toggle),
+                        Object.values(paths.standard),
+                        Object.values(paths.studyHierarchy.toggle),
+                        Object.values(paths.studyHierarchy.standard)
+                      )}
+                      render={() => (
+                        <ClearFiltersButton
+                          handleButtonClearFilters={handleButtonClearFilters}
+                          disabled={disabled}
+                        />
+                      )}
                     />
                   </Grid>
                   <Grid item xs={true}>
