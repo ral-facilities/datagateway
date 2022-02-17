@@ -24,11 +24,14 @@ import { mount, ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import { ListItemText } from '@mui/material';
+
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -237,25 +240,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('updates filter query params on date filter', () => {
-    //https://github.com/mui/material-ui-pickers/issues/2073
-
-    // add window.matchMedia
-    // this is necessary for the date picker to be rendered in desktop mode.
-    // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: (query) => ({
-        media: query,
-        // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
-        matches: query === '(pointer: fine)',
-        onchange: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        addListener: () => {},
-        removeListener: () => {},
-        dispatchEvent: () => false,
-      }),
-    });
+    applyDatePickerWorkaround();
 
     const wrapper = createWrapper();
 
@@ -277,7 +262,7 @@ describe('Investigation - Card View', () => {
 
     expect(history.location.search).toBe('?');
 
-    delete window.matchMedia;
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
@@ -17,3 +18,31 @@ export const flushPromises = (): Promise<void> =>
 
 // Mock lodash.debounce to return the function we want to call.
 jest.mock('lodash.debounce', () => (fn: (args: unknown) => unknown) => fn);
+
+// MUI date pickers default to mobile versions during testing and so functions
+// like .simulate('change') will not work, this workaround ensures desktop
+// datepickers are used in tests instead
+// https://github.com/mui/material-ui-pickers/issues/2073
+export const applyDatePickerWorkaround = (): void => {
+  // add window.matchMedia
+  // this is necessary for the date picker to be rendered in desktop mode.
+  // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: (query: string) => ({
+      media: query,
+      // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
+      matches: query === '(pointer: fine)',
+      onchange: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+};
+
+export const cleanupDatePickerWorkaround = (): void => {
+  delete window.matchMedia;
+};

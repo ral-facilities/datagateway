@@ -2,7 +2,11 @@
 import React from 'react';
 import DownloadStatusTable from './downloadStatusTable.component';
 import { mount, shallow } from 'enzyme';
-import { flushPromises } from '../setupTests';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+  flushPromises,
+} from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
 import { Download } from 'datagateway-common';
@@ -428,25 +432,7 @@ describe('Download Status Table', () => {
   });
 
   it('filters data when date filter is altered', async () => {
-    //https://github.com/mui/material-ui-pickers/issues/2073
-
-    // add window.matchMedia
-    // this is necessary for the date picker to be rendered in desktop mode.
-    // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: (query) => ({
-        media: query,
-        // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
-        matches: query === '(pointer: fine)',
-        onchange: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        addListener: () => {},
-        removeListener: () => {},
-        dispatchEvent: () => false,
-      }),
-    });
+    applyDatePickerWorkaround();
 
     const wrapper = mount(
       <DownloadStatusTable
@@ -506,6 +492,6 @@ describe('Download Status Table', () => {
 
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
 
-    delete window.matchMedia;
+    cleanupDatePickerWorkaround();
   });
 });
