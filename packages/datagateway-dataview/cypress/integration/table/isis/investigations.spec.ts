@@ -1,7 +1,12 @@
 describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
+    cy.intercept('**/investigations/count*').as('getInvestigationsCount');
+    cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/16/investigation');
+    cy.visit('/browse/instrument/1/facilityCycle/16/investigation').wait(
+      ['@getInvestigationsCount', '@getInvestigationsOrder'],
+      { timeout: 10000 }
+    );
   });
 
   it('should load correctly', () => {
@@ -200,14 +205,12 @@ describe('ISIS - Investigations Table', () => {
     it('date between', () => {
       cy.get('input[id="Start Date filter from"]').type('2006-08-05');
 
-      cy.get('button[aria-label="Start Date filter to, date picker"]')
+      cy.get('input[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-
-      cy.contains('OK').click();
+      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
 
       const date = new Date();
       date.setDate(1);

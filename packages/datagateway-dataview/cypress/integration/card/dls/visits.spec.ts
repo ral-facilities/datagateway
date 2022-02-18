@@ -132,12 +132,12 @@ describe('DLS - Visits Cards', () => {
       cy.get('input[id="Start Date filter from"]')
         .type('2019-01-01')
         .wait(['@getInvestigationsCount'], { timeout: 10000 });
-      cy.get('button[aria-label="Start Date filter to, date picker"]')
+      cy.get('input[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
-      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-      cy.contains('OK')
+      cy.get('.MuiPickersDay-root[tabindex="-1"]')
+        .first()
         .click()
         .wait(['@getInvestigationsCount'], { timeout: 10000 });
       const date = new Date();

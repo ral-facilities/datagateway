@@ -1,7 +1,12 @@
 describe('ISIS - Studies Table', () => {
   beforeEach(() => {
+    cy.intercept('**/studies/count*').as('getStudiesCount');
+    cy.intercept('**/studies?order*').as('getStudiesOrder');
     cy.login();
-    cy.visit('/browseStudyHierarchy/instrument/1/study');
+    cy.visit('/browseStudyHierarchy/instrument/1/study').wait(
+      ['@getStudiesCount', '@getStudiesOrder'],
+      { timeout: 10000 }
+    );
   });
 
   it('should load correctly', () => {

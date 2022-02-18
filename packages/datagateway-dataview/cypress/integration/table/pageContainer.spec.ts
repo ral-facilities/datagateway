@@ -5,6 +5,8 @@ describe('PageContainer Component', () => {
       password: 'pw',
       mechanism: 'simple',
     });
+    cy.intercept('/investigations/').as('getInvestigations');
+    cy.visit('/browse/investigation/').wait('@getInvestigations');
     cy.get('[aria-label="page-breadcrumbs"]').should('exist');
     cy.get('[aria-label="open-data-warning"]').should('not.exist');
   });
@@ -27,8 +29,8 @@ describe('PageContainer Component', () => {
 
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('36');
 
-      cy.url().should('eq', url);
       cy.get('[data-testid="clear-filters-button"]').click();
+      cy.url().should('eq', url);
     });
   });
 
