@@ -52,6 +52,7 @@ const usePaperStyles = makeStyles(
         //Footer is 36px
         height: 'calc(100vh - 180px - 36px)',
         width: '100%',
+        minHeight: 500,
         backgroundColor: 'inherit',
         overflowX: 'auto',
       },
