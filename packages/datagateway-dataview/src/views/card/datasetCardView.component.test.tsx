@@ -1,5 +1,4 @@
-import { Link, ListItemText } from '@mui/material';
-import { createMount } from '@mui/material/test-utils';
+import { ListItemText } from '@mui/material';
 import {
   AdvancedFilter,
   dGCommonInitialState,
@@ -8,7 +7,7 @@ import {
   Dataset,
   AddToCartButton,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
@@ -19,6 +18,10 @@ import DatasetCardView from './datasetCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -32,7 +35,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Dataset - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: Dataset[];
@@ -52,7 +54,6 @@ describe('Dataset - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
@@ -85,7 +86,6 @@ describe('Dataset - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -119,7 +119,7 @@ describe('Dataset - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -140,10 +140,12 @@ describe('Dataset - Card View', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').first().simulate('click');
     advancedFilter
       .find('input')
       .last()
@@ -159,6 +161,8 @@ describe('Dataset - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -166,7 +170,7 @@ describe('Dataset - Card View', () => {
 
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('datasets.name');
-    button.simulate('click');
+    button.find('div').simulate('click');
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`

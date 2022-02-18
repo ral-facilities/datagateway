@@ -1,5 +1,4 @@
-import { Link, ListItemText } from '@mui/material';
-import { createMount } from '@mui/material/test-utils';
+import { ListItemText } from '@mui/material';
 import {
   AdvancedFilter,
   dGCommonInitialState,
@@ -7,7 +6,7 @@ import {
   useFacilityCyclesPaginated,
   FacilityCycle,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
@@ -18,6 +17,10 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISFacilityCyclesCardView from './isisFacilityCyclesCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -31,7 +34,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Facility Cycles - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: FacilityCycle[];
@@ -52,7 +54,6 @@ describe('ISIS Facility Cycles - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
@@ -84,7 +85,6 @@ describe('ISIS Facility Cycles - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -106,7 +106,7 @@ describe('ISIS Facility Cycles - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -127,10 +127,12 @@ describe('ISIS Facility Cycles - Card View', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').first().simulate('click');
     advancedFilter
       .find('input')
       .last()
@@ -146,6 +148,8 @@ describe('ISIS Facility Cycles - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -163,7 +167,7 @@ describe('ISIS Facility Cycles - Card View', () => {
 
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('facilitycycles.name');
-    button.simulate('click');
+    button.find('div').simulate('click');
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`

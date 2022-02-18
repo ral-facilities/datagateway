@@ -22,23 +22,16 @@ import {
 import { Save, CalendarToday } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Theme } from '@mui/material';
+import { styled } from '@mui/material';
 
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    marginTop: theme.spacing(1),
+    margin: 'auto',
+  },
+}));
 
 interface ISISDatasetCardViewProps {
   instrumentId: string;
@@ -147,12 +140,10 @@ const ISISDatasetsCardView = (
     [data, dateFilter, sizeQueries, t]
   );
 
-  const classes = useStyles();
-
   const buttons = React.useMemo(
     () => [
       (dataset: Dataset) => (
-        <div className={classes.actionButtons}>
+        <ActionButtonsContainer>
           <AddToCartButton
             entityType="dataset"
             allIds={data?.map((dataset) => dataset.id) ?? []}
@@ -163,10 +154,10 @@ const ISISDatasetsCardView = (
             entityId={dataset.id}
             entityName={dataset.name}
           />
-        </div>
+        </ActionButtonsContainer>
       ),
     ],
-    [classes.actionButtons, data]
+    [data]
   );
 
   const moreInformation = React.useCallback(

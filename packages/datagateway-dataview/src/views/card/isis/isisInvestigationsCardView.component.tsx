@@ -1,4 +1,4 @@
-import { Link as MuiLink } from '@mui/material';
+import { Link as MuiLink, styled } from '@mui/material';
 import {
   Fingerprint,
   Public,
@@ -30,23 +30,15 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Theme } from '@mui/material';
 
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    marginTop: theme.spacing(1),
+    margin: 'auto',
+  },
+}));
 
 interface ISISInvestigationsCardViewProps {
   instrumentId: string;
@@ -193,12 +185,10 @@ const ISISInvestigationsCardView = (
     [data, dateFilter, principalExperimenterFilter, sizeQueries, t, textFilter]
   );
 
-  const classes = useStyles();
-
   const buttons = React.useMemo(
     () => [
       (investigation: Investigation) => (
-        <div className={classes.actionButtons}>
+        <ActionButtonsContainer>
           <AddToCartButton
             entityType="investigation"
             allIds={data?.map((investigation) => investigation.id) ?? []}
@@ -209,10 +199,10 @@ const ISISInvestigationsCardView = (
             entityId={investigation.id}
             entityName={investigation.name}
           />
-        </div>
+        </ActionButtonsContainer>
       ),
     ],
-    [classes.actionButtons, data]
+    [data]
   );
 
   const moreInformation = React.useCallback(

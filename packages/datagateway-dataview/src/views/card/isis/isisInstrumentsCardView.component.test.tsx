@@ -1,5 +1,4 @@
-import { Link, ListItemText } from '@mui/material';
-import { createMount } from '@mui/material/test-utils';
+import { ListItemText } from '@mui/material';
 import {
   AdvancedFilter,
   dGCommonInitialState,
@@ -8,7 +7,7 @@ import {
   Instrument,
   ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
@@ -32,7 +31,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Instruments - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: Instrument[];
@@ -52,7 +50,6 @@ describe('ISIS Instruments - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
@@ -83,7 +80,6 @@ describe('ISIS Instruments - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -125,7 +121,7 @@ describe('ISIS Instruments - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -160,7 +156,7 @@ describe('ISIS Instruments - Card View', () => {
 
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('instruments.name');
-    button.simulate('click');
+    button.find('div').simulate('click');
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"desc"}')}`
@@ -172,7 +168,7 @@ describe('ISIS Instruments - Card View', () => {
     expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeTruthy();
