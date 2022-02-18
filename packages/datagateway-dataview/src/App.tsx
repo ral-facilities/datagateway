@@ -1,5 +1,3 @@
-import createGenerateClassName from '@mui/styles/createGenerateClassName';
-import StylesProvider from '@mui/styles/StylesProvider';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import {
   DGCommonMiddleware,
@@ -31,15 +29,6 @@ import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-
-const generateClassName = createGenerateClassName({
-  productionPrefix: 'dgwt',
-
-  // Only set disable when we are in production and not running e2e tests;
-  // ensures class selectors are working on tests.
-  disableGlobal:
-    process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
-});
 
 const history = createBrowserHistory();
 
@@ -196,19 +185,17 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={this.store}>
             <ConnectedRouter history={history}>
               <QueryClientProvider client={queryClient}>
-                <StylesProvider generateClassName={generateClassName}>
-                  <DGThemeProvider>
-                    <ConnectedPreloader>
-                      <React.Suspense
-                        fallback={
-                          <Preloader loading={true}>Finished loading</Preloader>
-                        }
-                      >
-                        <PageContainer />
-                      </React.Suspense>
-                    </ConnectedPreloader>
-                  </DGThemeProvider>
-                </StylesProvider>
+                <DGThemeProvider>
+                  <ConnectedPreloader>
+                    <React.Suspense
+                      fallback={
+                        <Preloader loading={true}>Finished loading</Preloader>
+                      }
+                    >
+                      <PageContainer />
+                    </React.Suspense>
+                  </ConnectedPreloader>
+                </DGThemeProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
               </QueryClientProvider>
             </ConnectedRouter>
