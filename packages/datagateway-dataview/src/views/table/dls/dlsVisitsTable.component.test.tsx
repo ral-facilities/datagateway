@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import DLSVisitsTable from './dlsVisitsTable.component';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -11,13 +10,17 @@ import {
   dGCommonInitialState,
   DLSVisitDetailsPanel,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -32,7 +35,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Visits table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Investigation[];
@@ -52,7 +54,6 @@ describe('DLS Visits table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -97,7 +98,6 @@ describe('DLS Visits table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -153,7 +153,7 @@ describe('DLS Visits table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by investigations.visit_id"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -172,6 +172,8 @@ describe('DLS Visits table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -190,6 +192,8 @@ describe('DLS Visits table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -219,7 +223,7 @@ describe('DLS Visits table component', () => {
   it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });

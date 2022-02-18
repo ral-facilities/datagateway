@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import ISISStudiesTable from './isisStudiesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 
@@ -10,7 +9,7 @@ import {
   useStudyCount,
   useStudiesInfinite,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
@@ -18,6 +17,10 @@ import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
 import { parse } from 'date-fns';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest
   .useFakeTimers('modern')
@@ -35,7 +38,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Studies table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Study[];
@@ -55,7 +57,6 @@ describe('ISIS Studies table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -87,7 +88,6 @@ describe('ISIS Studies table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -166,7 +166,7 @@ describe('ISIS Studies table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by studies.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -184,6 +184,8 @@ describe('ISIS Studies table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find('input[id="studies.end_date filter to"]');
@@ -202,6 +204,8 @@ describe('ISIS Studies table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {

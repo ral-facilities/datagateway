@@ -1,7 +1,4 @@
 import React from 'react';
-import { Typography, Grid, Theme, Divider } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import {
   Table,
   investigationLink,
@@ -19,8 +16,8 @@ import {
   useSort,
   useTextFilter,
   useDateFilter,
-  DetailsPanelProps,
   useInvestigationSizes,
+  InvestigationDetailsPanel,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { useSelector } from 'react-redux';
@@ -33,64 +30,6 @@ import PublicIcon from '@mui/icons-material/Public';
 import SaveIcon from '@mui/icons-material/Save';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-export const InvestigationDetailsPanel = (
-  props: DetailsPanelProps
-): React.ReactElement => {
-  const classes = useStyles();
-  const [t] = useTranslation();
-  const investigationData = props.rowData as Investigation;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{investigationData.title}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.name')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.name}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.start_date')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.startDate}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.end_date')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.endDate}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
 
 const InvestigationTable = (): React.ReactElement => {
   const selectAllSetting = useSelector(

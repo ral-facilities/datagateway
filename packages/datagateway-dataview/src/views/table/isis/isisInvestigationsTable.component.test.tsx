@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import ISISInvestigationsTable from './isisInvestigationsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -23,8 +22,12 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -44,7 +47,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Investigations table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Investigation[];
@@ -73,7 +75,6 @@ describe('ISIS Investigations table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -151,7 +152,6 @@ describe('ISIS Investigations table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -229,7 +229,7 @@ describe('ISIS Investigations table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by investigations.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -248,6 +248,8 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -268,6 +270,8 @@ describe('ISIS Investigations table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -302,7 +306,7 @@ describe('ISIS Investigations table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -328,7 +332,7 @@ describe('ISIS Investigations table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -376,7 +380,7 @@ describe('ISIS Investigations table component', () => {
   it('displays details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
   });
@@ -393,7 +397,7 @@ describe('ISIS Investigations table component', () => {
 
     detailsPanelWrapper
       .find('#investigation-datasets-tab')
-      .first()
+      .last()
       .simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'

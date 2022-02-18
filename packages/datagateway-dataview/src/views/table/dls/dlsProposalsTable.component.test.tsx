@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import DLSProposalsTable from './dlsProposalsTable.component';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -9,7 +8,7 @@ import {
   useInvestigationsInfinite,
   dGCommonInitialState,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -29,7 +28,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Proposals table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Investigation[];
@@ -49,7 +47,6 @@ describe('DLS Proposals table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -93,7 +90,6 @@ describe('DLS Proposals table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 

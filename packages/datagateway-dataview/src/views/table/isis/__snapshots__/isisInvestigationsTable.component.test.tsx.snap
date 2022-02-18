@@ -8,16 +8,6 @@ Object {
   "allIds": Array [
     1,
   ],
-  "classes": Object {
-    "flexContainer": "VirtualizedTable-flexContainer-2",
-    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-8",
-    "table": "VirtualizedTable-table-1",
-    "tableCell": "VirtualizedTable-tableCell-6",
-    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
-    "tableRow": "VirtualizedTable-tableRow-4",
-    "tableRowHover": "VirtualizedTable-tableRowHover-5",
-  },
   "columns": Array [
     Object {
       "cellContentRenderer": [Function],
@@ -175,7 +165,7 @@ Object {
 `;
 
 exports[`ISIS Investigations table component renders title, name and DOI as links 1`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -192,17 +182,9 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
   data-testid="isis-investigations-table-title"
   to="/browse/instrument/4/facilityCycle/5/investigation/1"
 >
-  <ForwardRef(Link)
-    classes={
-      Object {
-        "button": "MuiLink-button",
-        "focusVisible": "Mui-focusVisible",
-        "root": "MuiLink-root",
-        "underlineAlways": "MuiLink-underlineAlways",
-        "underlineHover": "MuiLink-underlineHover",
-        "underlineNone": "MuiLink-underlineNone",
-      }
-    }
+  <MuiLinkRoot
+    className="MuiLink-root MuiLink-underlineAlways"
+    color="primary"
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
@@ -217,10 +199,36 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       }
     }
     data-testid="isis-investigations-table-title"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    ownerState={
+      Object {
+        "children": "Test 1",
+        "color": "primary",
+        "component": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        },
+        "data-testid": "isis-investigations-table-title",
+        "focusVisible": false,
+        "to": "/browse/instrument/4/facilityCycle/5/investigation/1",
+        "underline": "always",
+        "variant": "inherit",
+      }
+    }
     to="/browse/instrument/4/facilityCycle/5/investigation/1"
+    variant="inherit"
   >
-    <WithStyles(ForwardRef(Typography))
-      className="MuiLink-root MuiLink-underlineHover"
+    <Noop />
+    <ForwardRef(Typography)
+      className="MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
       color="primary"
       component={
         Object {
@@ -241,44 +249,8 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       to="/browse/instrument/4/facilityCycle/5/investigation/1"
       variant="inherit"
     >
-      <ForwardRef(Typography)
-        className="MuiLink-root MuiLink-underlineHover"
-        classes={
-          Object {
-            "alignCenter": "MuiTypography-alignCenter",
-            "alignJustify": "MuiTypography-alignJustify",
-            "alignLeft": "MuiTypography-alignLeft",
-            "alignRight": "MuiTypography-alignRight",
-            "body1": "MuiTypography-body1",
-            "body2": "MuiTypography-body2",
-            "button": "MuiTypography-button",
-            "caption": "MuiTypography-caption",
-            "colorError": "MuiTypography-colorError",
-            "colorInherit": "MuiTypography-colorInherit",
-            "colorPrimary": "MuiTypography-colorPrimary",
-            "colorSecondary": "MuiTypography-colorSecondary",
-            "colorTextPrimary": "MuiTypography-colorTextPrimary",
-            "colorTextSecondary": "MuiTypography-colorTextSecondary",
-            "displayBlock": "MuiTypography-displayBlock",
-            "displayInline": "MuiTypography-displayInline",
-            "gutterBottom": "MuiTypography-gutterBottom",
-            "h1": "MuiTypography-h1",
-            "h2": "MuiTypography-h2",
-            "h3": "MuiTypography-h3",
-            "h4": "MuiTypography-h4",
-            "h5": "MuiTypography-h5",
-            "h6": "MuiTypography-h6",
-            "noWrap": "MuiTypography-noWrap",
-            "overline": "MuiTypography-overline",
-            "paragraph": "MuiTypography-paragraph",
-            "root": "MuiTypography-root",
-            "srOnly": "MuiTypography-srOnly",
-            "subtitle1": "MuiTypography-subtitle1",
-            "subtitle2": "MuiTypography-subtitle2",
-          }
-        }
-        color="primary"
-        component={
+      <MuiTypographyRoot
+        as={
           Object {
             "$$typeof": Symbol(react.forward_ref),
             "propTypes": Object {
@@ -291,21 +263,70 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
             "render": [Function],
           }
         }
+        className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
         data-testid="isis-investigations-table-title"
         onBlur={[Function]}
         onFocus={[Function]}
+        ownerState={
+          Object {
+            "align": "inherit",
+            "children": "Test 1",
+            "className": "MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root",
+            "color": "primary.main",
+            "component": Object {
+              "$$typeof": Symbol(react.forward_ref),
+              "propTypes": Object {
+                "innerRef": [Function],
+                "onClick": [Function],
+                "replace": [Function],
+                "target": [Function],
+                "to": [Function],
+              },
+              "render": [Function],
+            },
+            "data-testid": "isis-investigations-table-title",
+            "gutterBottom": false,
+            "noWrap": false,
+            "onBlur": [Function],
+            "onFocus": [Function],
+            "paragraph": false,
+            "sx": Object {
+              "color": "primary.main",
+            },
+            "to": "/browse/instrument/4/facilityCycle/5/investigation/1",
+            "variant": "inherit",
+            "variantMapping": Object {
+              "body1": "p",
+              "body2": "p",
+              "h1": "h1",
+              "h2": "h2",
+              "h3": "h3",
+              "h4": "h4",
+              "h5": "h5",
+              "h6": "h6",
+              "inherit": "p",
+              "subtitle1": "h6",
+              "subtitle2": "h6",
+            },
+          }
+        }
+        sx={
+          Object {
+            "color": "primary.main",
+          }
+        }
         to="/browse/instrument/4/facilityCycle/5/investigation/1"
-        variant="inherit"
       >
+        <Noop />
         <Link
-          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
           data-testid="isis-investigations-table-title"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/instrument/4/facilityCycle/5/investigation/1"
         >
           <LinkAnchor
-            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
             data-testid="isis-investigations-table-title"
             href="/browse/instrument/4/facilityCycle/5/investigation/1"
             navigate={[Function]}
@@ -313,7 +334,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
             onFocus={[Function]}
           >
             <a
-              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
               data-testid="isis-investigations-table-title"
               href="/browse/instrument/4/facilityCycle/5/investigation/1"
               onBlur={[Function]}
@@ -324,35 +345,44 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
             </a>
           </LinkAnchor>
         </Link>
-      </ForwardRef(Typography)>
-    </WithStyles(ForwardRef(Typography))>
-  </ForwardRef(Link)>
-</WithStyles(ForwardRef(Link))>
+      </MuiTypographyRoot>
+    </ForwardRef(Typography)>
+  </MuiLinkRoot>
+</ForwardRef(Link)>
 `;
 
 exports[`ISIS Investigations table component renders title, name and DOI as links 2`] = `"Test 1"`;
 
 exports[`ISIS Investigations table component renders title, name and DOI as links 3`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   data-testid="isis-investigation-table-doi-link"
   href="https://doi.org/study pid"
 >
-  <ForwardRef(Link)
-    classes={
-      Object {
-        "button": "MuiLink-button",
-        "focusVisible": "Mui-focusVisible",
-        "root": "MuiLink-root",
-        "underlineAlways": "MuiLink-underlineAlways",
-        "underlineHover": "MuiLink-underlineHover",
-        "underlineNone": "MuiLink-underlineNone",
-      }
-    }
+  <MuiLinkRoot
+    className="MuiLink-root MuiLink-underlineAlways"
+    color="primary"
+    component="a"
     data-testid="isis-investigation-table-doi-link"
     href="https://doi.org/study pid"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    ownerState={
+      Object {
+        "children": "study pid",
+        "color": "primary",
+        "component": "a",
+        "data-testid": "isis-investigation-table-doi-link",
+        "focusVisible": false,
+        "href": "https://doi.org/study pid",
+        "underline": "always",
+        "variant": "inherit",
+      }
+    }
+    variant="inherit"
   >
-    <WithStyles(ForwardRef(Typography))
-      className="MuiLink-root MuiLink-underlineHover"
+    <Noop />
+    <ForwardRef(Typography)
+      className="MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
       color="primary"
       component="a"
       data-testid="isis-investigation-table-doi-link"
@@ -361,52 +391,55 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       onFocus={[Function]}
       variant="inherit"
     >
-      <ForwardRef(Typography)
-        className="MuiLink-root MuiLink-underlineHover"
-        classes={
-          Object {
-            "alignCenter": "MuiTypography-alignCenter",
-            "alignJustify": "MuiTypography-alignJustify",
-            "alignLeft": "MuiTypography-alignLeft",
-            "alignRight": "MuiTypography-alignRight",
-            "body1": "MuiTypography-body1",
-            "body2": "MuiTypography-body2",
-            "button": "MuiTypography-button",
-            "caption": "MuiTypography-caption",
-            "colorError": "MuiTypography-colorError",
-            "colorInherit": "MuiTypography-colorInherit",
-            "colorPrimary": "MuiTypography-colorPrimary",
-            "colorSecondary": "MuiTypography-colorSecondary",
-            "colorTextPrimary": "MuiTypography-colorTextPrimary",
-            "colorTextSecondary": "MuiTypography-colorTextSecondary",
-            "displayBlock": "MuiTypography-displayBlock",
-            "displayInline": "MuiTypography-displayInline",
-            "gutterBottom": "MuiTypography-gutterBottom",
-            "h1": "MuiTypography-h1",
-            "h2": "MuiTypography-h2",
-            "h3": "MuiTypography-h3",
-            "h4": "MuiTypography-h4",
-            "h5": "MuiTypography-h5",
-            "h6": "MuiTypography-h6",
-            "noWrap": "MuiTypography-noWrap",
-            "overline": "MuiTypography-overline",
-            "paragraph": "MuiTypography-paragraph",
-            "root": "MuiTypography-root",
-            "srOnly": "MuiTypography-srOnly",
-            "subtitle1": "MuiTypography-subtitle1",
-            "subtitle2": "MuiTypography-subtitle2",
-          }
-        }
-        color="primary"
-        component="a"
+      <MuiTypographyRoot
+        as="a"
+        className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
         data-testid="isis-investigation-table-doi-link"
         href="https://doi.org/study pid"
         onBlur={[Function]}
         onFocus={[Function]}
-        variant="inherit"
+        ownerState={
+          Object {
+            "align": "inherit",
+            "children": "study pid",
+            "className": "MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root",
+            "color": "primary.main",
+            "component": "a",
+            "data-testid": "isis-investigation-table-doi-link",
+            "gutterBottom": false,
+            "href": "https://doi.org/study pid",
+            "noWrap": false,
+            "onBlur": [Function],
+            "onFocus": [Function],
+            "paragraph": false,
+            "sx": Object {
+              "color": "primary.main",
+            },
+            "variant": "inherit",
+            "variantMapping": Object {
+              "body1": "p",
+              "body2": "p",
+              "h1": "h1",
+              "h2": "h2",
+              "h3": "h3",
+              "h4": "h4",
+              "h5": "h5",
+              "h6": "h6",
+              "inherit": "p",
+              "subtitle1": "h6",
+              "subtitle2": "h6",
+            },
+          }
+        }
+        sx={
+          Object {
+            "color": "primary.main",
+          }
+        }
       >
+        <Noop />
         <a
-          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
           data-testid="isis-investigation-table-doi-link"
           href="https://doi.org/study pid"
           onBlur={[Function]}
@@ -414,14 +447,14 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         >
           study pid
         </a>
-      </ForwardRef(Typography)>
-    </WithStyles(ForwardRef(Typography))>
-  </ForwardRef(Link)>
-</WithStyles(ForwardRef(Link))>
+      </MuiTypographyRoot>
+    </ForwardRef(Typography)>
+  </MuiLinkRoot>
+</ForwardRef(Link)>
 `;
 
 exports[`ISIS Investigations table component renders title, name and DOI as links in StudyHierarchy 1`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -438,17 +471,9 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
   data-testid="isis-investigations-table-title"
   to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
 >
-  <ForwardRef(Link)
-    classes={
-      Object {
-        "button": "MuiLink-button",
-        "focusVisible": "Mui-focusVisible",
-        "root": "MuiLink-root",
-        "underlineAlways": "MuiLink-underlineAlways",
-        "underlineHover": "MuiLink-underlineHover",
-        "underlineNone": "MuiLink-underlineNone",
-      }
-    }
+  <MuiLinkRoot
+    className="MuiLink-root MuiLink-underlineAlways"
+    color="primary"
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
@@ -463,10 +488,36 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       }
     }
     data-testid="isis-investigations-table-title"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    ownerState={
+      Object {
+        "children": "Test 1",
+        "color": "primary",
+        "component": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        },
+        "data-testid": "isis-investigations-table-title",
+        "focusVisible": false,
+        "to": "/browseStudyHierarchy/instrument/4/study/5/investigation/1",
+        "underline": "always",
+        "variant": "inherit",
+      }
+    }
     to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
+    variant="inherit"
   >
-    <WithStyles(ForwardRef(Typography))
-      className="MuiLink-root MuiLink-underlineHover"
+    <Noop />
+    <ForwardRef(Typography)
+      className="MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
       color="primary"
       component={
         Object {
@@ -487,44 +538,8 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
       variant="inherit"
     >
-      <ForwardRef(Typography)
-        className="MuiLink-root MuiLink-underlineHover"
-        classes={
-          Object {
-            "alignCenter": "MuiTypography-alignCenter",
-            "alignJustify": "MuiTypography-alignJustify",
-            "alignLeft": "MuiTypography-alignLeft",
-            "alignRight": "MuiTypography-alignRight",
-            "body1": "MuiTypography-body1",
-            "body2": "MuiTypography-body2",
-            "button": "MuiTypography-button",
-            "caption": "MuiTypography-caption",
-            "colorError": "MuiTypography-colorError",
-            "colorInherit": "MuiTypography-colorInherit",
-            "colorPrimary": "MuiTypography-colorPrimary",
-            "colorSecondary": "MuiTypography-colorSecondary",
-            "colorTextPrimary": "MuiTypography-colorTextPrimary",
-            "colorTextSecondary": "MuiTypography-colorTextSecondary",
-            "displayBlock": "MuiTypography-displayBlock",
-            "displayInline": "MuiTypography-displayInline",
-            "gutterBottom": "MuiTypography-gutterBottom",
-            "h1": "MuiTypography-h1",
-            "h2": "MuiTypography-h2",
-            "h3": "MuiTypography-h3",
-            "h4": "MuiTypography-h4",
-            "h5": "MuiTypography-h5",
-            "h6": "MuiTypography-h6",
-            "noWrap": "MuiTypography-noWrap",
-            "overline": "MuiTypography-overline",
-            "paragraph": "MuiTypography-paragraph",
-            "root": "MuiTypography-root",
-            "srOnly": "MuiTypography-srOnly",
-            "subtitle1": "MuiTypography-subtitle1",
-            "subtitle2": "MuiTypography-subtitle2",
-          }
-        }
-        color="primary"
-        component={
+      <MuiTypographyRoot
+        as={
           Object {
             "$$typeof": Symbol(react.forward_ref),
             "propTypes": Object {
@@ -537,21 +552,70 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
             "render": [Function],
           }
         }
+        className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
         data-testid="isis-investigations-table-title"
         onBlur={[Function]}
         onFocus={[Function]}
+        ownerState={
+          Object {
+            "align": "inherit",
+            "children": "Test 1",
+            "className": "MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root",
+            "color": "primary.main",
+            "component": Object {
+              "$$typeof": Symbol(react.forward_ref),
+              "propTypes": Object {
+                "innerRef": [Function],
+                "onClick": [Function],
+                "replace": [Function],
+                "target": [Function],
+                "to": [Function],
+              },
+              "render": [Function],
+            },
+            "data-testid": "isis-investigations-table-title",
+            "gutterBottom": false,
+            "noWrap": false,
+            "onBlur": [Function],
+            "onFocus": [Function],
+            "paragraph": false,
+            "sx": Object {
+              "color": "primary.main",
+            },
+            "to": "/browseStudyHierarchy/instrument/4/study/5/investigation/1",
+            "variant": "inherit",
+            "variantMapping": Object {
+              "body1": "p",
+              "body2": "p",
+              "h1": "h1",
+              "h2": "h2",
+              "h3": "h3",
+              "h4": "h4",
+              "h5": "h5",
+              "h6": "h6",
+              "inherit": "p",
+              "subtitle1": "h6",
+              "subtitle2": "h6",
+            },
+          }
+        }
+        sx={
+          Object {
+            "color": "primary.main",
+          }
+        }
         to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
-        variant="inherit"
       >
+        <Noop />
         <Link
-          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
           data-testid="isis-investigations-table-title"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
         >
           <LinkAnchor
-            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
             data-testid="isis-investigations-table-title"
             href="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
             navigate={[Function]}
@@ -559,7 +623,7 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
             onFocus={[Function]}
           >
             <a
-              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
               data-testid="isis-investigations-table-title"
               href="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
               onBlur={[Function]}
@@ -570,35 +634,44 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
             </a>
           </LinkAnchor>
         </Link>
-      </ForwardRef(Typography)>
-    </WithStyles(ForwardRef(Typography))>
-  </ForwardRef(Link)>
-</WithStyles(ForwardRef(Link))>
+      </MuiTypographyRoot>
+    </ForwardRef(Typography)>
+  </MuiLinkRoot>
+</ForwardRef(Link)>
 `;
 
 exports[`ISIS Investigations table component renders title, name and DOI as links in StudyHierarchy 2`] = `"Test 1"`;
 
 exports[`ISIS Investigations table component renders title, name and DOI as links in StudyHierarchy 3`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   data-testid="isis-investigation-table-doi-link"
   href="https://doi.org/study pid"
 >
-  <ForwardRef(Link)
-    classes={
-      Object {
-        "button": "MuiLink-button",
-        "focusVisible": "Mui-focusVisible",
-        "root": "MuiLink-root",
-        "underlineAlways": "MuiLink-underlineAlways",
-        "underlineHover": "MuiLink-underlineHover",
-        "underlineNone": "MuiLink-underlineNone",
-      }
-    }
+  <MuiLinkRoot
+    className="MuiLink-root MuiLink-underlineAlways"
+    color="primary"
+    component="a"
     data-testid="isis-investigation-table-doi-link"
     href="https://doi.org/study pid"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    ownerState={
+      Object {
+        "children": "study pid",
+        "color": "primary",
+        "component": "a",
+        "data-testid": "isis-investigation-table-doi-link",
+        "focusVisible": false,
+        "href": "https://doi.org/study pid",
+        "underline": "always",
+        "variant": "inherit",
+      }
+    }
+    variant="inherit"
   >
-    <WithStyles(ForwardRef(Typography))
-      className="MuiLink-root MuiLink-underlineHover"
+    <Noop />
+    <ForwardRef(Typography)
+      className="MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
       color="primary"
       component="a"
       data-testid="isis-investigation-table-doi-link"
@@ -607,52 +680,55 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
       onFocus={[Function]}
       variant="inherit"
     >
-      <ForwardRef(Typography)
-        className="MuiLink-root MuiLink-underlineHover"
-        classes={
-          Object {
-            "alignCenter": "MuiTypography-alignCenter",
-            "alignJustify": "MuiTypography-alignJustify",
-            "alignLeft": "MuiTypography-alignLeft",
-            "alignRight": "MuiTypography-alignRight",
-            "body1": "MuiTypography-body1",
-            "body2": "MuiTypography-body2",
-            "button": "MuiTypography-button",
-            "caption": "MuiTypography-caption",
-            "colorError": "MuiTypography-colorError",
-            "colorInherit": "MuiTypography-colorInherit",
-            "colorPrimary": "MuiTypography-colorPrimary",
-            "colorSecondary": "MuiTypography-colorSecondary",
-            "colorTextPrimary": "MuiTypography-colorTextPrimary",
-            "colorTextSecondary": "MuiTypography-colorTextSecondary",
-            "displayBlock": "MuiTypography-displayBlock",
-            "displayInline": "MuiTypography-displayInline",
-            "gutterBottom": "MuiTypography-gutterBottom",
-            "h1": "MuiTypography-h1",
-            "h2": "MuiTypography-h2",
-            "h3": "MuiTypography-h3",
-            "h4": "MuiTypography-h4",
-            "h5": "MuiTypography-h5",
-            "h6": "MuiTypography-h6",
-            "noWrap": "MuiTypography-noWrap",
-            "overline": "MuiTypography-overline",
-            "paragraph": "MuiTypography-paragraph",
-            "root": "MuiTypography-root",
-            "srOnly": "MuiTypography-srOnly",
-            "subtitle1": "MuiTypography-subtitle1",
-            "subtitle2": "MuiTypography-subtitle2",
-          }
-        }
-        color="primary"
-        component="a"
+      <MuiTypographyRoot
+        as="a"
+        className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
         data-testid="isis-investigation-table-doi-link"
         href="https://doi.org/study pid"
         onBlur={[Function]}
         onFocus={[Function]}
-        variant="inherit"
+        ownerState={
+          Object {
+            "align": "inherit",
+            "children": "study pid",
+            "className": "MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root",
+            "color": "primary.main",
+            "component": "a",
+            "data-testid": "isis-investigation-table-doi-link",
+            "gutterBottom": false,
+            "href": "https://doi.org/study pid",
+            "noWrap": false,
+            "onBlur": [Function],
+            "onFocus": [Function],
+            "paragraph": false,
+            "sx": Object {
+              "color": "primary.main",
+            },
+            "variant": "inherit",
+            "variantMapping": Object {
+              "body1": "p",
+              "body2": "p",
+              "h1": "h1",
+              "h2": "h2",
+              "h3": "h3",
+              "h4": "h4",
+              "h5": "h5",
+              "h6": "h6",
+              "inherit": "p",
+              "subtitle1": "h6",
+              "subtitle2": "h6",
+            },
+          }
+        }
+        sx={
+          Object {
+            "color": "primary.main",
+          }
+        }
       >
+        <Noop />
         <a
-          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
           data-testid="isis-investigation-table-doi-link"
           href="https://doi.org/study pid"
           onBlur={[Function]}
@@ -660,8 +736,8 @@ exports[`ISIS Investigations table component renders title, name and DOI as link
         >
           study pid
         </a>
-      </ForwardRef(Typography)>
-    </WithStyles(ForwardRef(Typography))>
-  </ForwardRef(Link)>
-</WithStyles(ForwardRef(Link))>
+      </MuiTypographyRoot>
+    </ForwardRef(Typography)>
+  </MuiLinkRoot>
+</ForwardRef(Link)>
 `;

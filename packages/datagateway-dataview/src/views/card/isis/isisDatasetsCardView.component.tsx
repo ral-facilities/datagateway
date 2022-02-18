@@ -28,8 +28,8 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   '& button': {
-    marginTop: theme.spacing(1),
     margin: 'auto',
+    marginTop: theme.spacing(1),
   },
 }));
 

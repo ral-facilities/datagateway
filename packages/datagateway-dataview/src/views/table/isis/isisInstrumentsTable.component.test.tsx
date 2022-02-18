@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import ISISInstrumentsTable from './isisInstrumentsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import { StateType } from '../../../state/app.types';
@@ -10,7 +9,7 @@ import {
   dGCommonInitialState,
   ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
@@ -30,7 +29,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Instruments table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Instrument[];
@@ -50,7 +48,6 @@ describe('ISIS Instruments table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -87,7 +84,6 @@ describe('ISIS Instruments table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -168,7 +164,7 @@ describe('ISIS Instruments table component', () => {
   it('displays details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeTruthy();
   });

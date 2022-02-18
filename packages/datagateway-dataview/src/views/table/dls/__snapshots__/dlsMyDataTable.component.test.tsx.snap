@@ -2,16 +2,6 @@
 
 exports[`DLS MyData table component renders correctly 1`] = `
 Object {
-  "classes": Object {
-    "flexContainer": "VirtualizedTable-flexContainer-2",
-    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-8",
-    "table": "VirtualizedTable-table-1",
-    "tableCell": "VirtualizedTable-tableCell-6",
-    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
-    "tableRow": "VirtualizedTable-tableRow-4",
-    "tableRowHover": "VirtualizedTable-tableRowHover-5",
-  },
   "columns": Array [
     Object {
       "cellContentRenderer": [Function],
@@ -128,7 +118,7 @@ Object {
 `;
 
 exports[`DLS MyData table component renders title and visit ID as a links 1`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -145,17 +135,9 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
   data-testid="dls-mydata-table-name"
   to="/browse/proposal/Test 1/investigation/1/dataset"
 >
-  <ForwardRef(Link)
-    classes={
-      Object {
-        "button": "MuiLink-button",
-        "focusVisible": "Mui-focusVisible",
-        "root": "MuiLink-root",
-        "underlineAlways": "MuiLink-underlineAlways",
-        "underlineHover": "MuiLink-underlineHover",
-        "underlineNone": "MuiLink-underlineNone",
-      }
-    }
+  <MuiLinkRoot
+    className="MuiLink-root MuiLink-underlineAlways"
+    color="primary"
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
@@ -170,10 +152,36 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
       }
     }
     data-testid="dls-mydata-table-name"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    ownerState={
+      Object {
+        "children": "Test 1",
+        "color": "primary",
+        "component": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        },
+        "data-testid": "dls-mydata-table-name",
+        "focusVisible": false,
+        "to": "/browse/proposal/Test 1/investigation/1/dataset",
+        "underline": "always",
+        "variant": "inherit",
+      }
+    }
     to="/browse/proposal/Test 1/investigation/1/dataset"
+    variant="inherit"
   >
-    <WithStyles(ForwardRef(Typography))
-      className="MuiLink-root MuiLink-underlineHover"
+    <Noop />
+    <ForwardRef(Typography)
+      className="MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
       color="primary"
       component={
         Object {
@@ -194,44 +202,8 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
       to="/browse/proposal/Test 1/investigation/1/dataset"
       variant="inherit"
     >
-      <ForwardRef(Typography)
-        className="MuiLink-root MuiLink-underlineHover"
-        classes={
-          Object {
-            "alignCenter": "MuiTypography-alignCenter",
-            "alignJustify": "MuiTypography-alignJustify",
-            "alignLeft": "MuiTypography-alignLeft",
-            "alignRight": "MuiTypography-alignRight",
-            "body1": "MuiTypography-body1",
-            "body2": "MuiTypography-body2",
-            "button": "MuiTypography-button",
-            "caption": "MuiTypography-caption",
-            "colorError": "MuiTypography-colorError",
-            "colorInherit": "MuiTypography-colorInherit",
-            "colorPrimary": "MuiTypography-colorPrimary",
-            "colorSecondary": "MuiTypography-colorSecondary",
-            "colorTextPrimary": "MuiTypography-colorTextPrimary",
-            "colorTextSecondary": "MuiTypography-colorTextSecondary",
-            "displayBlock": "MuiTypography-displayBlock",
-            "displayInline": "MuiTypography-displayInline",
-            "gutterBottom": "MuiTypography-gutterBottom",
-            "h1": "MuiTypography-h1",
-            "h2": "MuiTypography-h2",
-            "h3": "MuiTypography-h3",
-            "h4": "MuiTypography-h4",
-            "h5": "MuiTypography-h5",
-            "h6": "MuiTypography-h6",
-            "noWrap": "MuiTypography-noWrap",
-            "overline": "MuiTypography-overline",
-            "paragraph": "MuiTypography-paragraph",
-            "root": "MuiTypography-root",
-            "srOnly": "MuiTypography-srOnly",
-            "subtitle1": "MuiTypography-subtitle1",
-            "subtitle2": "MuiTypography-subtitle2",
-          }
-        }
-        color="primary"
-        component={
+      <MuiTypographyRoot
+        as={
           Object {
             "$$typeof": Symbol(react.forward_ref),
             "propTypes": Object {
@@ -244,21 +216,70 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
             "render": [Function],
           }
         }
+        className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
         data-testid="dls-mydata-table-name"
         onBlur={[Function]}
         onFocus={[Function]}
+        ownerState={
+          Object {
+            "align": "inherit",
+            "children": "Test 1",
+            "className": "MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root",
+            "color": "primary.main",
+            "component": Object {
+              "$$typeof": Symbol(react.forward_ref),
+              "propTypes": Object {
+                "innerRef": [Function],
+                "onClick": [Function],
+                "replace": [Function],
+                "target": [Function],
+                "to": [Function],
+              },
+              "render": [Function],
+            },
+            "data-testid": "dls-mydata-table-name",
+            "gutterBottom": false,
+            "noWrap": false,
+            "onBlur": [Function],
+            "onFocus": [Function],
+            "paragraph": false,
+            "sx": Object {
+              "color": "primary.main",
+            },
+            "to": "/browse/proposal/Test 1/investigation/1/dataset",
+            "variant": "inherit",
+            "variantMapping": Object {
+              "body1": "p",
+              "body2": "p",
+              "h1": "h1",
+              "h2": "h2",
+              "h3": "h3",
+              "h4": "h4",
+              "h5": "h5",
+              "h6": "h6",
+              "inherit": "p",
+              "subtitle1": "h6",
+              "subtitle2": "h6",
+            },
+          }
+        }
+        sx={
+          Object {
+            "color": "primary.main",
+          }
+        }
         to="/browse/proposal/Test 1/investigation/1/dataset"
-        variant="inherit"
       >
+        <Noop />
         <Link
-          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
           data-testid="dls-mydata-table-name"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/proposal/Test 1/investigation/1/dataset"
         >
           <LinkAnchor
-            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
             data-testid="dls-mydata-table-name"
             href="/browse/proposal/Test 1/investigation/1/dataset"
             navigate={[Function]}
@@ -266,7 +287,7 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
             onFocus={[Function]}
           >
             <a
-              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
               data-testid="dls-mydata-table-name"
               href="/browse/proposal/Test 1/investigation/1/dataset"
               onBlur={[Function]}
@@ -277,14 +298,14 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
             </a>
           </LinkAnchor>
         </Link>
-      </ForwardRef(Typography)>
-    </WithStyles(ForwardRef(Typography))>
-  </ForwardRef(Link)>
-</WithStyles(ForwardRef(Link))>
+      </MuiTypographyRoot>
+    </ForwardRef(Typography)>
+  </MuiLinkRoot>
+</ForwardRef(Link)>
 `;
 
 exports[`DLS MyData table component renders title and visit ID as a links 2`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -300,17 +321,9 @@ exports[`DLS MyData table component renders title and visit ID as a links 2`] = 
   }
   to="/browse/proposal/Test 1/investigation/1/dataset"
 >
-  <ForwardRef(Link)
-    classes={
-      Object {
-        "button": "MuiLink-button",
-        "focusVisible": "Mui-focusVisible",
-        "root": "MuiLink-root",
-        "underlineAlways": "MuiLink-underlineAlways",
-        "underlineHover": "MuiLink-underlineHover",
-        "underlineNone": "MuiLink-underlineNone",
-      }
-    }
+  <MuiLinkRoot
+    className="MuiLink-root MuiLink-underlineAlways"
+    color="primary"
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
@@ -324,10 +337,36 @@ exports[`DLS MyData table component renders title and visit ID as a links 2`] = 
         "render": [Function],
       }
     }
+    onBlur={[Function]}
+    onFocus={[Function]}
+    ownerState={
+      Object {
+        "children": "1",
+        "color": "primary",
+        "component": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        },
+        "data-testid": undefined,
+        "focusVisible": false,
+        "to": "/browse/proposal/Test 1/investigation/1/dataset",
+        "underline": "always",
+        "variant": "inherit",
+      }
+    }
     to="/browse/proposal/Test 1/investigation/1/dataset"
+    variant="inherit"
   >
-    <WithStyles(ForwardRef(Typography))
-      className="MuiLink-root MuiLink-underlineHover"
+    <Noop />
+    <ForwardRef(Typography)
+      className="MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
       color="primary"
       component={
         Object {
@@ -347,44 +386,8 @@ exports[`DLS MyData table component renders title and visit ID as a links 2`] = 
       to="/browse/proposal/Test 1/investigation/1/dataset"
       variant="inherit"
     >
-      <ForwardRef(Typography)
-        className="MuiLink-root MuiLink-underlineHover"
-        classes={
-          Object {
-            "alignCenter": "MuiTypography-alignCenter",
-            "alignJustify": "MuiTypography-alignJustify",
-            "alignLeft": "MuiTypography-alignLeft",
-            "alignRight": "MuiTypography-alignRight",
-            "body1": "MuiTypography-body1",
-            "body2": "MuiTypography-body2",
-            "button": "MuiTypography-button",
-            "caption": "MuiTypography-caption",
-            "colorError": "MuiTypography-colorError",
-            "colorInherit": "MuiTypography-colorInherit",
-            "colorPrimary": "MuiTypography-colorPrimary",
-            "colorSecondary": "MuiTypography-colorSecondary",
-            "colorTextPrimary": "MuiTypography-colorTextPrimary",
-            "colorTextSecondary": "MuiTypography-colorTextSecondary",
-            "displayBlock": "MuiTypography-displayBlock",
-            "displayInline": "MuiTypography-displayInline",
-            "gutterBottom": "MuiTypography-gutterBottom",
-            "h1": "MuiTypography-h1",
-            "h2": "MuiTypography-h2",
-            "h3": "MuiTypography-h3",
-            "h4": "MuiTypography-h4",
-            "h5": "MuiTypography-h5",
-            "h6": "MuiTypography-h6",
-            "noWrap": "MuiTypography-noWrap",
-            "overline": "MuiTypography-overline",
-            "paragraph": "MuiTypography-paragraph",
-            "root": "MuiTypography-root",
-            "srOnly": "MuiTypography-srOnly",
-            "subtitle1": "MuiTypography-subtitle1",
-            "subtitle2": "MuiTypography-subtitle2",
-          }
-        }
-        color="primary"
-        component={
+      <MuiTypographyRoot
+        as={
           Object {
             "$$typeof": Symbol(react.forward_ref),
             "propTypes": Object {
@@ -397,26 +400,75 @@ exports[`DLS MyData table component renders title and visit ID as a links 2`] = 
             "render": [Function],
           }
         }
+        className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
         onBlur={[Function]}
         onFocus={[Function]}
+        ownerState={
+          Object {
+            "align": "inherit",
+            "children": "1",
+            "className": "MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root",
+            "color": "primary.main",
+            "component": Object {
+              "$$typeof": Symbol(react.forward_ref),
+              "propTypes": Object {
+                "innerRef": [Function],
+                "onClick": [Function],
+                "replace": [Function],
+                "target": [Function],
+                "to": [Function],
+              },
+              "render": [Function],
+            },
+            "data-testid": undefined,
+            "gutterBottom": false,
+            "noWrap": false,
+            "onBlur": [Function],
+            "onFocus": [Function],
+            "paragraph": false,
+            "sx": Object {
+              "color": "primary.main",
+            },
+            "to": "/browse/proposal/Test 1/investigation/1/dataset",
+            "variant": "inherit",
+            "variantMapping": Object {
+              "body1": "p",
+              "body2": "p",
+              "h1": "h1",
+              "h2": "h2",
+              "h3": "h3",
+              "h4": "h4",
+              "h5": "h5",
+              "h6": "h6",
+              "inherit": "p",
+              "subtitle1": "h6",
+              "subtitle2": "h6",
+            },
+          }
+        }
+        sx={
+          Object {
+            "color": "primary.main",
+          }
+        }
         to="/browse/proposal/Test 1/investigation/1/dataset"
-        variant="inherit"
       >
+        <Noop />
         <Link
-          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/proposal/Test 1/investigation/1/dataset"
         >
           <LinkAnchor
-            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
             href="/browse/proposal/Test 1/investigation/1/dataset"
             navigate={[Function]}
             onBlur={[Function]}
             onFocus={[Function]}
           >
             <a
-              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
               href="/browse/proposal/Test 1/investigation/1/dataset"
               onBlur={[Function]}
               onClick={[Function]}
@@ -426,8 +478,8 @@ exports[`DLS MyData table component renders title and visit ID as a links 2`] = 
             </a>
           </LinkAnchor>
         </Link>
-      </ForwardRef(Typography)>
-    </WithStyles(ForwardRef(Typography))>
-  </ForwardRef(Link)>
-</WithStyles(ForwardRef(Link))>
+      </MuiTypographyRoot>
+    </ForwardRef(Typography)>
+  </MuiLinkRoot>
+</ForwardRef(Link)>
 `;

@@ -5,16 +5,6 @@ Object {
   "allIds": Array [
     1,
   ],
-  "classes": Object {
-    "flexContainer": "VirtualizedTable-flexContainer-2",
-    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-8",
-    "table": "VirtualizedTable-table-1",
-    "tableCell": "VirtualizedTable-tableCell-6",
-    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
-    "tableRow": "VirtualizedTable-tableRow-4",
-    "tableRowHover": "VirtualizedTable-tableRowHover-5",
-  },
   "columns": Array [
     Object {
       "cellContentRenderer": [Function],
@@ -161,78 +151,8 @@ Object {
 }
 `;
 
-exports[`Investigation table component renders details panel correctly 1`] = `
-<WithStyles(ForwardRef(Grid))
-  className="makeStyles-root-1"
-  container={true}
-  direction="column"
-  id="details-panel"
->
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-    xs={true}
-  >
-    <WithStyles(ForwardRef(Typography))
-      variant="h6"
-    >
-      <b>
-        Test 1
-      </b>
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Divider))
-      className="makeStyles-divider-2"
-    />
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-    xs={true}
-  >
-    <WithStyles(ForwardRef(Typography))
-      variant="overline"
-    >
-      investigations.details.name
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))>
-      <b>
-        Test 1
-      </b>
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-    xs={true}
-  >
-    <WithStyles(ForwardRef(Typography))
-      variant="overline"
-    >
-      investigations.details.start_date
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))>
-      <b>
-        2019-07-23
-      </b>
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-    xs={true}
-  >
-    <WithStyles(ForwardRef(Typography))
-      variant="overline"
-    >
-      investigations.details.end_date
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))>
-      <b>
-        2019-07-24
-      </b>
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-</WithStyles(ForwardRef(Grid))>
-`;
-
 exports[`Investigation table component renders investigation title as a link 1`] = `
-<WithStyles(ForwardRef(Link))
+<ForwardRef(Link)
   component={
     Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -249,17 +169,9 @@ exports[`Investigation table component renders investigation title as a link 1`]
   data-testid="investigation-table-title"
   to="/browse/investigation/1/dataset"
 >
-  <ForwardRef(Link)
-    classes={
-      Object {
-        "button": "MuiLink-button",
-        "focusVisible": "Mui-focusVisible",
-        "root": "MuiLink-root",
-        "underlineAlways": "MuiLink-underlineAlways",
-        "underlineHover": "MuiLink-underlineHover",
-        "underlineNone": "MuiLink-underlineNone",
-      }
-    }
+  <MuiLinkRoot
+    className="MuiLink-root MuiLink-underlineAlways"
+    color="primary"
     component={
       Object {
         "$$typeof": Symbol(react.forward_ref),
@@ -274,10 +186,36 @@ exports[`Investigation table component renders investigation title as a link 1`]
       }
     }
     data-testid="investigation-table-title"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    ownerState={
+      Object {
+        "children": "Test 1",
+        "color": "primary",
+        "component": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        },
+        "data-testid": "investigation-table-title",
+        "focusVisible": false,
+        "to": "/browse/investigation/1/dataset",
+        "underline": "always",
+        "variant": "inherit",
+      }
+    }
     to="/browse/investigation/1/dataset"
+    variant="inherit"
   >
-    <WithStyles(ForwardRef(Typography))
-      className="MuiLink-root MuiLink-underlineHover"
+    <Noop />
+    <ForwardRef(Typography)
+      className="MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
       color="primary"
       component={
         Object {
@@ -298,44 +236,8 @@ exports[`Investigation table component renders investigation title as a link 1`]
       to="/browse/investigation/1/dataset"
       variant="inherit"
     >
-      <ForwardRef(Typography)
-        className="MuiLink-root MuiLink-underlineHover"
-        classes={
-          Object {
-            "alignCenter": "MuiTypography-alignCenter",
-            "alignJustify": "MuiTypography-alignJustify",
-            "alignLeft": "MuiTypography-alignLeft",
-            "alignRight": "MuiTypography-alignRight",
-            "body1": "MuiTypography-body1",
-            "body2": "MuiTypography-body2",
-            "button": "MuiTypography-button",
-            "caption": "MuiTypography-caption",
-            "colorError": "MuiTypography-colorError",
-            "colorInherit": "MuiTypography-colorInherit",
-            "colorPrimary": "MuiTypography-colorPrimary",
-            "colorSecondary": "MuiTypography-colorSecondary",
-            "colorTextPrimary": "MuiTypography-colorTextPrimary",
-            "colorTextSecondary": "MuiTypography-colorTextSecondary",
-            "displayBlock": "MuiTypography-displayBlock",
-            "displayInline": "MuiTypography-displayInline",
-            "gutterBottom": "MuiTypography-gutterBottom",
-            "h1": "MuiTypography-h1",
-            "h2": "MuiTypography-h2",
-            "h3": "MuiTypography-h3",
-            "h4": "MuiTypography-h4",
-            "h5": "MuiTypography-h5",
-            "h6": "MuiTypography-h6",
-            "noWrap": "MuiTypography-noWrap",
-            "overline": "MuiTypography-overline",
-            "paragraph": "MuiTypography-paragraph",
-            "root": "MuiTypography-root",
-            "srOnly": "MuiTypography-srOnly",
-            "subtitle1": "MuiTypography-subtitle1",
-            "subtitle2": "MuiTypography-subtitle2",
-          }
-        }
-        color="primary"
-        component={
+      <MuiTypographyRoot
+        as={
           Object {
             "$$typeof": Symbol(react.forward_ref),
             "propTypes": Object {
@@ -348,21 +250,70 @@ exports[`Investigation table component renders investigation title as a link 1`]
             "render": [Function],
           }
         }
+        className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
         data-testid="investigation-table-title"
         onBlur={[Function]}
         onFocus={[Function]}
+        ownerState={
+          Object {
+            "align": "inherit",
+            "children": "Test 1",
+            "className": "MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root",
+            "color": "primary.main",
+            "component": Object {
+              "$$typeof": Symbol(react.forward_ref),
+              "propTypes": Object {
+                "innerRef": [Function],
+                "onClick": [Function],
+                "replace": [Function],
+                "target": [Function],
+                "to": [Function],
+              },
+              "render": [Function],
+            },
+            "data-testid": "investigation-table-title",
+            "gutterBottom": false,
+            "noWrap": false,
+            "onBlur": [Function],
+            "onFocus": [Function],
+            "paragraph": false,
+            "sx": Object {
+              "color": "primary.main",
+            },
+            "to": "/browse/investigation/1/dataset",
+            "variant": "inherit",
+            "variantMapping": Object {
+              "body1": "p",
+              "body2": "p",
+              "h1": "h1",
+              "h2": "h2",
+              "h3": "h3",
+              "h4": "h4",
+              "h5": "h5",
+              "h6": "h6",
+              "inherit": "p",
+              "subtitle1": "h6",
+              "subtitle2": "h6",
+            },
+          }
+        }
+        sx={
+          Object {
+            "color": "primary.main",
+          }
+        }
         to="/browse/investigation/1/dataset"
-        variant="inherit"
       >
+        <Noop />
         <Link
-          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
           data-testid="investigation-table-title"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/investigation/1/dataset"
         >
           <LinkAnchor
-            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
             data-testid="investigation-table-title"
             href="/browse/investigation/1/dataset"
             navigate={[Function]}
@@ -370,7 +321,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
             onFocus={[Function]}
           >
             <a
-              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
               data-testid="investigation-table-title"
               href="/browse/investigation/1/dataset"
               onBlur={[Function]}
@@ -381,8 +332,8 @@ exports[`Investigation table component renders investigation title as a link 1`]
             </a>
           </LinkAnchor>
         </Link>
-      </ForwardRef(Typography)>
-    </WithStyles(ForwardRef(Typography))>
-  </ForwardRef(Link)>
-</WithStyles(ForwardRef(Link))>
+      </MuiTypographyRoot>
+    </ForwardRef(Typography)>
+  </MuiLinkRoot>
+</ForwardRef(Link)>
 `;

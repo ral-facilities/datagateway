@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@mui/material/test-utils';
 import ISISFacilityCyclesTable from './isisFacilityCyclesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import { StateType } from '../../../state/app.types';
@@ -9,13 +8,17 @@ import {
   useFacilityCyclesInfinite,
   dGCommonInitialState,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -29,7 +32,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS FacilityCycles table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: FacilityCycle[];
@@ -50,7 +52,6 @@ describe('ISIS FacilityCycles table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -82,7 +83,6 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -123,7 +123,7 @@ describe('ISIS FacilityCycles table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by facilitycycles.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -142,6 +142,8 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -160,6 +162,8 @@ describe('ISIS FacilityCycles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
