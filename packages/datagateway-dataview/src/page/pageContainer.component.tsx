@@ -5,16 +5,13 @@ import {
   Typography,
   Theme,
   IconButton,
-  Badge,
   Button,
   styled,
 } from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
-  DownloadCartItem,
   Sticky,
   ViewsType,
   useCart,
@@ -23,6 +20,8 @@ import {
   readSciGatewayToken,
   ArrowTooltip,
   SelectionAlert,
+  ViewCartButton,
+  CartProps,
   useUpdateQueryParam,
 } from 'datagateway-common';
 import React from 'react';
@@ -164,13 +163,13 @@ const BlackTextTypography = styled(Typography)({
 });
 
 const NavBar = React.memo(
-  (props: {
-    entityCount: number;
-    cartItems: DownloadCartItem[];
-    navigateToSearch: () => void;
-    navigateToDownload: () => void;
-    loggedInAnonymously: boolean;
-  }): React.ReactElement => {
+  (
+    props: {
+      entityCount: number;
+      navigateToSearch: () => void;
+      loggedInAnonymously: boolean;
+    } & CartProps
+  ): React.ReactElement => {
     const [t] = useTranslation();
     const isStudyHierarchy =
       useRouteMatch([
@@ -271,7 +270,7 @@ const NavBar = React.memo(
               return (
                 <Grid
                   className="tour-dataview-results"
-                  style={{ textAlign: 'center' }}
+                  sx={{ textAlign: 'center' }}
                   item
                   sm={2}
                   xs={3}
@@ -279,7 +278,7 @@ const NavBar = React.memo(
                 >
                   <Paper
                     square
-                    style={{
+                    sx={{
                       backgroundColor: 'inherit',
                       height: '100%',
                       display: 'flex',
@@ -297,18 +296,18 @@ const NavBar = React.memo(
           />
           <Paper
             square
-            style={{
+            sx={{
               backgroundColor: 'inherit',
               display: 'flex',
-              paddingLeft: 6,
-              paddingRight: 6,
+              paddingLeft: '6px',
+              paddingRight: '6px',
             }}
           >
             <IconButton
               className="tour-dataview-search-icon"
               onClick={props.navigateToSearch}
               aria-label="view-search"
-              style={{ margin: 'auto' }}
+              sx={{ margin: 'auto' }}
               size="large"
             >
               <SearchIcon />
@@ -316,30 +315,18 @@ const NavBar = React.memo(
           </Paper>
           <Paper
             square
-            style={{
+            sx={{
               backgroundColor: 'inherit',
               display: 'flex',
-              paddingLeft: 6,
-              paddingRight: 6,
+              paddingLeft: '6px',
+              paddingRight: '6px',
             }}
           >
-            <IconButton
-              className="tour-dataview-cart-icon"
-              onClick={props.navigateToDownload}
-              aria-label="view-cart"
-              style={{ margin: 'auto' }}
-              size="large"
-            >
-              <Badge
-                badgeContent={
-                  props.cartItems.length > 0 ? props.cartItems.length : null
-                }
-                color="primary"
-                aria-label="view-cart-badge"
-              >
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
+            <ViewCartButton
+              cartItems={props.cartItems}
+              navigateToDownload={props.navigateToDownload}
+              cartAriaLabel={props.cartAriaLabel}
+            />
           </Paper>
         </StyledGrid>
       </Sticky>
@@ -389,7 +376,7 @@ export const ClearFiltersButton = (props: {
       <Button
         className="tour-dataview-clear-filter-button"
         data-testid="clear-filters-button"
-        style={{ margin: '5px' }}
+        sx={{ margin: '5px' }}
         variant="contained"
         color="primary"
         size="small"
@@ -636,6 +623,7 @@ const PageContainer: React.FC = () => {
       replaceView('card');
     }
   }, [location.pathname, view, prevView, prevLocation.pathname, replaceView]);
+  const [t] = useTranslation();
 
   //Determine whether logged in anonymously (assume this if username is null)
   const username = readSciGatewayToken().username;
@@ -675,12 +663,13 @@ const PageContainer: React.FC = () => {
       <Route
         render={() => (
           // Load the standard dataview pageContainer
-          <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
+          <Paper square elevation={0} sx={{ backgroundColor: 'inherit' }}>
             <NavBar
               entityCount={totalDataCount ?? 0}
               cartItems={cartItems ?? []}
               navigateToSearch={navigateToSearch}
               navigateToDownload={navigateToDownload}
+              cartAriaLabel={t('app.cart_arialabel')}
               loggedInAnonymously={loggedInAnonymously}
             />
 
@@ -688,7 +677,7 @@ const PageContainer: React.FC = () => {
               <Grid
                 item
                 xs={12}
-                style={{ marginTop: '10px', marginBottom: '10px' }}
+                sx={{ marginTop: '10px', marginBottom: '10px' }}
               >
                 <StyledGrid container>
                   {/* Toggle between the table and card view */}

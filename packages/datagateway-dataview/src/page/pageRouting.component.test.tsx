@@ -1,10 +1,9 @@
 import React from 'react';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 
-import { createMount } from '@mui/material/test-utils';
 import { Router } from 'react-router-dom';
 import PageRouting from './pageRouting.component';
 import { Provider } from 'react-redux';
@@ -113,7 +112,6 @@ const DLSRoutes = {
 };
 
 describe('PageTable', () => {
-  let mount;
   let state: StateType;
   let history: History;
 
@@ -171,7 +169,6 @@ describe('PageTable', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory();
 
     state = JSON.parse(
