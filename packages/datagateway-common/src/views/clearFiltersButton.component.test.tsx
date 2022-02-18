@@ -12,7 +12,7 @@ import ClearFiltersButton, {
   ClearFilterProps,
 } from './clearFiltersButton.component';
 
-describe('Generic view button', () => {
+describe('Generic clear filters button', () => {
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
