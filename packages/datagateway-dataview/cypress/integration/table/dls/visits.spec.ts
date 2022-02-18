@@ -216,11 +216,12 @@ describe('DLS - Visits Table', () => {
     });
 
     it('and then calculate file size when the value is 0', () => {
+      cy.intercept('/getSize', '0');
+
       // We need to wait for counts to finish, otherwise cypress
       // might interact with the details panel too quickly and
       // it re-renders during the test.
 
-      cy.intercept('/getSize', '0');
       cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
         'exist'
       );
