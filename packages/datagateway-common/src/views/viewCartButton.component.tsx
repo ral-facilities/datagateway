@@ -11,23 +11,21 @@ export interface CartProps {
 
 const ViewCartButton = (props: CartProps): React.ReactElement => {
   return (
-    <div>
-      <IconButton
-        className="tour-dataview-cart-icon"
-        onClick={props.navigateToDownload}
-        aria-label={props.cartAriaLabel}
-        style={{ margin: 'auto' }}
+    <IconButton
+      className="tour-dataview-cart-icon"
+      onClick={props.navigateToDownload}
+      aria-label={props.cartAriaLabel}
+      sx={{ margin: 'auto' }}
+    >
+      <Badge
+        badgeContent={
+          props.cartItems.length > 0 ? props.cartItems.length : null
+        }
+        color="primary"
       >
-        <Badge
-          badgeContent={
-            props.cartItems.length > 0 ? props.cartItems.length : null
-          }
-          color="primary"
-        >
-          <ShoppingCartIcon />
-        </Badge>
-      </IconButton>
-    </div>
+        <ShoppingCartIcon />
+      </Badge>
+    </IconButton>
   );
 };
 

@@ -119,6 +119,8 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
 }));
 
 const StyledBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   backgroundColor: (theme as any).colours?.tabsGrey,
 }));

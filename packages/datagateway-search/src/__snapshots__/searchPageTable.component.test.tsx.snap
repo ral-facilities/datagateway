@@ -7,7 +7,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
       class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-120r8wl-MuiPaper-root-MuiAppBar-root"
     >
       <div
-        class="MuiBox-root css-j544gw"
+        class="MuiBox-root css-12nzfz8"
       >
         <div
           class="MuiTabs-root tour-search-tab-select css-am8e3q-MuiTabs-root"
@@ -117,38 +117,35 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
           </div>
         </div>
         <div
-          class="MuiBox-root css-devkx7"
+          class="MuiBox-root css-shc6j8"
         >
-          <div>
-            <button
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium tour-dataview-cart-icon css-78trlr-MuiButtonBase-root-MuiIconButton-root"
-              style="margin: auto;"
-              tabindex="0"
-              type="button"
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium tour-dataview-cart-icon css-4e50t7-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiBadge-root css-1c32n2y-MuiBadge-root"
             >
-              <span
-                class="MuiBadge-root css-1c32n2y-MuiBadge-root"
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="ShoppingCartIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
               >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
-                  data-testid="ShoppingCartIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
-                  />
-                </svg>
-                <span
-                  class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight MuiBadge-invisible css-1pi4uwz-MuiBadge-badge"
+                <path
+                  d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
                 />
-              </span>
+              </svg>
               <span
-                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight MuiBadge-invisible css-1pi4uwz-MuiBadge-badge"
               />
-            </button>
-          </div>
+            </span>
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
         </div>
       </div>
     </header>

@@ -26,7 +26,7 @@ exports[`Home page component homepage renders correctly 1`] = `
       }
     >
       <ForwardRef(Box)
-        style={
+        sx={
           Object {
             "left": "50%",
             "position": "relative",

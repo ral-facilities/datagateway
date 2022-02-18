@@ -1,23 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Generic cart button renders correctly 1`] = `
-<div>
-  <ForwardRef(IconButton)
-    aria-label="test aria-label"
-    className="tour-dataview-cart-icon"
-    onClick={[MockFunction]}
-    style={
-      Object {
-        "margin": "auto",
-      }
+<ForwardRef(IconButton)
+  aria-label="test aria-label"
+  className="tour-dataview-cart-icon"
+  onClick={[MockFunction]}
+  sx={
+    Object {
+      "margin": "auto",
     }
+  }
+>
+  <ForwardRef(Badge)
+    badgeContent={null}
+    color="primary"
   >
-    <ForwardRef(Badge)
-      badgeContent={null}
-      color="primary"
-    >
-      <Memo(ForwardRef(ShoppingCartIcon)) />
-    </ForwardRef(Badge)>
-  </ForwardRef(IconButton)>
-</div>
+    <Memo(ForwardRef(ShoppingCartIcon)) />
+  </ForwardRef(Badge)>
+</ForwardRef(IconButton)>
 `;

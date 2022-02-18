@@ -149,7 +149,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
           }}
         >
           <Box
-            style={{
+            sx={{
               position: 'relative',
               left: '50%',
               top: '45px',

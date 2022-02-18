@@ -144,6 +144,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Tabs
               value={value}
               onChange={(event, newValue) => setValue(newValue)}
+              indicatorColor="secondary"
+              textColor="secondary"
             >
               <Tab
                 id="dataset-details-tab"

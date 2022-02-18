@@ -233,7 +233,7 @@ const NavBar = React.memo(
                     >
                       <IconButton
                         disableRipple
-                        style={{ backgroundColor: 'transparent' }}
+                        sx={{ backgroundColor: 'transparent' }}
                         size="large"
                       >
                         <InfoIcon
