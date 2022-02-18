@@ -8,7 +8,6 @@ import {
   createStyles,
   IconButton,
   makeStyles,
-  Button,
 } from '@material-ui/core';
 
 import SearchIcon from '@material-ui/icons/Search';
@@ -26,6 +25,8 @@ import {
   ViewCartButton,
   CartProps,
   useUpdateQueryParam,
+  ViewButton,
+  ClearFiltersButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -39,12 +40,9 @@ import {
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
-import { Clear } from '@material-ui/icons';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -343,7 +341,6 @@ const NavBar = React.memo(
             <ViewCartButton
               cartItems={props.cartItems}
               navigateToDownload={props.navigateToDownload}
-              cartAriaLabel={props.cartAriaLabel}
             />
           </Paper>
         </StyledGrid>
@@ -352,70 +349,6 @@ const NavBar = React.memo(
   }
 );
 NavBar.displayName = 'NavBar';
-
-const buttonStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      root: {
-        padding: theme.spacing(0.5),
-        display: 'inline-block',
-      },
-    })
-);
-
-const ViewButton = (props: {
-  viewCards: boolean;
-  handleButtonChange: () => void;
-}): React.ReactElement => {
-  const [t] = useTranslation();
-  const classes = buttonStyles();
-
-  return (
-    <div className={classes.root}>
-      <Button
-        className="tour-dataview-view-button"
-        aria-label={`page-view ${
-          props.viewCards ? t('app.view_table') : t('app.view_cards')
-        }`}
-        variant="contained"
-        color="primary"
-        size="small"
-        startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
-        onClick={() => props.handleButtonChange()}
-      >
-        {props.viewCards ? t('app.view_table') : t('app.view_cards')}
-      </Button>
-    </div>
-  );
-};
-
-export const ClearFiltersButton = (props: {
-  handleButtonClearFilters: () => void;
-  disabled: boolean;
-}): React.ReactElement => {
-  const [t] = useTranslation();
-  const classes = buttonStyles();
-
-  return (
-    <div className={classes.root}>
-      <Button
-        className="tour-dataview-clear-filter-button"
-        data-testid="clear-filters-button"
-        style={{ margin: '5px' }}
-        variant="contained"
-        color="primary"
-        size="small"
-        onClick={() => {
-          props.handleButtonClearFilters();
-        }}
-        startIcon={<Clear />}
-        disabled={props.disabled}
-      >
-        {t('app.clear_filters')}
-      </Button>
-    </div>
-  );
-};
 
 const StyledRouting = (props: {
   viewStyle: ViewsType;
@@ -651,7 +584,6 @@ const PageContainer: React.FC = () => {
       replaceView('card');
     }
   }, [location.pathname, view, prevView, prevLocation.pathname, replaceView]);
-  const [t] = useTranslation();
 
   //Determine whether logged in anonymously (assume this if username is null)
   const username = readSciGatewayToken().username;
@@ -697,7 +629,6 @@ const PageContainer: React.FC = () => {
               cartItems={cartItems ?? []}
               navigateToSearch={navigateToSearch}
               navigateToDownload={navigateToDownload}
-              cartAriaLabel={t('app.cart_arialabel')}
               loggedInAnonymously={loggedInAnonymously}
             />
 
@@ -709,7 +640,10 @@ const PageContainer: React.FC = () => {
               >
                 <StyledGrid container alignItems="baseline">
                   {/* Toggle between the table and card view */}
-                  <Grid item alignItems="baseline" style={{ display: 'flex' }}>
+                  <Grid
+                    item
+                    style={{ display: 'flex', alignItems: 'baseline' }}
+                  >
                     <Route
                       exact
                       path={Object.values(paths.myData)}
