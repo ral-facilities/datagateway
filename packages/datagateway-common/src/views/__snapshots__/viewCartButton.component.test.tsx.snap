@@ -79,13 +79,12 @@ exports[`Generic cart button renders correctly 1`] = `
         }
       >
         <ViewCartButton
-          cartAriaLabel="test aria-label"
           cartItems={Array []}
           navigateToDownload={[MockFunction]}
         >
           <div>
             <WithStyles(ForwardRef(IconButton))
-              aria-label="test aria-label"
+              aria-label="app.cart_arialabel"
               className="tour-dataview-cart-icon"
               onClick={[MockFunction]}
               style={
@@ -95,7 +94,7 @@ exports[`Generic cart button renders correctly 1`] = `
               }
             >
               <ForwardRef(IconButton)
-                aria-label="test aria-label"
+                aria-label="app.cart_arialabel"
                 className="tour-dataview-cart-icon"
                 classes={
                   Object {
@@ -118,7 +117,7 @@ exports[`Generic cart button renders correctly 1`] = `
                 }
               >
                 <WithStyles(ForwardRef(ButtonBase))
-                  aria-label="test aria-label"
+                  aria-label="app.cart_arialabel"
                   centerRipple={true}
                   className="MuiIconButton-root tour-dataview-cart-icon"
                   disabled={false}
@@ -131,7 +130,7 @@ exports[`Generic cart button renders correctly 1`] = `
                   }
                 >
                   <ForwardRef(ButtonBase)
-                    aria-label="test aria-label"
+                    aria-label="app.cart_arialabel"
                     centerRipple={true}
                     className="MuiIconButton-root tour-dataview-cart-icon"
                     classes={
@@ -151,7 +150,7 @@ exports[`Generic cart button renders correctly 1`] = `
                     }
                   >
                     <button
-                      aria-label="test aria-label"
+                      aria-label="app.cart_arialabel"
                       className="MuiButtonBase-root MuiIconButton-root tour-dataview-cart-icon"
                       disabled={false}
                       onBlur={[Function]}
