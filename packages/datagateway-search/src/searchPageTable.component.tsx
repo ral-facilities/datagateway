@@ -4,7 +4,7 @@ import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import Tab, { tabClasses } from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Badge, { badgeClasses } from '@mui/material/Badge';
-import { Paper, LinearProgress, styled } from '@mui/material';
+import { Paper, styled } from '@mui/material';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import InvestigationSearchTable from './table/investigationSearchTable.component';
@@ -22,7 +22,6 @@ import {
   useUpdateQueryParam,
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
-import { useIsFetching } from 'react-query';
 import {
   getFilters,
   getSorts,
@@ -165,14 +164,6 @@ const SearchPageTable = (
     maxCount: maxNumResults,
   });
 
-  const isFetchingNum = useIsFetching({
-    predicate: (query) =>
-      !query.queryHash.includes('InvestigationCount') &&
-      !query.queryHash.includes('DatasetCount') &&
-      !query.queryHash.includes('DatafileCount'),
-  });
-  const loading = isFetchingNum > 0;
-
   const { filters, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
@@ -246,9 +237,6 @@ const SearchPageTable = (
 
   return (
     <div>
-      {/* Show loading progress if data is still being loaded */}
-
-      {loading && <LinearProgress color="secondary" />}
       <AppBar position="static" elevation={0}>
         <StyledBox
           display="flex"

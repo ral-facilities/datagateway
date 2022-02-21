@@ -43,6 +43,7 @@ import { useTranslation } from 'react-i18next';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useIsFetching } from 'react-query';
 
 export const storeFilters = (
   filters: FiltersType,
@@ -380,11 +381,21 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     maxCount: maxNumResults,
   });
 
+  const isFetchingNum = useIsFetching({
+    predicate: (query) =>
+      !query.queryHash.includes('InvestigationCount') &&
+      !query.queryHash.includes('DatasetCount') &&
+      !query.queryHash.includes('DatafileCount'),
+  });
+
   const requestReceived =
     !investigationsIdle || !datasetsIdle || !datafilesIdle;
 
   const loading =
-    investigationsFetching || datasetsFetching || datafilesFetching;
+    investigationsFetching ||
+    datasetsFetching ||
+    datafilesFetching ||
+    isFetchingNum > 0;
 
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
