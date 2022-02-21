@@ -10,7 +10,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
         class="MuiBox-root css-12nzfz8"
       >
         <div
-          class="MuiTabs-root tour-search-tab-select css-am8e3q-MuiTabs-root"
+          class="MuiTabs-root tour-search-tab-select css-1sl6kf8-MuiTabs-root"
         >
           <div
             class="MuiTabs-scroller MuiTabs-fixed css-jpln7h-MuiTabs-scroller"
@@ -24,14 +24,14 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
               <button
                 aria-controls="simple-tabpanel-investigation"
                 aria-selected="true"
-                class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary Mui-selected css-1h9z7r5-MuiButtonBase-root-MuiTab-root"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
                 id="simple-tab-investigation"
                 role="tab"
                 tabindex="0"
                 type="button"
               >
                 <span
-                  class="MuiBadge-root css-qd5b74-MuiBadge-root"
+                  class="MuiBadge-root css-b49g95-MuiBadge-root"
                   id="investigation-badge"
                 >
                   <span
@@ -52,14 +52,14 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
               <button
                 aria-controls="simple-tabpanel-dataset"
                 aria-selected="false"
-                class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-1h9z7r5-MuiButtonBase-root-MuiTab-root"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
                 id="simple-tab-dataset"
                 role="tab"
                 tabindex="-1"
                 type="button"
               >
                 <span
-                  class="MuiBadge-root css-qd5b74-MuiBadge-root"
+                  class="MuiBadge-root css-b49g95-MuiBadge-root"
                   id="dataset-badge"
                 >
                   <span
@@ -80,14 +80,14 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
               <button
                 aria-controls="simple-tabpanel-datafile"
                 aria-selected="false"
-                class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-1h9z7r5-MuiButtonBase-root-MuiTab-root"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
                 id="simple-tab-datafile"
                 role="tab"
                 tabindex="-1"
                 type="button"
               >
                 <span
-                  class="MuiBadge-root css-qd5b74-MuiBadge-root"
+                  class="MuiBadge-root css-b49g95-MuiBadge-root"
                   id="datafile-badge"
                 >
                   <span
@@ -107,7 +107,7 @@ exports[`SearchPageCardView renders correctly when request received 1`] = `
               </button>
             </div>
             <span
-              class="MuiTabs-indicator css-1aquho2-MuiTabs-indicator"
+              class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
               style="left: 0px; width: 0px;"
             />
           </div>

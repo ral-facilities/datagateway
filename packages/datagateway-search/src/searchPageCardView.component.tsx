@@ -1,7 +1,7 @@
 import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import Tab, { tabClasses } from '@mui/material/Tab';
+import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Badge, { badgeClasses } from '@mui/material/Badge';
 import { Paper, styled } from '@mui/material';
@@ -88,7 +88,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     fontSize: '14px',
     fontWeight: 'bold',
     lineHeight: 'inherit',
-    top: '10px',
+    transform: 'none',
+    position: 'static',
   },
 }));
 
@@ -103,17 +104,6 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
         : // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (theme as any).colours?.blue,
     boxShadow: 'none',
-  },
-  [`& .${tabClasses.textColorPrimary}.${tabClasses.selected}`]: {
-    color:
-      theme.palette.mode === 'dark'
-        ? '#FFFFFF'
-        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (theme as any).colours?.blue,
-  },
-  [`& .${tabsClasses.indicator}`]: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    backgroundColor: (theme as any).colours?.blue,
   },
 }));
 
@@ -265,6 +255,8 @@ const SearchPageCardView = (
         >
           <StyledTabs
             className="tour-search-tab-select"
+            indicatorColor="secondary"
+            textColor="secondary"
             value={currentTab}
             onChange={handleChange}
             aria-label={t('searchPageCardView.tabs_arialabel')}
@@ -281,12 +273,6 @@ const SearchPageCardView = (
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          investigation?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          investigation?.length
-                        )}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -316,9 +302,6 @@ const SearchPageCardView = (
                         marginRight: `calc(0.5 * ${badgeDigits(
                           dataset?.length
                         )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          dataset?.length
-                        )}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -348,9 +331,6 @@ const SearchPageCardView = (
                         marginRight: `calc(0.5 * ${badgeDigits(
                           datafile?.length
                         )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          datafile?.length
-                        )}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
