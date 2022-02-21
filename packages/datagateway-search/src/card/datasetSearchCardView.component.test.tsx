@@ -218,7 +218,7 @@ describe('Dataset - Card View', () => {
       },
     ]);
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith(cardData);
-    expect(useDatasetSizes).toHaveBeenCalledWith([]);
+    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('updates filter query params on text filter', () => {
@@ -341,7 +341,7 @@ describe('Dataset - Card View', () => {
     const wrapper = createWrapper('isis');
 
     expect(useDatasetSizes).toHaveBeenCalledWith(cardData);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith([]);
+    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
       `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`

@@ -89,7 +89,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
 
   const { data } = useDatasetDetails(parseInt(datasetId));
-  const sizeQueries = useDatasetSizes(data ? [data] : []);
+  const sizeQueries = useDatasetSizes(data);
 
   const shortInfo = [
     {

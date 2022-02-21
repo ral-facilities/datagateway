@@ -246,7 +246,7 @@ describe('Dataset table component', () => {
     expect(useAddToCart).toHaveBeenCalledWith('dataset');
     expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith({ pages: [rowData] });
-    expect(useDatasetSizes).toHaveBeenCalledWith([]);
+    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
@@ -531,7 +531,7 @@ describe('Dataset table component', () => {
     const wrapper = createWrapper('isis');
 
     expect(useDatasetSizes).toHaveBeenCalledWith({ pages: [rowData] });
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith([]);
+    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`

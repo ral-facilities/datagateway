@@ -8,6 +8,11 @@ describe('ISIS - Datasets Table', () => {
     ).wait(['@datasetsCount', '@datasetsOrder'], {
       timeout: 10000,
     });
+    // Check that we have received the size from the API as this will produce
+    // a re-render which can prevent some interactions.
+    cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '6.21 GB').should(
+      'exist'
+    );
   });
 
   it('should load correctly', () => {
@@ -226,18 +231,6 @@ describe('ISIS - Datasets Table', () => {
   });
 
   describe('should be able to view details', () => {
-    beforeEach(() => {
-      // Check that we have received the size from the API as this will produce
-      // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '6.21 GB').should(
-        'exist'
-      );
-
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '5.53 GB').should(
-        'exist'
-      );
-    });
-
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 

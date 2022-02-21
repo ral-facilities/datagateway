@@ -93,7 +93,7 @@ describe('ISIS Dataset Landing page', () => {
     createWrapper();
 
     expect(useDatasetDetails).toHaveBeenCalledWith(87);
-    expect(useDatasetSizes).toHaveBeenCalledWith([initialData]);
+    expect(useDatasetSizes).toHaveBeenCalledWith(initialData);
   });
 
   it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
@@ -142,7 +142,7 @@ describe('ISIS Dataset Landing page', () => {
       data: undefined,
     });
     createWrapper();
-    expect(useDatasetSizes).toHaveBeenCalledWith([]);
+    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('incomplete datasets render correctly', () => {
