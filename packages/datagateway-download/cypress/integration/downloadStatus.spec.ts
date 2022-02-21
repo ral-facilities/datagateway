@@ -140,16 +140,11 @@ describe('Download Status', () => {
         .find('button')
         .click();
 
-      cy.contains(`${month} ${year}`)
-        .parent()
-        .parent()
-        .find('button')
-        .first()
-        .click();
+      cy.contains(`${month}`).should('exist');
+      cy.contains(`${year}`).should('exist');
+      cy.get('[aria-label="Previous month"]').click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-
-      cy.contains('OK').click();
+      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
 
       date.setDate(1);
       date.setMonth(date.getMonth() - 1);
