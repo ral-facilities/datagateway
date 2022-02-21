@@ -1,15 +1,17 @@
 import React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import Badge, { badgeClasses } from '@mui/material/Badge';
-import { Paper, styled } from '@mui/material';
-import { StateType } from './state/app.types';
-import { connect } from 'react-redux';
-import DatafileSearchTable from './table/datafileSearchTable.component';
-import { useTranslation } from 'react-i18next';
 import {
+  AppBar,
+  Badge,
+  badgeClasses,
+  Box,
+  Paper,
+  styled,
+  Tab,
+  Tabs,
+  tabsClasses,
+} from '@mui/material';
+import {
+  CartProps,
   parseSearchToQuery,
   useDatafileCount,
   useDatasetCount,
@@ -17,35 +19,23 @@ import {
   useLuceneSearch,
   useUpdateQueryParam,
   ViewCartButton,
-  CartProps,
+  ViewsType,
 } from 'datagateway-common';
-import InvestigationCardView from './card/investigationSearchCardView.component';
-import DatasetCardView from './card/datasetSearchCardView.component';
-import { useLocation } from 'react-router-dom';
 import {
   getFilters,
-  getPage,
-  getResults,
   getSorts,
   storeFilters,
-  storePage,
-  storeResults,
   storeSort,
 } from './searchPageContainer.component';
-
-export interface SearchCardViewProps {
-  containerHeight: string;
-  hierarchy: string;
-  onTabChange: (currentTab: string) => void;
-  currentTab: string;
-}
-
-interface SearchCardViewStoreProps {
-  maxNumResults: number;
-  datasetTab: boolean;
-  datafileTab: boolean;
-  investigationTab: boolean;
-}
+import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import { StateType } from './state/app.types';
+import InvestigationSearchTable from './table/investigationSearchTable.component';
+import InvestigationCardView from './card/investigationSearchCardView.component';
+import DatafileSearchTable from './table/datafileSearchTable.component';
+import DatasetCardView from './card/datasetSearchCardView.component';
+import DatasetSearchTable from './table/datasetSearchTable.component';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -66,7 +56,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
       border={0}
       {...other}
     >
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && <Box pt={1}>{children}</Box>}
     </Box>
   );
 }
@@ -114,14 +104,30 @@ const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme as any).colours?.tabsGrey,
 }));
 
-const SearchPageCardView = (
-  props: SearchCardViewProps & SearchCardViewStoreProps & CartProps
+interface SearchTabsStoreProps {
+  maxNumResults: number;
+  datasetTab: boolean;
+  datafileTab: boolean;
+  investigationTab: boolean;
+}
+
+export interface SearchTabsProps {
+  view: ViewsType;
+  containerHeight: string;
+  hierarchy: string;
+  onTabChange: (currentTab: string) => void;
+  currentTab: string;
+}
+
+const SearchTabs = (
+  props: SearchTabsProps & SearchTabsStoreProps & CartProps
 ): React.ReactElement => {
   const {
     maxNumResults,
     investigationTab,
     datasetTab,
     datafileTab,
+    view,
     containerHeight,
     hierarchy,
     onTabChange,
@@ -158,15 +164,13 @@ const SearchPageCardView = (
     maxCount: maxNumResults,
   });
 
-  const { filters, sort, page, results } = React.useMemo(
+  const { filters, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
 
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
   const replaceSorts = useUpdateQueryParam('sort', 'replace');
-  const replacePage = useUpdateQueryParam('page', 'replace');
-  const replaceResults = useUpdateQueryParam('results', 'replace');
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -174,31 +178,19 @@ const SearchPageCardView = (
   ): void => {
     storeFilters(filters, currentTab);
     storeSort(sort, currentTab);
-    if (page) {
-      storePage(page, currentTab);
-    }
-    if (results) {
-      storeResults(results, currentTab);
-    }
 
     onTabChange(newValue);
 
     replaceFilters({});
     replaceSorts({});
-    replacePage(null);
-    replaceResults(null);
   };
 
   React.useEffect(() => {
     const filters = getFilters(currentTab);
     const sorts = getSorts(currentTab);
-    const page = getPage(currentTab);
-    const results = getResults(currentTab);
     if (filters) replaceFilters(filters);
     if (sorts) replaceSorts(sorts);
-    if (page) replacePage(page);
-    if (results) replaceResults(results);
-  }, [currentTab, replaceFilters, replacePage, replaceResults, replaceSorts]);
+  }, [currentTab, replaceFilters, replaceSorts]);
 
   const { data: investigationDataCount } = useInvestigationCount(
     [
@@ -239,10 +231,6 @@ const SearchPageCardView = (
     currentTab
   );
 
-  const badgeDigits = (length?: number): 3 | 2 | 1 => {
-    return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
-  };
-
   return (
     <div>
       <AppBar position="static" elevation={0}>
@@ -259,14 +247,24 @@ const SearchPageCardView = (
             textColor="secondary"
             value={currentTab}
             onChange={handleChange}
-            aria-label={t('searchPageCardView.tabs_arialabel')}
+            aria-label={t('searchPageTable.tabs_arialabel')}
           >
             {investigationTab ? (
               <Tab
                 label={
                   <StyledBadge
                     id="investigation-badge"
-                    badgeContent={investigationDataCount ?? 0}
+                    badgeContent={
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: 'bold',
+                          marginTop: '1px',
+                        }}
+                      >
+                        {investigationDataCount ?? 0}
+                      </span>
+                    }
                     showZero
                     max={999}
                   >
@@ -299,9 +297,6 @@ const SearchPageCardView = (
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          dataset?.length
-                        )}ch + 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -328,9 +323,6 @@ const SearchPageCardView = (
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          datafile?.length
-                        )}ch + 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -355,19 +347,44 @@ const SearchPageCardView = (
           </StyledBox>
         </StyledBox>
       </AppBar>
-
       {currentTab === 'investigation' && (
         <TabPanel value={currentTab} index={'investigation'}>
-          <InvestigationCardView hierarchy={hierarchy} />
+          {view === 'card' ? (
+            <InvestigationCardView hierarchy={hierarchy} />
+          ) : (
+            <Paper
+              sx={{
+                height: `calc(${containerHeight} - 56px)`,
+                minHeight: `calc(500px - 56px)`,
+                overflowX: 'auto',
+                overflowY: 'hidden',
+              }}
+              elevation={0}
+            >
+              <InvestigationSearchTable hierarchy={hierarchy} />
+            </Paper>
+          )}
         </TabPanel>
       )}
-
       {currentTab === 'dataset' && (
         <TabPanel value={currentTab} index={'dataset'}>
-          <DatasetCardView hierarchy={hierarchy} />
+          {view === 'card' ? (
+            <DatasetCardView hierarchy={hierarchy} />
+          ) : (
+            <Paper
+              sx={{
+                height: `calc(${containerHeight} - 56px)`,
+                minHeight: `calc(500px - 56px)`,
+                overflowX: 'auto',
+                overflowY: 'hidden',
+              }}
+              elevation={0}
+            >
+              <DatasetSearchTable hierarchy={hierarchy} />
+            </Paper>
+          )}
         </TabPanel>
       )}
-
       {currentTab === 'datafile' && (
         <TabPanel value={currentTab} index={'datafile'}>
           <Paper
@@ -387,7 +404,7 @@ const SearchPageCardView = (
   );
 };
 
-const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
+const mapStateToProps = (state: StateType): SearchTabsStoreProps => {
   return {
     maxNumResults: state.dgsearch.maxNumResults,
     datasetTab: state.dgsearch.tabs.datasetTab,
@@ -396,4 +413,4 @@ const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
   };
 };
 
-export default connect(mapStateToProps)(SearchPageCardView);
+export default connect(mapStateToProps)(SearchTabs);

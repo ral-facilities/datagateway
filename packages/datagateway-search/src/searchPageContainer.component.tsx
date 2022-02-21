@@ -12,10 +12,9 @@ import {
 
 import { Grid, Paper, LinearProgress, Button, styled } from '@mui/material';
 
-import SearchPageTable from './searchPageTable.component';
-import SearchPageCardView from './searchPageCardView.component';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
+import SearchTabs from './searchTabs.component';
 
 import { useHistory } from 'react-router-dom';
 import {
@@ -604,27 +603,16 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         <LinearProgress color="secondary" />
                       </Grid>
                     )}
-                    {view === 'card' ? (
-                      <SearchPageCardView
-                        containerHeight={containerHeight}
-                        hierarchy={match.params.hierarchy}
-                        onTabChange={pushCurrentTab}
-                        currentTab={currentTab}
-                        cartItems={cartItems ?? []}
-                        navigateToDownload={navigateToDownload}
-                        cartAriaLabel={t('searchPageContainer.cart_arialabel')}
-                      />
-                    ) : (
-                      <SearchPageTable
-                        containerHeight={containerHeight}
-                        hierarchy={match.params.hierarchy}
-                        onTabChange={pushCurrentTab}
-                        currentTab={currentTab}
-                        cartItems={cartItems ?? []}
-                        navigateToDownload={navigateToDownload}
-                        cartAriaLabel={t('searchPageContainer.cart_arialabel')}
-                      />
-                    )}
+                    <SearchTabs
+                      view={view}
+                      containerHeight={containerHeight}
+                      hierarchy={match.params.hierarchy}
+                      onTabChange={pushCurrentTab}
+                      currentTab={currentTab}
+                      cartItems={cartItems ?? []}
+                      navigateToDownload={navigateToDownload}
+                      cartAriaLabel={t('searchPageContainer.cart_arialabel')}
+                    />
                   </DataViewPaper>
                 </Grid>
               </div>

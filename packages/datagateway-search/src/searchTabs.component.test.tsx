@@ -3,7 +3,7 @@ import { StateType } from './state/app.types';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Router } from 'react-router-dom';
 
-import SearchPageTable, { SearchTableProps } from './searchPageTable.component';
+import SearchPageTabs, { SearchTabsProps } from './searchTabs.component';
 
 import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
@@ -18,6 +18,8 @@ import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { createMemoryHistory, History } from 'history';
 import { render } from '@testing-library/react';
+import InvestigationCardView from './card/investigationSearchCardView.component';
+import DatasetCardView from './card/datasetSearchCardView.component';
 
 jest.mock('datagateway-common', () => ({
   ...jest.requireActual('datagateway-common'),
@@ -26,10 +28,10 @@ jest.mock('datagateway-common', () => ({
   Table: jest.fn(() => 'MockedTable'),
 }));
 
-describe('SearchPageTable', () => {
+describe('SearchTabs', () => {
   let state: StateType;
   let history: History;
-  let props: SearchTableProps & CartProps;
+  let props: SearchTabsProps & CartProps;
   const mockStore = configureStore([thunk]);
 
   const onTabChange = jest.fn();
@@ -37,13 +39,13 @@ describe('SearchPageTable', () => {
 
   const createWrapper = (
     store: Store = mockStore(state),
-    props: SearchTableProps & CartProps
+    props: SearchTabsProps & CartProps
   ): ReactWrapper => {
     return mount(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <SearchPageTable {...props} />
+            <SearchPageTabs {...props} />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -60,6 +62,7 @@ describe('SearchPageTable', () => {
     );
 
     props = {
+      view: 'table',
       onTabChange: onTabChange,
       currentTab: 'investigation',
       cartItems: [],
@@ -104,7 +107,7 @@ describe('SearchPageTable', () => {
           initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
         >
           <QueryClientProvider client={new QueryClient()}>
-            <SearchPageTable {...props} />
+            <SearchPageTabs {...props} />
           </QueryClientProvider>
         </MemoryRouter>
       </Provider>
@@ -136,44 +139,93 @@ describe('SearchPageTable', () => {
     expect(onTabChange).toHaveBeenNthCalledWith(1, 'dataset');
   });
 
-  it('has the investigation search table component when on the investigation tab', () => {
-    const updatedProps = {
-      ...props,
-      currentTab: 'investigation',
-    };
+  describe('table view', () => {
+    it('has the investigation search table component when on the investigation tab', () => {
+      const updatedProps = {
+        ...props,
+        currentTab: 'investigation',
+      };
 
-    const testStore = mockStore(state);
-    const wrapper = createWrapper(testStore, updatedProps);
-    expect(wrapper.exists(InvestigationSearchTable)).toBeTruthy();
+      const testStore = mockStore(state);
+      const wrapper = createWrapper(testStore, updatedProps);
+      expect(wrapper.exists(InvestigationSearchTable)).toBeTruthy();
+    });
+
+    it('has the dataset search table component when on the dataset tab', () => {
+      const updatedProps = {
+        ...props,
+        currentTab: 'dataset',
+      };
+
+      // Mock to prevent error logging
+      const spy = jest.spyOn(console, 'error').mockImplementation();
+      const testStore = mockStore(state);
+      const wrapper = createWrapper(testStore, updatedProps);
+
+      expect(wrapper.exists(DatasetSearchTable)).toBeTruthy();
+      spy.mockRestore();
+    });
+
+    it('has the datafile search table component when on the datafile tab', () => {
+      const updatedProps = {
+        ...props,
+        currentTab: 'datafile',
+      };
+
+      // Mock to prevent error logging
+      const spy = jest.spyOn(console, 'error').mockImplementation();
+      const testStore = mockStore(state);
+      const wrapper = createWrapper(testStore, updatedProps);
+
+      expect(wrapper.exists(DatafileSearchTable)).toBeTruthy();
+      spy.mockRestore();
+    });
   });
 
-  it('has the dataset search table component when on the dataset tab', () => {
-    const updatedProps = {
-      ...props,
-      currentTab: 'dataset',
-    };
+  describe('card view', () => {
+    beforeEach(() => {
+      props.view = 'card';
+    });
 
-    // Mock to prevent error logging
-    const spy = jest.spyOn(console, 'error').mockImplementation();
-    const testStore = mockStore(state);
-    const wrapper = createWrapper(testStore, updatedProps);
+    it('has the investigation search card view component when on the investigation tab', () => {
+      const updatedProps = {
+        ...props,
+        currentTab: 'investigation',
+      };
 
-    expect(wrapper.exists(DatasetSearchTable)).toBeTruthy();
-    spy.mockRestore();
-  });
+      const testStore = mockStore(state);
+      const wrapper = createWrapper(testStore, updatedProps);
+      expect(wrapper.exists(InvestigationCardView)).toBeTruthy();
+    });
 
-  it('has the datafile search table component when on the datafile tab', () => {
-    const updatedProps = {
-      ...props,
-      currentTab: 'datafile',
-    };
+    it('has the dataset search card view component when on the dataset tab', () => {
+      const updatedProps = {
+        ...props,
+        currentTab: 'dataset',
+      };
 
-    // Mock to prevent error logging
-    const spy = jest.spyOn(console, 'error').mockImplementation();
-    const testStore = mockStore(state);
-    const wrapper = createWrapper(testStore, updatedProps);
+      // Mock to prevent error logging
+      const spy = jest.spyOn(console, 'error').mockImplementation();
+      const testStore = mockStore(state);
+      const wrapper = createWrapper(testStore, updatedProps);
 
-    expect(wrapper.exists(DatafileSearchTable)).toBeTruthy();
-    spy.mockRestore();
+      expect(wrapper.exists(DatasetCardView)).toBeTruthy();
+      spy.mockRestore();
+    });
+
+    it('has the datafile search table component when on the datafile tab', () => {
+      const updatedProps = {
+        ...props,
+        currentTab: 'datafile',
+      };
+
+      // Mock to prevent error logging
+      const spy = jest.spyOn(console, 'error').mockImplementation();
+      const testStore = mockStore(state);
+      const wrapper = createWrapper(testStore, updatedProps);
+
+      expect(wrapper.exists(DatafileSearchTable)).toBeTruthy();
+      spy.mockRestore();
+    });
   });
 });

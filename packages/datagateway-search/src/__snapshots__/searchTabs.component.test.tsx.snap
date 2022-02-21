@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SearchPageTable renders correctly when request received 1`] = `
+exports[`SearchTabs renders correctly when request received 1`] = `
 <DocumentFragment>
   <div>
     <header
