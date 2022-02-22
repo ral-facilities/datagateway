@@ -139,7 +139,7 @@ function CVPagination(
     <Pagination
       size="large"
       color="secondary"
-      style={{ textAlign: 'center' }}
+      sx={{ textAlign: 'center' }}
       count={numPages}
       page={page}
       onChange={(e, p) => {
@@ -482,7 +482,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             alignItems="center"
             justifyContent="space-around"
             xs={12}
-            sx={{ padding: 2 }}
+            spacing={2}
           >
             {/* Fake box to mirror Max Results selector */}
             {totalDataCount > resOptions[0] && (
@@ -503,7 +503,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               <Grid container item xs={12} md={1} justifyContent="flex-end">
                 <FormControl
                   variant="standard"
-                  sx={{ margin: 1, minWidth: 120 }}
+                  sx={{ margin: 1, minWidth: '120px' }}
                 >
                   <InputLabel htmlFor="select-max-results">
                     {t('app.max_results')}
@@ -547,7 +547,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      <Grid container direction="row" justifyContent="center" spacing={2}>
+      <Grid
+        container
+        item
+        direction="row"
+        justifyContent="center"
+        spacing={2}
+        padding={4}
+      >
         {(hasSort || customFilters || !hasFilteredResults) && (
           <Grid item xs={12} md={3}>
             <Grid
@@ -556,8 +563,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               direction="column"
               justifyContent="flex-start"
               alignItems="stretch"
-              spacing={5}
               xs={12}
+              sx={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
             >
               {/* Sorting options */}
               {hasSort && (filterUpdate || totalDataCount > 0) && (
@@ -647,7 +654,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                       {Object.entries(filter.items).map(
                                         ([name, data], valueIndex) => (
                                           <ListItem
-                                            style={{ display: 'flex' }}
+                                            sx={{ display: 'flex' }}
                                             key={valueIndex}
                                             button
                                             disabled={data.selected}
@@ -676,7 +683,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                             )}
                                             {data.count && (
                                               <Typography
-                                                style={{ paddingLeft: '5%' }}
+                                                sx={{ paddingLeft: '5%' }}
                                               >
                                                 {data.count}
                                               </Typography>
@@ -724,10 +731,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
           {/* List of cards */}
           {hasFilteredResults ? (
-            <List style={{ padding: 0, marginRight: 20 }}>
+            <List sx={{ padding: 0, margin: 0 }}>
               {data.map((entity, index) => {
                 return (
-                  <ListItem key={index} alignItems="flex-start">
+                  <ListItem
+                    key={index}
+                    alignItems="flex-start"
+                    sx={{ paddingRight: 0 }}
+                  >
                     {/* Create an individual card */}
                     <EntityCard
                       entity={entity}
@@ -760,7 +771,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       {/*  Pagination  */}
       {(filterUpdate || totalDataCount > 0) &&
         (paginationPos === 'bottom' || paginationPos === 'both') && (
-          <Grid item xs style={{ padding: '50px' }}>
+          <Grid item xs sx={{ padding: '50px' }}>
             {CVPagination(page, maxPage, onPageChange)}
           </Grid>
         )}

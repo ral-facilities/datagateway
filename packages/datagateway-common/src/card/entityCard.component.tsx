@@ -67,23 +67,23 @@ const ShadowDiv = styled('div', {
 
     if (isDescriptionCollapsed) {
       return {
-        width: `${shadowWidth}px`,
         visibility: 'hidden',
         opacity: 0,
         transition: 'visibility 0s, opacity 0.5s linear',
+        width: `${shadowWidth}px`,
       };
     } else {
       return {
-        width: `${shadowWidth}px`,
         position: 'absolute',
-        height: 30,
-        top: 130,
+        height: '30px',
+        top: '130px',
         background: `linear-gradient(${paperZero}, ${paperOne})`,
 
         // Transition showing the shadow.
         visibility: 'visible',
         opacity: 1,
         transition: 'visibility 0s, opacity 0.5s linear',
+        width: `${shadowWidth}px`,
       };
     }
   }
@@ -273,7 +273,7 @@ const EntityCard = React.memo(
         {/* Card content is a flexbox (as a row):
             - has a card information area (split in horizontally - column) for title/description and tags
             - has card details area which takes up smaller space */}
-        <CardContent style={{ width: '100%', minWidth: 0 }}>
+        <CardContent sx={{ width: '100%', minWidth: 0 }}>
           {/* row:
               - main information; title and description (optional)
               - information (optional and custom)
@@ -292,17 +292,13 @@ const EntityCard = React.memo(
                   }
                   enterDelay={500}
                 >
-                  <Typography sx={titleStyle} component="h5" variant="h5">
-                    <span
-                      aria-label="card-title"
-                      style={{
-                        whiteSpace: isDescriptionCollapsed
-                          ? 'normal'
-                          : 'nowrap',
-                      }}
-                    >
-                      {title.content ? title.content : title.label}
-                    </span>
+                  <Typography
+                    sx={titleStyle}
+                    component="h5"
+                    variant="h5"
+                    noWrap={!isDescriptionCollapsed}
+                  >
+                    {title.content ? title.content : title.label}
                   </Typography>
                 </ArrowTooltip>
 
@@ -358,7 +354,7 @@ const EntityCard = React.memo(
               <Divider flexItem={true} orientation={'vertical'} />
             )}
 
-            <div style={{ paddingLeft: 15 }}>
+            <div style={{ paddingLeft: '15px' }}>
               {information && (
                 <InformationDiv>
                   <InformationLabelDiv>
