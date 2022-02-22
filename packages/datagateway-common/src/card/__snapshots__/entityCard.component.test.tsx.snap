@@ -12,7 +12,7 @@ exports[`Card renders correctly 1`] = `
   }
 >
   <ForwardRef(CardContent)
-    style={
+    sx={
       Object {
         "minWidth": 0,
         "width": "100%",
@@ -48,7 +48,8 @@ exports[`Card renders correctly 1`] = `
             title="Title"
           >
             <ForwardRef(Typography)
-              component="h5"
+              aria-label="card-title"
+              noWrap={true}
               sx={
                 Object {
                   "display": "inline-block",
@@ -59,16 +60,7 @@ exports[`Card renders correctly 1`] = `
               }
               variant="h5"
             >
-              <span
-                aria-label="card-title"
-                style={
-                  Object {
-                    "whiteSpace": "nowrap",
-                  }
-                }
-              >
-                Title
-              </span>
+              Title
             </ForwardRef(Typography)>
           </ArrowTooltip>
           <ForwardRef(Box)
@@ -98,7 +90,7 @@ exports[`Card renders correctly 1`] = `
       <div
         style={
           Object {
-            "paddingLeft": 15,
+            "paddingLeft": "15px",
           }
         }
       />

@@ -294,7 +294,7 @@ const EntityCard = React.memo(
                 >
                   <Typography
                     sx={titleStyle}
-                    component="h5"
+                    aria-label="card-title"
                     variant="h5"
                     noWrap={!isDescriptionCollapsed}
                   >

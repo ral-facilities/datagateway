@@ -20,11 +20,7 @@ exports[`Card View renders correctly 1`] = `
       direction="row"
       item={true}
       justifyContent="space-around"
-      sx={
-        Object {
-          "padding": 2,
-        }
-      }
+      spacing={2}
       xs={12}
     >
       <ForwardRef(Grid)
@@ -41,7 +37,7 @@ exports[`Card View renders correctly 1`] = `
           showFirstButton={true}
           showLastButton={true}
           size="large"
-          style={
+          sx={
             Object {
               "textAlign": "center",
             }
@@ -53,7 +49,9 @@ exports[`Card View renders correctly 1`] = `
   <ForwardRef(Grid)
     container={true}
     direction="row"
+    item={true}
     justifyContent="center"
+    padding={4}
     spacing={2}
   >
     <ForwardRef(Grid)
@@ -67,7 +65,13 @@ exports[`Card View renders correctly 1`] = `
         direction="column"
         item={true}
         justifyContent="flex-start"
-        spacing={5}
+        sx={
+          Object {
+            "marginBottom": 0,
+            "marginLeft": 0,
+            "marginRight": 0,
+          }
+        }
         xs={12}
       >
         <ForwardRef(Grid)
@@ -100,9 +104,9 @@ exports[`Card View renders correctly 1`] = `
       xs={12}
     >
       <ForwardRef(List)
-        style={
+        sx={
           Object {
-            "marginRight": 20,
+            "margin": 0,
             "padding": 0,
           }
         }
@@ -110,6 +114,11 @@ exports[`Card View renders correctly 1`] = `
         <ForwardRef(ListItem)
           alignItems="flex-start"
           key="0"
+          sx={
+            Object {
+              "paddingRight": 0,
+            }
+          }
         >
           <EntityCard
             entity={
@@ -138,6 +147,11 @@ exports[`Card View renders correctly 1`] = `
         <ForwardRef(ListItem)
           alignItems="flex-start"
           key="1"
+          sx={
+            Object {
+              "paddingRight": 0,
+            }
+          }
         >
           <EntityCard
             entity={
@@ -166,6 +180,11 @@ exports[`Card View renders correctly 1`] = `
         <ForwardRef(ListItem)
           alignItems="flex-start"
           key="2"
+          sx={
+            Object {
+              "paddingRight": 0,
+            }
+          }
         >
           <EntityCard
             entity={
@@ -196,7 +215,7 @@ exports[`Card View renders correctly 1`] = `
   </ForwardRef(Grid)>
   <ForwardRef(Grid)
     item={true}
-    style={
+    sx={
       Object {
         "padding": "50px",
       }
@@ -214,7 +233,7 @@ exports[`Card View renders correctly 1`] = `
       showFirstButton={true}
       showLastButton={true}
       size="large"
-      style={
+      sx={
         Object {
           "textAlign": "center",
         }
