@@ -24,7 +24,7 @@
     "lodash.memoize": "^4.1.2",
     "loglevel": "^1.7.1",
     "p-limit": "^4.0.0",
-    "react": "^16.13.1",
+    "react": "^17.0.2",
     "react-app-polyfill": "^3.0.0",
     "react-dom": "^16.11.0",
     "react-i18next": "^11.15.4",
