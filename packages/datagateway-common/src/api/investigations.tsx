@@ -240,7 +240,11 @@ export const useInvestigationSize = (
 };
 
 export const useInvestigationSizes = (
-  data: Investigation[] | InfiniteData<Investigation[]> | undefined
+  data:
+    | Investigation[]
+    | InfiniteData<Investigation[]>
+    | Investigation
+    | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
@@ -255,11 +259,13 @@ export const useInvestigationSizes = (
     number,
     ['investigationSize', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((investigation) => {
@@ -293,9 +299,10 @@ export const useInvestigationSizes = (
   const countAppliedRef = React.useRef(0);
 
   // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process
+  // back to 0 so we can restart the process, as well as clear sizes
   React.useEffect(() => {
     countAppliedRef.current = 0;
+    setSizes([]);
   }, [data]);
 
   // need to use useDeepCompareEffect here because the array returned by useQueries
@@ -309,18 +316,23 @@ export const useInvestigationSizes = (
       sizes.length - currCountReturned < 5
         ? sizes.length - currCountReturned
         : 5;
+
     // this in effect batches our updates to only happen in batches >= 5
     if (currCountReturned - countAppliedRef.current >= batchMax) {
       setSizes(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [sizes, queries]);
 
   return sizes;
 };
 
 export const useInvestigationsDatasetCount = (
-  data: Investigation[] | InfiniteData<Investigation[]> | undefined
+  data:
+    | Investigation[]
+    | InfiniteData<Investigation[]>
+    | Investigation
+    | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
@@ -330,11 +342,13 @@ export const useInvestigationsDatasetCount = (
     number,
     ['investigationDatasetCount', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((investigation) => {
@@ -372,9 +386,10 @@ export const useInvestigationsDatasetCount = (
   const countAppliedRef = React.useRef(0);
 
   // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process
+  // back to 0 so we can restart the process, as well as clear datasetCounts
   React.useEffect(() => {
     countAppliedRef.current = 0;
+    setDatasetCounts([]);
   }, [data]);
 
   // need to use useDeepCompareEffect here because the array returned by useQueries
@@ -388,12 +403,13 @@ export const useInvestigationsDatasetCount = (
       datasetCounts.length - currCountReturned < 5
         ? datasetCounts.length - currCountReturned
         : 5;
+
     // this in effect batches our updates to only happen in batches >= 5
     if (currCountReturned - countAppliedRef.current >= batchMax) {
       setDatasetCounts(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [datasetCounts, queries]);
 
   return datasetCounts;
 };
