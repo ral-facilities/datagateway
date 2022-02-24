@@ -5,7 +5,9 @@ import {
   makeStyles,
   MenuItem,
   Select,
+  StyleRules,
   Theme,
+  withStyles,
 } from '@material-ui/core';
 import axios, { AxiosError } from 'axios';
 import {
@@ -30,6 +32,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+const selectStyles = (): StyleRules =>
+  createStyles({
+    root: { overflow: 'clip' },
+  });
+
+const StyledSelect = withStyles(selectStyles)(Select);
 
 const fetchRoles = (apiUrl: string, username: string): Promise<string[]> => {
   const params = new URLSearchParams();
@@ -103,7 +112,10 @@ const RoleSelector: React.FC = () => {
   return (
     <FormControl id="role-selector" className={classes.formControl}>
       <InputLabel>{t('my_data_table.role_selector')}</InputLabel>
-      <Select value={roles?.includes(role) ? role : ''} onChange={handleChange}>
+      <StyledSelect
+        value={roles?.includes(role) ? role : ''}
+        onChange={handleChange}
+      >
         <MenuItem value={''}>
           <em>{t('my_data_table.all_roles')}</em>
         </MenuItem>
@@ -112,7 +124,7 @@ const RoleSelector: React.FC = () => {
             {role.replace('_', ' ').toLowerCase()}
           </MenuItem>
         ))}
-      </Select>
+      </StyledSelect>
     </FormControl>
   );
 };
