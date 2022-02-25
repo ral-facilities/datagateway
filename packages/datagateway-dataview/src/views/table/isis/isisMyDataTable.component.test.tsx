@@ -1,3 +1,4 @@
+import { render, RenderResult } from '@testing-library/react';
 import {
   dGCommonInitialState,
   Investigation,
@@ -62,6 +63,21 @@ describe('ISIS MyData table component', () => {
   ): ReactWrapper => {
     const store = mockStore(state);
     return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            {element}
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (
+    element: React.ReactElement = <ISISMyDataTable />
+  ): RenderResult => {
+    const store = mockStore(state);
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -475,14 +491,12 @@ describe('ISIS MyData table component', () => {
   });
 
   it('renders title and name as links', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
+
+    expect(wrapper.getAllByTestId('isis-mydata-table-title')).toMatchSnapshot();
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
+      wrapper.getAllByTestId('isis-mydata-table-doi-link')
     ).toMatchSnapshot();
   });
 

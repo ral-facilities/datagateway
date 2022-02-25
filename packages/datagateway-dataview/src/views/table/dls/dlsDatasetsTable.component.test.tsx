@@ -25,6 +25,7 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -53,6 +54,19 @@ describe('DLS Dataset table component', () => {
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
     return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSDatasetsTable proposalName="Proposal 1" investigationId="1" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -325,10 +339,10 @@ describe('DLS Dataset table component', () => {
   });
 
   it('renders Dataset title as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('dls-datasets-table-title')
     ).toMatchSnapshot();
   });
 

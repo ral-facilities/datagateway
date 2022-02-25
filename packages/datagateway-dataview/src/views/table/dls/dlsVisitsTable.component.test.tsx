@@ -21,6 +21,7 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -43,6 +44,19 @@ describe('DLS Visits table component', () => {
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
     return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSVisitsTable proposalName="Test 1" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -229,10 +243,10 @@ describe('DLS Visits table component', () => {
   });
 
   it('renders visit ID as links', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=2]').find('p').children()
+      wrapper.getAllByTestId('dls-visits-table-visitId')
     ).toMatchSnapshot();
   });
 

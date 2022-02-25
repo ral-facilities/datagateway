@@ -126,7 +126,7 @@ describe('ISIS Datasets - Card View', () => {
   it('correct link used when NOT in studyHierarchy', () => {
     const wrapper = createWrapper();
     expect(
-      wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
+      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
     ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1');
   });
 
@@ -147,7 +147,7 @@ describe('ISIS Datasets - Card View', () => {
       </Provider>
     );
     expect(
-      wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
+      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
     ).toEqual(
       '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1'
     );

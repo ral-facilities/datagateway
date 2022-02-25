@@ -19,6 +19,7 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -41,6 +42,19 @@ describe('ISIS FacilityCycles table component', () => {
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
     return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISFacilityCyclesTable instrumentId="1" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -191,11 +205,9 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('renders facilitycycle name as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=1]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.findByText('Test 1')).toMatchSnapshot();
   });
 
   it('renders fine with incomplete data', () => {

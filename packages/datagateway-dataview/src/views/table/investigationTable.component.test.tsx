@@ -22,6 +22,7 @@ import InvestigationTable from './investigationTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import { render, RenderResult } from '@testing-library/react';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
@@ -52,6 +53,19 @@ describe('Investigation table component', () => {
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
     return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <InvestigationTable />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -325,10 +339,10 @@ describe('Investigation table component', () => {
   });
 
   it('renders investigation title as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('investigation-table-title')
     ).toMatchSnapshot();
   });
 

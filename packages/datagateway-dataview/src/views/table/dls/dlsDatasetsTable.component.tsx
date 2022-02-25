@@ -113,7 +113,8 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
           tableLink(
             `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${cellProps.rowData.id}/datafile`,
             cellProps.rowData.name,
-            view
+            view,
+            'dls-datasets-table-title'
           ),
         filterComponent: textFilter,
       },

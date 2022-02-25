@@ -22,6 +22,7 @@ import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { mount, ReactWrapper } from 'enzyme';
+import { render, RenderResult } from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
 import {
   applyDatePickerWorkaround,
@@ -62,6 +63,28 @@ describe('ISIS Dataset table component', () => {
   ): ReactWrapper => {
     const store = mockStore(state);
     return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            {element}
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (
+    element: React.ReactElement = (
+      <ISISDatasetsTable
+        studyHierarchy={false}
+        instrumentId="1"
+        instrumentChildId="2"
+        investigationId="3"
+      />
+    )
+  ): RenderResult => {
+    const store = mockStore(state);
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -358,16 +381,14 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('renders dataset name as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('Test 1')).toMatchSnapshot();
   });
 
   it('renders dataset name as a link in StudyHierarchy', () => {
     const store = mockStore(state);
-    const wrapper = mount(
+    const wrapper = render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -382,9 +403,7 @@ describe('ISIS Dataset table component', () => {
       </Provider>
     );
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('Test 1')).toMatchSnapshot();
   });
 
   it('renders actions correctly', () => {

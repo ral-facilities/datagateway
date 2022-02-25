@@ -1,3 +1,4 @@
+import { render, RenderResult } from '@testing-library/react';
 import {
   dGCommonInitialState,
   DLSVisitDetailsPanel,
@@ -47,6 +48,19 @@ describe('DLS MyData table component', () => {
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
     return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSMyDataTable />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -239,14 +253,12 @@ describe('DLS MyData table component', () => {
   });
 
   it('renders title and visit ID as a links', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
+
+    expect(wrapper.getAllByTestId('dls-mydata-table-name')).toMatchSnapshot();
 
     expect(
-      wrapper.find('[aria-colindex=2]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('dls-mydata-table-visitId')
     ).toMatchSnapshot();
   });
 

@@ -115,7 +115,8 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
           tableLink(
             `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.id}`,
             cellProps.rowData.name,
-            view
+            view,
+            'isis-mydata-table-name'
           ),
         filterComponent: textFilter,
       },

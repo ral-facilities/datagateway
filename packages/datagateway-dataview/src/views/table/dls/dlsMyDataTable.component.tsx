@@ -104,7 +104,8 @@ const DLSMyDataTable = (): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
             investigationData.visitId,
-            view
+            view,
+            'dls-mydata-table-visitId'
           );
         },
         filterComponent: textFilter,

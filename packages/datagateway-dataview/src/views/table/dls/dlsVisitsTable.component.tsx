@@ -83,7 +83,8 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${proposalName}/investigation/${investigationData.id}/dataset`,
             investigationData.visitId,
-            view
+            view,
+            'dls-visits-table-visitId'
           );
         },
         filterComponent: textFilter,

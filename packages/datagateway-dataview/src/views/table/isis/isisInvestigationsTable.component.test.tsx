@@ -28,6 +28,7 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -64,6 +65,27 @@ describe('ISIS Investigations table component', () => {
   ): ReactWrapper => {
     const store = mockStore(state);
     return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            {element}
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (
+    element: React.ReactElement = (
+      <ISISInvestigationsTable
+        studyHierarchy={false}
+        instrumentId="4"
+        instrumentChildId="5"
+      />
+    )
+  ): RenderResult => {
+    const store = mockStore(state);
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -404,25 +426,21 @@ describe('ISIS Investigations table component', () => {
     );
   });
 
-  it('renders title, name and DOI as links', () => {
-    const wrapper = createWrapper();
+  it('renders title and DOI as links', () => {
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('isis-investigations-table-title')
     ).toMatchSnapshot();
 
     expect(
-      wrapper.find('[aria-colindex=4]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=5]').find('p').children()
+      wrapper.getAllByTestId('isis-investigation-table-doi-link')
     ).toMatchSnapshot();
   });
 
-  it('renders title, name and DOI as links in StudyHierarchy', () => {
+  it('renders title and DOI as links in StudyHierarchy', () => {
     const store = mockStore(state);
-    const wrapper = mount(
+    const wrapper = render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -437,15 +455,11 @@ describe('ISIS Investigations table component', () => {
     );
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('isis-investigations-table-title')
     ).toMatchSnapshot();
 
     expect(
-      wrapper.find('[aria-colindex=4]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=5]').find('p').children()
+      wrapper.getAllByTestId('isis-investigation-table-doi-link')
     ).toMatchSnapshot();
   });
 

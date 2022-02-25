@@ -16,6 +16,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -37,6 +38,19 @@ describe('ISIS Instruments table component', () => {
   const createWrapper = (studyHierarchy = false): ReactWrapper => {
     const store = mockStore(state);
     return mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISInstrumentsTable studyHierarchy={studyHierarchy} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (studyHierarchy = false): RenderResult => {
+    const store = mockStore(state);
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -170,18 +184,18 @@ describe('ISIS Instruments table component', () => {
   });
 
   it('renders names as links when NOT in studyHierarchy', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=2]').find('p').children()
+      wrapper.getAllByTestId('isis-instrument-table-name')
     ).toMatchSnapshot();
   });
 
   it('renders names as links in StudyHierarchy', () => {
-    const wrapper = createWrapper(true);
+    const wrapper = createRTLWrapper(true);
 
     expect(
-      wrapper.find('[aria-colindex=2]').find('p').children()
+      wrapper.getAllByTestId('isis-instrument-table-name')
     ).toMatchSnapshot();
   });
 
