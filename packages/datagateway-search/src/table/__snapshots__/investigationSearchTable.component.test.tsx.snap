@@ -111,285 +111,48 @@ Object {
 `;
 
 exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 1`] = `
-<ForwardRef(Link)
-  component={
-    Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "propTypes": Object {
-        "innerRef": [Function],
-        "onClick": [Function],
-        "replace": [Function],
-        "target": [Function],
-        "to": [Function],
-      },
-      "render": [Function],
-    }
-  }
-  to="/browse/investigation/1/dataset"
->
-  <MuiLinkRoot
-    className="MuiLink-root MuiLink-underlineAlways"
-    color="primary"
-    component={
-      Object {
-        "$$typeof": Symbol(react.forward_ref),
-        "propTypes": Object {
-          "innerRef": [Function],
-          "onClick": [Function],
-          "replace": [Function],
-          "target": [Function],
-          "to": [Function],
-        },
-        "render": [Function],
-      }
-    }
-    onBlur={[Function]}
-    onFocus={[Function]}
-    ownerState={
-      Object {
-        "children": "Test 1",
-        "color": "primary",
-        "component": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "propTypes": Object {
-            "innerRef": [Function],
-            "onClick": [Function],
-            "replace": [Function],
-            "target": [Function],
-            "to": [Function],
-          },
-          "render": [Function],
-        },
-        "data-testid": undefined,
-        "focusVisible": false,
-        "to": "/browse/investigation/1/dataset",
-        "underline": "always",
-        "variant": "inherit",
-      }
-    }
-    to="/browse/investigation/1/dataset"
-    variant="inherit"
+Array [
+  <a
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    href="/browse/investigation/1/dataset"
   >
-    <Noop />
-    <ForwardRef(Typography)
-      className="MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
-      color="primary"
-      component={
-        Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "propTypes": Object {
-            "innerRef": [Function],
-            "onClick": [Function],
-            "replace": [Function],
-            "target": [Function],
-            "to": [Function],
-          },
-          "render": [Function],
-        }
-      }
-      onBlur={[Function]}
-      onFocus={[Function]}
-      to="/browse/investigation/1/dataset"
-      variant="inherit"
-    >
-      <MuiTypographyRoot
-        as={
-          Object {
-            "$$typeof": Symbol(react.forward_ref),
-            "propTypes": Object {
-              "innerRef": [Function],
-              "onClick": [Function],
-              "replace": [Function],
-              "target": [Function],
-              "to": [Function],
-            },
-            "render": [Function],
-          }
-        }
-        className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
-        onBlur={[Function]}
-        onFocus={[Function]}
-        ownerState={
-          Object {
-            "align": "inherit",
-            "children": "Test 1",
-            "className": "MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root",
-            "color": "primary.main",
-            "component": Object {
-              "$$typeof": Symbol(react.forward_ref),
-              "propTypes": Object {
-                "innerRef": [Function],
-                "onClick": [Function],
-                "replace": [Function],
-                "target": [Function],
-                "to": [Function],
-              },
-              "render": [Function],
-            },
-            "data-testid": undefined,
-            "gutterBottom": false,
-            "noWrap": false,
-            "onBlur": [Function],
-            "onFocus": [Function],
-            "paragraph": false,
-            "sx": Object {
-              "color": "primary.main",
-            },
-            "to": "/browse/investigation/1/dataset",
-            "variant": "inherit",
-            "variantMapping": Object {
-              "body1": "p",
-              "body2": "p",
-              "h1": "h1",
-              "h2": "h2",
-              "h3": "h3",
-              "h4": "h4",
-              "h5": "h5",
-              "h6": "h6",
-              "inherit": "p",
-              "subtitle1": "h6",
-              "subtitle2": "h6",
-            },
-          }
-        }
-        sx={
-          Object {
-            "color": "primary.main",
-          }
-        }
-        to="/browse/investigation/1/dataset"
-      >
-        <Noop />
-        <Link
-          className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
-          onBlur={[Function]}
-          onFocus={[Function]}
-          to="/browse/investigation/1/dataset"
-        >
-          <LinkAnchor
-            className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
-            href="/browse/investigation/1/dataset"
-            navigate={[Function]}
-            onBlur={[Function]}
-            onFocus={[Function]}
-          >
-            <a
-              className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
-              href="/browse/investigation/1/dataset"
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-            >
-              Test 1
-            </a>
-          </LinkAnchor>
-        </Link>
-      </MuiTypographyRoot>
-    </ForwardRef(Typography)>
-  </MuiLinkRoot>
-</ForwardRef(Link)>
+    Test 1
+  </a>,
+  <p
+    aria-label="Test 1"
+    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+    data-mui-internal-clone-element="true"
+  >
+    Test 1
+  </p>,
+]
 `;
 
-exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 2`] = `"1"`;
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 2`] = `
+Array [
+  <p
+    aria-label="1"
+    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+    data-mui-internal-clone-element="true"
+  >
+    1
+  </p>,
+  <p
+    aria-label="1"
+    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+    data-mui-internal-clone-element="true"
+  >
+    1
+  </p>,
+]
+`;
 
-exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 3`] = `"Test 1"`;
-
-exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 4`] = `
-<ForwardRef(Link)
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 3`] = `
+<a
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
   data-testid="investigation-search-table-doi-link"
   href="https://doi.org/doi 1"
 >
-  <MuiLinkRoot
-    className="MuiLink-root MuiLink-underlineAlways"
-    color="primary"
-    component="a"
-    data-testid="investigation-search-table-doi-link"
-    href="https://doi.org/doi 1"
-    onBlur={[Function]}
-    onFocus={[Function]}
-    ownerState={
-      Object {
-        "children": "doi 1",
-        "color": "primary",
-        "component": "a",
-        "data-testid": "investigation-search-table-doi-link",
-        "focusVisible": false,
-        "href": "https://doi.org/doi 1",
-        "underline": "always",
-        "variant": "inherit",
-      }
-    }
-    variant="inherit"
-  >
-    <Noop />
-    <ForwardRef(Typography)
-      className="MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
-      color="primary"
-      component="a"
-      data-testid="investigation-search-table-doi-link"
-      href="https://doi.org/doi 1"
-      onBlur={[Function]}
-      onFocus={[Function]}
-      variant="inherit"
-    >
-      <MuiTypographyRoot
-        as="a"
-        className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root"
-        data-testid="investigation-search-table-doi-link"
-        href="https://doi.org/doi 1"
-        onBlur={[Function]}
-        onFocus={[Function]}
-        ownerState={
-          Object {
-            "align": "inherit",
-            "children": "doi 1",
-            "className": "MuiLink-root MuiLink-underlineAlways css-okiaqn-MuiLink-root",
-            "color": "primary.main",
-            "component": "a",
-            "data-testid": "investigation-search-table-doi-link",
-            "gutterBottom": false,
-            "href": "https://doi.org/doi 1",
-            "noWrap": false,
-            "onBlur": [Function],
-            "onFocus": [Function],
-            "paragraph": false,
-            "sx": Object {
-              "color": "primary.main",
-            },
-            "variant": "inherit",
-            "variantMapping": Object {
-              "body1": "p",
-              "body2": "p",
-              "h1": "h1",
-              "h2": "h2",
-              "h3": "h3",
-              "h4": "h4",
-              "h5": "h5",
-              "h6": "h6",
-              "inherit": "p",
-              "subtitle1": "h6",
-              "subtitle2": "h6",
-            },
-          }
-        }
-        sx={
-          Object {
-            "color": "primary.main",
-          }
-        }
-      >
-        <Noop />
-        <a
-          className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
-          data-testid="investigation-search-table-doi-link"
-          href="https://doi.org/doi 1"
-          onBlur={[Function]}
-          onFocus={[Function]}
-        >
-          doi 1
-        </a>
-      </MuiTypographyRoot>
-    </ForwardRef(Typography)>
-  </MuiLinkRoot>
-</ForwardRef(Link)>
+  doi 1
+</a>
 `;

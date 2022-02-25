@@ -384,7 +384,12 @@ describe('Investigation - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Test 1');
   });
 
@@ -399,7 +404,12 @@ describe('Investigation - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Test 1');
   });
 
@@ -414,7 +424,12 @@ describe('Investigation - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Test 1');
   });
 
@@ -439,7 +454,12 @@ describe('Investigation - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Test 1');
   });
 

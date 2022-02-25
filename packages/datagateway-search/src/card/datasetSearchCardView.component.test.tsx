@@ -379,7 +379,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -388,7 +393,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -408,7 +418,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -423,7 +438,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -438,7 +458,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -463,7 +488,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 

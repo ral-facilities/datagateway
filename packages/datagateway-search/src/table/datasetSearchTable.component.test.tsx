@@ -29,6 +29,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
+import { render, RenderResult } from '@testing-library/react';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
@@ -62,6 +63,18 @@ describe('Dataset table component', () => {
 
   const createWrapper = (hierarchy?: string): ReactWrapper => {
     return mount(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DatasetSearchTable hierarchy={hierarchy ?? ''} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (hierarchy?: string): RenderResult => {
+    return render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -456,11 +469,9 @@ describe('Dataset table component', () => {
   });
 
   it('renders Dataset title as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('Dataset test name')).toMatchSnapshot();
   });
 
   it('renders fine with incomplete data', () => {

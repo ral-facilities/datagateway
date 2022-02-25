@@ -30,6 +30,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 import InvestigationSearchTable from './investigationSearchTable.component';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -60,6 +61,18 @@ describe('Investigation Search Table component', () => {
 
   const createWrapper = (hierarchy?: string): ReactWrapper => {
     return mount(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <InvestigationSearchTable hierarchy={hierarchy ?? ''} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const createRTLWrapper = (hierarchy?: string): RenderResult => {
+    return render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -502,23 +515,14 @@ describe('Investigation Search Table component', () => {
   });
 
   it('renders title, visit ID, Name and DOI as links', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    //Title and name
+    expect(wrapper.getAllByText('Test 1')).toMatchSnapshot();
 
-    expect(
-      wrapper.find('[aria-colindex=4]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getAllByText('1')).toMatchSnapshot();
 
-    expect(
-      wrapper.find('[aria-colindex=5]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('doi 1')).toMatchSnapshot();
   });
 
   it('renders fine with incomplete data', () => {
