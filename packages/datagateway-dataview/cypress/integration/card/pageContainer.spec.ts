@@ -13,7 +13,7 @@ describe('PageContainer Component', () => {
       ],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page-view Display as cards"]').click();
+    cy.get('[aria-label="page view Display as cards"]').click();
     cy.clearDownloadCart();
   });
 
@@ -28,7 +28,7 @@ describe('PageContainer Component', () => {
 
     cy.get('[aria-label="Go to selections"]').should('exist');
 
-    cy.get('[aria-label="page-view Display as table"]').should('exist');
+    cy.get('[aria-label="page view Display as table"]').should('exist');
   });
 
   it('should display correct entity count', () => {

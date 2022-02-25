@@ -99,6 +99,7 @@ const RoleSelector: React.FC = () => {
         value={roles?.includes(role) ? role : ''}
         onChange={handleChange}
         variant="standard"
+        sx={{ overflow: 'clip' }}
       >
         <MenuItem value={''}>
           <em>{t('my_data_table.all_roles')}</em>

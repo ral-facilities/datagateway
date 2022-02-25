@@ -2,19 +2,20 @@ import React from 'react';
 import { Badge, IconButton } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { DownloadCartItem } from '../app.types';
+import { useTranslation } from 'react-i18next';
 
 export interface CartProps {
   cartItems: DownloadCartItem[];
   navigateToDownload: () => void;
-  cartAriaLabel: string;
 }
 
 const ViewCartButton = (props: CartProps): React.ReactElement => {
+  const [t] = useTranslation();
   return (
     <IconButton
       className="tour-dataview-cart-icon"
       onClick={props.navigateToDownload}
-      aria-label={props.cartAriaLabel}
+      aria-label={t('app.cart_arialabel')}
       sx={{ margin: 'auto' }}
     >
       <Badge

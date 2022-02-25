@@ -10,7 +10,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import { Grid, Paper, LinearProgress, Button, styled } from '@mui/material';
+import { Grid, Paper, LinearProgress, styled } from '@mui/material';
 
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
@@ -30,6 +30,8 @@ import {
   SortType,
   usePushCurrentTab,
   useUpdateQueryParam,
+  ViewButton,
+  ClearFiltersButton,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -38,10 +40,6 @@ import {
   setDatasetTab,
   setInvestigationTab,
 } from './state/actions/actions';
-import { useTranslation } from 'react-i18next';
-import ViewListIcon from '@mui/icons-material/ViewList';
-import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
-import ClearIcon from '@mui/icons-material/Clear';
 import { useIsFetching } from 'react-query';
 
 export const storeFilters = (
@@ -157,63 +155,6 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
       ? true
       : false
     : false;
-};
-
-const ButtonDiv = styled('div')(({ theme }) => ({
-  padding: `${theme.spacing(0.5)} 0px ${theme.spacing(0.5)} 0px`,
-  marginRight: theme.spacing(0.5),
-  display: 'inline-block',
-}));
-
-const ViewButton = (props: {
-  viewCards: boolean;
-  handleButtonChange: () => void;
-  disabled: boolean;
-}): React.ReactElement => {
-  const [t] = useTranslation();
-  return (
-    <ButtonDiv>
-      <Button
-        className="tour-dataview-view-button"
-        aria-label="container-view-button"
-        variant="contained"
-        color="primary"
-        size="small"
-        startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
-        onClick={() => props.handleButtonChange()}
-        disabled={props.disabled}
-      >
-        {props.viewCards && !props.disabled
-          ? t('app.view_table')
-          : t('app.view_cards')}
-      </Button>
-    </ButtonDiv>
-  );
-};
-
-export const ClearFiltersButton = (props: {
-  handleButtonClearFilters: () => void;
-  disabled: boolean;
-}): React.ReactElement => {
-  const [t] = useTranslation();
-
-  return (
-    <ButtonDiv>
-      <Button
-        className="tour-dataview-clear-filter-button"
-        data-testid="clear-filters-button"
-        style={{ margin: '5px' }}
-        variant="contained"
-        color="primary"
-        size="small"
-        onClick={() => props.handleButtonClearFilters()}
-        startIcon={<ClearIcon />}
-        disabled={props.disabled}
-      >
-        {t('searchPageContainer.clear_filters')}
-      </Button>
-    </ButtonDiv>
-  );
 };
 
 const TopSearchBoxPaper = styled(Paper)(({ theme }) => ({
@@ -508,7 +449,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const { push } = useHistory();
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
-  const [t] = useTranslation();
 
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
@@ -611,7 +551,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                       currentTab={currentTab}
                       cartItems={cartItems ?? []}
                       navigateToDownload={navigateToDownload}
-                      cartAriaLabel={t('searchPageContainer.cart_arialabel')}
                     />
                   </DataViewPaper>
                 </Grid>

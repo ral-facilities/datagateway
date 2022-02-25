@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Generic view button renders correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="css-1bl68gh"
+  >
+    <button
+      aria-label="page view app.view_table"
+      class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root tour-dataview-view-button css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        class="MuiButton-startIcon MuiButton-iconSizeSmall css-y6rp3m-MuiButton-startIcon"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+          data-testid="ViewListIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M3 14h4v-4H3v4zm0 5h4v-4H3v4zM3 9h4V5H3v4zm5 5h13v-4H8v4zm0 5h13v-4H8v4zM8 5v4h13V5H8z"
+          />
+        </svg>
+      </span>
+      app.view_table
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
+  </div>
+</DocumentFragment>
+`;

@@ -5,12 +5,14 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from './state/app.types';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
-import { dGCommonInitialState, useCart } from 'datagateway-common';
+import {
+  dGCommonInitialState,
+  useCart,
+  ClearFiltersButton,
+} from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
 import { MemoryRouter, Router } from 'react-router-dom';
-import SearchPageContainer, {
-  ClearFiltersButton,
-} from './searchPageContainer.component';
+import SearchPageContainer from './searchPageContainer.component';
 import { LinearProgress } from '@mui/material';
 import { Provider } from 'react-redux';
 import axios from 'axios';
@@ -821,15 +823,15 @@ describe('SearchPageContainer - Tests', () => {
     });
 
     expect(
-      wrapper.find('[aria-label="container-view-button"]').exists()
+      wrapper.find('[aria-label="page view app.view_cards"]').exists()
     ).toBeTruthy();
     expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
+      wrapper.find('[aria-label="page view app.view_cards"]').first().text()
     ).toEqual('app.view_cards');
 
     // Click view button
     wrapper
-      .find('[aria-label="container-view-button"]')
+      .find('[aria-label="page view app.view_cards"]')
       .last()
       .simulate('click');
     wrapper.update();
@@ -841,7 +843,7 @@ describe('SearchPageContainer - Tests', () => {
 
     // Check that the text on the button has changed
     expect(
-      wrapper.find('[aria-label="container-view-button"]').first().text()
+      wrapper.find('[aria-label="page view app.view_table"]').first().text()
     ).toEqual('app.view_table');
   });
 

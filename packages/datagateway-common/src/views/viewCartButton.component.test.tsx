@@ -34,7 +34,6 @@ describe('Generic cart button', () => {
     props = {
       cartItems: [],
       navigateToDownload: navigateToDownload,
-      cartAriaLabel: 'test aria-label',
     };
 
     state = JSON.parse(
@@ -64,7 +63,7 @@ describe('Generic cart button', () => {
   it('calls the navigate to download plugin when the cart clicked', () => {
     const wrapper = createWrapper(props);
 
-    wrapper.find('[aria-label="test aria-label"]').last().simulate('click');
+    wrapper.find('[aria-label="app.cart_arialabel"]').last().simulate('click');
 
     expect(navigateToDownload).toHaveBeenCalledTimes(1);
   });
@@ -88,7 +87,6 @@ describe('Generic cart button', () => {
         },
       ],
       navigateToDownload: navigateToDownload,
-      cartAriaLabel: 'test aria-label',
     };
     const wrapper = createWrapper(props);
 

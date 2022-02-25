@@ -9,16 +9,14 @@ import {
   dGCommonInitialState,
   readSciGatewayToken,
   useCart,
+  ClearFiltersButton,
 } from 'datagateway-common';
 
 import { LinearProgress } from '@mui/material';
 import { createLocation, createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 
-import PageContainer, {
-  ClearFiltersButton,
-  paths,
-} from './pageContainer.component';
+import PageContainer, { paths } from './pageContainer.component';
 import { checkInstrumentId, checkInvestigationId } from './idCheckFunctions';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
@@ -256,22 +254,22 @@ describe('PageContainer - Tests', () => {
     const wrapper = createWrapper();
 
     expect(
-      wrapper.find('[aria-label="page-view app.view_cards"]').exists()
+      wrapper.find('[aria-label="page view app.view_cards"]').exists()
     ).toBeTruthy();
     expect(
-      wrapper.find('[aria-label="page-view app.view_cards"]').first().text()
+      wrapper.find('[aria-label="page view app.view_cards"]').first().text()
     ).toEqual('app.view_cards');
 
     // Click view button
     wrapper
-      .find('[aria-label="page-view app.view_cards"]')
+      .find('[aria-label="page view app.view_cards"]')
       .last()
       .simulate('click');
     wrapper.update();
 
     // Check that the text on the button has changed
     expect(
-      wrapper.find('[aria-label="page-view app.view_table"]').first().text()
+      wrapper.find('[aria-label="page view app.view_table"]').first().text()
     ).toEqual('app.view_table');
   });
 

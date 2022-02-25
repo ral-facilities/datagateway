@@ -134,7 +134,6 @@ const SearchTabs = (
     currentTab,
     cartItems,
     navigateToDownload,
-    cartAriaLabel,
   } = props;
   const [t] = useTranslation();
 
@@ -342,7 +341,6 @@ const SearchTabs = (
             <ViewCartButton
               cartItems={cartItems}
               navigateToDownload={navigateToDownload}
-              cartAriaLabel={cartAriaLabel}
             />
           </StyledBox>
         </StyledBox>

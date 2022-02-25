@@ -120,6 +120,7 @@ exports[`SearchTabs renders correctly when request received 1`] = `
           class="MuiBox-root css-shc6j8"
         >
           <button
+            aria-label="app.cart_arialabel"
             class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium tour-dataview-cart-icon css-4e50t7-MuiButtonBase-root-MuiIconButton-root"
             tabindex="0"
             type="button"

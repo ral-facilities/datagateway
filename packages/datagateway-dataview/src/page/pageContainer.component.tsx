@@ -5,12 +5,10 @@ import {
   Typography,
   Theme,
   IconButton,
-  Button,
   styled,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
-import ClearIcon from '@mui/icons-material/Clear';
 import {
   Sticky,
   ViewsType,
@@ -23,6 +21,8 @@ import {
   ViewCartButton,
   CartProps,
   useUpdateQueryParam,
+  ViewButton,
+  ClearFiltersButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -36,8 +36,6 @@ import {
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
-import ViewListIcon from '@mui/icons-material/ViewList';
-import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
@@ -325,7 +323,6 @@ const NavBar = React.memo(
             <ViewCartButton
               cartItems={props.cartItems}
               navigateToDownload={props.navigateToDownload}
-              cartAriaLabel={props.cartAriaLabel}
             />
           </Paper>
         </StyledGrid>
@@ -334,63 +331,6 @@ const NavBar = React.memo(
   }
 );
 NavBar.displayName = 'NavBar';
-
-const ButtonDiv = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0.5),
-  display: 'inline-block',
-}));
-
-const ViewButton = (props: {
-  viewCards: boolean;
-  handleButtonChange: () => void;
-}): React.ReactElement => {
-  const [t] = useTranslation();
-
-  return (
-    <ButtonDiv>
-      <Button
-        className="tour-dataview-view-button"
-        aria-label={`page-view ${
-          props.viewCards ? t('app.view_table') : t('app.view_cards')
-        }`}
-        variant="contained"
-        color="primary"
-        size="small"
-        startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
-        onClick={() => props.handleButtonChange()}
-      >
-        {props.viewCards ? t('app.view_table') : t('app.view_cards')}
-      </Button>
-    </ButtonDiv>
-  );
-};
-
-export const ClearFiltersButton = (props: {
-  handleButtonClearFilters: () => void;
-  disabled: boolean;
-}): React.ReactElement => {
-  const [t] = useTranslation();
-
-  return (
-    <ButtonDiv>
-      <Button
-        className="tour-dataview-clear-filter-button"
-        data-testid="clear-filters-button"
-        sx={{ margin: '5px' }}
-        variant="contained"
-        color="primary"
-        size="small"
-        onClick={() => {
-          props.handleButtonClearFilters();
-        }}
-        startIcon={<ClearIcon />}
-        disabled={props.disabled}
-      >
-        {t('app.clear_filters')}
-      </Button>
-    </ButtonDiv>
-  );
-};
 
 const StyledRouting = (props: {
   viewStyle: ViewsType;
@@ -623,7 +563,6 @@ const PageContainer: React.FC = () => {
       replaceView('card');
     }
   }, [location.pathname, view, prevView, prevLocation.pathname, replaceView]);
-  const [t] = useTranslation();
 
   //Determine whether logged in anonymously (assume this if username is null)
   const username = readSciGatewayToken().username;
@@ -669,7 +608,6 @@ const PageContainer: React.FC = () => {
               cartItems={cartItems ?? []}
               navigateToSearch={navigateToSearch}
               navigateToDownload={navigateToDownload}
-              cartAriaLabel={t('app.cart_arialabel')}
               loggedInAnonymously={loggedInAnonymously}
             />
 
@@ -679,40 +617,41 @@ const PageContainer: React.FC = () => {
                 xs={12}
                 sx={{ marginTop: '10px', marginBottom: '10px' }}
               >
-                <StyledGrid container>
+                <StyledGrid container alignItems="baseline">
                   {/* Toggle between the table and card view */}
-                  <Grid item xs={'auto'}>
-                    <div>
-                      <Route
-                        exact
-                        path={togglePaths}
-                        render={() => (
-                          <ViewButton
-                            viewCards={view === 'card'}
-                            handleButtonChange={handleButtonChange}
-                          />
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={Object.values(paths.myData).concat(
-                          Object.values(paths.toggle),
-                          Object.values(paths.standard),
-                          Object.values(paths.studyHierarchy.toggle),
-                          Object.values(paths.studyHierarchy.standard)
-                        )}
-                        render={() => (
-                          <ClearFiltersButton
-                            handleButtonClearFilters={handleButtonClearFilters}
-                            disabled={disabled}
-                          />
-                        )}
-                      />
-                    </div>
+                  <Grid
+                    item
+                    style={{ display: 'flex', alignItems: 'baseline' }}
+                  >
                     <Route
                       exact
                       path={Object.values(paths.myData)}
                       render={() => <RoleSelector />}
+                    />
+                    <Route
+                      exact
+                      path={togglePaths}
+                      render={() => (
+                        <ViewButton
+                          viewCards={view === 'card'}
+                          handleButtonChange={handleButtonChange}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path={Object.values(paths.myData).concat(
+                        Object.values(paths.toggle),
+                        Object.values(paths.standard),
+                        Object.values(paths.studyHierarchy.toggle),
+                        Object.values(paths.studyHierarchy.standard)
+                      )}
+                      render={() => (
+                        <ClearFiltersButton
+                          handleButtonClearFilters={handleButtonClearFilters}
+                          disabled={disabled}
+                        />
+                      )}
                     />
                   </Grid>
                   <Grid item xs={true}>

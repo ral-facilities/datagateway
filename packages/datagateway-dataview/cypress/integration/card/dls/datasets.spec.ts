@@ -9,7 +9,7 @@ describe('DLS - Datasets Cards', () => {
         timeout: 10000,
       }
     );
-    cy.get('[aria-label="page-view Display as cards"]')
+    cy.get('[aria-label="page view Display as cards"]')
       .click()
       .wait(['@getDatasetsOrder'], {
         timeout: 10000,

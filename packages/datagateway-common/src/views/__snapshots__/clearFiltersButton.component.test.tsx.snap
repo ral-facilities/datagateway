@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Generic clear filters button renders correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="css-1bl68gh"
+  >
+    <button
+      class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root tour-dataview-clear-filter-button css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+      data-testid="clear-filters-button"
+      style="margin: 5px;"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        class="MuiButton-startIcon MuiButton-iconSizeSmall css-y6rp3m-MuiButton-startIcon"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+          data-testid="ClearIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+          />
+        </svg>
+      </span>
+      app.clear_filters
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
+  </div>
+</DocumentFragment>
+`;

@@ -123,7 +123,7 @@ describe('SearchPageContainer Component', () => {
     it('should have the correct url for the DOI link (Cardview) ', () => {
       // DOI
 
-      cy.get('[aria-label="container-view-button"]').click();
+      cy.get('[aria-label="page view Display as cards"]').click();
 
       cy.get('[data-testid="investigation-search-card-doi-link"]')
         .first()
@@ -156,10 +156,10 @@ describe('SearchPageContainer Component', () => {
     });
 
     it('should be able to switch to card view', () => {
-      cy.get('[aria-label="container-view-button"]').click();
+      cy.get('[aria-label="page view Display as cards"]').click();
       //Should now be in card view
-      cy.get('[aria-label="container-view-button"]').should('exist');
-      cy.get('[aria-label="container-view-button"]').contains(
+      cy.get('[aria-label="page view Display as table"]').should('exist');
+      cy.get('[aria-label="page view Display as table"]').contains(
         'Display as table'
       );
 
@@ -167,11 +167,11 @@ describe('SearchPageContainer Component', () => {
         expect(loc.search).to.eq('?view=card&searchText=dog');
       });
 
-      cy.get('[aria-label="container-view-button"]').click();
+      cy.get('[aria-label="page view Display as table"]').click();
 
       //Should now be in table view
-      cy.get('[aria-label="container-view-button"]').should('exist');
-      cy.get('[aria-label="container-view-button"]').contains(
+      cy.get('[aria-label="page view Display as cards"]').should('exist');
+      cy.get('[aria-label="page view Display as cards"]').contains(
         'Display as cards'
       );
 
@@ -204,7 +204,7 @@ describe('SearchPageContainer Component', () => {
         .wait(['@investigations', '@investigations', '@investigationsCount'], {
           timeout: 10000,
         });
-      cy.get('[aria-label="container-view-button"]').click();
+      cy.get('[aria-label="page view Display as cards"]').click();
       cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
         'have.length',
         10
@@ -238,7 +238,7 @@ describe('SearchPageContainer Component', () => {
           timeout: 10000,
         });
 
-      cy.get('[aria-label="container-view-button"]').click();
+      cy.get('[aria-label="page view Display as cards"]').click();
 
       cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
       cy.get('[data-testid="card"]')
@@ -331,48 +331,48 @@ describe('SearchPageContainer Component', () => {
 
     it('should display number of items in cart correctly and go to the download page when clicked (Table)', () => {
       // Check that the download cart has displayed correctly.
-      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
         // matches empty string i.e. no badge
         /^$/
       );
 
       cy.get('[aria-label="select row 0"]', { timeout: 10000 }).eq(0).click();
 
-      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
         /^1/
       );
 
       cy.get('[aria-label="select row 1"]', { timeout: 10000 }).eq(0).click();
 
-      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
         /^2/
       );
 
-      cy.get('[aria-label="Go to selections"]').click();
+      cy.get('[aria-label="app.cart_arialabel"]').click();
       cy.url().should('include', '/download');
     });
 
     it('should display number of items in cart correctly and go to the download page when clicked (Card)', () => {
-      cy.get('[aria-label="container-view-button"]').click();
+      cy.get('[aria-label="page view Display as cards"]').click();
       // Check that the download cart has displayed correctly.
-      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
         // matches empty string i.e. no badge
         /^$/
       );
 
       cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(0).click();
 
-      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
         /^1/
       );
 
       cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(1).click();
 
-      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
         /^2/
       );
 
-      cy.get('[aria-label="Go to selections"]').click();
+      cy.get('[aria-label="app.cart_arialabel"]').click();
       cy.url().should('include', '/download');
     });
 
@@ -403,8 +403,8 @@ describe('SearchPageContainer Component', () => {
       });
 
       //Should be in card view
-      cy.get('[aria-label="container-view-button"]').should('exist');
-      cy.get('[aria-label="container-view-button"]').contains(
+      cy.get('[aria-label="page view Display as table"]').should('exist');
+      cy.get('[aria-label="page view Display as table"]').contains(
         'Display as table'
       );
 

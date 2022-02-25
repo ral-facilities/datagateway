@@ -2,7 +2,7 @@
 
 exports[`Generic cart button renders correctly 1`] = `
 <ForwardRef(IconButton)
-  aria-label="test aria-label"
+  aria-label="app.cart_arialabel"
   className="tour-dataview-cart-icon"
   onClick={[MockFunction]}
   sx={
