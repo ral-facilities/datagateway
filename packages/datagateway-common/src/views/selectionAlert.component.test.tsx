@@ -3,6 +3,7 @@ import React from 'react';
 import { DownloadCartItem } from '../app.types';
 import { NotificationType } from '../state/actions/actions.types';
 import SelectionAlert from './selectionAlert.component';
+import { render, RenderResult } from '@testing-library/react';
 
 describe('SelectionAlert', () => {
   let events: CustomEvent<AnyAction>[] = [];
@@ -48,6 +49,21 @@ describe('SelectionAlert', () => {
     );
   };
 
+  const createRTLWrapper = (
+    selectedItems: DownloadCartItem[],
+    loggedInAnonymously: boolean
+  ): RenderResult => {
+    return render(
+      <SelectionAlert
+        selectedItems={selectedItems}
+        navigateToSelection={() => undefined}
+        width={'100px'}
+        marginSide={'4px'}
+        loggedInAnonymously={loggedInAnonymously}
+      />
+    );
+  };
+
   beforeEach(() => {
     events = [];
     document.dispatchEvent = (e: Event) => {
@@ -69,11 +85,8 @@ describe('SelectionAlert', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = createWrapper([cartItems[0]], true);
-    expect(
-      wrapper.find('[aria-label="selection-alert-text"]').first().text().trim()
-    ).toEqual('selec_alert.added');
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createRTLWrapper([cartItems[0]], true);
+    expect(wrapper.asFragment()).toMatchSnapshot();
   });
 
   it('sends a notification to SciGateway if user is not logged in but only once', () => {
@@ -170,17 +183,6 @@ describe('SelectionAlert', () => {
     wrapper.update();
 
     expect(wrapper.find('[aria-label="selection-alert"]').exists()).toBeFalsy();
-  });
-
-  it('renders correctly after animation finished', () => {
-    const wrapper = createWrapper(cartItems, false);
-    wrapper
-      .find('[aria-label="selection-alert"]')
-      .last()
-      .simulate('animationEnd');
-    wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
   });
 
   it('clicking link calls navigateToSelection', () => {
