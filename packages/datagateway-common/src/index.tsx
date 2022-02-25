@@ -62,6 +62,8 @@ export { default as HomePage } from './homePage/homePage.component';
 export { default as AddToCartButton } from './views/addToCartButton.component';
 export { default as ViewCartButton } from './views/viewCartButton.component';
 export type { CartProps } from './views/viewCartButton.component';
+export { default as ViewButton } from './views/viewButton.component';
+export { default as ClearFiltersButton } from './views/clearFiltersButton.component';
 export { default as DownloadButton } from './views/downloadButton.component';
 export { default as SelectionAlert } from './views/selectionAlert.component';
 

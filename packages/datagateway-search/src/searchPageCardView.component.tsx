@@ -146,7 +146,6 @@ const SearchPageCardView = (
     currentTab,
     cartItems,
     navigateToDownload,
-    cartAriaLabel,
   } = props;
   const [t] = useTranslation();
 
@@ -388,7 +387,6 @@ const SearchPageCardView = (
             <ViewCartButton
               cartItems={cartItems}
               navigateToDownload={navigateToDownload}
-              cartAriaLabel={cartAriaLabel}
             />
           </StyledBox>
         </StyledBox>
