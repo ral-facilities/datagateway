@@ -23,5 +23,5 @@
     "datagateway-search": "cd packages/datagateway-search && yarn start",
     "postinstall": "husky install"
   },
-  "dependencies": {}
+  "packageManager": "yarn@3.2.0"
 }
