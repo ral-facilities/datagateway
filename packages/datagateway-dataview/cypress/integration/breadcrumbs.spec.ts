@@ -153,7 +153,7 @@ describe('Breadcrumbs Component', () => {
 
   it('breadcrumbs should be sticky', () => {
     // Go onto card view
-    cy.get('[aria-label="page-view Display as cards"]').click();
+    cy.get('[aria-label="page view Display as cards"]').click();
 
     cy.get('[data-testid="Breadcrumb-base"]').should(
       'have.text',
