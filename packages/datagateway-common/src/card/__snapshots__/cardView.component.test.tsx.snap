@@ -65,6 +65,7 @@ exports[`Card View renders correctly 1`] = `
         direction="column"
         item={true}
         justifyContent="flex-start"
+        rowSpacing={4}
         sx={
           Object {
             "marginBottom": 0,

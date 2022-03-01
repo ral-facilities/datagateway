@@ -564,6 +564,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               justifyContent="flex-start"
               alignItems="stretch"
               xs={12}
+              rowSpacing={4}
               sx={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
             >
               {/* Sorting options */}

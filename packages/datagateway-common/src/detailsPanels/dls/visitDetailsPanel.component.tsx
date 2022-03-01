@@ -54,6 +54,8 @@ const VisitDetailsPanel = (
     <div id="details-panel" style={{ minWidth: 0 }}>
       <Tabs
         variant="scrollable"
+        textColor="secondary"
+        indicatorColor="secondary"
         scrollButtons="auto"
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
