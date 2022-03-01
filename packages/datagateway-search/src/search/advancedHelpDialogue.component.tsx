@@ -51,7 +51,11 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
       See all{' '}
       <Link
         component="button"
-        sx={{ fontSize: '14px', fontWeight: 'bold' }}
+        sx={{
+          fontSize: '14px',
+          fontWeight: 'bold',
+          verticalAlign: 'baseline',
+        }}
         aria-label={t('advanced_search_help.search_options_arialabel')}
         onClick={handleClickOpen}
       >

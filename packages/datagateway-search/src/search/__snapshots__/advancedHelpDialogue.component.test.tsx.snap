@@ -12,6 +12,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
       Object {
         "fontSize": "14px",
         "fontWeight": "bold",
+        "verticalAlign": "baseline",
       }
     }
   >

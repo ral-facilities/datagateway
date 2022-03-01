@@ -3,7 +3,10 @@ describe('DLS - Proposals Table', () => {
     cy.login();
     cy.intercept('/investigations?').as('investigations');
     cy.intercept('/investigations/count?').as('investigationsCount');
-    cy.visit('/browse/proposal');
+    cy.visit('/browse/proposal').wait(
+      ['@investigations', '@investigationsCount'],
+      { timeout: 10000 }
+    );
   });
 
   it('should load correctly', () => {
