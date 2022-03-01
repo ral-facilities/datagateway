@@ -114,7 +114,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                   downloadConfirmDialog.access_method_label
                 </label>
                 <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-1480iag-MuiInputBase-root-MuiInput-root"
+                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl  css-88nv5c-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                 >
                   <select
                     aria-invalid="false"
@@ -373,7 +373,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                   downloadConfirmDialog.access_method_label
                 </label>
                 <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-1480iag-MuiInputBase-root-MuiInput-root"
+                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl  css-88nv5c-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                 >
                   <select
                     aria-invalid="false"
