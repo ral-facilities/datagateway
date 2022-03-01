@@ -174,6 +174,7 @@ function CVPagination(
       hideNextButton={page >= numPages}
       showLastButton
       aria-label="pagination"
+      className="tour-dataview-pagination"
     />
   );
 }
@@ -535,6 +536,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                       name: 'Max Results',
                       id: 'select-max-results',
                     }}
+                    className="tour-dataview-max-results"
                     onChange={(e) => {
                       const newResults = e.target.value as number;
                       const newMaxPage = ~~(
@@ -590,7 +592,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     {/* Show all the available sort options: 
                         title, description and the further information (if provided) */}
                     <Box>
-                      <List component="nav" aria-label="sort-by-list">
+                      <List
+                        component="nav"
+                        aria-label="sort-by-list"
+                        className="tour-dataview-sort"
+                      >
                         {cardSort &&
                           cardSort.map((s, i) => (
                             <ListItem

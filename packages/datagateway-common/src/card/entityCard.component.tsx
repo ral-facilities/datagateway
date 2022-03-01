@@ -444,6 +444,7 @@ const EntityCard = React.memo(
                   variant="outlined"
                   expanded={isMoreInfoCollapsed}
                   onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
+                  className="tour-dataview-expand"
                 >
                   <AccordionSummary
                     aria-label="card-more-info-expand"

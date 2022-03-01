@@ -126,7 +126,7 @@ const CitationFormatter = (
     citationFormats = ['format1', 'format2', 'format3'];
 
   return (
-    <Box>
+    <Box className="tour-dataview-citation-formatter">
       <Typography
         className={classes.subHeading}
         component="h6"
