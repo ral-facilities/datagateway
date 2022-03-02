@@ -20,7 +20,7 @@ exports[`Card View renders correctly 1`] = `
       direction="row"
       item={true}
       justifyContent="space-around"
-      spacing={2}
+      padding={2}
       xs={12}
     >
       <ForwardRef(Grid)

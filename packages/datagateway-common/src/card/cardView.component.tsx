@@ -16,10 +16,10 @@ import {
   Typography,
   Select,
   Divider,
+  Pagination,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Pagination } from '@mui/material';
 import ArrowTooltip from '../arrowtooltip.component';
 import {
   Entity,
@@ -482,7 +482,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             alignItems="center"
             justifyContent="space-around"
             xs={12}
-            spacing={2}
+            padding={2}
           >
             {/* Fake box to mirror Max Results selector */}
             {totalDataCount > resOptions[0] && (

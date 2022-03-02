@@ -5,8 +5,8 @@
   "dependencies": {
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.4.2",
-    "@mui/material": "^5.4.3",
+    "@mui/icons-material": "^5.4.4",
+    "@mui/material": "^5.4.4",
     "@types/jest": "^27.4.0",
     "@types/lodash.debounce": "^4.0.6",
     "@types/lodash.memoize": "^4.1.6",
