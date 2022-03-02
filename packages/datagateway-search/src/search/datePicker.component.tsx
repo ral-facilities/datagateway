@@ -12,7 +12,7 @@ import { isBefore, isValid } from 'date-fns';
 import DatePicker from '@mui/lab/DatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { TextField } from '@mui/material';
+import { Box, TextField, Theme } from '@mui/material';
 
 interface DatePickerProps {
   initiateSearch: () => void;
@@ -104,6 +104,14 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             onChange={(date) => {
               handleChange(date as Date, 'startDate');
             }}
+            clearText={
+              <Box
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}
+              >
+                Clear
+              </Box>
+            }
             renderInput={(props) => {
               const error =
                 // eslint-disable-next-line react/prop-types
@@ -141,6 +149,14 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             onChange={(date) => {
               handleChange(date as Date, 'endDate');
             }}
+            clearText={
+              <Box
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}
+              >
+                Clear
+              </Box>
+            }
             renderInput={(props) => {
               const error =
                 // eslint-disable-next-line react/prop-types

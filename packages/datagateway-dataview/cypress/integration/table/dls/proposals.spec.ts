@@ -112,9 +112,6 @@ describe('DLS - Proposals Table', () => {
   });
 
   describe('should be able to filter by', () => {
-    beforeEach(() => {
-      cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
-    });
     it('text', () => {
       cy.get('[aria-label="Filter by Title"]').first().type('dog');
 

@@ -7,7 +7,17 @@ exports[`Date filter component renders correctly 1`] = `
   >
     <ForwardRef(DatePicker)
       aria-hidden="true"
-      clearText="Clear"
+      clearText={
+        <ForwardRef(Box)
+          sx={
+            Object {
+              "color": [Function],
+            }
+          }
+        >
+          Clear
+        </ForwardRef(Box)>
+      }
       clearable={true}
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"
@@ -18,6 +28,17 @@ exports[`Date filter component renders correctly 1`] = `
     />
     <ForwardRef(DatePicker)
       aria-hidden="true"
+      clearText={
+        <ForwardRef(Box)
+          sx={
+            Object {
+              "color": [Function],
+            }
+          }
+        >
+          Clear
+        </ForwardRef(Box)>
+      }
       clearable={true}
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"
@@ -37,7 +58,17 @@ exports[`Date filter component useTextFilter hook returns a function which can g
   >
     <ForwardRef(DatePicker)
       aria-hidden="true"
-      clearText="Clear"
+      clearText={
+        <ForwardRef(Box)
+          sx={
+            Object {
+              "color": [Function],
+            }
+          }
+        >
+          Clear
+        </ForwardRef(Box)>
+      }
       clearable={true}
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"
@@ -48,6 +79,17 @@ exports[`Date filter component useTextFilter hook returns a function which can g
     />
     <ForwardRef(DatePicker)
       aria-hidden="true"
+      clearText={
+        <ForwardRef(Box)
+          sx={
+            Object {
+              "color": [Function],
+            }
+          }
+        >
+          Clear
+        </ForwardRef(Box)>
+      }
       clearable={true}
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"

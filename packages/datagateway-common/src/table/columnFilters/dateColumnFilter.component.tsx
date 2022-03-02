@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { format, isValid, isEqual, isBefore } from 'date-fns';
 import { FiltersType, DateFilter } from '../../app.types';
 import { usePushFilter } from '../../api';
-import { TextField } from '@mui/material';
+import { Box, TextField, Theme } from '@mui/material';
 import DatePicker from '@mui/lab/DatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -80,7 +80,6 @@ const DateColumnFilter = (props: {
           mask="____-__-__"
           value={startDate}
           maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
-          clearText={'Clear'}
           onChange={(date) => {
             setStartDate(date as Date);
             updateFilter({
@@ -91,6 +90,12 @@ const DateColumnFilter = (props: {
               onChange: props.onChange,
             });
           }}
+          clearText={
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <Box sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}>
+              Clear
+            </Box>
+          }
           renderInput={(renderProps) => {
             const error =
               // eslint-disable-next-line react/prop-types
@@ -133,6 +138,12 @@ const DateColumnFilter = (props: {
               onChange: props.onChange,
             });
           }}
+          clearText={
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <Box sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}>
+              Clear
+            </Box>
+          }
           renderInput={(renderProps) => {
             const error =
               // eslint-disable-next-line react/prop-types
