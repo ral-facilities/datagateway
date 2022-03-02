@@ -199,12 +199,14 @@ const InvestigationCardView = (
     },
   ]);
 
-  // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
+  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
   // the correct calculation queries for each facility
   const datasetCountQueries = useInvestigationsDatasetCount(
-    hierarchy !== 'isis' ? data : []
+    hierarchy !== 'isis' ? data : undefined
   );
-  const sizeQueries = useInvestigationSizes(hierarchy === 'isis' ? data : []);
+  const sizeQueries = useInvestigationSizes(
+    hierarchy === 'isis' ? data : undefined
+  );
 
   const title = React.useMemo(
     () => ({

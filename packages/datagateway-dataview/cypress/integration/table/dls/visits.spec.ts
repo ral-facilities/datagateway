@@ -215,6 +215,24 @@ describe('DLS - Visits Table', () => {
       cy.contains('11.01 GB', { timeout: 10000 }).should('be.visible');
     });
 
+    it('and then calculate file size when the value is 0', () => {
+      cy.intercept('/getSize', '0');
+
+      // We need to wait for counts to finish, otherwise cypress
+      // might interact with the details panel too quickly and
+      // it re-renders during the test.
+
+      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
+        'exist'
+      );
+      cy.get('[aria-label="Show details"]').first().click();
+
+      cy.contains('#calculate-size-btn', 'Calculate')
+        .should('exist')
+        .click({ force: true });
+      cy.contains('0 B', { timeout: 10000 }).should('be.visible');
+    });
+
     // TODO: Since we only have one investigation, we cannot test
     // showing details when another row is showing details at the moment.
 

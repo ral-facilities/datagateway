@@ -238,12 +238,12 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     }
   }, [dlsLink, genericLink, hierarchy, isisLink]);
 
-  // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
+  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
   // the correct calculation queries for each facility
   const datasetCountQueries = useDatasetsDatafileCount(
-    hierarchy !== 'isis' ? data : []
+    hierarchy !== 'isis' ? data : undefined
   );
-  const sizeQueries = useDatasetSizes(hierarchy === 'isis' ? data : []);
+  const sizeQueries = useDatasetSizes(hierarchy === 'isis' ? data : undefined);
 
   const title = React.useMemo(
     () => ({

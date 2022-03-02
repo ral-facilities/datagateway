@@ -8,24 +8,25 @@ import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
-import ViewCartButton, { CartProps } from './viewCartButton.component';
-import { Badge } from '@material-ui/core';
+import ClearFiltersButton, {
+  ClearFilterProps,
+} from './clearFiltersButton.component';
 
-describe('Generic cart button', () => {
+describe('Generic clear filters button', () => {
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let props: CartProps;
+  let props: ClearFilterProps;
 
-  const navigateToDownload = jest.fn();
+  const handleButtonClearFilters = jest.fn();
 
-  const createWrapper = (props: CartProps): ReactWrapper => {
+  const createWrapper = (props: ClearFilterProps): ReactWrapper => {
     const store = mockStore(state);
     return mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
           <QueryClientProvider client={new QueryClient()}>
-            <ViewCartButton {...props} />
+            <ClearFiltersButton {...props} />
           </QueryClientProvider>
         </MemoryRouter>
       </Provider>
@@ -36,8 +37,8 @@ describe('Generic cart button', () => {
     mount = createMount();
 
     props = {
-      cartItems: [],
-      navigateToDownload: navigateToDownload,
+      handleButtonClearFilters: handleButtonClearFilters,
+      disabled: false,
     };
 
     state = JSON.parse(
@@ -57,7 +58,7 @@ describe('Generic cart button', () => {
   afterEach(() => {
     mount.cleanUp();
     jest.clearAllMocks();
-    navigateToDownload.mockClear();
+    handleButtonClearFilters.mockClear();
   });
 
   it('renders correctly', () => {
@@ -65,36 +66,24 @@ describe('Generic cart button', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('calls the navigate to download plugin when the cart clicked', () => {
+  it('calls the handle clear filter button when the button is clicked', () => {
     const wrapper = createWrapper(props);
 
-    wrapper.find('[aria-label="app.cart_arialabel"]').first().simulate('click');
+    wrapper
+      .find('[data-testid="clear-filters-button"]')
+      .first()
+      .simulate('click');
 
-    expect(navigateToDownload).toHaveBeenCalledTimes(1);
+    expect(handleButtonClearFilters).toHaveBeenCalledTimes(1);
   });
 
-  it('has cartItems', () => {
+  it(' is disabled when prop disabled is equal to true', () => {
     props = {
-      cartItems: [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-        {
-          entityId: 2,
-          entityType: 'investigation',
-          id: 2,
-          name: 'tes2',
-          parentEntities: [],
-        },
-      ],
-      navigateToDownload: navigateToDownload,
+      handleButtonClearFilters: handleButtonClearFilters,
+      disabled: true,
     };
     const wrapper = createWrapper(props);
 
-    expect(wrapper.find(Badge).props().badgeContent).toEqual(2);
+    expect(wrapper.find(ClearFiltersButton).props().disabled).toEqual(true);
   });
 });
