@@ -100,6 +100,7 @@ const RoleSelector: React.FC = () => {
         onChange={handleChange}
         variant="standard"
         sx={{ overflow: 'clip' }}
+        className="tour-dataview-role-selector"
       >
         <MenuItem value={''}>
           <em>{t('my_data_table.all_roles')}</em>

@@ -113,7 +113,7 @@ const CitationFormatter = (
     citationFormats = ['format1', 'format2', 'format3'];
 
   return (
-    <Box>
+    <Box className="tour-dataview-citation-formatter">
       <Subheading variant="h6" data-testid="citation-formatter-title">
         {t('studies.details.citation_formatter.label')}
       </Subheading>

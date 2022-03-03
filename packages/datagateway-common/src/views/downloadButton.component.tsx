@@ -46,6 +46,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
         onClick={() => {
           downloadData(entityType, entityId, entityName);
         }}
+        className="tour-dataview-download"
       >
         <GetApp />
       </IconButton>
@@ -60,6 +61,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
         startIcon={<GetApp />}
         disableElevation
         onClick={() => downloadData(entityType, entityId, entityName)}
+        className="tour-dataview-download"
       >
         {t('buttons.download')}
       </Button>

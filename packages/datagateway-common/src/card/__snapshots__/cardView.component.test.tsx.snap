@@ -28,6 +28,7 @@ exports[`Card View renders correctly 1`] = `
       >
         <ForwardRef(Pagination)
           aria-label="pagination"
+          className="tour-dataview-pagination"
           color="secondary"
           count={0}
           hideNextButton={true}
@@ -92,6 +93,7 @@ exports[`Card View renders correctly 1`] = `
             <ForwardRef(Box)>
               <ForwardRef(List)
                 aria-label="sort-by-list"
+                className="tour-dataview-sort"
                 component="nav"
               />
             </ForwardRef(Box)>
@@ -225,6 +227,7 @@ exports[`Card View renders correctly 1`] = `
   >
     <ForwardRef(Pagination)
       aria-label="pagination"
+      className="tour-dataview-pagination"
       color="secondary"
       count={0}
       hideNextButton={true}

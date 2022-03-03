@@ -26,7 +26,7 @@ exports[`Expand cell component renders correctly when not expanded 1`] = `
 >
   <ForwardRef(IconButton)
     aria-label="Show details"
-    className="tour-dataview-expand-1"
+    className="tour-dataview-expand"
     onClick={[Function]}
     size="large"
   >

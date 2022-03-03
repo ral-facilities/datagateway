@@ -367,6 +367,7 @@ const StyledRouting = (props: {
       <Paper
         square
         sx={viewStyle === 'card' ? cardPaperStyle : tableClassStyle}
+        className="tour-dataview-data"
       >
         <PageRouting
           loggedInAnonymously={loggedInAnonymously}
@@ -673,12 +674,7 @@ const PageContainer: React.FC = () => {
               )}
 
               {/* Hold the view for remainder of the page */}
-              <Grid
-                className="tour-dataview-data"
-                item
-                xs={12}
-                aria-label="page-view"
-              >
+              <Grid item xs={12} aria-label="page-view">
                 <ViewRouting
                   view={view}
                   location={location}

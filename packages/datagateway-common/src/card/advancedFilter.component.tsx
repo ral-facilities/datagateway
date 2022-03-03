@@ -128,7 +128,7 @@ export const UnmemoisedAdvancedFilter = (
         >
           {/* Filters for title and description provided on card */}
           {title && title.filterComponent && (
-            <FilterDiv>
+            <FilterDiv className="tour-dataview-filter">
               <Grid container>
                 {title.label && chooseIcon(title.label)}
                 <Typography variant="subtitle1">
@@ -143,7 +143,7 @@ export const UnmemoisedAdvancedFilter = (
             </FilterDiv>
           )}
           {description && description.filterComponent && (
-            <FilterDiv>
+            <FilterDiv className="tour-dataview-filter">
               <Grid container>
                 {description.label && chooseIcon(description.label)}
                 <Typography variant="subtitle1">
@@ -162,7 +162,7 @@ export const UnmemoisedAdvancedFilter = (
             information.map(
               (info, index) =>
                 info.filterComponent && (
-                  <FilterDiv key={index}>
+                  <FilterDiv key={index} className="tour-dataview-filter">
                     <Grid container>
                       {info.label && chooseIcon(info.label)}
                       <Typography variant="subtitle1">
@@ -182,6 +182,7 @@ export const UnmemoisedAdvancedFilter = (
       {/* Advanced filters link */}
       <Box sx={{ textAlign: 'center' }}>
         <Link
+          className="tour-dataview-advanced-filters"
           component="button"
           variant="body1"
           data-testid="advanced-filters-link"
