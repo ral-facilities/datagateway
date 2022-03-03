@@ -45,6 +45,7 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
       startIcon={<AddCircleOutlineOutlined />}
       disableElevation
       onClick={() => addToCart([entityId])}
+      className="tour-dataview-add-to-cart"
     >
       {t('buttons.add_to_cart')}
     </Button>

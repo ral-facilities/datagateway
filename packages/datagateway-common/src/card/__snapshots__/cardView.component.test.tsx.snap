@@ -28,6 +28,7 @@ exports[`Card View renders correctly 1`] = `
       >
         <WithStyles(ForwardRef(Pagination))
           aria-label="pagination"
+          className="tour-dataview-pagination"
           color="secondary"
           count={0}
           hideNextButton={true}
@@ -89,6 +90,7 @@ exports[`Card View renders correctly 1`] = `
             <Styled(MuiBox)>
               <WithStyles(ForwardRef(List))
                 aria-label="sort-by-list"
+                className="tour-dataview-sort"
                 component="nav"
               />
             </Styled(MuiBox)>
@@ -207,6 +209,7 @@ exports[`Card View renders correctly 1`] = `
   >
     <WithStyles(ForwardRef(Pagination))
       aria-label="pagination"
+      className="tour-dataview-pagination"
       color="secondary"
       count={0}
       hideNextButton={true}

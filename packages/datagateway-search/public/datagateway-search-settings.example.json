@@ -10,19 +10,27 @@
   "helpSteps": [
     {
       "target": "#plugin-link--search-data",
-      "content": "DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters"
+      "content": "Search allows you to search for specific datasets, datafiles or investigations using date and text filters"
+    },
+    {
+      "target": "#plugin-link--search-isis",
+      "content": "Search allows you to search for specific investigations, datasets or datafiles using date and text filters"
+    },
+    {
+      "target": "#plugin-link--search-dls",
+      "content": "Search allows you to search for specific visits or datasets using date and text filters"
     },
     {
       "target": ".tour-search-textfield",
-      "content": "Allows you to search for the results based on their titles"
+      "content": "Enter your text search here"
     },
     {
       "target": ".tour-search-checkbox",
-      "content": "Allows you to filter the search results based on the specific datasets, datafiles or investigations"
+      "content": "Change the type of items you want to search for"
     },
     {
       "target": ".tour-search-dates",
-      "content": "Allows you to filter the search results based on the specific dates"
+      "content": "Select the date range you would like to search data between"
     },
     {
       "target": ".tour-search-tab-select",

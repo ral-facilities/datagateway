@@ -113,6 +113,7 @@ const RoleSelector: React.FC = () => {
     <FormControl id="role-selector" className={classes.formControl}>
       <InputLabel>{t('my_data_table.role_selector')}</InputLabel>
       <StyledSelect
+        className="tour-dataview-role-selector"
         value={roles?.includes(role) ? role : ''}
         onChange={handleChange}
       >
