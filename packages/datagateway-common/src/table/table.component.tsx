@@ -81,6 +81,17 @@ const headerTableCellStyle = {
   },
 };
 
+const tableCellStyleCombined = { ...tableCellStyle, ...flexContainerStyle };
+const tableCellReducedPaddingStyleCombined = {
+  ...tableCellStyle,
+  ...tableReducedPaddingStyle,
+  ...flexContainerStyle,
+};
+const headerTableCellStyleCombined = {
+  ...headerTableCellStyle,
+  ...headerFlexContainerStyle,
+};
+
 export interface ColumnType {
   label: string;
   dataKey: string;
@@ -271,17 +282,6 @@ const VirtualizedTable = React.memo(
       },
       [widthProps, setWidthProps]
     );
-
-    const tableCellStyleCombined = { ...tableCellStyle, ...flexContainerStyle };
-    const tableCellReducedPaddingStyleCombined = {
-      ...tableCellStyle,
-      ...tableReducedPaddingStyle,
-      ...flexContainerStyle,
-    };
-    const headerTableCellStyleCombined = {
-      ...headerTableCellStyle,
-      ...headerFlexContainerStyle,
-    };
 
     return (
       <AutoSizer>
