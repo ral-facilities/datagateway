@@ -56,7 +56,7 @@
     },
     {
       "section": "Admin",
-      "link": "/admin-download",
+      "link": "/admin/download",
       "displayName": "Admin Download",
       "admin": true,
       "order": 1
