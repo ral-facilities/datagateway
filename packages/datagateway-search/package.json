@@ -97,7 +97,7 @@
     "@types/jsrsasign": "^8.0.3",
     "@types/react-redux": "^7.1.16",
     "@types/react-router": "^5.1.17",
-    "@types/react-router-dom": "^5.1.8",
+    "@types/react-router-dom": "^5.3.3",
     "@types/react-virtualized": "^9.21.10",
     "@types/redux-logger": "^3.0.8",
     "@types/redux-mock-store": "^1.0.3",
