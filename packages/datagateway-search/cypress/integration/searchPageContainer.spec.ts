@@ -333,48 +333,48 @@ describe('SearchPageContainer Component', () => {
 
     it('should display number of items in cart correctly and go to the download page when clicked (Table)', () => {
       // Check that the download cart has displayed correctly.
-      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
         // matches empty string i.e. no badge
         /^$/
       );
 
       cy.get('[aria-label="select row 0"]', { timeout: 10000 }).eq(0).click();
 
-      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
         /^1/
       );
 
       cy.get('[aria-label="select row 1"]', { timeout: 10000 }).eq(0).click();
 
-      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
         /^2/
       );
 
-      cy.get('[aria-label="app.cart_arialabel"]').click();
+      cy.get('[aria-label="Go to selections"]').click();
       cy.url().should('include', '/download');
     });
 
     it('should display number of items in cart correctly and go to the download page when clicked (Card)', () => {
       cy.get('[aria-label="page view Display as cards"]').click();
       // Check that the download cart has displayed correctly.
-      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
         // matches empty string i.e. no badge
         /^$/
       );
 
       cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(0).click();
 
-      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
         /^1/
       );
 
       cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(1).click();
 
-      cy.get('[aria-label="app.cart_arialabel"]', { timeout: 10000 }).contains(
+      cy.get('[aria-label="Go to selections"]', { timeout: 10000 }).contains(
         /^2/
       );
 
-      cy.get('[aria-label="app.cart_arialabel"]').click();
+      cy.get('[aria-label="Go to selections"]').click();
       cy.url().should('include', '/download');
     });
 

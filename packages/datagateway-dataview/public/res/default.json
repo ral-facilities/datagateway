@@ -16,13 +16,13 @@
   },
   "breadcrumbs": {
     "home": "Home",
-    "instrument_plural": "Instruments",
-    "facilityCycle_plural": "Facility Cycles",
-    "study_plural": "Experiments",
-    "proposal_plural": "Proposals",
-    "investigation_plural": "Investigations",
-    "dataset_plural": "Datasets",
-    "datafile_plural": "Datafiles"
+    "instrument_other": "Instruments",
+    "facilityCycle_other": "Facility Cycles",
+    "study_other": "Experiments",
+    "proposal_other": "Proposals",
+    "investigation_other": "Investigations",
+    "dataset_other": "Datasets",
+    "datafile_other": "Datafiles"
   },
   "instruments": {
     "name": "Name",
@@ -38,8 +38,8 @@
       "url": "Information Page",
       "instrument_scientists": {
         "label": "Instrument Scientists",
-        "name": "Name",
-        "name_plural": "Names",
+        "name_one": "Name",
+        "name_other": "Names",
         "no_name": "No scientists"
       }
     }
@@ -117,20 +117,20 @@
       "facility": "Facility",
       "users": {
         "label": "Investigation Users",
-        "name": "Name",
-        "name_plural": "Names",
+        "name_one": "Name",
+        "name_other": "Names",
         "no_name": "No users"
       },
       "samples": {
         "label": "Investigation Samples",
-        "name": "Sample",
-        "name_plural": "Samples",
+        "name_one": "Sample",
+        "name_other": "Samples",
         "no_samples": "No samples"
       },
       "publications": {
         "label": "Publications",
-        "reference": "Reference",
-        "reference_plural": "References",
+        "reference_one": "Reference",
+        "reference_other": "References",
         "no_publications": "No publications"
       },
       "type": {
@@ -269,10 +269,10 @@
     }
   },
   "selec_alert": {
-    "added": "{{count}} item has been added to selection.",
-    "added_plural": "{{count}} items have been added to selection.",
-    "removed": "{{count}} item has been removed from selection.",
-    "removed_plural": "{{count}} items have been removed from selection.",
+    "added_one": "{{count}} item has been added to selection.",
+    "added_other": "{{count}} items have been added to selection.",
+    "removed_one": "{{count}} item has been removed from selection.",
+    "removed_other": "{{count}} items have been removed from selection.",
     "link": "Go to selection.",
     "warning_message_session_token": "Please remember that your selection will be lost after 2 hours of inactivity on this site"
   },

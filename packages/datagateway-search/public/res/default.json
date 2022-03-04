@@ -1,4 +1,13 @@
 {
+  "app": {
+    "results": "Results",
+    "view_table": "Display as table",
+    "view_cards": "Display as cards",
+    "max_results": "Max Results",
+    "error": "Something went wrong...",
+    "cart_arialabel": "Go to selections",
+    "clear_filters": "Clear filters"
+  },
   "searchBox": {
     "search_text": "Search for investigations, datasets and datafiles",
     "examples_label": "For example <1>\"instrument calibration\"</1> or <4>neutron AND scattering</4>.",
@@ -76,20 +85,20 @@
       "facility": "Facility",
       "users": {
         "label": "Investigation Users",
-        "name": "Name",
-        "name_plural": "Names",
+        "name_one": "Name",
+        "name_other": "Names",
         "no_name": "No users"
       },
       "samples": {
         "label": "Investigation Samples",
-        "name": "Sample",
-        "name_plural": "Samples",
+        "name_one": "Sample",
+        "name_other": "Samples",
         "no_samples": "No samples"
       },
       "publications": {
         "label": "Publications",
-        "reference": "Reference",
-        "reference_plural": "References",
+        "reference_one": "Reference",
+        "reference_other": "References",
         "no_publications": "No publications"
       },
       "type": {
@@ -154,19 +163,12 @@
     "download": "Download"
   },
   "selec_alert": {
-    "added": "{{count}} item has been added to selection.",
-    "added_plural": "{{count}} items have been added to selection.",
-    "removed": "{{count}} item has been removed from selection.",
-    "removed_plural": "{{count}} items have been removed from selection.",
+    "added_one": "{{count}} item has been added to selection.",
+    "added_other": "{{count}} items have been added to selection.",
+    "removed_one": "{{count}} item has been removed from selection.",
+    "removed_other": "{{count}} items have been removed from selection.",
     "link": "Go to selection.",
     "warning_message_session_token": "Please remember that your selection will be lost after 2 hours of inactivity on this site"
-  },
-  "app": {
-    "results": "Results",
-    "view_table": "Display as table",
-    "view_cards": "Display as cards",
-    "max_results": "Max Results",
-    "error": "Something went wrong..."
   },
   "loading": {
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
