@@ -18,7 +18,7 @@ describe('Admin Download Status', () => {
     cy.clearDownloads();
 
     cy.seedDownloads().then(() => {
-      cy.visit('/admin-download');
+      cy.visit('/admin/download');
     });
   });
 
