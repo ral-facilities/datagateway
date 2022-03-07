@@ -5,7 +5,7 @@ describe('PageContainer Component', () => {
       password: 'pw',
       mechanism: 'simple',
     });
-    cy.intercept('/investigations/').as('getInvestigations');
+    cy.intercept('**/investigations/*').as('getInvestigations');
     cy.visit('/browse/investigation/').wait('@getInvestigations');
     cy.get('[aria-label="page-breadcrumbs"]').should('exist');
     cy.get('[aria-label="open-data-warning"]').should('not.exist');

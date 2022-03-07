@@ -1,7 +1,7 @@
 describe('Datasets Table', () => {
   beforeEach(() => {
-    cy.intercept('/datasets/count').as('datasetsCount');
-    cy.intercept('/datasets?order=').as('datasetsOrder');
+    cy.intercept('**/datasets/count?*').as('datasetsCount');
+    cy.intercept('**/datasets?order=*').as('datasetsOrder');
     cy.login();
     cy.visit('/browse/investigation/1/dataset').wait(
       ['@datasetsCount', '@datasetsOrder'],
