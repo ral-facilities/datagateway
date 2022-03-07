@@ -265,7 +265,7 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('and then calculate file size when the value is 0 ', () => {
-      cy.intercept('/getSize', '0');
+      cy.intercept('**/getSize?*', '0');
 
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
