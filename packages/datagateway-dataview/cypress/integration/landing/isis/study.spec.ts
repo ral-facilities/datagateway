@@ -70,7 +70,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('should load correctly when investigation missing', () => {
-    cy.intercept('/studies', [
+    cy.intercept('**/studies?*', [
       {
         id: 101224979,
         pid: '10.5286/ISIS.E.RB1810842',
@@ -89,7 +89,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('should disable the hover tool tip by pressing escape', () => {
-    cy.intercept('/studies', [
+    cy.intercept('**/studies?*', [
       {
         id: 101224979,
         pid: '10.5286/ISIS.E.RB1810842',
@@ -122,7 +122,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('should be able to use the citation formatter', () => {
-    cy.intercept('/studies', [
+    cy.intercept('**/studies?*', [
       {
         id: 101224979,
         pid: '10.5286/ISIS.E.RB1810842',
@@ -135,7 +135,7 @@ describe('ISIS - Study Landing', () => {
         ],
       },
     ]);
-    cy.intercept('/text/x-bibliography', [
+    cy.intercept('**/text/x-bibliography/10.5286/ISIS.E.RB1810842?*', [
       '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
     ]);
 
@@ -159,7 +159,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('citation formatter should give an error when there is a problem', () => {
-    cy.intercept('/studies', [
+    cy.intercept('**/studies?*', [
       {
         id: 101224979,
         pid: 'invaliddoi',
@@ -172,7 +172,7 @@ describe('ISIS - Study Landing', () => {
         ],
       },
     ]);
-    cy.intercept('/text/x-bibliography', {
+    cy.intercept('**/text/x-bibliography/invaliddoi?*', {
       statusCode: 503,
     });
     cy.visit('/browseStudyHierarchy/instrument/1/study/4');
