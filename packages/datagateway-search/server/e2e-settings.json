@@ -10,8 +10,7 @@
   "helpSteps": [
     {
       "target": "#plugin-link--search-data",
-      "content":
-        "DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters"
+      "content": "DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters"
     },
     {
       "target": ".tour-search-textfield",

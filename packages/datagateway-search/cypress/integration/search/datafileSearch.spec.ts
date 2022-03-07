@@ -10,15 +10,15 @@ describe('Datafile search tab', () => {
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
-    cy.intercept('/investigations/count?where=%7B%22id').as(
+    cy.intercept('**/investigations/count?where=%7B%22id*').as(
       'investigationsCount'
     );
-    cy.intercept('/investigations?').as('investigations');
-    cy.intercept('/datasets/count?where=%7B%22id').as('datasetsCount');
-    cy.intercept('/datasets?').as('datasets');
-    cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
-    cy.intercept('/datafiles?').as('datafiles');
-    cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
+    cy.intercept('**/investigations?*').as('investigations');
+    cy.intercept('**/datasets/count?where=%7B%22id*').as('datasetsCount');
+    cy.intercept('**/datasets?*').as('datasets');
+    cy.intercept('**/datafiles/count?where=%7B%22id*').as('datafilesCount');
+    cy.intercept('**/datafiles?*').as('datafiles');
+    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
   });
 
   it('should load correctly', () => {

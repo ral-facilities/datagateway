@@ -1,6 +1,6 @@
 describe('PageContainer Component', () => {
   beforeEach(() => {
-    cy.intercept('/investigations/').as('getInvestigations');
+    cy.intercept('**/investigations?*').as('getInvestigations');
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
