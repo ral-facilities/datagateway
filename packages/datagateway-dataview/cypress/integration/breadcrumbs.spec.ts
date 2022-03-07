@@ -4,8 +4,8 @@ describe('Breadcrumbs Component', () => {
     cy.login();
 
     // Create route and aliases.
-    cy.intercept('/investigations/').as('getInvestigation');
-    cy.intercept('/datasets/').as('getDataset');
+    cy.intercept('*/investigations/**').as('getInvestigation');
+    cy.intercept('*/datasets/*').as('getDataset');
 
     cy.visit('/browse/investigation').wait('@getInvestigation');
   });

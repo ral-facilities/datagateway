@@ -7,8 +7,8 @@ describe('DLS - MyData Table', () => {
 
   describe('Logged in tests', () => {
     beforeEach(() => {
-      cy.intercept('/investigations/count').as('getInvestigationCount');
-      cy.intercept('/investigations/').as('getInvestigations');
+      cy.intercept('*/investigations/count').as('getInvestigationCount');
+      cy.intercept('*/investigations?*').as('getInvestigations');
       cy.login({
         username: 'root',
         password: 'pw',

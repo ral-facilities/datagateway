@@ -1,9 +1,9 @@
 describe('Datafiles Table', () => {
   beforeEach(() => {
-    cy.intercept('/investigations/1').as('investigations');
-    cy.intercept('/datasets/1').as('datasets');
-    cy.intercept('/datafiles/count').as('datafilesCount');
-    cy.intercept('/datafiles?order=').as('datafilesOrder');
+    cy.intercept('*/investigations/1').as('investigations');
+    cy.intercept('*/datasets/1').as('datasets');
+    cy.intercept('*/datafiles/count?*').as('datafilesCount');
+    cy.intercept('*/datafiles?order=*').as('datafilesOrder');
     cy.login();
     cy.visit('/browse/investigation/1/dataset/1/datafile');
   });

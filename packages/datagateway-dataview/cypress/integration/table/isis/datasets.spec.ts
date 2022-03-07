@@ -1,7 +1,7 @@
 describe('ISIS - Datasets Table', () => {
   beforeEach(() => {
-    cy.intercept('/datasets/count').as('datasetsCount');
-    cy.intercept('/datasets?order=').as('datasetsOrder');
+    cy.intercept('*/datasets/count?*').as('datasetsCount');
+    cy.intercept('*/datasets?order=*').as('datasetsOrder');
     cy.login();
     cy.visit(
       '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'

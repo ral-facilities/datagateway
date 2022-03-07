@@ -1,9 +1,9 @@
 describe('DLS - Datasets Table', () => {
   beforeEach(() => {
-    cy.intercept('/investigations/1').as('investigations');
-    cy.intercept('/investigations/findone').as('investigationsFindOne');
-    cy.intercept('/datasets/count?').as('datasetsCount');
-    cy.intercept('/datasets?').as('datasets');
+    cy.intercept('*/investigations/1').as('investigations');
+    cy.intercept('*/investigations/findone?*').as('investigationsFindOne');
+    cy.intercept('*/datasets/count?*').as('datasetsCount');
+    cy.intercept('*/datasets?*').as('datasets');
     cy.login();
     cy.visit(
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'

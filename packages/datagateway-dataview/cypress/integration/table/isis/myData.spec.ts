@@ -6,7 +6,7 @@ describe('ISIS - MyData Table', () => {
   });
   describe('Logged in tests', () => {
     beforeEach(() => {
-      cy.intercept('/investigations/count').as('getInvestigationCount');
+      cy.intercept('*/investigations/count?*').as('getInvestigationCount');
       cy.login({
         username: 'root',
         password: 'pw',
