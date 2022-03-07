@@ -70,7 +70,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('should load correctly when investigation missing', () => {
-    cy.intercept('*/studies?*', [
+    cy.intercept('**/studies?*', [
       {
         id: 101224979,
         pid: '10.5286/ISIS.E.RB1810842',
@@ -89,7 +89,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('should disable the hover tool tip by pressing escape', () => {
-    cy.intercept('*/studies?*', [
+    cy.intercept('**/studies?*', [
       {
         id: 101224979,
         pid: '10.5286/ISIS.E.RB1810842',
@@ -123,7 +123,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('should be able to use the citation formatter', () => {
-    cy.intercept('*/studies?*', [
+    cy.intercept('**/studies?*', [
       {
         id: 101224979,
         pid: '10.5286/ISIS.E.RB1810842',
@@ -160,7 +160,7 @@ describe('ISIS - Study Landing', () => {
   });
 
   it('citation formatter should give an error when there is a problem', () => {
-    cy.intercept('*/studies?*', [
+    cy.intercept('**/studies?*', [
       {
         id: 101224979,
         pid: 'invaliddoi',

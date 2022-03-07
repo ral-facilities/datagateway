@@ -1,10 +1,10 @@
 describe('DLS - Visits Table', () => {
   beforeEach(() => {
     cy.login();
-    cy.intercept('*/investigations?*').as('investigations');
-    cy.intercept('*/investigations/count?*').as('investigationsCount');
-    cy.intercept('*/investigations/findone?*').as('investigationsFindOne');
-    cy.intercept('*/datasets/count?*').as('datasetsCount');
+    cy.intercept('**/investigations?*').as('investigations');
+    cy.intercept('**/investigations/count?*').as('investigationsCount');
+    cy.intercept('**/investigations/findone?*').as('investigationsFindOne');
+    cy.intercept('**/datasets/count?*').as('datasetsCount');
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/').wait(
       [
         '@investigations',
@@ -216,7 +216,7 @@ describe('DLS - Visits Table', () => {
     });
 
     it('and then calculate file size when the value is 0', () => {
-      cy.intercept('/getSize', '0');
+      cy.intercept('**/getSize?*', '0');
 
       // We need to wait for counts to finish, otherwise cypress
       // might interact with the details panel too quickly and

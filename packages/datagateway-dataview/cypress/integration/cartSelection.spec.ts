@@ -2,16 +2,16 @@ describe('Add/remove from cart functionality', () => {
   beforeEach(() => {
     cy.login();
     cy.clearDownloadCart();
-    cy.intercept('*/datasets/*').as('getDataset');
-    cy.intercept('*/investigations/**').as('getInvestigation');
-    cy.intercept('*/instruments/1/*').as('getInstrument');
-    cy.intercept('*/facilitycycles/16/**').as('getFacilityCycle');
+    cy.intercept('**/datasets/*').as('getDataset');
+    cy.intercept('**/investigations/**').as('getInvestigation');
+    cy.intercept('**/instruments/1/*').as('getInstrument');
+    cy.intercept('**/facilitycycles/16/**').as('getFacilityCycle');
   });
 
   describe('should be able to select datafiles', () => {
     beforeEach(() => {
-      cy.intercept('*/datafiles?*').as('getDatafiles');
-      cy.intercept('*/datafiles/count?*').as('getDatafileCount');
+      cy.intercept('**/datafiles?*').as('getDatafiles');
+      cy.intercept('**/datafiles/count?*').as('getDatafileCount');
     });
 
     describe('in generic table', () => {
@@ -580,8 +580,8 @@ describe('Add/remove from cart functionality', () => {
 
   describe('should be able to select datasets', () => {
     beforeEach(() => {
-      cy.intercept('*/datasets?*').as('getDatasets');
-      cy.intercept('*/datasets/count?*').as('getDatasetCount');
+      cy.intercept('**/datasets?*').as('getDatasets');
+      cy.intercept('**/datasets/count?*').as('getDatasetCount');
     });
 
     describe('in generic table', () => {

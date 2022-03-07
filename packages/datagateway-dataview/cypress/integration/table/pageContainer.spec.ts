@@ -11,7 +11,7 @@ describe('PageContainer Component', () => {
 
   beforeEach(() => {
     cy.login();
-    cy.intercept('*/investigations/*').as('getInvestigations');
+    cy.intercept('**/investigations/*').as('getInvestigations');
     cy.visit('/browse/investigation/').wait('@getInvestigations');
     cy.clearDownloadCart();
   });

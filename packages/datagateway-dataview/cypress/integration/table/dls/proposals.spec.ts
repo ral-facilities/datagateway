@@ -1,8 +1,8 @@
 describe('DLS - Proposals Table', () => {
   beforeEach(() => {
     cy.login();
-    cy.intercept('*/investigations?*').as('investigations');
-    cy.intercept('*/investigations/count?*').as('investigationsCount');
+    cy.intercept('**/investigations?*').as('investigations');
+    cy.intercept('**/investigations/count?*').as('investigationsCount');
     cy.visit('/browse/proposal');
   });
 
