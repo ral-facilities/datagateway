@@ -38,7 +38,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "single-spa-react": "^4.3.1",
     "tslib": "^2.3.0",
-    "typescript": "4.5.3",
+    "typescript": "4.6.2",
     "url-search-params-polyfill": "^8.1.1"
   },
   "scripts": {
