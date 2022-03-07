@@ -212,7 +212,9 @@ describe('DLS - Visits Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('11.01 GB', { timeout: 10000 }).should('be.visible');
+      cy.contains('11.01 GB', { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible');
     });
 
     it('and then calculate file size when the value is 0', () => {
@@ -230,7 +232,9 @@ describe('DLS - Visits Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('0 B', { timeout: 10000 }).should('be.visible');
+      cy.contains('0 B', { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible');
     });
 
     // TODO: Since we only have one investigation, we cannot test

@@ -261,7 +261,9 @@ describe('DLS - Datasets Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('4.55 GB', { timeout: 10000 }).should('be.visible');
+      cy.contains('4.55 GB', { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible');
     });
 
     it('and then calculate file size when the value is 0 ', () => {
@@ -282,7 +284,9 @@ describe('DLS - Datasets Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('0 B', { timeout: 10000 }).should('be.visible');
+      cy.contains('0 B', { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible');
     });
 
     it('and view the dataset type panel', () => {
