@@ -15,6 +15,7 @@ import { Link, Paper } from '@material-ui/core';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -120,7 +121,10 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
             >
               Use quotation marks around a phrase to search for a precise
               sequence of words e.g.{' '}
-              <Link href={t('advanced_search_help.exact_phrase.link1')}>
+              <Link
+                component={RouterLink}
+                to={t('advanced_search_help.exact_phrase.link1')}
+              >
                 &quot;neutron scattering&quot;
               </Link>
               .
@@ -140,23 +144,33 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               &#39;scattering&#39; with &#39;
               <Link
                 data-testid="advanced-help-link"
-                href={t('advanced_search_help.logic_operators.link1')}
+                component={RouterLink}
+                to={t('advanced_search_help.logic_operators.link1')}
               >
                 neutron AND scattering
               </Link>
               &#39;. Find all data containing either neutron or scattering with
               &#39;{' '}
-              <Link href={t('advanced_search_help.logic_operators.link2')}>
+              <Link
+                component={RouterLink}
+                to={t('advanced_search_help.logic_operators.link2')}
+              >
                 neutron OR scattering
               </Link>
               &#39;. Find all data that contains the phrase &#39;scattering&#39;
               but exclude those containing &#39;elastic&#39; with &#39;{' '}
-              <Link href={t('advanced_search_help.logic_operators.link3')}>
+              <Link
+                component={RouterLink}
+                to={t('advanced_search_help.logic_operators.link3')}
+              >
                 scattering NOT elastic
               </Link>
               &#39;. Use brackets around phrases to construct more complicated
               searches e.g. &#39;{' '}
-              <Link href={t('advanced_search_help.logic_operators.link4')}>
+              <Link
+                component={RouterLink}
+                to={t('advanced_search_help.logic_operators.link4')}
+              >
                 scattering NOT (elastic OR neutron)
               </Link>
               &#39;.
@@ -172,11 +186,21 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               Use wildcards to take the place of one or more characters in a
               phrase. A question mark &#39;?&#39; can be used to search for a
               phrase with one or more character missing e.g. &#39;{' '}
-              <Link href={t('advanced_search_help.wildcards.link1')}>te?t</Link>
+              <Link
+                component={RouterLink}
+                to={t('advanced_search_help.wildcards.link1')}
+              >
+                te?t
+              </Link>
               &#39; will return results containing &#39;test&#39; or
               &#39;text&#39;. An asterix &#39;*&#39; can be used to replace zero
               or more characters e.g. &#39;
-              <Link href={t('advanced_search_help.wildcards.link2')}>*ium</Link>
+              <Link
+                component={RouterLink}
+                to={t('advanced_search_help.wildcards.link2')}
+              >
+                *ium
+              </Link>
               &#39; will return results containing words like &#39;sodium&#39;
               and &#39;vanadium&#39;.
             </Trans>
@@ -195,7 +219,11 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
         <Typography className={classes.root} gutterBottom>
           <Trans t={t} i18nKey="advanced_search_help.footer">
             Further information on searching can be found{' '}
-            <Link href="https://lucene.apache.org/core/4_10_2/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">
+            <Link
+              target="_blank"
+              rel="noopener"
+              href="https://lucene.apache.org/core/4_10_2/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description"
+            >
               here
             </Link>
             .
