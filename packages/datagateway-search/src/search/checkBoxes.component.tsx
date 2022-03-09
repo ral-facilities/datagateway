@@ -150,7 +150,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
                 checked={toggle.value}
                 inputProps={{ 'aria-label': toggle.ariaLabel }}
               />
-              <ListItemText primary={toggle.name} />
+              <ListItemText primary={toggle.label} />
             </MenuItem>
           ))}
         </Select>
