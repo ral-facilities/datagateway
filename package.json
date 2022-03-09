@@ -12,6 +12,7 @@
   },
   "scripts": {
     "prepare": "lerna run prepare",
+    "build": "lerna run build --ignore datagateway-common",
     "lint": "lerna run lint:js -- --max-warnings=0",
     "tsc": "lerna run tsc",
     "test": "yarn test:unit && yarn test:e2e",
@@ -23,5 +24,8 @@
     "datagateway-search": "cd packages/datagateway-search && yarn start",
     "postinstall": "husky install"
   },
-  "dependencies": {}
+  "dependencies": {
+    "husky": "^7.0.4",
+    "lerna": "^4.0.0"
+  }
 }
