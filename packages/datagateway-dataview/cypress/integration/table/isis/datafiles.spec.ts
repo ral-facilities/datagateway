@@ -1,10 +1,10 @@
 describe('ISIS - Datafiles Table', () => {
   beforeEach(() => {
-    cy.intercept('/instruments/1').as('instruments');
-    cy.intercept('/facilitycycles/16').as('facilityCycles');
-    cy.intercept('/datasets/337').as('datasets');
-    cy.intercept('/datafiles/count').as('datafilesCount');
-    cy.intercept('/datafiles?order=').as('datafilesOrder');
+    cy.intercept('**/instruments/**').as('instruments');
+    cy.intercept('**/facilitycycles/16').as('facilityCycles');
+    cy.intercept('**/datasets/337').as('datasets');
+    cy.intercept('**/datafiles/count?*').as('datafilesCount');
+    cy.intercept('**/datafiles?order=*').as('datafilesOrder');
     cy.login();
   });
 

@@ -10,15 +10,15 @@ describe('SearchPageContainer Component', () => {
   it('Should default back to 10 when any result is manually entered into the url', () => {
     cy.login();
     cy.visit('/search/data?view=card&results=100');
-    cy.intercept('/investigations/count?where=%7B%22id').as(
+    cy.intercept('**/investigations/count?where=%7B%22id*').as(
       'investigationsCount'
     );
-    cy.intercept('/investigations?').as('investigations');
-    cy.intercept('/datasets/count?where=%7B%22id').as('datasetsCount');
-    cy.intercept('/datasets?').as('datasets');
-    cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
-    cy.intercept('/datafiles?').as('datafiles');
-    cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
+    cy.intercept('**/investigations?*').as('investigations');
+    cy.intercept('**/datasets/count?where=%7B%22id*').as('datasetsCount');
+    cy.intercept('**/datasets?*').as('datasets');
+    cy.intercept('**/datafiles/count?where=%7B%22id*').as('datafilesCount');
+    cy.intercept('**/datafiles?*').as('datafiles');
+    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
 
     cy.clearDownloadCart();
     cy.get('[aria-label="Submit search"]')
@@ -37,10 +37,10 @@ describe('SearchPageContainer Component', () => {
     beforeEach(() => {
       cy.login();
       cy.visit('/search/data/');
-      cy.intercept('/investigations/count?where=%7B%22id').as(
+      cy.intercept('**/investigations/count?where=%7B%22id*').as(
         'investigationsCount'
       );
-      cy.intercept('/investigations?').as('investigations');
+      cy.intercept('**/investigations?*').as('investigations');
 
       cy.clearDownloadCart();
       cy.get('[aria-label="Search text input"]')
@@ -195,10 +195,10 @@ describe('SearchPageContainer Component', () => {
     it('should be able to choose number of results to display', () => {
       cy.login();
       cy.visit('/search/data/');
-      cy.intercept('/investigations/count?where=%7B%22id').as(
+      cy.intercept('**/investigations/count?where=%7B%22id*').as(
         'investigationsCount'
       );
-      cy.intercept('/investigations?').as('investigations');
+      cy.intercept('**/investigations?*').as('investigations');
 
       cy.clearDownloadCart();
       cy.get('[aria-label="Submit search"]')

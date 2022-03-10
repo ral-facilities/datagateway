@@ -60,7 +60,7 @@ describe('ISIS - Investigation Landing', () => {
   });
 
   it('should disable the hover tool tip by pressing escape', () => {
-    cy.intercept('/investigations', [
+    cy.intercept('**/investigations?*', [
       {
         id: 1,
         title: 'Test 1',
@@ -125,7 +125,7 @@ describe('ISIS - Investigation Landing', () => {
   });
 
   it('should be able to use the citation formatter', () => {
-    cy.intercept('/investigations', [
+    cy.intercept('**/investigations?*', [
       {
         id: 1,
         title: 'Test 1',
@@ -136,7 +136,7 @@ describe('ISIS - Investigation Landing', () => {
         size: 1,
       },
     ]);
-    cy.intercept('/text/x-bibliography', [
+    cy.intercept('**/text/x-bibliography/10.5286/ISIS.E.RB1810842?*', [
       '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
     ]);
 
@@ -160,7 +160,7 @@ describe('ISIS - Investigation Landing', () => {
   });
 
   it('citation formatter should give an error when there is a problem', () => {
-    cy.intercept('/investigations', [
+    cy.intercept('**/investigations?*', [
       {
         id: 1,
         title: 'Test 1',
@@ -172,7 +172,7 @@ describe('ISIS - Investigation Landing', () => {
         startDate: '2019-06-10',
       },
     ]);
-    cy.intercept('/text/x-bibliography', {
+    cy.intercept('**/text/x-bibliography/invaliddoi?*', {
       statusCode: 503,
     });
     cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');

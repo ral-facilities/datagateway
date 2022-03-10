@@ -91,7 +91,7 @@ class App extends Component<unknown, { hasError: boolean }> {
               >
                 <Router>
                   <Switch>
-                    <Route path="/admin-download">
+                    <Route path="/admin/download">
                       <AdminDownloadStatusTable />
                     </Route>
                     <Route path="/download">
