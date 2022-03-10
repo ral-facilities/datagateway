@@ -420,11 +420,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, []);
 
   React.useEffect(() => {
-    //Ensure search text is assigned from the URL
-    setSearchText(searchTextURL);
-    setSearchOnNextRender(true);
+    if (searchTextURL !== searchText) {
+      //Ensure search text is assigned from the URL
+      setSearchText(searchTextURL);
+      setSearchOnNextRender(true);
+    }
 
     //Want to search whenever the search text in the URL changes so that clicking a react-router link also initiates the search
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTextURL]);
 
   const [searchBoxHeight, setSearchBoxHeight] = React.useState(0);
