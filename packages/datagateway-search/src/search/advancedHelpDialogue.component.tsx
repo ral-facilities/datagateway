@@ -124,6 +124,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               <Link
                 component={RouterLink}
                 to={t('advanced_search_help.exact_phrase.link1')}
+                onClick={handleClose}
               >
                 &quot;neutron scattering&quot;
               </Link>
@@ -146,6 +147,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
                 data-testid="advanced-help-link"
                 component={RouterLink}
                 to={t('advanced_search_help.logic_operators.link1')}
+                onClick={handleClose}
               >
                 neutron AND scattering
               </Link>
@@ -154,6 +156,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               <Link
                 component={RouterLink}
                 to={t('advanced_search_help.logic_operators.link2')}
+                onClick={handleClose}
               >
                 neutron OR scattering
               </Link>
@@ -162,6 +165,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               <Link
                 component={RouterLink}
                 to={t('advanced_search_help.logic_operators.link3')}
+                onClick={handleClose}
               >
                 scattering NOT elastic
               </Link>
@@ -170,6 +174,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               <Link
                 component={RouterLink}
                 to={t('advanced_search_help.logic_operators.link4')}
+                onClick={handleClose}
               >
                 scattering NOT (elastic OR neutron)
               </Link>
@@ -189,6 +194,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               <Link
                 component={RouterLink}
                 to={t('advanced_search_help.wildcards.link1')}
+                onClick={handleClose}
               >
                 te?t
               </Link>
@@ -198,6 +204,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               <Link
                 component={RouterLink}
                 to={t('advanced_search_help.wildcards.link2')}
+                onClick={handleClose}
               >
                 *ium
               </Link>
