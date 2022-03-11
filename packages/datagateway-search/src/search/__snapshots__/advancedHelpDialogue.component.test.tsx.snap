@@ -81,6 +81,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
                 "render": [Function],
               }
             }
+            onClick={[Function]}
             to="advanced_search_help.exact_phrase.link1"
           >
             "neutron scattering"
@@ -114,6 +115,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
               }
             }
             data-testid="advanced-help-link"
+            onClick={[Function]}
             to="advanced_search_help.logic_operators.link1"
           >
             neutron AND scattering
@@ -134,6 +136,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
                 "render": [Function],
               }
             }
+            onClick={[Function]}
             to="advanced_search_help.logic_operators.link2"
           >
             neutron OR scattering
@@ -154,6 +157,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
                 "render": [Function],
               }
             }
+            onClick={[Function]}
             to="advanced_search_help.logic_operators.link3"
           >
             scattering NOT elastic
@@ -174,6 +178,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
                 "render": [Function],
               }
             }
+            onClick={[Function]}
             to="advanced_search_help.logic_operators.link4"
           >
             scattering NOT (elastic OR neutron)
@@ -207,6 +212,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
                 "render": [Function],
               }
             }
+            onClick={[Function]}
             to="advanced_search_help.wildcards.link1"
           >
             te?t
@@ -226,6 +232,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
                 "render": [Function],
               }
             }
+            onClick={[Function]}
             to="advanced_search_help.wildcards.link2"
           >
             *ium
