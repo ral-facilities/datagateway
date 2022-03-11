@@ -8,6 +8,7 @@ import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch
 import configureStore from 'redux-mock-store';
 import { ReactWrapper } from 'enzyme';
 import { StateType } from '../state/app.types';
+import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -35,7 +36,9 @@ describe('Advanced help dialogue component tests', () => {
   const createWrapper = (): ReactWrapper => {
     return mount(
       <Provider store={mockStore(state)}>
-        <AdvancedHelpDialogue />
+        <MemoryRouter>
+          <AdvancedHelpDialogue />
+        </MemoryRouter>
       </Provider>
     );
   };
