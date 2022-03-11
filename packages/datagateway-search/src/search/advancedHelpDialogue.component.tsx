@@ -165,6 +165,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               <Link
                 component={RouterLink}
                 to={t('advanced_search_help.logic_operators.link3')}
+                onClick={handleClose}
               >
                 scattering NOT elastic
               </Link>
