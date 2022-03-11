@@ -810,6 +810,32 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
+  it('initiates search when the URL is changed', async () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+    (axios.get as jest.Mock).mockClear();
+
+    history.push('?searchText=neutron+AND+scattering');
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Investigation',
+            text: 'neutron AND scattering',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
   it('switches view button display name when clicked', async () => {
     const wrapper = createWrapper();
 

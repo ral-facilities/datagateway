@@ -68,7 +68,20 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
           Use quotation marks around a phrase to search for a precise sequence of words e.g.
            
           <ForwardRef(Link)
-            href="advanced_search_help.exact_phrase.link1"
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="advanced_search_help.exact_phrase.link1"
           >
             "neutron scattering"
           </ForwardRef(Link)>
@@ -87,29 +100,81 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
         >
           Find all data containing 'neutron' and 'scattering' with '
           <ForwardRef(Link)
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
             data-testid="advanced-help-link"
-            href="advanced_search_help.logic_operators.link1"
+            to="advanced_search_help.logic_operators.link1"
           >
             neutron AND scattering
           </ForwardRef(Link)>
           '. Find all data containing either neutron or scattering with '
            
           <ForwardRef(Link)
-            href="advanced_search_help.logic_operators.link2"
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="advanced_search_help.logic_operators.link2"
           >
             neutron OR scattering
           </ForwardRef(Link)>
           '. Find all data that contains the phrase 'scattering' but exclude those containing 'elastic' with '
            
           <ForwardRef(Link)
-            href="advanced_search_help.logic_operators.link3"
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="advanced_search_help.logic_operators.link3"
           >
             scattering NOT elastic
           </ForwardRef(Link)>
           '. Use brackets around phrases to construct more complicated searches e.g. '
            
           <ForwardRef(Link)
-            href="advanced_search_help.logic_operators.link4"
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="advanced_search_help.logic_operators.link4"
           >
             scattering NOT (elastic OR neutron)
           </ForwardRef(Link)>
@@ -129,13 +194,39 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
           Use wildcards to take the place of one or more characters in a phrase. A question mark '?' can be used to search for a phrase with one or more character missing e.g. '
            
           <ForwardRef(Link)
-            href="advanced_search_help.wildcards.link1"
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="advanced_search_help.wildcards.link1"
           >
             te?t
           </ForwardRef(Link)>
           ' will return results containing 'test' or 'text'. An asterix '*' can be used to replace zero or more characters e.g. '
           <ForwardRef(Link)
-            href="advanced_search_help.wildcards.link2"
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="advanced_search_help.wildcards.link2"
           >
             *ium
           </ForwardRef(Link)>
@@ -162,6 +253,8 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
          
         <ForwardRef(Link)
           href="https://lucene.apache.org/core/4_10_2/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description"
+          rel="noopener"
+          target="_blank"
         >
           here
         </ForwardRef(Link)>

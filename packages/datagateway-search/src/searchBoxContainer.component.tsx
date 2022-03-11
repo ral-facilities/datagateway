@@ -11,6 +11,7 @@ import AdvancedHelpDialogue from './search/advancedHelpDialogue.component';
 import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Link as RouterLink } from 'react-router-dom';
 
 const ContainerBox = styled(Box)(({ theme }) => ({
   maxWidth: '1920px',
@@ -80,15 +81,17 @@ const SearchBoxContainer = (
           <Trans t={t} i18nKey="searchBox.examples_label">
             For example
             <Link
+              component={RouterLink}
               sx={{ fontWeight: 'bold' }}
-              href={t('searchBox.examples_label_link1')}
+              to={t('searchBox.examples_label_link1')}
             >
               &quot;instrument calibration&quot;
             </Link>
             or{' '}
             <Link
+              component={RouterLink}
               sx={{ fontWeight: 'bold' }}
-              href={t('searchBox.examples_label_link2')}
+              to={t('searchBox.examples_label_link2')}
             >
               neutron AND scattering
             </Link>
