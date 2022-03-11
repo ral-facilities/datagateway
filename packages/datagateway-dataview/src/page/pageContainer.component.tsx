@@ -228,6 +228,7 @@ const NavBar = React.memo(
                         </h4>
                       }
                       disableHoverListener={false}
+                      aria-label={t('app.open_data_warning.aria_label')}
                     >
                       <IconButton
                         disableRipple
