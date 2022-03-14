@@ -99,14 +99,14 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: fix_warnings_#23
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icat_test_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -116,7 +116,7 @@ jobs:
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
-          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat-test-hosts.yml
+          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat_test_hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
@@ -125,7 +125,7 @@ jobs:
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icat_test_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       # Fixes on ICAT components needed for e2e tests
       - name: Add anon user to rootUserNames
@@ -234,14 +234,14 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: fix_warnings_#23
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icat_test_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -251,7 +251,7 @@ jobs:
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
-          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat-test-hosts.yml
+          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat_test_hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
@@ -260,7 +260,7 @@ jobs:
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icat_test_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       # Fixes on ICAT components needed for e2e tests
       - name: Add anon user to rootUserNames
@@ -385,14 +385,14 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: fix_warnings_#23
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icat_test_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -402,7 +402,7 @@ jobs:
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
-          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat-test-hosts.yml
+          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat_test_hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
@@ -411,7 +411,7 @@ jobs:
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icat_test_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
       - name: Add anon user to rootUserNames
         run: |
           awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
