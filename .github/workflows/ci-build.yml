@@ -99,7 +99,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: fix_warnings_#23
+          ref: underscore_changes
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -116,7 +116,7 @@ jobs:
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
-          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat_test_hosts.yml
+          sed -i 's/role: authn_uows_isis/role: authn_anon/' icat-ansible/icat_test_hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
@@ -234,7 +234,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: fix_warnings_#23
+          ref: underscore_changes
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -251,7 +251,7 @@ jobs:
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
-          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat_test_hosts.yml
+          sed -i 's/role: authn_uows_isis/role: authn_anon/' icat-ansible/icat_test_hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
@@ -385,7 +385,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: fix_warnings_#23
+          ref: underscore_changes
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -402,7 +402,7 @@ jobs:
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
-          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat_test_hosts.yml
+          sed -i 's/role: authn_uows_isis/role: authn_anon/' icat-ansible/icat_test_hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
