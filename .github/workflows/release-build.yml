@@ -38,7 +38,6 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
-          yarn tsc
 
       - name: Determine tag name
         run: |

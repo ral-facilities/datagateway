@@ -74,7 +74,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --coverage --watchAll=false",
-    "prepare": "yarn tsc",
+    "postinstall": "yarn tsc",
     "test:watch": "react-scripts test --env=jsdom --watch",
     "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src",
     "tsc": "tsc -p tsconfig.lib.json",
