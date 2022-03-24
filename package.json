@@ -5,9 +5,11 @@
   "workspaces": [
     "packages/*"
   ],
-  "devDependencies": {
+  "dependencies": {
     "husky": "^7.0.4",
-    "lerna": "^4.0.0",
+    "lerna": "^4.0.0"
+  },
+  "devDependencies": {
     "lerna-update-wizard": "^1.1.0"
   },
   "scripts": {
