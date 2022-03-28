@@ -245,7 +245,7 @@ describe('Download cart table component', () => {
     expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
   });
 
-  it('disables remove all button while request is processing', async () => {
+  it.only('disables remove all button while request is processing', async () => {
     (removeAllDownloadCartItems as jest.Mock).mockImplementation(() => {
       return new Promise((resolve) => setTimeout(resolve, 2000));
     });
@@ -268,12 +268,12 @@ describe('Download cart table component', () => {
       wrapper.find('button#removeAllButton').prop('disabled')
     ).toBeTruthy();
 
-    setTimeout(() => {
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 2001));
       wrapper.update();
-      expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(
-        true
-      );
-    }, 2001);
+    });
+
+    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
