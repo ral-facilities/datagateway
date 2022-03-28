@@ -20,6 +20,7 @@ import {
   makeStyles,
   Theme,
   Link,
+  CircularProgress,
 } from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
 import {
@@ -66,6 +67,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
   const [sizesFinished, setSizesFinished] = React.useState(true);
+  const [removingAll, setRemovingAll] = React.useState(false);
 
   const fileCountMax = settings.fileCountMax;
   const totalSizeMax = settings.totalSizeMax;
@@ -416,17 +418,24 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             style={{ marginRight: '1em' }}
           >
             <Grid item>
+              {/* Request to remove all selections is in progress. To prevent excessive requests, disable button during request */}
               <Button
                 className="tour-download-remove-button"
                 id="removeAllButton"
                 variant="contained"
                 color="primary"
-                onClick={() =>
+                disabled={removingAll}
+                startIcon={removingAll && <CircularProgress size={20} />}
+                onClick={() => {
+                  setRemovingAll(true);
                   removeAllDownloadCartItems({
                     facilityName: settings.facilityName,
                     downloadApiUrl: settings.downloadApiUrl,
-                  }).then(() => setData([]))
-                }
+                  }).then(() => {
+                    setData([]);
+                    setRemovingAll(false);
+                  });
+                }}
               >
                 {t('downloadCart.remove_all')}
               </Button>
