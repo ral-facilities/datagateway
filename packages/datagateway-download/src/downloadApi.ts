@@ -1,92 +1,126 @@
-import axios, { AxiosResponse } from 'axios';
+import React from 'react';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import * as log from 'loglevel';
 import {
-  DownloadCart,
   SubmitCart,
   DownloadCartItem,
   Datafile,
   Download,
   readSciGatewayToken,
   handleICATError,
+  fetchDownloadCart,
+  removeFromCart,
+  DownloadCartTableItem,
 } from 'datagateway-common';
+import { DownloadSettingsContext } from './ConfigProvider';
+import {
+  UseQueryResult,
+  useQuery,
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+  UseQueryOptions,
+  useQueries,
+} from 'react-query';
+import pLimit from 'p-limit';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
-export const fetchDownloadCartItems: (settings: {
+export const useCart = (): UseQueryResult<
+  DownloadCartTableItem[],
+  AxiosError
+> => {
+  const settings = React.useContext(DownloadSettingsContext);
+  const { facilityName, downloadApiUrl } = settings;
+  return useQuery(
+    'cart',
+    () =>
+      fetchDownloadCart({
+        facilityName,
+        downloadApiUrl,
+      }),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      select: (cart): DownloadCartTableItem[] => {
+        return cart.map((cartItem) => ({
+          ...cartItem,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          size: cartItem.size ?? -1,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          fileCount: cartItem.fileCount ?? -1,
+        }));
+      },
+      staleTime: 0,
+    }
+  );
+};
+
+export const removeAllDownloadCartItems: (settings: {
   facilityName: string;
   downloadApiUrl: string;
 }) => Promise<DownloadCartItem[]> = (settings: {
   facilityName: string;
   downloadApiUrl: string;
 }) => {
-  return axios
-    .get<DownloadCart>(
-      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}`,
-      {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-        },
-      }
-    )
-    .then((response) => {
-      return response.data.cartItems;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return [];
-    });
+  return axios.delete(
+    `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+    {
+      params: {
+        sessionId: readSciGatewayToken().sessionId,
+        items: '*',
+      },
+    }
+  );
 };
 
-export const removeAllDownloadCartItems: (settings: {
-  facilityName: string;
-  downloadApiUrl: string;
-}) => Promise<void> = (settings: {
-  facilityName: string;
-  downloadApiUrl: string;
-}) => {
-  return axios
-    .delete(
-      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
-      {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-          items: '*',
-        },
-      }
-    )
-    .then(() => {
-      // do nothing
-    })
-    .catch(handleICATError);
+export const useRemoveAllFromCart = (): UseMutationResult<
+  DownloadCartItem[],
+  AxiosError
+> => {
+  const queryClient = useQueryClient();
+  const settings = React.useContext(DownloadSettingsContext);
+  const { facilityName, downloadApiUrl } = settings;
+
+  return useMutation(
+    () => removeAllDownloadCartItems({ facilityName, downloadApiUrl }),
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData('cart', []);
+      },
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
 };
 
-export const removeDownloadCartItem: (
-  entityId: number,
-  entityType: string,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  }
-) => Promise<void> = (
-  entityId: number,
-  entityType: string,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  }
-) => {
-  return axios
-    .delete(
-      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
-      {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-          items: `${entityType} ${entityId}`,
-        },
-      }
-    )
-    .then(() => {
-      // do nothing
-    })
-    .catch(handleICATError);
+export const useRemoveEntityFromCart = (): UseMutationResult<
+  DownloadCartItem[],
+  AxiosError,
+  { entityId: number; entityType: 'investigation' | 'dataset' | 'datafile' }
+> => {
+  const queryClient = useQueryClient();
+  const settings = React.useContext(DownloadSettingsContext);
+  const { facilityName, downloadApiUrl } = settings;
+
+  return useMutation(
+    ({ entityId, entityType }) =>
+      removeFromCart(entityType, [entityId], {
+        facilityName,
+        downloadApiUrl,
+      }),
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData('cart', data);
+      },
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
 };
 
 export const getIsTwoLevel: (settings: {
@@ -96,11 +130,18 @@ export const getIsTwoLevel: (settings: {
     .get<boolean>(`${settings.idsUrl}/isTwoLevel`)
     .then((response) => {
       return response.data;
-    })
-    .catch((error) => {
-      handleICATError(error, false);
-      return false;
     });
+};
+
+export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
+  const settings = React.useContext(DownloadSettingsContext);
+  const { idsUrl } = settings;
+  return useQuery('isTwoLevel', () => getIsTwoLevel({ idsUrl }), {
+    onError: (error) => {
+      handleICATError(error);
+    },
+    staleTime: Infinity,
+  });
 };
 
 export const submitCart: (
@@ -144,11 +185,44 @@ export const submitCart: (
       // Get the downloadId that was returned from the IDS server.
       const downloadId = response.data['downloadId'];
       return downloadId;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return -1;
     });
+};
+
+export const useSubmitCart = (): UseMutationResult<
+  number,
+  AxiosError,
+  {
+    transport: string;
+    emailAddress: string;
+    fileName: string;
+    zipType?: 'ZIP' | 'ZIP_AND_COMPRESS';
+  }
+> => {
+  const queryClient = useQueryClient();
+  const settings = React.useContext(DownloadSettingsContext);
+  const { facilityName, downloadApiUrl } = settings;
+
+  return useMutation(
+    ({ transport, emailAddress, fileName, zipType }) =>
+      submitCart(
+        transport,
+        emailAddress,
+        fileName,
+        {
+          facilityName,
+          downloadApiUrl,
+        },
+        zipType
+      ),
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData('cart', data);
+      },
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
 };
 
 export const fetchDownloads: (
@@ -412,10 +486,6 @@ export const getSize: (
       .then((response) => {
         const size = response.data['fileSize'] as number;
         return size;
-      })
-      .catch((error) => {
-        handleICATError(error, false);
-        return -1;
       });
   } else {
     return axios
@@ -429,12 +499,86 @@ export const getSize: (
       })
       .then((response) => {
         return response.data;
-      })
-      .catch((error) => {
-        handleICATError(error, false);
-        return -1;
       });
   }
+};
+
+const sizesLimit = pLimit(10);
+
+export const useSizes = (
+  data: DownloadCartItem[] | undefined
+): UseQueryResult<number, AxiosError>[] => {
+  const settings = React.useContext(DownloadSettingsContext);
+  const { facilityName, apiUrl, downloadApiUrl } = settings;
+
+  const queryConfigs: UseQueryOptions<
+    number,
+    AxiosError,
+    number,
+    ['size', number]
+  >[] = React.useMemo(() => {
+    return data
+      ? data.map((cartItem) => {
+          const { entityId, entityType } = cartItem;
+          return {
+            queryKey: ['size', entityId],
+            queryFn: () =>
+              sizesLimit(() =>
+                getSize(entityId, entityType, {
+                  facilityName,
+                  apiUrl,
+                  downloadApiUrl,
+                })
+              ),
+            onError: (error) => {
+              handleICATError(error, false);
+            },
+            staleTime: Infinity,
+          };
+        })
+      : [];
+  }, [data, facilityName, apiUrl, downloadApiUrl]);
+
+  // useQueries doesn't allow us to specify type info, so ignore this line
+  // since we strongly type the queries object anyway
+  // we also need to prettier-ignore to make sure we don't wrap onto next line
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  // prettier-ignore
+  const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
+
+  const [sizes, setSizes] = React.useState<
+    UseQueryResult<number, AxiosError>[]
+  >([]);
+
+  const countAppliedRef = React.useRef(0);
+
+  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
+  // back to 0 so we can restart the process, as well as clear sizes
+  React.useEffect(() => {
+    countAppliedRef.current = 0;
+    setSizes([]);
+  }, [data]);
+
+  // need to use useDeepCompareEffect here because the array returned by useQueries
+  // is different every time this hook runs
+  useDeepCompareEffect(() => {
+    const currCountReturned = queries.reduce(
+      (acc, curr) => acc + (curr.isFetched ? 1 : 0),
+      0
+    );
+    const batchMax =
+      sizes.length - currCountReturned < 10
+        ? sizes.length - currCountReturned
+        : 10;
+    // this in effect batches our updates to only happen in batches >= 10
+    if (currCountReturned - countAppliedRef.current >= batchMax) {
+      setSizes(queries);
+      countAppliedRef.current = currCountReturned;
+    }
+  }, [sizes, queries]);
+
+  return sizes;
 };
 
 export const getDatafileCount: (
@@ -447,7 +591,12 @@ export const getDatafileCount: (
   settings: { apiUrl: string }
 ) => {
   if (entityType === 'datafile') {
-    return Promise.resolve(1);
+    // need to do this in a setTimeout to ensure it doesn't block the main thread
+    return new Promise((resolve) =>
+      window.setTimeout(() => {
+        resolve(1);
+      }, 0)
+    );
   } else if (entityType === 'dataset') {
     return axios
       .get<number>(`${settings.apiUrl}/datafiles/count`, {
@@ -465,10 +614,6 @@ export const getDatafileCount: (
       })
       .then((response) => {
         return response.data;
-      })
-      .catch((error) => {
-        handleICATError(error, false);
-        return -1;
       });
   } else {
     return axios
@@ -487,72 +632,84 @@ export const getDatafileCount: (
       })
       .then((response) => {
         return response.data;
-      })
-      .catch((error) => {
-        handleICATError(error, false);
-        return -1;
       });
   }
 };
 
-export const getCartDatafileCount: (
-  cartItems: DownloadCartItem[],
-  settings: { apiUrl: string }
-) => Promise<number> = (
-  cartItems: DownloadCartItem[],
-  settings: { apiUrl: string }
-) => {
-  const getDatafileCountPromises: Promise<number>[] = [];
-  cartItems.forEach((cartItem) =>
-    getDatafileCountPromises.push(
-      getDatafileCount(cartItem.entityId, cartItem.entityType, {
-        apiUrl: settings.apiUrl,
-      })
-    )
-  );
+const datafileCountslimit = pLimit(10);
 
-  return Promise.all(getDatafileCountPromises).then((counts) =>
-    counts.reduce(
-      (accumulator, nextCount) =>
-        nextCount > -1 ? accumulator + nextCount : accumulator,
+export const useDatafileCounts = (
+  data: DownloadCartItem[] | undefined
+): UseQueryResult<number, AxiosError>[] => {
+  const settings = React.useContext(DownloadSettingsContext);
+  const { apiUrl } = settings;
+
+  const queryConfigs: UseQueryOptions<
+    number,
+    AxiosError,
+    number,
+    ['datafileCount', number]
+  >[] = React.useMemo(() => {
+    return data
+      ? data.map((cartItem) => {
+          const { entityId, entityType } = cartItem;
+          return {
+            queryKey: ['datafileCount', entityId],
+            queryFn: () =>
+              datafileCountslimit(() =>
+                getDatafileCount(entityId, entityType, {
+                  apiUrl,
+                })
+              ),
+            onError: (error) => {
+              handleICATError(error, false);
+            },
+            staleTime: Infinity,
+          };
+        })
+      : [];
+  }, [data, apiUrl]);
+
+  // useQueries doesn't allow us to specify type info, so ignore this line
+  // since we strongly type the queries object anyway
+  // we also need to prettier-ignore to make sure we don't wrap onto next line
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  // prettier-ignore
+  const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
+
+  const [datafileCounts, setDatafileCounts] = React.useState<
+    UseQueryResult<number, AxiosError>[]
+  >([]);
+
+  const countAppliedRef = React.useRef(0);
+
+  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
+  // back to 0 so we can restart the process, as well as clear datafileCounts
+  React.useEffect(() => {
+    countAppliedRef.current = 0;
+    setDatafileCounts([]);
+  }, [data]);
+
+  // need to use useDeepCompareEffect here because the array returned by useQueries
+  // is different every time this hook runs
+  useDeepCompareEffect(() => {
+    const currCountReturned = queries.reduce(
+      (acc, curr) => acc + (curr.isFetched ? 1 : 0),
       0
-    )
-  );
-};
+    );
+    const batchMax =
+      datafileCounts.length - currCountReturned < 10
+        ? datafileCounts.length - currCountReturned
+        : 10;
+    // this in effect batches our updates to only happen in batches >= 10
+    if (currCountReturned - countAppliedRef.current >= batchMax) {
+      setDatafileCounts(queries);
+      countAppliedRef.current = currCountReturned;
+    }
+  }, [datafileCounts, queries]);
 
-export const getCartSize: (
-  cartItems: DownloadCartItem[],
-  settings: {
-    facilityName: string;
-    apiUrl: string;
-    downloadApiUrl: string;
-  }
-) => Promise<number> = (
-  cartItems: DownloadCartItem[],
-  settings: {
-    facilityName: string;
-    apiUrl: string;
-    downloadApiUrl: string;
-  }
-) => {
-  const getSizePromises: Promise<number>[] = [];
-  cartItems.forEach((cartItem) =>
-    getSizePromises.push(
-      getSize(cartItem.entityId, cartItem.entityType, {
-        facilityName: settings.facilityName,
-        apiUrl: settings.apiUrl,
-        downloadApiUrl: settings.downloadApiUrl,
-      })
-    )
-  );
-
-  return Promise.all(getSizePromises).then((sizes) =>
-    sizes.reduce(
-      (accumulator, nextSize) =>
-        nextSize > -1 ? accumulator + nextSize : accumulator,
-      0
-    )
-  );
+  return datafileCounts;
 };
 
 export const getDataUrl = (
