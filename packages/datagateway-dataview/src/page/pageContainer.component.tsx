@@ -44,13 +44,12 @@ import TranslatedHomePage from './translatedHomePage.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
-const usePaperStyles = makeStyles(
-  (theme: Theme): StyleRules =>
+const usePaperStyles = makeStyles<Theme, { tablePaperHeight: string }>(
+  (theme: Theme) =>
     createStyles({
       cardPaper: { backgroundColor: 'inherit' },
       tablePaper: {
-        //Footer is 36px
-        height: 'calc(100vh - 180px - 36px)',
+        height: ({ tablePaperHeight }) => tablePaperHeight,
         width: '100%',
         minHeight: 500,
         backgroundColor: 'inherit',
@@ -358,6 +357,7 @@ const StyledRouting = (props: {
   location: LocationType;
   displayFilterMessage: boolean;
   loggedInAnonymously: boolean;
+  linearProgressHeight: string;
 }): React.ReactElement => {
   const {
     view,
@@ -365,9 +365,16 @@ const StyledRouting = (props: {
     viewStyle,
     displayFilterMessage,
     loggedInAnonymously,
+    linearProgressHeight,
   } = props;
+
+  // Footer is 36px
+  // Chrome's display is 1px shorter than Firefox's, so we subtract 1px extra to account for this
+  // We also don't want the <LinearProgress> bar to push the page down so subtract the height of this (4px if on-screen)
+  const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight})`;
+
   const [t] = useTranslation();
-  const paperClasses = usePaperStyles();
+  const paperClasses = usePaperStyles({ tablePaperHeight });
   const tableClassName = displayFilterMessage
     ? paperClasses.tablePaperMessage
     : paperClasses.tablePaper;
@@ -408,6 +415,7 @@ const ViewRouting = React.memo(
     totalDataCount: number;
     location: LocationType;
     loggedInAnonymously: boolean;
+    linearProgressHeight: string;
   }): React.ReactElement => {
     const {
       view,
@@ -415,6 +423,7 @@ const ViewRouting = React.memo(
       totalDataCount,
       location,
       loggedInAnonymously,
+      linearProgressHeight,
     } = props;
     const displayFilterMessage = loadedCount && totalDataCount === 0;
 
@@ -442,6 +451,7 @@ const ViewRouting = React.memo(
             location={location}
             loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
 
@@ -453,6 +463,7 @@ const ViewRouting = React.memo(
             location={location}
             loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
       </SwitchRouting>
@@ -516,6 +527,10 @@ const PageContainer: React.FC = () => {
   });
   const loading = isFetchingNum > 0;
 
+  const [linearProgressHeight, setlinearProgressHeight] = React.useState(
+    loading ? '4px' : '0px'
+  );
+
   const queryClient = useQueryClient();
 
   // we need to run this hook every render to ensure we have the
@@ -530,6 +545,10 @@ const PageContainer: React.FC = () => {
       }) ?? 0;
     if (count !== totalDataCount) setTotalDataCount(count);
   });
+
+  React.useEffect(() => {
+    loading ? setlinearProgressHeight('4px') : setlinearProgressHeight('0px');
+  }, [loading]);
 
   const isCountFetchingNum = useIsFetching('count', {
     exact: false,
@@ -691,7 +710,10 @@ const PageContainer: React.FC = () => {
               {/* Show loading progress if data is still being loaded */}
               {loading && (
                 <Grid item xs={12}>
-                  <LinearProgress color="secondary" />
+                  <LinearProgress
+                    color="secondary"
+                    style={{ height: linearProgressHeight }}
+                  />
                 </Grid>
               )}
 
@@ -703,6 +725,7 @@ const PageContainer: React.FC = () => {
                   loadedCount={loadedCount}
                   loggedInAnonymously={loggedInAnonymously}
                   totalDataCount={totalDataCount ?? 0}
+                  linearProgressHeight={linearProgressHeight}
                 />
               </Grid>
             </StyledGrid>
