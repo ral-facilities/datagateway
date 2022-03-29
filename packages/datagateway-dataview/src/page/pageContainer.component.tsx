@@ -368,10 +368,23 @@ const StyledRouting = (props: {
     linearProgressHeight,
   } = props;
 
+  const breadcrumbDiv = document.getElementById('breadcrumbs');
+
+  const [breadcrumbHeight, setBreadcrumbHeight] = React.useState(
+    breadcrumbDiv ? `${breadcrumbDiv.clientHeight}px` : '30px'
+  );
+
+  React.useEffect(() => {
+    breadcrumbDiv
+      ? setBreadcrumbHeight(`${breadcrumbDiv.clientHeight}px`)
+      : setBreadcrumbHeight('30px');
+  }, [breadcrumbDiv, breadcrumbDiv?.clientHeight]);
+
   // Footer is 36px
   // Chrome's display is 1px shorter than Firefox's, so we subtract 1px extra to account for this
   // We also don't want the <LinearProgress> bar to push the page down so subtract the height of this (4px if on-screen)
-  const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight})`;
+  // Additional rows of breadcrumbs also push the page down so subtract the height of the breadcrumb div
+  const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
 
   const [t] = useTranslation();
   const paperClasses = usePaperStyles({ tablePaperHeight });
