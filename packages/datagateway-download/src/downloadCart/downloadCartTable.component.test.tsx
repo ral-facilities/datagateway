@@ -245,7 +245,7 @@ describe('Download cart table component', () => {
     expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
   });
 
-  it.only('disables remove all button while request is processing', async () => {
+  it('disables remove all button while request is processing', async () => {
     (removeAllDownloadCartItems as jest.Mock).mockImplementation(() => {
       return new Promise((resolve) => setTimeout(resolve, 2000));
     });
