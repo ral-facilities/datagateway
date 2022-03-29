@@ -19,6 +19,9 @@ COPY --from=build /datagateway/packages/ .
 # example url: http://localhost:8080/datagateway-dataview/build/main.js
 
 # Define virtual hosts so that the plugins can be deployed on different ports
+# TODO - Make virtual hosts production ready
+#        They need to be configured differently especially if using https:
+#        https://github.com/ral-facilities/scigateway/wiki/Deploying-Datagateway
 WORKDIR /usr/local/apache2/conf
 RUN sed -i '/Listen 80$/a\
 \Listen 5001\n\
