@@ -17,3 +17,22 @@ FROM httpd:alpine
 WORKDIR /usr/local/apache2/htdocs
 COPY --from=build /datagateway/packages/ .
 # example url: http://localhost:8080/datagateway-dataview/build/main.js
+
+# Define virtual hosts so that the plugins can be deployed on different ports
+WORKDIR /usr/local/apache2/conf
+RUN sed -i '/Listen 80$/a\
+\Listen 5001\n\
+\Listen 5002\n\
+\Listen 5003\n\
+\n\
+\<VirtualHost *:5001>\n\
+\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-dataview/build"\n\
+\</VirtualHost>\n\
+\n\
+\<VirtualHost *:5002>\n\
+\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-download/build"\n\
+\</VirtualHost>\n\
+\n\
+\<VirtualHost *:5003>\n\
+\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-search/build"\n\
+\</VirtualHost>' httpd.conf
