@@ -10,7 +10,6 @@ import {
   handleICATError,
   fetchDownloadCart,
   removeFromCart,
-  DownloadCartTableItem,
 } from 'datagateway-common';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
@@ -25,10 +24,7 @@ import {
 import pLimit from 'p-limit';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-export const useCart = (): UseQueryResult<
-  DownloadCartTableItem[],
-  AxiosError
-> => {
+export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
   const { facilityName, downloadApiUrl } = settings;
   return useQuery(
@@ -42,17 +38,6 @@ export const useCart = (): UseQueryResult<
       onError: (error) => {
         handleICATError(error);
       },
-      select: (cart): DownloadCartTableItem[] => {
-        return cart.map((cartItem) => ({
-          ...cartItem,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          size: cartItem.size ?? -1,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          fileCount: cartItem.fileCount ?? -1,
-        }));
-      },
       staleTime: 0,
     }
   );
@@ -61,24 +46,29 @@ export const useCart = (): UseQueryResult<
 export const removeAllDownloadCartItems: (settings: {
   facilityName: string;
   downloadApiUrl: string;
-}) => Promise<DownloadCartItem[]> = (settings: {
+}) => Promise<void> = (settings: {
   facilityName: string;
   downloadApiUrl: string;
 }) => {
-  return axios.delete(
-    `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
-    {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-        items: '*',
-      },
-    }
-  );
+  return axios
+    .delete(
+      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+      {
+        params: {
+          sessionId: readSciGatewayToken().sessionId,
+          items: '*',
+        },
+      }
+    )
+    .then(() => {
+      // do nothing
+    });
 };
 
 export const useRemoveAllFromCart = (): UseMutationResult<
-  DownloadCartItem[],
-  AxiosError
+  void,
+  AxiosError,
+  void
 > => {
   const queryClient = useQueryClient();
   const settings = React.useContext(DownloadSettingsContext);
@@ -123,7 +113,7 @@ export const useRemoveEntityFromCart = (): UseMutationResult<
   );
 };
 
-export const getIsTwoLevel: (settings: {
+const getIsTwoLevel: (settings: {
   idsUrl: string;
 }) => Promise<boolean> = (settings: { idsUrl: string }) => {
   return axios
@@ -185,45 +175,50 @@ export const submitCart: (
       // Get the downloadId that was returned from the IDS server.
       const downloadId = response.data['downloadId'];
       return downloadId;
+    })
+    .catch((error) => {
+      handleICATError(error);
+      return -1;
     });
 };
 
-export const useSubmitCart = (): UseMutationResult<
-  number,
-  AxiosError,
-  {
-    transport: string;
-    emailAddress: string;
-    fileName: string;
-    zipType?: 'ZIP' | 'ZIP_AND_COMPRESS';
-  }
-> => {
-  const queryClient = useQueryClient();
-  const settings = React.useContext(DownloadSettingsContext);
-  const { facilityName, downloadApiUrl } = settings;
+// TODO: refactor rest of dg-download to use react-query
+// export const useSubmitCart = (): UseMutationResult<
+//   number,
+//   AxiosError,
+//   {
+//     transport: string;
+//     emailAddress: string;
+//     fileName: string;
+//     zipType?: 'ZIP' | 'ZIP_AND_COMPRESS';
+//   }
+// > => {
+//   const queryClient = useQueryClient();
+//   const settings = React.useContext(DownloadSettingsContext);
+//   const { facilityName, downloadApiUrl } = settings;
 
-  return useMutation(
-    ({ transport, emailAddress, fileName, zipType }) =>
-      submitCart(
-        transport,
-        emailAddress,
-        fileName,
-        {
-          facilityName,
-          downloadApiUrl,
-        },
-        zipType
-      ),
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
-      },
-      onError: (error) => {
-        handleICATError(error);
-      },
-    }
-  );
-};
+//   return useMutation(
+//     ({ transport, emailAddress, fileName, zipType }) =>
+//       submitCart(
+//         transport,
+//         emailAddress,
+//         fileName,
+//         {
+//           facilityName,
+//           downloadApiUrl,
+//         },
+//         zipType
+//       ),
+//     {
+//       onSuccess: (data) => {
+//         queryClient.setQueryData('cart', data);
+//       },
+//       onError: (error) => {
+//         handleICATError(error);
+//       },
+//     }
+//   );
+// };
 
 export const fetchDownloads: (
   settings: { facilityName: string; downloadApiUrl: string },
@@ -459,7 +454,7 @@ export const adminDownloadStatus: (
     });
 };
 
-export const getSize: (
+const getSize: (
   entityId: number,
   entityType: string,
   settings: {
@@ -581,7 +576,7 @@ export const useSizes = (
   return sizes;
 };
 
-export const getDatafileCount: (
+const getDatafileCount: (
   entityId: number,
   entityType: string,
   settings: { apiUrl: string }
@@ -606,7 +601,6 @@ export const getDatafileCount: (
               eq: entityId,
             },
           },
-          include: '"dataset"',
         },
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -619,7 +613,6 @@ export const getDatafileCount: (
     return axios
       .get<number>(`${settings.apiUrl}/datafiles/count`, {
         params: {
-          include: '{"dataset": "investigation"}',
           where: {
             'dataset.investigation.id': {
               eq: entityId,

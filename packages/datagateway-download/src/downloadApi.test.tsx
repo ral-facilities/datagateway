@@ -3,22 +3,26 @@ import { DownloadCartItem, handleICATError } from 'datagateway-common';
 import {
   downloadDeleted,
   downloadPreparedCart,
-  fetchDownloadCartItems,
   fetchDownloads,
-  getCartDatafileCount,
-  getCartSize,
-  getDatafileCount,
   getDownload,
-  getIsTwoLevel,
-  getSize,
-  removeAllDownloadCartItems,
-  removeDownloadCartItem,
   submitCart,
   getDataUrl,
   fetchAdminDownloads,
   adminDownloadDeleted,
   adminDownloadStatus,
+  useCart,
+  useRemoveAllFromCart,
+  useRemoveEntityFromCart,
+  useIsTwoLevel,
+  useSizes,
+  useDatafileCounts,
 } from './downloadApi';
+import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import React from 'react';
+import { createMemoryHistory } from 'history';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { Router } from 'react-router-dom';
+import { DownloadSettingsContext } from './ConfigProvider';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -52,13 +56,45 @@ const mockedSettings = {
   },
 };
 
+// silence react-query errors
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
+});
+
+const createTestQueryClient = (): QueryClient =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+const createReactQueryWrapper = (): WrapperComponent<unknown> => {
+  const testQueryClient = createTestQueryClient();
+  const history = createMemoryHistory();
+
+  const wrapper: WrapperComponent<unknown> = ({ children }) => (
+    <DownloadSettingsContext.Provider value={mockedSettings}>
+      <Router history={history}>
+        <QueryClientProvider client={testQueryClient}>
+          {children}
+        </QueryClientProvider>
+      </Router>
+    </DownloadSettingsContext.Provider>
+  );
+  return wrapper;
+};
+
 describe('Download Cart API functions test', () => {
   afterEach(() => {
     (handleICATError as jest.Mock).mockClear();
   });
 
-  describe('fetchDownloadCartItems', () => {
-    it('returns cartItems upon successful response', async () => {
+  describe('useCart', () => {
+    it('sends axios request to fetch cart and returns successful response', async () => {
       const downloadCartMockData = {
         cartItems: [
           {
@@ -83,48 +119,38 @@ describe('Download Cart API functions test', () => {
         userName: 'test user',
       };
 
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: downloadCartMockData,
-        })
-      );
-
-      const returnData = await fetchDownloadCartItems({
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
+      axios.get = jest.fn().mockResolvedValue({
+        data: downloadCartMockData,
       });
 
-      expect(returnData).toBe(downloadCartMockData.cartItems);
-      expect(axios.get).toHaveBeenCalled();
-      expect(
-        axios.get
-      ).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}`,
-        { params: { sessionId: null } }
+      const { result, waitFor } = renderHook(() => useCart(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      await waitFor(() => result.current.isSuccess);
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/downloadApi/user/cart/LILS',
+        {
+          params: {
+            sessionId: null,
+          },
+        }
       );
+      expect(result.current.data).toEqual(downloadCartMockData.cartItems);
     });
 
-    it('returns empty array and logs error upon unsuccessful response', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      const returnData = await fetchDownloadCartItems({
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
+    it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
+      axios.get = jest.fn().mockRejectedValue({
+        message: 'Test error message',
       });
 
-      expect(returnData).toEqual([]);
-      expect(axios.get).toHaveBeenCalled();
-      expect(
-        axios.get
-      ).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}`,
-        { params: { sessionId: null } }
-      );
-      expect(handleICATError).toHaveBeenCalled();
+      const { result, waitFor } = renderHook(() => useCart(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      await waitFor(() => result.current.isError);
+
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
@@ -143,12 +169,18 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await removeAllDownloadCartItems({
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
+      const { result, waitFor } = renderHook(() => useRemoveAllFromCart(), {
+        wrapper: createReactQueryWrapper(),
       });
 
-      expect(returnData).toBeUndefined();
+      expect(axios.delete).not.toHaveBeenCalled();
+      expect(result.current.isIdle).toBe(true);
+
+      result.current.mutate();
+
+      await waitFor(() => result.current.isSuccess);
+
+      expect(result.current.data).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
       expect(
         axios.delete
@@ -158,27 +190,27 @@ describe('Download Cart API functions test', () => {
       );
     });
 
-    it('returns empty array and logs error upon unsuccessful response', async () => {
+    it('logs error upon unsuccessful response', async () => {
       axios.delete = jest.fn().mockImplementation(() =>
         Promise.reject({
           message: 'Test error message',
         })
       );
 
-      const returnData = await removeAllDownloadCartItems({
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
+      const { result, waitFor } = renderHook(() => useRemoveAllFromCart(), {
+        wrapper: createReactQueryWrapper(),
       });
 
-      expect(returnData).toBeUndefined();
-      expect(axios.delete).toHaveBeenCalled();
+      result.current.mutate();
+
+      await waitFor(() => result.current.isError);
+
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: '*' } }
       );
-      expect(handleICATError).toHaveBeenCalled();
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
@@ -186,7 +218,7 @@ describe('Download Cart API functions test', () => {
   });
 
   describe('removeDownloadCartItem', () => {
-    it('returns nothing upon successful response', async () => {
+    it('returns empty array upon successful response', async () => {
       axios.delete = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data: {
@@ -197,12 +229,18 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await removeDownloadCartItem(1, 'datafile', {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
+      const { result, waitFor } = renderHook(() => useRemoveEntityFromCart(), {
+        wrapper: createReactQueryWrapper(),
       });
 
-      expect(returnData).toBeUndefined();
+      expect(axios.delete).not.toHaveBeenCalled();
+      expect(result.current.isIdle).toBe(true);
+
+      result.current.mutate({ entityId: 1, entityType: 'datafile' });
+
+      await waitFor(() => result.current.isSuccess);
+
+      expect(result.current.data).toEqual([]);
       expect(axios.delete).toHaveBeenCalled();
       expect(
         axios.delete
@@ -212,27 +250,27 @@ describe('Download Cart API functions test', () => {
       );
     });
 
-    it('returns empty array and logs error upon unsuccessful response', async () => {
+    it('logs error upon unsuccessful response', async () => {
       axios.delete = jest.fn().mockImplementation(() =>
         Promise.reject({
           message: 'Test error message',
         })
       );
 
-      const returnData = await removeDownloadCartItem(1, 'investigation', {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
+      const { result, waitFor } = renderHook(() => useRemoveEntityFromCart(), {
+        wrapper: createReactQueryWrapper(),
       });
 
-      expect(returnData).toBeUndefined();
-      expect(axios.delete).toHaveBeenCalled();
+      result.current.mutate({ entityId: 1, entityType: 'investigation' });
+
+      await waitFor(() => result.current.isError);
+
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: 'investigation 1' } }
       );
-      expect(handleICATError).toHaveBeenCalled();
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
@@ -247,13 +285,16 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const isTwoLevel = await getIsTwoLevel({ idsUrl: mockedSettings.idsUrl });
+      const { result, waitFor } = renderHook(() => useIsTwoLevel(), {
+        wrapper: createReactQueryWrapper(),
+      });
 
-      expect(isTwoLevel).toBe(true);
-      expect(axios.get).toHaveBeenCalled();
+      await waitFor(() => result.current.isSuccess);
+
       expect(axios.get).toHaveBeenCalledWith(
         `${mockedSettings.idsUrl}/isTwoLevel`
       );
+      expect(result.current.data).toEqual(true);
     });
 
     it('returns false in the event of an error and logs error upon unsuccessful response', async () => {
@@ -263,20 +304,18 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const isTwoLevel = await getIsTwoLevel({ idsUrl: mockedSettings.idsUrl });
+      const { result, waitFor } = renderHook(() => useIsTwoLevel(), {
+        wrapper: createReactQueryWrapper(),
+      });
 
-      expect(isTwoLevel).toBe(false);
-      expect(axios.get).toHaveBeenCalled();
+      await waitFor(() => result.current.isError);
+
       expect(axios.get).toHaveBeenCalledWith(
         `${mockedSettings.idsUrl}/isTwoLevel`
       );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith(
-        {
-          message: 'Test error message',
-        },
-        false
-      );
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -460,107 +499,76 @@ describe('Download Cart API functions test', () => {
     });
   });
 
-  describe('getSize', () => {
-    it('returns a number upon successful response for datafile entityType', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: {
-            id: 1,
-            name: 'test datafile',
-            fileSize: 1,
-          },
+  describe('useSizes', () => {
+    it('returns the sizes of all the items in a cart', async () => {
+      axios.get = jest
+        .fn()
+        .mockImplementation((path) => {
+          if (path.includes('datafiles/')) {
+            return Promise.resolve({
+              data: {
+                id: 1,
+                name: 'test datafile',
+                fileSize: 1,
+              },
+            });
+          } else {
+            return Promise.resolve({
+              data: 1,
+            });
+          }
         })
-      );
+        .mockImplementationOnce(() =>
+          Promise.reject({
+            message: 'simulating a failed response',
+          })
+        );
 
-      const returnData = await getSize(1, 'datafile', {
-        facilityName: mockedSettings.facilityName,
-        apiUrl: mockedSettings.apiUrl,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(returnData).toBe(1);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.apiUrl}/datafiles/1`,
+      const cartItems: DownloadCartItem[] = [
         {
-          headers: { Authorization: 'Bearer null' },
-        }
-      );
-    });
-
-    it('returns -1 and logs error upon unsuccessful response for datafile entityType', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      const returnData = await getSize(1, 'datafile', {
-        facilityName: mockedSettings.facilityName,
-        apiUrl: mockedSettings.apiUrl,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(returnData).toBe(-1);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.apiUrl}/datafiles/1`,
-        {
-          headers: { Authorization: 'Bearer null' },
-        }
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith(
-        {
-          message: 'Test error message',
+          entityId: 1,
+          entityType: 'investigation',
+          id: 1,
+          name: 'INVESTIGATION 1',
+          parentEntities: [],
         },
-        false
-      );
-    });
-
-    it('returns a number upon successful response for non-datafile entityType', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: 2,
-        })
-      );
-
-      const returnData = await getSize(1, 'dataset', {
-        facilityName: mockedSettings.facilityName,
-        apiUrl: mockedSettings.apiUrl,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(returnData).toBe(2);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/getSize`,
         {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            entityType: 'dataset',
-            entityId: 1,
-          },
-        }
-      );
-    });
+          entityId: 2,
+          entityType: 'dataset',
+          id: 2,
+          name: 'DATASET 2',
+          parentEntities: [],
+        },
+        {
+          entityId: 3,
+          entityType: 'datafile',
+          id: 3,
+          name: 'DATAFILE 1',
+          parentEntities: [],
+        },
+        {
+          entityId: 4,
+          entityType: 'investigation',
+          id: 4,
+          name: 'INVESTIGATION 1',
+          parentEntities: [],
+        },
+      ];
 
-    it('returns -1 and logs error upon unsuccessful response for non-datafile entityType', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      const returnData = await getSize(1, 'investigation', {
-        facilityName: mockedSettings.facilityName,
-        apiUrl: mockedSettings.apiUrl,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
+      const { result, waitFor } = renderHook(() => useSizes(cartItems), {
+        wrapper: createReactQueryWrapper(),
       });
 
-      expect(returnData).toBe(-1);
-      expect(axios.get).toHaveBeenCalled();
+      await waitFor(() =>
+        result.current.every((query) => query.isSuccess || query.isError)
+      );
+
+      expect(result.current.map((query) => query.data)).toEqual([
+        undefined,
+        1,
+        1,
+        1,
+      ]);
       expect(axios.get).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/getSize`,
         {
@@ -572,158 +580,36 @@ describe('Download Cart API functions test', () => {
           },
         }
       );
-      expect(handleICATError).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.downloadApiUrl}/user/getSize`,
+        {
+          params: {
+            sessionId: null,
+            facilityName: mockedSettings.facilityName,
+            entityType: 'dataset',
+            entityId: 2,
+          },
+        }
+      );
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.apiUrl}/datafiles/${3}`,
+        {
+          headers: {
+            Authorization: 'Bearer null',
+          },
+        }
+      );
       expect(handleICATError).toHaveBeenCalledWith(
         {
-          message: 'Test error message',
+          message: 'simulating a failed response',
         },
         false
       );
     });
   });
 
-  describe('getDatafileCount', () => {
-    it('returns 1 upon request for datafile entityType', async () => {
-      const returnData = await getDatafileCount(1, 'datafile', {
-        apiUrl: mockedSettings.apiUrl,
-      });
-
-      expect(returnData).toBe(1);
-    });
-
-    it('returns a number upon successful response for dataset entityType', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: 2,
-        })
-      );
-
-      const returnData = await getDatafileCount(1, 'dataset', {
-        apiUrl: mockedSettings.apiUrl,
-      });
-
-      expect(returnData).toBe(2);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.apiUrl}/datafiles/count`,
-        {
-          params: {
-            where: {
-              'dataset.id': {
-                eq: 1,
-              },
-            },
-            include: '"dataset"',
-          },
-          headers: { Authorization: 'Bearer null' },
-        }
-      );
-    });
-
-    it('returns -1 and logs error upon unsuccessful response for dataset entityType', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      const returnData = await getDatafileCount(1, 'dataset', {
-        apiUrl: mockedSettings.apiUrl,
-      });
-
-      expect(returnData).toBe(-1);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.apiUrl}/datafiles/count`,
-        {
-          params: {
-            where: {
-              'dataset.id': {
-                eq: 1,
-              },
-            },
-            include: '"dataset"',
-          },
-          headers: { Authorization: 'Bearer null' },
-        }
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith(
-        {
-          message: 'Test error message',
-        },
-        false
-      );
-    });
-
-    it('returns a number upon successful response for investigation entityType', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: 5,
-        })
-      );
-
-      const returnData = await getDatafileCount(2, 'investigation', {
-        apiUrl: mockedSettings.apiUrl,
-      });
-
-      expect(returnData).toBe(5);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.apiUrl}/datafiles/count`,
-        {
-          params: {
-            include: '{"dataset": "investigation"}',
-            where: {
-              'dataset.investigation.id': {
-                eq: 2,
-              },
-            },
-          },
-          headers: { Authorization: 'Bearer null' },
-        }
-      );
-    });
-
-    it('returns -1 and logs error upon unsuccessful response for investigation entityType', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      const returnData = await getDatafileCount(2, 'investigation', {
-        apiUrl: mockedSettings.apiUrl,
-      });
-
-      expect(returnData).toBe(-1);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.apiUrl}/datafiles/count`,
-        {
-          params: {
-            include: '{"dataset": "investigation"}',
-            where: {
-              'dataset.investigation.id': {
-                eq: 2,
-              },
-            },
-          },
-          headers: { Authorization: 'Bearer null' },
-        }
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith(
-        {
-          message: 'Test error message',
-        },
-        false
-      );
-    });
-  });
-
-  describe('getCartDatafileCount', () => {
-    it('returns an accurate count of a given cart', async () => {
+  describe('useDatafileCounts', () => {
+    it('returns the counts of all the items in a cart', async () => {
       axios.get = jest
         .fn()
         .mockImplementation(() =>
@@ -768,87 +654,54 @@ describe('Download Cart API functions test', () => {
         },
       ];
 
-      const returnData = await getCartDatafileCount(cartItems, {
-        apiUrl: mockedSettings.apiUrl,
-      });
-
-      expect(returnData).toBe(3);
-      expect(axios.get).toHaveBeenCalledTimes(3);
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith(
+      const { result, waitFor } = renderHook(
+        () => useDatafileCounts(cartItems),
         {
-          message: 'simulating a failed response',
-        },
-        false
+          wrapper: createReactQueryWrapper(),
+        }
       );
-    });
-  });
 
-  describe('getCartSize', () => {
-    it('returns an accurate size of a given cart', async () => {
-      axios.get = jest
-        .fn()
-        .mockImplementation((path) => {
-          if (path.includes('datafiles/')) {
-            return Promise.resolve({
-              data: {
-                id: 1,
-                name: 'test datafile',
-                fileSize: 1,
+      await waitFor(() =>
+        result.current.every((query) => query.isSuccess || query.isError)
+      );
+
+      expect(result.current.map((query) => query.data)).toEqual([
+        undefined,
+        1,
+        1,
+        1,
+      ]);
+      expect(axios.get).toHaveBeenCalledTimes(3);
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.apiUrl}/datafiles/count`,
+        {
+          params: {
+            where: {
+              'dataset.investigation.id': {
+                eq: 2,
               },
-            });
-          } else {
-            return Promise.resolve({
-              data: 1,
-            });
-          }
-        })
-        .mockImplementationOnce(() =>
-          Promise.reject({
-            message: 'simulating a failed response',
-          })
-        );
-
-      const cartItems: DownloadCartItem[] = [
+            },
+          },
+          headers: {
+            Authorization: 'Bearer null',
+          },
+        }
+      );
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.apiUrl}/datafiles/count`,
         {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'INVESTIGATION 1',
-          parentEntities: [],
-        },
-        {
-          entityId: 2,
-          entityType: 'investigation',
-          id: 2,
-          name: 'INVESTIGATION 2',
-          parentEntities: [],
-        },
-        {
-          entityId: 3,
-          entityType: 'dataset',
-          id: 3,
-          name: 'DATASET 1',
-          parentEntities: [],
-        },
-        {
-          entityId: 4,
-          entityType: 'datafile',
-          id: 4,
-          name: 'DATAFILE 1',
-          parentEntities: [],
-        },
-      ];
-
-      const returnData = await getCartSize(cartItems, {
-        facilityName: mockedSettings.facilityName,
-        apiUrl: mockedSettings.apiUrl,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(returnData).toBe(3);
-      expect(axios.get).toHaveBeenCalledTimes(4);
-      expect(handleICATError).toHaveBeenCalled();
+          params: {
+            where: {
+              'dataset.id': {
+                eq: 3,
+              },
+            },
+          },
+          headers: {
+            Authorization: 'Bearer null',
+          },
+        }
+      );
       expect(handleICATError).toHaveBeenCalledWith(
         {
           message: 'simulating a failed response',

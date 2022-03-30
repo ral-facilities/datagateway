@@ -385,12 +385,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 color="primary"
                 disabled={removingAll}
                 startIcon={removingAll && <CircularProgress size={20} />}
-                onClick={() =>
-                  removeAllDownloadCartItems({
-                    facilityName: settings.facilityName,
-                    downloadApiUrl: settings.downloadApiUrl,
-                  })
-                }
+                onClick={() => removeAllDownloadCartItems()}
               >
                 {t('downloadCart.remove_all')}
               </Button>
