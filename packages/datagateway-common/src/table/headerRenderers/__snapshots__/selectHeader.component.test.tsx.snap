@@ -14,6 +14,7 @@ exports[`Select column header component renders correctly when checked 1`] = `
         fontSize="small"
       />
     }
+    disabled={false}
     icon={
       <Memo
         fontSize="small"
@@ -56,6 +57,7 @@ exports[`Select column header component renders correctly when indeterminate 1`]
         fontSize="small"
       />
     }
+    disabled={false}
     icon={
       <Memo
         fontSize="small"
@@ -98,6 +100,7 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
         fontSize="small"
       />
     }
+    disabled={false}
     icon={
       <Memo
         fontSize="small"

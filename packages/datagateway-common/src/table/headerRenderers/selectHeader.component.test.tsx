@@ -8,12 +8,12 @@ describe('Select column header component', () => {
   const onUncheck = jest.fn();
   const selectHeaderProps = {
     dataKey: 'test',
-    className: 'test-class',
     selectedRows: [],
     totalRowCount: 3,
     onCheck,
     onUncheck,
     allIds: [1, 2, 3],
+    loading: false,
   };
 
   afterEach(() => {

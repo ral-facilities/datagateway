@@ -8,15 +8,13 @@ describe('Dataset details panel component', () => {
   const detailsPanelResize = jest.fn();
 
   beforeEach(() => {
-    rowData = [
-      {
-        id: 1,
-        name: 'Test 1',
-        size: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-      },
-    ];
+    rowData = {
+      id: 1,
+      name: 'Test 1',
+      size: 1,
+      modTime: '2019-07-23',
+      createTime: '2019-07-23',
+    };
   });
 
   afterEach(() => {

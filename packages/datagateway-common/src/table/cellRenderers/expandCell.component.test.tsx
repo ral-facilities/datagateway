@@ -10,7 +10,6 @@ describe('Expand cell component', () => {
     isScrolling: false,
     rowIndex: 1,
     rowData: '',
-    className: 'test-class',
     expandedIndex: 1,
     setExpandedIndex,
   };

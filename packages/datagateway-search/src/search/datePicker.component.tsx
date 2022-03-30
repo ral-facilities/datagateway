@@ -88,8 +88,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
     }
   };
 
-  const invalidDateRange =
-    startDate && endDate && isBefore(endDate, startDate) ? true : false;
+  const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);
 
   return (
     <div className="tour-search-dates">

@@ -6,6 +6,7 @@ import {
   useInvestigationDetails,
   useInvestigationSize,
 } from '../../api/investigations';
+import { Investigation } from '../../app.types';
 
 jest.mock('../../api/investigations');
 

@@ -12,11 +12,8 @@ export function datesEqual(date1: Date | null, date2: Date | null): boolean {
     return true;
   } else if (!isValid(date1) && !isValid(date2)) {
     return true;
-  } else if (date1 !== null && date2 !== null && isEqual(date1, date2)) {
-    return true;
-  } else {
-    return false;
   }
+  return date1 !== null && date2 !== null && isEqual(date1, date2);
 }
 
 interface UpdateFilterParams {
@@ -66,14 +63,12 @@ const DateColumnFilter = (props: {
     props.value?.endDate ? new Date(props.value.endDate) : null
   );
 
-  const invalidDateRange =
-    startDate && endDate && isBefore(endDate, startDate) ? true : false;
+  const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);
 
   return (
     <form>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
-          //Clearable does not work at the moment https://github.com/mui/material-ui/issues/30676
           clearable
           aria-hidden="true"
           inputFormat="yyyy-MM-dd"
@@ -99,7 +94,7 @@ const DateColumnFilter = (props: {
           renderInput={(renderProps) => {
             const error =
               // eslint-disable-next-line react/prop-types
-              renderProps.error || invalidDateRange;
+              (renderProps.error || invalidDateRange) ?? undefined;
             let helperText = 'Date format: yyyy-MM-dd.';
             if (invalidDateRange) helperText = 'Invalid date range';
 
@@ -108,14 +103,12 @@ const DateColumnFilter = (props: {
                 {...renderProps}
                 id={props.label + ' filter from'}
                 inputProps={{
-                  // eslint-disable-next-line react/prop-types
                   ...renderProps.inputProps,
                   placeholder: 'From...',
                   'aria-label': `${props.label} filter from`,
                 }}
                 variant="standard"
                 error={error}
-                // eslint-disable-next-line react/prop-types
                 {...(error && { helperText: helperText })}
               />
             );
@@ -145,9 +138,7 @@ const DateColumnFilter = (props: {
             </Box>
           }
           renderInput={(renderProps) => {
-            const error =
-              // eslint-disable-next-line react/prop-types
-              renderProps.error || invalidDateRange;
+            const error = (renderProps.error || invalidDateRange) ?? undefined;
             let helperText = 'Date format: yyyy-MM-dd.';
             if (invalidDateRange) helperText = 'Invalid date range';
 
@@ -156,14 +147,12 @@ const DateColumnFilter = (props: {
                 {...renderProps}
                 id={props.label + ' filter to'}
                 inputProps={{
-                  // eslint-disable-next-line react/prop-types
                   ...renderProps.inputProps,
                   placeholder: 'To...',
                   'aria-label': `${props.label} filter to`,
                 }}
                 variant="standard"
                 error={error}
-                // eslint-disable-next-line react/prop-types
                 {...(error && { helperText: helperText })}
               />
             );

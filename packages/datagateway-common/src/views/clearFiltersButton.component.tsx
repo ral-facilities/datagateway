@@ -1,6 +1,6 @@
+import React from 'react';
 import { Button, styled } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 export interface ClearFilterProps {

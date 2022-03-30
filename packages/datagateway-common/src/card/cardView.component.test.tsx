@@ -20,7 +20,6 @@ describe('Card View', () => {
     return mount(<CardView {...props} />);
   };
 
-  const loadData = jest.fn();
   const onFilter = jest.fn();
   const onPageChange = jest.fn();
   const onSort = jest.fn();
@@ -79,11 +78,7 @@ describe('Card View', () => {
   });
 
   afterEach(() => {
-    loadData.mockClear();
-    onFilter.mockClear();
-    onPageChange.mockClear();
-    onSort.mockClear();
-    onResultsChange.mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {

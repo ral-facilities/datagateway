@@ -26,13 +26,13 @@ describe('Select cell component', () => {
     isScrolling: false,
     rowIndex: 2,
     rowData: data[2],
-    className: 'test-class',
     selectedRows: [],
     data,
     lastChecked: -1,
     setLastChecked,
     onCheck,
     onUncheck,
+    loading: false,
   };
 
   afterEach(() => {

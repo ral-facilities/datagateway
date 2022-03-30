@@ -11,7 +11,6 @@ describe('Data column header component', () => {
     label: 'Test',
     labelString: 'Test',
     dataKey: 'test',
-    className: 'test-class',
     sort: {},
     onSort,
     resizeColumn,
