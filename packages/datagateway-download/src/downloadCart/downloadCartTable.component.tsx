@@ -17,11 +17,11 @@ import {
   Typography,
   Button,
   LinearProgress,
-  CircularProgress,
   createStyles,
   makeStyles,
   Theme,
   Link,
+  CircularProgress,
 } from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
 import {
@@ -74,7 +74,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const { mutateAsync: removeDownloadCartItem } = useRemoveEntityFromCart();
   const {
     mutate: removeAllDownloadCartItems,
-    isLoading: removeAllPending,
+    isLoading: removingAll,
   } = useRemoveAllFromCart();
   const { data, isFetching: dataLoading } = useCart();
 
@@ -379,12 +379,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             style={{ marginRight: '1em' }}
           >
             <Grid item>
+              {/* Request to remove all selections is in progress. To prevent excessive requests, disable button during request */}
               <Button
                 className="tour-download-remove-button"
                 id="removeAllButton"
                 variant="contained"
                 color="primary"
-                disabled={removeAllPending}
+                disabled={removingAll}
+                startIcon={removingAll && <CircularProgress size={20} />}
                 onClick={() =>
                   removeAllDownloadCartItems({
                     facilityName: settings.facilityName,
