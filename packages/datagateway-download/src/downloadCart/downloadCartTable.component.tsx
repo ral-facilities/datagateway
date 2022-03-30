@@ -204,8 +204,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         cellContentRenderer: (props) => {
           return formatBytes(props.cellData);
         },
-        // cellContentRenderer: (cellProps) =>
-        //   formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
       },
     ],
     [t, textFilter]
@@ -405,12 +403,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 variant="contained"
                 color="primary"
                 disabled={
-                  fileCount <= 0 ||
-                  totalSize <= 0 ||
-                  sizesLoading ||
-                  fileCountsLoading ||
-                  (fileCountMax !== -1 && fileCount > fileCountMax) ||
-                  (totalSizeMax !== -1 && totalSize > totalSizeMax)
+                  (fileCountMax !== -1 &&
+                    (fileCount <= 0 ||
+                      fileCountsLoading ||
+                      fileCount > fileCountMax)) ||
+                  (totalSizeMax !== -1 &&
+                    (totalSize <= 0 ||
+                      sizesLoading ||
+                      totalSize > totalSizeMax))
                 }
               >
                 {t('downloadCart.download')}
