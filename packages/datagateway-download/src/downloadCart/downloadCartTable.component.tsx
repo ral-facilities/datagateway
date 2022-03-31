@@ -249,6 +249,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     return filteredData.sort(sortCartItems);
   }, [data, sort, filters]);
 
+  const emptyItems = React.useMemo(
+    () => data.some((item) => item.size === 0 || item.fileCount === 0),
+    [data]
+  );
+
   return data.length === 0 ? (
     <div
       className="tour-download-results"
@@ -305,8 +310,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           <Paper
             className="tour-download-results"
             style={{
-              height:
-                'calc(100vh - 64px - 48px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
+              height: `calc(100vh - 64px - 48px - 48px - 48px - 3rem${
+                emptyItems ? ' - 1rem' : ''
+              } - (1.75 * 0.875rem + 12px)`,
               minHeight: 230,
               overflowX: 'auto',
             }}
@@ -417,7 +423,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               {totalSize !== -1 ? formatBytes(totalSize) : 'Calculating...'}
               {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
             </Typography>
-            {data.some((item) => item.size === 0 || item.fileCount === 0) && (
+            {emptyItems && (
               <Typography>{t('downloadCart.empty_items_warning')}</Typography>
             )}
           </Grid>
@@ -462,9 +468,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 disabled={
                   fileCount <= 0 ||
                   totalSize <= 0 ||
-                  data.some(
-                    (item) => item.size === 0 || item.fileCount === 0
-                  ) ||
+                  emptyItems ||
                   (fileCountMax !== -1 && fileCount > fileCountMax) ||
                   (totalSizeMax !== -1 && totalSize > totalSizeMax)
                 }
