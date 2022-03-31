@@ -330,6 +330,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     return formatBytes(props.cellData);
                   },
                 },
+                {
+                  label: t('downloadCart.fileCount'),
+                  dataKey: 'fileCount',
+                  cellContentRenderer: (props) => {
+                    if (props.cellData === -1) return 'Loading...';
+                    return props.cellData;
+                  },
+                },
               ]}
               sort={sort}
               onSort={(column: string, order: 'desc' | 'asc' | null) => {
@@ -396,6 +404,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             direction="column"
             xs
             alignContent="flex-end"
+            alignItems="flex-end"
             style={{ marginRight: '1.2em' }}
           >
             <Typography id="fileCountDisplay">
@@ -408,6 +417,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               {totalSize !== -1 ? formatBytes(totalSize) : 'Calculating...'}
               {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
             </Typography>
+            {data.some((item) => item.size === 0 || item.fileCount === 0) && (
+              <Typography>{t('downloadCart.empty_items_warning')}</Typography>
+            )}
           </Grid>
           <Grid
             container
@@ -450,6 +462,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 disabled={
                   fileCount <= 0 ||
                   totalSize <= 0 ||
+                  data.some(
+                    (item) => item.size === 0 || item.fileCount === 0
+                  ) ||
                   (fileCountMax !== -1 && fileCount > fileCountMax) ||
                   (totalSizeMax !== -1 && totalSize > totalSizeMax)
                 }
