@@ -98,6 +98,10 @@ export const fetchSettings = (): Promise<SearchSettings | void> => {
                 plugin: 'datagateway-search',
                 displayName: route['displayName'],
                 order: route['order'] ? route['order'] : 0,
+                hideFromMenu: route['hideFromMenu']
+                  ? route['hideFromMenu']
+                  : false,
+                admin: route['admin'] ? route['admin'] : false,
                 helpSteps:
                   index === 0 && 'helpSteps' in settings
                     ? settings['helpSteps']

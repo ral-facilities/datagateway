@@ -138,6 +138,7 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
             link: route['link'],
             plugin: 'datagateway-download',
             displayName: route['displayName'],
+            hideFromMenu: route['hideFromMenu'] ? route['hideFromMenu'] : false,
             admin: route['admin'] ? route['admin'] : false,
             order: route['order'] ? route['order'] : 0,
             helpSteps:
