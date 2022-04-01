@@ -17,7 +17,7 @@ RUN yarn install
 RUN yarn build
 
 # Put the output of the build into an apache server
-FROM httpd:alpine
+FROM httpd:2.4-alpine3.15
 WORKDIR /usr/local/apache2/htdocs
 COPY --from=build /datagateway/packages/ .
 # example url: http://localhost:8080/datagateway-dataview/build/main.js
