@@ -26,12 +26,6 @@ describe('Download Status', () => {
     });
   });
 
-  afterEach(() => {
-    // Ensure to clear sessionStorage to prevent the app
-    // storing tab data.
-    sessionStorage.clear();
-  });
-
   it('should load correctly and display download status table', () => {
     cy.title().should('equal', 'DataGateway Download');
     cy.get('#datagateway-download').should('be.visible');
