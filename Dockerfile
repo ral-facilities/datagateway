@@ -1,6 +1,6 @@
 # Multipart build dockerfile to build and serve datagateway
 
-FROM node:16-alpine as build
+FROM node:16.14-alpine3.15 as build
 WORKDIR /datagateway
 ENV PATH /datagateway/node_modules/.bin:$PATH
 
