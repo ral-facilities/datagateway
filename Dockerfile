@@ -7,6 +7,10 @@ ENV PATH /datagateway/node_modules/.bin:$PATH
 # TODO: use yarn install --production:
 # https://github.com/ral-facilities/datagateway/issues/1155
 
+# Set Yarn version
+# TODO - Use Yarn 2 when project is upgraded
+RUN yarn set version 1.22
+
 # Install dependancies
 COPY . .
 RUN yarn install
