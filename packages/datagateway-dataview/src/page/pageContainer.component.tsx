@@ -241,7 +241,7 @@ const NavBar = React.memo(
                       title={
                         <h4>
                           {isStudyHierarchy
-                            ? t('app.open_data_warning.experiments_tooltip')
+                            ? t('app.open_data_warning.studies_tooltip')
                             : t('app.open_data_warning.tooltip')}
                           <br />
                           <br />

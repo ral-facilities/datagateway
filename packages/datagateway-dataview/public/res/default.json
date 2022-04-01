@@ -10,7 +10,7 @@
     "open_data_warning": {
       "message": "Open data",
       "tooltip": "Only open data is displayed when browsing anonymously. Please login to see embargoed data.",
-      "experiments_tooltip": "Only open data is currently supported by the experiment view. Please browse via facility cycle to view closed data",
+      "studies_tooltip": "Only open data is currently supported by the experiment view. Please browse via facility cycle to view closed data",
       "tooltip_link": "Click here to learn more about our data policy.",
       "aria_label": "More information about open data"
     }
