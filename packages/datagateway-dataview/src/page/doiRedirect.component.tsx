@@ -62,7 +62,7 @@ const DoiRedirect: React.FC = () => {
   if (investigation && instrument && facilityCycle) {
     return (
       <Redirect
-        to={`/browse/instrument/${instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigation.id}`}
+        to={`/browse/instrument/${instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigation.id}/dataset`}
       />
     );
   } else {

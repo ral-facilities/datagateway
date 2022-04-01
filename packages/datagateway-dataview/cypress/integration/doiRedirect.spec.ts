@@ -8,7 +8,7 @@ describe('DOI Redirect', () => {
 
     cy.url().should(
       'include',
-      '/browse/instrument/8/facilityCycle/1/investigation/1'
+      '/browse/instrument/8/facilityCycle/1/investigation/1/dataset'
     );
   });
 

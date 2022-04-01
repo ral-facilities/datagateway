@@ -128,7 +128,7 @@ describe('DOI Redirect page', () => {
       '2022-04-01 00:00:00'
     );
     expect(history.location.pathname).toBe(
-      '/browse/instrument/2/facilityCycle/3/investigation/1'
+      '/browse/instrument/2/facilityCycle/3/investigation/1/dataset'
     );
   });
 
