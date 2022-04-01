@@ -37,7 +37,7 @@ jest.mock('react-router-dom', () => {
     __esModule: true,
     ...originalModule, // use actual for all non-hook parts
     useParams: () => ({
-      facilityName: 'ISIS',
+      facilityName: 'LILS',
       entityName: 'investigation',
       entityId: '1',
     }),
