@@ -41,6 +41,7 @@ import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
 import TranslatedHomePage from './translatedHomePage.component';
+import DoiRedirect from './doiRedirect.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
@@ -105,6 +106,7 @@ const StyledGrid = withStyles(gridStyles)(Grid);
 export const paths = {
   homepage: '/datagateway',
   root: '/browse',
+  doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
   myData: {
     root: '/my-data',
     dls: '/my-data/DLS',
@@ -654,6 +656,9 @@ const PageContainer: React.FC = () => {
     <SwitchRouting location={location}>
       {/* Load the homepage */}
       <Route exact path={paths.homepage} component={TranslatedHomePage} />
+      <Route exact path={paths.doiRedirect}>
+        <DoiRedirect />
+      </Route>
       <Route
         render={() => (
           // Load the standard dataview pageContainer
