@@ -19,8 +19,10 @@ RUN yarn build
 # Put the output of the build into an apache server
 FROM httpd:2.4-alpine3.15
 WORKDIR /usr/local/apache2/htdocs
-COPY --from=build /datagateway/packages/ .
-# example url: http://localhost:8080/datagateway-dataview/build/main.js
+COPY --from=build /datagateway/packages/datagateway-dataview/build/. ./datagateway-dataview/
+COPY --from=build /datagateway/packages/datagateway-download/build/. ./datagateway-download/
+COPY --from=build /datagateway/packages/datagateway-search/build/. ./datagateway-search/
+# example url: http://localhost:8080/datagateway-dataview/main.js
 
 # Define virtual hosts so that the plugins can be deployed on different ports
 # TODO - Make virtual hosts production ready
@@ -33,13 +35,13 @@ RUN sed -i '/Listen 80$/a\
 \Listen 5003\n\
 \n\
 \<VirtualHost *:5001>\n\
-\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-dataview/build"\n\
+\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-dataview"\n\
 \</VirtualHost>\n\
 \n\
 \<VirtualHost *:5002>\n\
-\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-download/build"\n\
+\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-download"\n\
 \</VirtualHost>\n\
 \n\
 \<VirtualHost *:5003>\n\
-\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-search/build"\n\
+\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-search"\n\
 \</VirtualHost>' httpd.conf
