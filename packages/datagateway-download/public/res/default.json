@@ -75,6 +75,7 @@
     "name": "Name",
     "type": "Type",
     "size": "Size",
+    "fileCount": "File Count",
     "remove": "Remove {{name}} from selection",
     "remove_all": "Remove All",
     "download": "Download Selection",
@@ -82,6 +83,7 @@
     "total_size": "Total size",
     "no_selections": "No data selected. <2>Browse</2> or <6>search</6> for data.",
     "browse_link": "/browse/investigation",
-    "search_link": "/search/data"
+    "search_link": "/search/data",
+    "empty_items_warning": "You have selected some empty items - please remove them to proceed with downloading your selection"
   }
 }

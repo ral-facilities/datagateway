@@ -5,7 +5,12 @@ import { IndexRange } from 'react-virtualized';
 import { getApiParams, parseSearchToQuery } from '.';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
-import { FiltersType, Instrument, SortType } from '../app.types';
+import {
+  AdditionalFilters,
+  FiltersType,
+  Instrument,
+  SortType,
+} from '../app.types';
 import { StateType } from '../state/app.types';
 import {
   useQuery,
@@ -20,6 +25,7 @@ const fetchInstruments = (
     sort: SortType;
     filters: FiltersType;
   },
+  additionalFilters?: AdditionalFilters,
   offsetParams?: IndexRange
 ): Promise<Instrument[]> => {
   const params = getApiParams(sortAndFilters);
@@ -31,6 +37,10 @@ const fetchInstruments = (
       JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
     );
   }
+
+  additionalFilters?.forEach((filter) => {
+    params.append(filter.filterType, filter.filterValue);
+  });
 
   return axios
     .get(`${apiUrl}/instruments`, {
@@ -44,10 +54,9 @@ const fetchInstruments = (
     });
 };
 
-export const useInstrumentsPaginated = (): UseQueryResult<
-  Instrument[],
-  AxiosError
-> => {
+export const useInstrumentsPaginated = (
+  additionalFilters?: AdditionalFilters
+): UseQueryResult<Instrument[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
@@ -71,14 +80,10 @@ export const useInstrumentsPaginated = (): UseQueryResult<
       const { sort, filters, page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return fetchInstruments(
-        apiUrl,
-        { sort, filters },
-        {
-          startIndex,
-          stopIndex,
-        }
-      );
+      return fetchInstruments(apiUrl, { sort, filters }, additionalFilters, {
+        startIndex,
+        stopIndex,
+      });
     },
     {
       onError: (error) => {
@@ -88,10 +93,9 @@ export const useInstrumentsPaginated = (): UseQueryResult<
   );
 };
 
-export const useInstrumentsInfinite = (): UseInfiniteQueryResult<
-  Instrument[],
-  AxiosError
-> => {
+export const useInstrumentsInfinite = (
+  additionalFilters?: AdditionalFilters
+): UseInfiniteQueryResult<Instrument[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
@@ -106,7 +110,12 @@ export const useInstrumentsInfinite = (): UseInfiniteQueryResult<
     (params) => {
       const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return fetchInstruments(apiUrl, { sort, filters }, offsetParams);
+      return fetchInstruments(
+        apiUrl,
+        { sort, filters },
+        additionalFilters,
+        offsetParams
+      );
     },
     {
       onError: (error) => {
