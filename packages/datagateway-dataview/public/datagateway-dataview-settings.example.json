@@ -124,31 +124,31 @@
     },
     {
       "section": "Browse",
-      "link": "/browse/proposal",
+      "link": "/browse/proposal?sort={\"title\":\"asc\"}",
       "displayName": "DLS View",
       "order": 2
     },
     {
       "section": "Browse",
-      "link": "/browse/instrument",
+      "link": "/browse/instrument?sort={\"fullName\":\"asc\"}",
       "displayName": "ISIS View",
       "order": 3
     },
     {
       "section": "Browse",
-      "link": "/browseStudyHierarchy/instrument",
+      "link": "/browseStudyHierarchy/instrument?sort={\"fullName\":\"asc\"}",
       "displayName": "Experiments",
       "order": 4
     },
     {
       "section": "Browse",
-      "link": "/my-data/DLS",
+      "link": "/my-data/DLS?filters={\"startDate\":{\"endDate\":\"2022-04-01\"}}&sort={\"startDate\":\"desc\"}",
       "displayName": "My Data DLS",
       "order": 5
     },
     {
       "section": "Browse",
-      "link": "/my-data/ISIS",
+      "link": "/my-data/ISIS?sort={\"startDate\":\"desc\"}",
       "displayName": "My Data ISIS",
       "order": 6
     }
