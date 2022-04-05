@@ -31,7 +31,7 @@ import {
   useRemoveAllFromCart,
   useSizes,
   useDatafileCounts,
-} from '../downloadApi';
+} from '../downloadApiHooks';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
@@ -71,7 +71,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [showConfirmation, setShowConfirmation] = React.useState(false);
 
   const { data: isTwoLevel } = useIsTwoLevel();
-  const { mutateAsync: removeDownloadCartItem } = useRemoveEntityFromCart();
+  const { mutate: removeDownloadCartItem } = useRemoveEntityFromCart();
   const {
     mutate: removeAllDownloadCartItems,
     isLoading: removingAll,
@@ -239,7 +239,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             aria-label={t('downloadCart.remove', {
               name: cartItem.name,
             })}
-            key="remove"
+            key={`remove-${entityId}`}
             size="small"
             disabled={isDeleting}
             // Remove the download when clicked.
@@ -248,8 +248,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               removeDownloadCartItem({
                 entityId,
                 entityType,
-              }).then(() => {
-                setIsDeleting(false);
               });
             }}
           >

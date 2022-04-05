@@ -1,58 +1,53 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import DownloadCartTable from './downloadCartTable.component';
-import { DownloadCartItem } from 'datagateway-common';
-import { flushPromises } from '../setupTests';
 import {
-  fetchDownloadCartItems,
-  removeAllDownloadCartItems,
-  removeDownloadCartItem,
-  getSize,
-  getDatafileCount,
-} from '../downloadApi';
+  DownloadCartItem,
+  fetchDownloadCart,
+  removeFromCart,
+} from 'datagateway-common';
+import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { Router } from 'react-router-dom';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory } from 'history';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import {
+  getDatafileCount,
+  getSize,
+  removeAllDownloadCartItems,
+} from '../downloadApi';
 
-jest.mock('../downloadApi');
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    fetchDownloadCart: jest.fn(),
+    removeFromCart: jest.fn(),
+  };
+});
+
+jest.mock('../downloadApi', () => {
+  const originalModule = jest.requireActual('../downloadApi');
+
+  return {
+    ...originalModule,
+    removeAllDownloadCartItems: jest.fn(),
+    getSize: jest.fn(),
+    getDatafileCount: jest.fn(),
+    getIsTwoLevel: jest.fn().mockResolvedValue(true),
+  };
+});
 
 describe('Download cart table component', () => {
-  let shallow;
   let mount;
   let history;
+  let queryClient;
 
-  const cartItems: DownloadCartItem[] = [
-    {
-      entityId: 1,
-      entityType: 'investigation',
-      id: 1,
-      name: 'INVESTIGATION 1',
-      parentEntities: [],
-    },
-    {
-      entityId: 2,
-      entityType: 'investigation',
-      id: 2,
-      name: 'INVESTIGATION 2',
-      parentEntities: [],
-    },
-    {
-      entityId: 3,
-      entityType: 'dataset',
-      id: 3,
-      name: 'DATASET 1',
-      parentEntities: [],
-    },
-    {
-      entityId: 4,
-      entityType: 'datafile',
-      id: 4,
-      name: 'DATAFILE 1',
-      parentEntities: [],
-    },
-  ];
+  let cartItems: DownloadCartItem[] = [];
 
   // Create our mocked datagateway-download settings file.
   const mockedSettings = {
@@ -77,11 +72,14 @@ describe('Download cart table component', () => {
   };
 
   const createWrapper = (): ReactWrapper => {
+    queryClient = new QueryClient();
     return mount(
       <div id="datagateway-download">
         <Router history={history}>
           <DownloadSettingsContext.Provider value={mockedSettings}>
-            <DownloadCartTable statusTabRedirect={jest.fn()} />
+            <QueryClientProvider client={queryClient}>
+              <DownloadCartTable statusTabRedirect={jest.fn()} />
+            </QueryClientProvider>
           </DownloadSettingsContext.Provider>
         </Router>
       </div>
@@ -89,41 +87,80 @@ describe('Download cart table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     history = createMemoryHistory();
-    (fetchDownloadCartItems as jest.Mock).mockImplementation(() =>
-      Promise.resolve(cartItems)
-    );
-    (removeAllDownloadCartItems as jest.Mock).mockImplementation(() =>
-      Promise.resolve()
-    );
-    (removeDownloadCartItem as jest.Mock).mockImplementation(() =>
-      Promise.resolve()
-    );
-    (getSize as jest.Mock).mockImplementation(() => Promise.resolve(1));
-    (getDatafileCount as jest.Mock).mockImplementation(() =>
-      Promise.resolve(7)
-    );
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'INVESTIGATION 1',
+        parentEntities: [],
+      },
+      {
+        entityId: 2,
+        entityType: 'investigation',
+        id: 2,
+        name: 'INVESTIGATION 2',
+        parentEntities: [],
+      },
+      {
+        entityId: 3,
+        entityType: 'dataset',
+        id: 3,
+        name: 'DATASET 1',
+        parentEntities: [],
+      },
+      {
+        entityId: 4,
+        entityType: 'datafile',
+        id: 4,
+        name: 'DATAFILE 1',
+        parentEntities: [],
+      },
+    ];
+
+    (fetchDownloadCart as jest.MockedFunction<
+      typeof fetchDownloadCart
+    >).mockResolvedValue(cartItems);
+    (removeAllDownloadCartItems as jest.MockedFunction<
+      typeof removeAllDownloadCartItems
+    >).mockResolvedValue(null);
+    (removeFromCart as jest.MockedFunction<
+      typeof removeFromCart
+    >).mockImplementation((entityType, entityIds) => {
+      cartItems = cartItems.filter(
+        (item) => !entityIds.includes(item.entityId)
+      );
+      return Promise.resolve(cartItems);
+    });
+
+    (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
+    (getDatafileCount as jest.MockedFunction<
+      typeof getDatafileCount
+    >).mockResolvedValue(7);
   });
 
   afterEach(() => {
     mount.cleanUp();
-    (fetchDownloadCartItems as jest.Mock).mockClear();
-    (getSize as jest.Mock).mockClear();
-    (getDatafileCount as jest.Mock).mockClear();
-    (removeAllDownloadCartItems as jest.Mock).mockClear();
-    (removeDownloadCartItem as jest.Mock).mockClear();
+    jest.clearAllMocks();
     jest.clearAllTimers();
     jest.useRealTimers();
   });
 
-  it('renders correctly', () => {
-    const wrapper = shallow(
-      <DownloadCartTable statusTabRedirect={jest.fn()} />
-    );
+  it('renders no cart message correctly', async () => {
+    (fetchDownloadCart as jest.MockedFunction<
+      typeof fetchDownloadCart
+    >).mockResolvedValue([]);
 
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
   });
 
   it('fetches the download cart on load', async () => {
@@ -134,24 +171,10 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    expect(fetchDownloadCartItems).toHaveBeenCalled();
-  });
-
-  it('does not fetch the download cart on load if no dg-download element exists', async () => {
-    const wrapper = mount(
-      <Router history={history}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </Router>
+    expect(fetchDownloadCart).toHaveBeenCalled();
+    expect(wrapper.find('[aria-colindex=1]').find('p').first().text()).toEqual(
+      'INVESTIGATION 1'
     );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(fetchDownloadCartItems).not.toHaveBeenCalled();
   });
 
   it('calculates sizes once cart items have been fetched', async () => {
@@ -162,7 +185,7 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    expect(getSize).toHaveBeenCalledTimes(4);
+    expect(getSize).toHaveBeenCalled();
     expect(wrapper.find('[aria-colindex=3]').find('p').first().text()).toEqual(
       '1 B'
     );
@@ -180,6 +203,9 @@ describe('Download cart table component', () => {
     });
 
     expect(getDatafileCount).toHaveBeenCalled();
+    expect(wrapper.find('[aria-colindex=4]').find('p').first().text()).toEqual(
+      '7'
+    );
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
       expect.stringContaining('downloadCart.number_of_files: 28')
     );
@@ -246,9 +272,17 @@ describe('Download cart table component', () => {
   });
 
   it('disables remove all button while request is processing', async () => {
-    (removeAllDownloadCartItems as jest.Mock).mockImplementation(() => {
-      return new Promise((resolve) => setTimeout(resolve, 2000));
-    });
+    // use this to manually resolve promise
+    let promiseResolve;
+
+    (removeAllDownloadCartItems as jest.MockedFunction<
+      typeof removeAllDownloadCartItems
+    >).mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          promiseResolve = resolve;
+        })
+    );
 
     const wrapper = createWrapper();
 
@@ -269,11 +303,58 @@ describe('Download cart table component', () => {
     ).toBeTruthy();
 
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 2001));
+      promiseResolve();
+      await flushPromises();
       wrapper.update();
     });
 
     expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
+  });
+
+  it('disables download button when there are empty items in the cart ', async () => {
+    (getSize as jest.MockedFunction<typeof getSize>)
+      .mockResolvedValueOnce(1)
+      .mockResolvedValueOnce(0);
+    (getDatafileCount as jest.MockedFunction<
+      typeof getDatafileCount
+    >).mockResolvedValueOnce(0);
+
+    const wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(
+      wrapper.find('button#downloadCartButton').prop('disabled')
+    ).toBeTruthy();
+
+    wrapper
+      .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`)
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(
+      wrapper.find('button#downloadCartButton').prop('disabled')
+    ).toBeTruthy();
+
+    wrapper
+      .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 1}"]`)
+      .simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(
+      wrapper.find('button#downloadCartButton').prop('disabled')
+    ).toBeFalsy();
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
@@ -307,8 +388,8 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    expect(removeDownloadCartItem).toHaveBeenCalled();
-    expect(removeDownloadCartItem).toHaveBeenCalledWith(2, 'investigation', {
+    expect(removeFromCart).toHaveBeenCalled();
+    expect(removeFromCart).toHaveBeenCalledWith('investigation', [2], {
       facilityName: mockedSettings.facilityName,
       downloadApiUrl: mockedSettings.downloadApiUrl,
     });
