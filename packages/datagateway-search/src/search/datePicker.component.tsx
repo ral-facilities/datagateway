@@ -114,7 +114,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             renderInput={(props) => {
               const error =
                 // eslint-disable-next-line react/prop-types
-                props.error || invalidDateRange;
+                (props.error || invalidDateRange) ?? undefined;
               let helperText = t('searchBox.invalid_date_message');
               if (invalidDateRange)
                 helperText = t('searchBox.invalid_date_range_message');
