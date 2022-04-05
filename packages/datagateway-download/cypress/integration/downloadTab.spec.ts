@@ -1,13 +1,10 @@
 describe('Download Cart', () => {
   beforeEach(() => {
-    //cy.intercept('GET', '**/topcat/user/cart/**').as('fetchCart');
-    //cy.intercept('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login();
     cy.clearDownloadCart();
 
     cy.seedDownloadCart().then(() => {
       cy.visit('/download');
-      //cy.visit('/download').wait('@fetchCart');
     });
   });
 
