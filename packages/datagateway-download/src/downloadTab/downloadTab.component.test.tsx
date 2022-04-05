@@ -6,6 +6,8 @@ import { flushPromises } from '../setupTests';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
+import { ReactWrapper } from 'enzyme';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 // Create our mocked datagateway-download settings file.
 const mockedSettings = {
@@ -45,19 +47,26 @@ describe('DownloadTab', () => {
     sessionStorage.clear();
   });
 
+  const createWrapper = (): ReactWrapper => {
+    const queryClient = new QueryClient();
+    return mount(
+      <Router history={history}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <QueryClientProvider client={queryClient}>
+            <DownloadTabs />
+          </QueryClientProvider>
+        </DownloadSettingsContext.Provider>
+      </Router>
+    );
+  };
+
   it('renders correctly', () => {
     const wrapper = shallow(<DownloadTabs />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it('renders the previously used tab based on sessionStorage', async () => {
-    let wrapper = mount(
-      <Router history={history}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadTabs />
-        </DownloadSettingsContext.Provider>
-      </Router>
-    );
+    let wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -95,11 +104,7 @@ describe('DownloadTab', () => {
     expect(sessionStorage.getItem('downloadStatusTab')).toEqual('1');
 
     // Recreate the wrapper and expect it to show the download tab.
-    wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadTabs />
-      </DownloadSettingsContext.Provider>
-    );
+    wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -120,13 +125,7 @@ describe('DownloadTab', () => {
   });
 
   it('shows the appropriate table when clicking between tabs', async () => {
-    const wrapper = mount(
-      <Router history={history}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadTabs />
-        </DownloadSettingsContext.Provider>
-      </Router>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
