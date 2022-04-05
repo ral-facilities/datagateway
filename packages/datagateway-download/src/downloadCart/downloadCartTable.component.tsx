@@ -18,6 +18,7 @@ import {
   LinearProgress,
   Theme,
   Link,
+  CircularProgress,
 } from '@mui/material';
 import { RemoveCircle } from '@mui/icons-material';
 import {
@@ -52,6 +53,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
   const [sizesFinished, setSizesFinished] = React.useState(true);
+  const [removingAll, setRemovingAll] = React.useState(false);
 
   const fileCountMax = settings.fileCountMax;
   const totalSizeMax = settings.totalSizeMax;
@@ -233,6 +235,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     return filteredData.sort(sortCartItems);
   }, [data, sort, filters]);
 
+  const emptyItems = React.useMemo(
+    () => data.some((item) => item.size === 0 || item.fileCount === 0),
+    [data]
+  );
+
   return data.length === 0 ? (
     <div
       className="tour-download-results"
@@ -301,8 +308,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           <Paper
             className="tour-download-results"
             sx={{
-              height:
-                'calc(100vh - 64px - 48px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px))',
+              height: `calc(100vh - 64px - 48px - 48px - 48px - 3rem${
+                emptyItems ? ' - 1rem' : ''
+              } - (1.75 * 0.875rem + 12px)`,
               minHeight: 230,
               overflowX: 'auto',
             }}
@@ -324,6 +332,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   dataKey: 'size',
                   cellContentRenderer: (props) => {
                     return formatBytes(props.cellData);
+                  },
+                },
+                {
+                  label: t('downloadCart.fileCount'),
+                  dataKey: 'fileCount',
+                  cellContentRenderer: (props) => {
+                    if (props.cellData === -1) return 'Loading...';
+                    return props.cellData;
                   },
                 },
               ]}
@@ -392,6 +408,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             direction="column"
             xs
             alignContent="flex-end"
+            alignItems="flex-end"
             sx={{ marginRight: '1.2em' }}
           >
             <Typography id="fileCountDisplay">
@@ -404,6 +421,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               {totalSize !== -1 ? formatBytes(totalSize) : 'Calculating...'}
               {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
             </Typography>
+            {emptyItems && (
+              <Typography>{t('downloadCart.empty_items_warning')}</Typography>
+            )}
           </Grid>
           <Grid
             container
@@ -414,17 +434,24 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             sx={{ marginRight: '1em' }}
           >
             <Grid item>
+              {/* Request to remove all selections is in progress. To prevent excessive requests, disable button during request */}
               <Button
                 className="tour-download-remove-button"
                 id="removeAllButton"
                 variant="contained"
                 color="primary"
-                onClick={() =>
+                disabled={removingAll}
+                startIcon={removingAll && <CircularProgress size={20} />}
+                onClick={() => {
+                  setRemovingAll(true);
                   removeAllDownloadCartItems({
                     facilityName: settings.facilityName,
                     downloadApiUrl: settings.downloadApiUrl,
-                  }).then(() => setData([]))
-                }
+                  }).then(() => {
+                    setData([]);
+                    setRemovingAll(false);
+                  });
+                }}
               >
                 {t('downloadCart.remove_all')}
               </Button>
@@ -439,6 +466,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 disabled={
                   fileCount <= 0 ||
                   totalSize <= 0 ||
+                  emptyItems ||
                   (fileCountMax !== -1 && fileCount > fileCountMax) ||
                   (totalSizeMax !== -1 && totalSize > totalSizeMax)
                 }

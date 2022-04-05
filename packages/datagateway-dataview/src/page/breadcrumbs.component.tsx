@@ -319,7 +319,7 @@ const PageBreadcrumbs: React.FC<PageBreadcrumbsProps> = (
 
   const viewString = view ? `?view=${view}` : '';
   return (
-    <div>
+    <div id="breadcrumbs">
       <Paper square elevation={0}>
         {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
         {currentPathnames.length > 0 ? (

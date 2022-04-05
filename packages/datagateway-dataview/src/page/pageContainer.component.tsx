@@ -37,17 +37,21 @@ import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
 import TranslatedHomePage from './translatedHomePage.component';
+import DoiRedirect from './doiRedirect.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
-const cardPaperStyle = { backgroundColor: 'inherit' };
-const tablePaperStyle = {
-  //Footer is 36px
-  height: 'calc(100vh - 180px - 36px)',
-  width: '100%',
-  backgroundColor: 'inherit',
-  overflowX: 'auto',
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const getTablePaperStyle = (tablePaperHeight: string) => {
+  return {
+    height: tablePaperHeight,
+    width: '100%',
+    backgroundColor: 'inherit',
+    overflowX: 'auto',
+  };
 };
+
+const cardPaperStyle = { backgroundColor: 'inherit' };
 const tablePaperMessageStyle = {
   //Footer is 36px
   height: 'calc(100vh - 244px - 4rem - 36px)',
@@ -83,6 +87,7 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
 export const paths = {
   homepage: '/datagateway',
   root: '/browse',
+  doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
   myData: {
     root: '/my-data',
     dls: '/my-data/DLS',
@@ -339,6 +344,7 @@ const StyledRouting = (props: {
   location: LocationType;
   displayFilterMessage: boolean;
   loggedInAnonymously: boolean;
+  linearProgressHeight: string;
 }): React.ReactElement => {
   const {
     view,
@@ -346,11 +352,31 @@ const StyledRouting = (props: {
     viewStyle,
     displayFilterMessage,
     loggedInAnonymously,
+    linearProgressHeight,
   } = props;
+
+  const breadcrumbDiv = document.getElementById('breadcrumbs');
+
+  const [breadcrumbHeight, setBreadcrumbHeight] = React.useState(
+    breadcrumbDiv ? `${breadcrumbDiv.clientHeight}px` : '30px'
+  );
+
+  React.useEffect(() => {
+    breadcrumbDiv
+      ? setBreadcrumbHeight(`${breadcrumbDiv.clientHeight}px`)
+      : setBreadcrumbHeight('30px');
+  }, [breadcrumbDiv, breadcrumbDiv?.clientHeight]);
+
+  // Footer is 36px
+  // Chrome's display is 1px shorter than Firefox's, so we subtract 1px extra to account for this
+  // We also don't want the <LinearProgress> bar to push the page down so subtract the height of this (4px if on-screen)
+  // Additional rows of breadcrumbs also push the page down so subtract the height of the breadcrumb div
+  const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
+
   const [t] = useTranslation();
   const tableClassStyle = displayFilterMessage
     ? tablePaperMessageStyle
-    : tablePaperStyle;
+    : getTablePaperStyle(tablePaperHeight);
   return (
     <div>
       {viewStyle !== 'card' && displayFilterMessage && (
@@ -387,6 +413,7 @@ const ViewRouting = React.memo(
     totalDataCount: number;
     location: LocationType;
     loggedInAnonymously: boolean;
+    linearProgressHeight: string;
   }): React.ReactElement => {
     const {
       view,
@@ -394,6 +421,7 @@ const ViewRouting = React.memo(
       totalDataCount,
       location,
       loggedInAnonymously,
+      linearProgressHeight,
     } = props;
     const displayFilterMessage = loadedCount && totalDataCount === 0;
 
@@ -421,6 +449,7 @@ const ViewRouting = React.memo(
             location={location}
             loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
 
@@ -432,6 +461,7 @@ const ViewRouting = React.memo(
             location={location}
             loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
       </SwitchRouting>
@@ -495,6 +525,10 @@ const PageContainer: React.FC = () => {
   });
   const loading = isFetchingNum > 0;
 
+  const [linearProgressHeight, setlinearProgressHeight] = React.useState(
+    loading ? '4px' : '0px'
+  );
+
   const queryClient = useQueryClient();
 
   // we need to run this hook every render to ensure we have the
@@ -509,6 +543,10 @@ const PageContainer: React.FC = () => {
       }) ?? 0;
     if (count !== totalDataCount) setTotalDataCount(count);
   });
+
+  React.useEffect(() => {
+    loading ? setlinearProgressHeight('4px') : setlinearProgressHeight('0px');
+  }, [loading]);
 
   const isCountFetchingNum = useIsFetching('count', {
     exact: false,
@@ -601,6 +639,9 @@ const PageContainer: React.FC = () => {
     <SwitchRouting location={location}>
       {/* Load the homepage */}
       <Route exact path={paths.homepage} component={TranslatedHomePage} />
+      <Route exact path={paths.doiRedirect}>
+        <DoiRedirect />
+      </Route>
       <Route
         render={() => (
           // Load the standard dataview pageContainer
@@ -670,7 +711,10 @@ const PageContainer: React.FC = () => {
               {/* Show loading progress if data is still being loaded */}
               {loading && (
                 <Grid item xs={12}>
-                  <LinearProgress color="secondary" />
+                  <LinearProgress
+                    color="secondary"
+                    style={{ height: linearProgressHeight }}
+                  />
                 </Grid>
               )}
 
@@ -682,6 +726,7 @@ const PageContainer: React.FC = () => {
                   loadedCount={loadedCount}
                   loggedInAnonymously={loggedInAnonymously}
                   totalDataCount={totalDataCount ?? 0}
+                  linearProgressHeight={linearProgressHeight}
                 />
               </Grid>
             </StyledGrid>
