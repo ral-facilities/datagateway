@@ -358,11 +358,18 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             style={{ marginRight: '1.2em' }}
           >
             {fileCountsLoading && (
-              <CircularProgress size={15} thickness={7} disableShrink={true} />
+              <CircularProgress
+                size={15}
+                thickness={7}
+                disableShrink={true}
+                aria-label={t('downloadCart.calculating')}
+              />
             )}
             <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
               {t('downloadCart.number_of_files')}:{' '}
-              {fileCount !== -1 ? fileCount : 'Calculating...'}
+              {fileCount !== -1
+                ? fileCount
+                : `${t('downloadCart.calculating')}...`}
               {fileCountMax !== -1 && ` / ${fileCountMax}`}
             </Typography>
           </Grid>
@@ -375,11 +382,18 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             style={{ marginRight: '1.2em' }}
           >
             {sizesLoading && (
-              <CircularProgress size={15} thickness={7} disableShrink={true} />
+              <CircularProgress
+                size={15}
+                thickness={7}
+                disableShrink={true}
+                aria-label={t('downloadCart.calculating')}
+              />
             )}
             <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
               {t('downloadCart.total_size')}:{' '}
-              {totalSize !== -1 ? formatBytes(totalSize) : 'Calculating...'}
+              {totalSize !== -1
+                ? formatBytes(totalSize)
+                : `${t('downloadCart.calculating')}...`}
               {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
             </Typography>
           </Grid>

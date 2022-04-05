@@ -76,6 +76,7 @@
     "type": "Type",
     "size": "Size",
     "fileCount": "File Count",
+    "calculating": "Calculating",
     "remove": "Remove {{name}} from selection",
     "remove_all": "Remove All",
     "download": "Download Selection",
