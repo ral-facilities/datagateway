@@ -110,8 +110,8 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   let startDate = null;
   let endDate = null;
 
-  if (startDateString) startDate = new Date(startDateString);
-  if (endDateString) endDate = new Date(endDateString);
+  if (startDateString) startDate = new Date(startDateString + 'T00:00:00Z');
+  if (endDateString) endDate = new Date(endDateString + 'T00:00:00Z');
 
   // Create the query parameters object.
   const params: QueryParams = {
@@ -214,12 +214,7 @@ export const getApiParams = (
           searchParams.append(
             'where',
             JSON.stringify({
-              [column]: {
-                gte: format(
-                  Date.parse(filter.startDate),
-                  'yyyy-MM-dd HH:mm:ss'
-                ),
-              },
+              [column]: { gte: `${filter.startDate} 00:00:00` },
             })
           );
         }
@@ -227,9 +222,7 @@ export const getApiParams = (
           searchParams.append(
             'where',
             JSON.stringify({
-              [column]: {
-                lte: format(Date.parse(filter.endDate), 'yyyy-MM-dd HH:mm:ss'),
-              },
+              [column]: { lte: `${filter.endDate} 23:59:59` },
             })
           );
         }

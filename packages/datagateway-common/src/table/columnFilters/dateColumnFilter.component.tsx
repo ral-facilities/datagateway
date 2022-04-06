@@ -53,13 +53,13 @@ export function updateFilter({
       onChange({
         [startDateOrEndDateChanged]:
           date && isValid(date)
-            ? format(date, filterByTime ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd')
+            ? format(date, filterByTime ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd')
             : undefined,
         [startDateOrEndDateChanged === 'startDate' ? 'endDate' : 'startDate']:
           otherDate && isValid(otherDate)
             ? format(
                 otherDate,
-                filterByTime ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
+                filterByTime ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd'
               )
             : undefined,
       });
@@ -97,18 +97,18 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             allowKeyboardControl
             style={{ whiteSpace: 'nowrap' }}
             inputProps={{ 'aria-label': `${props.label} filter` }}
-            invalidDateMessage="Date format: yyyy-MM-dd HH:mm:ss."
+            invalidDateMessage="Date format: yyyy-MM-dd HH:mm."
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter from, date/time picker`,
             }}
             id={props.label + ' filter from'}
             aria-hidden="true"
-            format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm"
             placeholder="From..."
             value={startDate}
             views={['year', 'month', 'date', 'hours', 'minutes']}
-            maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
+            maxDate={endDate || new Date('2100-01-01 00:00')}
             maxDateMessage="Invalid date/time range"
             color="secondary"
             onChange={(date) => {
@@ -132,18 +132,18 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             allowKeyboardControl
             style={{ whiteSpace: 'nowrap' }}
             inputProps={{ 'aria-label': `${props.label} filter` }}
-            invalidDateMessage="Date format: yyyy-MM-dd HH:mm:ss."
+            invalidDateMessage="Date format: yyyy-MM-dd HH:mm."
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter to, date/time picker`,
             }}
             id={props.label + ' filter to'}
             aria-hidden="true"
-            format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm"
             placeholder="To..."
             value={endDate}
             views={['year', 'month', 'date', 'hours', 'minutes']}
-            minDate={startDate || new Date('1984-01-01T00:00:00Z')}
+            minDate={startDate || new Date('1984-01-01 00:00')}
             minDateMessage="Invalid date/time range"
             color="secondary"
             onChange={(date) => {

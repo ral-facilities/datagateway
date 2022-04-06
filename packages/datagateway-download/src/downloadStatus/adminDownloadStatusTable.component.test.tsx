@@ -415,7 +415,7 @@ describe('Admin Download Status Table', () => {
       'input[id="downloadStatus.createdAt filter from"]'
     );
     await act(async () => {
-      dateFromFilterInput.instance().value = '2020-01-01';
+      dateFromFilterInput.instance().value = '2020-01-01 00:00';
       dateFromFilterInput.simulate('change');
       await flushPromises();
       wrapper.update();
@@ -423,7 +423,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '9999-12-31 23:59:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00'} AND {ts '9999-12-31 23:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
 
     // Get the Requested Data To filter input
@@ -431,7 +431,7 @@ describe('Admin Download Status Table', () => {
       'input[id="downloadStatus.createdAt filter to"]'
     );
     await act(async () => {
-      dateToFilterInput.instance().value = '2020-01-02';
+      dateToFilterInput.instance().value = '2020-01-02 23:59';
       dateToFilterInput.simulate('change');
       await flushPromises();
       wrapper.update();
@@ -439,7 +439,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00'} AND {ts '2020-01-02 23:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
 
     dateFromFilterInput.instance().value = '';
