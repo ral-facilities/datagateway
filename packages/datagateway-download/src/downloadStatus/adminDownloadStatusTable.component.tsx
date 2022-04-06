@@ -90,10 +90,10 @@ const AdminDownloadStatusTable: React.FC = () => {
         if (!Array.isArray(filter)) {
           if ('startDate' in filter || 'endDate' in filter) {
             const startDate = filter.startDate
-              ? `${filter.startDate} 00:00:00`
+              ? filter.startDate
               : '0000-01-01 00:00:00';
             const endDate = filter.endDate
-              ? `${filter.endDate} 23:59:59`
+              ? filter.endDate
               : '9999-12-31 23:59:59';
 
             queryOffset += ` AND UPPER(download.${column}) BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
@@ -259,6 +259,7 @@ const AdminDownloadStatusTable: React.FC = () => {
         }
       }}
       value={filters[dataKey] as DateFilter}
+      filterByTime
     />
   );
 
