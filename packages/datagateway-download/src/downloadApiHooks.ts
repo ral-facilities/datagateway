@@ -141,7 +141,7 @@ export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
 //   );
 // };
 
-const sizesLimit = pLimit(10);
+const sizesLimit = pLimit(20);
 
 export const useSizes = (
   data: DownloadCartItem[] | undefined
@@ -183,41 +183,10 @@ export const useSizes = (
   // prettier-ignore
   const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
 
-  const [sizes, setSizes] = React.useState<
-    UseQueryResult<number, AxiosError>[]
-  >([]);
-
-  const countAppliedRef = React.useRef(0);
-
-  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process, as well as clear sizes
-  React.useEffect(() => {
-    countAppliedRef.current = 0;
-    setSizes([]);
-  }, [data]);
-
-  // need to use useDeepCompareEffect here because the array returned by useQueries
-  // is different every time this hook runs
-  useDeepCompareEffect(() => {
-    const currCountReturned = queries.reduce(
-      (acc, curr) => acc + (curr.isFetched ? 1 : 0),
-      0
-    );
-    const batchMax =
-      sizes.length - currCountReturned < 10
-        ? sizes.length - currCountReturned
-        : 10;
-    // this in effect batches our updates to only happen in batches >= 10
-    if (currCountReturned - countAppliedRef.current >= batchMax) {
-      setSizes(queries);
-      countAppliedRef.current = currCountReturned;
-    }
-  }, [sizes, queries]);
-
-  return sizes;
+  return queries;
 };
 
-const datafileCountslimit = pLimit(10);
+const datafileCountslimit = pLimit(20);
 
 export const useDatafileCounts = (
   data: DownloadCartItem[] | undefined
@@ -244,6 +213,8 @@ export const useDatafileCounts = (
               handleICATError(error, false);
             },
             staleTime: Infinity,
+            enabled: entityType !== 'datafile',
+            initialData: entityType === 'datafile' ? 1 : undefined,
           };
         })
       : [];
@@ -257,36 +228,5 @@ export const useDatafileCounts = (
   // prettier-ignore
   const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
 
-  const [datafileCounts, setDatafileCounts] = React.useState<
-    UseQueryResult<number, AxiosError>[]
-  >([]);
-
-  const countAppliedRef = React.useRef(0);
-
-  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process, as well as clear datafileCounts
-  React.useEffect(() => {
-    countAppliedRef.current = 0;
-    setDatafileCounts([]);
-  }, [data]);
-
-  // need to use useDeepCompareEffect here because the array returned by useQueries
-  // is different every time this hook runs
-  useDeepCompareEffect(() => {
-    const currCountReturned = queries.reduce(
-      (acc, curr) => acc + (curr.isFetched ? 1 : 0),
-      0
-    );
-    const batchMax =
-      datafileCounts.length - currCountReturned < 10
-        ? datafileCounts.length - currCountReturned
-        : 10;
-    // this in effect batches our updates to only happen in batches >= 10
-    if (currCountReturned - countAppliedRef.current >= batchMax) {
-      setDatafileCounts(queries);
-      countAppliedRef.current = currCountReturned;
-    }
-  }, [datafileCounts, queries]);
-
-  return datafileCounts;
+  return queries;
 };
