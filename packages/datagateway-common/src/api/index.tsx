@@ -221,9 +221,7 @@ export const getApiParams = (
         if ('endDate' in filter && filter.endDate) {
           searchParams.append(
             'where',
-            JSON.stringify({
-              [column]: { lte: `${filter.endDate} 23:59:59` },
-            })
+            JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
           );
         }
         if ('type' in filter && filter.type) {
