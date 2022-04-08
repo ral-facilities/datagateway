@@ -17,7 +17,6 @@ import {
   useQueries,
 } from 'react-query';
 import pLimit from 'p-limit';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 import {
   removeAllDownloadCartItems,
   getSize,
