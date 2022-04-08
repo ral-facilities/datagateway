@@ -139,3 +139,11 @@ updates:
   - dependency-name: "@material-ui/core"
     versions:
     - 4.11.2
+
+# Maintain dependencies for GitHub Actions
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "daily"
+    time: "00:00"
+    timezone: Europe/London
