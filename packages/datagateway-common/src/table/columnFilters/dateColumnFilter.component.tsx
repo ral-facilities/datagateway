@@ -78,7 +78,6 @@ interface DatePickerCommonProps {
   clearable: boolean;
   allowKeyboardControl: boolean;
   invalidDateMessage: string;
-  ariaHidden: boolean;
   format: string;
   color: 'secondary' | 'primary' | undefined;
   strictCompareDates?: boolean;
@@ -105,7 +104,6 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
     clearable: true,
     allowKeyboardControl: true,
     invalidDateMessage: 'Date format: yyyy-MM-dd.',
-    ariaHidden: true,
     format: 'yyyy-MM-dd',
     color: 'secondary',
     okLabel: <span style={{ color: buttonColour }}>OK</span>,
@@ -133,6 +131,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
               'aria-label': `${props.label} filter from, date/time picker`,
             }}
             id={props.label + ' filter from'}
+            aria-hidden="true"
             placeholder="From..."
             value={startDate}
             views={['year', 'month', 'date', 'hours', 'minutes']}
@@ -159,6 +158,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
               'aria-label': `${props.label} filter to, date/time picker`,
             }}
             id={props.label + ' filter to'}
+            aria-hidden="true"
             placeholder="To..."
             value={endDate}
             views={['year', 'month', 'date', 'hours', 'minutes']}
@@ -188,6 +188,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
               'aria-label': `${props.label} filter from, date picker`,
             }}
             id={props.label + ' filter from'}
+            aria-hidden="true"
             placeholder="From..."
             value={startDate}
             views={['year', 'month', 'date']}
@@ -205,24 +206,20 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             }}
           />
           <KeyboardDatePicker
-            clearable
-            allowKeyboardControl
+            {...datePickerProps}
             style={{ whiteSpace: 'nowrap' }}
             inputProps={{ 'aria-label': `${props.label} filter` }}
-            invalidDateMessage="Date format: yyyy-MM-dd."
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter to, date picker`,
             }}
             id={props.label + ' filter to'}
             aria-hidden="true"
-            format="yyyy-MM-dd"
             placeholder="To..."
             value={endDate}
             views={['year', 'month', 'date']}
             minDate={startDate || new Date('1984-01-01T00:00:00Z')}
             minDateMessage="Invalid date range"
-            color="secondary"
             onChange={(date) => {
               setEndDate(date);
               updateFilter({
@@ -233,9 +230,6 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
                 onChange: props.onChange,
               });
             }}
-            okLabel={<span style={{ color: buttonColour }}>OK</span>}
-            cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
-            clearLabel={<span style={{ color: buttonColour }}>Clear</span>}
           />
         </MuiPickersUtilsProvider>
       )}
