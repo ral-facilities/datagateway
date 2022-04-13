@@ -40,83 +40,11 @@ describe('DownloadTab', () => {
 
   afterEach(() => {
     mount.cleanUp();
-
-    // Clear the session storage.
-    sessionStorage.clear();
   });
 
   it('renders correctly', () => {
     const wrapper = shallow(<DownloadTabs />);
     expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders the previously used tab based on sessionStorage', async () => {
-    let wrapper = mount(
-      <Router history={history}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadTabs />
-        </DownloadSettingsContext.Provider>
-      </Router>
-    );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(
-      wrapper.exists('[aria-label="downloadTab.download_cart_panel_arialabel"]')
-    ).toBe(true);
-    expect(
-      wrapper
-        .find('div[aria-label="downloadTab.download_cart_panel_arialabel"]')
-        .props().hidden
-    ).toBe(false);
-
-    // The tab index should be 0 for the cart tab.
-    expect(sessionStorage.getItem('downloadStatusTab')).toEqual('0');
-
-    await act(async () => {
-      wrapper
-        .find('button[aria-label="downloadTab.downloads_tab_arialabel"]')
-        .simulate('click');
-
-      await flushPromises();
-      wrapper.update();
-
-      expect(
-        wrapper
-          .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
-          .props().hidden
-      ).toBe(false);
-    });
-
-    // The tab index should be 1 for the download tab.
-    expect(sessionStorage.getItem('downloadStatusTab')).toEqual('1');
-
-    // Recreate the wrapper and expect it to show the download tab.
-    wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadTabs />
-      </DownloadSettingsContext.Provider>
-    );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(sessionStorage.getItem('downloadStatusTab')).toEqual('1');
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadTab.download_status_panel_arialabel"]'
-      )
-    ).toBe(true);
-    expect(
-      wrapper
-        .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
-        .props().hidden
-    ).toBe(false);
   });
 
   it('shows the appropriate table when clicking between tabs', async () => {
@@ -198,5 +126,53 @@ describe('DownloadTab', () => {
           .props().hidden
       ).toBe(true);
     });
+  });
+
+  it('renders the selections tab on each mount', async () => {
+    let wrapper = mount(
+      <Router history={history}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadTabs />
+        </DownloadSettingsContext.Provider>
+      </Router>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Navigate to downloads tab
+    await act(async () => {
+      wrapper
+        .find('button[aria-label="downloadTab.downloads_tab_arialabel"]')
+        .simulate('click');
+
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Recreate the wrapper and expect it to show the selections tab.
+    wrapper = mount(
+      <Router history={history}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadTabs />
+        </DownloadSettingsContext.Provider>
+      </Router>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(
+      wrapper.exists('[aria-label="downloadTab.download_cart_panel_arialabel"]')
+    ).toBe(true);
+    expect(
+      wrapper
+        .find('div[aria-label="downloadTab.download_cart_panel_arialabel"]')
+        .props().hidden
+    ).toBe(false);
   });
 });
