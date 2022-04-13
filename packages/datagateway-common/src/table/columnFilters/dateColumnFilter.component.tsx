@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { format, isValid, isEqual } from 'date-fns';
 import {
@@ -74,6 +74,19 @@ interface DateColumnFilterProps {
   filterByTime?: boolean;
 }
 
+interface DatePickerCommonProps {
+  clearable: boolean;
+  allowKeyboardControl: boolean;
+  invalidDateMessage: string;
+  ariaHidden: boolean;
+  format: string;
+  color: 'secondary' | 'primary' | undefined;
+  strictCompareDates?: boolean;
+  okLabel: ReactElement;
+  cancelLabel: ReactElement;
+  clearLabel: ReactElement;
+}
+
 const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
   //Need state to change otherwise wont update error messages for an invalid date
   const [startDate, setStartDate] = useState(
@@ -88,29 +101,43 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buttonColour = (theme as any).colours?.blue;
 
+  const datePickerProps: DatePickerCommonProps = {
+    clearable: true,
+    allowKeyboardControl: true,
+    invalidDateMessage: 'Date format: yyyy-MM-dd.',
+    ariaHidden: true,
+    format: 'yyyy-MM-dd',
+    color: 'secondary',
+    okLabel: <span style={{ color: buttonColour }}>OK</span>,
+    cancelLabel: <span style={{ color: buttonColour }}>Cancel</span>,
+    clearLabel: <span style={{ color: buttonColour }}>Clear</span>,
+  };
+
+  const dateTimePickerProps: DatePickerCommonProps = {
+    ...datePickerProps,
+    invalidDateMessage: 'Date format: yyyy-MM-dd HH:mm.',
+    format: 'yyyy-MM-dd HH:mm',
+    strictCompareDates: true,
+  };
+
   return (
     <form>
       {props.filterByTime ? (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDateTimePicker
-            clearable
-            allowKeyboardControl
+            {...dateTimePickerProps}
             style={{ whiteSpace: 'nowrap' }}
             inputProps={{ 'aria-label': `${props.label} filter` }}
-            invalidDateMessage="Date format: yyyy-MM-dd HH:mm."
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter from, date/time picker`,
             }}
             id={props.label + ' filter from'}
-            aria-hidden="true"
-            format="yyyy-MM-dd HH:mm"
             placeholder="From..."
             value={startDate}
             views={['year', 'month', 'date', 'hours', 'minutes']}
             maxDate={endDate || new Date('2100-01-01 00:00')}
             maxDateMessage="Invalid date/time range"
-            color="secondary"
             onChange={(date) => {
               setStartDate(date);
               updateFilter({
@@ -122,30 +149,21 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
                 filterByTime: true,
               });
             }}
-            okLabel={<span style={{ color: buttonColour }}>OK</span>}
-            cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
-            clearLabel={<span style={{ color: buttonColour }}>Clear</span>}
-            strictCompareDates
           />
           <KeyboardDateTimePicker
-            clearable
-            allowKeyboardControl
+            {...dateTimePickerProps}
             style={{ whiteSpace: 'nowrap' }}
             inputProps={{ 'aria-label': `${props.label} filter` }}
-            invalidDateMessage="Date format: yyyy-MM-dd HH:mm."
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter to, date/time picker`,
             }}
             id={props.label + ' filter to'}
-            aria-hidden="true"
-            format="yyyy-MM-dd HH:mm"
             placeholder="To..."
             value={endDate}
             views={['year', 'month', 'date', 'hours', 'minutes']}
             minDate={startDate || new Date('1984-01-01 00:00')}
             minDateMessage="Invalid date/time range"
-            color="secondary"
             onChange={(date) => {
               setEndDate(date);
               updateFilter({
@@ -157,33 +175,24 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
                 filterByTime: true,
               });
             }}
-            okLabel={<span style={{ color: buttonColour }}>OK</span>}
-            cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
-            clearLabel={<span style={{ color: buttonColour }}>Clear</span>}
-            strictCompareDates
           />
         </MuiPickersUtilsProvider>
       ) : (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
-            clearable
-            allowKeyboardControl
+            {...datePickerProps}
             style={{ whiteSpace: 'nowrap' }}
             inputProps={{ 'aria-label': `${props.label} filter` }}
-            invalidDateMessage="Date format: yyyy-MM-dd."
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter from, date picker`,
             }}
             id={props.label + ' filter from'}
-            aria-hidden="true"
-            format="yyyy-MM-dd"
             placeholder="From..."
             value={startDate}
             views={['year', 'month', 'date']}
             maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
             maxDateMessage="Invalid date range"
-            color="secondary"
             onChange={(date) => {
               setStartDate(date);
               updateFilter({
@@ -194,9 +203,6 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
                 onChange: props.onChange,
               });
             }}
-            okLabel={<span style={{ color: buttonColour }}>OK</span>}
-            cancelLabel={<span style={{ color: buttonColour }}>Cancel</span>}
-            clearLabel={<span style={{ color: buttonColour }}>Clear</span>}
           />
           <KeyboardDatePicker
             clearable
