@@ -1,3 +1,5 @@
+import { format } from 'date-fns-tz';
+
 describe('Download Status', () => {
   before(() => {
     // Ensure the downloads are cleared before running tests.
@@ -129,7 +131,7 @@ describe('Download Status', () => {
     });
 
     it('date between', () => {
-      cy.get('input[id="Requested Date filter from"]').type('2020-01-31');
+      cy.get('input[id="Requested Date filter from"]').type('2020-01-31 00:00');
 
       const date = new Date();
       const month = date.toLocaleString('default', { month: 'long' });
@@ -156,7 +158,7 @@ describe('Download Status', () => {
 
       cy.get('input[id="Requested Date filter to"]').should(
         'have.value',
-        date.toISOString().slice(0, 10)
+        format(date, 'yyyy-MM-dd HH:mm')
       );
 
       // There should not be results for this time period.
@@ -169,7 +171,7 @@ describe('Download Status', () => {
       cy.get('[aria-rowcount="4"]').should('exist');
 
       cy.get('input[id="Requested Date filter from"]').type(
-        currDate.toISOString().slice(0, 10)
+        format(currDate, 'yyyy-MM-dd HH:mm')
       );
 
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
