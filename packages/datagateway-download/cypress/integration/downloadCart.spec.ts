@@ -12,10 +12,6 @@ describe('Download Cart', () => {
 
   afterEach(() => {
     cy.clearDownloadCart();
-
-    // Ensure to clear sessionStorage to prevent the app
-    // storing tab data.
-    sessionStorage.clear();
   });
 
   it('should load correctly and display cart items', () => {

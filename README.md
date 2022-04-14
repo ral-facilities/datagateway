@@ -1,6 +1,6 @@
 # DataGateway
 
-[![Build Status](https://github.com/ral-facilities/datagateway/workflows/CI%20Build/badge.svg?branch=master)](https://github.com/ral-facilities/datagateway/actions?query=workflow%3A%22CI+Build%22) [![codecov](https://codecov.io/gh/ral-facilities/datagateway/branch/master/graph/badge.svg)](https://codecov.io/gh/ral-facilities/datagateway)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Build Status](https://github.com/ral-facilities/datagateway/workflows/CI%20Build/badge.svg?branch=master)](https://github.com/ral-facilities/datagateway/actions?query=workflow%3A%22CI+Build%22) [![codecov](https://codecov.io/gh/ral-facilities/datagateway/branch/master/graph/badge.svg)](https://codecov.io/gh/ral-facilities/datagateway)
 
 DataGateway is a [ReactJs](https://reactjs.org/)-based web application that provides ways of discovering and accessing data produced at large-scale science facilities. DataGateway is
 a [micro-frontend](https://micro-frontends.org/) that can be integrated with the parent web application [SciGateway](https://github.com/ral-facilities/scigateway).
