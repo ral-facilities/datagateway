@@ -207,7 +207,7 @@ describe('Download cart table component', () => {
       '7'
     );
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      expect.stringContaining('downloadCart.number_of_files: 28')
+      expect.stringContaining('downloadCart.number_of_files: 22 / 5000')
     );
   });
 

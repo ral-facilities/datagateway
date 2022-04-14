@@ -138,13 +138,7 @@ describe('DownloadTab', () => {
   });
 
   it('renders the selections tab on each mount', async () => {
-    let wrapper = mount(
-      <Router history={history}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadTabs />
-        </DownloadSettingsContext.Provider>
-      </Router>
-    );
+    let wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -162,13 +156,7 @@ describe('DownloadTab', () => {
     });
 
     // Recreate the wrapper and expect it to show the selections tab.
-    wrapper = mount(
-      <Router history={history}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadTabs />
-        </DownloadSettingsContext.Provider>
-      </Router>
-    );
+    wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
