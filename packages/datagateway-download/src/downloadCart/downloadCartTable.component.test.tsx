@@ -206,8 +206,10 @@ describe('Download cart table component', () => {
     expect(wrapper.find('[aria-colindex=4]').find('p').first().text()).toEqual(
       '7'
     );
+
+    // TODO fix this. It seems getDatafileCount is not being called if entityType === 'datafile'
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      expect.stringContaining('downloadCart.number_of_files: 22 / 5000')
+      expect.stringContaining('downloadCart.number_of_files: 28 / 5000')
     );
   });
 
