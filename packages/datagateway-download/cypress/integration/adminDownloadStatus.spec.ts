@@ -57,7 +57,7 @@ describe('Admin Download Status', () => {
       cy.get('.react-draggable')
         .eq(7)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 600 })
+        .trigger('mousemove', { clientX: 800 })
         .trigger('mouseup');
       cy.contains('[role="button"]', 'Requested Date').click();
 
@@ -81,7 +81,7 @@ describe('Admin Download Status', () => {
       cy.get('.react-draggable')
         .eq(7)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 600 })
+        .trigger('mousemove', { clientX: 800 })
         .trigger('mouseup');
       cy.contains('[role="button"]', 'Requested Date').click();
 
@@ -110,7 +110,7 @@ describe('Admin Download Status', () => {
       cy.get('.react-draggable')
         .eq(7)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 600 })
+        .trigger('mousemove', { clientX: 800 })
         .trigger('mouseup');
       cy.contains('[role="button"]', 'Requested Date').click();
 
@@ -144,7 +144,7 @@ describe('Admin Download Status', () => {
       cy.get('.react-draggable')
         .eq(7)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 600 })
+        .trigger('mousemove', { clientX: 800 })
         .trigger('mouseup');
       cy.contains('[role="button"]', 'Requested Date').click();
 
