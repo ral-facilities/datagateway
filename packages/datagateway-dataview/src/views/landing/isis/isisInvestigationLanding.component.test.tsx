@@ -15,6 +15,8 @@ import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Router } from 'react-router';
+import { flushPromises } from '../../../setupTests';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -162,6 +164,8 @@ describe('ISIS Investigation Landing page', () => {
       fullReference: 'Journal, Author, Date, DOI',
     },
   ];
+  const noSamples: never[] = [];
+  const noPublication: never[] = [];
 
   beforeEach(() => {
     mount = createMount();
@@ -269,6 +273,34 @@ describe('ISIS Investigation Landing page', () => {
     ).toHaveLength(0);
   });
 
+  it('renders text "No samples" when no data is present', () => {
+    let wrapper = createWrapper();
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], samples: noSamples }],
+    });
+    wrapper = createWrapper();
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-details-panel-no-samples"]')
+        .exists()
+    ).toBeTruthy();
+  });
+
+  it('renders text "No publications" when no data is present', () => {
+    let wrapper = createWrapper();
+    (useInvestigation as jest.Mock).mockReturnValue({
+      data: [{ ...initialData[0], publications: noPublication }],
+    });
+    wrapper = createWrapper();
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-details-panel-no-publications"]')
+        .exists()
+    ).toBeTruthy();
+  });
+
   it('publications displayed correctly', () => {
     let wrapper = createWrapper();
 
@@ -321,83 +353,79 @@ describe('ISIS Investigation Landing page', () => {
     ).toEqual('Sample');
   });
 
-  it('displays citation correctly when study missing', () => {
+  it('displays citation correctly when study missing', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], studyInvestigations: undefined }],
     });
     const wrapper = createWrapper();
+    await act(async () => flushPromises());
+    wrapper.update();
     expect(
-      wrapper
-        .find('[aria-label="landing-investigation-citation"]')
-        .first()
-        .text()
-    ).toEqual('Test 1, doi_constants.publisher.name, https://doi.org/doi 1');
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
+    ).toEqual(
+      '2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+    );
   });
 
-  it('displays citation correctly with one user', () => {
+  it('displays citation correctly with one user', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
     });
     const wrapper = createWrapper();
+    await act(async () => flushPromises());
+    wrapper.update();
     expect(
-      wrapper
-        .find('[aria-label="landing-investigation-citation"]')
-        .first()
-        .text()
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual(
       'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
     );
   });
 
-  it('displays citation correctly with multiple users', () => {
+  it('displays citation correctly with multiple users', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: investigationUser }],
     });
     const wrapper = createWrapper();
+    await act(async () => flushPromises());
+    wrapper.update();
     expect(
-      wrapper
-        .find('[aria-label="landing-investigation-citation"]')
-        .first()
-        .text()
+      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
     ).toEqual(
       'John Smith et al; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
     );
   });
 
-  it('copies data citation to clipboard', () => {
-    // Mock the clipboard object
-    const testWriteText = jest.fn();
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: testWriteText,
-      },
-    });
-
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
-    });
+  it('displays DOI and renders the expected Link ', () => {
     const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigation-landing-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
 
     expect(
       wrapper
-        .find('[aria-label="landing-investigation-citation"]')
+        .find('[data-testid="isis-investigation-landing-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
+  });
+
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
         .first()
         .text()
-    ).toEqual(
-      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
-    );
-
-    wrapper
-      .find('#landing-investigation-copy-citation')
-      .first()
-      .simulate('click');
-
-    expect(testWriteText).toHaveBeenCalledWith(
-      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
-    );
+    ).toEqual('study pid');
 
     expect(
-      wrapper.find('#landing-investigation-copied-citation').first().text()
-    ).toEqual('Copied citation');
+      wrapper
+        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/study pid');
   });
 });

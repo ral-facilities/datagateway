@@ -8,9 +8,10 @@ Object {
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "headerTableCell": "VirtualizedTable-headerTableCell-8",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
+    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
     "tableRow": "VirtualizedTable-tableRow-4",
     "tableRowHover": "VirtualizedTable-tableRowHover-5",
   },
@@ -100,6 +101,7 @@ Object {
     },
     Object {
       "dataKey": "startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -179,173 +181,6 @@ Object {
 }
 `;
 
-exports[`ISIS MyData table component renders details panel correctly and it fetches data and can navigate 1`] = `
-<div
-  id="details-panel"
-  style={
-    Object {
-      "minWidth": 0,
-    }
-  }
->
-  <WithStyles(ForwardRef(Tabs))
-    aria-label="investigations.details.tabs_label"
-    onChange={[Function]}
-    scrollButtons="auto"
-    value="details"
-    variant="scrollable"
-  >
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="investigation-details-panel"
-      id="investigation-details-tab"
-      label="investigations.details.label"
-      value="details"
-    />
-    <WithStyles(ForwardRef(Tab))
-      id="investigation-datasets-tab"
-      label="investigations.details.datasets"
-      onClick={[Function]}
-    />
-  </WithStyles(ForwardRef(Tabs))>
-  <div
-    aria-labelledby="investigation-details-tab"
-    hidden={false}
-    id="investigation-details-panel"
-    role="tabpanel"
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-419"
-      container={true}
-      direction="column"
-    >
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="h6"
-        >
-          <b>
-            Test 1 name
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-420"
-        />
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.title
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            Test 1 title
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.visit_id
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.summary
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            foo bar
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        key="6"
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.pid
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <WithStyles(ForwardRef(Link))
-            href="https://doi.org/study pid"
-          >
-            study pid
-          </WithStyles(ForwardRef(Link))>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.doi
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            doi 1
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.start_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            2019-06-10
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        item={true}
-        xs={true}
-      >
-        <WithStyles(ForwardRef(Typography))
-          variant="overline"
-        >
-          investigations.details.end_date
-        </WithStyles(ForwardRef(Typography))>
-        <WithStyles(ForwardRef(Typography))>
-          <b>
-            2019-06-11
-          </b>
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </div>
-</div>
-`;
-
 exports[`ISIS MyData table component renders title and name as links 1`] = `
 <WithStyles(ForwardRef(Link))
   component={
@@ -362,6 +197,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
       "render": [Function],
     }
   }
+  data-testid="isis-mydata-table-title"
   to="/browse/instrument/3/facilityCycle/8/investigation/1"
 >
   <ForwardRef(Link)
@@ -389,6 +225,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
         "render": [Function],
       }
     }
+    data-testid="isis-mydata-table-title"
     to="/browse/instrument/3/facilityCycle/8/investigation/1"
   >
     <WithStyles(ForwardRef(Typography))
@@ -408,6 +245,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
           "render": [Function],
         }
       }
+      data-testid="isis-mydata-table-title"
       onBlur={[Function]}
       onFocus={[Function]}
       to="/browse/instrument/3/facilityCycle/8/investigation/1"
@@ -464,6 +302,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
             "render": [Function],
           }
         }
+        data-testid="isis-mydata-table-title"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browse/instrument/3/facilityCycle/8/investigation/1"
@@ -471,12 +310,14 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          data-testid="isis-mydata-table-title"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/instrument/3/facilityCycle/8/investigation/1"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="isis-mydata-table-title"
             href="/browse/instrument/3/facilityCycle/8/investigation/1"
             navigate={[Function]}
             onBlur={[Function]}
@@ -484,6 +325,7 @@ exports[`ISIS MyData table component renders title and name as links 1`] = `
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="isis-mydata-table-title"
               href="/browse/instrument/3/facilityCycle/8/investigation/1"
               onBlur={[Function]}
               onClick={[Function]}

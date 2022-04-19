@@ -18,14 +18,8 @@ describe('Admin Download Status', () => {
     cy.clearDownloads();
 
     cy.seedDownloads().then(() => {
-      cy.visit('/admin-download');
+      cy.visit('/admin/download');
     });
-  });
-
-  afterEach(() => {
-    // Ensure to clear sessionStorage to prevent the app
-    // storing tab data.
-    sessionStorage.clear();
   });
 
   it('should load correctly and display admin download status table', () => {

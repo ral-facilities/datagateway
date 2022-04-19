@@ -5,9 +5,10 @@ Object {
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "headerTableCell": "VirtualizedTable-headerTableCell-8",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
+    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
     "tableRow": "VirtualizedTable-tableRow-4",
     "tableRowHover": "VirtualizedTable-tableRowHover-5",
   },
@@ -70,6 +71,7 @@ Object {
     },
     Object {
       "dataKey": "startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -141,6 +143,7 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
       "render": [Function],
     }
   }
+  data-testid="dls-mydata-table-name"
   to="/browse/proposal/Test 1/investigation/1/dataset"
 >
   <ForwardRef(Link)
@@ -168,6 +171,7 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
         "render": [Function],
       }
     }
+    data-testid="dls-mydata-table-name"
     to="/browse/proposal/Test 1/investigation/1/dataset"
   >
     <WithStyles(ForwardRef(Typography))
@@ -187,6 +191,7 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
           "render": [Function],
         }
       }
+      data-testid="dls-mydata-table-name"
       onBlur={[Function]}
       onFocus={[Function]}
       to="/browse/proposal/Test 1/investigation/1/dataset"
@@ -243,6 +248,7 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
             "render": [Function],
           }
         }
+        data-testid="dls-mydata-table-name"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browse/proposal/Test 1/investigation/1/dataset"
@@ -250,12 +256,14 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          data-testid="dls-mydata-table-name"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/proposal/Test 1/investigation/1/dataset"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="dls-mydata-table-name"
             href="/browse/proposal/Test 1/investigation/1/dataset"
             navigate={[Function]}
             onBlur={[Function]}
@@ -263,6 +271,7 @@ exports[`DLS MyData table component renders title and visit ID as a links 1`] = 
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="dls-mydata-table-name"
               href="/browse/proposal/Test 1/investigation/1/dataset"
               onBlur={[Function]}
               onClick={[Function]}

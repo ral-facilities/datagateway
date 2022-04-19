@@ -23,6 +23,7 @@ const ExpandCell = React.memo(
       >
         {props.rowIndex !== expandedIndex ? (
           <IconButton
+            className="tour-dataview-expand"
             aria-label="Show details"
             onClick={() => setExpandedIndex(props.rowIndex)}
           >

@@ -2,19 +2,63 @@ describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
     cy.login();
     cy.visit('/browse/instrument/1/facilityCycle/16/investigation');
+    // Check that we have received the size from the API as this will produce
+    // a re-render which can prevent some interactions.
+    cy.contains('[aria-rowindex="2"] [aria-colindex="6"]', '10.96 GB').should(
+      'exist'
+    );
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('exist');
   });
 
   it('should be able to click an investigation to see its landing page', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/16'
+      '/browse/instrument/1/facilityCycle/16/investigation/97'
     );
+  });
+
+  it('should have the correct url for the DOI link', () => {
+    cy.get('[data-testid="isis-investigation-table-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('[data-testid="isis-investigation-table-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
+  it('should disable the hover tool tip by pressing escape', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="isis-investigations-table-title"]')
+      .first()
+      .trigger('mouseover', { force: true })
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
+
+    cy.get('body').type('{esc}');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="isis-investigations-table-title"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
   });
 
   // Not enough investigations to test scrolling.
@@ -89,6 +133,11 @@ describe('ISIS - Investigations Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Title').click();
 
@@ -150,6 +199,8 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
         'INVESTIGATION 97'
       );
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('11.74 GB');
     });
 
     it('date between', () => {
@@ -187,15 +238,40 @@ describe('ISIS - Investigations Table', () => {
 
   describe('should be able to view details', () => {
     beforeEach(() => {
-      // Check that we have received the size from the API as this will produce
-      // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '10.2 GB').should(
-        'exist'
-      );
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
     });
 
     it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
+
+      // Study PID
+
+      cy.get('[data-testid="investigation-details-panel-pid-link"]')
+        .first()
+        .then(($pid) => {
+          const pid = $pid.text();
+
+          const url = `https://doi.org/${pid}`;
+
+          cy.get('[data-testid="investigation-details-panel-pid-link"]')
+            .first()
+            .should('have.attr', 'href', url);
+        });
+
+      // DOI
+
+      cy.get('[data-testid="investigation-details-panel-doi-link"]')
+        .first()
+        .then(($doi) => {
+          const doi = $doi.text();
+
+          const url = `https://doi.org/${doi}`;
+
+          cy.get('[data-testid="investigation-details-panel-doi-link"]')
+            .first()
+            .should('have.attr', 'href', url);
+        });
 
       cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');

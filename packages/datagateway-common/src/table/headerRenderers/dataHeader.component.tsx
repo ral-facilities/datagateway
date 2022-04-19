@@ -1,14 +1,13 @@
 import React from 'react';
-import { Order } from '../../app.types';
+import { Order, UpdateMethod } from '../../app.types';
 import { TableHeaderProps } from 'react-virtualized';
 import {
   TableCell,
   TableSortLabel,
   Box,
   Typography,
-  useMediaQuery,
+  Divider,
 } from '@material-ui/core';
-import { DragIndicator } from '@material-ui/icons';
 import Draggable from 'react-draggable';
 
 const DataHeader = React.memo(
@@ -16,11 +15,16 @@ const DataHeader = React.memo(
     props: TableHeaderProps & {
       className: string;
       sort: { [column: string]: Order };
-      onSort: (column: string, order: Order | null) => void;
+      onSort: (
+        column: string,
+        order: Order | null,
+        defaultSort: UpdateMethod
+      ) => void;
       resizeColumn: (dataKey: string, deltaX: number) => void;
       labelString: string;
       icon?: React.ComponentType<unknown>;
       filterComponent?: (label: string, dataKey: string) => React.ReactElement;
+      defaultSort?: Order;
     }
   ): React.ReactElement => {
     const {
@@ -31,12 +35,22 @@ const DataHeader = React.memo(
       label,
       labelString,
       disableSort,
+      defaultSort,
       resizeColumn,
       icon: Icon,
       filterComponent,
     } = props;
 
     const currSortDirection = sort[dataKey];
+
+    //Apply default sort on page load (but only if not already defined in URL params)
+    //This will apply them in the order of the column definitions given to a table
+    React.useEffect(() => {
+      if (defaultSort !== undefined && currSortDirection === undefined)
+        onSort(dataKey, defaultSort, 'replace');
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     let nextSortDirection: Order | null = null;
     switch (currSortDirection) {
       case 'asc':
@@ -51,9 +65,10 @@ const DataHeader = React.memo(
 
     const inner = !disableSort ? (
       <TableSortLabel
+        className={'tour-dataview-sort'}
         active={dataKey in sort}
         direction={currSortDirection}
-        onClick={() => onSort(dataKey, nextSortDirection)}
+        onClick={() => onSort(dataKey, nextSortDirection, 'push')}
       >
         <Typography
           noWrap
@@ -68,8 +83,6 @@ const DataHeader = React.memo(
       </Typography>
     );
 
-    const smWindow = !useMediaQuery('(min-width: 960px)');
-
     return (
       <TableCell
         size="small"
@@ -77,7 +90,6 @@ const DataHeader = React.memo(
         className={className}
         variant="head"
         sortDirection={currSortDirection}
-        style={smWindow ? { paddingLeft: 8, paddingRight: 8 } : {}}
       >
         <div
           style={{
@@ -95,12 +107,22 @@ const DataHeader = React.memo(
           axis="none"
           onDrag={(event, { deltaX }) => resizeColumn(dataKey, deltaX)}
         >
-          <DragIndicator
-            fontSize="small"
+          <div
             style={{
+              marginLeft: 18,
+              paddingLeft: '4px',
+              paddingRight: '4px',
               cursor: 'col-resize',
             }}
-          />
+          >
+            <Divider
+              orientation="vertical"
+              flexItem
+              style={{
+                height: '100%',
+              }}
+            />
+          </div>
         </Draggable>
       </TableCell>
     );

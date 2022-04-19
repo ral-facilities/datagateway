@@ -14,6 +14,29 @@ exports[`Date filter component renders correctly 1`] = `
       }
       allowKeyboardControl={true}
       aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
       color="secondary"
       format="yyyy-MM-dd"
       id="test filter from"
@@ -22,11 +45,22 @@ exports[`Date filter component renders correctly 1`] = `
           "aria-label": "test filter",
         }
       }
-      invalidDateMessage="Invalid Date Format"
+      invalidDateMessage="Date format: yyyy-MM-dd."
       maxDate={2000-01-01T00:00:00.000Z}
       maxDateMessage="Invalid date range"
       minDate={1900-01-01T00:00:00.000Z}
       minDateMessage="Date should not be before minimal date"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
       onChange={[Function]}
       openTo="date"
       placeholder="From..."
@@ -53,6 +87,29 @@ exports[`Date filter component renders correctly 1`] = `
       }
       allowKeyboardControl={true}
       aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
       color="secondary"
       format="yyyy-MM-dd"
       id="test filter to"
@@ -61,11 +118,22 @@ exports[`Date filter component renders correctly 1`] = `
           "aria-label": "test filter",
         }
       }
-      invalidDateMessage="Invalid Date Format"
+      invalidDateMessage="Date format: yyyy-MM-dd."
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"
       minDate={1999-01-01T00:00:00.000Z}
       minDateMessage="Invalid date range"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
       onChange={[Function]}
       openTo="date"
       placeholder="To..."
@@ -101,6 +169,29 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       }
       allowKeyboardControl={true}
       aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
       color="secondary"
       format="yyyy-MM-dd"
       id="Start Date filter from"
@@ -109,11 +200,22 @@ exports[`Date filter component useTextFilter hook returns a function which can g
           "aria-label": "Start Date filter",
         }
       }
-      invalidDateMessage="Invalid Date Format"
+      invalidDateMessage="Date format: yyyy-MM-dd."
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Invalid date range"
       minDate={1900-01-01T00:00:00.000Z}
       minDateMessage="Date should not be before minimal date"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
       onChange={[Function]}
       openTo="date"
       placeholder="From..."
@@ -140,6 +242,29 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       }
       allowKeyboardControl={true}
       aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
       color="secondary"
       format="yyyy-MM-dd"
       id="Start Date filter to"
@@ -148,11 +273,22 @@ exports[`Date filter component useTextFilter hook returns a function which can g
           "aria-label": "Start Date filter",
         }
       }
-      invalidDateMessage="Invalid Date Format"
+      invalidDateMessage="Date format: yyyy-MM-dd."
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"
-      minDate={1900-01-01T00:00:00.000Z}
+      minDate={1984-01-01T00:00:00.000Z}
       minDateMessage="Invalid date range"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
       onChange={[Function]}
       openTo="date"
       placeholder="To..."

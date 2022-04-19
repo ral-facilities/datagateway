@@ -2,24 +2,24 @@ import React from 'react';
 
 import {
   CardView,
+  CardViewDetails,
   formatCountOrSize,
   Investigation,
   tableLink,
   parseSearchToQuery,
   useDateFilter,
-  useFilter,
   useInvestigationCount,
   useInvestigationsPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
   useInvestigationsDatasetCount,
   nestedValue,
   ArrowTooltip,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import {
   Assessment,
   CalendarToday,
@@ -46,8 +46,8 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
-  const pushFilters = usePushFilters();
+  const handleSort = useSort();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -73,12 +73,6 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     },
   ]);
   const countQueries = useInvestigationsDatasetCount(data);
-  const { data: typeIds } = useFilter('investigation', 'type.id', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({ name: { eq: proposalName } }),
-    },
-  ]);
 
   const title = React.useMemo(
     () => ({
@@ -95,7 +89,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     [proposalName, t, textFilter, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.details.summary'),
       dataKey: 'summary',
@@ -104,7 +98,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: Assessment,
@@ -140,6 +134,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
@@ -151,24 +146,13 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     [countQueries, data, dateFilter, t, textFilter]
   );
 
-  const customFilters = React.useMemo(
-    () => [
-      {
-        label: t('investigations.type.id'),
-        dataKey: 'type.id',
-        filterItems: typeIds ?? [],
-      },
-    ],
-    [t, typeIds]
-  );
-
   return (
     <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
-      onSort={pushSort}
+      onFilter={pushFilter}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
@@ -180,9 +164,8 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
       description={description}
       information={information}
       moreInformation={(investigation: Investigation) => (
-        <VisitDetailsPanel rowData={investigation} />
+        <DLSVisitDetailsPanel rowData={investigation} />
       )}
-      customFilters={customFilters}
     />
   );
 };

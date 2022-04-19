@@ -1,5 +1,5 @@
 import { Investigation } from '../app.types';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
@@ -64,6 +64,7 @@ describe('investigation api functions', () => {
   afterEach(() => {
     (handleICATError as jest.Mock).mockClear();
     (axios.get as jest.Mock).mockClear();
+    jest.useRealTimers();
   });
 
   describe('useInvestigation', () => {
@@ -157,7 +158,60 @@ describe('investigation api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('skip', JSON.stringify(20));
+      params.append('limit', JSON.stringify(20));
+      params.append(
+        'include',
+        JSON.stringify({
+          investigationInstruments: 'instrument',
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/investigations',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData);
+    });
+
+    it('sends axios request to fetch paginated investigations and returns successful response when ignoreIDSort is true', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData,
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useInvestigationsPaginated(
+            [
+              {
+                filterType: 'include',
+                filterValue: JSON.stringify({
+                  investigationInstruments: 'instrument',
+                }),
+              },
+            ],
+            true
+          ),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append('order', JSON.stringify('name asc'));
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(20));
@@ -241,7 +295,88 @@ describe('investigation api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('skip', JSON.stringify(0));
+      params.append('limit', JSON.stringify(50));
+      params.append(
+        'include',
+        JSON.stringify({
+          investigationInstruments: 'instrument',
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/investigations',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+
+      result.current.fetchNextPage({
+        pageParam: { startIndex: 50, stopIndex: 74 },
+      });
+
+      await waitFor(() => result.current.isFetching);
+
+      await waitFor(() => !result.current.isFetching);
+
+      expect(axios.get).toHaveBeenNthCalledWith(
+        2,
+        'https://example.com/api/investigations',
+        expect.objectContaining({
+          params,
+        })
+      );
+      params.set('skip', JSON.stringify(50));
+      params.set('limit', JSON.stringify(25));
+      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+        params.toString()
+      );
+
+      expect(result.current.data.pages).toStrictEqual([
+        mockData[0],
+        mockData[1],
+      ]);
+    });
+
+    it('sends axios request to fetch infinite investigations and returns successful response when ignoreIDSort is true', async () => {
+      (axios.get as jest.Mock).mockImplementation((url, options) =>
+        options.params.get('skip') === '0'
+          ? Promise.resolve({ data: mockData[0] })
+          : Promise.resolve({ data: mockData[1] })
+      );
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useInvestigationsInfinite(
+            [
+              {
+                filterType: 'include',
+                filterValue: JSON.stringify({
+                  investigationInstruments: 'instrument',
+                }),
+              },
+            ],
+            true
+          ),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append('order', JSON.stringify('name asc'));
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(0));
@@ -431,8 +566,9 @@ describe('investigation api functions', () => {
         })
       );
 
+      const pagedData = { pages: [mockData], pageParams: null };
       const { result, waitFor } = renderHook(
-        () => useInvestigationSizes({ pages: [mockData], pageParams: null }),
+        () => useInvestigationSizes(pagedData),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -481,7 +617,7 @@ describe('investigation api functions', () => {
         message: 'Test error',
       });
       const { result, waitFor } = renderHook(
-        () => useInvestigationSizes(mockData),
+        () => useInvestigationSizes(mockData[0]),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -489,7 +625,7 @@ describe('investigation api functions', () => {
 
       await waitFor(() => result.current.every((query) => query.isError));
 
-      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith(
         { message: 'Test error' },
         false
@@ -497,8 +633,9 @@ describe('investigation api functions', () => {
     });
 
     it("doesn't send any requests if the array supplied is empty to undefined", () => {
+      let data = [];
       const { result: emptyResult } = renderHook(
-        () => useInvestigationSizes([]),
+        () => useInvestigationSizes(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -507,8 +644,9 @@ describe('investigation api functions', () => {
       expect(emptyResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
 
+      data = undefined;
       const { result: undefinedResult } = renderHook(
-        () => useInvestigationSizes(undefined),
+        () => useInvestigationSizes(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -516,6 +654,111 @@ describe('investigation api functions', () => {
 
       expect(undefinedResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    it('batches updates correctly & updates results correctly when data updates', async () => {
+      jest.useFakeTimers();
+      mockData = [
+        {
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
+        },
+        {
+          id: 2,
+          title: 'Test 2',
+          name: 'Test 2',
+          visitId: '2',
+        },
+        {
+          id: 3,
+          title: 'Test 3',
+          name: 'Test 3',
+          visitId: '3',
+        },
+        {
+          id: 4,
+          title: 'Test 4',
+          name: 'Test 4',
+          visitId: '4',
+        },
+        {
+          id: 5,
+          title: 'Test 5',
+          name: 'Test 5',
+          visitId: '5',
+        },
+        {
+          id: 6,
+          title: 'Test 6',
+          name: 'Test 6',
+          visitId: '6',
+        },
+        {
+          id: 7,
+          title: 'Test 7',
+          name: 'Test 7',
+          visitId: '7',
+        },
+      ];
+      (axios.get as jest.Mock).mockImplementation(
+        (url, options) =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  data: options.params.entityId ?? 0,
+                }),
+              options.params.entityId * 10
+            )
+          )
+      );
+
+      const { result, rerender, waitForNextUpdate } = renderHook(
+        () => useInvestigationSizes(mockData),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      jest.advanceTimersByTime(30);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual(
+        Array(7).fill(undefined)
+      );
+
+      jest.advanceTimersByTime(40);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual([
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+      ]);
+
+      mockData = [
+        {
+          id: 4,
+          title: 'Test 4',
+          name: 'Test 4',
+          visitId: '4',
+        },
+      ];
+
+      await act(async () => {
+        rerender();
+        await waitForNextUpdate();
+      });
+
+      expect(result.current.map((query) => query.data)).toEqual([4]);
     });
   });
 
@@ -599,12 +842,12 @@ describe('investigation api functions', () => {
         })
       );
 
+      const pagedData = {
+        pages: [mockData],
+        pageParams: null,
+      };
       const { result, waitFor } = renderHook(
-        () =>
-          useInvestigationsDatasetCount({
-            pages: [mockData],
-            pageParams: null,
-          }),
+        () => useInvestigationsDatasetCount(pagedData),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -671,15 +914,20 @@ describe('investigation api functions', () => {
         message: 'Test error',
       });
       const { result, waitFor } = renderHook(
-        () => useInvestigationsDatasetCount(mockData),
+        () => useInvestigationsDatasetCount(mockData[0]),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
+      // for some reason we need to flush promise queue in this test
+      await act(async () => {
+        await Promise.resolve();
+      });
+
       await waitFor(() => result.current.every((query) => query.isError));
 
-      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith(
         { message: 'Test error' },
         false
@@ -687,8 +935,9 @@ describe('investigation api functions', () => {
     });
 
     it("doesn't send any requests if the array supplied is empty to undefined", () => {
+      let data = [];
       const { result: emptyResult } = renderHook(
-        () => useInvestigationsDatasetCount([]),
+        () => useInvestigationsDatasetCount(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -697,8 +946,9 @@ describe('investigation api functions', () => {
       expect(emptyResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
 
+      data = undefined;
       const { result: undefinedResult } = renderHook(
-        () => useInvestigationsDatasetCount(undefined),
+        () => useInvestigationsDatasetCount(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -706,6 +956,114 @@ describe('investigation api functions', () => {
 
       expect(undefinedResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    it('batches updates correctly & updates results correctly when data updates', async () => {
+      jest.useFakeTimers();
+      mockData = [
+        {
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
+        },
+        {
+          id: 2,
+          title: 'Test 2',
+          name: 'Test 2',
+          visitId: '2',
+        },
+        {
+          id: 3,
+          title: 'Test 3',
+          name: 'Test 3',
+          visitId: '3',
+        },
+        {
+          id: 4,
+          title: 'Test 4',
+          name: 'Test 4',
+          visitId: '4',
+        },
+        {
+          id: 5,
+          title: 'Test 5',
+          name: 'Test 5',
+          visitId: '5',
+        },
+        {
+          id: 6,
+          title: 'Test 6',
+          name: 'Test 6',
+          visitId: '6',
+        },
+        {
+          id: 7,
+          title: 'Test 7',
+          name: 'Test 7',
+          visitId: '7',
+        },
+      ];
+      (axios.get as jest.Mock).mockImplementation(
+        (url, options) =>
+          new Promise((resolve) => {
+            const id = JSON.parse(options.params.get('where'))[
+              'investigation.id'
+            ].eq;
+            return setTimeout(
+              () =>
+                resolve({
+                  data: id ?? 0,
+                }),
+              id * 10
+            );
+          })
+      );
+
+      const { result, rerender, waitForNextUpdate } = renderHook(
+        () => useInvestigationsDatasetCount(mockData),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      jest.advanceTimersByTime(30);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual(
+        Array(7).fill(undefined)
+      );
+
+      jest.advanceTimersByTime(40);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual([
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+      ]);
+
+      mockData = [
+        {
+          id: 4,
+          title: 'Test 4',
+          name: 'Test 4',
+          visitId: '4',
+        },
+      ];
+
+      await act(async () => {
+        rerender();
+        await waitForNextUpdate();
+      });
+
+      expect(result.current.map((query) => query.data)).toEqual([4]);
     });
   });
 
@@ -728,16 +1086,58 @@ describe('investigation api functions', () => {
         }
       );
 
-      // testing default is 0
-      expect(result.current.data).toEqual(0);
-
-      await waitFor(() => result.current.isFetching);
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => result.current.isSuccess);
 
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('distinct', JSON.stringify(['name', 'title']));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/investigations/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData.length);
+    });
+
+    it('sends axios request to fetch investigation count and returns successful response using stored filters', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData.length,
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useInvestigationCount(
+            [
+              {
+                filterType: 'distinct',
+                filterValue: JSON.stringify(['name', 'title']),
+              },
+            ],
+            {
+              name: { value: 'test2', type: 'include' },
+            },
+            'datafile'
+          ),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test2' },
         })
       );
       params.append('distinct', JSON.stringify(['name', 'title']));
@@ -851,7 +1251,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(20));
@@ -861,6 +1261,7 @@ describe('investigation api functions', () => {
           JSON.stringify([
             { investigationInstruments: 'instrument' },
             { studyInvestigations: 'study' },
+            { investigationUsers: 'user' },
           ])
         );
 
@@ -895,7 +1296,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(20));
@@ -917,6 +1318,7 @@ describe('investigation api functions', () => {
           JSON.stringify([
             { investigationInstruments: 'instrument' },
             { studyInvestigations: 'study' },
+            { investigationUsers: 'user' },
           ])
         );
 
@@ -953,6 +1355,7 @@ describe('investigation api functions', () => {
           JSON.stringify([
             { investigationInstruments: 'instrument' },
             { studyInvestigations: 'study' },
+            { investigationUsers: 'user' },
           ])
         );
 
@@ -991,7 +1394,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(0));
@@ -1001,6 +1404,7 @@ describe('investigation api functions', () => {
           JSON.stringify([
             { investigationInstruments: 'instrument' },
             { studyInvestigations: 'study' },
+            { investigationUsers: 'user' },
           ])
         );
 
@@ -1063,7 +1467,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append('skip', JSON.stringify(0));
@@ -1085,6 +1489,7 @@ describe('investigation api functions', () => {
           JSON.stringify([
             { investigationInstruments: 'instrument' },
             { studyInvestigations: 'study' },
+            { investigationUsers: 'user' },
           ])
         );
 
@@ -1147,6 +1552,7 @@ describe('investigation api functions', () => {
           JSON.stringify([
             { investigationInstruments: 'instrument' },
             { studyInvestigations: 'study' },
+            { investigationUsers: 'user' },
           ])
         );
 
@@ -1176,16 +1582,12 @@ describe('investigation api functions', () => {
           }
         );
 
-        // testing default is 0
-        expect(result.current.data).toEqual(0);
-
-        await waitFor(() => result.current.isFetching);
-        await waitFor(() => !result.current.isFetching);
+        await waitFor(() => result.current.isSuccess);
 
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
 
@@ -1213,16 +1615,12 @@ describe('investigation api functions', () => {
           }
         );
 
-        // testing default is 0
-        expect(result.current.data).toEqual(0);
-
-        await waitFor(() => result.current.isFetching);
-        await waitFor(() => !result.current.isFetching);
+        await waitFor(() => result.current.isSuccess);
 
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append(
@@ -1295,7 +1693,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
 
@@ -1329,7 +1727,7 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            name: { like: 'test' },
+            name: { ilike: 'test' },
           })
         );
         params.append(
@@ -1356,6 +1754,18 @@ describe('investigation api functions', () => {
           (axios.get as jest.Mock).mock.calls[0][1].params.toString()
         ).toBe(params.toString());
         expect(result.current.data).toEqual([1, 2, 3]);
+      });
+
+      it('does not send axios request to fetch ids when set to disabled', async () => {
+        const { result } = renderHook(
+          () => useISISInvestigationIds(1, 2, false, false),
+          {
+            wrapper: createReactQueryWrapper(history),
+          }
+        );
+
+        expect(result.current.isIdle).toBe(true);
+        expect(axios.get).not.toHaveBeenCalled();
       });
 
       it('sends axios request to fetch ISIS investigation ids and calls handleICATError on failure', async () => {

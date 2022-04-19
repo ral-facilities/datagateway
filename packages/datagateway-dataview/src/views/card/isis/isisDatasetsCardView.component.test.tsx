@@ -6,6 +6,9 @@ import {
   useDatasetsPaginated,
   useDatasetCount,
   Dataset,
+  AddToCartButton,
+  DownloadButton,
+  ISISDatasetDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -17,9 +20,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISDatasetsCardView from './isisDatasetsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import AddToCartButton from '../../addToCartButton.component';
-import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
-import DownloadButton from '../../downloadButton.component';
 import { createMemoryHistory, History } from 'history';
 
 jest.mock('datagateway-common', () => {
@@ -112,10 +112,6 @@ describe('ISIS Datasets - Card View', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsPaginated).toHaveBeenCalledWith([
       {
@@ -123,10 +119,6 @@ describe('ISIS Datasets - Card View', () => {
         filterValue: JSON.stringify({
           'investigation.id': { eq: investigationId },
         }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
       },
     ]);
   });
@@ -171,7 +163,6 @@ describe('ISIS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -183,7 +174,6 @@ describe('ISIS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -197,7 +187,6 @@ describe('ISIS Datasets - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
@@ -207,8 +196,17 @@ describe('ISIS Datasets - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
   });
 
   it('updates sort query params on sort', () => {
@@ -218,7 +216,6 @@ describe('ISIS Datasets - Card View', () => {
     expect(button.text()).toEqual('datasets.name');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
@@ -235,13 +232,13 @@ describe('ISIS Datasets - Card View', () => {
 
   it('displays details panel when more information is expanded and navigates to datafiles view when tab clicked', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
 
     wrapper.find('#dataset-datafiles-tab').first().simulate('click');
     expect(history.location.pathname).toBe(

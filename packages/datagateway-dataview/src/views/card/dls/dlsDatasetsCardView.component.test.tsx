@@ -6,6 +6,8 @@ import {
   useDatasetsPaginated,
   useDatasetCount,
   Dataset,
+  AddToCartButton,
+  DLSDatasetDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -17,8 +19,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDatasetsCardView from './dlsDatasetsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import AddToCartButton from '../../addToCartButton.component';
-import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { createMemoryHistory, History } from 'history';
 
 jest.mock('datagateway-common', () => {
@@ -105,10 +105,6 @@ describe('DLS Datasets - Card View', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsPaginated).toHaveBeenCalledWith([
       {
@@ -116,10 +112,6 @@ describe('DLS Datasets - Card View', () => {
         filterValue: JSON.stringify({
           'investigation.id': { eq: investigationId },
         }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
       },
     ]);
   });
@@ -134,7 +126,6 @@ describe('DLS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -146,7 +137,6 @@ describe('DLS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -160,7 +150,6 @@ describe('DLS Datasets - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
@@ -170,8 +159,17 @@ describe('DLS Datasets - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
   });
 
   it('updates sort query params on sort', () => {
@@ -181,7 +179,6 @@ describe('DLS Datasets - Card View', () => {
     expect(button.text()).toEqual('datasets.name');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
@@ -189,13 +186,13 @@ describe('DLS Datasets - Card View', () => {
 
   it('displays details panel when more information is expanded', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders buttons correctly', () => {

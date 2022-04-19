@@ -113,8 +113,17 @@ describe('Admin Download Status Table', () => {
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
-    (fetchAdminDownloads as jest.Mock).mockImplementation(() =>
-      Promise.resolve(downloadItems)
+    (fetchAdminDownloads as jest.Mock).mockImplementation(
+      (
+        settings: { facilityName: string; downloadApiUrl: string },
+        queryOffset?: string
+      ) => {
+        //Only return the 5 results when initialy requesting so that only a total
+        //of 5 results will be loaded
+        if (queryOffset?.endsWith('LIMIT 0, 50'))
+          return Promise.resolve(downloadItems);
+        else return Promise.resolve([]);
+      }
     );
     (adminDownloadDeleted as jest.Mock).mockImplementation(() =>
       Promise.resolve()
@@ -152,9 +161,40 @@ describe('Admin Download Status Table', () => {
     });
 
     expect(fetchAdminDownloads).toHaveBeenCalledTimes(2);
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+    expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
+      1,
       { downloadApiUrl: '', facilityName: '' },
       "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+    );
+    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+  });
+
+  it('fetches more download items when loadMoreRows is called', async () => {
+    const wrapper = mount(
+      <div id="datagateway-download">
+        <AdminDownloadStatusTable />
+      </div>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    await act(async () => {
+      wrapper.find('VirtualizedTable').prop('loadMoreRows')({
+        startIndex: 5,
+        stopIndex: 9,
+      });
+
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(fetchAdminDownloads).toHaveBeenCalledTimes(3);
+    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+      { downloadApiUrl: '', facilityName: '' },
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 5, 5"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -211,7 +251,8 @@ describe('Admin Download Status Table', () => {
     });
 
     expect(fetchAdminDownloads).toHaveBeenCalledTimes(3);
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+    expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
+      3,
       { downloadApiUrl: '', facilityName: '' },
       "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
@@ -308,7 +349,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.userName) LIKE CONCAT('%', 'test user', '%') ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
     usernameFilterInput.instance().value = '';
     usernameFilterInput.simulate('change');
@@ -417,8 +458,6 @@ describe('Admin Download Status Table', () => {
   }, 10000);
 
   it('sends restore item and item status requests when restore button is clicked', async () => {
-    jest.useFakeTimers();
-
     const wrapper = mount(
       <div id="datagateway-download">
         <AdminDownloadStatusTable />
@@ -442,7 +481,6 @@ describe('Admin Download Status Table', () => {
           'button[aria-label="downloadStatus.restore {filename:test-file-4}"]'
         )
         .simulate('click');
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });
@@ -463,7 +501,6 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends pause restore request when pause button is clicked', async () => {
-    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <AdminDownloadStatusTable />
@@ -481,7 +518,6 @@ describe('Admin Download Status Table', () => {
           'button[aria-label="downloadStatus.pause {filename:test-file-3}"]'
         )
         .simulate('click');
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });
@@ -498,7 +534,6 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends resume restore request when resume button is clicked', async () => {
-    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <AdminDownloadStatusTable />
@@ -516,7 +551,6 @@ describe('Admin Download Status Table', () => {
           'button[aria-label="downloadStatus.resume {filename:test-file-5}"]'
         )
         .simulate('click');
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });
@@ -533,7 +567,6 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends delete item request when delete button is clicked', async () => {
-    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <AdminDownloadStatusTable />
@@ -550,7 +583,6 @@ describe('Admin Download Status Table', () => {
       .simulate('click');
 
     await act(async () => {
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });

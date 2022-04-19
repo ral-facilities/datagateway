@@ -1,18 +1,27 @@
 describe('ISIS - Datasets Table', () => {
   beforeEach(() => {
-    cy.intercept('/datasets/count').as('datasetsCount');
-    cy.intercept('/datasets?order=').as('datasetsOrder');
+    cy.intercept('**/datasets/count?*').as('datasetsCount');
+    cy.intercept('**/datasets?order=*').as('datasetsOrder');
     cy.login();
     cy.visit(
       '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
     ).wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
       timeout: 10000,
     });
+    // Check that we have received the size from the API as this will produce
+    // a re-render which can prevent some interactions.
+    cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '6.21 GB').should(
+      'exist'
+    );
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should not load incorrect URL', () => {
@@ -100,6 +109,13 @@ describe('ISIS - Datasets Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait('@datasetsOrder', { timeout: 10000 });
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
@@ -173,6 +189,8 @@ describe('ISIS - Datasets Table', () => {
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
         '2001-09-30 04:00:59'
       );
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('5.53 GB');
     });
 
     it('date between', () => {
@@ -215,18 +233,6 @@ describe('ISIS - Datasets Table', () => {
   });
 
   describe('should be able to view details', () => {
-    beforeEach(() => {
-      // Check that we have received the size from the API as this will produce
-      // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '5.78 GB').should(
-        'exist'
-      );
-
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '5.15 GB').should(
-        'exist'
-      );
-    });
-
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 

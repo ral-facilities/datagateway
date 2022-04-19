@@ -6,6 +6,7 @@ import {
   useDatasetsPaginated,
   useDatasetCount,
   Dataset,
+  AddToCartButton,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -16,7 +17,6 @@ import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import DatasetCardView from './datasetCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import AddToCartButton from '../addToCartButton.component';
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 
@@ -104,10 +104,6 @@ describe('Dataset - Card View', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsPaginated).toHaveBeenCalledWith([
       {
@@ -115,10 +111,6 @@ describe('Dataset - Card View', () => {
         filterValue: JSON.stringify({
           'investigation.id': { eq: investigationId },
         }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
       },
     ]);
   });
@@ -133,7 +125,6 @@ describe('Dataset - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -145,7 +136,6 @@ describe('Dataset - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -159,7 +149,6 @@ describe('Dataset - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
@@ -169,7 +158,6 @@ describe('Dataset - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -180,7 +168,6 @@ describe('Dataset - Card View', () => {
     expect(button.text()).toEqual('datasets.name');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );

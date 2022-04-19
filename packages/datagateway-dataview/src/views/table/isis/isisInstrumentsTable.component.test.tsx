@@ -8,6 +8,7 @@ import {
   useInstrumentCount,
   useInstrumentsInfinite,
   dGCommonInitialState,
+  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
@@ -16,7 +17,6 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router';
 import { createMemoryHistory, History } from 'history';
-import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -104,7 +104,7 @@ describe('ISIS Instruments table component', () => {
 
   it('calls useInstrumentsInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useInstrumentsInfinite as jest.Mock).mockReturnValueOnce({
+    (useInstrumentsInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -141,6 +141,16 @@ describe('ISIS Instruments table component', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
+    );
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -151,16 +161,16 @@ describe('ISIS Instruments table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
+      `?sort=${encodeURIComponent('{"fullName":"desc"}')}`
     );
   });
 
   it('displays details panel when expanded', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeFalsy();
     wrapper.find('[aria-label="Show details"]').first().simulate('click');
 
-    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders names as links when NOT in studyHierarchy', () => {

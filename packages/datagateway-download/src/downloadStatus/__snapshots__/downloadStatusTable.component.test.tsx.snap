@@ -18,7 +18,7 @@ exports[`Download Status Table renders correctly 1`] = `
     <WithStyles(ForwardRef(Paper))
       style={
         Object {
-          "height": "calc(100vh - 64px - 30px - 48px - 48px - (1.75rem + 40px))",
+          "height": "calc(100vh - 64px - 36px - 48px - 48px - (1.75rem + 40px))",
           "minHeight": 230,
           "overflowX": "auto",
         }

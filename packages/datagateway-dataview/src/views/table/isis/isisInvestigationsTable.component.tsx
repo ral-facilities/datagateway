@@ -3,6 +3,7 @@ import {
   Investigation,
   Table,
   tableLink,
+  externalSiteLink,
   useISISInvestigationsInfinite,
   useISISInvestigationCount,
   useISISInvestigationIds,
@@ -12,26 +13,27 @@ import {
   useCart,
   useDateFilter,
   useInvestigationSizes,
-  usePushSort,
+  usePrincipalExperimenterFilter,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
   TableActionProps,
+  DownloadButton,
+  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
-import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 
 import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
-import AssessmentIcon from '@material-ui/icons/Assessment';
+import PersonIcon from '@material-ui/icons/Person';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
-import DownloadButton from '../../downloadButton.component';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
@@ -68,7 +70,8 @@ const ISISInvestigationsTable = (
   const { data: allIds } = useISISInvestigationIds(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
-    studyHierarchy
+    studyHierarchy,
+    selectAllSetting
   );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
@@ -84,12 +87,13 @@ const ISISInvestigationsTable = (
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'investigation' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   const aggregatedData: Investigation[] = React.useMemo(
@@ -99,7 +103,8 @@ const ISISInvestigationsTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
+  const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -114,7 +119,7 @@ const ISISInvestigationsTable = (
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => (
-      <InvestigationDetailsPanel
+      <ISISInvestigationDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         viewDatasets={(id: number) => push(`${urlPrefix}/${id}/dataset`)}
@@ -134,7 +139,8 @@ const ISISInvestigationsTable = (
           return tableLink(
             `${urlPrefix}/${investigationData.id}`,
             investigationData.title,
-            view
+            view,
+            'isis-investigations-table-title'
           );
         },
         filterComponent: textFilter,
@@ -143,14 +149,6 @@ const ISISInvestigationsTable = (
         icon: FingerprintIcon,
         label: t('investigations.name'),
         dataKey: 'name',
-        cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigationData = cellProps.rowData as Investigation;
-          return tableLink(
-            `${urlPrefix}/${investigationData.id}`,
-            investigationData.name,
-            view
-          );
-        },
         filterComponent: textFilter,
       },
       {
@@ -160,10 +158,10 @@ const ISISInvestigationsTable = (
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           if (investigationData?.studyInvestigations?.[0]?.study) {
-            return tableLink(
-              `${urlPrefix}/${investigationData.id}`,
+            return externalSiteLink(
+              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
               investigationData.studyInvestigations[0].study.pid,
-              view
+              'isis-investigation-table-doi-link'
             );
           } else {
             return '';
@@ -180,25 +178,29 @@ const ISISInvestigationsTable = (
         disableSort: true,
       },
       {
-        icon: AssessmentIcon,
-        label: t('investigations.instrument'),
-        dataKey: 'investigationInstruments.instrument.fullName',
+        icon: PersonIcon,
+        label: t('investigations.principal_investigators'),
+        dataKey: 'investigationUsers.user.fullName',
+        disableSort: true,
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.investigationInstruments?.[0]?.instrument) {
-            return investigationData.investigationInstruments[0].instrument
-              .fullName;
+          const principal_investigators = investigationData?.investigationUsers?.filter(
+            (iu) => iu.role === 'principal_experimenter'
+          );
+          if (principal_investigators && principal_investigators.length !== 0) {
+            return principal_investigators?.[0].user?.fullName;
           } else {
             return '';
           }
         },
-        filterComponent: textFilter,
+        filterComponent: principalExperimenterFilter,
       },
       {
         icon: CalendarTodayIcon,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -208,7 +210,15 @@ const ISISInvestigationsTable = (
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+    [
+      t,
+      textFilter,
+      principalExperimenterFilter,
+      dateFilter,
+      urlPrefix,
+      view,
+      sizeQueries,
+    ]
   );
 
   return (
@@ -218,7 +228,7 @@ const ISISInvestigationsTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

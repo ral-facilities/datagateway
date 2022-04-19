@@ -8,16 +8,20 @@ import {
   removeAllDownloadCartItems,
   removeDownloadCartItem,
   getSize,
-  getCartDatafileCount,
+  getDatafileCount,
 } from '../downloadApi';
 import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { Router } from 'react-router-dom';
+import { ReactWrapper } from 'enzyme';
+import { createMemoryHistory } from 'history';
 
 jest.mock('../downloadApi');
 
 describe('Download cart table component', () => {
   let shallow;
   let mount;
+  let history;
 
   const cartItems: DownloadCartItem[] = [
     {
@@ -72,9 +76,22 @@ describe('Download cart table component', () => {
     },
   };
 
+  const createWrapper = (): ReactWrapper => {
+    return mount(
+      <div id="datagateway-download">
+        <Router history={history}>
+          <DownloadSettingsContext.Provider value={mockedSettings}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </DownloadSettingsContext.Provider>
+        </Router>
+      </div>
+    );
+  };
+
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
+    history = createMemoryHistory();
     (fetchDownloadCartItems as jest.Mock).mockImplementation(() =>
       Promise.resolve(cartItems)
     );
@@ -85,7 +102,7 @@ describe('Download cart table component', () => {
       Promise.resolve()
     );
     (getSize as jest.Mock).mockImplementation(() => Promise.resolve(1));
-    (getCartDatafileCount as jest.Mock).mockImplementation(() =>
+    (getDatafileCount as jest.Mock).mockImplementation(() =>
       Promise.resolve(7)
     );
   });
@@ -94,7 +111,7 @@ describe('Download cart table component', () => {
     mount.cleanUp();
     (fetchDownloadCartItems as jest.Mock).mockClear();
     (getSize as jest.Mock).mockClear();
-    (getCartDatafileCount as jest.Mock).mockClear();
+    (getDatafileCount as jest.Mock).mockClear();
     (removeAllDownloadCartItems as jest.Mock).mockClear();
     (removeDownloadCartItem as jest.Mock).mockClear();
     jest.clearAllTimers();
@@ -110,13 +127,7 @@ describe('Download cart table component', () => {
   });
 
   it('fetches the download cart on load', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -128,9 +139,11 @@ describe('Download cart table component', () => {
 
   it('does not fetch the download cart on load if no dg-download element exists', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <Router history={history}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </Router>
     );
 
     await act(async () => {
@@ -142,13 +155,7 @@ describe('Download cart table component', () => {
   });
 
   it('calculates sizes once cart items have been fetched', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -165,37 +172,21 @@ describe('Download cart table component', () => {
   });
 
   it('calculates total file count once cart items have been fetched', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
       wrapper.update();
     });
 
-    expect(getCartDatafileCount).toHaveBeenCalled();
+    expect(getDatafileCount).toHaveBeenCalled();
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      expect.stringContaining('downloadCart.number_of_files: 7')
+      expect.stringContaining('downloadCart.number_of_files: 28')
     );
   });
 
   it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </div>
-    );
-
-    expect(wrapper.find('button#downloadCartButton').prop('disabled')).toBe(
-      true
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -236,15 +227,11 @@ describe('Download cart table component', () => {
   });
 
   it('removes all items from cart when Remove All button is clicked', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
+      await flushPromises();
+      wrapper.update();
       await flushPromises();
       wrapper.update();
     });
@@ -255,24 +242,51 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    expect(removeAllDownloadCartItems).toHaveBeenCalled();
-    expect(wrapper.exists('[role="gridcell"]')).toBe(false);
-    expect(wrapper.exists('[aria-rowcount=0]')).toBe(true);
+    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
   });
 
-  it("removes an item when said item's remove button is clicked", async () => {
-    jest.useFakeTimers();
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </div>
-    );
+  it('disables remove all button while request is processing', async () => {
+    (removeAllDownloadCartItems as jest.Mock).mockImplementation(() => {
+      return new Promise((resolve) => setTimeout(resolve, 2000));
+    });
+
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
       wrapper.update();
+      await flushPromises();
+      wrapper.update();
+    });
+
+    await act(async () => {
+      wrapper.find('button#removeAllButton').simulate('click');
+      await flushPromises();
+      wrapper.update();
+    });
+    expect(
+      wrapper.find('button#removeAllButton').prop('disabled')
+    ).toBeTruthy();
+
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 2001));
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
+  });
+
+  it("removes an item when said item's remove button is clicked", async () => {
+    const wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    await act(async () => {
+      wrapper.update();
+      await flushPromises();
     });
 
     wrapper
@@ -289,7 +303,6 @@ describe('Download cart table component', () => {
     ).toEqual('error');
 
     await act(async () => {
-      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });
@@ -308,17 +321,16 @@ describe('Download cart table component', () => {
   });
 
   it('sorts data when headers are clicked', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
       wrapper.update();
+    });
+
+    await act(async () => {
+      wrapper.update();
+      await flushPromises();
     });
 
     const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
@@ -353,17 +365,16 @@ describe('Download cart table component', () => {
   });
 
   it('filters data when text fields are typed into', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </DownloadSettingsContext.Provider>
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
       wrapper.update();
+    });
+
+    await act(async () => {
+      wrapper.update();
+      await flushPromises();
     });
 
     const nameFilterInput = wrapper

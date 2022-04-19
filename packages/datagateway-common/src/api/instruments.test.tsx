@@ -58,7 +58,7 @@ describe('instrument api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(20));
@@ -80,15 +80,25 @@ describe('instrument api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useInstrumentsPaginated(), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () =>
+          useInstrumentsPaginated([
+            {
+              filterType: 'include',
+              filterValue: JSON.stringify('facility'),
+            },
+          ]),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       await waitFor(() => result.current.isError);
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
       params.append('limit', JSON.stringify(10));
+      params.append('include', JSON.stringify('facility'));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/instruments',
@@ -122,7 +132,7 @@ describe('instrument api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(0));
@@ -170,15 +180,25 @@ describe('instrument api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useInstrumentsInfinite(), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () =>
+          useInstrumentsInfinite([
+            {
+              filterType: 'include',
+              filterValue: JSON.stringify('facility'),
+            },
+          ]),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       await waitFor(() => result.current.isError);
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
       params.append('limit', JSON.stringify(50));
+      params.append('include', JSON.stringify('facility'));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/instruments',
@@ -203,16 +223,12 @@ describe('instrument api functions', () => {
         wrapper: createReactQueryWrapper(history),
       });
 
-      // testing default is 0
-      expect(result.current.data).toEqual(0);
-
-      await waitFor(() => result.current.isFetching);
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => result.current.isSuccess);
 
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
 

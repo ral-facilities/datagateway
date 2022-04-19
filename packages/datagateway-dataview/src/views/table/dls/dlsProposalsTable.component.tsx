@@ -6,7 +6,7 @@ import {
   useInvestigationsInfinite,
   useInvestigationCount,
   parseSearchToQuery,
-  usePushSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -30,12 +30,17 @@ const DLSProposalsTable = (): React.ReactElement => {
       filterValue: JSON.stringify(['name', 'title']),
     },
   ]);
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    {
-      filterType: 'distinct',
-      filterValue: JSON.stringify(['name', 'title']),
-    },
-  ]);
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['name', 'title']),
+      },
+    ],
+    // Do not add order by id as id is not a distinct field above and will otherwise
+    // cause missing results
+    true
+  );
 
   const aggregatedData: Investigation[] = React.useMemo(
     () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
@@ -43,7 +48,7 @@ const DLSProposalsTable = (): React.ReactElement => {
   );
 
   const textFilter = useTextFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -61,10 +66,15 @@ const DLSProposalsTable = (): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${investigationData.name}/investigation`,
             investigationData.title,
-            view
+            view,
+            'dls-proposals-table-title'
           );
         },
         filterComponent: textFilter,
+        // Sort to ensure a deterministic order for pagination (ignoreIDSort: true is
+        // used above in useInvestigationsInfinite)
+        defaultSort: 'asc',
+        disableSort: true,
       },
       {
         icon: TitleIcon,
@@ -78,6 +88,7 @@ const DLSProposalsTable = (): React.ReactElement => {
           );
         },
         filterComponent: textFilter,
+        disableSort: true,
       },
     ],
     [t, textFilter, view]
@@ -89,7 +100,7 @@ const DLSProposalsTable = (): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       columns={columns}
     />
   );

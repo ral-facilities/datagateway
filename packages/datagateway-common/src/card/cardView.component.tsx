@@ -15,12 +15,20 @@ import {
   TableSortLabel,
   Typography,
   Select,
+  Divider,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
 import ArrowTooltip from '../arrowtooltip.component';
-import { Entity, Filter, Order, SortType, FiltersType } from '../app.types';
+import {
+  Entity,
+  Filter,
+  Order,
+  SortType,
+  FiltersType,
+  UpdateMethod,
+} from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
@@ -28,9 +36,6 @@ import EntityCard, { EntityImageDetails } from './entityCard.component';
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      backgroundColor: theme.palette.background.paper,
-    },
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
@@ -69,7 +74,18 @@ export interface CardViewDetails {
   // Filter and sort options.
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
   disableSort?: boolean;
+  defaultSort?: Order;
   noTooltip?: boolean;
+}
+
+export interface CVCustomFilters {
+  label: string;
+  dataKey: string;
+  filterItems: {
+    name: string;
+    count: string;
+  }[];
+  prefixLabel?: boolean;
 }
 
 type CVPaginationPosition = 'top' | 'bottom' | 'both';
@@ -87,7 +103,11 @@ export interface CardViewProps {
   onPageChange: (page: number) => void;
   onFilter: (filter: string, data: Filter | null) => void;
   onResultsChange: (page: number) => void;
-  onSort: (sort: string, order: Order | null) => void;
+  onSort: (
+    sort: string,
+    order: Order | null,
+    updateMethod: UpdateMethod
+  ) => void;
 
   // Props to get title, description of the card
   // represented by data.
@@ -100,7 +120,7 @@ export interface CardViewProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buttons?: ((data?: any) => React.ReactNode)[];
 
-  customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
+  customFilters?: CVCustomFilters[];
   resultsOptions?: number[];
   image?: EntityImageDetails;
 
@@ -111,7 +131,10 @@ interface CVFilterInfo {
   [filterKey: string]: {
     label: string;
     items: {
-      [data: string]: boolean;
+      [data: string]: {
+        selected: boolean;
+        count: number;
+      };
     };
     hasSelectedItems: boolean;
   };
@@ -151,11 +174,11 @@ function CVPagination(
       hideNextButton={page >= numPages}
       showLastButton
       aria-label="pagination"
+      className="tour-dataview-pagination"
     />
   );
 }
 
-// TODO: Hide/disable pagination and sort/filters if no results retrieved.
 const CardView = (props: CardViewProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
@@ -216,6 +239,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const [selectedFilters, setSelectedFilters] = React.useState<
     CVSelectedFilter[]
   >([]);
+  const [filterUpdate, setFilterUpdate] = React.useState(false);
 
   // Sort.
   const [cardSort, setCardSort] = React.useState<CVSort[] | null>(null);
@@ -223,6 +247,30 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     !title.disableSort ||
     (description ? !description.disableSort : false) ||
     (information ? information.some((i) => !i.disableSort) : false);
+
+  //Apply default sort on page load (but only if not already defined in URL params)
+  //This will apply them in the order of title, description and information, wherever
+  //defaultSort has been provided
+  React.useEffect(() => {
+    if (title.defaultSort !== undefined && sort[title.dataKey] === undefined)
+      onSort(title.dataKey, title.defaultSort, 'replace');
+    if (
+      description &&
+      description.defaultSort !== undefined &&
+      sort[description.dataKey] === undefined
+    )
+      onSort(description.dataKey, description.defaultSort, 'replace');
+    if (information) {
+      information.forEach((element: CardViewDetails) => {
+        if (
+          element.defaultSort !== undefined &&
+          sort[element.dataKey] === undefined
+        )
+          onSort(element.dataKey, element.defaultSort, 'replace');
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Get sort information from title, description and information lists.
   React.useEffect(() => {
@@ -281,7 +329,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               items: filter.filterItems.reduce(
                 (o, item) => ({
                   ...o,
-                  [item]: getSelectedFilter(filter.dataKey, item),
+                  [item.name]: {
+                    selected: getSelectedFilter(filter.dataKey, item.name),
+                    count: item.count,
+                  },
                 }),
                 {}
               ),
@@ -291,14 +342,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
           // Update the selected count for each filter.
           const selectedItems = Object.values(data[filter.dataKey].items).find(
-            (v) => v === true
+            (v) => v.selected === true
           );
           if (selectedItems) {
             data[filter.dataKey].hasSelectedItems = true;
           }
           return data;
         }, {})
-      : [];
+      : {};
 
     setFiltersInfo(info);
   }, [customFilters, filters]);
@@ -312,7 +363,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             filterKey: filterKey,
             label: info.label,
             items: Object.entries(info.items)
-              .filter(([, v]) => v)
+              .filter(([, v]) => v.selected)
               .map(([i]) => i),
           }),
           []
@@ -321,6 +372,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       setSelectedFilters(selected);
     }
   }, [filtersInfo]);
+
+  React.useEffect(() => {
+    if (filterUpdate && loadedData) setFilterUpdate(false);
+  }, [filterUpdate, totalDataCount, loadedData]);
 
   const changeFilter = (
     filterKey: string,
@@ -398,7 +453,27 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     loadedCount,
   ]);
 
+  // Handle (max) result
+  React.useEffect(() => {
+    if (loadedCount && props.results) {
+      if (
+        resOptions
+          .filter(
+            (n, i) =>
+              (i === 0 && totalDataCount > n) ||
+              (i > 0 && totalDataCount > resOptions[i - 1])
+          )
+          .includes(props.results) === true
+      ) {
+        onResultsChange(props.results);
+      } else {
+        onResultsChange(resOptions[0]);
+      }
+    }
+  }, [onResultsChange, resOptions, loadedCount, totalDataCount, props.results]);
+
   const [t] = useTranslation();
+  const hasFilteredResults = loadedData && (filterUpdate || totalDataCount > 0);
 
   return (
     <Grid container direction="column" alignItems="center">
@@ -423,7 +498,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           </Grid>
         )}
 
-        {totalDataCount > 0 && loadedData && (
+        {(filterUpdate || totalDataCount > 0) && (
           <Grid
             container
             item
@@ -461,6 +536,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                       name: 'Max Results',
                       id: 'select-max-results',
                     }}
+                    className="tour-dataview-max-results"
                     onChange={(e) => {
                       const newResults = e.target.value as number;
                       const newMaxPage = ~~(
@@ -492,8 +568,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      {loadedData && (
-        <Grid container direction="row">
+      <Grid container direction="row" justify="center">
+        {(hasSort || customFilters || !hasFilteredResults) && (
           <Grid item xs={12} md={3}>
             <Grid
               item
@@ -506,7 +582,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
             >
               {/* Sorting options */}
-              {hasSort && totalDataCount > 0 && (
+              {hasSort && (filterUpdate || totalDataCount > 0) && (
                 <Grid item xs>
                   <Paper>
                     <Box p={2}>
@@ -516,14 +592,22 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     {/* Show all the available sort options: 
                         title, description and the further information (if provided) */}
                     <Box>
-                      <List component="nav" aria-label="sort-by-list">
+                      <List
+                        component="nav"
+                        aria-label="sort-by-list"
+                        className="tour-dataview-sort"
+                      >
                         {cardSort &&
                           cardSort.map((s, i) => (
                             <ListItem
                               key={i}
                               button
                               onClick={() => {
-                                onSort(s.dataKey, nextSortDirection(s.dataKey));
+                                onSort(
+                                  s.dataKey,
+                                  nextSortDirection(s.dataKey),
+                                  'push'
+                                );
                                 if (page !== 1) {
                                   onPageChange(1);
                                 }
@@ -558,7 +642,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               )}
 
               {/* Filtering options */}
-              {customFilters && (
+              {customFilters && (filterUpdate || totalDataCount > 0) && (
                 <Grid item xs>
                   <Paper>
                     <Box p={2}>
@@ -587,25 +671,42 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                       aria-label="filter-by-list"
                                     >
                                       {Object.entries(filter.items).map(
-                                        ([item, selected], valueIndex) => (
+                                        ([name, data], valueIndex) => (
                                           <ListItem
+                                            style={{ display: 'flex' }}
                                             key={valueIndex}
                                             button
-                                            disabled={selected}
+                                            disabled={data.selected}
                                             onClick={() => {
-                                              changeFilter(filterKey, item);
+                                              changeFilter(filterKey, name);
+                                              setFilterUpdate(true);
                                             }}
-                                            aria-label={`Filter by ${filter.label} ${item}`}
+                                            aria-label={`Filter by ${filter.label} ${name}`}
                                           >
-                                            <Chip
-                                              label={
-                                                <ArrowTooltip title={item}>
-                                                  <Typography>
-                                                    {item}
-                                                  </Typography>
-                                                </ArrowTooltip>
-                                              }
-                                            />
+                                            <div style={{ flex: 1 }}>
+                                              <Chip
+                                                label={
+                                                  <ArrowTooltip title={name}>
+                                                    <Typography>
+                                                      {name}
+                                                    </Typography>
+                                                  </ArrowTooltip>
+                                                }
+                                              />
+                                            </div>
+                                            {data.count && (
+                                              <Divider
+                                                orientation="vertical"
+                                                flexItem
+                                              />
+                                            )}
+                                            {data.count && (
+                                              <Typography
+                                                style={{ paddingLeft: '5%' }}
+                                              >
+                                                {data.count}
+                                              </Typography>
+                                            )}
                                           </ListItem>
                                         )
                                       )}
@@ -622,74 +723,68 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               )}
             </Grid>
           </Grid>
+        )}
 
-          {/* Card data */}
-          <Grid item xs={12} md={9}>
-            {/* Selected filters array */}
-            {selectedFilters.length > 0 && (
-              <div className={classes.selectedChips}>
-                {selectedFilters.map((filter, filterIndex) => (
-                  <li key={filterIndex}>
-                    {filter.items.map((item, itemIndex) => (
-                      <Chip
-                        key={itemIndex}
-                        className={classes.chip}
-                        label={`${filter.label} - ${item}`}
-                        onDelete={() => {
-                          changeFilter(filter.filterKey, item, true);
-                        }}
-                      />
-                    ))}
-                  </li>
-                ))}
-              </div>
-            )}
+        {/* Card data */}
+        <Grid item xs={12} md={9}>
+          {/* Selected filters array */}
+          {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
+            <ul className={classes.selectedChips}>
+              {selectedFilters.map((filter, filterIndex) => (
+                <li key={filterIndex}>
+                  {filter.items.map((item, itemIndex) => (
+                    <Chip
+                      key={itemIndex}
+                      className={classes.chip}
+                      label={`${filter.label} - ${item}`}
+                      onDelete={() => {
+                        changeFilter(filter.filterKey, item, true);
+                        setFilterUpdate(true);
+                      }}
+                    />
+                  ))}
+                </li>
+              ))}
+            </ul>
+          )}
 
-            {/* List of cards */}
-            {totalDataCount > 0 ? (
-              <List style={{ padding: 0, marginRight: 20 }}>
-                {/* TODO: The width of the card should take up more room when
-                      there is no information or buttons. */}
-                {data.map((entity, index) => {
-                  return (
-                    <ListItem
-                      key={index}
-                      alignItems="flex-start"
-                      className={classes.root}
-                    >
-                      {/* Create an individual card */}
-                      <EntityCard
-                        entity={entity}
-                        title={title}
-                        description={description}
-                        information={information}
-                        moreInformation={moreInformation}
-                        // Pass in the react nodes with the data to the card.
-                        buttons={buttons}
-                        // Pass tag names to the card given the specified data key for the filter.
-                        customFilters={customFilters}
-                        image={image}
-                      />
-                    </ListItem>
-                  );
-                })}
-              </List>
-            ) : (
-              <Grid item xs={12} md={8}>
-                <Paper className={classes.noResultsPaper}>
-                  <Typography align="center" variant="h6" component="h6">
-                    {t('loading.filter_message')}
-                  </Typography>
-                </Paper>
-              </Grid>
-            )}
-          </Grid>
+          {/* List of cards */}
+          {hasFilteredResults ? (
+            <List style={{ padding: 0, marginRight: 20 }}>
+              {data.map((entity, index) => {
+                return (
+                  <ListItem key={index} alignItems="flex-start">
+                    {/* Create an individual card */}
+                    <EntityCard
+                      entity={entity}
+                      title={title}
+                      description={description}
+                      information={information}
+                      moreInformation={moreInformation}
+                      // Pass in the React nodes with the data to the card.
+                      buttons={buttons}
+                      // Pass tag names to the card given the specified data key for the filter.
+                      customFilters={customFilters}
+                      image={image}
+                    />
+                  </ListItem>
+                );
+              })}
+            </List>
+          ) : (
+            <Grid item xs={12} md={8}>
+              <Paper className={classes.noResultsPaper}>
+                <Typography align="center" variant="h6" component="h6">
+                  {t('loading.filter_message')}
+                </Typography>
+              </Paper>
+            </Grid>
+          )}
         </Grid>
-      )}
+      </Grid>
 
       {/*  Pagination  */}
-      {totalDataCount > 0 &&
-        loadedData &&
+      {(filterUpdate || totalDataCount > 0) &&
         (paginationPos === 'bottom' || paginationPos === 'both') && (
           <Grid item xs style={{ padding: '50px' }}>
             {CVPagination(page, maxPage, onPageChange)}

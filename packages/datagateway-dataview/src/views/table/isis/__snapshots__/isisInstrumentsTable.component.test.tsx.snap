@@ -5,9 +5,10 @@ Object {
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "headerTableCell": "VirtualizedTable-headerTableCell-8",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
+    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
     "tableRow": "VirtualizedTable-tableRow-4",
     "tableRowHover": "VirtualizedTable-tableRowHover-5",
   },
@@ -15,6 +16,7 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "fullName",
+      "defaultSort": "asc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -25,6 +27,19 @@ Object {
         },
       },
       "label": "instruments.name",
+    },
+    Object {
+      "dataKey": "type",
+      "filterComponent": [Function],
+      "icon": Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      },
+      "label": "instruments.type",
     },
   ],
   "data": Array [
@@ -45,7 +60,9 @@ Object {
   "detailsPanel": [Function],
   "loadMoreRows": [Function],
   "onSort": [Function],
-  "sort": Object {},
+  "sort": Object {
+    "fullName": "asc",
+  },
   "totalRowCount": 1,
 }
 `;
@@ -67,6 +84,7 @@ Array [
         "render": [Function],
       }
     }
+    data-testid="isis-instrument-table-name"
     to="/browseStudyHierarchy/instrument/1/study"
   >
     <ForwardRef(Link)
@@ -94,6 +112,7 @@ Array [
           "render": [Function],
         }
       }
+      data-testid="isis-instrument-table-name"
       to="/browseStudyHierarchy/instrument/1/study"
     >
       <WithStyles(ForwardRef(Typography))
@@ -113,6 +132,7 @@ Array [
             "render": [Function],
           }
         }
+        data-testid="isis-instrument-table-name"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browseStudyHierarchy/instrument/1/study"
@@ -169,6 +189,7 @@ Array [
               "render": [Function],
             }
           }
+          data-testid="isis-instrument-table-name"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browseStudyHierarchy/instrument/1/study"
@@ -176,12 +197,14 @@ Array [
         >
           <Link
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="isis-instrument-table-name"
             onBlur={[Function]}
             onFocus={[Function]}
             to="/browseStudyHierarchy/instrument/1/study"
           >
             <LinkAnchor
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="isis-instrument-table-name"
               href="/browseStudyHierarchy/instrument/1/study"
               navigate={[Function]}
               onBlur={[Function]}
@@ -189,6 +212,7 @@ Array [
             >
               <a
                 className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+                data-testid="isis-instrument-table-name"
                 href="/browseStudyHierarchy/instrument/1/study"
                 onBlur={[Function]}
                 onClick={[Function]}
@@ -217,6 +241,7 @@ Array [
         "render": [Function],
       }
     }
+    data-testid="isis-instrument-table-name"
     to="/browseStudyHierarchy/instrument/2/study"
   >
     <ForwardRef(Link)
@@ -244,6 +269,7 @@ Array [
           "render": [Function],
         }
       }
+      data-testid="isis-instrument-table-name"
       to="/browseStudyHierarchy/instrument/2/study"
     >
       <WithStyles(ForwardRef(Typography))
@@ -263,6 +289,7 @@ Array [
             "render": [Function],
           }
         }
+        data-testid="isis-instrument-table-name"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browseStudyHierarchy/instrument/2/study"
@@ -319,6 +346,7 @@ Array [
               "render": [Function],
             }
           }
+          data-testid="isis-instrument-table-name"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browseStudyHierarchy/instrument/2/study"
@@ -326,12 +354,14 @@ Array [
         >
           <Link
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="isis-instrument-table-name"
             onBlur={[Function]}
             onFocus={[Function]}
             to="/browseStudyHierarchy/instrument/2/study"
           >
             <LinkAnchor
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="isis-instrument-table-name"
               href="/browseStudyHierarchy/instrument/2/study"
               navigate={[Function]}
               onBlur={[Function]}
@@ -339,6 +369,7 @@ Array [
             >
               <a
                 className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+                data-testid="isis-instrument-table-name"
                 href="/browseStudyHierarchy/instrument/2/study"
                 onBlur={[Function]}
                 onClick={[Function]}
@@ -372,6 +403,7 @@ Array [
         "render": [Function],
       }
     }
+    data-testid="isis-instrument-table-name"
     to="/browse/instrument/1/facilityCycle"
   >
     <ForwardRef(Link)
@@ -399,6 +431,7 @@ Array [
           "render": [Function],
         }
       }
+      data-testid="isis-instrument-table-name"
       to="/browse/instrument/1/facilityCycle"
     >
       <WithStyles(ForwardRef(Typography))
@@ -418,6 +451,7 @@ Array [
             "render": [Function],
           }
         }
+        data-testid="isis-instrument-table-name"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browse/instrument/1/facilityCycle"
@@ -474,6 +508,7 @@ Array [
               "render": [Function],
             }
           }
+          data-testid="isis-instrument-table-name"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/instrument/1/facilityCycle"
@@ -481,12 +516,14 @@ Array [
         >
           <Link
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="isis-instrument-table-name"
             onBlur={[Function]}
             onFocus={[Function]}
             to="/browse/instrument/1/facilityCycle"
           >
             <LinkAnchor
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="isis-instrument-table-name"
               href="/browse/instrument/1/facilityCycle"
               navigate={[Function]}
               onBlur={[Function]}
@@ -494,6 +531,7 @@ Array [
             >
               <a
                 className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+                data-testid="isis-instrument-table-name"
                 href="/browse/instrument/1/facilityCycle"
                 onBlur={[Function]}
                 onClick={[Function]}
@@ -522,6 +560,7 @@ Array [
         "render": [Function],
       }
     }
+    data-testid="isis-instrument-table-name"
     to="/browse/instrument/2/facilityCycle"
   >
     <ForwardRef(Link)
@@ -549,6 +588,7 @@ Array [
           "render": [Function],
         }
       }
+      data-testid="isis-instrument-table-name"
       to="/browse/instrument/2/facilityCycle"
     >
       <WithStyles(ForwardRef(Typography))
@@ -568,6 +608,7 @@ Array [
             "render": [Function],
           }
         }
+        data-testid="isis-instrument-table-name"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browse/instrument/2/facilityCycle"
@@ -624,6 +665,7 @@ Array [
               "render": [Function],
             }
           }
+          data-testid="isis-instrument-table-name"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/instrument/2/facilityCycle"
@@ -631,12 +673,14 @@ Array [
         >
           <Link
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="isis-instrument-table-name"
             onBlur={[Function]}
             onFocus={[Function]}
             to="/browse/instrument/2/facilityCycle"
           >
             <LinkAnchor
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="isis-instrument-table-name"
               href="/browse/instrument/2/facilityCycle"
               navigate={[Function]}
               onBlur={[Function]}
@@ -644,6 +688,7 @@ Array [
             >
               <a
                 className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+                data-testid="isis-instrument-table-name"
                 href="/browse/instrument/2/facilityCycle"
                 onBlur={[Function]}
                 onClick={[Function]}

@@ -16,6 +16,11 @@ import {
   Typography,
   Button,
   LinearProgress,
+  createStyles,
+  makeStyles,
+  Theme,
+  Link,
+  CircularProgress,
 } from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
 import {
@@ -23,14 +28,26 @@ import {
   removeAllDownloadCartItems,
   removeDownloadCartItem,
   getSize,
-  getCartDatafileCount,
   getIsTwoLevel,
+  getDatafileCount,
 } from '../downloadApi';
 import chunk from 'lodash.chunk';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    noSelectionsMessage: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      color: (theme as any).colours?.contrastGrey,
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -39,6 +56,7 @@ interface DownloadCartTableProps {
 const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   props: DownloadCartTableProps
 ) => {
+  const classes = useStyles();
   const settings = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
@@ -49,8 +67,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
   const [sizesFinished, setSizesFinished] = React.useState(true);
+  const [removingAll, setRemovingAll] = React.useState(false);
 
-  const [fileCount, setFileCount] = React.useState<number>(-1);
   const fileCountMax = settings.fileCountMax;
   const totalSizeMax = settings.totalSizeMax;
 
@@ -65,6 +83,20 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       return data.reduce((accumulator, nextItem) => {
         if (nextItem.size > -1) {
           return accumulator + nextItem.size;
+        } else {
+          return accumulator;
+        }
+      }, 0);
+    } else {
+      return -1;
+    }
+  }, [data, sizesFinished]);
+
+  const fileCount = React.useMemo(() => {
+    if (sizesFinished) {
+      return data.reduce((accumulator, nextItem) => {
+        if (nextItem.fileCount > -1) {
+          return accumulator + nextItem.fileCount;
         } else {
           return accumulator;
         }
@@ -91,13 +123,16 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         facilityName: settings.facilityName,
         downloadApiUrl: settings.downloadApiUrl,
       }).then((cartItems) => {
-        setData(cartItems.map((cartItem) => ({ ...cartItem, size: -1 })));
+        setData(
+          cartItems.map((cartItem) => ({
+            ...cartItem,
+            size: -1,
+            fileCount: -1,
+          }))
+        );
         setDataLoaded(true);
         setSizesLoaded(false);
         setSizesFinished(false);
-        getCartDatafileCount(cartItems, {
-          apiUrl: settings.apiUrl,
-        }).then((count) => setFileCount(count));
       });
   }, [
     settings.facilityName,
@@ -117,15 +152,26 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
         const chunkIndexOffset = chunkIndex * chunkSize;
         chunk.forEach((cartItem, index) => {
-          const promise = getSize(cartItem.entityId, cartItem.entityType, {
+          const promiseSize = getSize(cartItem.entityId, cartItem.entityType, {
             facilityName: settings.facilityName,
             apiUrl: settings.apiUrl,
             downloadApiUrl: settings.downloadApiUrl,
           }).then((size) => {
             updatedData[chunkIndexOffset + index].size = size;
           });
-          chunkPromises.push(promise);
-          allPromises.push(promise);
+          const promiseFileCount = getDatafileCount(
+            cartItem.entityId,
+            cartItem.entityType,
+            {
+              apiUrl: settings.apiUrl,
+            }
+          ).then((fileCount) => {
+            updatedData[chunkIndexOffset + index].fileCount = fileCount;
+          });
+          chunkPromises.push(promiseSize);
+          allPromises.push(promiseSize);
+          chunkPromises.push(promiseFileCount);
+          allPromises.push(promiseFileCount);
         });
 
         Promise.all(chunkPromises).then(() => {
@@ -203,7 +249,52 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     return filteredData.sort(sortCartItems);
   }, [data, sort, filters]);
 
-  return (
+  const emptyItems = React.useMemo(
+    () => data.some((item) => item.size === 0 || item.fileCount === 0),
+    [data]
+  );
+
+  return data.length === 0 ? (
+    <div
+      className="tour-download-results"
+      data-testid="no-selections-message"
+      style={{
+        //Table should take up page but leave room for: SG appbar, SG footer,
+        //tabs, table padding.
+        height: 'calc(100vh - 64px - 36px - 48px - 48px)',
+        minHeight: 230,
+        overflowX: 'auto',
+      }}
+    >
+      <Paper>
+        <Grid container direction="column" alignItems="center" justify="center">
+          <Grid item>
+            <Typography className={classes.noSelectionsMessage}>
+              <Trans i18nKey="downloadCart.no_selections">
+                No data selected.{' '}
+                <Link
+                  component={RouterLink}
+                  to={t('downloadCart.browse_link')}
+                  style={{ fontWeight: 'bold' }}
+                >
+                  Browse
+                </Link>{' '}
+                or{' '}
+                <Link
+                  component={RouterLink}
+                  to={t('downloadCart.search_link')}
+                  style={{ fontWeight: 'bold' }}
+                >
+                  search
+                </Link>{' '}
+                for data.
+              </Trans>
+            </Typography>
+          </Grid>
+        </Grid>
+      </Paper>
+    </div>
+  ) : (
     <div>
       <Grid container direction="column">
         {/* Show loading progress if data is still being loaded */}
@@ -217,9 +308,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               SG footer, tabs, table padding, text below table, and buttons
               (respectively). */}
           <Paper
+            className="tour-download-results"
             style={{
-              height:
-                'calc(100vh - 64px - 30px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
+              height: `calc(100vh - 64px - 48px - 48px - 48px - 3rem${
+                emptyItems ? ' - 1rem' : ''
+              } - (1.75 * 0.875rem + 12px)`,
               minHeight: 230,
               overflowX: 'auto',
             }}
@@ -241,6 +334,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   dataKey: 'size',
                   cellContentRenderer: (props) => {
                     return formatBytes(props.cellData);
+                  },
+                },
+                {
+                  label: t('downloadCart.fileCount'),
+                  dataKey: 'fileCount',
+                  cellContentRenderer: (props) => {
+                    if (props.cellData === -1) return 'Loading...';
+                    return props.cellData;
                   },
                 },
               ]}
@@ -269,27 +370,26 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                       // Remove the download when clicked.
                       onClick={() => {
                         setIsDeleting(true);
-                        setTimeout(
-                          () =>
-                            removeDownloadCartItem(
-                              cartItem.entityId,
-                              cartItem.entityType,
-                              {
-                                facilityName: settings.facilityName,
-                                downloadApiUrl: settings.downloadApiUrl,
-                              }
-                            ).then(() =>
-                              setData(
-                                data.filter(
-                                  (item) => item.entityId !== cartItem.entityId
-                                )
-                              )
-                            ),
-                          100
-                        );
+                        removeDownloadCartItem(
+                          cartItem.entityId,
+                          cartItem.entityType,
+                          {
+                            facilityName: settings.facilityName,
+                            downloadApiUrl: settings.downloadApiUrl,
+                          }
+                        ).then(() => {
+                          setData(
+                            data.filter(
+                              (item) => item.entityId !== cartItem.entityId
+                            )
+                          );
+                        });
                       }}
                     >
-                      <RemoveCircle color={isDeleting ? 'error' : 'inherit'} />
+                      <RemoveCircle
+                        className="tour-download-remove-single"
+                        color={isDeleting ? 'error' : 'inherit'}
+                      />
                     </IconButton>
                   );
                 },
@@ -310,6 +410,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             direction="column"
             xs
             alignContent="flex-end"
+            alignItems="flex-end"
             style={{ marginRight: '1.2em' }}
           >
             <Typography id="fileCountDisplay">
@@ -322,6 +423,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               {totalSize !== -1 ? formatBytes(totalSize) : 'Calculating...'}
               {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
             </Typography>
+            {emptyItems && (
+              <Typography>{t('downloadCart.empty_items_warning')}</Typography>
+            )}
           </Grid>
           <Grid
             container
@@ -332,23 +436,31 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             style={{ marginRight: '1em' }}
           >
             <Grid item>
+              {/* Request to remove all selections is in progress. To prevent excessive requests, disable button during request */}
               <Button
+                className="tour-download-remove-button"
                 id="removeAllButton"
                 variant="contained"
                 color="primary"
-                onClick={() =>
+                disabled={removingAll}
+                startIcon={removingAll && <CircularProgress size={20} />}
+                onClick={() => {
+                  setRemovingAll(true);
                   removeAllDownloadCartItems({
                     facilityName: settings.facilityName,
                     downloadApiUrl: settings.downloadApiUrl,
-                  }).then(() => setData([]))
-                }
-                disabled={fileCount <= 0 || totalSize <= 0}
+                  }).then(() => {
+                    setData([]);
+                    setRemovingAll(false);
+                  });
+                }}
               >
                 {t('downloadCart.remove_all')}
               </Button>
             </Grid>
             <Grid item>
               <Button
+                className="tour-download-download-button"
                 onClick={() => setShowConfirmation(true)}
                 id="downloadCartButton"
                 variant="contained"
@@ -356,6 +468,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 disabled={
                   fileCount <= 0 ||
                   totalSize <= 0 ||
+                  emptyItems ||
                   (fileCountMax !== -1 && fileCount > fileCountMax) ||
                   (totalSizeMax !== -1 && totalSize > totalSizeMax)
                 }

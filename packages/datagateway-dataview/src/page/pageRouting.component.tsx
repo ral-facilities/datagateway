@@ -1,6 +1,6 @@
 import React from 'react';
 import { Location as LocationType } from 'history';
-import { Switch, Route, RouteComponentProps } from 'react-router';
+import { Switch, Route, RouteComponentProps, Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import InvestigationTable from '../views/table/investigationTable.component';
@@ -43,7 +43,8 @@ import {
   checkProposalName,
   checkInvestigationId,
   checkInstrumentAndFacilityCycleId,
-  checkInstrumentAndStudyId,
+  checkInstrumentId,
+  checkStudyId,
 } from './idCheckFunctions';
 
 import { paths } from './pageContainer.component';
@@ -81,10 +82,17 @@ const SafeISISDatafilesTable = React.memo(
     const SafeISISDatafilesTable = props.studyHierarchy
       ? withIdCheck(
           Promise.all([
-            checkInstrumentAndStudyId(
+            checkInstrumentId(
               parseInt(props.instrumentId),
+              parseInt(props.instrumentChildId)
+            ),
+            checkStudyId(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
+            ),
+            checkInvestigationId(
+              parseInt(props.investigationId),
+              parseInt(props.datasetId)
             ),
           ]).then((values) => !values.includes(false))
         )(ISISDatafilesTable)
@@ -119,8 +127,11 @@ const SafeISISDatasetLanding = React.memo(
     const SafeISISDatasetLanding = props.studyHierarchy
       ? withIdCheck(
           Promise.all([
-            checkInstrumentAndStudyId(
+            checkInstrumentId(
               parseInt(props.instrumentId),
+              parseInt(props.instrumentChildId)
+            ),
+            checkStudyId(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
@@ -158,11 +169,16 @@ const SafeISISDatasetsTable = React.memo(
   }): React.ReactElement => {
     const SafeISISDatasetsTable = props.studyHierarchy
       ? withIdCheck(
-          checkInstrumentAndStudyId(
-            parseInt(props.instrumentId),
-            parseInt(props.instrumentChildId),
-            parseInt(props.investigationId)
-          )
+          Promise.all([
+            checkInstrumentId(
+              parseInt(props.instrumentId),
+              parseInt(props.instrumentChildId)
+            ),
+            checkStudyId(
+              parseInt(props.instrumentChildId),
+              parseInt(props.investigationId)
+            ),
+          ]).then((values) => !values.includes(false))
         )(ISISDatasetsTable)
       : withIdCheck(
           checkInstrumentAndFacilityCycleId(
@@ -186,11 +202,16 @@ const SafeISISDatasetsCardView = React.memo(
   }): React.ReactElement => {
     const SafeISISDatasetsCardView = props.studyHierarchy
       ? withIdCheck(
-          checkInstrumentAndStudyId(
-            parseInt(props.instrumentId),
-            parseInt(props.instrumentChildId),
-            parseInt(props.investigationId)
-          )
+          Promise.all([
+            checkInstrumentId(
+              parseInt(props.instrumentId),
+              parseInt(props.instrumentChildId)
+            ),
+            checkStudyId(
+              parseInt(props.instrumentChildId),
+              parseInt(props.investigationId)
+            ),
+          ]).then((values) => !values.includes(false))
         )(ISISDatasetsCardView)
       : withIdCheck(
           checkInstrumentAndFacilityCycleId(
@@ -214,11 +235,16 @@ const SafeISISInvestigationLanding = React.memo(
   }): React.ReactElement => {
     const SafeISISInvestigationLanding = props.studyHierarchy
       ? withIdCheck(
-          checkInstrumentAndStudyId(
-            parseInt(props.instrumentId),
-            parseInt(props.instrumentChildId),
-            parseInt(props.investigationId)
-          )
+          Promise.all([
+            checkInstrumentId(
+              parseInt(props.instrumentId),
+              parseInt(props.instrumentChildId)
+            ),
+            checkStudyId(
+              parseInt(props.instrumentChildId),
+              parseInt(props.investigationId)
+            ),
+          ]).then((values) => !values.includes(false))
         )(ISISInvestigationLanding)
       : withIdCheck(
           checkInstrumentAndFacilityCycleId(
@@ -232,6 +258,17 @@ const SafeISISInvestigationLanding = React.memo(
   }
 );
 SafeISISInvestigationLanding.displayName = 'SafeISISInvestigationLanding';
+
+const SafeISISStudyLanding = React.memo(
+  (props: { instrumentId: string; studyId: string }): React.ReactElement => {
+    const SafeISISStudyLanding = withIdCheck(
+      checkInstrumentId(parseInt(props.instrumentId), parseInt(props.studyId))
+    )(ISISStudyLanding);
+
+    return <SafeISISStudyLanding {...props} />;
+  }
+);
+SafeISISStudyLanding.displayName = 'SafeISISStudyLanding';
 
 const SafeDLSDatafilesTable = React.memo(
   (props: {
@@ -296,6 +333,7 @@ SafeDLSDatasetsCardView.displayName = 'SafeDLSDatasetsCardView';
 interface PageRoutingProps {
   view: ViewsType;
   location: LocationType;
+  loggedInAnonymously: boolean;
 }
 
 class PageRouting extends React.PureComponent<PageRoutingProps> {
@@ -317,8 +355,22 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         />
 
         {/* My Data routes */}
-        <Route path={paths.myData.dls} component={DLSMyDataTable} />
-        <Route path={paths.myData.isis} component={ISISMyDataTable} />
+
+        <Route exact path={paths.myData.dls}>
+          {this.props.loggedInAnonymously === true ? (
+            <Redirect to={'/login'} />
+          ) : (
+            <DLSMyDataTable />
+          )}
+        </Route>
+
+        <Route exact path={paths.myData.isis}>
+          {this.props.loggedInAnonymously === true ? (
+            <Redirect to={'/login'} />
+          ) : (
+            <ISISMyDataTable />
+          )}
+        </Route>
 
         {/* DLS routes */}
         <Route
@@ -384,9 +436,9 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.studyHierarchy.toggle.isisInstrument}
           render={() =>
             this.props.view === 'card' ? (
-              <ISISInstrumentsCardView studyHierarchy={true} />
+              <ISISInstrumentsCardView studyHierarchy={true} key="true" />
             ) : (
-              <ISISInstrumentsTable studyHierarchy={true} />
+              <ISISInstrumentsTable studyHierarchy={true} key="true" />
             )
           }
         />
@@ -409,7 +461,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           exact
           path={paths.studyHierarchy.landing.isisStudyLanding}
           render={({ match }) => (
-            <ISISStudyLanding
+            <SafeISISStudyLanding
               instrumentId={match.params.instrumentId as string}
               studyId={match.params.studyId as string}
             />
@@ -500,9 +552,9 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.toggle.isisInstrument}
           render={() =>
             this.props.view === 'card' ? (
-              <ISISInstrumentsCardView studyHierarchy={false} />
+              <ISISInstrumentsCardView studyHierarchy={false} key="false" />
             ) : (
-              <ISISInstrumentsTable studyHierarchy={false} />
+              <ISISInstrumentsTable studyHierarchy={false} key="false" />
             )
           }
         />

@@ -1,15 +1,16 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
   Investigation,
   tableLink,
   parseSearchToQuery,
   useInvestigationCount,
   useInvestigationsPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
@@ -25,8 +26,8 @@ const DLSProposalsCardView = (): React.ReactElement => {
   );
 
   const textFilter = useTextFilter(filters);
-  const pushSort = usePushSort();
-  const pushFilters = usePushFilters();
+  const handleSort = useSort();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -39,14 +40,19 @@ const DLSProposalsCardView = (): React.ReactElement => {
       filterValue: JSON.stringify(['name', 'title']),
     },
   ]);
-  const { isLoading: dataLoading, data } = useInvestigationsPaginated([
-    {
-      filterType: 'distinct',
-      filterValue: JSON.stringify(['name', 'title']),
-    },
-  ]);
+  const { isLoading: dataLoading, data } = useInvestigationsPaginated(
+    [
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['name', 'title']),
+      },
+    ],
+    // Do not add order by id as id is not a distinct field above and will otherwise
+    // cause missing results
+    true
+  );
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.title'),
       dataKey: 'title',
@@ -54,18 +60,24 @@ const DLSProposalsCardView = (): React.ReactElement => {
         tableLink(
           `/browse/proposal/${investigation.name}/investigation`,
           investigation.title,
-          view
+          view,
+          'dls-proposal-card-title'
         ),
       filterComponent: textFilter,
+      // Sort to ensure a deterministic order for pagination (ignoreIDSort: true is
+      // used above in useInvestigationsPaginated)
+      defaultSort: 'asc',
+      disableSort: true,
     }),
     [t, textFilter, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.name'),
       dataKey: 'name',
       filterComponent: textFilter,
+      disableSort: true,
     }),
     [t, textFilter]
   );
@@ -75,8 +87,8 @@ const DLSProposalsCardView = (): React.ReactElement => {
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
-      onSort={pushSort}
+      onFilter={pushFilter}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

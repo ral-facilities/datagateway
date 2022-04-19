@@ -24,15 +24,16 @@ import {
   Study,
   tableLink,
   useStudy,
-  Mark,
   ViewsType,
+  AddToCartButton,
+  ArrowTooltip,
+  getTooltipText,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
-import AddToCartButton from '../../addToCartButton.component';
 import Branding from './isisBranding.component';
-import Button from '@material-ui/core/Button';
+import CitationFormatter from '../../citationFormatter.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -85,7 +86,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface FormattedUser {
+export interface FormattedUser {
   role: string;
   fullName: string;
 }
@@ -111,7 +112,18 @@ const LinkedInvestigation = (
 
   const shortInvestigationInfo = [
     {
-      content: (entity: Investigation) => entity.doi,
+      content: function doiFormat(entity: Investigation) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              data-testid="landing-study-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('investigations.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -135,7 +147,7 @@ const LinkedInvestigation = (
         component="h6"
         variant="h6"
         align="center"
-        aria-label="landing-study-part-label"
+        data-testid="landing-study-part-label"
       >
         {tableLink(
           `${props.urlPrefix}/investigation/${investigation.id}`,
@@ -149,9 +161,11 @@ const LinkedInvestigation = (
             {field.icon}
             {field.label}:
           </Typography>
-          <Typography className={classes.shortInfoValue}>
-            {field.content(investigation)}
-          </Typography>
+          <ArrowTooltip title={getTooltipText(field.content(investigation))}>
+            <Typography className={classes.shortInfoValue}>
+              {field.content(investigation)}
+            </Typography>
+          </ArrowTooltip>
         </div>
       ))}
       <div className={classes.actionButtons}>
@@ -174,8 +188,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   ]);
 
   const [value, setValue] = React.useState<'details'>('details');
-  const citationRef = React.useRef<HTMLElement>(null);
-  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const { instrumentId, studyId } = props;
 
   const pathRoot = 'browseStudyHierarchy';
@@ -296,7 +308,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const shortInfo = [
     {
-      content: (entity: Study) => entity.pid,
+      content: function studyPidFormat(entity: Study) {
+        return (
+          entity?.pid && (
+            <MuiLink
+              href={`https://doi.org/${entity.pid}`}
+              data-testid="landing-study-pid-link"
+            >
+              {entity.pid}
+            </MuiLink>
+          )
+        );
+      },
       label: t('studies.pid'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -366,18 +389,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12}>
+        <Grid item container xs={12} id="study-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Typography
               className={classes.subHeading}
               component="h5"
               variant="h5"
-              aria-label="landing-investigation-title"
+              data-testid="landing-investigation-title"
             >
               {title}
             </Typography>
-            <Typography aria-label="landing-study-description">
+            <Typography data-testid="landing-study-description">
               {summary}
             </Typography>
 
@@ -387,12 +410,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   className={classes.subHeading}
                   component="h6"
                   variant="h6"
-                  aria-label="landing-study-users-label"
+                  data-testid="landing-study-users-label"
                 >
                   {t('studies.details.users')}
                 </Typography>
                 {formattedUsers.map((user, i) => (
-                  <Typography aria-label={`landing-study-user-${i}`} key={i}>
+                  <Typography data-testid={`landing-study-user-${i}`} key={i}>
                     <b>{user.role}:</b> {user.fullName}
                   </Typography>
                 ))}
@@ -403,75 +426,21 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               className={classes.subHeading}
               component="h6"
               variant="h6"
-              aria-label="landing-study-publisher-label"
+              data-testid="landing-study-publisher-label"
             >
               {t('studies.details.publisher')}
             </Typography>
-            <Typography aria-label="landing-study-publisher">
+            <Typography data-testid="landing-study-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
-
-            <Typography
-              className={classes.subHeading}
-              component="h6"
-              variant="h6"
-              aria-label="landing-study-citation-label"
-            >
-              {t('studies.details.citation_label')}
-            </Typography>
-            <Typography aria-label="landing-study-citation_format">
-              {t('studies.details.citation_format')}
-            </Typography>
-            <Typography aria-label="landing-study-citation">
-              <i ref={citationRef}>
-                {formattedUsers.length > 1 &&
-                  `${formattedUsers[0].fullName} et al; `}
-                {formattedUsers.length === 1 &&
-                  `${formattedUsers[0].fullName}; `}
-                {`${data?.[0]?.studyInvestigations?.[0]?.investigation?.startDate?.slice(
-                  0,
-                  4
-                )}: `}
-                {title && `${title}, `}
-                {t('doi_constants.publisher.name')}
-                {pid && ', '}
-                {pid && (
-                  <a
-                    href={`https://doi.org/${pid}`}
-                  >{`https://doi.org/${pid}`}</a>
-                )}
-              </i>
-            </Typography>
-            {!copiedCitation ? (
-              <Button
-                id="landing-study-copy-citation"
-                aria-label="landing-study-copy-citation"
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => {
-                  if (citationRef?.current?.textContent) {
-                    navigator.clipboard.writeText(
-                      citationRef.current.textContent
-                    );
-                    setCopiedCitation(true);
-                    setTimeout(() => setCopiedCitation(false), 1750);
-                  }
-                }}
-              >
-                Copy citation
-              </Button>
-            ) : (
-              <Button
-                id="landing-study-copied-citation"
-                variant="contained"
-                color="primary"
-                size="small"
-                startIcon={<Mark size={20} visible={true} />}
-              >
-                Copied citation
-              </Button>
-            )}
+            <CitationFormatter
+              doi={pid}
+              formattedUsers={formattedUsers}
+              title={title}
+              startDate={
+                data?.[0]?.studyInvestigations?.[0]?.investigation?.startDate
+              }
+            />
           </Grid>
 
           <Divider orientation="vertical" />
@@ -486,9 +455,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {field.icon}
                       {field.label}:
                     </Typography>
-                    <Typography className={classes.shortInfoValue}>
-                      {field.content(data[0] as Study)}
-                    </Typography>
+                    <ArrowTooltip
+                      title={getTooltipText(field.content(data[0] as Study))}
+                    >
+                      <Typography className={classes.shortInfoValue}>
+                        {field.content(data[0] as Study)}
+                      </Typography>
+                    </ArrowTooltip>
                   </div>
                 )
             )}

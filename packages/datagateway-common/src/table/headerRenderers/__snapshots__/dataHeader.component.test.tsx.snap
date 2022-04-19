@@ -5,12 +5,6 @@ exports[`Data column header component renders correctly with filter but no sort 
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
   role="cell"
-  style={
-    Object {
-      "paddingLeft": 8,
-      "paddingRight": 8,
-    }
-  }
 >
   <div
     style={
@@ -43,6 +37,7 @@ exports[`Data column header component renders correctly with filter but no sort 
       </Styled(MuiBox)>
     </Styled(MuiBox)>
     <TextColumnFilter
+      label="Test"
       onChange={[MockFunction]}
     />
   </div>
@@ -73,14 +68,26 @@ exports[`Data column header component renders correctly with filter but no sort 
     scale={1}
     transform={null}
   >
-    <Memo(ForwardRef(DragIndicatorIcon))
-      fontSize="small"
+    <div
       style={
         Object {
           "cursor": "col-resize",
+          "marginLeft": 18,
+          "paddingLeft": "4px",
+          "paddingRight": "4px",
         }
       }
-    />
+    >
+      <WithStyles(ForwardRef(Divider))
+        flexItem={true}
+        orientation="vertical"
+        style={
+          Object {
+            "height": "100%",
+          }
+        }
+      />
+    </div>
   </Draggable>
 </div>
 `;
@@ -90,12 +97,6 @@ exports[`Data column header component renders correctly with sort and filter 1`]
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
   role="cell"
-  style={
-    Object {
-      "paddingLeft": 8,
-      "paddingRight": 8,
-    }
-  }
 >
   <div
     style={
@@ -116,6 +117,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       <Styled(MuiBox)>
         <WithStyles(ForwardRef(TableSortLabel))
           active={false}
+          className="tour-dataview-sort"
           onClick={[Function]}
         >
           <WithStyles(ForwardRef(Typography))
@@ -133,6 +135,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       </Styled(MuiBox)>
     </Styled(MuiBox)>
     <TextColumnFilter
+      label="Test"
       onChange={[MockFunction]}
     />
   </div>
@@ -163,14 +166,26 @@ exports[`Data column header component renders correctly with sort and filter 1`]
     scale={1}
     transform={null}
   >
-    <Memo(ForwardRef(DragIndicatorIcon))
-      fontSize="small"
+    <div
       style={
         Object {
           "cursor": "col-resize",
+          "marginLeft": 18,
+          "paddingLeft": "4px",
+          "paddingRight": "4px",
         }
       }
-    />
+    >
+      <WithStyles(ForwardRef(Divider))
+        flexItem={true}
+        orientation="vertical"
+        style={
+          Object {
+            "height": "100%",
+          }
+        }
+      />
+    </div>
   </Draggable>
 </div>
 `;
@@ -180,12 +195,6 @@ exports[`Data column header component renders correctly with sort but no filter 
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
   role="cell"
-  style={
-    Object {
-      "paddingLeft": 8,
-      "paddingRight": 8,
-    }
-  }
 >
   <div
     style={
@@ -206,6 +215,7 @@ exports[`Data column header component renders correctly with sort but no filter 
       <Styled(MuiBox)>
         <WithStyles(ForwardRef(TableSortLabel))
           active={false}
+          className="tour-dataview-sort"
           onClick={[Function]}
         >
           <WithStyles(ForwardRef(Typography))
@@ -250,14 +260,26 @@ exports[`Data column header component renders correctly with sort but no filter 
     scale={1}
     transform={null}
   >
-    <Memo(ForwardRef(DragIndicatorIcon))
-      fontSize="small"
+    <div
       style={
         Object {
           "cursor": "col-resize",
+          "marginLeft": 18,
+          "paddingLeft": "4px",
+          "paddingRight": "4px",
         }
       }
-    />
+    >
+      <WithStyles(ForwardRef(Divider))
+        flexItem={true}
+        orientation="vertical"
+        style={
+          Object {
+            "height": "100%",
+          }
+        }
+      />
+    </div>
   </Draggable>
 </div>
 `;
@@ -267,12 +289,6 @@ exports[`Data column header component renders correctly without sort or filter 1
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
   role="cell"
-  style={
-    Object {
-      "paddingLeft": 8,
-      "paddingRight": 8,
-    }
-  }
 >
   <div
     style={
@@ -332,14 +348,26 @@ exports[`Data column header component renders correctly without sort or filter 1
     scale={1}
     transform={null}
   >
-    <Memo(ForwardRef(DragIndicatorIcon))
-      fontSize="small"
+    <div
       style={
         Object {
           "cursor": "col-resize",
+          "marginLeft": 18,
+          "paddingLeft": "4px",
+          "paddingRight": "4px",
         }
       }
-    />
+    >
+      <WithStyles(ForwardRef(Divider))
+        flexItem={true}
+        orientation="vertical"
+        style={
+          Object {
+            "height": "100%",
+          }
+        }
+      />
+    </div>
   </Draggable>
 </div>
 `;

@@ -1,4 +1,4 @@
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import {
   Datafile,
   dGCommonInitialState,
@@ -8,6 +8,8 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useDatafilesInfinite,
+  DownloadButton,
+  DatafileDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -16,11 +18,10 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
-import DatafileTable, { DatafileDetailsPanel } from './datafileTable.component';
+import DatafileTable from './datafileTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import DownloadButton from '../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -38,7 +39,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Datafile table component', () => {
-  let shallow;
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -59,7 +59,6 @@ describe('Datafile table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     rowData = [
       {
@@ -141,18 +140,22 @@ describe('Datafile table component', () => {
         }),
       },
     ]);
-    expect(useIds).toHaveBeenCalledWith('datafile', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'datafile',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'dataset.investigation.id': { eq: investigationId },
+          }),
+        },
+      ],
+      true
+    );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('datafile');
     expect(useRemoveFromCart).toHaveBeenCalledWith('datafile');
@@ -303,19 +306,31 @@ describe('Datafile table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('datafile', expect.anything(), false);
+    expect(useIds).not.toHaveBeenCalledWith(
+      'datafile',
+      expect.anything(),
+      true
+    );
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+  });
+
   it('renders actions correctly', () => {
     const wrapper = createWrapper();
 
     expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <DatafileDetailsPanel
-        rowData={rowData[0]}
-        detailsPanelResize={jest.fn()}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DatafileDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(DatafileDetailsPanel).exists()).toBeTruthy();
   });
 });

@@ -220,7 +220,7 @@ export const useDatasetSize = (
 };
 
 export const useDatasetSizes = (
-  data: Dataset[] | InfiniteData<Dataset[]> | undefined
+  data: Dataset[] | InfiniteData<Dataset[]> | Dataset | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
@@ -235,11 +235,13 @@ export const useDatasetSizes = (
     number,
     ['datasetSize', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((dataset) => {
@@ -268,6 +270,14 @@ export const useDatasetSizes = (
   >([]);
 
   const countAppliedRef = React.useRef(0);
+
+  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
+  // back to 0 so we can restart the process, as well as clear sizes
+  React.useEffect(() => {
+    countAppliedRef.current = 0;
+    setSizes([]);
+  }, [data]);
+
   // need to use useDeepCompareEffect here because the array returned by useQueries
   // is different every time this hook runs
   useDeepCompareEffect(() => {
@@ -284,13 +294,13 @@ export const useDatasetSizes = (
       setSizes(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [sizes, queries]);
 
   return sizes;
 };
 
 export const useDatasetsDatafileCount = (
-  data: Dataset[] | InfiniteData<Dataset[]> | undefined
+  data: Dataset[] | InfiniteData<Dataset[]> | Dataset | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
@@ -300,11 +310,13 @@ export const useDatasetsDatafileCount = (
     number,
     ['datasetDatafileCount', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((dataset) => {
@@ -335,11 +347,19 @@ export const useDatasetsDatafileCount = (
   // prettier-ignore
   const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
 
-  const [datasetCounts, setDatasetCounts] = React.useState<
+  const [datafileCounts, setDatafileCounts] = React.useState<
     UseQueryResult<number, AxiosError>[]
   >([]);
 
   const countAppliedRef = React.useRef(0);
+
+  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
+  // back to 0 so we can restart the process, as well as clear datafileCounts
+  React.useEffect(() => {
+    countAppliedRef.current = 0;
+    setDatafileCounts([]);
+  }, [data]);
+
   // need to use useDeepCompareEffect here because the array returned by useQueries
   // is different every time this hook runs
   useDeepCompareEffect(() => {
@@ -348,17 +368,17 @@ export const useDatasetsDatafileCount = (
       0
     );
     const batchMax =
-      datasetCounts.length - currCountReturned < 5
-        ? datasetCounts.length - currCountReturned
+      datafileCounts.length - currCountReturned < 5
+        ? datafileCounts.length - currCountReturned
         : 5;
     // this in effect batches our updates to only happen in batches >= 5
     if (currCountReturned - countAppliedRef.current >= batchMax) {
-      setDatasetCounts(queries);
+      setDatafileCounts(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [datafileCounts, queries]);
 
-  return datasetCounts;
+  return datafileCounts;
 };
 
 export const fetchDatasetCountQuery = (
@@ -386,11 +406,16 @@ export const fetchDatasetCountQuery = (
 };
 
 export const useDatasetCount = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  storedFilters?: FiltersType,
+  currentTab?: string
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters } = parseSearchToQuery(location.search);
+  const filters =
+    currentTab === 'dataset' || !storedFilters
+      ? parseSearchToQuery(location.search).filters
+      : storedFilters;
 
   return useQuery<
     number,
@@ -404,7 +429,6 @@ export const useDatasetCount = (
       return fetchDatasetCountQuery(apiUrl, filters, additionalFilters);
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },

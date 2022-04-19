@@ -3,7 +3,7 @@
 exports[`Card renders correctly 1`] = `
 <WithStyles(ForwardRef(Card))
   className="makeStyles-root-1"
-  id="card"
+  data-testid="card"
 >
   <WithStyles(ForwardRef(CardContent))
     style={
@@ -24,8 +24,6 @@ exports[`Card renders correctly 1`] = `
         >
           <ArrowTooltip
             enterDelay={500}
-            maxEnabledHeight={32}
-            percentageWidth={30}
             title="Title"
           >
             <WithStyles(ForwardRef(Typography))

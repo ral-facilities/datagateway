@@ -1,4 +1,4 @@
-import { Link, ListItemText } from '@material-ui/core';
+import { Link } from '@material-ui/core';
 import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
@@ -101,12 +101,15 @@ describe('DLS Proposals - Card View', () => {
         filterValue: JSON.stringify(['name', 'title']),
       },
     ]);
-    expect(useInvestigationsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'distinct',
-        filterValue: JSON.stringify(['name', 'title']),
-      },
-    ]);
+    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify(['name', 'title']),
+        },
+      ],
+      true
+    );
   });
 
   it('updates filter query params on text filter', () => {
@@ -119,7 +122,6 @@ describe('DLS Proposals - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
@@ -131,18 +133,14 @@ describe('DLS Proposals - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
-  it('updates sort query params on sort', () => {
+  it('uses default sort', () => {
     const wrapper = createWrapper();
+    wrapper.update();
 
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('investigations.title');
-    button.simulate('click');
-
-    expect(history.length).toBe(2);
+    expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );

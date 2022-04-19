@@ -61,6 +61,7 @@ describe('Card', () => {
     expect(wrapper.find('[aria-label="card-title"]').text()).toEqual(
       'Test Title'
     );
+    expect(wrapper.find('ArrowTooltip').prop('title')).toEqual('Test Title');
   });
 
   it('renders with a description', () => {
@@ -143,22 +144,29 @@ describe('Card', () => {
         information={[
           {
             dataKey: 'visitId',
-            content: () => '1',
+            content: function Test() {
+              return <b>{'1'}</b>;
+            },
             icon: function Icon() {
               return <strong>ICON - </strong>;
             },
-            noTooltip: true,
           },
         ]}
       />
     );
-    expect(wrapper.exists("[aria-label='card-info-visitId']")).toBe(true);
-    expect(wrapper.find("[aria-label='card-info-visitId']").text()).toEqual(
+    expect(wrapper.exists("[data-testid='card-info-visitId']")).toBe(true);
+    expect(wrapper.find("[data-testid='card-info-visitId']").text()).toEqual(
       '<Icon />visitId:'
     );
-    expect(wrapper.exists("[aria-label='card-info-data-visitId']")).toBe(true);
+    expect(wrapper.exists("[data-testid='card-info-data-visitId']")).toBe(true);
     expect(
-      wrapper.find("[aria-label='card-info-data-visitId']").text()
+      wrapper.find("[data-testid='card-info-data-visitId']").find('b').text()
+    ).toEqual('1');
+    expect(
+      wrapper
+        .find("[data-testid='card-info-data-visitId']")
+        .find('ArrowTooltip')
+        .prop('title')
     ).toEqual('1');
   });
 

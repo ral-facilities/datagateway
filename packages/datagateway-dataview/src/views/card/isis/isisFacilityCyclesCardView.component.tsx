@@ -1,16 +1,17 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
   FacilityCycle,
   parseSearchToQuery,
   tableLink,
   useDateFilter,
   useFacilityCycleCount,
   useFacilityCyclesPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
@@ -35,8 +36,8 @@ const ISISFacilityCyclesCardView = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
-  const pushFilters = usePushFilters();
+  const handleSort = useSort();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -48,7 +49,7 @@ const ISISFacilityCyclesCardView = (
     parseInt(instrumentId)
   );
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       label: t('facilitycycles.name'),
       dataKey: 'name',
@@ -63,7 +64,7 @@ const ISISFacilityCyclesCardView = (
     [t, textFilter, instrumentId, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('facilitycycles.description'),
       dataKey: 'description',
@@ -72,13 +73,14 @@ const ISISFacilityCyclesCardView = (
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: CalendarToday,
         label: t('facilitycycles.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
@@ -95,8 +97,8 @@ const ISISFacilityCyclesCardView = (
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
-      onSort={pushSort}
+      onFilter={pushFilter}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

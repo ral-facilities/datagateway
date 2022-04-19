@@ -1,8 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import InvestigationSearchTable, {
-  InvestigationDetailsPanel,
-} from './investigationSearchTable.component';
+import { createMount } from '@material-ui/core/test-utils';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
@@ -20,6 +17,9 @@ import {
   useInvestigationSizes,
   useLuceneSearch,
   useRemoveFromCart,
+  ISISInvestigationDetailsPanel,
+  InvestigationDetailsPanel,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -29,6 +29,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
+import InvestigationSearchTable from './investigationSearchTable.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -51,7 +52,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Investigation Search Table component', () => {
-  let shallow;
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -72,7 +72,6 @@ describe('Investigation Search Table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     history = createMemoryHistory();
 
@@ -209,9 +208,10 @@ describe('Investigation Search Table component', () => {
 
     expect(useCart).toHaveBeenCalled();
     expect(useLuceneSearch).toHaveBeenCalledWith('Investigation', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: '',
+      startDate: null,
+      endDate: null,
+      maxCount: 300,
     });
 
     expect(useInvestigationCount).toHaveBeenCalledWith([
@@ -236,21 +236,25 @@ describe('Investigation Search Table component', () => {
         }),
       },
     ]);
-    expect(useIds).toHaveBeenCalledWith('investigation', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'investigation',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      true
+    );
 
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
     expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useInvestigationSizes).toHaveBeenCalledWith([]);
+    expect(useInvestigationSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
@@ -269,6 +273,23 @@ describe('Investigation Search Table component', () => {
     expect(fetchNextPage).toHaveBeenCalledWith({
       pageParam: { startIndex: 50, stopIndex: 74 },
     });
+  });
+
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="investigation-search-table-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-search-table-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
   });
 
   it('updates filter query params on text filter', () => {
@@ -398,15 +419,67 @@ describe('Investigation Search Table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <InvestigationDetailsPanel
-        rowData={rowData[0]}
-        detailsPanelResize={jest.fn()}
-      />
-    );
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgsearch.selectAllSetting = false;
 
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith(
+      'investigation',
+      expect.anything(),
+      false
+    );
+    expect(useIds).not.toHaveBeenCalledWith(
+      'investigation',
+      expect.anything(),
+      true
+    );
+    expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
+  });
+
+  it('displays generic details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for ISIS when expanded', () => {
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 4,
+          name: 'facility cycle name',
+          startDate: '2000-06-10',
+          endDate: '2020-06-11',
+        },
+      ],
+    });
+
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+
+    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/3/facilityCycle/4/investigation/1/dataset'
+    );
+  });
+
+  it('displays correct details panel for DLS when expanded', () => {
+    const wrapper = createWrapper('dls');
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders title, visit ID, Name and DOI as links', () => {
@@ -438,6 +511,7 @@ describe('Investigation Search Table component', () => {
         name: 'test',
         title: 'test',
         visitId: '1',
+        doi: 'Test 1',
         investigationInstruments: [],
       },
     ];
@@ -465,13 +539,14 @@ describe('Investigation Search Table component', () => {
     expect(wrapper.find('[aria-colindex=7]').text()).toEqual('Calculating...');
   });
 
-  it('renders DLS link correctly', () => {
+  it("renders DLS link correctly and doesn't allow for cart selection", () => {
     const wrapper = createWrapper('dls');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+    expect(wrapper.find('[aria-colindex=2]').find('a').prop('href')).toEqual(
       '/browse/proposal/Test 1/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=2]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-label="select row 0"]')).toHaveLength(0);
   });
 
   it('renders ISIS link & file sizes correctly', () => {
@@ -489,7 +564,7 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper('isis');
 
     expect(useInvestigationSizes).toHaveBeenCalledWith({ pages: [rowData] });
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith([]);
+    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       '/browse/instrument/3/facilityCycle/2/investigation/1/dataset'

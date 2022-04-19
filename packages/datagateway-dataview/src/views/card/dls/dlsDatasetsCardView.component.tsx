@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
   Dataset,
   formatCountOrSize,
   tableLink,
@@ -8,20 +9,19 @@ import {
   useDateFilter,
   useDatasetCount,
   useDatasetsPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
-  useFilter,
   useDatasetsDatafileCount,
+  AddToCartButton,
+  DLSDatasetDetailsPanel,
 } from 'datagateway-common';
 import { CalendarToday } from '@material-ui/icons';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import AddToCartButton from '../../addToCartButton.component';
 
 interface DLSDatasetsCVProps {
   proposalName: string;
@@ -41,8 +41,8 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
-  const pushFilters = usePushFilters();
+  const handleSort = useSort();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -53,25 +53,8 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
   const { data, isLoading: dataLoading } = useDatasetsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
-  ]);
-
-  const { data: typeIds } = useFilter('dataset', 'type.id', [
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -82,7 +65,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
 
   const datafileCountQueries = useDatasetsDatafileCount(data);
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       // Provide label for filter component.
       label: t('datasets.name'),
@@ -99,7 +82,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [investigationId, proposalName, t, textFilter, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('datasets.details.description'),
       dataKey: 'description',
@@ -108,7 +91,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: ConfirmationNumberIcon,
@@ -126,6 +109,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
@@ -162,24 +146,13 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [data]
   );
 
-  const customFilters = React.useMemo(
-    () => [
-      {
-        label: t('datasets.type.id'),
-        dataKey: 'type.id',
-        filterItems: typeIds ?? [],
-      },
-    ],
-    [t, typeIds]
-  );
-
   return (
     <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
-      onSort={pushSort}
+      onFilter={pushFilter}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
@@ -191,10 +164,9 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       description={description}
       information={information}
       moreInformation={(dataset: Dataset) => (
-        <DatasetDetailsPanel rowData={dataset} />
+        <DLSDatasetDetailsPanel rowData={dataset} />
       )}
       buttons={buttons}
-      customFilters={customFilters}
     />
   );
 };

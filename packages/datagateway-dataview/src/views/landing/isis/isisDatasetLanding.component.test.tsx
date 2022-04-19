@@ -54,25 +54,22 @@ describe('ISIS Dataset Landing page', () => {
     );
   };
 
-  const initialData: Dataset[] = [
-    {
-      id: 87,
-      name: 'Test 1',
-      description: 'foo bar',
-      modTime: '2019-06-10',
-      createTime: '2019-06-10',
-      doi: 'doi 1',
-      startDate: '2019-06-10',
-      endDate: '2019-06-11',
-      complete: true,
-      type: {
-        id: 1,
-        name: 'Type 1',
-        description: 'The first type',
-      },
+  const initialData: Dataset = {
+    id: 87,
+    name: 'Test 1',
+    description: 'foo bar',
+    modTime: '2019-06-10',
+    createTime: '2019-06-10',
+    doi: 'doi 1',
+    startDate: '2019-06-10',
+    endDate: '2019-06-11',
+    complete: true,
+    type: {
+      id: 1,
+      name: 'Type 1',
+      description: 'The first type',
     },
-  ];
-
+  };
   beforeEach(() => {
     mount = createMount();
 
@@ -100,8 +97,8 @@ describe('ISIS Dataset Landing page', () => {
   it('calls the correct data fetching hooks', () => {
     createWrapper();
 
-    expect(useDatasetDetails).toHaveBeenCalledWith(1);
-    expect(useDatasetSizes).toHaveBeenCalledWith([initialData]);
+    expect(useDatasetDetails).toHaveBeenCalledWith(87);
+    expect(useDatasetSizes).toHaveBeenCalledWith(initialData);
   });
 
   it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
@@ -127,16 +124,34 @@ describe('ISIS Dataset Landing page', () => {
     expect(history.location.search).toBe('?view=card');
   });
 
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-dataset-landing-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-dataset-landing-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
+  });
+
   it('useDatasetSizes queries not sent if no data returned from useDatasetDetails', () => {
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: undefined,
     });
     createWrapper();
-    expect(useDatasetSizes).toHaveBeenCalledWith([]);
+    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('incomplete datasets render correctly', () => {
-    initialData[0].complete = false;
+    initialData.complete = false;
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: initialData,
     });

@@ -1,5 +1,5 @@
 import { Dataset } from '../app.types';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
@@ -54,6 +54,7 @@ describe('dataset api functions', () => {
   afterEach(() => {
     (handleICATError as jest.Mock).mockClear();
     (axios.get as jest.Mock).mockClear();
+    jest.useRealTimers();
   });
 
   describe('useDataset', () => {
@@ -147,7 +148,7 @@ describe('dataset api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(20));
@@ -228,7 +229,7 @@ describe('dataset api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(0));
@@ -412,12 +413,13 @@ describe('dataset api functions', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(
-        () => useDatasetSizes({ pages: [mockData], pageParams: null }),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const pagedData = {
+        pages: [mockData],
+        pageParams: null,
+      };
+      const { result, waitFor } = renderHook(() => useDatasetSizes(pagedData), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       await waitFor(() => result.current.every((query) => query.isSuccess));
 
@@ -461,13 +463,16 @@ describe('dataset api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useDatasetSizes(mockData), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () => useDatasetSizes(mockData[0]),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       await waitFor(() => result.current.every((query) => query.isError));
 
-      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith(
         { message: 'Test error' },
         false
@@ -475,15 +480,17 @@ describe('dataset api functions', () => {
     });
 
     it("doesn't send any requests if the array supplied is empty to undefined", () => {
-      const { result: emptyResult } = renderHook(() => useDatasetSizes([]), {
+      let data = [];
+      const { result: emptyResult } = renderHook(() => useDatasetSizes(data), {
         wrapper: createReactQueryWrapper(),
       });
 
       expect(emptyResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
 
+      data = undefined;
       const { result: undefinedResult } = renderHook(
-        () => useDatasetSizes(undefined),
+        () => useDatasetSizes(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -491,6 +498,111 @@ describe('dataset api functions', () => {
 
       expect(undefinedResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    it('batches updates correctly & updates results correctly when data updates', async () => {
+      jest.useFakeTimers();
+      mockData = [
+        {
+          id: 1,
+          name: 'Test 1',
+          modTime: '2019-06-10',
+          createTime: '2019-06-11',
+        },
+        {
+          id: 2,
+          name: 'Test 2',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 3,
+          name: 'Test 3',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 4,
+          name: 'Test 4',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 5,
+          name: 'Test 5',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 6,
+          name: 'Test 6',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 7,
+          name: 'Test 7',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+      ];
+      (axios.get as jest.Mock).mockImplementation(
+        (url, options) =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  data: options.params.entityId ?? 0,
+                }),
+              options.params.entityId * 10
+            )
+          )
+      );
+
+      const { result, rerender, waitForNextUpdate } = renderHook(
+        () => useDatasetSizes(mockData),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      jest.advanceTimersByTime(30);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual(
+        Array(7).fill(undefined)
+      );
+
+      jest.advanceTimersByTime(40);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual([
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+      ]);
+
+      mockData = [
+        {
+          id: 4,
+          name: 'Test 4',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+      ];
+
+      await act(async () => {
+        rerender();
+        await waitForNextUpdate();
+      });
+
+      expect(result.current.map((query) => query.data)).toEqual([4]);
     });
   });
 
@@ -572,12 +684,12 @@ describe('dataset api functions', () => {
         })
       );
 
+      const pagedData = {
+        pages: [mockData],
+        pageParams: null,
+      };
       const { result, waitFor } = renderHook(
-        () =>
-          useDatasetsDatafileCount({
-            pages: [mockData],
-            pageParams: null,
-          }),
+        () => useDatasetsDatafileCount(pagedData),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -639,20 +751,25 @@ describe('dataset api functions', () => {
       expect(result.current.map((query) => query.data)).toEqual([1, 2, 3]);
     });
 
-    it('sends axios request to fetch dataset dataset counts once refetch function is called and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch dataset dataset counts and calls handleICATError on failure', async () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
       const { result, waitFor } = renderHook(
-        () => useDatasetsDatafileCount(mockData),
+        () => useDatasetsDatafileCount(mockData[0]),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
+      // for some reason we need to flush promise queue in this test
+      await act(async () => {
+        await Promise.resolve();
+      });
+
       await waitFor(() => result.current.every((query) => query.isError));
 
-      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith(
         { message: 'Test error' },
         false
@@ -660,8 +777,9 @@ describe('dataset api functions', () => {
     });
 
     it("doesn't send any requests if the array supplied is empty to undefined", () => {
+      let data = [];
       const { result: emptyResult } = renderHook(
-        () => useDatasetsDatafileCount([]),
+        () => useDatasetsDatafileCount(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -670,8 +788,9 @@ describe('dataset api functions', () => {
       expect(emptyResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
 
+      data = undefined;
       const { result: undefinedResult } = renderHook(
-        () => useDatasetsDatafileCount(undefined),
+        () => useDatasetsDatafileCount(data),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -679,6 +798,112 @@ describe('dataset api functions', () => {
 
       expect(undefinedResult.current.length).toBe(0);
       expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    it('batches updates correctly & updates results correctly when data updates', async () => {
+      jest.useFakeTimers();
+      mockData = [
+        {
+          id: 1,
+          name: 'Test 1',
+          modTime: '2019-06-10',
+          createTime: '2019-06-11',
+        },
+        {
+          id: 2,
+          name: 'Test 2',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 3,
+          name: 'Test 3',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 4,
+          name: 'Test 4',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 5,
+          name: 'Test 5',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 6,
+          name: 'Test 6',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+        {
+          id: 7,
+          name: 'Test 7',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+      ];
+      (axios.get as jest.Mock).mockImplementation(
+        (url, options) =>
+          new Promise((resolve) => {
+            const id = JSON.parse(options.params.get('where'))['dataset.id'].eq;
+            return setTimeout(
+              () =>
+                resolve({
+                  data: id ?? 0,
+                }),
+              id * 10
+            );
+          })
+      );
+
+      const { result, rerender, waitForNextUpdate } = renderHook(
+        () => useDatasetsDatafileCount(mockData),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      jest.advanceTimersByTime(30);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual(
+        Array(7).fill(undefined)
+      );
+
+      jest.advanceTimersByTime(40);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.map((query) => query.data)).toEqual([
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+      ]);
+
+      mockData = [
+        {
+          id: 4,
+          name: 'Test 4',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
+        },
+      ];
+
+      await act(async () => {
+        rerender();
+        await waitForNextUpdate();
+      });
+
+      expect(result.current.map((query) => query.data)).toEqual([4]);
     });
   });
 
@@ -701,16 +926,58 @@ describe('dataset api functions', () => {
         }
       );
 
-      // testing default is 0
-      expect(result.current.data).toEqual(0);
-
-      await waitFor(() => result.current.isFetching);
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => result.current.isSuccess);
 
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('distinct', JSON.stringify(['name', 'title']));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datasets/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData.length);
+    });
+
+    it('sends axios request to fetch dataset count and returns successful response using the stored filters', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData.length,
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDatasetCount(
+            [
+              {
+                filterType: 'distinct',
+                filterValue: JSON.stringify(['name', 'title']),
+              },
+            ],
+            {
+              name: { value: 'test2', type: 'include' },
+            },
+            'datafile'
+          ),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test2' },
         })
       );
       params.append('distinct', JSON.stringify(['name', 'title']));

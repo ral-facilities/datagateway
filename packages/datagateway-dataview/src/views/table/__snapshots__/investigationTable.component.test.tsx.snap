@@ -8,9 +8,10 @@ Object {
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "headerTableCell": "VirtualizedTable-headerTableCell-8",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
+    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
     "tableRow": "VirtualizedTable-tableRow-4",
     "tableRowHover": "VirtualizedTable-tableRowHover-5",
   },
@@ -57,6 +58,7 @@ Object {
       "label": "investigations.name",
     },
     Object {
+      "cellContentRenderer": [Function],
       "dataKey": "doi",
       "filterComponent": [Function],
       "icon": Object {
@@ -71,7 +73,7 @@ Object {
     },
     Object {
       "cellContentRenderer": [Function],
-      "dataKey": "datasetCount",
+      "dataKey": "size",
       "disableSort": true,
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -81,7 +83,7 @@ Object {
           "render": [Function],
         },
       },
-      "label": "investigations.dataset_count",
+      "label": "investigations.size",
     },
     Object {
       "cellContentRenderer": [Function],
@@ -141,7 +143,6 @@ Object {
         },
       ],
       "name": "Test 1",
-      "size": 1,
       "startDate": "2019-07-23",
       "title": "Test 1",
       "visitId": "1",
@@ -162,7 +163,7 @@ Object {
 
 exports[`Investigation table component renders details panel correctly 1`] = `
 <WithStyles(ForwardRef(Grid))
-  className="makeStyles-root-343"
+  className="makeStyles-root-419"
   container={true}
   direction="column"
   id="details-panel"
@@ -179,7 +180,7 @@ exports[`Investigation table component renders details panel correctly 1`] = `
       </b>
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Divider))
-      className="makeStyles-divider-344"
+      className="makeStyles-divider-420"
     />
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
@@ -246,6 +247,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
       "render": [Function],
     }
   }
+  data-testid="investigation-table-title"
   to="/browse/investigation/1/dataset"
 >
   <ForwardRef(Link)
@@ -273,6 +275,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
         "render": [Function],
       }
     }
+    data-testid="investigation-table-title"
     to="/browse/investigation/1/dataset"
   >
     <WithStyles(ForwardRef(Typography))
@@ -292,6 +295,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
           "render": [Function],
         }
       }
+      data-testid="investigation-table-title"
       onBlur={[Function]}
       onFocus={[Function]}
       to="/browse/investigation/1/dataset"
@@ -348,6 +352,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
             "render": [Function],
           }
         }
+        data-testid="investigation-table-title"
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browse/investigation/1/dataset"
@@ -355,12 +360,14 @@ exports[`Investigation table component renders investigation title as a link 1`]
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          data-testid="investigation-table-title"
           onBlur={[Function]}
           onFocus={[Function]}
           to="/browse/investigation/1/dataset"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            data-testid="investigation-table-title"
             href="/browse/investigation/1/dataset"
             navigate={[Function]}
             onBlur={[Function]}
@@ -368,6 +375,7 @@ exports[`Investigation table component renders investigation title as a link 1`]
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              data-testid="investigation-table-title"
               href="/browse/investigation/1/dataset"
               onBlur={[Function]}
               onClick={[Function]}

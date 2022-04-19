@@ -4,20 +4,42 @@
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
   "icatUrl": "example.icat.url",
+  "selectAllSetting": true,
+  "searchableEntities": ["investigation", "dataset", "datafile"],
+  "maxNumResults": 300,
   "helpSteps": [
     {
       "target": "#plugin-link--search-data",
-      "content":
-        "DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters"
+      "content": "Search allows you to search for specific datasets, datafiles or investigations using date and text filters"
+    },
+    {
+      "target": "#plugin-link--search-isis",
+      "content": "Search allows you to search for specific investigations, datasets or datafiles using date and text filters"
+    },
+    {
+      "target": "#plugin-link--search-dls",
+      "content": "Search allows you to search for specific visits or datasets using date and text filters"
+    },
+    {
+      "target": ".tour-search-textfield",
+      "content": "Enter your text search here"
+    },
+    {
+      "target": ".tour-search-checkbox",
+      "content": "Change the type of items you want to search for"
+    },
+    {
+      "target": ".tour-search-dates",
+      "content": "Select the date range you would like to search data between"
     },
     {
       "target": ".tour-search-tab-select",
-      "content": "Select which type of data to view the search results for"
+      "content": "Select the type of search results to view"
     }
   ],
   "routes": [
     {
-      "section": "Test",
+      "section": "Discover",
       "link": "/search/data",
       "displayName": "Search",
       "order": 0

@@ -7,6 +7,7 @@ import {
   useInvestigationsPaginated,
   useInvestigationsDatasetCount,
   Investigation,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -19,7 +20,6 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import DLSVisitsCardView from './dlsVisitsCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -131,7 +131,6 @@ describe('DLS Visits - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
@@ -141,7 +140,6 @@ describe('DLS Visits - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -155,7 +153,6 @@ describe('DLS Visits - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"visitId":{"value":"test","type":"include"}}'
@@ -167,8 +164,17 @@ describe('DLS Visits - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+    );
   });
 
   it('updates sort query params on sort', () => {
@@ -178,7 +184,6 @@ describe('DLS Visits - Card View', () => {
     expect(button.text()).toEqual('investigations.visit_id');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"visitId":"asc"}')}`
     );
@@ -186,13 +191,13 @@ describe('DLS Visits - Card View', () => {
 
   it('displays details panel when more information is expanded', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(VisitDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(wrapper.find(VisitDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders fine with incomplete data', () => {

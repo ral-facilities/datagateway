@@ -1,123 +1,36 @@
 import { DGSearchState } from '../app.types';
 import { createReducer } from 'datagateway-common';
 import {
-  ToggleDatasetType,
-  ToggleDatafileType,
-  ToggleInvestigationType,
-  SelectStartDateType,
-  SelectEndDateType,
-  SearchTextType,
   TogglePayload,
-  SelectDatePayload,
-  SearchTextPayload,
   SetDatasetTabType,
   SetDatafileTabType,
   SetInvestigationTabType,
   SettingsLoadedType,
-  CurrentTabPayload,
-  SetCurrentTabType,
+  ConfigureSelectAllSettingType,
+  ConfigureSelectAllSettingPayload,
+  ConfigureSearchableEntitiesPayload,
+  ConfigureSearchableEntitiesType,
+  ConfigureMaxNumResultsPayload,
+  ConfigureMaxNumResultsType,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
-  searchText: '',
-  selectDate: {
-    startDate: null,
-    endDate: null,
-  },
-  checkBox: {
-    dataset: true,
-    datafile: true,
-    investigation: true,
-  },
   tabs: {
     datasetTab: false,
     datafileTab: false,
     investigationTab: false,
-    currentTab: 'investigation',
   },
+  selectAllSetting: true,
   settingsLoaded: false,
   sideLayout: false,
+  searchableEntities: ['investigation', 'dataset', 'datafile'],
+  maxNumResults: 300,
 };
 
 export function handleSettingsLoaded(state: DGSearchState): DGSearchState {
   return {
     ...state,
     settingsLoaded: true,
-  };
-}
-
-export function handleSearchText(
-  state: DGSearchState,
-  payload: SearchTextPayload
-): DGSearchState {
-  return {
-    ...state,
-    searchText: payload.searchText,
-  };
-}
-
-export function handleToggleDataset(
-  state: DGSearchState,
-  payload: TogglePayload
-): DGSearchState {
-  return {
-    ...state,
-    checkBox: {
-      ...state.checkBox,
-      dataset: payload.toggleOption,
-    },
-  };
-}
-
-export function handleToggleDatafile(
-  state: DGSearchState,
-  payload: TogglePayload
-): DGSearchState {
-  return {
-    ...state,
-    checkBox: {
-      ...state.checkBox,
-      datafile: payload.toggleOption,
-    },
-  };
-}
-
-export function handleToggleInvestigation(
-  state: DGSearchState,
-  payload: TogglePayload
-): DGSearchState {
-  return {
-    ...state,
-    checkBox: {
-      ...state.checkBox,
-      investigation: payload.toggleOption,
-    },
-  };
-}
-
-export function selectStartDate(
-  state: DGSearchState,
-  payload: SelectDatePayload
-): DGSearchState {
-  return {
-    ...state,
-    selectDate: {
-      ...state.selectDate,
-      startDate: payload.date,
-    },
-  };
-}
-
-export function selectEndDate(
-  state: DGSearchState,
-  payload: SelectDatePayload
-): DGSearchState {
-  return {
-    ...state,
-    selectDate: {
-      ...state.selectDate,
-      endDate: payload.date,
-    },
   };
 }
 
@@ -160,31 +73,44 @@ export function handleSetInvestigationTab(
   };
 }
 
-export function handleSetCurrentTab(
+export function handleConfigureSelectAllSetting(
   state: DGSearchState,
-  payload: CurrentTabPayload
+  payload: ConfigureSelectAllSettingPayload
 ): DGSearchState {
   return {
     ...state,
-    tabs: {
-      ...state.tabs,
-      currentTab: payload.currentTab,
-    },
+    selectAllSetting: payload.settings,
+  };
+}
+
+export function handleConfigureSearchableEntities(
+  state: DGSearchState,
+  payload: ConfigureSearchableEntitiesPayload
+): DGSearchState {
+  return {
+    ...state,
+    searchableEntities: payload.entities,
+  };
+}
+
+export function handleConfigureMaxNumResults(
+  state: DGSearchState,
+  payload: ConfigureMaxNumResultsPayload
+): DGSearchState {
+  return {
+    ...state,
+    maxNumResults: payload.maxNumResults,
   };
 }
 
 const DGSearchReducer = createReducer(initialState, {
-  [ToggleDatasetType]: handleToggleDataset,
-  [ToggleDatafileType]: handleToggleDatafile,
-  [ToggleInvestigationType]: handleToggleInvestigation,
-  [SelectStartDateType]: selectStartDate,
-  [SelectEndDateType]: selectEndDate,
-  [SearchTextType]: handleSearchText,
   [SetDatasetTabType]: handleSetDatasetTab,
   [SetDatafileTabType]: handleSetDatafileTab,
   [SetInvestigationTabType]: handleSetInvestigationTab,
   [SettingsLoadedType]: handleSettingsLoaded,
-  [SetCurrentTabType]: handleSetCurrentTab,
+  [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
+  [ConfigureSearchableEntitiesType]: handleConfigureSearchableEntities,
+  [ConfigureMaxNumResultsType]: handleConfigureMaxNumResults,
 });
 
 export default DGSearchReducer;

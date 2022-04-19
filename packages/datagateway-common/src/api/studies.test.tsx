@@ -77,7 +77,7 @@ describe('study api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(20));
@@ -162,7 +162,7 @@ describe('study api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(0));
@@ -353,16 +353,12 @@ describe('study api functions', () => {
         }
       );
 
-      // testing default is 0
-      expect(result.current.data).toEqual(0);
-
-      await waitFor(() => result.current.isFetching);
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => result.current.isSuccess);
 
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append(

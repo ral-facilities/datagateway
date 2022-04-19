@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
   Dataset,
   tableLink,
   formatCountOrSize,
@@ -9,18 +10,18 @@ import {
   useDateFilter,
   useDatasetCount,
   useDatasetsPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
+  AddToCartButton,
+  DownloadButton,
+  ISISDatasetDetailsPanel,
 } from 'datagateway-common';
 import { Save, CalendarToday } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
-import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
-import AddToCartButton from '../../addToCartButton.component';
-import DownloadButton from '../../downloadButton.component';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -64,8 +65,8 @@ const ISISDatasetsCardView = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
-  const pushFilters = usePushFilters();
+  const handleSort = useSort();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -76,10 +77,6 @@ const ISISDatasetsCardView = (
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
   const { data, isLoading: dataLoading } = useDatasetsPaginated([
     {
@@ -88,10 +85,6 @@ const ISISDatasetsCardView = (
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
   const sizeQueries = useDatasetSizes(data);
 
@@ -99,7 +92,7 @@ const ISISDatasetsCardView = (
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       // Provide label for filter component.
       label: t('datasets.name'),
@@ -112,7 +105,7 @@ const ISISDatasetsCardView = (
     [t, textFilter, urlPrefix, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('datasets.details.description'),
       dataKey: 'description',
@@ -121,7 +114,7 @@ const ISISDatasetsCardView = (
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: Save,
@@ -139,6 +132,7 @@ const ISISDatasetsCardView = (
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
@@ -165,7 +159,6 @@ const ISISDatasetsCardView = (
             entityType="dataset"
             entityId={dataset.id}
             entityName={dataset.name}
-            variant="outlined"
           />
         </div>
       ),
@@ -175,7 +168,7 @@ const ISISDatasetsCardView = (
 
   const moreInformation = React.useCallback(
     (dataset: Dataset) => (
-      <DatasetDetailsPanel
+      <ISISDatasetDetailsPanel
         rowData={dataset}
         viewDatafiles={(id: number) => {
           const url = view
@@ -193,8 +186,8 @@ const ISISDatasetsCardView = (
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
-      onSort={pushSort}
+      onFilter={pushFilter}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

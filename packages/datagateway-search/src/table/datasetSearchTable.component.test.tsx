@@ -1,15 +1,15 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatasetSearchTable, {
-  DatasetDetailsPanel,
-} from './datasetSearchTable.component';
+import { createMount } from '@material-ui/core/test-utils';
+import DatasetSearchTable from './datasetSearchTable.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
   Dataset,
   dGCommonInitialState,
-  handleICATError,
+  DatasetDetailsPanel,
+  ISISDatasetDetailsPanel,
+  DLSDatasetDetailsPanel,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
@@ -36,7 +36,6 @@ jest.mock('datagateway-common', () => {
   return {
     __esModule: true,
     ...originalModule,
-    handleICATError: jest.fn(),
     useCart: jest.fn(),
     useLuceneSearch: jest.fn(),
     useDatasetCount: jest.fn(),
@@ -51,7 +50,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Dataset table component', () => {
-  let shallow;
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -72,7 +70,6 @@ describe('Dataset table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     history = createMemoryHistory();
 
@@ -187,17 +184,7 @@ describe('Dataset table component', () => {
 
   afterEach(() => {
     mount.cleanUp();
-    (handleICATError as jest.Mock).mockClear();
-    (useCart as jest.Mock).mockClear();
-    (useLuceneSearch as jest.Mock).mockClear();
-    (useDatasetCount as jest.Mock).mockClear();
-    (useDatasetsInfinite as jest.Mock).mockClear();
-    (useIds as jest.Mock).mockClear();
-    (useAddToCart as jest.Mock).mockClear();
-    (useRemoveFromCart as jest.Mock).mockClear();
-    (useAllFacilityCycles as jest.Mock).mockClear();
-    (useDatasetsDatafileCount as jest.Mock).mockClear();
-    (useDatasetSizes as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
@@ -214,9 +201,10 @@ describe('Dataset table component', () => {
 
     expect(useCart).toHaveBeenCalled();
     expect(useLuceneSearch).toHaveBeenCalledWith('Dataset', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: '',
+      startDate: null,
+      endDate: null,
+      maxCount: 300,
     });
 
     expect(useDatasetCount).toHaveBeenCalledWith([
@@ -241,19 +229,23 @@ describe('Dataset table component', () => {
         }),
       },
     ]);
-    expect(useIds).toHaveBeenCalledWith('dataset', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'dataset',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      true
+    );
 
     expect(useAddToCart).toHaveBeenCalledWith('dataset');
     expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith({ pages: [rowData] });
-    expect(useDatasetSizes).toHaveBeenCalledWith([]);
+    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
@@ -401,15 +393,61 @@ describe('Dataset table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <DatasetDetailsPanel
-        rowData={rowData[0]}
-        detailsPanelResize={jest.fn()}
-      />
-    );
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgsearch.selectAllSetting = false;
 
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('dataset', expect.anything(), false);
+    expect(useIds).not.toHaveBeenCalledWith('dataset', expect.anything(), true);
+    expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
+  });
+
+  it('displays generic details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for ISIS when expanded', () => {
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
+    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+      data: [
+        {
+          id: 4,
+          name: 'facility cycle name',
+          startDate: '2000-06-10',
+          endDate: '2020-06-11',
+        },
+      ],
+    });
+
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+
+    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
+    );
+  });
+
+  it('displays correct details panel for DLS when expanded', () => {
+    const wrapper = createWrapper('dls');
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders Dataset title as a link', () => {
@@ -490,7 +528,7 @@ describe('Dataset table component', () => {
     const wrapper = createWrapper('isis');
 
     expect(useDatasetSizes).toHaveBeenCalledWith({ pages: [rowData] });
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith([]);
+    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`

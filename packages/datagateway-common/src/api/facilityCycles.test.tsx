@@ -9,6 +9,7 @@ import {
   useFacilityCycleCount,
   useFacilityCyclesInfinite,
   useFacilityCyclesPaginated,
+  useFacilityCyclesByInvestigation,
 } from './facilityCycles';
 
 jest.mock('../handleICATError');
@@ -102,7 +103,7 @@ describe('facility cycle api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(20));
@@ -172,7 +173,7 @@ describe('facility cycle api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(0));
@@ -256,16 +257,12 @@ describe('facility cycle api functions', () => {
         wrapper: createReactQueryWrapper(history),
       });
 
-      // testing default is 0
-      expect(result.current.data).toEqual(0);
-
-      await waitFor(() => result.current.isFetching);
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => result.current.isSuccess);
 
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
 
@@ -293,6 +290,85 @@ describe('facility cycle api functions', () => {
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/instruments/1/facilitycycles/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+    });
+  });
+
+  describe('useFacilityCyclesByInvestigation', () => {
+    it('sends axios request to fetch facility cycle given a investigation start date and returns successful response', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData,
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useFacilityCyclesByInvestigation('2022-04-01 00:00:00'),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          startDate: { lte: '2022-04-01 00:00:00' },
+        })
+      );
+      params.append(
+        'where',
+        JSON.stringify({
+          endDate: { gte: '2022-04-01 00:00:00' },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/facilitycycles',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData);
+    });
+
+    it('sends axios request to fetch paginated facility cycles and calls handleICATError on failure', async () => {
+      (axios.get as jest.Mock).mockRejectedValue({
+        message: 'Test error',
+      });
+      const { result, waitFor } = renderHook(
+        () => useFacilityCyclesByInvestigation('2022-04-01 00:00:00'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          startDate: { lte: '2022-04-01 00:00:00' },
+        })
+      );
+      params.append(
+        'where',
+        JSON.stringify({
+          endDate: { gte: '2022-04-01 00:00:00' },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })

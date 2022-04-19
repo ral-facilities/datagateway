@@ -1,29 +1,29 @@
-import { configureApp, settingsLoaded } from '.';
-import { SettingsLoadedType } from './actions.types';
-import axios from 'axios';
-import * as log from 'loglevel';
-import { actions, resetActions, dispatch, getState } from '../../setupTests';
 import {
-  loadUrls,
-  loadFacilityName,
-  MicroFrontendId,
-  RegisterRouteType,
-} from 'datagateway-common';
-import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
-import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
+  configureApp,
+  loadMaxNumResults,
+  loadSearchableEntitites,
+  loadSelectAllSetting,
+  settingsLoaded,
+} from '.';
+import {
+  ConfigureMaxNumResultsType,
+  ConfigureSearchableEntitiesType,
+  ConfigureSelectAllSettingType,
+  SettingsLoadedType,
+} from './actions.types';
+import { actions, resetActions, dispatch, getState } from '../../setupTests';
+import { loadUrls, loadFacilityName } from 'datagateway-common';
 
-jest.mock('loglevel');
+const mockSettingsGetter = jest.fn();
+jest.mock('../../settings', () => ({
+  get settings() {
+    return mockSettingsGetter();
+  },
+}));
 
 describe('Actions', () => {
-  beforeEach(() => {
-    global.document.dispatchEvent = jest.fn();
-    global.CustomEvent = jest.fn();
-  });
-
   afterEach(() => {
-    (axios.get as jest.Mock).mockReset();
-    (log.error as jest.Mock).mockReset();
-    (CustomEvent as jest.Mock).mockClear();
+    mockSettingsGetter.mockReset();
     resetActions();
   });
 
@@ -32,39 +32,37 @@ describe('Actions', () => {
     expect(action.type).toEqual(SettingsLoadedType);
   });
 
-  it('settings are loaded and facilityName, loadUrls and settingsLoaded actions are sent', async () => {
-    (axios.get as jest.Mock)
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            facilityName: 'Generic',
-            idsUrl: 'ids',
-            apiUrl: 'api',
-            downloadApiUrl: 'download-api',
-            icatUrl: 'icat',
-            routes: [
-              {
-                section: 'section',
-                link: 'link',
-                displayName: 'displayName',
-              },
-            ],
-            pluginHost: 'http://localhost:3000/',
-          },
-        })
-      )
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            testSection: { test: 'string' },
-          },
-        })
-      );
+  it('given JSON loadSelectAllSetting returns a ConfigureSelectAllSettingType with ConfigureSelectAllSettingPayload', () => {
+    const action = loadSelectAllSetting(false);
+    expect(action.type).toEqual(ConfigureSelectAllSettingType);
+    expect(action.payload).toEqual({
+      settings: false,
+    });
+  });
 
+  it('given JSON loadSearchableEntitites returns a ConfigureSearchableEntitiesType with ConfigureSearchableEntitiesPayload', () => {
+    const action = loadSearchableEntitites(['investigation', 'dataset']);
+    expect(action.type).toEqual(ConfigureSearchableEntitiesType);
+    expect(action.payload).toEqual({
+      entities: ['investigation', 'dataset'],
+    });
+  });
+
+  it('settings are loaded and facilityName, loadUrls, loadSelectAllSetting, loadSearchableEntitites, loadMaxNumResults and settingsLoaded actions are sent', async () => {
+    mockSettingsGetter.mockReturnValue({
+      facilityName: 'Generic',
+      idsUrl: 'ids',
+      apiUrl: 'api',
+      downloadApiUrl: 'download-api',
+      icatUrl: 'icat',
+      selectAllSetting: false,
+      searchableEntities: ['investigation', 'dataset', 'datafile'],
+      maxNumResults: 150,
+    });
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(3);
+    expect(actions.length).toEqual(6);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       loadUrls({
@@ -74,238 +72,45 @@ describe('Actions', () => {
         icatUrl: 'icat',
       })
     );
+    expect(actions).toContainEqual(loadSelectAllSetting(false));
+    expect(actions).toContainEqual(
+      loadSearchableEntitites(['investigation', 'dataset', 'datafile'])
+    );
+    expect(actions).toContainEqual(loadMaxNumResults(150));
 
     expect(actions).toContainEqual(settingsLoaded());
-    expect(CustomEvent).toHaveBeenCalledTimes(1);
-    expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
-      detail: {
-        type: RegisterRouteType,
-        payload: {
-          section: 'section',
-          link: 'link',
-          plugin: 'datagateway-search',
-          displayName: '\xa0displayName',
-          order: 0,
-          helpSteps: [],
-          logoLightMode: 'http://localhost:3000/' + LogoLight,
-          logoDarkMode: 'http://localhost:3000/' + LogoDark,
-          logoAltText: 'DataGateway',
-        },
-      },
+  });
+
+  it("doesn't send loadSelectAllSetting, loadSearchableEntitites and loadMaxNumResults actions when they're not defined", async () => {
+    mockSettingsGetter.mockReturnValue({
+      facilityName: 'Generic',
+      idsUrl: 'ids',
+      apiUrl: 'api',
+      downloadApiUrl: 'download-api',
+      icatUrl: 'icat',
     });
-  });
-
-  it('settings loaded and multiple routes registered with any helpSteps provided', async () => {
-    (axios.get as jest.Mock)
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            facilityName: 'Generic',
-            idsUrl: 'ids',
-            apiUrl: 'api',
-            downloadApiUrl: 'download-api',
-            routes: [
-              {
-                section: 'section0',
-                link: 'link0',
-                displayName: 'displayName0',
-                order: 0,
-              },
-              {
-                section: 'section1',
-                link: 'link1',
-                displayName: 'displayName1',
-                order: 1,
-              },
-            ],
-            helpSteps: [{ target: '#id', content: 'content' }],
-          },
-        })
-      )
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            testSection: { test: 'string' },
-          },
-        })
-      );
-
-    const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
-    expect(CustomEvent).toHaveBeenCalledTimes(2);
-    expect(CustomEvent).toHaveBeenNthCalledWith(1, MicroFrontendId, {
-      detail: {
-        type: RegisterRouteType,
-        payload: {
-          section: 'section0',
-          link: 'link0',
-          plugin: 'datagateway-search',
-          displayName: '\xa0displayName0',
-          order: 0,
-          helpSteps: [{ target: '#id', content: 'content' }],
-          logoLightMode: undefined,
-          logoDarkMode: undefined,
-          logoAltText: 'DataGateway',
-        },
-      },
-    });
-    expect(CustomEvent).toHaveBeenNthCalledWith(2, MicroFrontendId, {
-      detail: {
-        type: RegisterRouteType,
-        payload: {
-          section: 'section1',
-          link: 'link1',
-          plugin: 'datagateway-search',
-          displayName: '\xa0displayName1',
-          order: 1,
-          helpSteps: [],
-          logoLightMode: undefined,
-          logoDarkMode: undefined,
-          logoAltText: 'DataGateway',
-        },
-      },
-    });
-  });
-
-  it('logs an error if facility name is not defined in settings.json and fails to be loaded', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          idsUrl: 'ids',
-          apiUrl: 'api',
-          downloadApiUrl: 'download-api',
-          icatUrl: 'icat',
-        },
-      })
-    );
-
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-search-settings.json: facilityName is undefined in settings'
-    );
+    expect(actions.length).toEqual(3);
+    expect(
+      actions.every(({ type }) => type !== ConfigureSelectAllSettingType)
+    ).toBe(true);
+    expect(
+      actions.every(({ type }) => type !== ConfigureSearchableEntitiesType)
+    ).toBe(true);
+    expect(
+      actions.every(({ type }) => type !== ConfigureMaxNumResultsType)
+    ).toBe(true);
+
+    expect(actions).toContainEqual(settingsLoaded());
   });
 
-  it('logs an error if urls are not defined in settings.json and fails to be loaded', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          facilityName: 'Generic',
-        },
-      })
-    );
-
+  it("doesn't send any actions when settings are undefined", async () => {
+    mockSettingsGetter.mockReturnValue(undefined);
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-search-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl, icatUrl) is undefined in settings'
-    );
-  });
-
-  it('logs an error if no routes are defined in settings.json and fails to be loaded', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          facilityName: 'Generic',
-          idsUrl: 'ids',
-          apiUrl: 'api',
-          downloadApiUrl: 'download-api',
-          icatUrl: 'icat',
-        },
-      })
-    );
-
-    const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
-
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-search-settings.json: No routes provided in the settings'
-    );
-  });
-
-  it('logs an error if route has missing entries', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          facilityName: 'Generic',
-          idsUrl: 'ids',
-          apiUrl: 'api',
-          downloadApiUrl: 'download-api',
-          icatUrl: 'icat',
-          routes: [
-            {
-              section: 'section',
-              link: 'link',
-            },
-          ],
-        },
-      })
-    );
-
-    const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
-
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-search-settings.json: Route provided does not have all the required entries (section, link, displayName)'
-    );
-  });
-
-  it('logs an error if settings.json fails to be loaded', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
-
-    const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
-
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      expect.stringContaining(
-        `Error loading /datagateway-search-settings.json: `
-      )
-    );
-  });
-
-  it('logs an error if settings.json fails to be loaded with custom path', async () => {
-    process.env.REACT_APP_SEARCH_BUILD_DIRECTORY = '/custom/directory/';
-    (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
-
-    const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
-
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      expect.stringContaining(
-        `Error loading /custom/directory/datagateway-search-settings.json: `
-      )
-    );
-    delete process.env.REACT_APP_SEARCH_BUILD_DIRECTORY;
-  });
-
-  it('logs an error if settings.json is invalid JSON object', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: 1,
-      })
-    );
-
-    const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
-
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-search-settings.json: Invalid format'
-    );
+    expect(actions.length).toEqual(0);
   });
 });

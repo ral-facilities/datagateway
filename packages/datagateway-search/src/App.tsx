@@ -6,13 +6,21 @@ import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import {
   DGCommonMiddleware,
   DGThemeProvider,
+  MicroFrontendId,
   Preloader,
+  BroadcastSignOutType,
+  RequestPluginRerenderType,
 } from 'datagateway-common';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createBrowserHistory } from 'history';
+import {
+  createBrowserHistory,
+  LocationListener,
+  Location,
+  Action,
+  // eslint-disable-next-line import/no-extraneous-dependencies
+} from 'history';
 import * as log from 'loglevel';
 import React from 'react';
-import { connect, Provider } from 'react-redux';
+import { batch, connect, Provider } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
@@ -31,6 +39,45 @@ const composeEnhancers =
 /* eslint-enable */
 
 const history = createBrowserHistory();
+
+// fix query string freeze bug
+// see https://github.com/supasate/connected-react-router/issues/311#issuecomment-692017995
+let listeners: LocationListener<unknown>[] = [];
+
+function appendListener(fn: LocationListener<unknown>): () => void {
+  let isActive = true;
+
+  const listener: LocationListener<unknown> = (...args) => {
+    if (isActive) fn(...args);
+  };
+
+  listeners.push(listener);
+
+  return () => {
+    isActive = false;
+    listeners = listeners.filter((item) => item !== listener);
+  };
+}
+
+function notifyListeners(
+  ...args: [location: Location<unknown>, action: Action]
+): void {
+  listeners.forEach((listener) => listener(...args));
+}
+
+// make only one subscription to history changes and proxy to our internal listeners
+history.listen((...args) => {
+  // here's the key change
+  batch(() => {
+    notifyListeners(...args);
+  });
+});
+
+// monkey patch to store subscriptions into our own pool
+history.listen = (fn) => {
+  return appendListener(fn);
+};
+
 const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
 
 const generateClassName = createGenerateClassName({
@@ -59,10 +106,17 @@ export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
+      refetchOnWindowFocus: true,
+      staleTime: 300000,
     },
   },
+});
+
+document.addEventListener(MicroFrontendId, (e) => {
+  const action = (e as CustomEvent).detail;
+  if (action.type === BroadcastSignOutType) {
+    queryClient.clear();
+  }
 });
 
 class App extends React.Component<unknown, { hasError: boolean }> {
@@ -70,6 +124,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
   public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
+    this.handler = this.handler.bind(this);
 
     // set up store in constructor to isolate from SciGateway redux store: https://redux.js.org/recipes/isolating-redux-sub-apps
     this.store = createStore(
@@ -83,6 +138,22 @@ class App extends React.Component<unknown, { hasError: boolean }> {
       AnyAction
     >;
     dispatch(configureApp());
+  }
+
+  handler(e: Event): void {
+    // attempt to re-render the plugin if we get told to
+    const action = (e as CustomEvent).detail;
+    if (action.type === RequestPluginRerenderType) {
+      this.forceUpdate();
+    }
+  }
+
+  public componentDidMount(): void {
+    document.addEventListener(MicroFrontendId, this.handler);
+  }
+
+  public componentWillUnmount(): void {
+    document.removeEventListener(MicroFrontendId, this.handler);
   }
 
   public componentDidCatch(error: Error | null): void {

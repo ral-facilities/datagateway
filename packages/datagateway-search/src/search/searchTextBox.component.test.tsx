@@ -5,38 +5,46 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import SearchTextBox from './searchTextBox.component';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
 import { initialState } from '../state/reducers/dgsearch.reducer';
-import { submitSearchText } from '../state/actions/actions';
+import { createMemoryHistory, History } from 'history';
+import { Router } from 'react-router-dom';
 
 jest.mock('loglevel');
 
 describe('Search text box component tests', () => {
   let shallow;
+  let mount;
   let state: StateType;
   let mockStore;
-  let mount;
+  let testStore;
+  let history: History;
 
   const testInitiateSearch = jest.fn();
+  const handleChange = jest.fn();
+
+  const createWrapper = (h: History = history): ReactWrapper => {
+    return mount(
+      <Provider store={testStore}>
+        <Router history={h}>
+          <SearchTextBox
+            store={testStore}
+            searchText=""
+            initiateSearch={testInitiateSearch}
+            onChange={handleChange}
+          />
+        </Router>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
+    history = createMemoryHistory();
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
     state.dgsearch = {
-      searchText: '',
-      text: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
-      checkBox: {
-        dataset: true,
-        datafile: true,
-        investigation: false,
-      },
       tabs: {
         datasetTab: true,
         datafileTab: true,
@@ -52,6 +60,7 @@ describe('Search text box component tests', () => {
     };
 
     mockStore = configureStore([thunk]);
+    testStore = mockStore(state);
   });
 
   afterEach(() => {
@@ -61,39 +70,17 @@ describe('Search text box component tests', () => {
   it('renders correctly', () => {
     const wrapper = shallow(
       <SearchTextBox
-        store={mockStore(state)}
+        store={testStore}
+        searchText="test"
         initiateSearch={testInitiateSearch}
+        onChange={handleChange}
       />
     );
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends selectStartDate action when user types number into Start Date input', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchTextBox initiateSearch={testInitiateSearch} />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    wrapper
-      .find('[aria-label="searchBox.search_text_arialabel"] input')
-      .simulate('change', { target: { value: 'test' } });
-
-    expect(testStore.getActions()[0]).toEqual(submitSearchText('test'));
-  });
-
   it('initiates search when user presses enter key', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <SearchTextBox initiateSearch={testInitiateSearch} />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper();
     wrapper
       .find('[aria-label="searchBox.search_text_arialabel"] input')
       .simulate('change', { target: { value: 'test' } });

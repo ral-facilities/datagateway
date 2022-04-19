@@ -6,6 +6,7 @@ import {
   settingsLoaded,
   loadSelectAllSetting,
   loadPluginHostSetting,
+  loadFacilityImageSetting,
 } from '../actions';
 
 describe('dgdataview reducer', () => {
@@ -80,5 +81,16 @@ describe('dgdataview reducer', () => {
     );
 
     expect(updatedState.pluginHost).toEqual('http://localhost:3000');
+  });
+
+  it('should set facilityImageSetting when configuring action is sent', () => {
+    expect(state.dgdataview.facilityImageURL).toEqual('');
+
+    const updatedState = DGDataViewReducer(
+      state,
+      loadFacilityImageSetting('test-image.jpg')
+    );
+
+    expect(updatedState.facilityImageURL).toEqual('test-image.jpg');
   });
 });

@@ -1,28 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Search text box component tests renders correctly 1`] = `
-<div>
-  <WithStyles(ForwardRef(TextField))
-    InputProps={
-      Object {
-        "aria-label": "searchBox.search_text_arialabel",
-        "endAdornment": <WithStyles(ForwardRef(InputAdornment))
-          position="start"
-        >
-          <Memo />
-        </WithStyles(ForwardRef(InputAdornment))>,
-      }
-    }
-    color="secondary"
+<div
+  className="MuiFormControl-root MuiTextField-root tour-search-textfield MuiFormControl-marginNormal MuiFormControl-fullWidth"
+  onKeyDown={[Function]}
+>
+  <WithStyles(ForwardRef(InputLabel))
+    htmlFor="filled-search"
+    id="filled-search-label"
+  >
+    searchBox.search_text
+  </WithStyles(ForwardRef(InputLabel))>
+  <WithStyles(ForwardRef(OutlinedInput))
+    aria-label="searchBox.search_text_arialabel"
+    autoFocus={false}
     fullWidth={true}
     id="filled-search"
-    label="searchBox.search_text"
-    margin="normal"
+    label={
+      <React.Fragment>
+        searchBox.search_text
+      </React.Fragment>
+    }
+    multiline={false}
     onChange={[Function]}
-    onKeyDown={[Function]}
     type="search"
-    value=""
-    variant="outlined"
+    value="test"
   />
 </div>
 `;

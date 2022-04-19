@@ -7,20 +7,26 @@ import {
   withStyles,
   createStyles,
   IconButton,
-  Badge,
   makeStyles,
-  Button,
 } from '@material-ui/core';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+
 import SearchIcon from '@material-ui/icons/Search';
+import InfoIcon from '@material-ui/icons/Info';
 import { StyleRules } from '@material-ui/core/styles';
 import {
-  DownloadCartItem,
   Sticky,
   ViewsType,
   useCart,
   parseSearchToQuery,
-  usePushView,
+  useUpdateView,
+  readSciGatewayToken,
+  ArrowTooltip,
+  SelectionAlert,
+  ViewCartButton,
+  CartProps,
+  useUpdateQueryParam,
+  ViewButton,
+  ClearFiltersButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,27 +35,30 @@ import {
   Route,
   useLocation,
   useHistory,
+  useRouteMatch,
 } from 'react-router-dom';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
+import DoiRedirect from './doiRedirect.component';
+import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
-const usePaperStyles = makeStyles(
-  (theme: Theme): StyleRules =>
+const usePaperStyles = makeStyles<Theme, { tablePaperHeight: string }>(
+  (theme: Theme) =>
     createStyles({
       cardPaper: { backgroundColor: 'inherit' },
       tablePaper: {
-        height: 'calc(100vh - 180px)',
+        height: ({ tablePaperHeight }) => tablePaperHeight,
         width: '100%',
+        minHeight: 500,
         backgroundColor: 'inherit',
         overflowX: 'auto',
       },
       tablePaperMessage: {
-        height: 'calc(100vh - 244px - 4rem)',
+        //Footer is 36px
+        height: 'calc(100vh - 244px - 4rem - 36px)',
         width: '100%',
         backgroundColor: 'inherit',
         overflowX: 'auto',
@@ -61,6 +70,25 @@ const usePaperStyles = makeStyles(
         marginLeft: 'auto',
         marginRight: 'auto',
         maxWidth: '960px',
+      },
+    })
+);
+
+const useNavBarStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      openDataPaper: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        backgroundColor: (theme as any).colours?.warning,
+        display: 'flex',
+        flexDirection: 'column',
+        paddingLeft: 0,
+        paddingRight: 20,
+        justifyContent: 'center',
+      },
+      openDataInfoIcon: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        color: (theme as any).colours?.information,
       },
     })
 );
@@ -78,6 +106,7 @@ const StyledGrid = withStyles(gridStyles)(Grid);
 export const paths = {
   homepage: '/datagateway',
   root: '/browse',
+  doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
   myData: {
     root: '/my-data',
     dls: '/my-data/DLS',
@@ -140,14 +169,47 @@ const togglePaths = Object.values(paths.toggle).concat(
   Object.values(paths.studyHierarchy.toggle)
 );
 
+// ISIS base paths - required for linking to correct search view
+const isisPaths = [
+  paths.myData.isis,
+  paths.toggle.isisInstrument,
+  paths.studyHierarchy.root,
+];
+
+// DLS base paths - required for linking to correct search view
+const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
+
+const BlackTextTypography = withStyles({
+  root: {
+    color: '#000000',
+    fontSize: '16px',
+  },
+})(Typography);
+
 const NavBar = React.memo(
-  (props: {
-    entityCount: number;
-    cartItems: DownloadCartItem[];
-    navigateToSearch: () => void;
-    navigateToDownload: () => void;
-  }): React.ReactElement => {
+  (
+    props: {
+      entityCount: number;
+      navigateToSearch: () => void;
+      loggedInAnonymously: boolean;
+    } & CartProps
+  ): React.ReactElement => {
     const [t] = useTranslation();
+    const classes = useNavBarStyles();
+    const isStudyHierarchy =
+      useRouteMatch([
+        ...Object.values(paths.studyHierarchy.toggle),
+        ...Object.values(paths.studyHierarchy.standard),
+      ]) !== null;
+    const isISISRoute = useRouteMatch(isisPaths) !== null;
+    const landingPages = isStudyHierarchy
+      ? paths.studyHierarchy.landing
+      : isISISRoute
+      ? paths.landing
+      : [];
+    const landingPageEntities = Object.values(landingPages).map(
+      (x) => x.split('/')[x.split('/').length - 2]
+    );
 
     return (
       <Sticky>
@@ -160,32 +222,80 @@ const NavBar = React.memo(
             aria-label="page-breadcrumbs"
           >
             {/* don't show breadcrumbs on /my-data - only on browse */}
-            <Route
-              path={[paths.root, paths.studyHierarchy.root]}
-              component={PageBreadcrumbs}
-            />
+            <Route path={[paths.root, paths.studyHierarchy.root]}>
+              <PageBreadcrumbs landingPageEntities={landingPageEntities} />
+            </Route>
           </Grid>
+
+          {props.loggedInAnonymously || isStudyHierarchy ? (
+            <Grid item>
+              <Paper square className={classes.openDataPaper}>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                  aria-label="open-data-warning"
+                >
+                  <Grid item>
+                    <ArrowTooltip
+                      interactive
+                      title={
+                        <h4>
+                          {isStudyHierarchy
+                            ? t('app.open_data_warning.studies_tooltip')
+                            : t('app.open_data_warning.tooltip')}
+                          <br />
+                          <br />
+                          <a
+                            href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
+                            style={{ color: '#6793FF' }}
+                          >
+                            {t('app.open_data_warning.tooltip_link')}
+                          </a>
+                        </h4>
+                      }
+                      disableHoverListener={false}
+                      aria-label={t('app.open_data_warning.aria_label')}
+                    >
+                      <IconButton
+                        disableRipple
+                        style={{ backgroundColor: 'transparent' }}
+                      >
+                        <InfoIcon className={classes.openDataInfoIcon} />
+                      </IconButton>
+                    </ArrowTooltip>
+                  </Grid>
+                  <Grid item>
+                    <BlackTextTypography variant="h6">
+                      <b>{t('app.open_data_warning.message')}</b>
+                    </BlackTextTypography>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+          ) : null}
 
           {/* The table entity count has a size of 2 (or 3 for xs screens); the
             breadcrumbs will take the remainder of the space. */}
-          <Grid
-            className="tour-dataview-results"
-            style={{ textAlign: 'center' }}
-            item
-            sm={2}
-            xs={3}
-            aria-label="view-count"
-          >
-            <Route
-              exact
-              path={Object.values(paths.myData).concat(
-                Object.values(paths.toggle),
-                Object.values(paths.standard),
-                Object.values(paths.studyHierarchy.toggle),
-                Object.values(paths.studyHierarchy.standard)
-              )}
-              render={() => {
-                return (
+          <Route
+            exact
+            path={Object.values(paths.myData).concat(
+              Object.values(paths.toggle),
+              Object.values(paths.standard),
+              Object.values(paths.studyHierarchy.toggle),
+              Object.values(paths.studyHierarchy.standard)
+            )}
+            render={() => {
+              return (
+                <Grid
+                  className="tour-dataview-results"
+                  style={{ textAlign: 'center' }}
+                  item
+                  sm={2}
+                  xs={3}
+                  aria-label="view-count"
+                >
                   <Paper
                     square
                     style={{
@@ -200,10 +310,10 @@ const NavBar = React.memo(
                       <b>{t('app.results')}:</b> {props.entityCount}
                     </Typography>
                   </Paper>
-                );
-              }}
-            />
-          </Grid>
+                </Grid>
+              );
+            }}
+          />
           <Paper
             square
             style={{
@@ -231,22 +341,10 @@ const NavBar = React.memo(
               paddingRight: 6,
             }}
           >
-            <IconButton
-              className="tour-dataview-cart-icon"
-              onClick={props.navigateToDownload}
-              aria-label="view-cart"
-              style={{ margin: 'auto' }}
-            >
-              <Badge
-                badgeContent={
-                  props.cartItems.length > 0 ? props.cartItems.length : null
-                }
-                color="primary"
-                aria-label="view-cart-badge"
-              >
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
+            <ViewCartButton
+              cartItems={props.cartItems}
+              navigateToDownload={props.navigateToDownload}
+            />
           </Paper>
         </StyledGrid>
       </Sticky>
@@ -255,50 +353,43 @@ const NavBar = React.memo(
 );
 NavBar.displayName = 'NavBar';
 
-const viewButtonStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      root: {
-        padding: theme.spacing(1),
-      },
-    })
-);
-
-const ViewButton = (props: {
-  viewCards: boolean;
-  handleButtonChange: () => void;
-}): React.ReactElement => {
-  const [t] = useTranslation();
-  const classes = viewButtonStyles();
-
-  return (
-    <div className={classes.root}>
-      <Button
-        className="tour-dataview-view-button"
-        aria-label={`page-view ${
-          props.viewCards ? t('app.view_table') : t('app.view_cards')
-        }`}
-        variant="contained"
-        color="primary"
-        size="small"
-        startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
-        onClick={() => props.handleButtonChange()}
-      >
-        {props.viewCards ? t('app.view_table') : t('app.view_cards')}
-      </Button>
-    </div>
-  );
-};
-
 const StyledRouting = (props: {
   viewStyle: ViewsType;
   view: ViewsType;
   location: LocationType;
   displayFilterMessage: boolean;
+  loggedInAnonymously: boolean;
+  linearProgressHeight: string;
 }): React.ReactElement => {
-  const { view, location, viewStyle, displayFilterMessage } = props;
+  const {
+    view,
+    location,
+    viewStyle,
+    displayFilterMessage,
+    loggedInAnonymously,
+    linearProgressHeight,
+  } = props;
+
+  const breadcrumbDiv = document.getElementById('breadcrumbs');
+
+  const [breadcrumbHeight, setBreadcrumbHeight] = React.useState(
+    breadcrumbDiv ? `${breadcrumbDiv.clientHeight}px` : '30px'
+  );
+
+  React.useEffect(() => {
+    breadcrumbDiv
+      ? setBreadcrumbHeight(`${breadcrumbDiv.clientHeight}px`)
+      : setBreadcrumbHeight('30px');
+  }, [breadcrumbDiv, breadcrumbDiv?.clientHeight]);
+
+  // Footer is 36px
+  // Chrome's display is 1px shorter than Firefox's, so we subtract 1px extra to account for this
+  // We also don't want the <LinearProgress> bar to push the page down so subtract the height of this (4px if on-screen)
+  // Additional rows of breadcrumbs also push the page down so subtract the height of the breadcrumb div
+  const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
+
   const [t] = useTranslation();
-  const paperClasses = usePaperStyles();
+  const paperClasses = usePaperStyles({ tablePaperHeight });
   const tableClassName = displayFilterMessage
     ? paperClasses.tablePaperMessage
     : paperClasses.tablePaper;
@@ -318,11 +409,15 @@ const StyledRouting = (props: {
       )}
       <Paper
         square
-        className={
+        className={`${
           viewStyle === 'card' ? paperClasses.cardPaper : tableClassName
-        }
+        } tour-dataview-data`}
       >
-        <PageRouting view={view} location={location} />
+        <PageRouting
+          loggedInAnonymously={loggedInAnonymously}
+          view={view}
+          location={location}
+        />
       </Paper>
     </div>
   );
@@ -334,8 +429,17 @@ const ViewRouting = React.memo(
     loadedCount: boolean;
     totalDataCount: number;
     location: LocationType;
+    loggedInAnonymously: boolean;
+    linearProgressHeight: string;
   }): React.ReactElement => {
-    const { view, loadedCount, totalDataCount, location } = props;
+    const {
+      view,
+      loadedCount,
+      totalDataCount,
+      location,
+      loggedInAnonymously,
+      linearProgressHeight,
+    } = props;
     const displayFilterMessage = loadedCount && totalDataCount === 0;
 
     return (
@@ -346,7 +450,13 @@ const ViewRouting = React.memo(
           path={Object.values(paths.landing).concat(
             Object.values(paths.studyHierarchy.landing)
           )}
-          render={() => <PageRouting view={view} location={location} />}
+          render={() => (
+            <PageRouting
+              loggedInAnonymously={loggedInAnonymously}
+              view={view}
+              location={location}
+            />
+          )}
         />
         {/* For "toggle" paths, check state for the current view to determine styling */}
         <Route exact path={togglePaths}>
@@ -354,7 +464,9 @@ const ViewRouting = React.memo(
             viewStyle={view}
             view={view}
             location={location}
+            loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
 
@@ -364,7 +476,9 @@ const ViewRouting = React.memo(
             viewStyle={'table'}
             view={view}
             location={location}
+            loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
       </SwitchRouting>
@@ -428,6 +542,10 @@ const PageContainer: React.FC = () => {
   });
   const loading = isFetchingNum > 0;
 
+  const [linearProgressHeight, setlinearProgressHeight] = React.useState(
+    loading ? '4px' : '0px'
+  );
+
   const queryClient = useQueryClient();
 
   // we need to run this hook every render to ensure we have the
@@ -443,6 +561,10 @@ const PageContainer: React.FC = () => {
     if (count !== totalDataCount) setTotalDataCount(count);
   });
 
+  React.useEffect(() => {
+    loading ? setlinearProgressHeight('4px') : setlinearProgressHeight('0px');
+  }, [loading]);
+
   const isCountFetchingNum = useIsFetching('count', {
     exact: false,
   });
@@ -450,7 +572,8 @@ const PageContainer: React.FC = () => {
 
   const { data: cartItems } = useCart();
 
-  const pushView = usePushView();
+  const pushView = useUpdateView('push');
+  const replaceView = useUpdateView('replace');
 
   const handleButtonChange = React.useCallback((): void => {
     const nextView = view !== 'card' ? 'card' : 'table';
@@ -464,9 +587,20 @@ const PageContainer: React.FC = () => {
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
-  const navigateToSearch = React.useCallback(() => push('/search/data'), [
-    push,
-  ]);
+  const isisRouteMatch = useRouteMatch(isisPaths);
+  const dlsRouteMatch = useRouteMatch(dlsPaths);
+  const isISISRoute = isisRouteMatch !== null;
+  const isDLSRoute = dlsRouteMatch !== null;
+
+  const navigateToSearch = React.useCallback(() => {
+    if (isISISRoute) {
+      return push('/search/isis');
+    } else if (isDLSRoute) {
+      return push('/search/dls');
+    } else {
+      return push('/search/data');
+    }
+  }, [push, isISISRoute, isDLSRoute]);
 
   React.useEffect(() => {
     prevLocationRef.current = location;
@@ -481,14 +615,50 @@ const PageContainer: React.FC = () => {
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
     if (getToggle(location.pathname, view) && !view) {
-      pushView('card');
+      //Replace rather than push here to ensure going back doesn't just go to the same
+      //page without the query which would execute this code again
+      replaceView('card');
     }
-  }, [location.pathname, view, prevView, prevLocation.pathname, pushView]);
+  }, [location.pathname, view, prevView, prevLocation.pathname, replaceView]);
+
+  //Determine whether logged in anonymously (assume this if username is null)
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously = username === null || username === 'anon/anon';
+
+  const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+
+  const dlsDefaultFilters = {
+    startDate: {
+      endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
+    },
+  };
+
+  const disabled =
+    Object.keys(filters).length === 0 ||
+    (location.pathname === paths.myData.dls &&
+      JSON.stringify(filters) === JSON.stringify(dlsDefaultFilters))
+      ? true
+      : false;
+
+  const pushFilters = useUpdateQueryParam('filters', 'push');
+
+  const handleButtonClearFilters = (): void => {
+    if (location.pathname === paths.myData.dls) {
+      pushFilters(dlsDefaultFilters);
+    } else {
+      pushFilters({});
+    }
+  };
 
   return (
     <SwitchRouting location={location}>
       {/* Load the homepage */}
       <Route exact path={paths.homepage} component={TranslatedHomePage} />
+      <Route exact path={paths.doiRedirect}>
+        <DoiRedirect />
+      </Route>
       <Route
         render={() => (
           // Load the standard dataview pageContainer
@@ -498,27 +668,70 @@ const PageContainer: React.FC = () => {
               cartItems={cartItems ?? []}
               navigateToSearch={navigateToSearch}
               navigateToDownload={navigateToDownload}
+              loggedInAnonymously={loggedInAnonymously}
             />
 
             <StyledGrid container>
-              {/* Toggle between the table and card view */}
-              <Grid item xs={12}>
-                <Route
-                  exact
-                  path={togglePaths}
-                  render={() => (
-                    <ViewButton
-                      viewCards={view === 'card'}
-                      handleButtonChange={handleButtonChange}
+              <Grid
+                item
+                xs={12}
+                style={{ marginTop: '10px', marginBottom: '10px' }}
+              >
+                <StyledGrid container alignItems="baseline">
+                  {/* Toggle between the table and card view */}
+                  <Grid
+                    item
+                    style={{ display: 'flex', alignItems: 'baseline' }}
+                  >
+                    <Route
+                      exact
+                      path={Object.values(paths.myData)}
+                      render={() => <RoleSelector />}
                     />
-                  )}
-                />
+                    <Route
+                      exact
+                      path={togglePaths}
+                      render={() => (
+                        <ViewButton
+                          viewCards={view === 'card'}
+                          handleButtonChange={handleButtonChange}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path={Object.values(paths.myData).concat(
+                        Object.values(paths.toggle),
+                        Object.values(paths.standard),
+                        Object.values(paths.studyHierarchy.toggle),
+                        Object.values(paths.studyHierarchy.standard)
+                      )}
+                      render={() => (
+                        <ClearFiltersButton
+                          handleButtonClearFilters={handleButtonClearFilters}
+                          disabled={disabled}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={true}>
+                    <SelectionAlert
+                      selectedItems={cartItems ?? []}
+                      navigateToSelection={navigateToDownload}
+                      marginSide={'8px'}
+                      loggedInAnonymously={loggedInAnonymously}
+                    />
+                  </Grid>
+                </StyledGrid>
               </Grid>
 
               {/* Show loading progress if data is still being loaded */}
               {loading && (
                 <Grid item xs={12}>
-                  <LinearProgress color="secondary" />
+                  <LinearProgress
+                    color="secondary"
+                    style={{ height: linearProgressHeight }}
+                  />
                 </Grid>
               )}
 
@@ -528,7 +741,9 @@ const PageContainer: React.FC = () => {
                   view={view}
                   location={location}
                   loadedCount={loadedCount}
+                  loggedInAnonymously={loggedInAnonymously}
                   totalDataCount={totalDataCount ?? 0}
+                  linearProgressHeight={linearProgressHeight}
                 />
               </Grid>
             </StyledGrid>

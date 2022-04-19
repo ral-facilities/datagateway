@@ -5,6 +5,7 @@ import {
   ListItemText,
   // SvgIcon,
 } from '@material-ui/core';
+
 import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
@@ -13,6 +14,7 @@ import {
   useInvestigationCount,
   Investigation,
   useInvestigationsDatasetCount,
+  AddToCartButton,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -24,7 +26,6 @@ import { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import InvestigationCardView from './investigationCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import AddToCartButton from '../addToCartButton.component';
 import { createMemoryHistory, History } from 'history';
 
 jest.mock('datagateway-common', () => {
@@ -67,6 +68,7 @@ describe('Investigation - Card View', () => {
         title: 'Test 1',
         name: 'Test 1',
         visitId: '1',
+        doi: 'doi 1',
       },
     ];
     history = createMemoryHistory();
@@ -120,7 +122,6 @@ describe('Investigation - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
@@ -132,7 +133,6 @@ describe('Investigation - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -146,7 +146,6 @@ describe('Investigation - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
@@ -156,8 +155,21 @@ describe('Investigation - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testid="investigation-card-doi-link"]').first().text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-card-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
   });
 
   it('updates sort query params on sort', () => {
@@ -167,7 +179,6 @@ describe('Investigation - Card View', () => {
     expect(button.text()).toEqual('investigations.title');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );

@@ -9,7 +9,7 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useInvestigationsInfinite,
-  useInvestigationsDatasetCount,
+  useInvestigationSizes,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -33,7 +33,7 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useInvestigationCount: jest.fn(),
     useInvestigationsInfinite: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
+    useInvestigationSizes: jest.fn(),
     useIds: jest.fn(),
     useCart: jest.fn(),
     useAddToCart: jest.fn(),
@@ -72,7 +72,6 @@ describe('Investigation table component', () => {
         name: 'Test 1',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
         investigationInstruments: [
           {
             id: 3,
@@ -106,7 +105,7 @@ describe('Investigation table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
+    (useInvestigationSizes as jest.Mock).mockReturnValue({ data: 1 });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
     });
@@ -141,10 +140,10 @@ describe('Investigation table component', () => {
         }),
       },
     ]);
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
+    expect(useInvestigationSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('investigation');
+    expect(useIds).toHaveBeenCalledWith('investigation', undefined, true);
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
     expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
@@ -166,6 +165,23 @@ describe('Investigation table component', () => {
     expect(fetchNextPage).toHaveBeenCalledWith({
       pageParam: { startIndex: 50, stopIndex: 74 },
     });
+  });
+
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="investigation-table-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('doi 1');
+
+    expect(
+      wrapper
+        .find('[data-testid="investigation-table-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi 1');
   });
 
   it('updates filter query params on text filter', () => {
@@ -297,6 +313,16 @@ describe('Investigation table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('investigation', undefined, false);
+    expect(useIds).not.toHaveBeenCalledWith('investigation', undefined, true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+  });
+
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <InvestigationDetailsPanel
@@ -334,6 +360,7 @@ describe('Investigation table component', () => {
         id: 1,
         name: 'test',
         title: 'test',
+        doi: 'Test 1',
       },
     ];
     (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({

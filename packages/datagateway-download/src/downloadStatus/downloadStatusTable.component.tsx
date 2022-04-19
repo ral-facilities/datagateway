@@ -247,7 +247,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         <Paper
           style={{
             height:
-              'calc(100vh - 64px - 30px - 48px - 48px - (1.75rem + 40px))',
+              'calc(100vh - 64px - 36px - 48px - 48px - (1.75rem + 40px))',
             minHeight: 230,
             overflowX: 'auto',
           }}
@@ -303,7 +303,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                   ? true
                   : false;
 
-                const [clicked, setClicked] = React.useState(false);
                 return (
                   <BlackTooltip
                     title={
@@ -331,14 +330,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                           })}
                           key="download"
                           size="small"
-                          onClick={() => {
-                            setClicked(true);
-                            setTimeout(() => {
-                              setClicked(false);
-                            }, 100);
-                          }}
                         >
-                          <GetApp color={clicked ? 'primary' : 'inherit'} />
+                          <GetApp />
                         </IconButton>
                       ) : (
                         <IconButton
@@ -376,17 +369,13 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                     size="small"
                     onClick={() => {
                       setIsDeleting(true);
-                      setTimeout(
-                        () =>
-                          downloadDeleted(downloadItem.id as number, true, {
-                            facilityName: settings.facilityName,
-                            downloadApiUrl: settings.downloadApiUrl,
-                          }).then(() =>
-                            setData(
-                              data.filter((item) => item.id !== downloadItem.id)
-                            )
-                          ),
-                        100
+                      downloadDeleted(downloadItem.id as number, true, {
+                        facilityName: settings.facilityName,
+                        downloadApiUrl: settings.downloadApiUrl,
+                      }).then(() =>
+                        setData(
+                          data.filter((item) => item.id !== downloadItem.id)
+                        )
                       );
                     }}
                   >

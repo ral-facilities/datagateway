@@ -42,6 +42,7 @@ const SelectCell = React.memo(
         variant="body"
       >
         <Checkbox
+          className="tour-dataview-add-to-cart"
           checked={selectedRows.includes(rowData.id)}
           inputProps={{
             'aria-label': `select row ${rowIndex}`,

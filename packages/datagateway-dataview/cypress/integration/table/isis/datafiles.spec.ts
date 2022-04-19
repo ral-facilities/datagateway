@@ -1,10 +1,10 @@
 describe('ISIS - Datafiles Table', () => {
   beforeEach(() => {
-    cy.intercept('/instruments/1').as('instruments');
-    cy.intercept('/facilitycycles/16').as('facilityCycles');
-    cy.intercept('/datasets/337').as('datasets');
-    cy.intercept('/datafiles/count').as('datafilesCount');
-    cy.intercept('/datafiles?order=').as('datafilesOrder');
+    cy.intercept('**/instruments/**').as('instruments');
+    cy.intercept('**/facilitycycles/16').as('facilityCycles');
+    cy.intercept('**/datasets/337').as('datasets');
+    cy.intercept('**/datafiles/count?*').as('datafilesCount');
+    cy.intercept('**/datafiles?order=*').as('datafilesOrder');
     cy.login();
   });
 
@@ -30,6 +30,10 @@ describe('ISIS - Datafiles Table', () => {
     it('should load correctly', () => {
       cy.title().should('equal', 'DataGateway DataView');
       cy.get('#datagateway-dataview').should('be.visible');
+
+      //Default sort
+      cy.get('[aria-sort="descending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
     });
 
     it('should not load incorrect URL', () => {
@@ -48,6 +52,13 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     describe('should be able to sort by', () => {
+      beforeEach(() => {
+        //Revert the default sort
+        cy.contains('[role="button"]', 'Modified Time')
+          .click()
+          .wait('@datafilesOrder', { timeout: 10000 });
+      });
+
       it('ascending order', () => {
         cy.contains('[role="button"]', 'Location')
           .click()
@@ -151,6 +162,13 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     describe('should be able to view details', () => {
+      beforeEach(() => {
+        //Revert the default sort
+        cy.contains('[role="button"]', 'Modified Time')
+          .click()
+          .wait('@datafilesOrder', { timeout: 10000 });
+      });
+
       it('when no other row is showing details', () => {
         cy.get('[aria-label="Show details"]').first().click();
 

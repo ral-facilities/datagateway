@@ -17,6 +17,7 @@ export const InvalidateTokenType = `${CustomFrontendMessageType}:invalidate_toke
 export const RegisterRouteType = `${CustomFrontendMessageType}:register_route`;
 export const RequestPluginRerenderType = `${CustomFrontendMessageType}:plugin_rerender`;
 export const SendThemeOptionsType = `${CustomFrontendMessageType}:send_themeoptions`;
+export const BroadcastSignOutType = `${CustomFrontendMessageType}:signout`;
 
 // internal actions
 export const ConfigureFacilityNameType =
@@ -260,6 +261,7 @@ export interface PluginRoute {
   link: string;
   displayName: string;
   admin?: boolean;
+  hideFromMenu?: boolean;
   order: number;
 }
 

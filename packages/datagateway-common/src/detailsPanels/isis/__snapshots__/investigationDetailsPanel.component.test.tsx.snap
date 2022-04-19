@@ -1,0 +1,279 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Investigation details panel component checks if multiple publications result in change of title to plural version 1`] = `
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "doi": "doi 1",
+    "endDate": "2019-06-11",
+    "id": 1,
+    "investigationInstruments": Array [
+      Object {
+        "id": 1,
+        "instrument": Object {
+          "id": 3,
+          "name": "LARMOR",
+        },
+      },
+    ],
+    "name": "Test 1",
+    "publications": Array [
+      Object {
+        "fullReference": "Test publication",
+        "id": 8,
+      },
+      Object {
+        "fullReference": "Test publication 1",
+        "id": 9,
+      },
+    ],
+    "size": 1,
+    "startDate": "2019-06-10",
+    "studyInvestigations": Array [
+      Object {
+        "id": 11,
+        "study": Object {
+          "id": 12,
+          "pid": "study pid",
+        },
+      },
+    ],
+    "summary": "foo bar",
+    "title": "Test 1",
+    "visitId": "1",
+  },
+}
+`;
+
+exports[`Investigation details panel component checks if multiple samples result in change of title to plural version 1`] = `
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "doi": "doi 1",
+    "endDate": "2019-06-11",
+    "id": 1,
+    "investigationInstruments": Array [
+      Object {
+        "id": 1,
+        "instrument": Object {
+          "id": 3,
+          "name": "LARMOR",
+        },
+      },
+    ],
+    "name": "Test 1",
+    "samples": Array [
+      Object {
+        "id": 7,
+        "name": "Test sample",
+      },
+      Object {
+        "id": 8,
+        "name": "Test sample 1",
+      },
+    ],
+    "size": 1,
+    "startDate": "2019-06-10",
+    "studyInvestigations": Array [
+      Object {
+        "id": 11,
+        "study": Object {
+          "id": 12,
+          "pid": "study pid",
+        },
+      },
+    ],
+    "summary": "foo bar",
+    "title": "Test 1",
+    "visitId": "1",
+  },
+}
+`;
+
+exports[`Investigation details panel component gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users 1`] = `
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "doi": "doi 1",
+    "endDate": "2019-06-11",
+    "id": 1,
+    "investigationInstruments": Array [
+      Object {
+        "id": 1,
+        "instrument": Object {
+          "id": 3,
+          "name": "LARMOR",
+        },
+      },
+    ],
+    "investigationUsers": Array [
+      Object {
+        "id": 4,
+        "role": "Investigator",
+      },
+    ],
+    "name": "Test 1",
+    "size": 1,
+    "startDate": "2019-06-10",
+    "studyInvestigations": Array [
+      Object {
+        "id": 11,
+      },
+    ],
+    "summary": "foo bar",
+    "title": "Test 1",
+    "visitId": "1",
+  },
+}
+`;
+
+exports[`Investigation details panel component renders correctly 1`] = `
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "doi": "doi 1",
+    "endDate": "2019-06-11",
+    "id": 1,
+    "investigationInstruments": Array [
+      Object {
+        "id": 1,
+        "instrument": Object {
+          "id": 3,
+          "name": "LARMOR",
+        },
+      },
+    ],
+    "name": "Test 1",
+    "size": 1,
+    "startDate": "2019-06-10",
+    "studyInvestigations": Array [
+      Object {
+        "id": 11,
+        "study": Object {
+          "id": 12,
+          "pid": "study pid",
+        },
+      },
+    ],
+    "summary": "foo bar",
+    "title": "Test 1",
+    "visitId": "1",
+  },
+}
+`;
+
+exports[`Investigation details panel component renders user, sample and publication tabs when present in the data 1`] = `
+Object {
+  "detailsPanelResize": [MockFunction] {
+    "calls": Array [
+      Array [],
+    ],
+    "results": Array [
+      Object {
+        "type": "return",
+        "value": undefined,
+      },
+    ],
+  },
+  "rowData": Object {
+    "doi": "doi 1",
+    "endDate": "2019-06-11",
+    "id": 1,
+    "investigationInstruments": Array [
+      Object {
+        "id": 1,
+        "instrument": Object {
+          "id": 3,
+          "name": "LARMOR",
+        },
+      },
+    ],
+    "investigationUsers": Array [
+      Object {
+        "id": 4,
+        "role": "Investigator",
+        "user": Object {
+          "fullName": "Louise Davies",
+          "id": 5,
+          "name": "Louise",
+        },
+      },
+      Object {
+        "id": 9,
+        "role": "Investigator",
+        "user": Object {
+          "id": 10,
+          "name": "Louise",
+        },
+      },
+    ],
+    "name": "Test 1",
+    "publications": Array [
+      Object {
+        "fullReference": "Test publication",
+        "id": 8,
+      },
+    ],
+    "samples": Array [
+      Object {
+        "id": 7,
+        "name": "Test sample",
+      },
+    ],
+    "size": 1,
+    "startDate": "2019-06-10",
+    "studyInvestigations": Array [
+      Object {
+        "id": 11,
+        "study": Object {
+          "id": 12,
+          "pid": "study pid",
+        },
+      },
+    ],
+    "summary": "foo bar",
+    "title": "Test 1",
+    "visitId": "1",
+  },
+}
+`;

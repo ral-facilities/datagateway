@@ -1,10 +1,10 @@
 describe('DLS - Visits Table', () => {
   beforeEach(() => {
     cy.login();
-    cy.intercept('/investigations?').as('investigations');
-    cy.intercept('/investigations/count?').as('investigationsCount');
-    cy.intercept('/investigations/findone?').as('investigationsFindOne');
-    cy.intercept('/datasets/count').as('datasetsCount');
+    cy.intercept('**/investigations?*').as('investigations');
+    cy.intercept('**/investigations/count?*').as('investigationsCount');
+    cy.intercept('**/investigations/findone?*').as('investigationsFindOne');
+    cy.intercept('**/datasets/count?*').as('datasetsCount');
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/').wait(
       [
         '@investigations',
@@ -19,6 +19,10 @@ describe('DLS - Visits Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should be able to click an investigation to see its datasets', () => {
@@ -97,6 +101,11 @@ describe('DLS - Visits Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Visit ID').click();
 
@@ -203,7 +212,29 @@ describe('DLS - Visits Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('10.25 GB', { timeout: 10000 }).should('be.visible');
+      cy.contains('11.01 GB', { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible');
+    });
+
+    it('and then calculate file size when the value is 0', () => {
+      cy.intercept('**/getSize?*', '0');
+
+      // We need to wait for counts to finish, otherwise cypress
+      // might interact with the details panel too quickly and
+      // it re-renders during the test.
+
+      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
+        'exist'
+      );
+      cy.get('[aria-label="Show details"]').first().click();
+
+      cy.contains('#calculate-size-btn', 'Calculate')
+        .should('exist')
+        .click({ force: true });
+      cy.contains('0 B', { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible');
     });
 
     // TODO: Since we only have one investigation, we cannot test

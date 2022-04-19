@@ -102,11 +102,26 @@ describe('Card View', () => {
     let updatedProps = {
       ...props,
       customFilters: [
-        { label: 'Type ID', dataKey: 'type.id', filterItems: ['1', '2'] },
+        {
+          label: 'Type ID',
+          dataKey: 'type.id',
+          filterItems: [
+            {
+              name: '1',
+              count: '1',
+            },
+            {
+              name: '2',
+              count: '1',
+            },
+          ],
+        },
       ],
     };
     const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find('#card').at(0).find(Chip).text()).toEqual('1');
+    expect(
+      wrapper.find('[data-testid="card"]').at(0).find(Chip).text()
+    ).toEqual('1');
 
     // Open custom filters
     const typePanel = wrapper.find(Accordion).first();
@@ -168,12 +183,27 @@ describe('Card View', () => {
     const updatedProps = {
       ...props,
       customFilters: [
-        { label: 'Type ID', dataKey: 'type.id', filterItems: ['1', '2'] },
+        {
+          label: 'Type ID',
+          dataKey: 'type.id',
+          filterItems: [
+            {
+              name: '1',
+              count: '1',
+            },
+            {
+              name: '2',
+              count: '1',
+            },
+          ],
+        },
       ],
       filters: { 'type.id': { value: 'abc', type: 'include' } },
     };
     const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find('#card').at(0).find(Chip).text()).toEqual('1');
+    expect(
+      wrapper.find('[data-testid="card"]').at(0).find(Chip).text()
+    ).toEqual('1');
 
     // Open custom filters
     const typePanel = wrapper.find(Accordion).first();
@@ -258,7 +288,7 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc');
+    expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc', 'push');
     updatedProps = {
       ...updatedProps,
       sort: { title: 'asc' },
@@ -267,7 +297,7 @@ describe('Card View', () => {
 
     // Click to sort descending
     button.simulate('click');
-    expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc');
+    expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc', 'push');
     updatedProps = {
       ...updatedProps,
       sort: { title: 'desc' },
@@ -276,7 +306,29 @@ describe('Card View', () => {
 
     // Click to clear sorting
     button.simulate('click');
-    expect(onSort).toHaveBeenNthCalledWith(3, 'title', null);
+    expect(onSort).toHaveBeenNthCalledWith(3, 'title', null, 'push');
+  });
+
+  it('default sort applied correctly', () => {
+    const updatedProps: CardViewProps = {
+      ...props,
+      title: { ...props.title, defaultSort: 'asc' },
+      description: { dataKey: 'name', label: 'Name', defaultSort: 'desc' },
+      information: [
+        { dataKey: 'visitId' },
+        {
+          dataKey: 'test',
+          label: 'Name',
+          defaultSort: 'asc',
+        },
+      ],
+    };
+    const wrapper = createWrapper(updatedProps);
+    wrapper.update();
+
+    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('name', 'desc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('test', 'asc', 'replace');
   });
 
   it('can sort by description with label', () => {
@@ -292,7 +344,7 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(onSort).toHaveBeenCalledWith('name', 'asc');
+    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
   });
 
   it('can sort by description without label', () => {
@@ -308,7 +360,7 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(onSort).toHaveBeenCalledWith('name', 'asc');
+    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
   });
 
   it('page changed when sort applied', () => {
@@ -319,7 +371,7 @@ describe('Card View', () => {
 
     // Click to sort ascending
     button.simulate('click');
-    expect(onSort).toHaveBeenCalledWith('title', 'asc');
+    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'push');
     expect(onPageChange).toHaveBeenCalledWith(1);
   });
 
@@ -340,23 +392,23 @@ describe('Card View', () => {
     };
     const wrapper = createWrapper(updatedProps);
     expect(
-      wrapper.find('[aria-label="card-info-visitId"]').first().text()
+      wrapper.find('[data-testid="card-info-visitId"]').first().text()
     ).toEqual('visitId:');
     expect(
-      wrapper.find('[aria-label="card-info-data-visitId"]').first().text()
+      wrapper.find('[data-testid="card-info-data-visitId"]').first().text()
     ).toEqual('1');
     expect(
-      wrapper.find('[aria-label="card-info-Name"]').first().text()
+      wrapper.find('[data-testid="card-info-Name"]').first().text()
     ).toEqual('Name:');
     expect(
-      wrapper.find('[aria-label="card-info-data-Name"]').first().text()
+      wrapper.find('[data-testid="card-info-data-Name"]').first().text()
     ).toEqual('Content');
 
     // Click to sort ascending
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('visitId');
     button.simulate('click');
-    expect(onSort).toHaveBeenCalledWith('visitId', 'asc');
+    expect(onSort).toHaveBeenCalledWith('visitId', 'asc', 'push');
   });
 
   it('information displays with content that has no tooltip', () => {
@@ -376,10 +428,10 @@ describe('Card View', () => {
 
     const wrapper = createWrapper(updatedProps);
     expect(
-      wrapper.find('[aria-label="card-info-Name"]').first().text()
+      wrapper.find('[data-testid="card-info-Name"]').first().text()
     ).toEqual('Name:');
     expect(
-      wrapper.find('[aria-label="card-info-data-Name"]').first().text()
+      wrapper.find('[data-testid="card-info-data-Name"]').first().text()
     ).toEqual('Content');
   });
 
@@ -420,6 +472,30 @@ describe('Card View', () => {
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 
+  it('results changed when max results exceeded', () => {
+    const updatedProps = {
+      ...props,
+      totalDataCount: 100,
+      resultsOptions: [10, 20, 30],
+      results: 40,
+      page: 1,
+    };
+    createWrapper(updatedProps);
+    expect(onResultsChange).toHaveBeenNthCalledWith(1, 10);
+  });
+
+  it('results changed when max results exceeded when total data count is between 10 and 20)', () => {
+    const updatedProps = {
+      ...props,
+      totalDataCount: 14,
+      resultsOptions: [10, 20, 30],
+      results: 30,
+      page: 1,
+    };
+    createWrapper(updatedProps);
+    expect(onResultsChange).toHaveBeenNthCalledWith(1, 10);
+  });
+
   it('selector sends pushQuery with results', () => {
     const updatedProps = {
       ...props,
@@ -432,7 +508,7 @@ describe('Card View', () => {
       .find(Select)
       .props()
       .onChange?.({ target: { value: 2 } });
-    expect(onResultsChange).toHaveBeenNthCalledWith(1, 2);
+    expect(onResultsChange).toHaveBeenNthCalledWith(2, 2);
   });
 
   it('selector sends pushQuery with results and page', () => {
@@ -447,7 +523,7 @@ describe('Card View', () => {
       .find(Select)
       .props()
       .onChange?.({ target: { value: 3 } });
-    expect(onResultsChange).toHaveBeenNthCalledWith(1, 3);
+    expect(onResultsChange).toHaveBeenNthCalledWith(2, 3);
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 });

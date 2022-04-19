@@ -1,9 +1,9 @@
 describe('DLS - Datasets Table', () => {
   beforeEach(() => {
-    cy.intercept('/investigations/1').as('investigations');
-    cy.intercept('/investigations/findone').as('investigationsFindOne');
-    cy.intercept('/datasets/count?').as('datasetsCount');
-    cy.intercept('/datasets?').as('datasets');
+    cy.intercept('**/investigations/1').as('investigations');
+    cy.intercept('**/investigations/findone?*').as('investigationsFindOne');
+    cy.intercept('**/datasets/count?*').as('datasetsCount');
+    cy.intercept('**/datasets?*').as('datasets');
     cy.login();
     cy.visit(
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
@@ -23,6 +23,10 @@ describe('DLS - Datasets Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should not load incorrect URL', () => {
@@ -37,7 +41,7 @@ describe('DLS - Datasets Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/1/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/241/datafile'
     );
   });
 
@@ -109,6 +113,11 @@ describe('DLS - Datasets Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Create Time').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
@@ -205,6 +214,11 @@ describe('DLS - Datasets Table', () => {
   });
 
   describe('should be able to view details', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Create Time').click();
+    });
+
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
@@ -247,7 +261,32 @@ describe('DLS - Datasets Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('4.24 GB', { timeout: 10000 }).should('be.visible');
+      cy.contains('4.55 GB', { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible');
+    });
+
+    it('and then calculate file size when the value is 0 ', () => {
+      cy.intercept('**/getSize?*', '0');
+
+      // need to wait for counts to finish, otherwise cypress might interact with the details panel
+      // too quickly and it rerenders during the test
+
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '55').should(
+        'exist'
+      );
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '55').should(
+        'exist'
+      );
+
+      cy.get('[aria-label="Show details"]').first().click();
+
+      cy.contains('#calculate-size-btn', 'Calculate')
+        .should('exist')
+        .click({ force: true });
+      cy.contains('0 B', { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible');
     });
 
     it('and view the dataset type panel', () => {
@@ -276,5 +315,23 @@ describe('DLS - Datasets Table', () => {
       cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
+  });
+
+  it('should display correct datafile count after filtering', () => {
+    cy.visit('/browse/proposal/INVESTIGATION%202/investigation/2/dataset').wait(
+      ['@investigationsFindOne', '@datasetsCount', '@datasets'],
+      {
+        timeout: 10000,
+      }
+    );
+
+    cy.get('[aria-label="Filter by Name"]')
+      .first()
+      .type('DATASET 242')
+      .wait(['@datasetsCount', '@datasets'], {
+        timeout: 10000,
+      });
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('55');
   });
 });

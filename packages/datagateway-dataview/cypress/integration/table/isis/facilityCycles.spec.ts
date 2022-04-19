@@ -7,13 +7,17 @@ describe('ISIS - FacilityCycles Table', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should be able to click a facility cycle to see its investigations', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/1/investigation'
+      '/browse/instrument/1/facilityCycle/79/investigation'
     );
   });
 
@@ -91,6 +95,11 @@ describe('ISIS - FacilityCycles Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name').click();
 
@@ -150,7 +159,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        '2010-08-04 00:00:00+00:00'
+        '2010-06-03 00:00:00+00:00'
       );
     });
 
@@ -176,7 +185,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-rowcount="19"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2010-06-03 00:00:00+00:00'
+        '2019-08-04 00:00:00+00:00'
       );
     });
 

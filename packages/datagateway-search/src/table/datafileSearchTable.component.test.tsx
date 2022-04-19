@@ -1,8 +1,6 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatafileSearchTable, {
-  DatafileDetailsPanel,
-} from './datafileSearchTable.component';
+import { createMount } from '@material-ui/core/test-utils';
+import DatafileSearchTable from './datafileSearchTable.component';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
@@ -16,6 +14,9 @@ import {
   useLuceneSearch,
   useRemoveFromCart,
   useAllFacilityCycles,
+  ISISDatafileDetailsPanel,
+  DatafileDetailsPanel,
+  DLSDatafileDetailsPanel,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -24,7 +25,7 @@ import { Router } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { dGCommonInitialState } from 'datagateway-common';
-import { ReactWrapper, shallow as enzymeShallow } from 'enzyme';
+import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 
 jest.mock('datagateway-common', () => {
@@ -46,7 +47,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Datafile search table component', () => {
-  let shallow: typeof enzymeShallow;
   let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -67,7 +67,6 @@ describe('Datafile search table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     history = createMemoryHistory();
 
@@ -188,9 +187,10 @@ describe('Datafile search table component', () => {
 
     expect(useCart).toHaveBeenCalled();
     expect(useLuceneSearch).toHaveBeenCalledWith('Datafile', {
-      searchText: state.dgsearch.searchText,
-      startDate: state.dgsearch.selectDate.startDate,
-      endDate: state.dgsearch.selectDate.endDate,
+      searchText: '',
+      startDate: null,
+      endDate: null,
+      maxCount: 300,
     });
 
     expect(useDatafileCount).toHaveBeenCalledWith([
@@ -217,14 +217,18 @@ describe('Datafile search table component', () => {
         }),
       },
     ]);
-    expect(useIds).toHaveBeenCalledWith('datafile', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'datafile',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { in: [1] },
+          }),
+        },
+      ],
+      true
+    );
 
     expect(useAddToCart).toHaveBeenCalledWith('datafile');
     expect(useRemoveFromCart).toHaveBeenCalledWith('datafile');
@@ -375,15 +379,41 @@ describe('Datafile search table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <DatafileDetailsPanel
-        rowData={rowData[0]}
-        detailsPanelResize={jest.fn()}
-      />
-    );
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgsearch.selectAllSetting = false;
 
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('datafile', expect.anything(), false);
+    expect(useIds).not.toHaveBeenCalledWith(
+      'datafile',
+      expect.anything(),
+      true
+    );
+    expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
+  });
+
+  it('displays generic details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DatafileDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(DatafileDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for ISIS when expanded', () => {
+    const wrapper = createWrapper('isis');
+    expect(wrapper.find(ISISDatafileDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    expect(wrapper.find(ISISDatafileDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('displays correct details panel for DLS when expanded', () => {
+    const wrapper = createWrapper('dls');
+    expect(wrapper.find(DLSDatafileDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(DLSDatafileDetailsPanel).exists()).toBeTruthy();
   });
 
   // Not necessary as this should be a test of the formatBytes function

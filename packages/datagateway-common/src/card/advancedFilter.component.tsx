@@ -19,6 +19,7 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import SaveIcon from '@material-ui/icons/Save';
 import DescriptionIcon from '@material-ui/icons/Description';
 import LinkIcon from '@material-ui/icons/Link';
+import PersonIcon from '@material-ui/icons/Person';
 import { useTranslation } from 'react-i18next';
 
 const useAdvancedFilterStyles = makeStyles((theme: Theme) =>
@@ -125,6 +126,12 @@ export const UnmemoisedAdvancedFilter = (
       }) as string[]).includes(label)
     ) {
       return <LinkIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.person', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <PersonIcon className={classes.icon} />;
     } else {
       return null;
     }
@@ -136,10 +143,10 @@ export const UnmemoisedAdvancedFilter = (
         <div className={classes.filterGrid}>
           {/* Filters for title and description provided on card */}
           {title && title.filterComponent && (
-            <div className={classes.filter}>
+            <div className={`${classes.filter} tour-dataview-filter`}>
               <Grid container>
                 {title.label && chooseIcon(title.label)}
-                <Typography aria-label="title-label" variant="subtitle1">
+                <Typography variant="subtitle1">
                   {title.label ? title.label : title.dataKey}
                 </Typography>
               </Grid>
@@ -151,10 +158,10 @@ export const UnmemoisedAdvancedFilter = (
             </div>
           )}
           {description && description.filterComponent && (
-            <div className={classes.filter}>
+            <div className={`${classes.filter} tour-dataview-filter`}>
               <Grid container>
                 {description.label && chooseIcon(description.label)}
-                <Typography aria-label="description-label" variant="subtitle1">
+                <Typography variant="subtitle1">
                   {description.label ? description.label : description.dataKey}
                 </Typography>
               </Grid>
@@ -170,13 +177,13 @@ export const UnmemoisedAdvancedFilter = (
             information.map(
               (info, index) =>
                 info.filterComponent && (
-                  <div key={index} className={classes.filter}>
+                  <div
+                    key={index}
+                    className={`${classes.filter} tour-dataview-filter`}
+                  >
                     <Grid container>
                       {info.label && chooseIcon(info.label)}
-                      <Typography
-                        aria-label="information-label"
-                        variant="subtitle1"
-                      >
+                      <Typography variant="subtitle1">
                         {info.label ? info.label : info.dataKey}
                       </Typography>
                     </Grid>
@@ -193,9 +200,10 @@ export const UnmemoisedAdvancedFilter = (
       {/* Advanced filters link */}
       <div className={classes.link}>
         <Link
+          className="tour-dataview-advanced-filters"
           component="button"
           variant="body1"
-          aria-label="advanced-filters-link"
+          data-testid="advanced-filters-link"
           onClick={() => setAdvSearchCollapsed((prev) => !prev)}
         >
           {!advSearchCollapsed

@@ -10,6 +10,7 @@ import {
 import {
   Table,
   investigationLink,
+  externalSiteLink,
   Investigation,
   ColumnType,
   formatCountOrSize,
@@ -20,11 +21,11 @@ import {
   useAddToCart,
   useRemoveFromCart,
   parseSearchToQuery,
-  usePushSort,
+  useSort,
   useTextFilter,
   useDateFilter,
-  useInvestigationsDatasetCount,
   DetailsPanelProps,
+  useInvestigationSizes,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { useSelector } from 'react-redux';
@@ -34,7 +35,7 @@ import { useLocation } from 'react-router-dom';
 import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
@@ -117,7 +118,7 @@ const InvestigationTable = (): React.ReactElement => {
       }),
     },
   ]);
-  const { data: allIds } = useIds('investigation');
+  const { data: allIds } = useIds('investigation', undefined, selectAllSetting);
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'investigation'
@@ -127,34 +128,35 @@ const InvestigationTable = (): React.ReactElement => {
     isLoading: removeFromCartLoading,
   } = useRemoveFromCart('investigation');
 
-  const selectedRows = React.useMemo(
-    () =>
-      cartItems
-        ?.filter(
-          (cartItem) =>
-            allIds &&
-            cartItem.entityType === 'investigation' &&
-            allIds.includes(cartItem.entityId)
-        )
-        .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
-  );
-
   const aggregatedData: Investigation[] = React.useMemo(
     () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
     [data]
   );
 
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        ?.filter(
+          (cartItem) =>
+            cartItem.entityType === 'investigation' &&
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
+        )
+        .map((cartItem) => cartItem.entityId),
+    [cartItems, selectAllSetting, allIds]
+  );
+
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
     [fetchNextPage]
   );
 
-  const datasetCountQueries = useInvestigationsDatasetCount(data);
+  const sizeQueries = useInvestigationSizes(data);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -167,7 +169,8 @@ const InvestigationTable = (): React.ReactElement => {
           return investigationLink(
             investigationData.id,
             investigationData.title,
-            view
+            view,
+            'investigation-table-title'
           );
         },
         filterComponent: textFilter,
@@ -189,14 +192,23 @@ const InvestigationTable = (): React.ReactElement => {
         icon: PublicIcon,
         label: t('investigations.doi'),
         dataKey: 'doi',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          return externalSiteLink(
+            `https://doi.org/${investigationData.doi}`,
+            investigationData.doi,
+            'investigation-table-doi-link'
+          );
+        },
         filterComponent: textFilter,
       },
+
       {
-        icon: ConfirmationNumberIcon,
-        label: t('investigations.dataset_count'),
-        dataKey: 'datasetCount',
+        icon: SaveIcon,
+        label: t('investigations.size'),
+        dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(datasetCountQueries[cellProps.rowIndex]),
+          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
         disableSort: true,
       },
       {
@@ -238,7 +250,7 @@ const InvestigationTable = (): React.ReactElement => {
         },
       },
     ],
-    [t, textFilter, dateFilter, view, datasetCountQueries]
+    [t, textFilter, dateFilter, view, sizeQueries]
   );
 
   return (
@@ -248,7 +260,7 @@ const InvestigationTable = (): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

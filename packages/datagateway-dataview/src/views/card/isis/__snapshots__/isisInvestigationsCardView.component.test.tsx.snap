@@ -8,7 +8,37 @@ Object {
   "data": Array [
     Object {
       "id": 1,
+      "investigationUsers": Array [
+        Object {
+          "id": 2,
+          "role": "experimenter",
+          "user": Object {
+            "fullName": "Test experimenter",
+            "id": 2,
+            "name": "test",
+          },
+        },
+        Object {
+          "id": 3,
+          "role": "principal_experimenter",
+          "user": Object {
+            "fullName": "Test PI",
+            "id": 3,
+            "name": "testpi",
+          },
+        },
+      ],
       "name": "Test 1",
+      "studyInvestigations": Array [
+        Object {
+          "id": 1,
+          "name": "study 1",
+          "study": Object {
+            "id": 1,
+            "pid": "study pid",
+          },
+        },
+      ],
       "title": "Test 1",
       "visitId": "1",
     },
@@ -34,6 +64,7 @@ Object {
       "label": "investigations.name",
     },
     Object {
+      "content": [Function],
       "dataKey": "studyInvestigations[0].study.pid",
       "filterComponent": [Function],
       "icon": Object {
@@ -62,7 +93,8 @@ Object {
     },
     Object {
       "content": [Function],
-      "dataKey": "investigationInstruments.instrument.name",
+      "dataKey": "investigationUsers.user.fullName",
+      "disableSort": true,
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -72,11 +104,11 @@ Object {
           "render": [Function],
         },
       },
-      "label": "investigations.instrument",
-      "noTooltip": true,
+      "label": "investigations.principal_investigators",
     },
     Object {
       "dataKey": "startDate",
+      "defaultSort": "desc",
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -111,7 +143,9 @@ Object {
   "onSort": [Function],
   "page": null,
   "results": null,
-  "sort": Object {},
+  "sort": Object {
+    "startDate": "desc",
+  },
   "title": Object {
     "content": [Function],
     "dataKey": "title",

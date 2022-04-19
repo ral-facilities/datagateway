@@ -141,6 +141,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -175,6 +176,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -201,6 +203,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Investigation",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -212,6 +215,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Investigation",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -302,6 +306,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -336,6 +341,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -362,6 +368,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Dataset",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -373,6 +380,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Dataset",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -463,6 +471,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -497,6 +506,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -523,6 +533,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Datafile",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -534,6 +545,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Datafile",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -553,8 +565,272 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "status": "idle",
                   },
                 },
+                Query {
+                  "cache": [Circular],
+                  "cacheTime": 300000,
+                  "defaultOptions": undefined,
+                  "gcTimeout": undefined,
+                  "initialState": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                  "observers": Array [
+                    QueryObserver {
+                      "client": [Circular],
+                      "currentQuery": [Circular],
+                      "currentQueryInitialState": Object {
+                        "data": undefined,
+                        "dataUpdateCount": 0,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdateCount": 0,
+                        "errorUpdatedAt": 0,
+                        "fetchFailureCount": 0,
+                        "fetchMeta": null,
+                        "isFetching": false,
+                        "isInvalidated": false,
+                        "isPaused": false,
+                        "status": "idle",
+                      },
+                      "currentResult": Object {
+                        "data": undefined,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdatedAt": 0,
+                        "failureCount": 0,
+                        "isError": false,
+                        "isFetched": false,
+                        "isFetchedAfterMount": false,
+                        "isFetching": false,
+                        "isIdle": true,
+                        "isLoading": false,
+                        "isLoadingError": false,
+                        "isPlaceholderData": false,
+                        "isPreviousData": false,
+                        "isRefetchError": false,
+                        "isStale": true,
+                        "isSuccess": false,
+                        "refetch": [Function],
+                        "remove": [Function],
+                        "status": "idle",
+                      },
+                      "currentResultOptions": Object {
+                        "_defaulted": true,
+                        "enabled": false,
+                        "onError": [Function],
+                        "optimisticResults": true,
+                        "queryFn": [Function],
+                        "queryHash": "[\\"cart\\"]",
+                        "queryKey": "cart",
+                        "staleTime": 0,
+                      },
+                      "currentResultState": Object {
+                        "data": undefined,
+                        "dataUpdateCount": 0,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdateCount": 0,
+                        "errorUpdatedAt": 0,
+                        "fetchFailureCount": 0,
+                        "fetchMeta": null,
+                        "isFetching": false,
+                        "isInvalidated": false,
+                        "isPaused": false,
+                        "status": "idle",
+                      },
+                      "listeners": Array [
+                        [Function],
+                      ],
+                      "options": Object {
+                        "_defaulted": true,
+                        "enabled": false,
+                        "onError": [Function],
+                        "optimisticResults": true,
+                        "queryFn": [Function],
+                        "queryHash": "[\\"cart\\"]",
+                        "queryKey": "cart",
+                        "staleTime": 0,
+                      },
+                      "previousQueryResult": undefined,
+                      "previousSelectError": null,
+                      "refetch": [Function],
+                      "refetchIntervalId": undefined,
+                      "remove": [Function],
+                      "staleTimeoutId": undefined,
+                      "trackedProps": Array [],
+                    },
+                  ],
+                  "options": Object {
+                    "_defaulted": true,
+                    "enabled": false,
+                    "onError": [Function],
+                    "optimisticResults": true,
+                    "queryFn": [Function],
+                    "queryHash": "[\\"cart\\"]",
+                    "queryKey": "cart",
+                    "staleTime": 0,
+                  },
+                  "queryHash": "[\\"cart\\"]",
+                  "queryKey": "cart",
+                  "state": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                },
               ],
               "queriesMap": Object {
+                "[\\"cart\\"]": Query {
+                  "cache": [Circular],
+                  "cacheTime": 300000,
+                  "defaultOptions": undefined,
+                  "gcTimeout": undefined,
+                  "initialState": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                  "observers": Array [
+                    QueryObserver {
+                      "client": [Circular],
+                      "currentQuery": [Circular],
+                      "currentQueryInitialState": Object {
+                        "data": undefined,
+                        "dataUpdateCount": 0,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdateCount": 0,
+                        "errorUpdatedAt": 0,
+                        "fetchFailureCount": 0,
+                        "fetchMeta": null,
+                        "isFetching": false,
+                        "isInvalidated": false,
+                        "isPaused": false,
+                        "status": "idle",
+                      },
+                      "currentResult": Object {
+                        "data": undefined,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdatedAt": 0,
+                        "failureCount": 0,
+                        "isError": false,
+                        "isFetched": false,
+                        "isFetchedAfterMount": false,
+                        "isFetching": false,
+                        "isIdle": true,
+                        "isLoading": false,
+                        "isLoadingError": false,
+                        "isPlaceholderData": false,
+                        "isPreviousData": false,
+                        "isRefetchError": false,
+                        "isStale": true,
+                        "isSuccess": false,
+                        "refetch": [Function],
+                        "remove": [Function],
+                        "status": "idle",
+                      },
+                      "currentResultOptions": Object {
+                        "_defaulted": true,
+                        "enabled": false,
+                        "onError": [Function],
+                        "optimisticResults": true,
+                        "queryFn": [Function],
+                        "queryHash": "[\\"cart\\"]",
+                        "queryKey": "cart",
+                        "staleTime": 0,
+                      },
+                      "currentResultState": Object {
+                        "data": undefined,
+                        "dataUpdateCount": 0,
+                        "dataUpdatedAt": 0,
+                        "error": null,
+                        "errorUpdateCount": 0,
+                        "errorUpdatedAt": 0,
+                        "fetchFailureCount": 0,
+                        "fetchMeta": null,
+                        "isFetching": false,
+                        "isInvalidated": false,
+                        "isPaused": false,
+                        "status": "idle",
+                      },
+                      "listeners": Array [
+                        [Function],
+                      ],
+                      "options": Object {
+                        "_defaulted": true,
+                        "enabled": false,
+                        "onError": [Function],
+                        "optimisticResults": true,
+                        "queryFn": [Function],
+                        "queryHash": "[\\"cart\\"]",
+                        "queryKey": "cart",
+                        "staleTime": 0,
+                      },
+                      "previousQueryResult": undefined,
+                      "previousSelectError": null,
+                      "refetch": [Function],
+                      "refetchIntervalId": undefined,
+                      "remove": [Function],
+                      "staleTimeoutId": undefined,
+                      "trackedProps": Array [],
+                    },
+                  ],
+                  "options": Object {
+                    "_defaulted": true,
+                    "enabled": false,
+                    "onError": [Function],
+                    "optimisticResults": true,
+                    "queryFn": [Function],
+                    "queryHash": "[\\"cart\\"]",
+                    "queryKey": "cart",
+                    "staleTime": 0,
+                  },
+                  "queryHash": "[\\"cart\\"]",
+                  "queryKey": "cart",
+                  "state": Object {
+                    "data": undefined,
+                    "dataUpdateCount": 0,
+                    "dataUpdatedAt": 0,
+                    "error": null,
+                    "errorUpdateCount": 0,
+                    "errorUpdatedAt": 0,
+                    "fetchFailureCount": 0,
+                    "fetchMeta": null,
+                    "isFetching": false,
+                    "isInvalidated": false,
+                    "isPaused": false,
+                    "status": "idle",
+                  },
+                },
                 "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
@@ -626,6 +902,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -660,6 +937,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Datafile",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -686,6 +964,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Datafile",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -697,6 +976,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Datafile",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -787,6 +1067,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -821,6 +1102,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Dataset",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -847,6 +1129,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Dataset",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -858,6 +1141,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Dataset",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -948,6 +1232,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -982,6 +1267,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                           "Investigation",
                           Object {
                             "endDate": null,
+                            "maxCount": undefined,
                             "searchText": "",
                             "startDate": null,
                           },
@@ -1008,6 +1294,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                       "Investigation",
                       Object {
                         "endDate": null,
+                        "maxCount": undefined,
                         "searchText": "",
                         "startDate": null,
                       },
@@ -1019,6 +1306,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "Investigation",
                     Object {
                       "endDate": null,
+                      "maxCount": undefined,
                       "searchText": "",
                       "startDate": null,
                     },
@@ -1048,19 +1336,20 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
       >
         <Connect(SearchPageContainer)>
           <SearchPageContainer
-            datafile={true}
             datafileTab={true}
-            dataset={false}
             datasetTab={true}
-            endDate={null}
-            investigation={false}
             investigationTab={true}
-            searchText=""
+            searchableEntities={
+              Array [
+                "investigation",
+                "dataset",
+                "datafile",
+              ]
+            }
             setDatafileTab={[Function]}
             setDatasetTab={[Function]}
             setInvestigationTab={[Function]}
             sideLayout={false}
-            startDate={null}
           >
             <Switch>
               <Route

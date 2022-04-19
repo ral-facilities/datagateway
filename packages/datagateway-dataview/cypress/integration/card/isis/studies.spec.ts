@@ -7,88 +7,154 @@ describe('ISIS - Studies Cards', () => {
       ['@getStudiesCount', '@getStudiesOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page-view Display as cards"]').click();
+    cy.get('[aria-label="page view Display as cards"]').click();
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    //Default sort
+    cy.contains('[role="button"]', 'desc').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
   it('should be able to click a study to see its landing page', () => {
-    cy.get('#card').contains('STUDY 4').click({ force: true });
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('STUDY 314')
+      .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/4'
+      '/browseStudyHierarchy/instrument/1/study/314'
     );
   });
 
-  it('should be able to sort by one field', () => {
-    cy.contains('[role="button"]', 'Start Date')
-      .click()
-      .wait('@getStudiesOrder', {
-        timeout: 10000,
-      });
-    cy.contains('[role="button"]', 'asc').should('exist');
-    cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('STUDY 325');
+  it('should disable the hover tool tip by pressing escape', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="landing-study-card-pid-link"]')
+      .first()
+      .trigger('mouseover')
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
 
-    cy.contains('[role="button"]', 'Start Date')
-      .click()
-      .wait('@getStudiesOrder', {
-        timeout: 10000,
-      });
-    cy.contains('[role="button"]', 'asc').should('not.exist');
-    cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains('STUDY 494');
+    cy.get('body').type('{esc}');
 
-    cy.contains('[role="button"]', 'Start Date')
-      .click()
-      .wait('@getStudiesOrder', {
-        timeout: 10000,
-      });
-    cy.contains('[role="button"]', 'asc').should('not.exist');
-    cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('STUDY 4');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="card"]')
+      .get('[data-testid="landing-study-card-pid-link"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
   });
 
-  it('should be able to sort by multiple fields', () => {
-    cy.contains('[role="button"]', 'Start Date')
-      .click()
-      .wait('@getStudiesOrder', {
-        timeout: 10000,
-      });
-    cy.contains('[role="button"]', 'asc').should('exist');
-    cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('STUDY 325');
+  it('should have the correct url for the PID link', () => {
+    cy.get('[data-testid="card"]')
+      .first()
+      .get('[data-testid="landing-study-card-pid-link"]')
+      .first()
+      .then(($pid) => {
+        const pid = $pid.text();
 
-    cy.contains('[role="button"]', 'End Date')
-      .click()
-      .wait('@getStudiesOrder', {
-        timeout: 10000,
+        const url = `https://doi.org/${pid}`;
+
+        cy.get('[data-testid="card"]')
+          .first()
+          .get('[data-testid="landing-study-card-pid-link"]')
+          .first()
+          .should('have.attr', 'href', url);
       });
-    cy.contains('[role="button"]', 'asc').should('exist');
-    cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('STUDY 325');
   });
 
-  it('should be able to filter by multiple fields', () => {
-    cy.get('[aria-label="advanced-filters-link"]').click();
+  describe('should be able to sort by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date')
+        .click()
+        .wait('@getStudiesOrder', { timeout: 10000 });
+    });
 
-    cy.get('[aria-label="Filter by Name"]')
-      .first()
-      .type('1')
-      .wait(['@getStudiesCount', '@getStudiesOrder'], {
-        timeout: 10000,
-      });
-    cy.get('#card').contains('STUDY 11');
+    it('one field', () => {
+      cy.contains('[role="button"]', 'Start Date')
+        .click()
+        .wait('@getStudiesOrder', {
+          timeout: 10000,
+        });
+      cy.contains('[role="button"]', 'asc').should('exist');
+      cy.contains('[role="button"]', 'desc').should('not.exist');
+      cy.get('[data-testid="card"]').first().contains('STUDY 325');
 
-    cy.get('[aria-label="Filter by Title"]')
-      .first()
-      .type('peace')
-      .wait(['@getStudiesCount', '@getStudiesOrder'], {
-        timeout: 10000,
-      });
-    cy.get('#card').contains('STUDY 341');
+      cy.contains('[role="button"]', 'Start Date')
+        .click()
+        .wait('@getStudiesOrder', {
+          timeout: 10000,
+        });
+      cy.contains('[role="button"]', 'asc').should('not.exist');
+      cy.contains('[role="button"]', 'desc').should('exist');
+      cy.get('[data-testid="card"]').first().contains('STUDY 314');
+
+      cy.contains('[role="button"]', 'Start Date')
+        .click()
+        .wait('@getStudiesOrder', {
+          timeout: 10000,
+        });
+      cy.contains('[role="button"]', 'asc').should('not.exist');
+      cy.contains('[role="button"]', 'desc').should('not.exist');
+      cy.get('[data-testid="card"]').first().contains('STUDY 4');
+    });
+
+    it('multiple fields', () => {
+      cy.contains('[role="button"]', 'Start Date')
+        .click()
+        .wait('@getStudiesOrder', {
+          timeout: 10000,
+        });
+      cy.contains('[role="button"]', 'asc').should('exist');
+      cy.contains('[role="button"]', 'desc').should('not.exist');
+      cy.get('[data-testid="card"]').first().contains('STUDY 325');
+
+      cy.contains('[role="button"]', 'End Date')
+        .click()
+        .wait('@getStudiesOrder', {
+          timeout: 10000,
+        });
+      cy.contains('[role="button"]', 'asc').should('exist');
+      cy.contains('[role="button"]', 'desc').should('not.exist');
+      cy.get('[data-testid="card"]').first().contains('STUDY 325');
+    });
+  });
+
+  describe('should be able to filter by', () => {
+    beforeEach(() => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date')
+        .click()
+        .wait('@getStudiesOrder', { timeout: 10000 });
+    });
+
+    it('multiple fields', () => {
+      cy.get('[data-testid="advanced-filters-link"]').click();
+
+      cy.get('[aria-label="Filter by Name"]')
+        .first()
+        .type('1')
+        .wait(['@getStudiesCount', '@getStudiesOrder'], {
+          timeout: 10000,
+        });
+      cy.get('[data-testid="card"]').first().contains('STUDY 21');
+
+      cy.get('[aria-label="Filter by Title"]')
+        .first()
+        .type('science')
+        .wait(['@getStudiesCount', '@getStudiesOrder'], {
+          timeout: 10000,
+        });
+      cy.get('[data-testid="card"]').first().contains('STUDY 314');
+    });
   });
 });

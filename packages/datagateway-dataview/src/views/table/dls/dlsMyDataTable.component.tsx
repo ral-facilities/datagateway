@@ -2,8 +2,6 @@ import {
   ColumnType,
   formatCountOrSize,
   Investigation,
-  MicroFrontendId,
-  NotificationType,
   parseSearchToQuery,
   readSciGatewayToken,
   Table,
@@ -12,14 +10,14 @@ import {
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsInfinite,
-  usePushFilters,
-  usePushSort,
+  usePushFilter,
+  useSort,
   useTextFilter,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
@@ -45,10 +43,6 @@ const DLSMyDataTable = (): React.ReactElement => {
         'investigationUsers.user.name': { eq: username },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({ investigationUsers: 'user' }),
-    },
   ]);
   const { fetchNextPage, data } = useInvestigationsInfinite([
     {
@@ -63,7 +57,6 @@ const DLSMyDataTable = (): React.ReactElement => {
         {
           investigationInstruments: 'instrument',
         },
-        { investigationUsers: 'user' },
       ]),
     },
   ]);
@@ -77,8 +70,8 @@ const DLSMyDataTable = (): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
-  const pushFilters = usePushFilters();
+  const handleSort = useSort();
+  const pushFilter = usePushFilter();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -96,7 +89,8 @@ const DLSMyDataTable = (): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
             investigationData.title,
-            view
+            view,
+            'dls-mydata-table-name'
           );
         },
         filterComponent: textFilter,
@@ -143,6 +137,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -155,32 +150,10 @@ const DLSMyDataTable = (): React.ReactElement => {
     [t, dateFilter, textFilter, view, datasetCountQueries]
   );
 
-  // Broadcast a SciGateway notification for any warning encountered.
-  const broadcastWarning = (message: string): void => {
-    document.dispatchEvent(
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: NotificationType,
-          payload: {
-            severity: 'warning',
-            message,
-          },
-        },
-      })
-    );
-  };
-
-  React.useEffect(() => {
-    if (localStorage.getItem('autoLogin') === 'true') {
-      broadcastWarning(t('my_data_table.login_warning_msg'));
-    }
-  }, [t]);
-
   React.useEffect(() => {
     // Sort and filter by startDate upon load.
-    if (!('startDate' in sort)) pushSort('startDate', 'desc');
     if (!('startDate' in filters))
-      pushFilters('startDate', {
+      pushFilter('startDate', {
         endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
       });
     // we only want this to run on mount
@@ -193,8 +166,8 @@ const DLSMyDataTable = (): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
-      detailsPanel={VisitDetailsPanel}
+      onSort={handleSort}
+      detailsPanel={DLSVisitDetailsPanel}
       columns={columns}
     />
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import ISISInvestigationsTable from './isisInvestigationsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -16,6 +16,8 @@ import {
   useInvestigationSizes,
   useInvestigationDetails,
   Table,
+  DownloadButton,
+  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -23,7 +25,6 @@ import { Router } from 'react-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import DownloadButton from '../../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -43,24 +44,28 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Investigations table component', () => {
-  let shallow;
   let mount;
   let mockStore;
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
+  let replaceSpy: jest.SpyInstance;
 
-  const createWrapper = (): ReactWrapper => {
+  const createWrapper = (
+    element: React.ReactElement = (
+      <ISISInvestigationsTable
+        studyHierarchy={false}
+        instrumentId="4"
+        instrumentChildId="5"
+      />
+    )
+  ): ReactWrapper => {
     const store = mockStore(state);
     return mount(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInvestigationsTable
-              studyHierarchy={false}
-              instrumentId="4"
-              instrumentChildId="5"
-            />
+            {element}
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -68,7 +73,6 @@ describe('ISIS Investigations table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow();
     mount = createMount();
     rowData = [
       {
@@ -79,13 +83,16 @@ describe('ISIS Investigations table component', () => {
         visitId: '1',
         doi: 'doi 1',
         size: 1,
-        investigationInstruments: [
+        investigationUsers: [
           {
-            id: 1,
-            instrument: {
-              id: 4,
-              name: 'LARMOR',
-            },
+            id: 2,
+            role: 'experimenter',
+            user: { id: 2, name: 'test', fullName: 'Test experimenter' },
+          },
+          {
+            id: 3,
+            role: 'principal_experimenter',
+            user: { id: 3, name: 'testpi', fullName: 'Test PI' },
           },
         ],
         studyInvestigations: [
@@ -102,6 +109,7 @@ describe('ISIS Investigations table component', () => {
       },
     ];
     history = createMemoryHistory();
+    replaceSpy = jest.spyOn(history, 'replace');
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -173,7 +181,8 @@ describe('ISIS Investigations table component', () => {
     expect(useISISInvestigationIds).toHaveBeenCalledWith(
       parseInt(instrumentId),
       parseInt(instrumentChildId),
-      studyHierarchy
+      studyHierarchy,
+      true
     );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
@@ -182,7 +191,7 @@ describe('ISIS Investigations table component', () => {
 
   it('calls useISISInvestigationsInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useISISInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
+    (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -196,6 +205,23 @@ describe('ISIS Investigations table component', () => {
     expect(fetchNextPage).toHaveBeenCalledWith({
       pageParam: { startIndex: 50, stopIndex: 74 },
     });
+  });
+
+  it('displays DOI and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigation-table-doi-link"]')
+        .first()
+        .text()
+    ).toEqual('study pid');
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-investigation-table-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/study pid');
   });
 
   it('updates filter query params on text filter', () => {
@@ -244,6 +270,16 @@ describe('ISIS Investigations table component', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    });
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -260,7 +296,7 @@ describe('ISIS Investigations table component', () => {
 
   it('calls addToCart mutate function on unchecked checkbox click', () => {
     const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValueOnce({
+    (useAddToCart as jest.Mock).mockReturnValue({
       mutate: addToCart,
       loading: false,
     });
@@ -272,7 +308,7 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('calls removeFromCart mutate function on checked checkbox click', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
+    (useCart as jest.Mock).mockReturnValue({
       data: [
         {
           entityId: 1,
@@ -285,7 +321,7 @@ describe('ISIS Investigations table component', () => {
     });
 
     const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValueOnce({
+    (useRemoveFromCart as jest.Mock).mockReturnValue({
       mutate: removeFromCart,
       loading: false,
     });
@@ -327,26 +363,38 @@ describe('ISIS Investigations table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly and it fetches data and can navigate', () => {
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
     const wrapper = createWrapper();
 
-    const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')({
-        rowData: rowData[0],
-      })
-    );
-    expect(detailsPanelWrapper).toMatchSnapshot();
+    expect(useISISInvestigationIds).toHaveBeenCalledWith(4, 5, false, false);
+    expect(useISISInvestigationIds).not.toHaveBeenCalledWith(4, 5, false, true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+  });
 
-    mount(
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('renders details panel with datasets link and can navigate', () => {
+    const wrapper = createWrapper();
+
+    const detailsPanelWrapper = createWrapper(
       wrapper.find(Table).prop('detailsPanel')({
         rowData: rowData[0],
         detailsPanelResize: jest.fn(),
       })
     );
 
-    expect(useInvestigationDetails).toHaveBeenCalledWith(1);
-
-    detailsPanelWrapper.find('#investigation-datasets-tab').simulate('click');
+    detailsPanelWrapper
+      .find('#investigation-datasets-tab')
+      .first()
+      .simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
     );
@@ -397,13 +445,20 @@ describe('ISIS Investigations table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('gracefully handles empty Study Investigation and InvestigationInstrument, missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', () => {
+  it('displays the correct user as the PI ', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual(
+      'Test PI'
+    );
+  });
+
+  it('gracefully handles empty Study Investigation and investigationUsers, missing Study from Study Investigation object and missing User from investigationUsers object', () => {
     (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: {
         pages: [
           {
             ...rowData[0],
-            investigationInstruments: [],
+            investigationUsers: [],
             studyInvestigations: [],
           },
         ],
@@ -420,7 +475,7 @@ describe('ISIS Investigations table component', () => {
         pages: [
           {
             ...rowData[0],
-            investigationInstruments: [
+            investigationUsers: [
               {
                 id: 1,
               },
@@ -443,7 +498,6 @@ describe('ISIS Investigations table component', () => {
 
   it('renders actions correctly', () => {
     const wrapper = createWrapper();
-
     expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
   });
 });

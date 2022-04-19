@@ -13,18 +13,18 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  usePushSort,
+  useSort,
   useIds,
   useCart,
   useAddToCart,
   useRemoveFromCart,
+  DLSDatafileDetailsPanel,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';
-import DatafileDetailsPanel from '../../detailsPanels/dls/datafileDetailsPanel.component';
 
 interface DLSDatafilesTableProps {
   datasetId: string;
@@ -51,20 +51,24 @@ const DLSDatafilesTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
-  const { data: allIds } = useIds('datafile', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  const { data: allIds } = useIds(
+    'datafile',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'dataset.investigation.id': { eq: investigationId },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'datafile'
@@ -138,6 +142,7 @@ const DLSDatafilesTable = (
         label: t('datafiles.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
     ],
     [t, dateFilter, textFilter]
@@ -148,12 +153,13 @@ const DLSDatafilesTable = (
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'datafile' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   return (
@@ -163,13 +169,13 @@ const DLSDatafilesTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
-      detailsPanel={DatafileDetailsPanel}
+      detailsPanel={DLSDatafileDetailsPanel}
       columns={columns}
     />
   );

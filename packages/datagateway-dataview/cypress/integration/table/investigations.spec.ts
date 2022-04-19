@@ -20,6 +20,41 @@ describe('Investigations Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
+  it('should disable the hover tool tip by pressing escape', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="investigation-table-title"]')
+      .first()
+      .trigger('mouseover', { force: true })
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
+
+    cy.get('body').type('{esc}');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="investigation-table-title"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
+  });
+
+  it('should have the correct url for the DOI link', () => {
+    cy.get('[data-testid="investigation-table-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `https://doi.org/${doi}`;
+
+        cy.get('[data-testid="investigation-table-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   it('should be able to resize a column', () => {
     let columnWidth = 0;
 
@@ -140,6 +175,9 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-rowcount="7"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
+
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('11.32 GB');
     });
 
     it('date between', () => {

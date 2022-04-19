@@ -4,17 +4,26 @@
     "view_table": "Display as table",
     "view_cards": "Display as cards",
     "max_results": "Max Results",
-    "error": "Something went wrong..."
+    "error": "Something went wrong...",
+    "cart_arialabel": "Go to selections",
+    "clear_filters": "Clear filters",
+    "open_data_warning": {
+      "message": "Open data",
+      "tooltip": "Only open data is displayed when browsing anonymously. Please login to see embargoed data.",
+      "studies_tooltip": "Only open data is currently supported by the experiment view. Please browse via facility cycle to view closed data",
+      "tooltip_link": "Click here to learn more about our data policy.",
+      "aria_label": "More information about open data"
+    }
   },
   "breadcrumbs": {
     "home": "Home",
-    "instrument_plural": "Instruments",
-    "facilityCycle_plural": "Facility Cycles",
-    "study_plural": "Studies",
-    "proposal_plural": "Proposals",
-    "investigation_plural": "Investigations",
-    "dataset_plural": "Datasets",
-    "datafile_plural": "Datafiles"
+    "instrument_other": "Instruments",
+    "facilityCycle_other": "Facility Cycles",
+    "study_other": "Experiments",
+    "proposal_other": "Proposals",
+    "investigation_other": "Investigations",
+    "dataset_other": "Datasets",
+    "datafile_other": "Datafiles"
   },
   "instruments": {
     "name": "Name",
@@ -30,7 +39,9 @@
       "url": "Information Page",
       "instrument_scientists": {
         "label": "Instrument Scientists",
-        "name": "Name"
+        "name_one": "Name",
+        "name_other": "Names",
+        "no_name": "No scientists"
       }
     }
   },
@@ -47,18 +58,40 @@
     "end_date": "End Date",
     "start_date": "Start Date",
     "details": {
-      "label": "Study Details",
+      "label": "Experiment Details",
       "investigations": "View Investigations",
-      "users": "Study Users",
+      "users": "Experiment Users",
       "publisher": "Publisher",
       "format": "Data Format",
-      "citation_label": "Data Citation",
-      "citation_format": "The recommended format for citing this data in a research publication is [author]; [date]: [title], [publisher], [doi]:"
+      "citation_formatter": {
+        "label": "Data Citation",
+        "details": "The recommended format for citing this data can be found below.",
+        "details_select_format": "You can also select your preferred format here:",
+        "select_arialabel": "Citation format drop down list",
+        "copy_citation": "Copy citation",
+        "copied_citation": "Copied citation",
+        "copy_citation_arialabel": "Copy citation button",
+        "error": "An error has occurred while fetching the citation.",
+        "locale": "en-GB",
+        "default_format": "default",
+        "formats": [
+          "american-physics-society",
+          "american-chemical-society",
+          "american-institute-of-physics",
+          "bibtex",
+          "chicago-author-date",
+          "ieee-with-url",
+          "institute-of-physics-numeric",
+          "nature",
+          "science"
+        ]
+      }
     }
   },
   "investigations": {
     "title": "Title",
     "name": "Name",
+    "principal_investigators": "Principal Investigator",
     "end_date": "End Date",
     "start_date": "Start Date",
     "size": "Size",
@@ -85,15 +118,21 @@
       "facility": "Facility",
       "users": {
         "label": "Investigation Users",
-        "name": "Name"
+        "name_one": "Name",
+        "name_other": "Names",
+        "no_name": "No users"
       },
       "samples": {
         "label": "Investigation Samples",
-        "name": "Sample"
+        "name_one": "Sample",
+        "name_other": "Samples",
+        "no_samples": "No samples"
       },
       "publications": {
         "label": "Publications",
-        "reference": "Reference"
+        "reference_one": "Reference",
+        "reference_other": "References",
+        "no_publications": "No publications"
       },
       "type": {
         "id": "Type ID"
@@ -154,22 +193,24 @@
       "size": "Size",
       "location": "Location",
       "parameters": {
-        "label": "Datafile Parameters"
+        "label": "Datafile Parameters",
+        "no_parameters": "No parameters"
       }
     }
   },
   "my_data_table": {
-    "login_warning_msg": "You need to be logged in to be able to see your own data."
+    "role_selector": "Select role",
+    "all_roles": "All"
   },
   "loading": {
     "verifying": "Verifying URL",
     "oops": "Oops!",
-    "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
+    "message": "We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "buttons": {
-    "add_to_cart": "Add to cart",
-    "remove_from_cart": "Remove from cart",
+    "add_to_cart": "Add to selection",
+    "remove_from_cart": "Remove from selection",
     "download": "Download"
   },
   "advanced_filters": {
@@ -179,13 +220,19 @@
       "title": ["Title", "Name", "Type"],
       "fingerprint": ["Visit ID", "Name"],
       "public": ["DOI"],
-      "confirmation_number": ["Dataset Count"," Datafile Count"],
+      "confirmation_number": ["Dataset Count", " Datafile Count"],
       "assessment": ["Instrument", "Beamline"],
-      "calendar_today": ["Start Date", "End Date", "Create Time", "Modified Time"],
+      "calendar_today": [
+        "Start Date",
+        "End Date",
+        "Create Time",
+        "Modified Time"
+      ],
       "explore": ["Location"],
       "save": ["Size"],
       "description": ["Description", "Summary"],
-      "link": ["URL"]
+      "link": ["URL"],
+      "person": ["Principal Investigator"]
     }
   },
   "entity_card": {
@@ -193,16 +240,42 @@
     "show_more": "Show more",
     "show_less": "Show less"
   },
-  "homePage": {
-    "title": "DataGateway",
-    "logoLabel": "DataGateway Logo",
-    "howLabel": "How it works...",
-    "exploreLabel": "1. Explore",
-    "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
-    "discoverLabel": "2. Discover",
-    "discoverDescription": "Search for the experimental data according to different criteria.",
-    "downloadLabel": "3. Download",
-    "downloadDescription": "Retrieve the experimental data using a variety of download methods."
+  "home_page": {
+    "title_line1": "<0>Data discovery</0> and <2>access</2>",
+    "title_line2": "for <1>large-scale</1> science facilities",
+    "browse": {
+      "title": "Browse, explore and visualise experimental data",
+      "description1": "Large scale facilities, such as synchrotrons, neutron and muon sources, lasers and accelerators, generate vast amounts of data that need to be managed in an efficient way, supporting data ingestion for long-term storage and archival, as well as data analysis and data publication workflows.",
+      "description2": "<0>DataGateway</0> focuses on providing data discovery and data access functionality to the data.",
+      "link": "/browse/investigation",
+      "button": "Browse data"
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search for the experimental data according to different criteria.",
+      "link": "/search/data",
+      "button": "Search data"
+    },
+    "download": {
+      "title": "Download",
+      "description": "Retrieve the experimental data using a variety of download methods.",
+      "link": "/download",
+      "button": "Download data"
+    },
+    "facility": {
+      "title": "ISIS Neutron and Muon Source",
+      "description": "World-leading centre for research giving unique insights into the properties of materials on the atomic scale.",
+      "link": "https://www.isis.stfc.ac.uk/Pages/About.aspx",
+      "button": "Read more"
+    }
+  },
+  "selec_alert": {
+    "added_one": "{{count}} item has been added to selection.",
+    "added_other": "{{count}} items have been added to selection.",
+    "removed_one": "{{count}} item has been removed from selection.",
+    "removed_other": "{{count}} items have been removed from selection.",
+    "link": "Go to selection.",
+    "warning_message_session_token": "Please remember that your selection will be lost after 2 hours of inactivity on this site"
   },
   "doi_constants": {
     "keywords": [

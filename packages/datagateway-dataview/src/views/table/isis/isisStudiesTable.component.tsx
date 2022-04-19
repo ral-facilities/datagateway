@@ -5,10 +5,12 @@ import {
   useStudiesInfinite,
   useStudyCount,
   ColumnType,
+  getStudyInfoInvestigation,
   Study,
   useDateFilter,
-  usePushSort,
+  useSort,
   useTextFilter,
+  externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +21,7 @@ import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import TitleIcon from '@material-ui/icons/Title';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useLocation } from 'react-router';
+import { format, set } from 'date-fns';
 
 interface ISISStudiesTableProps {
   instrumentId: string;
@@ -35,12 +38,27 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     [location.search]
   );
 
+  const unembargoDate = format(
+    // set s and ms to 0 to escape recursive loop of fetching data every time they change
+    set(new Date(), { seconds: 0, milliseconds: 0 }),
+    'yyyy-MM-dd HH:mm:ss'
+  );
+
   const { data: totalDataCount } = useStudyCount([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
         'studyInvestigations.investigation.investigationInstruments.instrument.id': {
           eq: instrumentId,
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
         },
       }),
     },
@@ -51,6 +69,15 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
       filterValue: JSON.stringify({
         'studyInvestigations.investigation.investigationInstruments.instrument.id': {
           eq: instrumentId,
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
         },
       }),
     },
@@ -69,7 +96,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -97,14 +124,23 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         label: t('studies.title'),
         dataKey: 'studyInvestigations.investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) =>
-          (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
-            ?.title ?? '',
+          getStudyInfoInvestigation(cellProps.rowData as Study)?.title ?? '',
         filterComponent: textFilter,
       },
       {
         icon: PublicIcon,
         label: t('studies.pid'),
         dataKey: 'pid',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const studyData = cellProps.rowData as Study;
+          if (studyData?.pid) {
+            return externalSiteLink(
+              `https://doi.org/${studyData.pid}`,
+              studyData.pid,
+              'isis-study-table-doi-link'
+            );
+          }
+        },
         filterComponent: textFilter,
       },
       {
@@ -112,17 +148,17 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
-          (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
-            ?.startDate ?? '',
+          getStudyInfoInvestigation(cellProps.rowData as Study)?.startDate ??
+          '',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
-          (cellProps.rowData as Study)?.studyInvestigations?.[0]?.investigation
-            ?.endDate ?? '',
+          getStudyInfoInvestigation(cellProps.rowData as Study)?.endDate ?? '',
         filterComponent: dateFilter,
       },
     ];
@@ -134,7 +170,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       columns={columns}
     />
   );

@@ -13,23 +13,23 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ArrowTooltip from '../arrowtooltip.component';
+import ArrowTooltip, { getTooltipText } from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import hexToRbga from 'hex-to-rgba';
 import { nestedValue } from '../api';
 import { Entity } from '../app.types';
-import { CardViewDetails } from './cardView.component';
+import { CardViewDetails, CVCustomFilters } from './cardView.component';
 
 const useCardStyles = makeStyles((theme: Theme) => {
-  // TODO: Remove use of "vw" here
+  // TODO: Remove use of "vw" here?
   // NOTE: This is width of the main content
   //       (this also matches the description shadow width).
   //       Change this width in accordance with the maxWidth in root class.
   const mainWidth = '45vw';
   // Expected width of info labels to prevent misalignment due to newlines
   const labelWidth = '15ch';
-  // TODO: Remove use of "vw" here
+  // TODO: Remove use of "vw" here?
   const infoDataMaxWidth = '10vw';
 
   // Transparent and opaque values for the background theme (used in the 'show more' shadow gradient)
@@ -62,7 +62,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
       flexGrow: 1,
       flexShrink: 1,
       flexBasis: mainWidth,
-      // TODO: Remove use of "vw" here
+      // TODO: Remove use of "vw" here?
       minWidth: '30vw',
       paddingRight: '10px',
     },
@@ -181,8 +181,8 @@ interface EntityCardProps {
   moreInformation?: (data: Entity) => React.ReactNode;
   buttons?: ((data: Entity) => React.ReactNode)[];
 
+  customFilters?: CVCustomFilters[];
   image?: EntityImageDetails;
-  customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
 }
 
 const EntityCard = React.memo(
@@ -215,6 +215,9 @@ const EntityCard = React.memo(
           : nestedValue(entity, details.dataKey),
         noTooltip: details.noTooltip,
       }))
+      // TODO: The only issue this might cause if someone sorts/filters
+      //       by this field and a card with no content for this field
+      //       would not show up on the card.
       // Filter afterwards to only show content with information.
       .filter((v) => v.content)
       // Add in tooltips to the content we have filtered.
@@ -222,7 +225,7 @@ const EntityCard = React.memo(
         ...details,
         // If we use custom content we can choose to not show a tooltip.
         content: !details.noTooltip ? (
-          <ArrowTooltip title={nestedValue(entity, details.dataKey)}>
+          <ArrowTooltip title={getTooltipText(details.content)}>
             <Typography>{details.content}</Typography>
           </ArrowTooltip>
         ) : (
@@ -231,9 +234,11 @@ const EntityCard = React.memo(
       }));
 
     const buttons = props.buttons?.map((button) => button(entity));
-    const tags = props.customFilters?.map((f) =>
-      nestedValue(entity, f.dataKey)
-    );
+    const tags = props.customFilters?.map((f) => ({
+      data: nestedValue(entity, f.dataKey),
+      label: f.label,
+      prefixLabel: f.prefixLabel ?? false,
+    }));
 
     // The default collapsed height for card description is 100px.
     const defaultCollapsedHeight = 100;
@@ -272,7 +277,8 @@ const EntityCard = React.memo(
     const [t] = useTranslation();
 
     return (
-      <Card id="card" className={classes.root}>
+      <Card data-testid="card" className={classes.root}>
+        {/* TODO: Check width and sizing of having image on card under different circumstances */}
         {/* We allow for additional width when having an image in the card (see card styles). */}
         {image && (
           <CardMedia
@@ -300,12 +306,11 @@ const EntityCard = React.memo(
                 - title/description 
             */}
               <div aria-label="main-content" ref={mainContentRef}>
-                {/* TODO: Delay not consistent between cards? */}
                 <ArrowTooltip
-                  title={title.label}
+                  title={
+                    title.content ? getTooltipText(title.content) : title.label
+                  }
                   enterDelay={500}
-                  percentageWidth={30}
-                  maxEnabledHeight={32}
                 >
                   <Typography
                     className={classes.title}
@@ -371,7 +376,8 @@ const EntityCard = React.memo(
             </div>
 
             {/* Divider is optional based on if there is information/buttons. */}
-            {(information || buttons) && (
+            {((information && information.length > 0) ||
+              (buttons && buttons.length > 0)) && (
               // Set flexItem to true to allow it to show when flex direction is column for content.
               <Divider flexItem={true} orientation={'vertical'} />
             )}
@@ -385,7 +391,7 @@ const EntityCard = React.memo(
                         const { label, icon: Icon } = info;
                         return (
                           <Typography
-                            aria-label={`card-info-${label}`}
+                            data-testid={`card-info-${label}`}
                             key={index}
                           >
                             {Icon && <Icon />}
@@ -400,7 +406,7 @@ const EntityCard = React.memo(
                     {information.map(
                       (info: EntityCardDetails, index: number) => (
                         <div
-                          aria-label={`card-info-data-${info.label}`}
+                          data-testid={`card-info-data-${info.label}`}
                           key={index}
                         >
                           {info.content && info.content}
@@ -438,6 +444,7 @@ const EntityCard = React.memo(
                   variant="outlined"
                   expanded={isMoreInfoCollapsed}
                   onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
+                  className="tour-dataview-expand"
                 >
                   <AccordionSummary
                     aria-label="card-more-info-expand"
@@ -462,10 +469,10 @@ const EntityCard = React.memo(
               <div style={{ paddingTop: '10px' }}>
                 {tags.map((v, i) => (
                   <Chip
-                    aria-label={`card-tag-${v}`}
+                    aria-label={`card-tag-${v.data}`}
                     key={i}
                     className={classes.chip}
-                    label={v}
+                    label={v.prefixLabel ? `${v.label} - ${v.data}` : v.data}
                   />
                 ))}
               </div>

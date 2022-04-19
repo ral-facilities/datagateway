@@ -1,8 +1,8 @@
 describe('DLS - Proposals Table', () => {
   beforeEach(() => {
     cy.login();
-    cy.intercept('/investigations?').as('investigations');
-    cy.intercept('/investigations/count?').as('investigationsCount');
+    cy.intercept('**/investigations?*').as('investigations');
+    cy.intercept('**/investigations/count?*').as('investigationsCount');
     cy.visit('/browse/proposal');
   });
 
@@ -16,7 +16,7 @@ describe('DLS - Proposals Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation'
+      '/browse/proposal/INVESTIGATION%2030/investigation'
     );
   });
 
@@ -27,6 +27,27 @@ describe('DLS - Proposals Table', () => {
     cy.wait(3000);
     cy.get('[aria-label="grid"]').scrollTo('bottom');
     cy.get('[aria-rowcount="75"]').should('exist');
+  });
+
+  it('should disable the hover tool tip by pressing escape', () => {
+    // The hover tool tip has a enter delay of 500ms.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="dls-proposals-table-title"]')
+      .first()
+      .trigger('mouseover', { force: true })
+      .wait(700)
+      .get('[data-testid="arrow-tooltip-component-true"]')
+      .should('exist');
+
+    cy.get('body').type('{esc}');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.get('[data-testid="dls-proposals-table-title"]')
+      .wait(700)
+      .first()
+      .get('[data-testid="arrow-tooltip-component-false"]')
+      .first()
+      .should('exist');
   });
 
   it('should be able to resize a column', () => {
@@ -85,64 +106,6 @@ describe('DLS - Proposals Table', () => {
       cy.window().should(($window) => {
         expect(width).to.be.greaterThan($window.innerWidth);
       });
-    });
-  });
-
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
-    });
-
-    it('ascending order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'About quickly both stop. Population buy on poor. Avoid teacher summer positive feel sing.'
-      );
-    });
-
-    it('descending order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
-
-      cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Yourself smile either I pass significant. Avoid sound suddenly development line get executive ahead.'
-      );
-    });
-
-    it('no order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      );
-    });
-
-    it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Title').click();
-
-      cy.get('[aria-rowindex="2"] [aria-colindex="1"]').contains(
-        'Learn street computer. Take voice light on. Wrong structure how year.'
-      );
     });
   });
 

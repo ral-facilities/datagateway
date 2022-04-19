@@ -17,6 +17,11 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router';
 import { createMemoryHistory, History } from 'history';
+import { parse } from 'date-fns';
+
+jest
+  .useFakeTimers('modern')
+  .setSystemTime(parse('2021-10-27', 'yyyy-MM-dd', 0));
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -103,6 +108,14 @@ describe('ISIS Studies table component', () => {
           },
         }),
       },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.releaseDate': {
+            lt: '2021-10-27 00:00:00',
+          },
+        }),
+      },
     ]);
     expect(useStudiesInfinite).toHaveBeenCalledWith([
       {
@@ -110,6 +123,14 @@ describe('ISIS Studies table component', () => {
         filterValue: JSON.stringify({
           'studyInvestigations.investigation.investigationInstruments.instrument.id': {
             eq: instrumentId,
+          },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.releaseDate': {
+            lt: '2021-10-27 00:00:00',
           },
         }),
       },
@@ -124,7 +145,7 @@ describe('ISIS Studies table component', () => {
 
   it('calls useStudiesInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useStudiesInfinite as jest.Mock).mockReturnValueOnce({
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -183,6 +204,18 @@ describe('ISIS Studies table component', () => {
     expect(history.location.search).toBe('?');
   });
 
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent(
+        '{"studyInvestigations.investigation.startDate":"desc"}'
+      )}`
+    );
+  });
+
   it('updates sort query params on sort', () => {
     const wrapper = createWrapper();
 
@@ -203,6 +236,46 @@ describe('ISIS Studies table component', () => {
     expect(
       wrapper.find('[aria-colindex=1]').find('p').children()
     ).toMatchSnapshot();
+  });
+
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
+    rowData = [
+      {
+        ...rowData[0],
+        studyInvestigations: [
+          {
+            id: 2,
+            study: {
+              ...rowData[0],
+            },
+            investigation: {
+              id: 3,
+              name: 'Test',
+              title: 'Test investigation',
+              visitId: '3',
+              startDate: '2021-08-19',
+              endDate: '2021-08-20',
+            },
+          },
+        ],
+      },
+    ];
+    (useStudiesInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [rowData] },
+      fetchNextPage: jest.fn(),
+    });
+
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testid="isis-study-table-doi-link"]').first().text()
+    ).toEqual('doi');
+
+    expect(
+      wrapper
+        .find('[data-testid="isis-study-table-doi-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi');
   });
 
   it('displays information from investigation when investigation present', () => {

@@ -10,12 +10,20 @@ import {
   QueryParams,
   ViewsType,
   Entity,
+  UpdateMethod,
 } from '../app.types';
-import { useQuery, UseQueryResult } from 'react-query';
+import {
+  useQueries,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from 'react-query';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import format from 'date-fns/format';
+import { isValid } from 'date-fns';
 
 export * from './cart';
 export * from './facilityCycles';
@@ -55,6 +63,13 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const filters = query.get('filters');
   const sort = query.get('sort');
   const view = query.get('view') as ViewsType;
+  const searchText = query.get('searchText');
+  const dataset = query.get('dataset');
+  const datafile = query.get('datafile');
+  const investigation = query.get('investigation');
+  const startDateString = query.get('startDate');
+  const endDateString = query.get('endDate');
+  const currentTab = query.get('currentTab');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -92,6 +107,12 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     }
   }
 
+  let startDate = null;
+  let endDate = null;
+
+  if (startDateString) startDate = new Date(startDateString + 'T00:00:00Z');
+  if (endDateString) endDate = new Date(endDateString + 'T00:00:00Z');
+
   // Create the query parameters object.
   const params: QueryParams = {
     view: view,
@@ -100,6 +121,13 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     results: results ? Number(results) : null,
     filters: parsedFilters,
     sort: parsedSort,
+    searchText: searchText,
+    dataset: dataset !== null ? dataset === 'true' : true,
+    datafile: datafile !== null ? datafile === 'true' : true,
+    investigation: investigation !== null ? investigation === 'true' : true,
+    startDate: startDate,
+    endDate: endDate,
+    currentTab: currentTab ? currentTab : 'investigation',
   };
 
   return params;
@@ -117,7 +145,17 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
   // Loop and add all the query parameters which is in use.
   for (const [q, v] of Object.entries(query)) {
     if (v !== null && q !== 'filters' && q !== 'sort') {
-      queryParams.append(q, v);
+      if ((q === 'startDate' || q === 'endDate') && isValid(v)) {
+        queryParams.append(q, format(v, 'yyyy-MM-dd'));
+      } else if (
+        //Take default value of these as true, so don't put in url if this is the case
+        !(
+          (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
+          v === true
+        ) &&
+        !(q === 'currentTab' && v === 'investigation')
+      )
+        queryParams.append(q, v);
     }
   }
 
@@ -151,10 +189,13 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
 /**
  * Convert Sort and Filter types to datagateway-api compatible URLSearchParams
  */
-export const getApiParams = (props: {
-  sort: SortType;
-  filters: FiltersType;
-}): URLSearchParams => {
+export const getApiParams = (
+  props: {
+    sort: SortType;
+    filters: FiltersType;
+  },
+  ignoreIDSort?: boolean
+): URLSearchParams => {
   const { sort, filters } = props;
   const searchParams = new URLSearchParams();
 
@@ -162,8 +203,9 @@ export const getApiParams = (props: {
     searchParams.append('order', JSON.stringify(`${key} ${value}`));
   }
 
-  // sort by ID first to guarantee order
-  searchParams.append('order', JSON.stringify(`id asc`));
+  if (!ignoreIDSort)
+    // sort by ID first to guarantee order
+    searchParams.append('order', JSON.stringify(`id asc`));
 
   for (const [column, filter] of Object.entries(filters)) {
     if (typeof filter === 'object') {
@@ -186,12 +228,12 @@ export const getApiParams = (props: {
           if (filter.type === 'include') {
             searchParams.append(
               'where',
-              JSON.stringify({ [column]: { like: filter.value } })
+              JSON.stringify({ [column]: { ilike: filter.value } })
             );
           } else {
             searchParams.append(
               'where',
-              JSON.stringify({ [column]: { nlike: filter.value } })
+              JSON.stringify({ [column]: { nilike: filter.value } })
             );
           }
         }
@@ -209,13 +251,19 @@ export const getApiParams = (props: {
   return searchParams;
 };
 
-export const usePushSort = (): ((
+export const useSort = (): ((
   sortKey: string,
-  order: Order | null
+  order: Order | null,
+  updateMethod: UpdateMethod
 ) => void) => {
-  const { push } = useHistory();
+  const { push, replace } = useHistory();
+
   return React.useCallback(
-    (sortKey: string, order: Order | null): void => {
+    (
+      sortKey: string,
+      order: Order | null,
+      updateMethod: UpdateMethod
+    ): void => {
       let query = parseSearchToQuery(window.location.search);
       if (order !== null) {
         query = {
@@ -235,17 +283,20 @@ export const usePushSort = (): ((
           },
         };
       }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
+      (updateMethod === 'push' ? push : replace)({
+        search: `?${parseQueryToSearch(query).toString()}`,
+      });
     },
-    [push]
+    [push, replace]
   );
 };
 
-export const usePushFilters = (): ((
+export const usePushFilter = (): ((
   filterKey: string,
   filter: Filter | null
 ) => void) => {
   const { push } = useHistory();
+
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
       let query = parseSearchToQuery(window.location.search);
@@ -269,6 +320,82 @@ export const usePushFilters = (): ((
         };
       }
       push({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [push]
+  );
+};
+
+export const usePushFilters = (): ((
+  filters: { filterKey: string; filter: Filter | null }[]
+) => void) => {
+  const { push } = useHistory();
+  return React.useCallback(
+    (filters: { filterKey: string; filter: Filter | null }[]) => {
+      let query = parseSearchToQuery(window.location.search);
+      filters.forEach((f) => {
+        const { filter, filterKey } = f;
+        if (filter !== null) {
+          // if given an defined filter, update the relevant column in the sort state
+          query = {
+            ...query,
+            filters: {
+              ...query.filters,
+              [filterKey]: filter,
+            },
+          };
+        } else {
+          // if filter is null, user no longer wants to filter by that column so remove column from filter state
+          const { [filterKey]: filter, ...rest } = query.filters;
+          query = {
+            ...query,
+            filters: {
+              ...rest,
+            },
+          };
+        }
+      });
+      push({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [push]
+  );
+};
+
+export const useUpdateQueryParam = (
+  type: 'filters' | 'sort' | 'page' | 'results',
+  updateMethod: 'push' | 'replace'
+): ((param: FiltersType | SortType | number | null) => void) => {
+  const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
+  return React.useCallback(
+    (param: FiltersType | SortType | number | null) => {
+      const query = parseSearchToQuery(window.location.search);
+
+      if (type === 'filters') {
+        query.filters = param as FiltersType;
+      } else if (type === 'sort') {
+        query.sort = param as SortType;
+      } else if (type === 'page') {
+        query.page = param as number | null;
+      } else if (type === 'results') {
+        query.results = param as number | null;
+      }
+
+      functionToUse({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [type, functionToUse]
+  );
+};
+
+export const usePushCurrentTab = (): ((currentTab: string) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (currentTab: string) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        currentTab,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
     },
     [push]
   );
@@ -304,8 +431,11 @@ export const usePushResults = (): ((results: number) => void) => {
   );
 };
 
-export const usePushView = (): ((view: ViewsType) => void) => {
-  const { push } = useHistory();
+export const useUpdateView = (
+  updateMethod: UpdateMethod
+): ((view: ViewsType) => void) => {
+  const { push, replace } = useHistory();
+  const functionToUse = updateMethod === 'push' ? push : replace;
 
   return React.useCallback(
     (view: ViewsType) => {
@@ -313,7 +443,93 @@ export const usePushView = (): ((view: ViewsType) => void) => {
         ...parseSearchToQuery(window.location.search),
         view,
       };
+      functionToUse(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [functionToUse]
+  );
+};
+
+export const usePushSearchText = (): ((searchText: string) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (searchText: string) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        searchText,
+      };
       push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushSearchToggles = (): ((
+  dataset: boolean,
+  datafile: boolean,
+  investigation: boolean
+) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (dataset: boolean, datafile: boolean, investigation: boolean) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        dataset,
+        datafile,
+        investigation,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushSearchStartDate = (): ((
+  startDate: Date | null
+) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (startDate: Date | null) => {
+      //If null remove from URL instead
+      if (startDate) {
+        const query = {
+          ...parseSearchToQuery(window.location.search),
+          startDate,
+        };
+        push(`?${parseQueryToSearch(query).toString()}`);
+      } else {
+        const searchParams = parseQueryToSearch(
+          parseSearchToQuery(window.location.search)
+        );
+        searchParams.delete('startDate');
+        push(`?${searchParams.toString()}`);
+      }
+    },
+    [push]
+  );
+};
+
+export const usePushSearchEndDate = (): ((endDate: Date | null) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (endDate: Date | null) => {
+      //If null remove from URL instead
+      if (endDate) {
+        const query = {
+          ...parseSearchToQuery(window.location.search),
+          endDate,
+        };
+        push(`?${parseQueryToSearch(query).toString()}`);
+      } else {
+        const searchParams = parseQueryToSearch(
+          parseSearchToQuery(window.location.search)
+        );
+        searchParams.delete('endDate');
+        push(`?${searchParams.toString()}`);
+      }
     },
     [push]
   );
@@ -359,7 +575,8 @@ export const fetchIds = (
 
 export const useIds = (
   entityType: 'investigation' | 'dataset' | 'datafile',
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  enabled = true
 ): UseQueryResult<number[], Error> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -380,6 +597,7 @@ export const useIds = (
       onError: (error) => {
         handleICATError(error);
       },
+      enabled,
     }
   );
 };
@@ -433,8 +651,7 @@ const fetchFilter = (
     });
 };
 
-// TODO: name this in a way to not get confused with filtering in general?
-export const useFilter = (
+export const useCustomFilter = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   filterKey: string,
   additionalFilters?: {
@@ -466,4 +683,119 @@ export const useFilter = (
       },
     }
   );
+};
+
+export const formatFilterCount = (
+  query: UseQueryResult<number, Error>
+): string => (query?.isSuccess ? query.data.toString() : '');
+
+export const fetchFilterCountQuery = (
+  apiUrl: string,
+  entityType:
+    | 'investigation'
+    | 'dataset'
+    | 'datafile'
+    | 'facilityCycle'
+    | 'instrument'
+    | 'facility'
+    | 'study',
+  additionalFilters?: AdditionalFilters
+): Promise<number> => {
+  const params = new URLSearchParams();
+
+  if (additionalFilters) {
+    additionalFilters.forEach((filter) => {
+      params.append(filter.filterType, filter.filterValue);
+    });
+  }
+
+  // TODO: Call from a separate function?
+  // Pluralise the entity type for the request
+  const pluralisedEntityType =
+    entityType.charAt(entityType.length - 1) === 'y'
+      ? `${entityType.slice(0, entityType.length - 1)}ies`
+      : `${entityType}s`;
+
+  return axios
+    .get(`${apiUrl}/${pluralisedEntityType}/count`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => response.data);
+};
+
+export const useCustomFilterCount = (
+  entityType:
+    | 'investigation'
+    | 'dataset'
+    | 'datafile'
+    | 'facilityCycle'
+    | 'instrument'
+    | 'facility'
+    | 'study',
+  filterKey: string,
+  filterIds: string[] | undefined,
+  additionalFilters?: {
+    filterType: 'where' | 'distinct' | 'include';
+    filterValue: string;
+  }[]
+): UseQueryResult<number, AxiosError>[] => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  const queryConfigs: UseQueryOptions<
+    number,
+    AxiosError,
+    number,
+    [
+      string,
+      (
+        | 'investigation'
+        | 'dataset'
+        | 'datafile'
+        | 'facilityCycle'
+        | 'instrument'
+        | 'facility'
+        | 'study'
+      ),
+      string,
+      string,
+      AdditionalFilters?
+    ]
+  >[] = React.useMemo(() => {
+    const ids = filterIds ?? [];
+
+    return ids.map((filterId) => {
+      return {
+        queryKey: [
+          'filterCount',
+          entityType,
+          filterKey,
+          filterId,
+          additionalFilters,
+        ],
+        queryFn: () =>
+          fetchFilterCountQuery(apiUrl, entityType, [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                [filterKey]: { eq: filterId },
+              }),
+            },
+            ...(additionalFilters ?? []),
+          ]),
+        onError: (error) => {
+          handleICATError(error, false);
+        },
+        staleTime: Infinity,
+      };
+    });
+  }, [apiUrl, entityType, filterIds, filterKey, additionalFilters]);
+
+  // useQueries doesn't allow us to specify type info, so ignore this line
+  // since we strongly type the queries object anyway
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return useQueries(queryConfigs);
 };

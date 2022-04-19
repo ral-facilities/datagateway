@@ -10,15 +10,18 @@ Object {
       "dataKey": "type.id",
       "filterItems": Array [],
       "label": "investigations.type.id",
+      "prefixLabel": true,
     },
     Object {
       "dataKey": "facility.id",
       "filterItems": Array [],
       "label": "investigations.facility.id",
+      "prefixLabel": true,
     },
   ],
   "data": Array [
     Object {
+      "doi": "doi 1",
       "id": 1,
       "name": "Test 1",
       "title": "Test 1",
@@ -33,6 +36,7 @@ Object {
   "filters": Object {},
   "information": Array [
     Object {
+      "content": [Function],
       "dataKey": "doi",
       "filterComponent": [Function],
       "icon": Object {

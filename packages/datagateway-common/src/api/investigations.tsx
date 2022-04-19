@@ -32,9 +32,10 @@ const fetchInvestigations = (
     filters: FiltersType;
   },
   additionalFilters?: AdditionalFilters,
-  offsetParams?: IndexRange
+  offsetParams?: IndexRange,
+  ignoreIDSort?: boolean
 ): Promise<Investigation[]> => {
-  const params = getApiParams(sortAndFilters);
+  const params = getApiParams(sortAndFilters, ignoreIDSort);
 
   if (offsetParams) {
     params.append('skip', JSON.stringify(offsetParams.startIndex));
@@ -70,7 +71,7 @@ export const useInvestigation = (
     Investigation[],
     AxiosError,
     Investigation[],
-    [string, number, AdditionalFilters?]
+    [string, number, AdditionalFilters?, boolean?]
   >(
     ['investigation', investigationId, additionalFilters],
     (params) => {
@@ -93,7 +94,8 @@ export const useInvestigation = (
 };
 
 export const useInvestigationsPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  ignoreIDSort?: boolean
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -111,22 +113,30 @@ export const useInvestigationsPaginated = (
         page: number;
         results: number;
       },
-      AdditionalFilters?
+      AdditionalFilters?,
+      boolean?
     ]
   >(
     [
       'investigation',
       { sort, filters, page: page ?? 1, results: results ?? 10 },
       additionalFilters,
+      ignoreIDSort,
     ],
     (params) => {
       const { sort, filters, page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return fetchInvestigations(apiUrl, { sort, filters }, additionalFilters, {
-        startIndex,
-        stopIndex,
-      });
+      return fetchInvestigations(
+        apiUrl,
+        { sort, filters },
+        additionalFilters,
+        {
+          startIndex,
+          stopIndex,
+        },
+        ignoreIDSort
+      );
     },
     {
       onError: (error) => {
@@ -137,7 +147,8 @@ export const useInvestigationsPaginated = (
 };
 
 export const useInvestigationsInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  ignoreIDSort?: boolean
 ): UseInfiniteQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -147,9 +158,14 @@ export const useInvestigationsInfinite = (
     Investigation[],
     AxiosError,
     Investigation[],
-    [string, { sort: SortType; filters: FiltersType }, AdditionalFilters?]
+    [
+      string,
+      { sort: SortType; filters: FiltersType },
+      AdditionalFilters?,
+      boolean?
+    ]
   >(
-    ['investigation', { sort, filters }, additionalFilters],
+    ['investigation', { sort, filters }, additionalFilters, ignoreIDSort],
     (params) => {
       const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
@@ -157,7 +173,8 @@ export const useInvestigationsInfinite = (
         apiUrl,
         { sort, filters },
         additionalFilters,
-        offsetParams
+        offsetParams,
+        ignoreIDSort
       );
     },
     {
@@ -223,7 +240,11 @@ export const useInvestigationSize = (
 };
 
 export const useInvestigationSizes = (
-  data: Investigation[] | InfiniteData<Investigation[]> | undefined
+  data:
+    | Investigation[]
+    | InfiniteData<Investigation[]>
+    | Investigation
+    | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
@@ -238,11 +259,13 @@ export const useInvestigationSizes = (
     number,
     ['investigationSize', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((investigation) => {
@@ -274,6 +297,14 @@ export const useInvestigationSizes = (
   >([]);
 
   const countAppliedRef = React.useRef(0);
+
+  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
+  // back to 0 so we can restart the process, as well as clear sizes
+  React.useEffect(() => {
+    countAppliedRef.current = 0;
+    setSizes([]);
+  }, [data]);
+
   // need to use useDeepCompareEffect here because the array returned by useQueries
   // is different every time this hook runs
   useDeepCompareEffect(() => {
@@ -285,18 +316,23 @@ export const useInvestigationSizes = (
       sizes.length - currCountReturned < 5
         ? sizes.length - currCountReturned
         : 5;
+
     // this in effect batches our updates to only happen in batches >= 5
     if (currCountReturned - countAppliedRef.current >= batchMax) {
       setSizes(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [sizes, queries]);
 
   return sizes;
 };
 
 export const useInvestigationsDatasetCount = (
-  data: Investigation[] | InfiniteData<Investigation[]> | undefined
+  data:
+    | Investigation[]
+    | InfiniteData<Investigation[]>
+    | Investigation
+    | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
@@ -306,11 +342,13 @@ export const useInvestigationsDatasetCount = (
     number,
     ['investigationDatasetCount', number]
   >[] = React.useMemo(() => {
-    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    // check the type of the data parameter to determine the way the data needs to be iterated
     const aggregatedData = data
       ? 'pages' in data
         ? data.pages.flat()
-        : data
+        : data instanceof Array
+        ? data
+        : [data]
       : [];
 
     return aggregatedData.map((investigation) => {
@@ -346,6 +384,14 @@ export const useInvestigationsDatasetCount = (
   >([]);
 
   const countAppliedRef = React.useRef(0);
+
+  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
+  // back to 0 so we can restart the process, as well as clear datasetCounts
+  React.useEffect(() => {
+    countAppliedRef.current = 0;
+    setDatasetCounts([]);
+  }, [data]);
+
   // need to use useDeepCompareEffect here because the array returned by useQueries
   // is different every time this hook runs
   useDeepCompareEffect(() => {
@@ -357,12 +403,13 @@ export const useInvestigationsDatasetCount = (
       datasetCounts.length - currCountReturned < 5
         ? datasetCounts.length - currCountReturned
         : 5;
+
     // this in effect batches our updates to only happen in batches >= 5
     if (currCountReturned - countAppliedRef.current >= batchMax) {
       setDatasetCounts(queries);
       countAppliedRef.current = currCountReturned;
     }
-  }, [queries]);
+  }, [datasetCounts, queries]);
 
   return datasetCounts;
 };
@@ -392,11 +439,16 @@ const fetchInvestigationCount = (
 };
 
 export const useInvestigationCount = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  storedFilters?: FiltersType,
+  currentTab?: string
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
-  const { filters } = parseSearchToQuery(location.search);
+  const filters =
+    currentTab === 'investigation' || !storedFilters
+      ? parseSearchToQuery(location.search).filters
+      : storedFilters;
 
   return useQuery<
     number,
@@ -410,7 +462,6 @@ export const useInvestigationCount = (
       return fetchInvestigationCount(apiUrl, filters, additionalFilters);
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },
@@ -516,6 +567,9 @@ export const useISISInvestigationsPaginated = (
       {
         studyInvestigations: 'study',
       },
+      {
+        investigationUsers: 'user',
+      },
     ]),
   };
 
@@ -612,6 +666,9 @@ export const useISISInvestigationsInfinite = (
       },
       {
         studyInvestigations: 'study',
+      },
+      {
+        investigationUsers: 'user',
       },
     ]),
   };
@@ -736,7 +793,6 @@ export const useISISInvestigationCount = (
       }
     },
     {
-      placeholderData: 0,
       onError: (error) => {
         handleICATError(error);
       },
@@ -774,7 +830,8 @@ const fetchAllISISInvestigationIds = (
 export const useISISInvestigationIds = (
   instrumentId: number,
   instrumentChildId: number,
-  studyHierarchy: boolean
+  studyHierarchy: boolean,
+  enabled = true
 ): UseQueryResult<number[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -820,6 +877,7 @@ export const useISISInvestigationIds = (
       onError: (error) => {
         handleICATError(error);
       },
+      enabled,
     }
   );
 };

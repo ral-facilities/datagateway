@@ -13,15 +13,15 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  usePushSort,
+  useSort,
   useIds,
   useCart,
   useAddToCart,
   useRemoveFromCart,
   useDatasetsDatafileCount,
+  DLSDatasetDetailsPanel,
 } from 'datagateway-common';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -50,16 +50,20 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
-  const { data: allIds } = useIds('dataset', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: parseInt(investigationId) },
-      }),
-    },
-  ]);
+  const { data: allIds } = useIds(
+    'dataset',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: parseInt(investigationId) },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'dataset'
@@ -76,10 +80,6 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
 
   const { fetchNextPage, data } = useDatasetsInfinite([
@@ -88,10 +88,6 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       filterValue: JSON.stringify({
         'investigation.id': { eq: investigationId },
       }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
     },
   ]);
 
@@ -134,6 +130,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -159,12 +156,13 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'dataset' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   return (
@@ -174,13 +172,13 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
-      detailsPanel={DatasetDetailsPanel}
+      detailsPanel={DLSDatasetDetailsPanel}
       columns={columns}
     />
   );

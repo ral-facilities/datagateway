@@ -13,6 +13,7 @@ exports[`Select cell component renders correctly when checked 1`] = `
         fontSize="small"
       />
     }
+    className="tour-dataview-add-to-cart"
     icon={
       <Memo
         fontSize="small"
@@ -42,6 +43,7 @@ exports[`Select cell component renders correctly when unchecked 1`] = `
         fontSize="small"
       />
     }
+    className="tour-dataview-add-to-cart"
     icon={
       <Memo
         fontSize="small"

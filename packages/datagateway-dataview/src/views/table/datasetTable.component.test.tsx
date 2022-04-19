@@ -1,4 +1,4 @@
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 import {
   Dataset,
   dGCommonInitialState,
@@ -9,6 +9,7 @@ import {
   useRemoveFromCart,
   useDatasetsInfinite,
   useDatasetsDatafileCount,
+  DatasetDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -17,7 +18,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
-import DatasetTable, { DatasetDetailsPanel } from './datasetTable.component';
+import DatasetTable from './datasetTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
@@ -39,7 +40,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Dataset table component', () => {
-  let shallow;
   let mount;
   let mockStore;
   let state: StateType;
@@ -60,7 +60,6 @@ describe('Dataset table component', () => {
   };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'DatasetTable' });
     mount = createMount();
     rowData = [
       {
@@ -125,10 +124,6 @@ describe('Dataset table component', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsInfinite).toHaveBeenCalledWith([
       {
@@ -137,22 +132,22 @@ describe('Dataset table component', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('dataset', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: parseInt(investigationId) },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'dataset',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigation.id': { eq: parseInt(investigationId) },
+          }),
+        },
+      ],
+      true
+    );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('dataset');
     expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
@@ -303,14 +298,22 @@ describe('Dataset table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <DatasetDetailsPanel
-        rowData={rowData[0]}
-        detailsPanelResize={jest.fn()}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('dataset', expect.anything(), false);
+    expect(useIds).not.toHaveBeenCalledWith('dataset', expect.anything(), true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+  });
+
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders Dataset title as a link', () => {

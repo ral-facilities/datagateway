@@ -52,10 +52,13 @@ Object {
   "onSort": [Function],
   "page": null,
   "results": null,
-  "sort": Object {},
+  "sort": Object {
+    "fullName": "asc",
+  },
   "title": Object {
     "content": [Function],
     "dataKey": "fullName",
+    "defaultSort": "asc",
     "filterComponent": [Function],
     "label": "instruments.name",
   },

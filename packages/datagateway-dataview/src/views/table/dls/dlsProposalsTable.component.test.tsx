@@ -110,17 +110,20 @@ describe('DLS Proposals table component', () => {
         filterValue: JSON.stringify(['name', 'title']),
       },
     ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'distinct',
-        filterValue: JSON.stringify(['name', 'title']),
-      },
-    ]);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify(['name', 'title']),
+        },
+      ],
+      true
+    );
   });
 
   it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
       fetchNextPage,
     });
@@ -157,15 +160,11 @@ describe('DLS Proposals table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('updates sort query params on sort', () => {
+  it('uses default sort', () => {
     const wrapper = createWrapper();
+    wrapper.update();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
-
-    expect(history.length).toBe(2);
+    expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );

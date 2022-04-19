@@ -2,21 +2,22 @@ import { Link } from '@material-ui/core';
 import { Title, Link as LinkIcon } from '@material-ui/icons';
 import {
   CardView,
+  CardViewDetails,
   Instrument,
   parseSearchToQuery,
   tableLink,
   useInstrumentCount,
   useInstrumentsPaginated,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
+  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
 interface ISISInstrumentsCVProps {
   studyHierarchy: boolean;
@@ -35,8 +36,8 @@ const ISISInstrumentsCardView = (
   );
 
   const textFilter = useTextFilter(filters);
-  const pushSort = usePushSort();
-  const pushFilters = usePushFilters();
+  const handleSort = useSort();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -46,7 +47,7 @@ const ISISInstrumentsCardView = (
   } = useInstrumentCount();
   const { isLoading: dataLoading, data } = useInstrumentsPaginated();
 
-  const title = React.useMemo(() => {
+  const title: CardViewDetails = React.useMemo(() => {
     const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
     const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
     return {
@@ -56,13 +57,15 @@ const ISISInstrumentsCardView = (
         tableLink(
           `/${pathRoot}/instrument/${instrument.id}/${instrumentChild}`,
           instrument.fullName || instrument.name,
-          view
+          view,
+          'isis-instrument-card-name'
         ),
       filterComponent: textFilter,
+      defaultSort: 'asc',
     };
   }, [t, textFilter, view, studyHierarchy]);
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('instruments.description'),
       dataKey: 'description',
@@ -71,7 +74,7 @@ const ISISInstrumentsCardView = (
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: Title,
@@ -84,7 +87,11 @@ const ISISInstrumentsCardView = (
         label: t('instruments.url'),
         dataKey: 'url',
         content: function Content(instrument: Instrument) {
-          return <Link href={instrument.url}>{instrument.url}</Link>;
+          return instrument && instrument.url ? (
+            <Link href={instrument.url}>{instrument.url}</Link>
+          ) : (
+            ''
+          );
         },
         filterComponent: textFilter,
       },
@@ -97,8 +104,8 @@ const ISISInstrumentsCardView = (
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
-      onSort={pushSort}
+      onFilter={pushFilter}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}
@@ -110,7 +117,7 @@ const ISISInstrumentsCardView = (
       description={description}
       information={information}
       moreInformation={(instrument: Instrument) => (
-        <InstrumentDetailsPanel rowData={instrument} />
+        <ISISInstrumentDetailsPanel rowData={instrument} />
       )}
     />
   );

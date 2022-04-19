@@ -4,15 +4,29 @@
   "apiUrl": "http://localhost:5000",
   "downloadApiUrl": "https://localhost:8181/topcat",
   "icatUrl": "https://localhost:8181/icat",
+  "selectAllSetting": true,
+  "searchableEntities": ["investigation", "dataset", "datafile"],
+  "maxNumResults": 300,
   "helpSteps": [
     {
       "target": "#plugin-link--search-data",
-      "content":
-        "DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters"
+      "content": "DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters"
+    },
+    {
+      "target": ".tour-search-textfield",
+      "content": "Allows you to search for the results based on their titles"
+    },
+    {
+      "target": ".tour-search-checkbox",
+      "content": "Allows you to filter the search results based on the specific datasets, datafiles or investigations"
+    },
+    {
+      "target": ".tour-search-dates",
+      "content": "Allows you to filter the search results based on the specific dates"
     },
     {
       "target": ".tour-search-tab-select",
-      "content": "Select which type of data to view the search results for"
+      "content": "Select the type of search results to view"
     }
   ],
   "routes": [

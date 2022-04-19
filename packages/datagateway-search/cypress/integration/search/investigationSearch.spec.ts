@@ -10,22 +10,25 @@ describe('Investigation search tab', () => {
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
-    cy.intercept('/investigations/count?where=%7B%22id').as(
+    cy.intercept('**/investigations/count?where=%7B%22id*').as(
       'investigationsCount'
     );
-    cy.intercept('/investigations?').as('investigations');
-    cy.intercept('/datasets/count?where=%7B%22id').as('datasetsCount');
-    cy.intercept('/datasets?').as('datasets');
-    cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
-    cy.intercept('/datafiles?').as('datafiles');
-    cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
+    cy.intercept('**/investigations?*').as('investigations');
+    cy.intercept('**/datasets/count?where=%7B%22id*').as('datasetsCount');
+    cy.intercept('**/datasets?*').as('datasets');
+    cy.intercept('**/datafiles/count?where=%7B%22id*').as('datafilesCount');
+    cy.intercept('**/datafiles?*').as('datafiles');
+    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway Search');
 
+    cy.get('#search-entities-menu').click();
     cy.get('[aria-label="Dataset checkbox"]').click();
     cy.get('[aria-label="Datafile checkbox"]').click();
+    //Close drop down menu
+    cy.get('body').type('{esc}');
 
     cy.get('[aria-label="Submit search"]')
       .click()
@@ -111,7 +114,10 @@ describe('Investigation search tab', () => {
   });
 
   it('should be hidden if investigation checkbox is unchecked', () => {
+    cy.get('#search-entities-menu').click();
     cy.get('[aria-label="Investigation checkbox"]').click();
+    //Close drop down menu
+    cy.get('body').type('{esc}');
 
     cy.get('[aria-label="Submit search"]')
       .click()

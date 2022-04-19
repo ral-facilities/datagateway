@@ -18,6 +18,11 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISStudiesCardView from './isisStudiesCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { parse } from 'date-fns';
+
+jest
+  .useFakeTimers('modern')
+  .setSystemTime(parse('2021-10-27', 'yyyy-MM-dd', 0));
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -106,6 +111,14 @@ describe('ISIS Studies - Card View', () => {
           },
         }),
       },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.releaseDate': {
+            lt: '2021-10-27 00:00:00',
+          },
+        }),
+      },
     ]);
     expect(useStudiesPaginated).toHaveBeenCalledWith([
       {
@@ -113,6 +126,14 @@ describe('ISIS Studies - Card View', () => {
         filterValue: JSON.stringify({
           'studyInvestigations.investigation.investigationInstruments.instrument.id': {
             eq: instrumentId,
+          },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.releaseDate': {
+            lt: '2021-10-27 00:00:00',
           },
         }),
       },
@@ -125,6 +146,32 @@ describe('ISIS Studies - Card View', () => {
     ]);
   });
 
+  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
+    const wrapper = createWrapper();
+    expect(
+      wrapper.find('[data-testid="landing-study-card-pid-link"]').first().text()
+    ).toEqual('doi');
+
+    expect(
+      wrapper
+        .find('[data-testid="landing-study-card-pid-link"]')
+        .first()
+        .prop('href')
+    ).toEqual('https://doi.org/doi');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent(
+        '{"studyInvestigations.investigation.startDate":"desc"}'
+      )}`
+    );
+  });
+
   it('updates filter query params on text filter', () => {
     const wrapper = createWrapper();
 
@@ -135,7 +182,6 @@ describe('ISIS Studies - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -147,7 +193,6 @@ describe('ISIS Studies - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -161,7 +206,6 @@ describe('ISIS Studies - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"studyInvestigations.investigation.endDate":{"endDate":"2019-08-06"}}'
@@ -173,7 +217,6 @@ describe('ISIS Studies - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -184,7 +227,6 @@ describe('ISIS Studies - Card View', () => {
     expect(button.text()).toEqual('studies.name');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );

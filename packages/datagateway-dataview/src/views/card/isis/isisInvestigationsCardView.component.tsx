@@ -1,35 +1,35 @@
-import { Typography } from '@material-ui/core';
+import { Link as MuiLink } from '@material-ui/core';
 import {
   Fingerprint,
   Public,
   Save,
-  Assessment,
+  Person,
   CalendarToday,
 } from '@material-ui/icons';
 import {
   CardView,
+  CardViewDetails,
   formatCountOrSize,
   Investigation,
-  nestedValue,
   tableLink,
   useInvestigationSizes,
   parseSearchToQuery,
   useDateFilter,
   useISISInvestigationCount,
   useISISInvestigationsPaginated,
-  usePushFilters,
+  usePrincipalExperimenterFilter,
+  usePushFilter,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useTextFilter,
-  ArrowTooltip,
+  AddToCartButton,
+  DownloadButton,
+  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
-import AddToCartButton from '../../addToCartButton.component';
-import DownloadButton from '../../downloadButton.component';
 import { Theme, createStyles, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -67,8 +67,9 @@ const ISISInvestigationsCardView = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
-  const pushFilters = usePushFilters();
+  const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
+  const handleSort = useSort();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
@@ -91,7 +92,7 @@ const ISISInvestigationsCardView = (
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
-  const title = React.useMemo(
+  const title: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.title'),
       dataKey: 'title',
@@ -99,14 +100,15 @@ const ISISInvestigationsCardView = (
         tableLink(
           `${urlPrefix}/${investigation.id}`,
           investigation.title,
-          view
+          view,
+          'isis-investigations-card-title'
         ),
       filterComponent: textFilter,
     }),
     [t, textFilter, urlPrefix, view]
   );
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.details.summary'),
       dataKey: 'summary',
@@ -115,7 +117,7 @@ const ISISInvestigationsCardView = (
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
         icon: Fingerprint,
@@ -124,6 +126,18 @@ const ISISInvestigationsCardView = (
         filterComponent: textFilter,
       },
       {
+        content: function doiFormat(entity: Investigation) {
+          return (
+            entity?.studyInvestigations?.[0]?.study?.pid && (
+              <MuiLink
+                href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
+                data-testid="isis-investigations-card-doi-link"
+              >
+                {entity.studyInvestigations[0].study?.pid}
+              </MuiLink>
+            )
+          );
+        },
         icon: Public,
         label: t('investigations.doi'),
         dataKey: 'studyInvestigations[0].study.pid',
@@ -141,28 +155,30 @@ const ISISInvestigationsCardView = (
         disableSort: true,
       },
       {
-        icon: Assessment,
-        label: t('investigations.instrument'),
-        dataKey: 'investigationInstruments.instrument.name',
+        icon: Person,
+        label: t('investigations.principal_investigators'),
+        dataKey: 'investigationUsers.user.fullName',
+        disableSort: true,
         content: function Content(investigation: Investigation) {
-          const instrument = nestedValue(
-            investigation,
-            'investigationInstruments[0].instrument.name'
+          const principal_investigators = investigation?.investigationUsers?.filter(
+            (iu) => iu.role === 'principal_experimenter'
           );
-          return (
-            <ArrowTooltip title={instrument}>
-              <Typography>{instrument}</Typography>
-            </ArrowTooltip>
-          );
+          let principal_investigator = '';
+          if (principal_investigators && principal_investigators.length !== 0) {
+            principal_investigator =
+              principal_investigators?.[0].user?.fullName ?? '';
+          }
+
+          return principal_investigator;
         },
-        noTooltip: true,
-        filterComponent: textFilter,
+        filterComponent: principalExperimenterFilter,
       },
       {
         icon: CalendarToday,
         label: t('investigations.details.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
@@ -171,7 +187,7 @@ const ISISInvestigationsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [data, dateFilter, sizeQueries, t, textFilter]
+    [data, dateFilter, principalExperimenterFilter, sizeQueries, t, textFilter]
   );
 
   const classes = useStyles();
@@ -189,7 +205,6 @@ const ISISInvestigationsCardView = (
             entityType="investigation"
             entityId={investigation.id}
             entityName={investigation.name}
-            variant="outlined"
           />
         </div>
       ),
@@ -199,7 +214,7 @@ const ISISInvestigationsCardView = (
 
   const moreInformation = React.useCallback(
     (investigation: Investigation) => (
-      <InvestigationDetailsPanel
+      <ISISInvestigationDetailsPanel
         rowData={investigation}
         viewDatasets={(id: number) => {
           const url = view
@@ -217,8 +232,8 @@ const ISISInvestigationsCardView = (
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
-      onSort={pushSort}
+      onFilter={pushFilter}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

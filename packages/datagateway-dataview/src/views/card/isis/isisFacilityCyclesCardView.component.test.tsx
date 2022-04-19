@@ -36,6 +36,7 @@ describe('ISIS Facility Cycles - Card View', () => {
   let state: StateType;
   let cardData: FacilityCycle[];
   let history: History;
+  let replaceSpy: jest.SpyInstance;
 
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
@@ -67,6 +68,7 @@ describe('ISIS Facility Cycles - Card View', () => {
       },
     ];
     history = createMemoryHistory();
+    replaceSpy = jest.spyOn(history, 'replace');
 
     (useFacilityCycleCount as jest.Mock).mockReturnValue({
       data: 1,
@@ -110,7 +112,6 @@ describe('ISIS Facility Cycles - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -122,7 +123,6 @@ describe('ISIS Facility Cycles - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
   });
 
@@ -136,7 +136,6 @@ describe('ISIS Facility Cycles - Card View', () => {
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
@@ -146,8 +145,17 @@ describe('ISIS Facility Cycles - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    });
   });
 
   it('updates sort query params on sort', () => {
@@ -157,7 +165,6 @@ describe('ISIS Facility Cycles - Card View', () => {
     expect(button.text()).toEqual('facilitycycles.name');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );

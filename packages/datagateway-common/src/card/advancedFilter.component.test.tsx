@@ -10,6 +10,7 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import SaveIcon from '@material-ui/icons/Save';
 import DescriptionIcon from '@material-ui/icons/Description';
 import LinkIcon from '@material-ui/icons/Link';
+import PersonIcon from '@material-ui/icons/Person';
 import AdvancedFilter, {
   UnmemoisedAdvancedFilter,
 } from './advancedFilter.component';
@@ -34,15 +35,15 @@ describe('AdvancedFilter', () => {
 
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
 
-    expect(wrapper.find('[aria-label="title-label"]').text()).toEqual('Test');
-    expect(wrapper.find('[aria-label="advanced-filters-link"]').text()).toEqual(
-      'advanced_filters.hide'
-    );
+    expect(wrapper.find('[children="Test"]').exists()).toBe(true);
+    expect(
+      wrapper.find('[data-testid="advanced-filters-link"]').text()
+    ).toEqual('advanced_filters.hide');
   });
 
   it('shows title correctly when no label provided', () => {
@@ -57,15 +58,15 @@ describe('AdvancedFilter', () => {
 
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
 
-    expect(wrapper.find('[aria-label="title-label"]').text()).toEqual('TEST');
-    expect(wrapper.find('[aria-label="advanced-filters-link"]').text()).toEqual(
-      'advanced_filters.hide'
-    );
+    expect(wrapper.find('[children="TEST"]').exists()).toBe(true);
+    expect(
+      wrapper.find('[data-testid="advanced-filters-link"]').text()
+    ).toEqual('advanced_filters.hide');
   });
 
   it('shows description correctly', () => {
@@ -82,17 +83,15 @@ describe('AdvancedFilter', () => {
 
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
 
-    expect(wrapper.find('[aria-label="description-label"]').text()).toEqual(
-      'Desc'
-    );
-    expect(wrapper.find('[aria-label="advanced-filters-link"]').text()).toEqual(
-      'advanced_filters.hide'
-    );
+    expect(wrapper.find('[children="Desc"]').exists()).toBe(true);
+    expect(
+      wrapper.find('[data-testid="advanced-filters-link"]').text()
+    ).toEqual('advanced_filters.hide');
   });
 
   it('shows description correctly when no label provided', () => {
@@ -108,17 +107,15 @@ describe('AdvancedFilter', () => {
 
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
 
-    expect(wrapper.find('[aria-label="description-label"]').text()).toEqual(
-      'DESC'
-    );
-    expect(wrapper.find('[aria-label="advanced-filters-link"]').text()).toEqual(
-      'advanced_filters.hide'
-    );
+    expect(wrapper.find('[children="DESC"]').exists()).toBe(true);
+    expect(
+      wrapper.find('[data-testid="advanced-filters-link"]').text()
+    ).toEqual('advanced_filters.hide');
   });
 
   it('shows information correctly', () => {
@@ -137,17 +134,15 @@ describe('AdvancedFilter', () => {
 
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
 
-    expect(wrapper.find('[aria-label="information-label"]').text()).toEqual(
-      'Info'
-    );
-    expect(wrapper.find('[aria-label="advanced-filters-link"]').text()).toEqual(
-      'advanced_filters.hide'
-    );
+    expect(wrapper.find('[children="Info"]').exists()).toBe(true);
+    expect(
+      wrapper.find('[data-testid="advanced-filters-link"]').text()
+    ).toEqual('advanced_filters.hide');
   });
 
   it('shows information correctly when label not provided', () => {
@@ -165,17 +160,15 @@ describe('AdvancedFilter', () => {
 
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
 
-    expect(wrapper.find('[aria-label="information-label"]').text()).toEqual(
-      'INFO'
-    );
-    expect(wrapper.find('[aria-label="advanced-filters-link"]').text()).toEqual(
-      'advanced_filters.hide'
-    );
+    expect(wrapper.find('[children="INFO"]').exists()).toBe(true);
+    expect(
+      wrapper.find('[data-testid="advanced-filters-link"]').text()
+    ).toEqual('advanced_filters.hide');
   });
 
   it('TitleIcon displays correctly', () => {
@@ -190,7 +183,7 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
@@ -209,7 +202,7 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
@@ -228,7 +221,7 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
@@ -247,7 +240,7 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
@@ -266,7 +259,7 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
@@ -285,7 +278,7 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
@@ -304,7 +297,7 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
@@ -323,7 +316,7 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
@@ -342,7 +335,7 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
@@ -361,10 +354,29 @@ describe('AdvancedFilter', () => {
     );
     // Click on the link to show the filters.
     wrapper
-      .find('[aria-label="advanced-filters-link"]')
+      .find('[data-testid="advanced-filters-link"]')
       .first()
       .simulate('click');
     wrapper.update();
     expect(wrapper.exists(LinkIcon)).toBeTruthy();
+  });
+
+  it('LinkIcon displays correctly', () => {
+    const wrapper = shallow(
+      <AdvancedFilter
+        title={{
+          label: 'advanced_filters.icons.person',
+          dataKey: 'TEST',
+          filterComponent: jest.fn(),
+        }}
+      />
+    );
+    // Click on the link to show the filters.
+    wrapper
+      .find('[data-testid="advanced-filters-link"]')
+      .first()
+      .simulate('click');
+    wrapper.update();
+    expect(wrapper.exists(PersonIcon)).toBeTruthy();
   });
 });

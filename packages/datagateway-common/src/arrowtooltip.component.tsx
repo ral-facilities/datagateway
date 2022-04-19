@@ -1,55 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import ResizeObserver from 'resize-observer-polyfill';
 import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
-const arrowGenerator = (
-  color: string
-): Record<string, Record<string, string | number | Record<string, string>>> => {
-  return {
-    '&[x-placement*="bottom"] $arrow': {
-      top: 0,
-      left: 0,
-      marginTop: '-0.95em',
-      width: '2em',
-      height: '1em',
-      '&::before': {
-        borderWidth: '0 1em 1em 1em',
-        borderColor: `transparent transparent ${color} transparent`,
-      },
-    },
-    '&[x-placement*="top"] $arrow': {
-      bottom: 0,
-      left: 0,
-      marginBottom: '-0.95em',
-      width: '2em',
-      height: '1em',
-      '&::before': {
-        borderWidth: '1em 1em 0 1em',
-        borderColor: `${color} transparent transparent transparent`,
-      },
-    },
-    '&[x-placement*="right"] $arrow': {
-      left: 0,
-      marginLeft: '-0.95em',
-      height: '2em',
-      width: '1em',
-      '&::before': {
-        borderWidth: '1em 1em 1em 0',
-        borderColor: `transparent ${color} transparent transparent`,
-      },
-    },
-    '&[x-placement*="left"] $arrow': {
-      right: 0,
-      marginRight: '-0.95em',
-      height: '2em',
-      width: '1em',
-      '&::before': {
-        borderWidth: '1em 0 1em 1em',
-        borderColor: `transparent transparent transparent ${color}`,
-      },
-    },
-  };
-};
 
 const useStylesArrow = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,107 +10,106 @@ const useStylesArrow = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.common.black,
       fontSize: '0.875rem',
     },
-    popper: arrowGenerator(theme.palette.common.black),
     arrow: {
-      position: 'absolute',
-      fontSize: 6,
-      '&::before': {
-        content: '""',
-        margin: 'auto',
-        display: 'block',
-        width: 0,
-        height: 0,
-        borderStyle: 'solid',
-      },
+      color: theme.palette.common.black,
     },
   })
 );
 
+export const getTooltipText = (node: React.ReactNode): string => {
+  if (typeof node === 'string') return node;
+  if (typeof node === 'number' || typeof node === 'boolean')
+    return node.toString();
+  if (node instanceof Array) return node.map(getTooltipText).join('');
+  if (typeof node === 'object' && node && 'props' in node)
+    return getTooltipText(node.props.children);
+  return '';
+};
+
 const ArrowTooltip = (
   props: TooltipProps & {
-    percentageWidth?: number;
-    maxEnabledHeight?: number;
+    disableHoverListener?: boolean;
   }
 ): React.ReactElement => {
-  const { percentageWidth, maxEnabledHeight, ...tooltipProps } = props;
+  const { disableHoverListener, ...tooltipProps } = props;
 
-  const { arrow, ...classes } = useStylesArrow();
-  const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
+  const { ...classes } = useStylesArrow();
 
-  const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
   const [isTooltipVisible, setTooltipVisible] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
-  useEffect(() => {
-    function updateTooltip(): void {
+  const tooltipResizeObserver = React.useRef<ResizeObserver>(
+    new ResizeObserver((entries) => {
+      const tooltipElement = entries[0].target;
       // Check that the element has been rendered and set the viewable
       // as false before checking to see the element has exceeded maximum width.
-      if (tooltipElement !== null) {
-        // We pass in a percentage width (as a prop) of the viewport width,
-        // which is set as the max width the tooltip will allow content which
-        // is wrapped within it until it makes the tooltip visible.
-        if (percentageWidth) {
-          // Check to ensure whether the tooltip should be visible given the width provided.
-          if (
-            tooltipElement.current &&
-            tooltipElement.current.offsetWidth / window.innerWidth >=
-              percentageWidth / 100
-          )
-            setTooltipVisible(true);
-          else setTooltipVisible(false);
-        }
+      if (
+        tooltipElement !== null &&
+        entries.length > 0 &&
+        entries[0].borderBoxSize.length > 0
+      ) {
+        // Width of the tooltip contents including padding and borders
+        // This is rounded as window.innerWidth and tooltip.scrollWidth are always integer
+        const borderBoxWidth = Math.round(
+          entries[0].borderBoxSize[0].inlineSize
+        );
 
-        if (maxEnabledHeight) {
-          if (
-            tooltipElement.current &&
-            tooltipElement.current.offsetHeight > maxEnabledHeight
-          ) {
-            setTooltipVisible(false);
-          }
-        }
-
-        if (!percentageWidth && !maxEnabledHeight) {
-          // If props haven't been given, have tooltip appear only when visible
-          // text width is smaller than full text width.
-          if (
-            tooltipElement.current &&
-            tooltipElement.current.offsetWidth <
-              tooltipElement.current.scrollWidth
-          ) {
-            setTooltipVisible(true);
-          } else {
-            setTooltipVisible(false);
-          }
+        // have tooltip appear only when visible text width is smaller than full text width.
+        if (tooltipElement && borderBoxWidth < tooltipElement.scrollWidth) {
+          setTooltipVisible(true);
+        } else {
+          setTooltipVisible(false);
         }
       }
+    })
+  );
+
+  // need to use a useCallback instead of a useRef for this
+  // see https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
+  const tooltipRef = React.useCallback((container: HTMLDivElement) => {
+    if (container !== null) {
+      tooltipResizeObserver.current.observe(container);
     }
-    window.addEventListener('resize', updateTooltip);
-    updateTooltip();
-    return () => window.removeEventListener('resize', updateTooltip);
-  }, [tooltipElement, setTooltipVisible, percentageWidth, maxEnabledHeight]);
+    // When element is unmounted we know container is null so time to clean up
+    else {
+      if (tooltipResizeObserver.current)
+        tooltipResizeObserver.current.disconnect();
+    }
+  }, []);
+
+  const handleKeyDown = React.useCallback((e) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onClose = (): void => {
+    window.removeEventListener('keydown', handleKeyDown);
+    setOpen(false);
+  };
+
+  const onOpen = (): void => {
+    window.addEventListener('keydown', handleKeyDown);
+    setOpen(true);
+  };
+
+  let shouldDisableHoverListener = !isTooltipVisible;
+  //Allow disableHoverListener to be overidden
+  if (disableHoverListener !== undefined)
+    shouldDisableHoverListener = disableHoverListener;
 
   return (
     <Tooltip
-      ref={tooltipElement}
+      ref={tooltipRef}
       classes={classes}
-      PopperProps={{
-        popperOptions: {
-          modifiers: {
-            arrow: {
-              enabled: Boolean(arrowRef),
-              element: arrowRef,
-            },
-          },
-        },
-      }}
       {...tooltipProps}
-      title={
-        <React.Fragment>
-          {tooltipProps.title}
-          <span className={arrow} ref={setArrowRef} />
-        </React.Fragment>
-      }
-      // TODO: This shouldn't really be calculated inside and should still be possible to be overriden by a prop.
-      disableHoverListener={!isTooltipVisible}
+      disableHoverListener={shouldDisableHoverListener}
+      arrow={true}
+      onOpen={onOpen}
+      onClose={onClose}
+      open={open}
+      data-testid={`arrow-tooltip-component-${open}`}
     />
   );
 };

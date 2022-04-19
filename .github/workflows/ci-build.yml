@@ -10,7 +10,7 @@ on:
 jobs:
   lint-and-unit-test:
     name: Lint & Unit Tests
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -76,7 +76,7 @@ jobs:
 
   dataview-e2e-tests:
     name: DataGateway DataView End to End Tests
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -90,7 +90,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.x
+          python-version: 3.6
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -105,7 +105,7 @@ jobs:
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icat_test_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -115,16 +115,23 @@ jobs:
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
-          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat-test-hosts.yml
+          sed -i 's/role: authn_uows_isis/role: authn_anon/' icat-ansible/icat_test_hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
         run: sudo hostname -b localhost
 
+      # Remove existing MySQL installation so it doesn't interfere with GitHub Actions
+      - name: Remove existing mysql
+        run: |
+          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
+          sudo apt-get remove --purge "mysql*"
+          sudo rm -rf /var/lib/mysql* /etc/mysql
+
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icat_test_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       # Fixes on ICAT components needed for e2e tests
       - name: Add anon user to rootUserNames
@@ -142,6 +149,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
+          ref: v1.0.1
 
       # DataGateway API file setup
       - name: Create log file
@@ -209,7 +217,7 @@ jobs:
 
   download-e2e-tests:
     name: DataGateway Download End to End Tests
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -223,7 +231,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.x
+          python-version: 3.6
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -238,7 +246,7 @@ jobs:
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icat_test_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -248,16 +256,23 @@ jobs:
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
-          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat-test-hosts.yml
+          sed -i 's/role: authn_uows_isis/role: authn_anon/' icat-ansible/icat_test_hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
         run: sudo hostname -b localhost
 
+      # Remove existing MySQL installation so it doesn't interfere with GitHub Actions
+      - name: Remove existing mysql
+        run: |
+          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
+          sudo apt-get remove --purge "mysql*"
+          sudo rm -rf /var/lib/mysql* /etc/mysql
+
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icat_test_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       # Fixes on ICAT components needed for e2e tests
       - name: Add anon user to rootUserNames
@@ -291,6 +306,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
+          ref: v1.0.1
 
       # DataGateway API file setup
       - name: Create log file
@@ -358,7 +374,7 @@ jobs:
 
   search-e2e-tests:
     name: DataGateway Search End to End Tests
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -372,7 +388,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.x
+          python-version: 3.6
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -387,7 +403,7 @@ jobs:
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icat_test_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -397,16 +413,23 @@ jobs:
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
-          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat-test-hosts.yml
+          sed -i 's/role: authn_uows_isis/role: authn_anon/' icat-ansible/icat_test_hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
         run: sudo hostname -b localhost
 
+      # Remove existing MySQL installation so it doesn't interfere with GitHub Actions
+      - name: Remove existing mysql
+        run: |
+          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
+          sudo apt-get remove --purge "mysql*"
+          sudo rm -rf /var/lib/mysql* /etc/mysql
+
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icat_test_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
       - name: Add anon user to rootUserNames
         run: |
           awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
@@ -422,6 +445,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
+          ref: v1.0.1
 
       # DataGateway API file setup
       - name: Create log file

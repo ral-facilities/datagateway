@@ -14,6 +14,9 @@ import {
   useDatasetsInfinite,
   Dataset,
   useDatasetSizes,
+  DownloadButton,
+  ISISDatasetDetailsPanel,
+  Table,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -21,7 +24,6 @@ import { Router } from 'react-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import DownloadButton from '../../downloadButton.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -46,18 +48,22 @@ describe('ISIS Dataset table component', () => {
   let rowData: Dataset[];
   let history: History;
 
-  const createWrapper = (): ReactWrapper => {
+  const createWrapper = (
+    element: React.ReactElement = (
+      <ISISDatasetsTable
+        studyHierarchy={false}
+        instrumentId="1"
+        instrumentChildId="2"
+        investigationId="3"
+      />
+    )
+  ): ReactWrapper => {
     const store = mockStore(state);
     return mount(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetsTable
-              studyHierarchy={false}
-              instrumentId="1"
-              instrumentChildId="2"
-              investigationId="3"
-            />
+            {element}
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -129,10 +135,6 @@ describe('ISIS Dataset table component', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetsInfinite).toHaveBeenCalledWith([
       {
@@ -141,22 +143,22 @@ describe('ISIS Dataset table component', () => {
           'investigation.id': { eq: investigationId },
         }),
       },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify('investigation'),
-      },
     ]);
     expect(useDatasetSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useIds).toHaveBeenCalledWith('dataset', [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: parseInt(investigationId) },
-        }),
-      },
-    ]);
+    expect(useIds).toHaveBeenCalledWith(
+      'dataset',
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigation.id': { eq: parseInt(investigationId) },
+          }),
+        },
+      ],
+      true
+    );
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('dataset');
     expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
@@ -222,6 +224,16 @@ describe('ISIS Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
   });
 
   it('updates sort query params on sort', () => {
@@ -305,6 +317,43 @@ describe('ISIS Dataset table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+    state.dgdataview.selectAllSetting = false;
+
+    const wrapper = createWrapper();
+
+    expect(useIds).toHaveBeenCalledWith('dataset', expect.anything(), false);
+    expect(useIds).not.toHaveBeenCalledWith('dataset', expect.anything(), true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+  });
+
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+
+    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+  });
+
+  it('renders details panel with datasets link and can navigate', () => {
+    const wrapper = createWrapper();
+
+    const detailsPanelWrapper = createWrapper(
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: rowData[0],
+        detailsPanelResize: jest.fn(),
+      })
+    );
+
+    detailsPanelWrapper
+      .find('#dataset-datafiles-tab')
+      .first()
+      .simulate('click');
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile'
+    );
   });
 
   it('renders dataset name as a link', () => {

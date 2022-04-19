@@ -1,14 +1,16 @@
 import React from 'react';
 import {
   CardView,
+  CardViewDetails,
+  getStudyInfoInvestigation,
   parseSearchToQuery,
   Study,
   tableLink,
   useDateFilter,
-  usePushFilters,
+  usePushFilter,
   usePushPage,
   usePushResults,
-  usePushSort,
+  useSort,
   useStudiesPaginated,
   useStudyCount,
   useTextFilter,
@@ -17,6 +19,8 @@ import PublicIcon from '@material-ui/icons/Public';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import { format, set } from 'date-fns';
+import { Link as MuiLink } from '@material-ui/core';
 
 interface ISISStudiesCVProps {
   instrumentId: string;
@@ -35,10 +39,16 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
-  const pushFilters = usePushFilters();
+  const handleSort = useSort();
+  const pushFilter = usePushFilter();
   const pushPage = usePushPage();
   const pushResults = usePushResults();
+
+  const unembargoDate = format(
+    // set s and ms to 0 to escape recursive loop of fetching data every time they change
+    set(new Date(), { seconds: 0, milliseconds: 0 }),
+    'yyyy-MM-dd HH:mm:ss'
+  );
 
   const { data: totalDataCount, isLoading: countLoading } = useStudyCount([
     {
@@ -49,6 +59,15 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         },
       }),
     },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
+        },
+      }),
+    },
   ]);
   const { isLoading: dataLoading, data } = useStudiesPaginated([
     {
@@ -56,6 +75,15 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       filterValue: JSON.stringify({
         'studyInvestigations.investigation.investigationInstruments.instrument.id': {
           eq: instrumentId,
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        // this matches the ISIS ICAT rule
+        'studyInvestigations.investigation.releaseDate': {
+          lt: unembargoDate,
         },
       }),
     },
@@ -84,21 +112,33 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     };
   }, [t, textFilter, instrumentId, view]);
 
-  const description = React.useMemo(
+  const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('studies.title'),
       dataKey: 'studyInvestigations.investigation.title',
       content: (study: Study) => {
-        return study.studyInvestigations?.[0]?.investigation?.title ?? '';
+        return getStudyInfoInvestigation(study)?.title ?? '';
       },
       filterComponent: textFilter,
     }),
     [t, textFilter]
   );
 
-  const information = React.useMemo(
+  const information: CardViewDetails[] = React.useMemo(
     () => [
       {
+        content: function studyPidFormat(entity: Study) {
+          return (
+            entity?.pid && (
+              <MuiLink
+                href={`https://doi.org/${entity.pid}`}
+                data-testid="landing-study-card-pid-link"
+              >
+                {entity.pid}
+              </MuiLink>
+            )
+          );
+        },
         icon: PublicIcon,
         label: t('studies.pid'),
         dataKey: 'pid',
@@ -109,15 +149,16 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         content: (study: Study) =>
-          study.studyInvestigations?.[0]?.investigation?.startDate ?? '',
+          getStudyInfoInvestigation(study)?.startDate ?? '',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         content: (study: Study) =>
-          study.studyInvestigations?.[0]?.investigation?.endDate ?? '',
+          getStudyInfoInvestigation(study)?.endDate ?? '',
         filterComponent: dateFilter,
       },
     ],
@@ -129,8 +170,8 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
-      onFilter={pushFilters}
-      onSort={pushSort}
+      onFilter={pushFilter}
+      onSort={handleSort}
       onResultsChange={pushResults}
       loadedData={!dataLoading}
       loadedCount={!countLoading}

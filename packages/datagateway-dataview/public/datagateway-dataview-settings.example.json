@@ -1,5 +1,6 @@
 {
   "facilityName": "Generic",
+  "facilityImageURL": "",
   "features": {},
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
@@ -8,41 +9,97 @@
   "helpSteps": [
     {
       "target": "#plugin-link--browse-investigation",
-      "content":
-        "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
+      "content": "Browse the data via investigations"
     },
     {
-      "target": "#plugin-link--browse-propsal",
-      "content":
-        "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
+      "target": "#plugin-link--browse-proposal",
+      "content": "Browse the data via proposals"
     },
     {
       "target": "#plugin-link--browse-instrument",
-      "content":
-        "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
+      "content": "Browse the data via instruments and facility cycles"
+    },
+    {
+      "target": "#plugin-link--browseStudyHierarchy-instrument",
+      "content": "Browse the data via instruments and experiments"
+    },
+    {
+      "target": "#plugin-link--my-data-ISIS",
+      "content": "View your own data"
+    },
+    {
+      "target": "#plugin-link--my-data-DLS",
+      "content": "View your own data"
     },
     {
       "target": ".tour-dataview-breadcrumbs",
-      "content":
-        "The hierarchy of the currently displayed data is shown here, and allows navigation to the dataset or investigation containing it"
+      "content": "This shows your navigation steps and you can click on each step to go back"
     },
     {
       "target": ".tour-dataview-results",
-      "content":
-        "The number of results found taking into account any applied filters is displayed here"
+      "content": "The number of results found taking into account any applied filters is displayed here"
     },
     {
       "target": ".tour-dataview-search-icon",
-      "content": "Navigate to Datagateway Search"
+      "content": "Navigate to search"
     },
     {
       "target": ".tour-dataview-cart-icon",
-      "content":
-        "Displays the current number of items in the download cart, and navigates to Datagateway Download"
+      "content": "Displays the current number of items in the selection and you can click here to navigate to download"
     },
     {
       "target": ".tour-dataview-view-button",
-      "content": "Switch between table and card views"
+      "content": "Switch between table and card view"
+    },
+    {
+      "target": ".tour-dataview-role-selector",
+      "content": "Select a role to filter your data by your role on experiments"
+    },
+    {
+      "target": ".tour-dataview-clear-filter-button",
+      "content": "Click here to remove all filters currently applied to columns"
+    },
+    {
+      "target": ".tour-dataview-advanced-filters",
+      "content": "Click here to expand the filters"
+    },
+    {
+      "target": ".tour-dataview-filter",
+      "content": "Enter text here to filter within this column. You can click on the cog to make the filter inclusive or exclusive"
+    },
+    {
+      "target": ".tour-dataview-sort",
+      "content": "The results can be sorted in ascending or descending order by clicking the column name"
+    },
+    {
+      "target": ".tour-dataview-pagination",
+      "content": "Navigate between different pages of results here"
+    },
+    {
+      "target": ".tour-dataview-max-results",
+      "content": "Use this dropdown to change the number of results displayed per page"
+    },
+    {
+      "target": ".tour-dataview-data",
+      "content": "This area displays the data"
+    },
+    {
+      "target": ".tour-dataview-add-to-cart",
+      "content": "You can select investigations, datasets or datafiles by clicking here",
+      "disableScrolling": true
+    },
+    {
+      "target": ".tour-dataview-expand",
+      "content": "You can view detailed information by clicking here",
+      "disableScrolling": true
+    },
+    {
+      "target": ".tour-dataview-download",
+      "content": "Click on this button to download this specific item"
+    },
+    {
+      "target": ".tour-dataview-citation-formatter",
+      "content": "Here you can format the citation for this data. Use the dropdown to select the citation format and click the button to copy the citation"
     }
   ],
   "routes": [
@@ -53,22 +110,47 @@
       "order": 0
     },
     {
-      "section": "Data",
+      "section": "Browse",
+      "link": "/doi-redirect",
+      "displayName": "DOI Redirect",
+      "order": 0,
+      "hideFromMenu": true
+    },
+    {
+      "section": "Browse",
       "link": "/browse/investigation",
       "displayName": "DataView",
       "order": 1
     },
     {
-      "section": "Data",
-      "link": "/browse/proposal",
+      "section": "Browse",
+      "link": "/browse/proposal?sort={\"title\":\"asc\"}",
       "displayName": "DLS View",
       "order": 2
     },
     {
-      "section": "Data",
-      "link": "/browse/instrument",
+      "section": "Browse",
+      "link": "/browse/instrument?sort={\"fullName\":\"asc\"}",
       "displayName": "ISIS View",
       "order": 3
+    },
+    {
+      "section": "Browse",
+      "link": "/browseStudyHierarchy/instrument?sort={\"fullName\":\"asc\"}",
+      "displayName": "Experiments",
+      "order": 4
+    },
+    {
+      "section": "Browse",
+      "link": "/my-data/DLS?filters={\"startDate\":{\"endDate\":\"2022-04-01\"}}&sort={\"startDate\":\"desc\"}",
+      "displayName": "My Data DLS",
+      "order": 5
+    },
+    {
+      "section": "Browse",
+      "link": "/my-data/ISIS?sort={\"startDate\":\"desc\"}",
+      "displayName": "My Data ISIS",
+      "order": 6
     }
   ],
   "pluginHost": "http://localhost:3000"

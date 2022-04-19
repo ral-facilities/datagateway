@@ -23,18 +23,13 @@ describe('Download Confirmation', () => {
     });
 
     // Open the confirmation dialog and confirm it is present.
-    cy.contains('Download Cart').click();
+    cy.contains('Download Selection').click();
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
-  });
-
-  afterEach(() => {
-    // Clear the session storage to avoid storing the current tab information.
-    sessionStorage.clear();
   });
 
   it('should load correctly and display the confirmation dialog for the cart items', () => {
     // Show the correct download size of the cart items.
-    cy.contains('Download Size: 10.25 GB').should('exist');
+    cy.contains('Download Size: 11.01 GB').should('exist');
 
     // Shows HTTPS as the default access method.
     cy.contains('#confirm-access-method', 'HTTPS').should('exist');

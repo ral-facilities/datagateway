@@ -9,13 +9,13 @@ import {
   useInvestigationCount,
   useInvestigationsInfinite,
   useInvestigationsDatasetCount,
-  usePushSort,
+  useSort,
   useTextFilter,
+  DLSVisitDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import AssessmentIcon from '@material-ui/icons/Assessment';
@@ -65,7 +65,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -116,6 +116,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
+        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,
@@ -133,8 +134,8 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
-      detailsPanel={VisitDetailsPanel}
+      onSort={handleSort}
+      detailsPanel={DLSVisitDetailsPanel}
       columns={columns}
     />
   );

@@ -3,7 +3,6 @@
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
   "idsUrl": "example.ids.url",
-  "icatUrl": "example.icat.url",
   "fileCountMax": 5000,
   "totalSizeMax": 1000000000000,
   "accessMethods": {
@@ -21,28 +20,43 @@
   "helpSteps": [
     {
       "target": "#plugin-link--download",
-      "content":
-        "DataGateway Download allows you to view and manage items in the current download cart as well see previous downloads"
+      "content": "Download allows you to view and manage items in the current selection as well see your previous downloads"
     },
     {
       "target": ".tour-download-cart-tab",
-      "content": "Show the items currently in the cart for download"
+      "content": "This tab shows your current selection for download"
     },
     {
       "target": ".tour-download-downloads-tab",
-      "content": "Show the status of previous downloads"
+      "content": "This tab shows the status of previous downloads"
+    },
+    {
+      "target": ".tour-download-results",
+      "content": "Shows all the items you have selected"
+    },
+    {
+      "target": ".tour-download-remove-single",
+      "content": "You can remove single items by using the remove button"
+    },
+    {
+      "target": ".tour-download-remove-button",
+      "content": "Click here to remove all the selected items in one click"
+    },
+    {
+      "target": ".tour-download-download-button",
+      "content": "Click here to download the selection of results shown above"
     }
   ],
   "routes": [
     {
-      "section": "Test",
+      "section": "Discover",
       "link": "/download",
       "displayName": "Download",
       "order": 0
     },
     {
       "section": "Admin",
-      "link": "/admin-download",
+      "link": "/admin/download",
       "displayName": "Admin Download",
       "admin": true,
       "order": 1

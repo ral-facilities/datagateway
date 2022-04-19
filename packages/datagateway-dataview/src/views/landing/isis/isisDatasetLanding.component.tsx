@@ -3,6 +3,7 @@ import {
   Divider,
   Grid,
   makeStyles,
+  Link as MuiLink,
   Paper,
   Tab,
   Tabs,
@@ -16,12 +17,14 @@ import {
   parseSearchToQuery,
   useDatasetDetails,
   useDatasetSizes,
+  AddToCartButton,
+  DownloadButton,
+  ArrowTooltip,
+  getTooltipText,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
-import AddToCartButton from '../../addToCartButton.component';
-import DownloadButton from '../../downloadButton.component';
 import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -100,12 +103,23 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
   const classes = useStyles();
 
-  const { data } = useDatasetDetails(parseInt(investigationId));
-  const sizeQueries = useDatasetSizes(data ? [data] : []);
+  const { data } = useDatasetDetails(parseInt(datasetId));
+  const sizeQueries = useDatasetSizes(data);
 
   const shortInfo = [
     {
-      content: (entity: Dataset) => entity.doi,
+      content: function doiFormat(entity: Dataset) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              data-testid="isis-dataset-landing-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('datasets.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -167,7 +181,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12}>
+        <Grid item container xs={12} id="dataset-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Typography
@@ -216,9 +230,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {field.icon}
                       {field.label}:
                     </Typography>
-                    <Typography className={classes.shortInfoValue}>
-                      {field.content(data as Dataset)}
-                    </Typography>
+                    <ArrowTooltip
+                      title={getTooltipText(field.content(data as Dataset))}
+                    >
+                      <Typography className={classes.shortInfoValue}>
+                        {field.content(data as Dataset)}
+                      </Typography>
+                    </ArrowTooltip>
                   </div>
                 )
             )}

@@ -1,13 +1,5 @@
 import React from 'react';
 import {
-  createStyles,
-  Divider,
-  Grid,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
-import {
   Table,
   formatBytes,
   Datafile,
@@ -15,7 +7,6 @@ import {
   FacilityCycle,
   ColumnType,
   Dataset,
-  DetailsPanelProps,
   parseSearchToQuery,
   useAddToCart,
   useAllFacilityCycles,
@@ -25,61 +16,18 @@ import {
   useDateFilter,
   useIds,
   useLuceneSearch,
-  usePushSort,
+  useSort,
   useRemoveFromCart,
   useTextFilter,
+  DatafileDetailsPanel,
+  ISISDatafileDetailsPanel,
+  DLSDatafileDetailsPanel,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
-import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-export const DatafileDetailsPanel = (
-  props: DetailsPanelProps
-): React.ReactElement => {
-  const classes = useStyles();
-  const [t] = useTranslation();
-  const datafileData = props.rowData as Datafile;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{datafileData.name}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">{t('datafiles.size')}</Typography>
-        <Typography>
-          <b>{formatBytes(datafileData.fileSize)}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">{t('datafiles.location')}</Typography>
-        <Typography>
-          <b>{datafileData.location}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
+import { useSelector } from 'react-redux';
+import { StateType } from '../state/app.types';
 
 interface DatafileSearchTableProps {
   hierarchy: string;
@@ -92,21 +40,27 @@ const DatafileSearchTable = (
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
-  const searchText = useSelector(
-    (state: StateType) => state.dgsearch.searchText
+  const location = useLocation();
+  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const { startDate, endDate } = queryParams;
+  const searchText = queryParams.searchText ? queryParams.searchText : '';
+
+  const selectAllSetting = useSelector(
+    (state: StateType) => state.dgsearch.selectAllSetting
   );
-  const startDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.startDate
+
+  const maxNumResults = useSelector(
+    (state: StateType) => state.dgsearch.maxNumResults
   );
-  const endDate = useSelector(
-    (state: StateType) => state.dgsearch.selectDate.endDate
-  );
+
   const { data: luceneData } = useLuceneSearch('Datafile', {
     searchText,
     startDate,
     endDate,
+    maxCount: maxNumResults,
   });
-  const location = useLocation();
   const [t] = useTranslation();
 
   const { filters, sort } = React.useMemo(
@@ -136,14 +90,18 @@ const DatafileSearchTable = (
       }),
     },
   ]);
-  const { data: allIds } = useIds('datafile', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
+  const { data: allIds } = useIds(
+    'datafile',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'datafile'
@@ -160,7 +118,7 @@ const DatafileSearchTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -273,12 +231,13 @@ const DatafileSearchTable = (
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'datafile' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -322,6 +281,10 @@ const DatafileSearchTable = (
     [t, textFilter, dateFilter, hierarchyLink]
   );
 
+  let detailsPanel = DatafileDetailsPanel;
+  if (hierarchy === 'isis') detailsPanel = ISISDatafileDetailsPanel;
+  else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
+
   return (
     <Table
       loading={addToCartLoading || removeFromCartLoading}
@@ -329,12 +292,13 @@ const DatafileSearchTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
+      disableSelectAll={!selectAllSetting}
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      detailsPanel={DatafileDetailsPanel}
+      detailsPanel={detailsPanel}
       columns={columns}
     />
   );

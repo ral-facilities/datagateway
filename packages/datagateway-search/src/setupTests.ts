@@ -34,7 +34,11 @@ export const dispatch = (action: Action): void | Promise<void> => {
   }
 };
 
-export const flushPromises = (): Promise<void> => new Promise(setImmediate);
+export const flushPromises = (): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve));
 
 // Mock lodash.debounce to return the function we want to call.
 jest.mock('lodash.debounce', () => (fn: (args: unknown) => unknown) => fn);
+
+// Add in ResizeObserver as it's not in Jest's environment
+global.ResizeObserver = require('resize-observer-polyfill');

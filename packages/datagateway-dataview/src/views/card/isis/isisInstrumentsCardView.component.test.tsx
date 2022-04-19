@@ -6,6 +6,7 @@ import {
   useInstrumentsPaginated,
   useInstrumentCount,
   Instrument,
+  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -18,7 +19,6 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISInstrumentsCardView from './isisInstrumentsCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -131,7 +131,6 @@ describe('ISIS Instruments - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"fullName":{"value":"test","type":"include"}}'
@@ -143,8 +142,17 @@ describe('ISIS Instruments - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
 
-    expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+  });
+
+  it('uses default sort', () => {
+    const wrapper = createWrapper();
+    wrapper.update();
+
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
+    );
   });
 
   it('updates sort query params on sort', () => {
@@ -154,21 +162,20 @@ describe('ISIS Instruments - Card View', () => {
     expect(button.text()).toEqual('instruments.name');
     button.simulate('click');
 
-    expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
+      `?sort=${encodeURIComponent('{"fullName":"desc"}')}`
     );
   });
 
   it('displays details panel when more information is expanded', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeFalsy();
+    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
       .first()
       .simulate('click');
 
-    expect(wrapper.find(InstrumentDetailsPanel).exists()).toBeTruthy();
+    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders fine with incomplete data', () => {

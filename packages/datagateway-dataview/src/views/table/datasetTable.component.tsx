@@ -3,14 +3,6 @@ import TitleIcon from '@material-ui/icons/Title';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import {
-  Typography,
-  Grid,
-  createStyles,
-  makeStyles,
-  Theme,
-  Divider,
-} from '@material-ui/core';
-import {
   Table,
   datasetLink,
   Dataset,
@@ -21,12 +13,12 @@ import {
   useTextFilter,
   useDateFilter,
   ColumnType,
-  usePushSort,
+  useSort,
   useIds,
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  DetailsPanelProps,
+  DatasetDetailsPanel,
   useDatasetsDatafileCount,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
@@ -34,48 +26,6 @@ import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
 import { TableCellProps, IndexRange } from 'react-virtualized';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-export const DatasetDetailsPanel = (
-  props: DetailsPanelProps
-): React.ReactElement => {
-  const classes = useStyles();
-  const [t] = useTranslation();
-  const datasetData = props.rowData as Dataset;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{datasetData.name}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('datasets.details.description')}
-        </Typography>
-        <Typography>
-          <b>{datasetData.name}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
 
 interface DatasetTableProps {
   investigationId: string;
@@ -99,16 +49,20 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
-  const { data: allIds } = useIds('dataset', [
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: parseInt(investigationId) },
-      }),
-    },
-  ]);
+  const { data: allIds } = useIds(
+    'dataset',
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: parseInt(investigationId) },
+        }),
+      },
+    ],
+    selectAllSetting
+  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'dataset'
@@ -125,10 +79,6 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         'investigation.id': { eq: investigationId },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
-    },
   ]);
 
   const { fetchNextPage, data } = useDatasetsInfinite([
@@ -137,10 +87,6 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
       filterValue: JSON.stringify({
         'investigation.id': { eq: investigationId },
       }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('investigation'),
     },
   ]);
 
@@ -202,12 +148,13 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
       cartItems
         ?.filter(
           (cartItem) =>
-            allIds &&
             cartItem.entityType === 'dataset' &&
-            allIds.includes(cartItem.entityId)
+            // if select all is disabled, it's safe to just pass the whole cart as selectedRows
+            (!selectAllSetting ||
+              (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, allIds]
+    [cartItems, selectAllSetting, allIds]
   );
 
   return (
@@ -217,7 +164,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
+      onSort={handleSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}

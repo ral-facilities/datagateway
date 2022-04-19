@@ -6,13 +6,13 @@ import {
   tableLink,
   useInstrumentCount,
   useInstrumentsInfinite,
-  usePushSort,
+  useSort,
   useTextFilter,
+  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 import TitleIcon from '@material-ui/icons/Title';
 import { useLocation } from 'react-router-dom';
 
@@ -42,7 +42,7 @@ const ISISInstrumentsTable = (
   );
 
   const textFilter = useTextFilter(filters);
-  const pushSort = usePushSort();
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -62,9 +62,17 @@ const ISISInstrumentsTable = (
           return tableLink(
             `/${pathRoot}/instrument/${instrumentData.id}/${instrumentChild}`,
             instrumentData.fullName || instrumentData.name,
-            view
+            view,
+            'isis-instrument-table-name'
           );
         },
+        filterComponent: textFilter,
+        defaultSort: 'asc',
+      },
+      {
+        icon: TitleIcon,
+        label: t('instruments.type'),
+        dataKey: 'type',
         filterComponent: textFilter,
       },
     ];
@@ -76,8 +84,8 @@ const ISISInstrumentsTable = (
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
-      onSort={pushSort}
-      detailsPanel={InstrumentDetailsPanel}
+      onSort={handleSort}
+      detailsPanel={ISISInstrumentDetailsPanel}
       columns={columns}
     />
   );

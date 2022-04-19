@@ -5,9 +5,10 @@ Object {
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-7",
+    "headerTableCell": "VirtualizedTable-headerTableCell-8",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
+    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
     "tableRow": "VirtualizedTable-tableRow-4",
     "tableRowHover": "VirtualizedTable-tableRowHover-5",
   },
@@ -15,6 +16,8 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "title",
+      "defaultSort": "asc",
+      "disableSort": true,
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -29,6 +32,7 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "name",
+      "disableSort": true,
       "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
@@ -65,7 +69,9 @@ Object {
   ],
   "loadMoreRows": [Function],
   "onSort": [Function],
-  "sort": Object {},
+  "sort": Object {
+    "title": "asc",
+  },
   "totalRowCount": 1,
 }
 `;

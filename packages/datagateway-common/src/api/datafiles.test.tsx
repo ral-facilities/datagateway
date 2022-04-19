@@ -78,7 +78,7 @@ describe('datafile api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(20));
@@ -159,7 +159,7 @@ describe('datafile api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
         })
       );
       params.append('skip', JSON.stringify(0));
@@ -255,16 +255,58 @@ describe('datafile api functions', () => {
         }
       );
 
-      // testing default is 0
-      expect(result.current.data).toEqual(0);
-
-      await waitFor(() => result.current.isFetching);
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => result.current.isSuccess);
 
       params.append(
         'where',
         JSON.stringify({
-          name: { like: 'test' },
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('distinct', JSON.stringify(['name', 'title']));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datafiles/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData.length);
+    });
+
+    it('sends axios request to fetch datafile count and returns successful response using the stored filters', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData.length,
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDatafileCount(
+            [
+              {
+                filterType: 'distinct',
+                filterValue: JSON.stringify(['name', 'title']),
+              },
+            ],
+            {
+              name: { value: 'test2', type: 'include' },
+            },
+            'investigation'
+          ),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test2' },
         })
       );
       params.append('distinct', JSON.stringify(['name', 'title']));

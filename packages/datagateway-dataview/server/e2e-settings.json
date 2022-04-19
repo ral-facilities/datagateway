@@ -22,28 +22,23 @@
   "helpSteps": [
     {
       "target": "#plugin-link--browse-investigation",
-      "content":
-        "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
+      "content": "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
     },
     {
       "target": "#plugin-link--browse-propsal",
-      "content":
-        "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
+      "content": "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
     },
     {
       "target": "#plugin-link--browse-instrument",
-      "content":
-        "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
+      "content": "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
     },
     {
       "target": ".tour-dataview-breadcrumbs",
-      "content":
-        "The hierarchy of the currently displayed data is shown here, and allows navigation to the dataset or investigation containing it"
+      "content": "The hierarchy of the currently displayed data is shown here, and allows navigation to the dataset or investigation containing it"
     },
     {
       "target": ".tour-dataview-results",
-      "content":
-        "The number of results found taking into account any applied filters is displayed here"
+      "content": "The number of results found taking into account any applied filters is displayed here"
     },
     {
       "target": ".tour-dataview-search-icon",
@@ -51,12 +46,23 @@
     },
     {
       "target": ".tour-dataview-cart-icon",
-      "content":
-        "Displays the current number of items in the download cart, and navigates to Datagateway Download"
+      "content": "Displays the current number of items in the download selection, and navigates to Datagateway Download"
     },
     {
-      "target": ".tour-dataview-view-button",
-      "content": "Switch between table and card views"
+      "target": ".tour-dataview-toggle-card",
+      "content": "Toggle between list and card view"
+    },
+    {
+      "target": ".tour-dataview-filter",
+      "content": "The filters allow for selecting certain aspects to include or exclude from the data. Here you can add the title text to include/exclude."
+    },
+    {
+      "target": ".tour-dataview-sort",
+      "content": "The results can be sorted by clicking on the title of the filter. This funtionality is available for filters that allow such usage."
+    },
+    {
+      "target": ".tour-dataview-data",
+      "content": "The results are displayed here, where it allows for expanding to view details and selecting specific results to add to the selection"
     }
   ],
   "routes": [

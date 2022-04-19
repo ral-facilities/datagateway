@@ -1,5 +1,4 @@
 import {
-  Button,
   createStyles,
   Divider,
   Grid,
@@ -31,13 +30,15 @@ import {
   tableLink,
   useInvestigation,
   useInvestigationSizes,
-  Mark,
+  AddToCartButton,
+  DownloadButton,
+  ArrowTooltip,
+  getTooltipText,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
-import AddToCartButton from '../../addToCartButton.component';
-import DownloadButton from '../../downloadButton.component';
+import CitationFormatter from '../../citationFormatter.component';
 import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -111,8 +112,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     location.search,
   ]);
   const [value, setValue] = React.useState<'details'>('details');
-  const citationRef = React.useRef<HTMLElement>(null);
-  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const {
     instrumentId,
     instrumentChildId,
@@ -148,10 +147,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const title = React.useMemo(() => data?.[0]?.title, [data]);
   const doi = React.useMemo(() => data?.[0]?.doi, [data]);
-  const studyInvestigation = React.useMemo(
-    () => data?.[0]?.studyInvestigations,
-    [data]
-  );
 
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];
@@ -211,7 +206,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       content: function doiFormat(entity: Investigation) {
         return (
           entity?.doi && (
-            <MuiLink href={`https://doi.org/${entity.doi}`}>
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              data-testid="isis-investigation-landing-doi-link"
+            >
               {entity.doi}
             </MuiLink>
           )
@@ -221,11 +219,17 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => {
-        const studyInvestigation = entity.studyInvestigations;
-        return studyInvestigation
-          ? studyInvestigation[0]?.study?.pid
-          : undefined;
+      content: function parentDoiFormat(entity: Investigation) {
+        return (
+          entity?.studyInvestigations?.[0]?.study?.pid && (
+            <MuiLink
+              href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
+              data-testid="isis-investigations-landing-parent-doi-link"
+            >
+              {entity.studyInvestigations[0].study.pid}
+            </MuiLink>
+          )
+        );
       },
       label: t('investigations.parent_doi'),
       icon: <Public className={classes.shortInfoIcon} />,
@@ -256,7 +260,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     {
       content: function distributionFormat(entity: Investigation) {
         return (
-          <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
+          <MuiLink href="https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx">
             {t('doi_constants.distribution.format')}
           </MuiLink>
         );
@@ -283,7 +287,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const shortDatasetInfo = [
     {
-      content: (entity: Dataset) => entity.doi,
+      content: function doiFormat(entity: Dataset) {
+        return (
+          entity?.doi && (
+            <MuiLink
+              href={`https://doi.org/${entity.doi}`}
+              aria-label="landing-study-doi-link"
+            >
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('datasets.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -322,7 +337,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12}>
+        <Grid item container xs={12} id="investigation-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Typography
@@ -339,7 +354,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 ? data[0].summary
                 : 'Description not provided'}
             </Typography>
-
             {formattedUsers.length > 0 && (
               <div>
                 <Typography
@@ -372,67 +386,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Typography aria-label="landing-investigation-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
-
-            <Typography
-              className={classes.subHeading}
-              component="h6"
-              variant="h6"
-              aria-label="landing-investigation-citation-label"
-            >
-              {t('studies.details.citation_label')}
-            </Typography>
-            <Typography aria-label="landing-investigation-citation_format">
-              {t('studies.details.citation_format')}
-            </Typography>
-            <Typography aria-label="landing-investigation-citation">
-              <i ref={citationRef}>
-                {formattedUsers.length > 1 &&
-                  `${formattedUsers[0].fullName} et al; `}
-                {formattedUsers.length === 1 &&
-                  `${formattedUsers[0].fullName}; `}
-                {studyInvestigation &&
-                  studyInvestigation[0]?.study?.startDate &&
-                  `${studyInvestigation[0].study.startDate.slice(0, 4)}: `}
-                {title && `${title}, `}
-                {t('doi_constants.publisher.name')}
-                {doi && ', '}
-                {doi && (
-                  <a
-                    href={`https://doi.org/${doi}`}
-                  >{`https://doi.org/${doi}`}</a>
-                )}
-              </i>
-            </Typography>
-            {!copiedCitation ? (
-              <Button
-                id="landing-investigation-copy-citation"
-                aria-label="landing-investigation-copy-citation"
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => {
-                  if (citationRef?.current?.textContent) {
-                    navigator.clipboard.writeText(
-                      citationRef.current.textContent
-                    );
-                    setCopiedCitation(true);
-                    setTimeout(() => setCopiedCitation(false), 1500);
-                  }
-                }}
-              >
-                Copy citation
-              </Button>
-            ) : (
-              <Button
-                id="landing-investigation-copied-citation"
-                variant="contained"
-                color="primary"
-                size="small"
-                startIcon={<Mark size={20} visible={true} />}
-              >
-                Copied citation
-              </Button>
-            )}
+            <CitationFormatter
+              doi={doi}
+              formattedUsers={formattedUsers}
+              title={title}
+              startDate={data?.[0]?.startDate}
+            />
 
             {formattedSamples && (
               <div>
@@ -444,6 +403,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.samples.label')}
                 </Typography>
+                {formattedSamples.length === 0 && (
+                  <Typography data-testid="investigation-details-panel-no-samples">
+                    {t('investigations.details.samples.no_samples')}
+                  </Typography>
+                )}
                 {formattedSamples.map((name, i) => (
                   <Typography
                     aria-label={`landing-investigation-sample-${i}`}
@@ -465,6 +429,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {t('investigations.details.publications.label')}
                 </Typography>
+                {formattedPublications.length === 0 && (
+                  <Typography data-testid="investigation-details-panel-no-publications">
+                    {t('investigations.details.publications.no_publications')}
+                  </Typography>
+                )}
                 {formattedPublications.map((reference, i) => (
                   <Typography
                     aria-label={`landing-investigation-reference-${i}`}
@@ -488,9 +457,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {field.icon}
                       {field.label}:
                     </Typography>
-                    <Typography className={classes.shortInfoValue}>
-                      {field.content(data[0] as Investigation)}
-                    </Typography>
+                    <ArrowTooltip
+                      title={getTooltipText(
+                        field.content(data[0] as Investigation)
+                      )}
+                    >
+                      <Typography className={classes.shortInfoValue}>
+                        {field.content(data[0] as Investigation)}
+                      </Typography>
+                    </ArrowTooltip>
                   </div>
                 )
             )}
@@ -527,15 +502,21 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                           {field.icon}
                           {field.label}:
                         </Typography>
-                        <Typography className={classes.shortInfoValue}>
-                          {field.content(dataset as Dataset)}
-                        </Typography>
+                        <ArrowTooltip
+                          title={getTooltipText(
+                            field.content(dataset as Dataset)
+                          )}
+                        >
+                          <Typography className={classes.shortInfoValue}>
+                            {field.content(dataset as Dataset)}
+                          </Typography>
+                        </ArrowTooltip>
                       </div>
                     )
                 )}
                 <div className={classes.actionButtons}>
                   <AddToCartButton
-                    entityType="investigation"
+                    entityType="dataset"
                     allIds={[dataset.id]}
                     entityId={dataset.id}
                   />
