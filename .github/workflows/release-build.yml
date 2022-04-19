@@ -1,7 +1,7 @@
 name: Release Build
 on:
   push:
-    branches: master
+    branches: main
     tags: '*'
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
 
       - name: Determine tag name
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/master" ]
+          if [ "${{ github.ref }}" = "refs/heads/main" ]
           then
             echo TAG_NAME=snapshot >> $GITHUB_ENV
           else
@@ -78,7 +78,7 @@ jobs:
           tag_name: ${{ env.TAG_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Create/update release
         uses: johnwbyrd/update-release@v1.0.0
@@ -87,5 +87,5 @@ jobs:
           files: ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz ./datagateway-download-${{ env.TAG_NAME }}.tar.gz ./datagateway-search-${{ env.TAG_NAME }}.tar.gz
           release: Release ${{ env.TAG_NAME }}
           tag: ${{ env.TAG_NAME }}
-          prerelease: ${{ github.ref == 'refs/heads/master' }}
+          prerelease: ${{ github.ref == 'refs/heads/main' }}
           draft: false
