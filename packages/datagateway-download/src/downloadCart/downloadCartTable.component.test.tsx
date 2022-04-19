@@ -185,7 +185,7 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    expect(getSize).toHaveBeenCalled();
+    expect(getSize).toHaveBeenCalledTimes(4);
     expect(wrapper.find('[aria-colindex=3]').find('p').first().text()).toEqual(
       '1 B'
     );
@@ -202,14 +202,17 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    expect(getDatafileCount).toHaveBeenCalled();
+    expect(getDatafileCount).toHaveBeenCalledTimes(3);
     expect(wrapper.find('[aria-colindex=4]').find('p').first().text()).toEqual(
       '7'
     );
+    // datafiles should always be 1 and shouldn't call getDatafileCount
+    expect(wrapper.find('[aria-colindex=4]').find('p').last().text()).toEqual(
+      '1'
+    );
 
-    // TODO fix this. It seems getDatafileCount is not being called if entityType === 'datafile'
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      expect.stringContaining('downloadCart.number_of_files: 28 / 5000')
+      expect.stringContaining('downloadCart.number_of_files: 22 / 5000')
     );
   });
 
