@@ -44,6 +44,9 @@ describe('Download Status', () => {
 
   describe('should be able to sort download items by', () => {
     it('ascending order', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.contains('[role="button"]', 'Download Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
@@ -56,6 +59,9 @@ describe('Download Status', () => {
     });
 
     it('descending order', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.contains('[role="button"]', 'Download Name').click();
       cy.contains('[role="button"]', 'Download Name').click();
 
@@ -77,6 +83,9 @@ describe('Download Status', () => {
     });
 
     it('no order', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.contains('[role="button"]', 'Download Name').click();
       cy.contains('[role="button"]', 'Download Name').click();
       cy.contains('[role="button"]', 'Download Name').click();
@@ -100,6 +109,9 @@ describe('Download Status', () => {
     });
 
     it('multiple columns', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.contains('[role="button"]', 'Access Method').click();
       cy.contains('[role="button"]', 'Availability').click();
 

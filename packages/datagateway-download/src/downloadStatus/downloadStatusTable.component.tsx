@@ -33,7 +33,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const settings = React.useContext(DownloadSettingsContext);
 
   // Sorting columns
-  const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
+  const [sort, setSort] = React.useState<{ [column: string]: Order }>({
+    createdAt: 'desc',
+  });
   const [filters, setFilters] = React.useState<{
     [column: string]:
       | { value?: string | number; type: string }
