@@ -1,10 +1,12 @@
-import React, { ReactElement, useState } from 'react';
+import React, { useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { format, isValid, isEqual } from 'date-fns';
 import {
   KeyboardDatePicker,
   KeyboardDateTimePicker,
   MuiPickersUtilsProvider,
+  KeyboardDatePickerProps,
+  KeyboardDateTimePickerProps,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { FiltersType, DateFilter } from '../../app.types';
@@ -74,18 +76,6 @@ interface DateColumnFilterProps {
   filterByTime?: boolean;
 }
 
-interface DatePickerCommonProps {
-  clearable: boolean;
-  allowKeyboardControl: boolean;
-  invalidDateMessage: string;
-  format: string;
-  color: 'secondary' | 'primary' | undefined;
-  strictCompareDates?: boolean;
-  okLabel: ReactElement;
-  cancelLabel: ReactElement;
-  clearLabel: ReactElement;
-}
-
 const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
   //Need state to change otherwise wont update error messages for an invalid date
   const [startDate, setStartDate] = useState(
@@ -100,7 +90,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buttonColour = (theme as any).colours?.blue;
 
-  const datePickerProps: DatePickerCommonProps = {
+  const datePickerProps: Partial<KeyboardDatePickerProps> = {
     clearable: true,
     allowKeyboardControl: true,
     invalidDateMessage: 'Date format: yyyy-MM-dd.',
@@ -109,13 +99,18 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
     okLabel: <span style={{ color: buttonColour }}>OK</span>,
     cancelLabel: <span style={{ color: buttonColour }}>Cancel</span>,
     clearLabel: <span style={{ color: buttonColour }}>Clear</span>,
+    style: { whiteSpace: 'nowrap' },
+    'aria-hidden': 'true',
+    inputProps: { 'aria-label': `${props.label} filter` },
+    views: ['year', 'month', 'date'],
   };
 
-  const dateTimePickerProps: DatePickerCommonProps = {
+  const dateTimePickerProps: Partial<KeyboardDateTimePickerProps> = {
     ...datePickerProps,
     invalidDateMessage: 'Date format: yyyy-MM-dd HH:mm.',
     format: 'yyyy-MM-dd HH:mm',
     strictCompareDates: true,
+    views: ['year', 'month', 'date', 'hours', 'minutes'],
   };
 
   return (
@@ -124,17 +119,13 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDateTimePicker
             {...dateTimePickerProps}
-            style={{ whiteSpace: 'nowrap' }}
-            inputProps={{ 'aria-label': `${props.label} filter` }}
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter from, date/time picker`,
             }}
             id={props.label + ' filter from'}
-            aria-hidden="true"
             placeholder="From..."
             value={startDate}
-            views={['year', 'month', 'date', 'hours', 'minutes']}
             maxDate={endDate || new Date('2100-01-01 00:00')}
             maxDateMessage="Invalid date/time range"
             onChange={(date) => {
@@ -151,17 +142,13 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
           />
           <KeyboardDateTimePicker
             {...dateTimePickerProps}
-            style={{ whiteSpace: 'nowrap' }}
-            inputProps={{ 'aria-label': `${props.label} filter` }}
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter to, date/time picker`,
             }}
             id={props.label + ' filter to'}
-            aria-hidden="true"
             placeholder="To..."
             value={endDate}
-            views={['year', 'month', 'date', 'hours', 'minutes']}
             minDate={startDate || new Date('1984-01-01 00:00')}
             minDateMessage="Invalid date/time range"
             onChange={(date) => {
@@ -181,17 +168,13 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             {...datePickerProps}
-            style={{ whiteSpace: 'nowrap' }}
-            inputProps={{ 'aria-label': `${props.label} filter` }}
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter from, date picker`,
             }}
             id={props.label + ' filter from'}
-            aria-hidden="true"
             placeholder="From..."
             value={startDate}
-            views={['year', 'month', 'date']}
             maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
             maxDateMessage="Invalid date range"
             onChange={(date) => {
@@ -207,17 +190,13 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
           />
           <KeyboardDatePicker
             {...datePickerProps}
-            style={{ whiteSpace: 'nowrap' }}
-            inputProps={{ 'aria-label': `${props.label} filter` }}
             KeyboardButtonProps={{
               size: 'small',
               'aria-label': `${props.label} filter to, date picker`,
             }}
             id={props.label + ' filter to'}
-            aria-hidden="true"
             placeholder="To..."
             value={endDate}
-            views={['year', 'month', 'date']}
             minDate={startDate || new Date('1984-01-01T00:00:00Z')}
             minDateMessage="Invalid date range"
             onChange={(date) => {
