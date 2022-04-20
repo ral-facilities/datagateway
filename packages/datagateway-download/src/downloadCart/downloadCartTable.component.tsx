@@ -375,8 +375,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 {fileCountMax !== -1 && ` / ${fileCountMax}`}
               </Typography>
             </Grid>
-            <Grid item>
-              {fileCount > fileCountMax && (
+            {fileCount > fileCountMax && (
+              <Grid item>
                 <Alert
                   id="fileLimitAlert"
                   variant="filled"
@@ -387,8 +387,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   Too many files - you have exceeded limit of {fileCountMax}{' '}
                   files - please remove some files
                 </Alert>
-              )}
-            </Grid>
+              </Grid>
+            )}
           </Grid>
           <Grid
             container
@@ -415,8 +415,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
               </Typography>
             </Grid>
-            <Grid item>
-              {totalSize > totalSizeMax && (
+            {totalSize > totalSizeMax && (
+              <Grid item>
                 <Alert
                   id="sizeLimitAlert"
                   variant="filled"
@@ -427,8 +427,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   Too much data - you have exceeded limit of{' '}
                   {formatBytes(totalSizeMax)} - please remove some files
                 </Alert>
-              )}
-            </Grid>
+              </Grid>
+            )}
           </Grid>
           <Grid
             container
