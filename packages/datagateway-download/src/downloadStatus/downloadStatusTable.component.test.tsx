@@ -334,6 +334,13 @@ describe('Download Status Table', () => {
       wrapper.update();
     });
 
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    const createdAtSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(3);
+    createdAtSortLabel.simulate('click');
+
     const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
 
     // Get the access method sort header.

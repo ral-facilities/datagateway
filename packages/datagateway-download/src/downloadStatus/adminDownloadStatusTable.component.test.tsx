@@ -148,7 +148,7 @@ describe('Admin Download Status Table', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('fetches the download items on load', async () => {
+  it('fetches the download items and sorts by download requested time desc on load ', async () => {
     const wrapper = mount(
       <div id="datagateway-download">
         <AdminDownloadStatusTable />
@@ -164,7 +164,7 @@ describe('Admin Download Status Table', () => {
     expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
       1,
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.createdAt) desc, UPPER(download.id) ASC LIMIT 0, 50"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -194,7 +194,7 @@ describe('Admin Download Status Table', () => {
     expect(fetchAdminDownloads).toHaveBeenCalledTimes(3);
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 5, 5"
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.createdAt) desc, UPPER(download.id) ASC LIMIT 5, 5"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -254,7 +254,7 @@ describe('Admin Download Status Table', () => {
     expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
       3,
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.createdAt) desc, UPPER(download.id) ASC LIMIT 0, 50"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -267,6 +267,17 @@ describe('Admin Download Status Table', () => {
     );
 
     await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    const createdAtSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(6);
+    await act(async () => {
+      createdAtSortLabel.simulate('click');
       await flushPromises();
       wrapper.update();
     });
@@ -332,6 +343,17 @@ describe('Admin Download Status Table', () => {
     );
 
     await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    const createdAtSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(6);
+    await act(async () => {
+      createdAtSortLabel.simulate('click');
       await flushPromises();
       wrapper.update();
     });
@@ -406,6 +428,17 @@ describe('Admin Download Status Table', () => {
     );
 
     await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    const createdAtSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(6);
+    await act(async () => {
+      createdAtSortLabel.simulate('click');
       await flushPromises();
       wrapper.update();
     });
