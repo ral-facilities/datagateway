@@ -50,7 +50,7 @@ describe('Download cart table component', () => {
   let cartItems: DownloadCartItem[] = [];
 
   // Create our mocked datagateway-download settings file.
-  const mockedSettings = {
+  let mockedSettings = {
     facilityName: 'LILS',
     apiUrl: 'https://example.com/api',
     downloadApiUrl: 'https://example.com/downloadApi',
@@ -508,5 +508,38 @@ describe('Download cart table component', () => {
         '[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]'
       )
     ).toBe(true);
+  });
+
+  it('displays error alert if file/size limit exceeded', async () => {
+    let wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Make sure alerts are not displayed if under the limits
+    expect(wrapper.exists('div#fileLimitAlert')).toBeFalsy();
+    expect(wrapper.exists('div#sizeLimitAlert')).toBeFalsy();
+
+    const oldSettings = mockedSettings;
+    mockedSettings = {
+      ...mockedSettings,
+      fileCountMax: 1,
+      totalSizeMax: 1,
+    };
+
+    wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Make sure alerts are displayed if over the limits
+    expect(wrapper.exists('div#fileLimitAlert')).toBeTruthy();
+    expect(wrapper.exists('div#sizeLimitAlert')).toBeTruthy();
+
+    mockedSettings = oldSettings;
   });
 });

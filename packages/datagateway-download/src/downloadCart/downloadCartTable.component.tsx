@@ -24,6 +24,7 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
+import { Alert } from '@material-ui/lab';
 import {
   useCart,
   useRemoveEntityFromCart,
@@ -351,51 +352,83 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         >
           <Grid
             container
-            item
+            spacing={1}
             justify="flex-end"
             alignItems="center"
             direction="row"
             style={{ marginRight: '1.2em' }}
           >
-            {fileCountsLoading && (
-              <CircularProgress
-                size={15}
-                thickness={7}
-                disableShrink={true}
-                aria-label={t('downloadCart.calculating')}
-              />
-            )}
-            <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
-              {t('downloadCart.number_of_files')}:{' '}
-              {fileCount !== -1
-                ? fileCount
-                : `${t('downloadCart.calculating')}...`}
-              {fileCountMax !== -1 && ` / ${fileCountMax}`}
-            </Typography>
+            <Grid item>
+              {fileCountsLoading && (
+                <CircularProgress
+                  size={15}
+                  thickness={7}
+                  disableShrink={true}
+                  aria-label={t('downloadCart.calculating')}
+                />
+              )}
+              <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
+                {t('downloadCart.number_of_files')}:{' '}
+                {fileCount !== -1
+                  ? fileCount
+                  : `${t('downloadCart.calculating')}...`}
+                {fileCountMax !== -1 && ` / ${fileCountMax}`}
+              </Typography>
+            </Grid>
+            <Grid item>
+              {fileCount > fileCountMax && (
+                <Alert
+                  id="fileLimitAlert"
+                  variant="filled"
+                  severity="error"
+                  icon={false}
+                  style={{ padding: '0px 8px', lineHeight: 0.6 }}
+                >
+                  Too many files - you have exceeded limit of {fileCountMax}{' '}
+                  files - please remove some files
+                </Alert>
+              )}
+            </Grid>
           </Grid>
           <Grid
             container
-            item
+            spacing={1}
             justify="flex-end"
             alignItems="center"
             direction="row"
             style={{ marginRight: '1.2em' }}
           >
-            {sizesLoading && (
-              <CircularProgress
-                size={15}
-                thickness={7}
-                disableShrink={true}
-                aria-label={t('downloadCart.calculating')}
-              />
-            )}
-            <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
-              {t('downloadCart.total_size')}:{' '}
-              {totalSize !== -1
-                ? formatBytes(totalSize)
-                : `${t('downloadCart.calculating')}...`}
-              {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
-            </Typography>
+            <Grid item>
+              {sizesLoading && (
+                <CircularProgress
+                  size={15}
+                  thickness={7}
+                  disableShrink={true}
+                  aria-label={t('downloadCart.calculating')}
+                />
+              )}
+              <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
+                {t('downloadCart.total_size')}:{' '}
+                {totalSize !== -1
+                  ? formatBytes(totalSize)
+                  : `${t('downloadCart.calculating')}...`}
+                {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
+              </Typography>
+            </Grid>
+            <Grid item>
+              {totalSize > totalSizeMax && (
+                <Alert
+                  id="sizeLimitAlert"
+                  variant="filled"
+                  severity="error"
+                  icon={false}
+                  style={{ padding: '0px 8px', lineHeight: 0.6 }}
+                >
+                  Too much data - you have exceeded limit of{' '}
+                  {formatBytes(totalSizeMax)} - please remove some files
+                </Alert>
+              )}
+            </Grid>
           </Grid>
           <Grid
             container
