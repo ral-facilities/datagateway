@@ -22,7 +22,7 @@
     "loglevel": "^1.8.0",
     "react-draggable": "^4.4.3",
     "react-i18next": "^11.15.4",
-    "react-query": "^3.18.1",
+    "react-query": "^3.35.0",
     "react-redux": "^7.1.0",
     "react-router": "^5.0.1",
     "react-scripts": "5.0.0",
