@@ -158,6 +158,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         }
       }}
       value={filters[dataKey] as DateFilter}
+      filterByTime
     />
   );
 
@@ -186,7 +187,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             const tableTimestamp = toDate(tableValue).getTime();
             const startTimestamp = toDate(value.startDate).getTime();
             const endTimestamp = value.endDate
-              ? new Date(`${value.endDate} 23:59:59`).getTime()
+              ? new Date(value.endDate).getTime()
               : Date.now();
 
             if (
