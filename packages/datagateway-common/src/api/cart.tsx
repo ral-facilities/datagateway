@@ -30,12 +30,16 @@ export const fetchDownloadCart = (config: {
 const addToCart = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   entityIds: number[],
-  config: { facilityName: string; downloadApiUrl: string }
+  config: { facilityName: string; downloadApiUrl: string },
+  remove?: boolean
 ): Promise<DownloadCartItem[]> => {
   const { facilityName, downloadApiUrl } = config;
   const params = new URLSearchParams();
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('items', `${entityType} ${entityIds.join(`, ${entityType} `)}`);
+  if (remove) {
+    params.append('remove', remove.toString());
+  }
 
   return axios
     .post<DownloadCart>(
@@ -112,6 +116,14 @@ export const useAddToCart = (
       onSuccess: (data) => {
         queryClient.setQueryData('cart', data);
       },
+      retry: (failureCount, error) => {
+        // if we get 431 we know this is an intermittent error so retry
+        if (error.code === '431' && failureCount < 3) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       onError: (error) => {
         handleICATError(error);
       },
@@ -132,13 +144,26 @@ export const useRemoveFromCart = (
 
   return useMutation(
     (entityIds: number[]) =>
-      removeFromCart(entityType, entityIds, {
-        facilityName,
-        downloadApiUrl,
-      }),
+      addToCart(
+        entityType,
+        entityIds,
+        {
+          facilityName,
+          downloadApiUrl,
+        },
+        true
+      ),
     {
       onSuccess: (data) => {
         queryClient.setQueryData('cart', data);
+      },
+      retry: (failureCount, error) => {
+        // if we get 431 we know this is an intermittent error so retry
+        if (error.code === '431' && failureCount < 3) {
+          return true;
+        } else {
+          return false;
+        }
       },
       onError: (error) => {
         handleICATError(error);
