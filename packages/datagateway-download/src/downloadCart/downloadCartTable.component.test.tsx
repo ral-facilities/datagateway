@@ -331,6 +331,7 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
+    expect(wrapper.exists('div#emptyFilesAlert')).toBeTruthy();
     expect(
       wrapper.find('button#downloadCartButton').prop('disabled')
     ).toBeTruthy();
@@ -344,6 +345,7 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
+    expect(wrapper.exists('div#emptyFilesAlert')).toBeTruthy();
     expect(
       wrapper.find('button#downloadCartButton').prop('disabled')
     ).toBeTruthy();
@@ -357,6 +359,7 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
+    expect(wrapper.exists('div#emptyFilesAlert')).toBeFalsy();
     expect(
       wrapper.find('button#downloadCartButton').prop('disabled')
     ).toBeFalsy();
@@ -524,8 +527,7 @@ describe('Download cart table component', () => {
 
     const oldSettings = mockedSettings;
     mockedSettings = {
-      ...mockedSettings,
-      fileCountMax: 1,
+      ...oldSettings,
       totalSizeMax: 1,
     };
 
@@ -536,9 +538,23 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    // Make sure alerts are displayed if over the limits
-    expect(wrapper.exists('div#fileLimitAlert')).toBeTruthy();
+    // Make sure size limit alert is displayed if over the limit
     expect(wrapper.exists('div#sizeLimitAlert')).toBeTruthy();
+
+    mockedSettings = {
+      ...oldSettings,
+      fileCountMax: 1,
+    };
+
+    wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Make sure file limit alert is displayed if over the limit
+    expect(wrapper.exists('div#fileLimitAlert')).toBeTruthy();
 
     mockedSettings = oldSettings;
   });
