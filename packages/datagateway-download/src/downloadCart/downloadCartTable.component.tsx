@@ -357,108 +357,114 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           <Grid
             container
             item
+            spacing={1}
             justify="flex-end"
             alignItems="center"
             direction="row"
             style={{ marginRight: '1.2em' }}
           >
-            {fileCountsLoading && (
-              <CircularProgress
-                size={15}
-                thickness={7}
-                disableShrink={true}
-                aria-label={t('downloadCart.calculating')}
-              />
-            )}
-            <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
-              {t('downloadCart.number_of_files')}:{' '}
-              {fileCount !== -1
-                ? fileCount
-                : `${t('downloadCart.calculating')}...`}
-              {fileCountMax !== -1 && ` / ${fileCountMax}`}
-            </Typography>
-          </Grid>
-          <Grid
-            container
-            item
-            justify="flex-end"
-            alignItems="center"
-            direction="row"
-            style={{ marginRight: '1.2em' }}
-          >
-            {sizesLoading && (
-              <CircularProgress
-                size={15}
-                thickness={7}
-                disableShrink={true}
-                aria-label={t('downloadCart.calculating')}
-              />
-            )}
-            <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
-              {t('downloadCart.total_size')}:{' '}
-              {totalSize !== -1
-                ? formatBytes(totalSize)
-                : `${t('downloadCart.calculating')}...`}
-              {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
-            </Typography>
-          </Grid>
-          <Grid
-            container
-            item
-            justify="flex-end"
-            alignItems="center"
-            direction="row"
-            style={{ marginRight: '1.2em' }}
-          >
-            {emptyItems ? (
-              <Alert
-                id="emptyFilesAlert"
-                variant="filled"
-                severity="error"
-                style={{
-                  padding: '0px 8px',
-                  lineHeight: 0.6,
-                  alignItems: 'center',
-                }}
-              >
-                <Typography>{t('downloadCart.empty_items_error')}</Typography>
-              </Alert>
-            ) : totalSize > totalSizeMax ? (
-              <Alert
-                id="sizeLimitAlert"
-                variant="filled"
-                severity="error"
-                style={{
-                  padding: '0px 8px',
-                  lineHeight: 0.6,
-                  alignItems: 'center',
-                }}
-              >
-                <Typography>
-                  {t('downloadCart.size_limit_error', {
-                    totalSizeMax: formatBytes(totalSizeMax),
-                  })}
-                </Typography>
-              </Alert>
-            ) : (
-              fileCount > fileCountMax && (
+            <Grid item>
+              {fileCountsLoading && (
+                <CircularProgress
+                  size={15}
+                  thickness={7}
+                  disableShrink={true}
+                  aria-label={t('downloadCart.calculating')}
+                />
+              )}
+              <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
+                {t('downloadCart.number_of_files')}:{' '}
+                {fileCount !== -1
+                  ? fileCount
+                  : `${t('downloadCart.calculating')}...`}
+                {fileCountMax !== -1 && ` / ${fileCountMax}`}
+              </Typography>
+            </Grid>
+            <Grid item>
+              {fileCount > fileCountMax && (
                 <Alert
                   id="fileLimitAlert"
                   variant="filled"
                   severity="error"
+                  icon={false}
                   style={{
                     padding: '0px 8px',
                     lineHeight: 0.6,
-                    alignItems: 'center',
                   }}
                 >
-                  <Typography>
-                    {t('downloadCart.file_limit_error', {
-                      fileCountMax: fileCountMax,
-                    })}
-                  </Typography>
+                  {t('downloadCart.file_limit_error', {
+                    fileCountMax: fileCountMax,
+                  })}
                 </Alert>
-              )
+              )}
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            item
+            spacing={1}
+            justify="flex-end"
+            alignItems="center"
+            direction="row"
+            style={{ marginRight: '1.2em' }}
+          >
+            <Grid item>
+              {sizesLoading && (
+                <CircularProgress
+                  size={15}
+                  thickness={7}
+                  disableShrink={true}
+                  aria-label={t('downloadCart.calculating')}
+                />
+              )}
+              <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
+                {t('downloadCart.total_size')}:{' '}
+                {totalSize !== -1
+                  ? formatBytes(totalSize)
+                  : `${t('downloadCart.calculating')}...`}
+                {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
+              </Typography>
+            </Grid>
+            <Grid item>
+              {totalSize > totalSizeMax && (
+                <Alert
+                  id="sizeLimitAlert"
+                  variant="filled"
+                  severity="error"
+                  icon={false}
+                  style={{
+                    padding: '0px 8px',
+                    lineHeight: 0.6,
+                  }}
+                >
+                  {t('downloadCart.size_limit_error', {
+                    totalSizeMax: formatBytes(totalSizeMax),
+                  })}
+                </Alert>
+              )}
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            item
+            justify="flex-end"
+            alignItems="center"
+            direction="row"
+            style={{ marginRight: '1.2em' }}
+          >
+            {emptyItems && (
+              <Alert
+                id="emptyFilesAlert"
+                variant="filled"
+                severity="error"
+                icon={false}
+                style={{
+                  padding: '0px 8px',
+                  lineHeight: 0.6,
+                }}
+              >
+                {t('downloadCart.empty_items_error')}
+              </Alert>
             )}
           </Grid>
           <Grid
