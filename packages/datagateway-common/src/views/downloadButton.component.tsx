@@ -71,9 +71,6 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
                 id={`download-btn-${entityId}`}
                 aria-label={t('buttons.download')}
                 size={'small'}
-                onClick={() => {
-                  downloadData(entityType, entityId, entityName);
-                }}
                 className="tour-dataview-download"
                 disabled
               >
@@ -117,7 +114,6 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
                 color="primary"
                 startIcon={<GetApp />}
                 disableElevation
-                onClick={() => downloadData(entityType, entityId, entityName)}
                 className="tour-dataview-download"
                 disabled
               >
