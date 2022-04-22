@@ -61,6 +61,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
             title={
               <Typography>{t('buttons.tooltip.unable_to_download')}</Typography>
             }
+            id={`tooltip-${entityId}`}
             placement="left"
             arrow
             classes={classes}
@@ -103,6 +104,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
             title={
               <Typography>{t('buttons.tooltip.unable_to_download')}</Typography>
             }
+            id={`tooltip-${entityId}`}
             placement="bottom"
             arrow
             classes={classes}
