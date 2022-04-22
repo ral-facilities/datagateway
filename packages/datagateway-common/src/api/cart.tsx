@@ -37,7 +37,7 @@ const addToCart = (
   const params = new URLSearchParams();
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('items', `${entityType} ${entityIds.join(`, ${entityType} `)}`);
-  if (remove) {
+  if (typeof remove !== 'undefined') {
     params.append('remove', remove.toString());
   }
 
