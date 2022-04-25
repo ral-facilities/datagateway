@@ -24,6 +24,7 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
+import { Alert } from '@material-ui/lab';
 import {
   useCart,
   useRemoveEntityFromCart,
@@ -326,7 +327,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             className="tour-download-results"
             style={{
               height: `calc(100vh - 64px - 48px - 48px - 48px - 3rem${
-                emptyItems ? ' - 1rem' : ''
+                emptyItems ||
+                fileCount > fileCountMax ||
+                totalSize > totalSizeMax
+                  ? ' - 2rem'
+                  : ''
               } - (1.75 * 0.875rem + 12px)`,
               minHeight: 230,
               overflowX: 'auto',
@@ -352,50 +357,92 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           <Grid
             container
             item
+            spacing={1}
             justify="flex-end"
             alignItems="center"
             direction="row"
             style={{ marginRight: '1.2em' }}
           >
-            {fileCountsLoading && (
-              <CircularProgress
-                size={15}
-                thickness={7}
-                disableShrink={true}
-                aria-label={t('downloadCart.calculating')}
-              />
-            )}
-            <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
-              {t('downloadCart.number_of_files')}:{' '}
-              {fileCount !== -1
-                ? fileCount
-                : `${t('downloadCart.calculating')}...`}
-              {fileCountMax !== -1 && ` / ${fileCountMax}`}
-            </Typography>
+            <Grid item>
+              {fileCountsLoading && (
+                <CircularProgress
+                  size={15}
+                  thickness={7}
+                  disableShrink={true}
+                  aria-label={t('downloadCart.calculating')}
+                />
+              )}
+              <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
+                {t('downloadCart.number_of_files')}:{' '}
+                {fileCount !== -1
+                  ? fileCount
+                  : `${t('downloadCart.calculating')}...`}
+                {fileCountMax !== -1 && ` / ${fileCountMax}`}
+              </Typography>
+            </Grid>
+            <Grid item>
+              {fileCount > fileCountMax && (
+                <Alert
+                  id="fileLimitAlert"
+                  variant="filled"
+                  severity="error"
+                  icon={false}
+                  style={{
+                    padding: '0px 8px',
+                    lineHeight: 0.6,
+                  }}
+                >
+                  {t('downloadCart.file_limit_error', {
+                    fileCountMax: fileCountMax,
+                  })}
+                </Alert>
+              )}
+            </Grid>
           </Grid>
           <Grid
             container
             item
+            spacing={1}
             justify="flex-end"
             alignItems="center"
             direction="row"
             style={{ marginRight: '1.2em' }}
           >
-            {sizesLoading && (
-              <CircularProgress
-                size={15}
-                thickness={7}
-                disableShrink={true}
-                aria-label={t('downloadCart.calculating')}
-              />
-            )}
-            <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
-              {t('downloadCart.total_size')}:{' '}
-              {totalSize !== -1
-                ? formatBytes(totalSize)
-                : `${t('downloadCart.calculating')}...`}
-              {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
-            </Typography>
+            <Grid item>
+              {sizesLoading && (
+                <CircularProgress
+                  size={15}
+                  thickness={7}
+                  disableShrink={true}
+                  aria-label={t('downloadCart.calculating')}
+                />
+              )}
+              <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
+                {t('downloadCart.total_size')}:{' '}
+                {totalSize !== -1
+                  ? formatBytes(totalSize)
+                  : `${t('downloadCart.calculating')}...`}
+                {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
+              </Typography>
+            </Grid>
+            <Grid item>
+              {totalSize > totalSizeMax && (
+                <Alert
+                  id="sizeLimitAlert"
+                  variant="filled"
+                  severity="error"
+                  icon={false}
+                  style={{
+                    padding: '0px 8px',
+                    lineHeight: 0.6,
+                  }}
+                >
+                  {t('downloadCart.size_limit_error', {
+                    totalSizeMax: formatBytes(totalSizeMax),
+                  })}
+                </Alert>
+              )}
+            </Grid>
           </Grid>
           <Grid
             container
@@ -406,7 +453,18 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             style={{ marginRight: '1.2em' }}
           >
             {emptyItems && (
-              <Typography>{t('downloadCart.empty_items_warning')}</Typography>
+              <Alert
+                id="emptyFilesAlert"
+                variant="filled"
+                severity="error"
+                icon={false}
+                style={{
+                  padding: '0px 8px',
+                  lineHeight: 0.6,
+                }}
+              >
+                {t('downloadCart.empty_items_error')}
+              </Alert>
             )}
           </Grid>
           <Grid
