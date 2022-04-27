@@ -4,7 +4,6 @@ import {
   DownloadCartItem,
   handleICATError,
   fetchDownloadCart,
-  removeFromCart,
 } from 'datagateway-common';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
@@ -19,6 +18,7 @@ import {
 import pLimit from 'p-limit';
 import {
   removeAllDownloadCartItems,
+  removeFromCart,
   getSize,
   getDatafileCount,
   getIsTwoLevel,

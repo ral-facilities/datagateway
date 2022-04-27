@@ -27,7 +27,7 @@ export const fetchDownloadCart = (config: {
     .then((response) => response.data.cartItems);
 };
 
-const addToCart = (
+const addOrRemoveFromCart = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   entityIds: number[],
   config: { facilityName: string; downloadApiUrl: string },
@@ -45,26 +45,6 @@ const addToCart = (
     .post<DownloadCart>(
       `${downloadApiUrl}/user/cart/${facilityName}/cartItems`,
       params
-    )
-    .then((response) => response.data.cartItems);
-};
-
-export const removeFromCart = (
-  entityType: 'investigation' | 'dataset' | 'datafile',
-  entityIds: number[],
-  config: { facilityName: string; downloadApiUrl: string }
-): Promise<DownloadCartItem[]> => {
-  const { facilityName, downloadApiUrl } = config;
-
-  return axios
-    .delete<DownloadCart>(
-      `${downloadApiUrl}/user/cart/${facilityName}/cartItems`,
-      {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-          items: `${entityType} ${entityIds.join(`, ${entityType} `)}`,
-        },
-      }
     )
     .then((response) => response.data.cartItems);
 };
@@ -108,7 +88,7 @@ export const useAddToCart = (
 
   return useMutation(
     (entityIds: number[]) =>
-      addToCart(entityType, entityIds, {
+      addOrRemoveFromCart(entityType, entityIds, {
         facilityName,
         downloadApiUrl,
       }),
@@ -144,7 +124,7 @@ export const useRemoveFromCart = (
 
   return useMutation(
     (entityIds: number[]) =>
-      addToCart(
+      addOrRemoveFromCart(
         entityType,
         entityIds,
         {
