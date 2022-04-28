@@ -11,8 +11,14 @@ ENV PATH /datagateway/node_modules/.bin:$PATH
 # TODO - Use Yarn 2 when project is upgraded
 RUN yarn set version 1.22
 
-# Install dependancies
 COPY . .
+ARG HOST_URL
+# Set the React production variables which hold reference to the paths of the plugin builds
+RUN echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=$HOST_URL:5001/" > packages/datagateway-dataview/.env.production
+RUN echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=$HOST_URL:5002/" > packages/datagateway-download/.env.production
+RUN echo "REACT_APP_SEARCH_BUILD_DIRECTORY=$HOST_URL:5003/" > packages/datagateway-search/.env.production
+
+# Install dependancies
 RUN yarn install
 RUN yarn build
 
