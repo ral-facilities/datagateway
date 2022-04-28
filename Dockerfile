@@ -45,3 +45,5 @@ RUN sed -i '/Listen 80$/a\
 \<VirtualHost *:5003>\n\
 \    DocumentRoot "/usr/local/apache2/htdocs/datagateway-search"\n\
 \</VirtualHost>' httpd.conf
+
+
