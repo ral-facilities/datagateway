@@ -14,9 +14,9 @@ RUN yarn set version 1.22
 COPY . .
 ARG HOST_URL
 # Set the React production variables which hold reference to the paths of the plugin builds
-RUN echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=$HOST_URL:5001/" > packages/datagateway-dataview/.env.production
-RUN echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=$HOST_URL:5002/" > packages/datagateway-download/.env.production
-RUN echo "REACT_APP_SEARCH_BUILD_DIRECTORY=$HOST_URL:5003/" > packages/datagateway-search/.env.production
+RUN echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=$HOST_URL/datagateway-dataview/" > packages/datagateway-dataview/.env.production
+RUN echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=$HOST_URL/datagateway-download/" > packages/datagateway-download/.env.production
+RUN echo "REACT_APP_SEARCH_BUILD_DIRECTORY=$HOST_URL/datagateway-search/" > packages/datagateway-search/.env.production
 
 # Install dependancies
 RUN yarn install
