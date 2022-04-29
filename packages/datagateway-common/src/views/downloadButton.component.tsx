@@ -47,7 +47,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
       downloadInvestigation(idsUrl, entityId, entityName);
     } else if (entityType === 'dataset') {
       downloadDataset(idsUrl, entityId, entityName);
-    } else if (entityType === 'datafile') {
+    } else {
       downloadDatafile(idsUrl, entityId, entityName);
     }
   };
@@ -59,7 +59,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
         {entitySize <= 0 ? (
           <Tooltip
             title={
-              <Typography>{t('buttons.tooltip.unable_to_download')}</Typography>
+              <Typography>{t('buttons.unable_to_download_tooltip')}</Typography>
             }
             id={`tooltip-${entityId}`}
             placement="left"
@@ -99,7 +99,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
         {entitySize <= 0 ? (
           <Tooltip
             title={
-              <Typography>{t('buttons.tooltip.unable_to_download')}</Typography>
+              <Typography>{t('buttons.unable_to_download_tooltip')}</Typography>
             }
             id={`tooltip-${entityId}`}
             placement="bottom"

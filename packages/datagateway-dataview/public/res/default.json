@@ -212,9 +212,7 @@
     "add_to_cart": "Add to selection",
     "remove_from_cart": "Remove from selection",
     "download": "Download",
-    "tooltip": {
-      "unable_to_download": "Unable to download - this file is empty"
-    }
+    "unable_to_download_tooltip": "Unable to download - this item is empty"
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",
