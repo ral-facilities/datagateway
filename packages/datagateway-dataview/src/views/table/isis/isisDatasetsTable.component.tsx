@@ -205,6 +205,10 @@ const ISISDatasetsTable = (
             entityId={rowData.id}
             entityName={rowData.name}
             variant="icon"
+            entitySize={
+              sizeQueries[aggregatedData.indexOf(rowData as Dataset)]?.data ??
+              -1
+            }
           />
         ),
       ]}

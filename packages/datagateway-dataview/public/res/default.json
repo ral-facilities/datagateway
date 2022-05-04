@@ -211,7 +211,8 @@
   "buttons": {
     "add_to_cart": "Add to selection",
     "remove_from_cart": "Remove from selection",
-    "download": "Download"
+    "download": "Download",
+    "unable_to_download_tooltip": "Unable to download - this item is empty"
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",
