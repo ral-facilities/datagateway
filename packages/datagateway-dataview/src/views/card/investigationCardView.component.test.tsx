@@ -1,10 +1,4 @@
-import {
-  // Chip,
-  // Accordion,
-  ListItemText,
-  // SvgIcon,
-} from '@mui/material';
-
+import { ListItemText } from '@mui/material';
 import {
   AdvancedFilter,
   dGCommonInitialState,

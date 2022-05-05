@@ -335,6 +335,6 @@ describe('ISIS Study Landing page', () => {
     });
     createWrapper();
 
-    expect(mockElement.innerHTML).toMatchSnapshot();
+    expect(mockElement).toMatchSnapshot();
   });
 });

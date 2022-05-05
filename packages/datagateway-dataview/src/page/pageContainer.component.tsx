@@ -42,9 +42,14 @@ import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const getTablePaperStyle = (tablePaperHeight: string) => {
+const getTablePaperStyle = (
+  displayFilterMessage: boolean,
+  tablePaperHeight: string
+) => {
   return {
-    height: tablePaperHeight,
+    height: displayFilterMessage
+      ? 'calc(100vh - 244px - 4rem - 36px)' // Footer is 36px
+      : tablePaperHeight,
     width: '100%',
     backgroundColor: 'inherit',
     overflowX: 'auto',
@@ -52,13 +57,6 @@ const getTablePaperStyle = (tablePaperHeight: string) => {
 };
 
 const cardPaperStyle = { backgroundColor: 'inherit' };
-const tablePaperMessageStyle = {
-  //Footer is 36px
-  height: 'calc(100vh - 244px - 4rem - 36px)',
-  width: '100%',
-  backgroundColor: 'inherit',
-  overflowX: 'auto',
-};
 
 const NoResultsPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -374,9 +372,10 @@ const StyledRouting = (props: {
   const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
 
   const [t] = useTranslation();
-  const tableClassStyle = displayFilterMessage
-    ? tablePaperMessageStyle
-    : getTablePaperStyle(tablePaperHeight);
+  const tableClassStyle = getTablePaperStyle(
+    displayFilterMessage,
+    tablePaperHeight
+  );
   return (
     <div>
       {viewStyle !== 'card' && displayFilterMessage && (

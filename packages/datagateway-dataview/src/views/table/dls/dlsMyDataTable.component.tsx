@@ -19,11 +19,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import TitleIcon from '@mui/icons-material/Title';
-import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import {
+  Title,
+  Fingerprint,
+  ConfirmationNumber,
+  Assessment,
+  CalendarToday,
+} from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 
 const DLSMyDataTable = (): React.ReactElement => {
@@ -81,7 +83,7 @@ const DLSMyDataTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: Title,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -96,7 +98,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -111,7 +113,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumberIcon,
+        icon: ConfirmationNumber,
         label: t('investigations.dataset_count'),
         dataKey: 'datasetCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -119,7 +121,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: AssessmentIcon,
+        icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -134,14 +136,14 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
 
         label: t('investigations.end_date'),
         dataKey: 'endDate',

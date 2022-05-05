@@ -31,6 +31,10 @@ import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 import InvestigationSearchTable from './investigationSearchTable.component';
 import { render, RenderResult } from '@testing-library/react';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -326,25 +330,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
-    //https://github.com/mui/material-ui-pickers/issues/2073
-
-    // add window.matchMedia
-    // this is necessary for the date picker to be rendered in desktop mode.
-    // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: (query) => ({
-        media: query,
-        // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
-        matches: query === '(pointer: fine)',
-        onchange: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        addListener: () => {},
-        removeListener: () => {},
-        dispatchEvent: () => false,
-      }),
-    });
+    applyDatePickerWorkaround();
 
     const wrapper = createWrapper();
 
@@ -365,7 +351,7 @@ describe('Investigation Search Table component', () => {
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
 
-    delete window.matchMedia;
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {

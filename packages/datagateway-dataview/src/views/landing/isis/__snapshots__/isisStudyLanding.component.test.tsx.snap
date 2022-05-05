@@ -1,3 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ISIS Study Landing page renders structured data correctly 1`] = `""`;
+exports[`ISIS Study Landing page renders structured data correctly 1`] = `
+<head>
+  <script
+    id="study-5"
+    type="application/ld+json"
+  >
+    {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/study pid","url":"https://doi.org/study pid","identifier":"study pid","name":"Title 1","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.distribution.content_url"},"distribution":[{"@type":"DataDownload","encodingFormat":"doi_constants.distribution.format","contentUrl":"doi_constants.distribution.content_url"}]}
+  </script>
+</head>
+`;

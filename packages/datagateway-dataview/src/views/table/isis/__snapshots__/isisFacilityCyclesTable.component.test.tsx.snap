@@ -63,4 +63,11 @@ Object {
 }
 `;
 
-exports[`ISIS FacilityCycles table component renders facilitycycle name as a link 1`] = `Promise {}`;
+exports[`ISIS FacilityCycles table component renders facilitycycle name as a link 1`] = `
+<a
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+  href="/browse/instrument/1/facilityCycle/1/investigation"
+>
+  Test 1
+</a>
+`;

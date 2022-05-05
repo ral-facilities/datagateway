@@ -15,8 +15,7 @@ import {
   useStudyCount,
   useTextFilter,
 } from 'datagateway-common';
-import PublicIcon from '@mui/icons-material/Public';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { Public, CalendarToday } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { format, set } from 'date-fns';
@@ -139,13 +138,13 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
             )
           );
         },
-        icon: PublicIcon,
+        icon: Public,
         label: t('studies.pid'),
         dataKey: 'pid',
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         content: (study: Study) =>
@@ -154,7 +153,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         content: (study: Study) =>
