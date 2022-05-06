@@ -1,7 +1,9 @@
 name: Release Build
 on:
   push:
-    branches: main
+    branches:
+      - main
+      - develop
     tags: '*'
 
 jobs:
@@ -44,6 +46,9 @@ jobs:
           if [ "${{ github.ref }}" = "refs/heads/main" ]
           then
             echo TAG_NAME=snapshot >> $GITHUB_ENV
+          elif [ "${{ github.ref }}" = "refs/heads/develop" ]
+          then
+            echo TAG_NAME=snapshot-develop >> $GITHUB_ENV
           else
             echo TAG_NAME=`basename ${{ github.ref }}` >> $GITHUB_ENV
           fi
@@ -78,7 +83,7 @@ jobs:
           tag_name: ${{ env.TAG_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
 
       - name: Create/update release
         uses: johnwbyrd/update-release@v1.0.0
@@ -87,5 +92,5 @@ jobs:
           files: ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz ./datagateway-download-${{ env.TAG_NAME }}.tar.gz ./datagateway-search-${{ env.TAG_NAME }}.tar.gz
           release: Release ${{ env.TAG_NAME }}
           tag: ${{ env.TAG_NAME }}
-          prerelease: ${{ github.ref == 'refs/heads/main' }}
+          prerelease: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
           draft: false
