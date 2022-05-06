@@ -184,6 +184,7 @@ const ISISDatafilesTable = (
             entityId={rowData.id}
             entityName={(rowData as Datafile).location}
             variant="icon"
+            entitySize={(rowData as Datafile).fileSize ?? -1}
           />
         ),
       ]}

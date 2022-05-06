@@ -159,11 +159,14 @@ const ISISDatasetsCardView = (
             entityType="dataset"
             entityId={dataset.id}
             entityName={dataset.name}
+            entitySize={
+              data ? sizeQueries[data.indexOf(dataset)]?.data ?? -1 : -1
+            }
           />
         </div>
       ),
     ],
-    [classes.actionButtons, data]
+    [classes.actionButtons, data, sizeQueries]
   );
 
   const moreInformation = React.useCallback(
