@@ -233,14 +233,14 @@ describe('ISIS Investigations table component', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-testid="isis-investigation-table-doi-link"]')
+        .find('[data-testid="isis-investigations-table-doi-link"]')
         .first()
         .text()
     ).toEqual('study pid');
 
     expect(
       wrapper
-        .find('[data-testid="isis-investigation-table-doi-link"]')
+        .find('[data-testid="isis-investigations-table-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/study pid');
@@ -434,32 +434,26 @@ describe('ISIS Investigations table component', () => {
     ).toMatchSnapshot();
 
     expect(
-      wrapper.getAllByTestId('isis-investigation-table-doi-link')
+      wrapper.getAllByTestId('isis-investigations-table-doi-link')
     ).toMatchSnapshot();
   });
 
   it('renders title and DOI as links in StudyHierarchy', () => {
-    const store = mockStore(state);
-    const wrapper = render(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ISISInvestigationsTable
-              studyHierarchy={true}
-              instrumentId="4"
-              instrumentChildId="5"
-            />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
+    const element: React.ReactElement = (
+      <ISISInvestigationsTable
+        studyHierarchy={true}
+        instrumentId="4"
+        instrumentChildId="5"
+      />
     );
+    const wrapper = createRTLWrapper(element);
 
     expect(
       wrapper.getAllByTestId('isis-investigations-table-title')
     ).toMatchSnapshot();
 
     expect(
-      wrapper.getAllByTestId('isis-investigation-table-doi-link')
+      wrapper.getAllByTestId('isis-investigations-table-doi-link')
     ).toMatchSnapshot();
   });
 

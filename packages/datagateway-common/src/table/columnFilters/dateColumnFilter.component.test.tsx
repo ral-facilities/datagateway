@@ -9,34 +9,20 @@ import DateColumnFilter, {
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-test-renderer';
 import { usePushFilter } from '../../api';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../setupTests';
 
 jest.mock('../../api');
 
 describe('Date filter component', () => {
   beforeEach(() => {
-    //https://github.com/mui/material-ui-pickers/issues/2073
-
-    // add window.matchMedia
-    // this is necessary for the date picker to be rendered in desktop mode.
-    // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: (query) => ({
-        media: query,
-        // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
-        matches: query === '(pointer: fine)',
-        onchange: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        addListener: () => {},
-        removeListener: () => {},
-        dispatchEvent: () => false,
-      }),
-    });
+    applyDatePickerWorkaround();
   });
 
   afterEach(() => {
-    delete window.matchMedia;
+    cleanupDatePickerWorkaround();
   });
 
   it('renders correctly', () => {

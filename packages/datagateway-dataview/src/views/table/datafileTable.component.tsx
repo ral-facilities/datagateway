@@ -1,8 +1,5 @@
 import React from 'react';
-import TitleIcon from '@mui/icons-material/Title';
-import ExploreIcon from '@mui/icons-material/Explore';
-import SaveIcon from '@mui/icons-material/Save';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { Title, Explore, Save, CalendarToday } from '@mui/icons-material';
 import {
   Table,
   TableActionProps,
@@ -116,19 +113,19 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: Title,
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,
       },
       {
-        icon: ExploreIcon,
+        icon: Explore,
         label: t('datafiles.location'),
         dataKey: 'location',
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('datafiles.size'),
         dataKey: 'fileSize',
         cellContentRenderer: (cellProps) => {
@@ -136,7 +133,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
         },
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datafiles.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,
