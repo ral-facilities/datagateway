@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/adding-docker-file
+      - k8s-deployment
 
 jobs:
   push_to_registry:
