@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import { mount, ReactWrapper, shallow } from 'enzyme';
 import { Download } from 'datagateway-common';
@@ -538,7 +537,7 @@ describe('Admin Download Status Table', () => {
         '[aria-label="downloadStatus.pause {filename:test-file-5}"]'
       )
     ).toBeTruthy();
-  }, 10000);
+  });
 
   it('sends delete item request when delete button is clicked', async () => {
     const wrapper = createWrapper();

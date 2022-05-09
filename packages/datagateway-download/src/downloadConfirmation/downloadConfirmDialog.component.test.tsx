@@ -7,7 +7,7 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { flushPromises } from '../setupTests';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 import { handleICATError } from 'datagateway-common';
-import { render } from '@testing-library/react';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -21,12 +21,6 @@ jest.mock('datagateway-common', () => {
 
 const updateDialogWrapper = async (wrapper: ReactWrapper): Promise<void> => {
   // Update the wrapper with the loading dialog.
-  await act(async () => {
-    await flushPromises();
-    wrapper.update();
-  });
-
-  // Update the wrapper with the download confirmation dialog.
   await act(async () => {
     await flushPromises();
     wrapper.update();
@@ -66,9 +60,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
-    (axios.post as jest.Mock).mockClear();
-    (handleICATError as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
   const createWrapper = (
@@ -90,8 +82,11 @@ describe('DownloadConfirmDialog', () => {
     );
   };
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const renderWrapper = (size: number, isTwoLevel: boolean, open: boolean) => {
+  const renderWrapper = (
+    size: number,
+    isTwoLevel: boolean,
+    open: boolean
+  ): RenderResult => {
     return render(
       <DownloadSettingsContext.Provider value={mockedSettings}>
         <DownloadConfirmDialog
@@ -112,9 +107,6 @@ describe('DownloadConfirmDialog', () => {
     await act(async () => {
       await flushPromises();
     });
-    await act(async () => {
-      await flushPromises();
-    });
 
     expect(
       wrapper.getByLabelText('downloadConfirmDialog.dialog_arialabel')
@@ -124,9 +116,6 @@ describe('DownloadConfirmDialog', () => {
   it('does not load the download speed/time table when isTwoLevel is true', async () => {
     // Set isTwoLevel to true as a prop.
     const wrapper = renderWrapper(100, true, true);
-    await act(async () => {
-      await flushPromises();
-    });
     await act(async () => {
       await flushPromises();
     });
@@ -637,6 +626,10 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
         data: { disabled: false, message: '' },
       });
     });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   // Calculate the file size required to reach the given download time (at 1 Mbps).

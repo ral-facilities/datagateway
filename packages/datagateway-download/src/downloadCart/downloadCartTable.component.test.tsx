@@ -109,15 +109,8 @@ describe('Download cart table component', () => {
   });
 
   afterEach(() => {
-    if (holder) {
-      document.body.removeChild(holder);
-    }
-
-    (fetchDownloadCartItems as jest.Mock).mockClear();
-    (getSize as jest.Mock).mockClear();
-    (getDatafileCount as jest.Mock).mockClear();
-    (removeAllDownloadCartItems as jest.Mock).mockClear();
-    (removeDownloadCartItem as jest.Mock).mockClear();
+    if (holder) document.body.removeChild(holder);
+    jest.clearAllMocks();
     jest.clearAllTimers();
     jest.useRealTimers();
   });

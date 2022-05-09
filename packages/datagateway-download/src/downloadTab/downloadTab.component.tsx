@@ -9,8 +9,8 @@ import {
   IconButton,
   CircularProgress,
   styled,
+  Tab,
 } from '@mui/material';
-import Tab from '@mui/material/Tab';
 
 import DownloadCartTable from '../downloadCart/downloadCartTable.component';
 import DownloadStatusTable from '../downloadStatus/downloadStatusTable.component';

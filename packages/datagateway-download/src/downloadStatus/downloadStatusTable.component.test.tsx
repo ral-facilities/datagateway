@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import DownloadStatusTable from './downloadStatusTable.component';
-import { mount, shallow } from 'enzyme';
+import { mount, ReactWrapper, shallow } from 'enzyme';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
@@ -128,6 +127,17 @@ describe('Download Status Table', () => {
     },
   ];
 
+  const createWrapper = (): ReactWrapper => {
+    return mount(
+      <DownloadStatusTable
+        refreshTable={false}
+        setRefreshTable={jest.fn()}
+        setLastChecked={jest.fn()}
+      />,
+      { attachTo: holder }
+    );
+  };
+
   beforeEach(() => {
     //https://stackoverflow.com/questions/43694975/jest-enzyme-using-mount-document-getelementbyid-returns-null-on-componen
     holder = document.createElement('div');
@@ -142,9 +152,7 @@ describe('Download Status Table', () => {
   });
 
   afterEach(() => {
-    (fetchDownloads as jest.Mock).mockClear();
-    (downloadDeleted as jest.Mock).mockClear();
-    (getDataUrl as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
@@ -159,14 +167,7 @@ describe('Download Status Table', () => {
   });
 
   it('translates the status strings correctly', async () => {
-    const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />,
-      { attachTo: holder }
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -191,14 +192,7 @@ describe('Download Status Table', () => {
   });
 
   it('fetches the download items on load', async () => {
-    const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />,
-      { attachTo: holder }
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -236,14 +230,7 @@ describe('Download Status Table', () => {
   });
 
   it('should have a link for a download item', async () => {
-    const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />,
-      { attachTo: holder }
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -274,14 +261,7 @@ describe('Download Status Table', () => {
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
-    const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />,
-      { attachTo: holder }
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -311,14 +291,7 @@ describe('Download Status Table', () => {
   });
 
   it('sorts data when headers are clicked', async () => {
-    const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />,
-      { attachTo: holder }
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -359,14 +332,7 @@ describe('Download Status Table', () => {
   });
 
   it('filters data when text fields are typed into', async () => {
-    const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />,
-      { attachTo: holder }
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -434,14 +400,7 @@ describe('Download Status Table', () => {
   it('filters data when date filter is altered', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />,
-      { attachTo: holder }
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();

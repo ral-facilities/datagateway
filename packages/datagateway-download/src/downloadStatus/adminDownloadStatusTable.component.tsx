@@ -35,8 +35,8 @@ import {
   PlayCircleFilled,
   RemoveCircle,
   Restore,
+  Refresh,
 } from '@mui/icons-material';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import BlackTooltip from '../tooltip.component';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
@@ -283,7 +283,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                   onClick={() => setRefreshDownloads(true)}
                   size="large"
                 >
-                  <RefreshIcon />
+                  <Refresh />
                 </IconButton>
               </BlackTooltip>
             ) : (
