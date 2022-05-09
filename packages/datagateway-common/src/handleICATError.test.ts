@@ -134,4 +134,33 @@ describe('handleICATError', () => {
       type: InvalidateTokenType,
     });
   });
+
+  it('customises notification message to SciGateway on TopCAT authentication error', () => {
+    error.response.status = 403;
+    handleICATError(error);
+
+    expect(events.length).toBe(2);
+    expect(events[0].detail).toEqual({
+      type: NotificationType,
+      payload: {
+        severity: 'error',
+        message: 'Your session has expired, please reload the page',
+      },
+    });
+
+    events = [];
+    error.response.data = {
+      message: 'Unable to find user by sessionid: null',
+    };
+    handleICATError(error);
+
+    expect(events.length).toBe(2);
+    expect(events[0].detail).toEqual({
+      type: NotificationType,
+      payload: {
+        severity: 'error',
+        message: 'Your session has expired, please reload the page',
+      },
+    });
+  });
 });
