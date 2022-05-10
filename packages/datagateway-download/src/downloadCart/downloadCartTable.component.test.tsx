@@ -123,6 +123,21 @@ describe('Download cart table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it('renders no cart message correctly', async () => {
+    (fetchDownloadCart as jest.MockedFunction<
+      typeof fetchDownloadCart
+    >).mockResolvedValue([]);
+
+    const wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
+  });
+
   it('fetches the download cart on load', async () => {
     const wrapper = createWrapper();
 

@@ -223,6 +223,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 entityType="dataset"
                 entityId={parseInt(datasetId)}
                 entityName={data?.name ?? ''}
+                entitySize={sizeQueries[0]?.data ?? -1}
               />
             </ActionButtonsContainer>
           </Grid>

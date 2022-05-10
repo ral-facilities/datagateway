@@ -56,21 +56,8 @@ function a11yProps(
 }
 
 const DownloadTabs: React.FC = () => {
-  // Setting the selected tab in session storage is required
-  // as the selected tab information is lost with each re-render
-  // (e.g. opening/closing the navigation drawer).
-  const getTab = (): number => {
-    const savedTab = sessionStorage.getItem('downloadStatusTab');
-
-    // If the tab has not been saved, then set it to the initial cart view (0).
-    if (!savedTab) sessionStorage.setItem('downloadStatusTab', '0');
-    else return parseInt(savedTab);
-
-    return 0;
-  };
-
   // Set the initial tab.
-  const [selectedTab, setSelectedTab] = React.useState(getTab());
+  const [selectedTab, setSelectedTab] = React.useState(0);
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
   const [lastChecked, setLastChecked] = React.useState('');
   const [t] = useTranslation();
@@ -79,8 +66,6 @@ const DownloadTabs: React.FC = () => {
     event: React.ChangeEvent<unknown>,
     setTab: number
   ): void => {
-    // Set the tab in the session storage.
-    sessionStorage.setItem('downloadStatusTab', setTab.toString());
     setSelectedTab(setTab);
   };
 

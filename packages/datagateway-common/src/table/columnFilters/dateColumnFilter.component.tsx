@@ -3,8 +3,7 @@ import { format, isValid, isEqual, isBefore } from 'date-fns';
 import { FiltersType, DateFilter } from '../../app.types';
 import { usePushFilter } from '../../api';
 import { Box, TextField, Theme } from '@mui/material';
-import DatePicker from '@mui/lab/DatePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { DatePicker, DateTimePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 export function datesEqual(date1: Date | null, date2: Date | null): boolean {
@@ -22,6 +21,7 @@ interface UpdateFilterParams {
   otherDate: Date | null;
   startDateOrEndDateChanged: 'startDate' | 'endDate';
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
+  filterByTime?: boolean;
 }
 
 export function updateFilter({
@@ -30,6 +30,7 @@ export function updateFilter({
   otherDate,
   startDateOrEndDateChanged,
   onChange,
+  filterByTime,
 }: UpdateFilterParams): void {
   if (!datesEqual(date, prevDate)) {
     if (
@@ -40,21 +41,29 @@ export function updateFilter({
     } else {
       onChange({
         [startDateOrEndDateChanged]:
-          date && isValid(date) ? format(date, 'yyyy-MM-dd') : undefined,
+          date && isValid(date)
+            ? format(date, filterByTime ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd')
+            : undefined,
         [startDateOrEndDateChanged === 'startDate' ? 'endDate' : 'startDate']:
           otherDate && isValid(otherDate)
-            ? format(otherDate, 'yyyy-MM-dd')
+            ? format(
+                otherDate,
+                filterByTime ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd'
+              )
             : undefined,
       });
     }
   }
 }
 
-const DateColumnFilter = (props: {
+interface DateColumnFilterProps {
   label: string;
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
   value: { startDate?: string; endDate?: string } | undefined;
-}): React.ReactElement => {
+  filterByTime?: boolean;
+}
+
+const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
   //Need state to change otherwise wont update error messages for an invalid date
   const [startDate, setStartDate] = useState(
     props.value?.startDate ? new Date(props.value.startDate) : null
@@ -65,100 +74,250 @@ const DateColumnFilter = (props: {
 
   const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);
 
+  // const datePickerProps: Partial<KeyboardDatePickerProps> = {
+  //   clearable: true,
+  //   allowKeyboardControl: true,
+  //   invalidDateMessage: 'Date format: yyyy-MM-dd.',
+  //   format: 'yyyy-MM-dd',
+  //   color: 'secondary',
+  //   okLabel: <span style={{ color: buttonColour }}>OK</span>,
+  //   cancelLabel: <span style={{ color: buttonColour }}>Cancel</span>,
+  //   clearLabel: <span style={{ color: buttonColour }}>Clear</span>,
+  //   style: { whiteSpace: 'nowrap' },
+  //   'aria-hidden': 'true',
+  //   inputProps: { 'aria-label': `${props.label} filter` },
+  //   views: ['year', 'month', 'date'],
+  // };
+
+  // const dateTimePickerProps: Partial<KeyboardDateTimePickerProps> = {
+  //   ...datePickerProps,
+  //   invalidDateMessage: 'Date format: yyyy-MM-dd HH:mm.',
+  //   format: 'yyyy-MM-dd HH:mm',
+  //   strictCompareDates: true,
+  //   views: ['year', 'month', 'date', 'hours', 'minutes'],
+  // };
+
   return (
     <form>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DatePicker
-          clearable
-          aria-hidden="true"
-          inputFormat="yyyy-MM-dd"
-          mask="____-__-__"
-          value={startDate}
-          maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
-          onChange={(date) => {
-            setStartDate(date as Date);
-            updateFilter({
-              date: date as Date,
-              prevDate: startDate,
-              otherDate: endDate,
-              startDateOrEndDateChanged: 'startDate',
-              onChange: props.onChange,
-            });
-          }}
-          clearText={
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            <Box sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}>
-              Clear
-            </Box>
-          }
-          renderInput={(renderProps) => {
-            const error =
-              // eslint-disable-next-line react/prop-types
-              (renderProps.error || invalidDateRange) ?? undefined;
-            let helperText = 'Date format: yyyy-MM-dd.';
-            if (invalidDateRange) helperText = 'Invalid date range';
+      {props.filterByTime ? (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DateTimePicker
+            clearable
+            aria-hidden="true"
+            inputFormat="yyyy-MM-dd HH:mm"
+            mask="____-__-__ __:__"
+            value={startDate}
+            maxDate={endDate || new Date('2100-01-01 00:00')}
+            onChange={(date) => {
+              setStartDate(date as Date);
+              updateFilter({
+                date: date as Date,
+                prevDate: startDate,
+                otherDate: endDate,
+                startDateOrEndDateChanged: 'startDate',
+                onChange: props.onChange,
+              });
+            }}
+            clearText={
+              <Box
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}
+              >
+                Clear
+              </Box>
+            }
+            OpenPickerButtonProps={{
+              size: 'small',
+              'aria-label': `${props.label} filter from, date-time picker`,
+            }}
+            // id={props.label + 'filter from'}
+            renderInput={(renderProps) => {
+              const error =
+                // eslint-disable-next-line react/prop-types
+                (renderProps.error || invalidDateRange) ?? undefined;
+              let helperText = 'Date-time format: yyyy-MM-dd HH:mm.';
+              if (invalidDateRange) helperText = 'Invalid date-time range';
 
-            return (
-              <TextField
-                {...renderProps}
-                id={props.label + ' filter from'}
-                inputProps={{
-                  ...renderProps.inputProps,
-                  placeholder: 'From...',
-                  'aria-label': `${props.label} filter from`,
-                }}
-                variant="standard"
-                error={error}
-                {...(error && { helperText: helperText })}
-              />
-            );
-          }}
-        />
-        <DatePicker
-          clearable
-          aria-hidden="true"
-          inputFormat="yyyy-MM-dd"
-          mask="____-__-__"
-          value={endDate}
-          minDate={startDate || new Date('1984-01-01T00:00:00Z')}
-          onChange={(date) => {
-            setEndDate(date as Date);
-            updateFilter({
-              date: date as Date,
-              prevDate: endDate,
-              otherDate: startDate,
-              startDateOrEndDateChanged: 'endDate',
-              onChange: props.onChange,
-            });
-          }}
-          clearText={
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            <Box sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}>
-              Clear
-            </Box>
-          }
-          renderInput={(renderProps) => {
-            const error = (renderProps.error || invalidDateRange) ?? undefined;
-            let helperText = 'Date format: yyyy-MM-dd.';
-            if (invalidDateRange) helperText = 'Invalid date range';
+              return (
+                <TextField
+                  {...renderProps}
+                  id={props.label + ' filter from'}
+                  inputProps={{
+                    ...renderProps.inputProps,
+                    placeholder: 'From...',
+                    'aria-label': `${props.label} filter from`,
+                  }}
+                  variant="standard"
+                  error={error}
+                  {...(error && { helperText: helperText })}
+                />
+              );
+            }}
+          />
+          <DateTimePicker
+            clearable
+            aria-hidden="true"
+            inputFormat="yyyy-MM-dd HH:mm"
+            mask="____-__-__ __:__"
+            value={endDate}
+            maxDate={startDate || new Date('1984-01-01 00:00')}
+            onChange={(date) => {
+              setEndDate(date as Date);
+              updateFilter({
+                date: date as Date,
+                prevDate: endDate,
+                otherDate: startDate,
+                startDateOrEndDateChanged: 'endDate',
+                onChange: props.onChange,
+              });
+            }}
+            clearText={
+              <Box
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}
+              >
+                Clear
+              </Box>
+            }
+            OpenPickerButtonProps={{
+              size: 'small',
+              'aria-label': `${props.label} filter to, date-time picker`,
+            }}
+            // id={props.label + 'filter to'}
+            renderInput={(renderProps) => {
+              const error =
+                // eslint-disable-next-line react/prop-types
+                (renderProps.error || invalidDateRange) ?? undefined;
+              let helperText = 'Date-time format: yyyy-MM-dd HH:mm.';
+              if (invalidDateRange) helperText = 'Invalid date-time range';
 
-            return (
-              <TextField
-                {...renderProps}
-                id={props.label + ' filter to'}
-                inputProps={{
-                  ...renderProps.inputProps,
-                  placeholder: 'To...',
-                  'aria-label': `${props.label} filter to`,
-                }}
-                variant="standard"
-                error={error}
-                {...(error && { helperText: helperText })}
-              />
-            );
-          }}
-        />
-      </LocalizationProvider>
+              return (
+                <TextField
+                  {...renderProps}
+                  id={props.label + ' filter to'}
+                  inputProps={{
+                    ...renderProps.inputProps,
+                    placeholder: 'To...',
+                    'aria-label': `${props.label} filter to`,
+                  }}
+                  variant="standard"
+                  error={error}
+                  {...(error && { helperText: helperText })}
+                />
+              );
+            }}
+          />
+        </LocalizationProvider>
+      ) : (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            clearable
+            aria-hidden="true"
+            inputFormat="yyyy-MM-dd"
+            mask="____-__-__"
+            value={startDate}
+            maxDate={endDate || new Date('2100-01-01 00:00')}
+            onChange={(date) => {
+              setStartDate(date as Date);
+              updateFilter({
+                date: date as Date,
+                prevDate: startDate,
+                otherDate: endDate,
+                startDateOrEndDateChanged: 'startDate',
+                onChange: props.onChange,
+              });
+            }}
+            clearText={
+              <Box
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}
+              >
+                Clear
+              </Box>
+            }
+            OpenPickerButtonProps={{
+              size: 'small',
+              'aria-label': `${props.label} filter from, date picker`,
+            }}
+            // id={props.label + 'filter from'}
+            renderInput={(renderProps) => {
+              const error =
+                // eslint-disable-next-line react/prop-types
+                (renderProps.error || invalidDateRange) ?? undefined;
+              let helperText = 'Date format: yyyy-MM-dd.';
+              if (invalidDateRange) helperText = 'Invalid date range';
+
+              return (
+                <TextField
+                  {...renderProps}
+                  id={props.label + ' filter from'}
+                  inputProps={{
+                    ...renderProps.inputProps,
+                    placeholder: 'From...',
+                    'aria-label': `${props.label} filter from`,
+                  }}
+                  variant="standard"
+                  error={error}
+                  {...(error && { helperText: helperText })}
+                />
+              );
+            }}
+          />
+          <DatePicker
+            clearable
+            aria-hidden="true"
+            inputFormat="yyyy-MM-dd"
+            mask="____-__-__"
+            value={endDate}
+            maxDate={startDate || new Date('1984-01-01 00:00')}
+            onChange={(date) => {
+              setStartDate(date as Date);
+              updateFilter({
+                date: date as Date,
+                prevDate: endDate,
+                otherDate: startDate,
+                startDateOrEndDateChanged: 'endDate',
+                onChange: props.onChange,
+              });
+            }}
+            clearText={
+              <Box
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}
+              >
+                Clear
+              </Box>
+            }
+            OpenPickerButtonProps={{
+              size: 'small',
+              'aria-label': `${props.label} filter to, date picker`,
+            }}
+            // id={props.label + 'filter to'}
+            renderInput={(renderProps) => {
+              const error =
+                // eslint-disable-next-line react/prop-types
+                (renderProps.error || invalidDateRange) ?? undefined;
+              let helperText = 'Date format: yyyy-MM-dd.';
+              if (invalidDateRange) helperText = 'Invalid date range';
+
+              return (
+                <TextField
+                  {...renderProps}
+                  id={props.label + ' filter to'}
+                  inputProps={{
+                    ...renderProps.inputProps,
+                    placeholder: 'To...',
+                    'aria-label': `${props.label} filter to`,
+                  }}
+                  variant="standard"
+                  error={error}
+                  {...(error && { helperText: helperText })}
+                />
+              );
+            }}
+          />
+        </LocalizationProvider>
+      )}
     </form>
   );
 };

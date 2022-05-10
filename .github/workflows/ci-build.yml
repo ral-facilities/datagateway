@@ -2,10 +2,11 @@ name: CI Build
 on:
   workflow_dispatch:
   pull_request:
-  # By default, the pull_request event type is not triggered when a PR is merged into master
+  # By default, the pull_request event type is not triggered when a PR is merged into main
   push:
     branches:
-      - master
+      - main
+      - develop
 
 jobs:
   lint-and-unit-test:

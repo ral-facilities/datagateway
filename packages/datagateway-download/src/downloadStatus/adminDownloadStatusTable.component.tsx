@@ -51,7 +51,9 @@ const AdminDownloadStatusTable: React.FC = () => {
   // Load the settings for use
   const settings = React.useContext(DownloadSettingsContext);
   // Sorting columns
-  const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
+  const [sort, setSort] = React.useState<{ [column: string]: Order }>({
+    createdAt: 'desc',
+  });
   const [filters, setFilters] = React.useState<{
     [column: string]:
       | { value?: string | number; type: string }
@@ -81,12 +83,8 @@ const AdminDownloadStatusTable: React.FC = () => {
       if (typeof filter === 'object') {
         if (!Array.isArray(filter)) {
           if ('startDate' in filter || 'endDate' in filter) {
-            const startDate = filter.startDate
-              ? `${filter.startDate} 00:00:00`
-              : '0000-01-01 00:00:00';
-            const endDate = filter.endDate
-              ? `${filter.endDate} 23:59:59`
-              : '9999-12-31 23:59:59';
+            const startDate = filter.startDate ?? '0000-01-01 00:00';
+            const endDate = filter.endDate ?? '9999-12-31 23:59';
 
             queryOffset += ` AND UPPER(download.${column}) BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
           }
@@ -251,6 +249,7 @@ const AdminDownloadStatusTable: React.FC = () => {
         }
       }}
       value={filters[dataKey] as DateFilter}
+      filterByTime
     />
   );
 

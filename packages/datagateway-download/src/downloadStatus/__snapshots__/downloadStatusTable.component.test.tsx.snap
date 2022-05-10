@@ -61,7 +61,11 @@ exports[`Download Status Table renders correctly 1`] = `
         data={Array []}
         loading={true}
         onSort={[Function]}
-        sort={Object {}}
+        sort={
+          Object {
+            "createdAt": "desc",
+          }
+        }
       />
     </ForwardRef(Paper)>
   </ForwardRef(Grid)>

@@ -10,10 +10,16 @@ type CellRendererProps = TableCellProps & {
 
 const ActionCell = React.memo(
   (props: CellRendererProps): React.ReactElement => {
-    const { sx, actions, rowData } = props;
+    const { sx, actions, rowData, rowIndex } = props;
 
     return (
-      <TableCell size="medium" component="div" sx={sx} variant="body">
+      <TableCell
+        size="medium"
+        component="div"
+        sx={sx}
+        variant="body"
+        key={rowData?.id || rowIndex}
+      >
         {actions.map((TableAction, index) => (
           <TableAction key={index} rowData={rowData} />
         ))}

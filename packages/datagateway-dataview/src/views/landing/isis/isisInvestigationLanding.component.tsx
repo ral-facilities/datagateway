@@ -493,6 +493,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     entityType="dataset"
                     entityId={dataset.id}
                     entityName={dataset.name}
+                    entitySize={sizeQueries[0]?.data ?? -1}
                   />
                 </ActionButtonsContainer>
               </Box>

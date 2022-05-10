@@ -244,6 +244,10 @@ const ISISInvestigationsTable = (
             entityId={rowData.id}
             entityName={rowData.name}
             variant="icon"
+            entitySize={
+              sizeQueries[aggregatedData.indexOf(rowData as Investigation)]
+                ?.data ?? -1
+            }
           />
         ),
       ]}

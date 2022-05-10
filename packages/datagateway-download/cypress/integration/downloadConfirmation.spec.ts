@@ -27,11 +27,6 @@ describe('Download Confirmation', () => {
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
   });
 
-  afterEach(() => {
-    // Clear the session storage to avoid storing the current tab information.
-    sessionStorage.clear();
-  });
-
   it('should load correctly and display the confirmation dialog for the cart items', () => {
     // Show the correct download size of the cart items.
     cy.contains('Download Size: 11.01 GB').should('exist');

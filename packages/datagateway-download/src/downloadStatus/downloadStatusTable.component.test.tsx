@@ -298,6 +298,13 @@ describe('Download Status Table', () => {
       wrapper.update();
     });
 
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    const createdAtSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(3);
+    createdAtSortLabel.simulate('click');
+
     const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
 
     // Get the access method sort header.
@@ -411,7 +418,7 @@ describe('Download Status Table', () => {
       'input[id="downloadStatus.createdAt filter from"]'
     );
 
-    dateFromFilterInput.instance().value = '2020-01-01';
+    dateFromFilterInput.instance().value = '2020-01-01 00:00';
     dateFromFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
@@ -420,14 +427,14 @@ describe('Download Status Table', () => {
       'input[id="downloadStatus.createdAt filter to"]'
     );
 
-    dateToFilterInput.instance().value = '2020-01-02';
+    dateToFilterInput.instance().value = '2020-01-02 23:59';
     dateToFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=0]')).toBe(true);
 
-    dateFromFilterInput.instance().value = '2020-02-26';
+    dateFromFilterInput.instance().value = '2020-02-26 00:00';
     dateFromFilterInput.simulate('change');
-    dateToFilterInput.instance().value = '2020-02-27';
+    dateToFilterInput.instance().value = '2020-02-27 23:59';
     dateToFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);

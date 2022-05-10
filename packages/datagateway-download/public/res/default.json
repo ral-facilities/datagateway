@@ -76,6 +76,7 @@
     "type": "Type",
     "size": "Size",
     "fileCount": "File Count",
+    "calculating": "Calculating",
     "remove": "Remove {{name}} from selection",
     "remove_all": "Remove All",
     "download": "Download Selection",
@@ -84,6 +85,8 @@
     "no_selections": "No data selected. <2>Browse</2> or <6>search</6> for data.",
     "browse_link": "/browse/investigation",
     "search_link": "/search/data",
-    "empty_items_warning": "You have selected some empty items - please remove them to proceed with downloading your selection"
+    "empty_items_error": "You have selected some empty items - please remove them to proceed with downloading your selection",
+    "file_limit_error": "Too many files - you have exceeded limit of {{fileCountMax}} files - please remove some files",
+    "size_limit_error": "Too much data - you have exceeded limit of {{totalSizeMax}} - please remove some files"
   }
 }
