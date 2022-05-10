@@ -1,13 +1,8 @@
 import React from 'react';
-import { Theme } from '@mui/material/styles';
-import FormControl from '@mui/material/FormControl';
-import Checkbox from '@mui/material/Checkbox';
-import { connect } from 'react-redux';
-import { StateType } from '../state/app.types';
-import { useTranslation } from 'react-i18next';
-import { parseSearchToQuery, usePushSearchToggles } from 'datagateway-common';
-import { useLocation } from 'react-router-dom';
 import {
+  Theme,
+  FormControl,
+  Checkbox,
   FormHelperText,
   InputLabel,
   ListItemText,
@@ -15,6 +10,11 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
+import { connect } from 'react-redux';
+import { StateType } from '../state/app.types';
+import { useTranslation } from 'react-i18next';
+import { parseSearchToQuery, usePushSearchToggles } from 'datagateway-common';
+import { useLocation } from 'react-router-dom';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

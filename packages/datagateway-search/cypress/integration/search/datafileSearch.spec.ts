@@ -47,7 +47,7 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search"]')
       .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+      .wait(['@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
 
@@ -81,7 +81,7 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search"]')
       .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+      .wait(['@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
 

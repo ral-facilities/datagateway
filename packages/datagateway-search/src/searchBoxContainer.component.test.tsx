@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactWrapper, shallow } from 'enzyme';
+import { ShallowWrapper, shallow } from 'enzyme';
 
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
@@ -14,10 +14,14 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('SearchBoxContainer - Tests', () => {
-  const testInitiateSearch = jest.fn();
-
-  const createWrapper = (path: string): ReactWrapper => {
-    return shallow(<SearchBoxContainer initiateSearch={testInitiateSearch} />);
+  const createWrapper = (): ShallowWrapper => {
+    return shallow(
+      <SearchBoxContainer
+        initiateSearch={jest.fn()}
+        onSearchTextChange={jest.fn()}
+        searchText=""
+      />
+    );
   };
 
   beforeEach(() => {
@@ -27,24 +31,24 @@ describe('SearchBoxContainer - Tests', () => {
   });
 
   it('renders searchBoxContainer correctly', () => {
-    const wrapper = createWrapper('/');
-
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 });
 
 describe('SearchBoxContainerSide - Tests', () => {
-  const testInitiateSearch = jest.fn();
-
-  const createWrapper = (path: string): ReactWrapper => {
+  const createWrapper = (): ShallowWrapper => {
     return shallow(
-      <SearchBoxContainerSide initiateSearch={testInitiateSearch} />
+      <SearchBoxContainerSide
+        initiateSearch={jest.fn()}
+        onSearchTextChange={jest.fn()}
+        searchText=""
+      />
     );
   };
 
   it('renders searchBoxContainerSide correctly', () => {
-    const wrapper = createWrapper('/');
-
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 });

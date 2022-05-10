@@ -9,8 +9,7 @@ import {
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { isBefore, isValid } from 'date-fns';
-import DatePicker from '@mui/lab/DatePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { DatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { Box, TextField, Theme } from '@mui/material';
 

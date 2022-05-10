@@ -6,8 +6,8 @@ exports[`Search text box component tests renders correctly 1`] = `
     class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root tour-search-textfield css-17vbkzs-MuiFormControl-root-MuiTextField-root"
   >
     <label
-      class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorSecondary MuiFormLabel-filled css-19285mc-MuiFormLabel-root-MuiInputLabel-root"
-      data-shrink="true"
+      class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorSecondary css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="false"
       for="filled-search"
       id="filled-search-label"
     >
@@ -22,14 +22,14 @@ exports[`Search text box component tests renders correctly 1`] = `
         class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
         id="filled-search"
         type="search"
-        value="test"
+        value=""
       />
       <fieldset
         aria-hidden="true"
         class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
       >
         <legend
-          class="css-7nxzgd"
+          class="css-1g8cwq9"
         >
           <span>
             searchBox.search_text

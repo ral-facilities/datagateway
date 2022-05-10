@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import SelectDates from './datePicker.component';
 import thunk from 'redux-thunk';
@@ -64,8 +63,7 @@ describe('DatePicker component tests', () => {
   });
 
   afterEach(() => {
-    testInitiateSearch.mockClear();
-
+    jest.clearAllMocks();
     cleanupDatePickerWorkaround();
   });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import CheckBoxesGroup from './checkBoxes.component';
 import thunk from 'redux-thunk';
@@ -52,6 +52,10 @@ describe('Checkbox component tests', () => {
 
     mockStore = configureStore([thunk]);
     testStore = mockStore(state);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {

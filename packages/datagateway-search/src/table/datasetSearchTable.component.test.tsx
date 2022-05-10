@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import DatasetSearchTable from './datasetSearchTable.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';
@@ -25,8 +24,6 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { mount, ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 import { render, RenderResult } from '@testing-library/react';
@@ -492,11 +489,8 @@ describe('Dataset table component', () => {
     });
 
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-
     expect(() => createWrapper()).not.toThrowError();
-
     expect(consoleSpy).not.toHaveBeenCalled();
-    consoleSpy.mockRestore();
   });
 
   it('renders generic link & pending count correctly', () => {
