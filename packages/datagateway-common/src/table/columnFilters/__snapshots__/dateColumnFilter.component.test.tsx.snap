@@ -12,7 +12,6 @@ exports[`Date filter component DatePicker functionality useTextFilter hook retur
           "size": "small",
         }
       }
-      aria-hidden="true"
       clearText={
         <ForwardRef(Box)
           sx={
@@ -39,7 +38,6 @@ exports[`Date filter component DatePicker functionality useTextFilter hook retur
           "size": "small",
         }
       }
-      aria-hidden="true"
       clearText={
         <ForwardRef(Box)
           sx={
@@ -230,7 +228,6 @@ exports[`Date filter component renders correctly 1`] = `
           "size": "small",
         }
       }
-      aria-hidden="true"
       clearText={
         <ForwardRef(Box)
           sx={
@@ -257,7 +254,6 @@ exports[`Date filter component renders correctly 1`] = `
           "size": "small",
         }
       }
-      aria-hidden="true"
       clearText={
         <ForwardRef(Box)
           sx={

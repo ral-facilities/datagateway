@@ -82,14 +82,12 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
 
   const datePickerProps: Partial<DatePickerProps> = {
     clearable: true,
-    'aria-hidden': 'true',
     inputFormat: 'yyyy-MM-dd',
     mask: '____-__-__',
   };
 
   const dateTimePickerProps: Partial<DateTimePickerProps> = {
     clearable: true,
-    'aria-hidden': 'true',
     inputFormat: 'yyyy-MM-dd HH:mm',
     mask: '____-__-__ __:__',
   };

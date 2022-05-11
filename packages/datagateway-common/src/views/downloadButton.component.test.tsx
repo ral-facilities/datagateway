@@ -157,7 +157,7 @@ describe('Generic download button', () => {
       variant: 'icon',
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -186,7 +186,7 @@ describe('Generic download button', () => {
     let wrapper = createWrapper(props);
 
     expect(wrapper.exists('#tooltip-1'));
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).not.toHaveBeenCalled();
 
     jest.clearAllMocks();
@@ -197,7 +197,7 @@ describe('Generic download button', () => {
     });
 
     expect(wrapper.exists('#tooltip-1'));
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).not.toHaveBeenCalled();
   });
 });
