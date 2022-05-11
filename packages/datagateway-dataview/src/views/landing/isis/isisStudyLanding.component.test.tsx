@@ -308,7 +308,7 @@ describe('ISIS Study Landing page', () => {
     ).toEqual('study pid');
   });
 
-  it('renders structured data correctly', () => {
+  it.skip('renders structured data correctly', () => {
     // mock getElementByTagNameSpy so we can snapshot mockElement
     const docFragment = document.createDocumentFragment();
     const mockElement = document.createElement('head');

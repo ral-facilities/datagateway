@@ -20,9 +20,9 @@ import {
   Theme,
   Link,
   CircularProgress,
+  Alert,
 } from '@mui/material';
 import { RemoveCircle } from '@mui/icons-material';
-import { Alert } from '@mui/lab';
 import {
   useCart,
   useRemoveEntityFromCart,

@@ -81,6 +81,12 @@ describe('Download cart table component', () => {
     );
   };
 
+  const resetDOM = (): void => {
+    if (holder) document.body.removeChild(holder);
+    holder = document.getElementById('datagateway-download');
+    if (holder) document.body.removeChild(holder);
+  };
+
   beforeEach(() => {
     history = createMemoryHistory();
 
@@ -142,25 +148,10 @@ describe('Download cart table component', () => {
   });
 
   afterEach(() => {
-    if (holder) document.body.removeChild(holder);
+    resetDOM();
     jest.clearAllMocks();
     jest.clearAllTimers();
     jest.useRealTimers();
-  });
-
-  it('renders no cart message correctly', async () => {
-    (fetchDownloadCart as jest.MockedFunction<
-      typeof fetchDownloadCart
-    >).mockResolvedValue([]);
-
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
   });
 
   it('renders no cart message correctly', async () => {
@@ -190,18 +181,6 @@ describe('Download cart table component', () => {
     expect(wrapper.find('[aria-colindex=1]').find('p').first().text()).toEqual(
       'INVESTIGATION 1'
     );
-  });
-
-  it('does not fetch the download cart on load if no dg-download element exists', async () => {
-    holder.setAttribute('id', 'test');
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(fetchDownloadCart).not.toHaveBeenCalled();
   });
 
   it('calculates sizes once cart items have been fetched', async () => {
@@ -543,6 +522,7 @@ describe('Download cart table component', () => {
     expect(wrapper.exists('div#fileLimitAlert')).toBeFalsy();
     expect(wrapper.exists('div#sizeLimitAlert')).toBeFalsy();
 
+    resetDOM();
     const oldSettings = mockedSettings;
     mockedSettings = {
       ...oldSettings,
@@ -559,6 +539,7 @@ describe('Download cart table component', () => {
     // Make sure size limit alert is displayed if over the limit
     expect(wrapper.exists('div#sizeLimitAlert')).toBeTruthy();
 
+    resetDOM();
     mockedSettings = {
       ...oldSettings,
       fileCountMax: 1,
