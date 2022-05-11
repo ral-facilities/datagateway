@@ -150,7 +150,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
           <DateTimePicker
             {...dateTimePickerProps}
             value={endDate}
-            maxDate={startDate || new Date('1984-01-01 00:00')}
+            minDate={startDate || new Date('1984-01-01 00:00')}
             onChange={(date) => {
               setEndDate(date as Date);
               updateFilter({
@@ -254,7 +254,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
           <DatePicker
             {...datePickerProps}
             value={endDate}
-            maxDate={startDate || new Date('1984-01-01 00:00')}
+            minDate={startDate || new Date('1984-01-01 00:00')}
             onChange={(date) => {
               setEndDate(date as Date);
               updateFilter({
