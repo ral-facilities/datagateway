@@ -52,7 +52,7 @@ exports[`Date filter component DatePicker functionality useTextFilter hook retur
       clearable={true}
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"
-      maxDate={1984-01-01T00:00:00.000Z}
+      minDate={1984-01-01T00:00:00.000Z}
       onChange={[Function]}
       renderInput={[Function]}
       value={null}
@@ -268,7 +268,7 @@ exports[`Date filter component renders correctly 1`] = `
       clearable={true}
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"
-      maxDate={1999-01-01T00:00:00.000Z}
+      minDate={1999-01-01T00:00:00.000Z}
       onChange={[Function]}
       renderInput={[Function]}
       value={2000-01-01T00:00:00.000Z}
