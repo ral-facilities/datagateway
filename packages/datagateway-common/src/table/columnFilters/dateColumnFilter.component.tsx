@@ -3,7 +3,13 @@ import { format, isValid, isEqual, isBefore } from 'date-fns';
 import { FiltersType, DateFilter } from '../../app.types';
 import { usePushFilter } from '../../api';
 import { Box, TextField, Theme } from '@mui/material';
-import { DatePicker, DateTimePicker, LocalizationProvider } from '@mui/lab';
+import {
+  DatePicker,
+  DateTimePicker,
+  LocalizationProvider,
+  DatePickerProps,
+  DateTimePickerProps,
+} from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 export function datesEqual(date1: Date | null, date2: Date | null): boolean {
@@ -74,38 +80,26 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
 
   const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);
 
-  // const datePickerProps: Partial<KeyboardDatePickerProps> = {
-  //   clearable: true,
-  //   allowKeyboardControl: true,
-  //   invalidDateMessage: 'Date format: yyyy-MM-dd.',
-  //   format: 'yyyy-MM-dd',
-  //   color: 'secondary',
-  //   okLabel: <span style={{ color: buttonColour }}>OK</span>,
-  //   cancelLabel: <span style={{ color: buttonColour }}>Cancel</span>,
-  //   clearLabel: <span style={{ color: buttonColour }}>Clear</span>,
-  //   style: { whiteSpace: 'nowrap' },
-  //   'aria-hidden': 'true',
-  //   inputProps: { 'aria-label': `${props.label} filter` },
-  //   views: ['year', 'month', 'date'],
-  // };
+  const datePickerProps: Partial<DatePickerProps> = {
+    clearable: true,
+    'aria-hidden': 'true',
+    inputFormat: 'yyyy-MM-dd',
+    mask: '____-__-__',
+  };
 
-  // const dateTimePickerProps: Partial<KeyboardDateTimePickerProps> = {
-  //   ...datePickerProps,
-  //   invalidDateMessage: 'Date format: yyyy-MM-dd HH:mm.',
-  //   format: 'yyyy-MM-dd HH:mm',
-  //   strictCompareDates: true,
-  //   views: ['year', 'month', 'date', 'hours', 'minutes'],
-  // };
+  const dateTimePickerProps: Partial<DateTimePickerProps> = {
+    clearable: true,
+    'aria-hidden': 'true',
+    inputFormat: 'yyyy-MM-dd HH:mm',
+    mask: '____-__-__ __:__',
+  };
 
   return (
     <form>
       {props.filterByTime ? (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
-            clearable
-            aria-hidden="true"
-            inputFormat="yyyy-MM-dd HH:mm"
-            mask="____-__-__ __:__"
+            {...dateTimePickerProps}
             value={startDate}
             maxDate={endDate || new Date('2100-01-01 00:00')}
             onChange={(date) => {
@@ -116,6 +110,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
                 otherDate: endDate,
                 startDateOrEndDateChanged: 'startDate',
                 onChange: props.onChange,
+                filterByTime: true,
               });
             }}
             clearText={
@@ -155,10 +150,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             }}
           />
           <DateTimePicker
-            clearable
-            aria-hidden="true"
-            inputFormat="yyyy-MM-dd HH:mm"
-            mask="____-__-__ __:__"
+            {...dateTimePickerProps}
             value={endDate}
             maxDate={startDate || new Date('1984-01-01 00:00')}
             onChange={(date) => {
@@ -169,6 +161,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
                 otherDate: startDate,
                 startDateOrEndDateChanged: 'endDate',
                 onChange: props.onChange,
+                filterByTime: true,
               });
             }}
             clearText={
@@ -211,10 +204,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
       ) : (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
-            clearable
-            aria-hidden="true"
-            inputFormat="yyyy-MM-dd"
-            mask="____-__-__"
+            {...datePickerProps}
             value={startDate}
             maxDate={endDate || new Date('2100-01-01 00:00')}
             onChange={(date) => {
@@ -264,14 +254,11 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             }}
           />
           <DatePicker
-            clearable
-            aria-hidden="true"
-            inputFormat="yyyy-MM-dd"
-            mask="____-__-__"
+            {...datePickerProps}
             value={endDate}
             maxDate={startDate || new Date('1984-01-01 00:00')}
             onChange={(date) => {
-              setStartDate(date as Date);
+              setEndDate(date as Date);
               updateFilter({
                 date: date as Date,
                 prevDate: endDate,
