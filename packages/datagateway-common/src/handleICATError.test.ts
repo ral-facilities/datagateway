@@ -91,76 +91,122 @@ describe('handleICATError', () => {
     expect(events.length).toBe(0);
   });
 
-  it('sends an invalidate token message to SciGateway on 403 response', () => {
-    if (error.response) error.response.status = 403;
-    handleICATError(error);
-
-    expect(log.error).toHaveBeenCalledWith(
-      'Test error message (response data)'
+  describe('sends messages to SciGateway on TopCAT authentication error', () => {
+    const localStorageGetItemMock = jest.spyOn(
+      window.localStorage.__proto__,
+      'getItem'
     );
-    expect(events.length).toBe(2);
-    expect(events[1].detail).toEqual({
-      type: InvalidateTokenType,
-    });
-  });
 
-  it('sends an invalidate token message to SciGateway on TopCAT authentication error', () => {
-    if (error.response)
-      error.response.data = {
-        message: 'Unable to find user by sessionid: null',
-      };
-    handleICATError(error);
-
-    expect(log.error).toHaveBeenCalledWith(
-      'Unable to find user by sessionid: null'
-    );
-    expect(events.length).toBe(2);
-    expect(events[1].detail).toEqual({
-      type: InvalidateTokenType,
+    afterAll(() => {
+      jest.clearAllMocks();
     });
 
-    (log.error as jest.Mock).mockClear();
-    events = [];
+    describe('sends invalidate token message and notifies user to reload the page if autoLogin true', () => {
+      beforeEach(() => {
+        localStorageGetItemMock.mockImplementation(() => 'true');
+      });
 
-    if (error.response)
-      error.response.data = {
-        message: 'Session id:null has expired',
-      };
-    handleICATError(error);
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
 
-    expect(log.error).toHaveBeenCalledWith('Session id:null has expired');
-    expect(events.length).toBe(2);
-    expect(events[1].detail).toEqual({
-      type: InvalidateTokenType,
+      it('if error code is 403', () => {
+        error.response.status = 403;
+        handleICATError(error);
+
+        expect(log.error).toHaveBeenCalledWith(
+          'Test error message (response data)'
+        );
+        expect(localStorage.getItem).toBeCalledWith('autoLogin');
+        expect(events.length).toBe(2);
+        expect(events[0].detail).toEqual({
+          type: NotificationType,
+          payload: {
+            severity: 'error',
+            message: 'Your session has expired, please reload the page',
+          },
+        });
+        expect(events[1].detail).toEqual({
+          type: InvalidateTokenType,
+        });
+      });
+
+      it('if SESSION appears in error response', () => {
+        error.response.data = {
+          message: 'Unable to find user by sessionid: null',
+        };
+        handleICATError(error);
+
+        expect(log.error).toHaveBeenCalledWith(
+          'Unable to find user by sessionid: null'
+        );
+        expect(localStorage.getItem).toBeCalledWith('autoLogin');
+        expect(events.length).toBe(2);
+        expect(events[0].detail).toEqual({
+          type: NotificationType,
+          payload: {
+            severity: 'error',
+            message: 'Your session has expired, please reload the page',
+          },
+        });
+        expect(events[1].detail).toEqual({
+          type: InvalidateTokenType,
+        });
+      });
     });
-  });
 
-  it('customises notification message to SciGateway on TopCAT authentication error', () => {
-    error.response.status = 403;
-    handleICATError(error);
+    describe('sends invalidate token message and notifies user to login again if autoLogin false', () => {
+      beforeEach(() => {
+        localStorageGetItemMock.mockImplementation(() => 'false');
+      });
 
-    expect(events.length).toBe(2);
-    expect(events[0].detail).toEqual({
-      type: NotificationType,
-      payload: {
-        severity: 'error',
-        message: 'Your session has expired, please reload the page',
-      },
-    });
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
 
-    events = [];
-    error.response.data = {
-      message: 'Unable to find user by sessionid: null',
-    };
-    handleICATError(error);
+      it('if error code is 403', () => {
+        error.response.status = 403;
+        handleICATError(error);
 
-    expect(events.length).toBe(2);
-    expect(events[0].detail).toEqual({
-      type: NotificationType,
-      payload: {
-        severity: 'error',
-        message: 'Your session has expired, please reload the page',
-      },
+        expect(log.error).toHaveBeenCalledWith(
+          'Test error message (response data)'
+        );
+        expect(localStorage.getItem).toBeCalledWith('autoLogin');
+        expect(events.length).toBe(2);
+        expect(events[0].detail).toEqual({
+          type: NotificationType,
+          payload: {
+            severity: 'error',
+            message: 'Your session has expired, please login again',
+          },
+        });
+        expect(events[1].detail).toEqual({
+          type: InvalidateTokenType,
+        });
+      });
+
+      it('if SESSION appears in error response', () => {
+        error.response.data = {
+          message: 'Unable to find user by sessionid: null',
+        };
+        handleICATError(error);
+
+        expect(log.error).toHaveBeenCalledWith(
+          'Unable to find user by sessionid: null'
+        );
+        expect(localStorage.getItem).toBeCalledWith('autoLogin');
+        expect(events.length).toBe(2);
+        expect(events[0].detail).toEqual({
+          type: NotificationType,
+          payload: {
+            severity: 'error',
+            message: 'Your session has expired, please login again',
+          },
+        });
+        expect(events[1].detail).toEqual({
+          type: InvalidateTokenType,
+        });
+      });
     });
   });
 });

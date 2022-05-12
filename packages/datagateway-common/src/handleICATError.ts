@@ -17,7 +17,10 @@ const handleICATError = (error: AxiosError, broadcast = true): void => {
         // TopCAT doesn't set 403 for session ID failure, so detect by looking at the message
         message.toUpperCase().includes('SESSION'))
     ) {
-      broadcastMessage = 'Your session has expired, please reload the page';
+      broadcastMessage =
+        localStorage.getItem('autoLogin') === 'true'
+          ? 'Your session has expired, please reload the page'
+          : 'Your session has expired, please login again';
     }
     document.dispatchEvent(
       new CustomEvent(MicroFrontendId, {
