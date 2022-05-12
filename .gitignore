@@ -26,7 +26,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-**/public/settings.json
-**/public/datagateway-dataview-settings.json
-**/public/datagateway-download-settings.json
-**/public/datagateway-search-settings.json
+**/public/*settings*.json
+!**/public/*settings.example.json
+
