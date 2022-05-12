@@ -64,24 +64,25 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
           position: 'relative',
 
           /* Positions breadcrumb */
-          height: '30px',
-          lineHeight: '30px',
+          height: '28px',
+          lineHeight: '28px',
           padding: '0 5px 0 2px',
           textAlign: 'center',
 
           /* Adds between breadcrumbs */
-          marginRight: '1px',
+          marginRight: '-1px',
           '&:before, &:after': {
             content: '""',
             position: 'absolute',
             top: 0,
             border: `0 solid ${theme.palette.primary.light}`,
-            borderWidth: '15px 7px',
+            // these need to be even numbers to avoid sub-pixel issue (#1196)
+            borderWidth: '14px 6px',
             width: 0,
             height: 0,
           },
           '&:before': {
-            left: '-14px',
+            left: '-12px',
             borderLeftColor: 'transparent',
           },
           '&:after': {
@@ -136,7 +137,7 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
       },
       '& li:last-child': {
         '& a, p': {
-          paddingRight: '7px',
+          paddingRight: '8px',
 
           /* Curve the last breadcrumb border */
           borderRadius: '0 4px 4px 0',
