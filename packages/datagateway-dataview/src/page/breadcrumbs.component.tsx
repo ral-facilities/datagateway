@@ -64,52 +64,37 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
           position: 'relative',
 
           /* Positions breadcrumb */
-          height: '28px',
           lineHeight: '28px',
-          padding: '0 5px 0 2px',
+          padding: ' 0 10px 0 20px',
           textAlign: 'center',
 
-          /* Adds between breadcrumbs */
-          marginRight: '-1px',
-          '&:before, &:after': {
+          /* Add the arrow between breadcrumbs */
+          '&:after': {
             content: '""',
             position: 'absolute',
-            top: 0,
-            border: `0 solid ${theme.palette.primary.light}`,
-            // these need to be even numbers to avoid sub-pixel issue (#1196)
-            borderWidth: '14px 6px',
-            width: 0,
-            height: 0,
-          },
-          '&:before': {
-            left: '-12px',
-            borderLeftColor: 'transparent',
-          },
-          '&:after': {
-            left: '100%',
-
-            /* Gap in between chevrons */
-            borderColor: 'transparent',
-            borderLeftColor: theme.palette.primary.light,
+            top: '3px',
+            // half the width/height
+            right: '-11px',
+            // width/height same as lineHeight - 2* top height
+            height: '22px',
+            width: '22px',
+            // change skew to alter how shallow the arrow is
+            transform: 'scale(0.707) rotate(45deg) skew(15deg,15deg)',
+            zIndex: 1,
+            boxShadow: '2px -2px 0 2px white',
+            borderRadius: ' 0 5px 0 50px',
+            backgroundColor: theme.palette.primary.light,
           },
           '&:hover': {
             backgroundColor: theme.palette.primary.light,
-            '&:before': {
-              borderColor: theme.palette.primary.light,
-              borderLeftColor: 'transparent',
-            },
             '&:after': {
-              borderLeftColor: theme.palette.primary.light,
+              backgroundColor: theme.palette.primary.light,
             },
           },
           '&:active': {
             backgroundColor: theme.palette.grey[600],
-            '&:before': {
-              borderColor: `${theme.palette.grey[600]} !important`,
-              borderLeftColor: 'transparent !important',
-            },
             '&:after': {
-              borderLeftColor: `${theme.palette.grey[600]} !important`,
+              backgroundColor: `${theme.palette.grey[600]} !important`,
             },
           },
         },
@@ -118,31 +103,26 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
       '& li:nth-child(4n + 3)': {
         '& a, p': {
           backgroundColor: theme.palette.primary.main,
-          '&:before': {
-            borderColor: theme.palette.primary.main,
-            borderLeftColor: 'transparent',
-          },
           '&:after': {
-            borderLeftColor: theme.palette.primary.main,
+            backgroundColor: theme.palette.primary.main,
           },
         },
       },
       '& li:first-child': {
         '& a, p': {
-          paddingLeft: '4px',
+          paddingLeft: '16px',
           '&:before': {
-            border: 'none',
+            left: '14px',
           },
         },
       },
       '& li:last-child': {
         '& a, p': {
-          paddingRight: '8px',
-
           /* Curve the last breadcrumb border */
-          borderRadius: '0 4px 4px 0',
+          borderRadius: '0 5px 5px 0',
+          paddingLeft: '20px',
           '&:after': {
-            border: 'none',
+            content: 'none',
           },
         },
       },
@@ -156,6 +136,10 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
         overflow: 'hidden',
         textOverflow: 'ellipsis',
       },
+    },
+    separator: {
+      marginLeft: 0,
+      marginRight: 0,
     },
   });
 
