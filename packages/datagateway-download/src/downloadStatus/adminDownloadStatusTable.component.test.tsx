@@ -169,7 +169,7 @@ describe('Admin Download Status Table', () => {
     expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
       1,
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.createdAt) desc, UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 0, 50"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -195,7 +195,7 @@ describe('Admin Download Status Table', () => {
     expect(fetchAdminDownloads).toHaveBeenCalledTimes(3);
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.createdAt) desc, UPPER(download.id) ASC LIMIT 5, 5"
+      "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 5, 5"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -247,7 +247,7 @@ describe('Admin Download Status Table', () => {
     expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
       3,
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.createdAt) desc, UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 0, 50"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -283,7 +283,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) asc, UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50"
     );
 
     // Get the Access Method sort header.
@@ -298,7 +298,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) asc, UPPER(download.transport) asc, UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50"
     );
 
     await act(async () => {
@@ -309,7 +309,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) asc, UPPER(download.transport) desc, UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50"
     );
 
     await act(async () => {
@@ -320,7 +320,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.userName) asc, UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50"
     );
   }, 10000);
 
@@ -356,7 +356,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50"
     );
     usernameFilterInput.instance().value = '';
     usernameFilterInput.simulate('change');
@@ -374,7 +374,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
     );
 
     // We simulate a change in the select from 'include' to 'exclude'.
@@ -389,7 +389,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
     );
 
     await act(async () => {
@@ -401,7 +401,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
     );
   }, 10000);
 
@@ -439,7 +439,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00'} AND {ts '9999-12-31 23:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '9999-12-31 23:59'} ORDER BY download.id ASC LIMIT 0, 50"
     );
 
     // Get the Requested Data To filter input
@@ -455,7 +455,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00'} AND {ts '2020-01-02 23:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '2020-01-02 23:59'} ORDER BY download.id ASC LIMIT 0, 50"
     );
 
     dateFromFilterInput.instance().value = '';
@@ -469,7 +469,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
     );
 
     cleanupDatePickerWorkaround();
@@ -505,7 +505,7 @@ describe('Admin Download Status Table', () => {
     });
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      'WHERE UPPER(download.id) = 4'
+      'WHERE download.id = 4'
     );
     expect(
       wrapper.exists(

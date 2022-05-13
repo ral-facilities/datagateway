@@ -7,33 +7,38 @@ import {
 import { MicroFrontendId } from './app.types';
 
 const handleICATError = (error: AxiosError, broadcast = true): void => {
-  let message;
-  if (error.response && error.response.data.message) {
-    message = error.response.data.message;
-  } else {
-    message = error.message;
-  }
+  const message = error.response?.data.message ?? error.message;
   log.error(message);
   if (broadcast) {
+    let broadcastMessage = message;
+    if (
+      error.response?.status &&
+      (error.response.status === 403 ||
+        // TopCAT doesn't set 403 for session ID failure, so detect by looking at the message
+        message.toUpperCase().includes('SESSION'))
+    ) {
+      broadcastMessage =
+        localStorage.getItem('autoLogin') === 'true'
+          ? 'Your session has expired, please reload the page'
+          : 'Your session has expired, please login again';
+    }
     document.dispatchEvent(
       new CustomEvent(MicroFrontendId, {
         detail: {
           type: NotificationType,
           payload: {
             severity: 'error',
-            message: message,
+            message: broadcastMessage,
           },
         },
       })
     );
   }
   if (
-    error.response &&
-    error.response.status &&
+    error.response?.status &&
     (error.response.status === 403 ||
       // TopCAT doesn't set 403 for session ID failure, so detect by looking at the message
-      (error.response.data.message &&
-        error.response.data.message.toUpperCase().includes('SESSION')))
+      message.toUpperCase().includes('SESSION'))
   ) {
     document.dispatchEvent(
       new CustomEvent(MicroFrontendId, {

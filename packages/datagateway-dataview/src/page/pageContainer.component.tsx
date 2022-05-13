@@ -506,7 +506,7 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
     : false;
 };
 
-const PageContainer: React.FC = () => {
+const DataviewPageContainer: React.FC = () => {
   const location = useLocation();
   const { push } = useHistory();
   const prevLocationRef = React.useRef(location);
@@ -635,103 +635,102 @@ const PageContainer: React.FC = () => {
   };
 
   return (
+    <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
+      <NavBar
+        entityCount={totalDataCount ?? 0}
+        cartItems={cartItems ?? []}
+        navigateToSearch={navigateToSearch}
+        navigateToDownload={navigateToDownload}
+        loggedInAnonymously={loggedInAnonymously}
+      />
+
+      <StyledGrid container>
+        <Grid item xs={12} style={{ marginTop: '10px', marginBottom: '10px' }}>
+          <StyledGrid container alignItems="baseline">
+            {/* Toggle between the table and card view */}
+            <Grid item style={{ display: 'flex', alignItems: 'baseline' }}>
+              <Route
+                exact
+                path={Object.values(paths.myData)}
+                render={() => <RoleSelector />}
+              />
+              <Route
+                exact
+                path={togglePaths}
+                render={() => (
+                  <ViewButton
+                    viewCards={view === 'card'}
+                    handleButtonChange={handleButtonChange}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path={Object.values(paths.myData).concat(
+                  Object.values(paths.toggle),
+                  Object.values(paths.standard),
+                  Object.values(paths.studyHierarchy.toggle),
+                  Object.values(paths.studyHierarchy.standard)
+                )}
+                render={() => (
+                  <ClearFiltersButton
+                    handleButtonClearFilters={handleButtonClearFilters}
+                    disabled={disabled}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={true}>
+              <SelectionAlert
+                selectedItems={cartItems ?? []}
+                navigateToSelection={navigateToDownload}
+                marginSide={'8px'}
+                loggedInAnonymously={loggedInAnonymously}
+              />
+            </Grid>
+          </StyledGrid>
+        </Grid>
+
+        {/* Show loading progress if data is still being loaded */}
+        {loading && (
+          <Grid item xs={12}>
+            <LinearProgress
+              color="secondary"
+              style={{ height: linearProgressHeight }}
+            />
+          </Grid>
+        )}
+
+        {/* Hold the view for remainder of the page */}
+        <Grid item xs={12} aria-label="page-view">
+          <ViewRouting
+            view={view}
+            location={location}
+            loadedCount={loadedCount}
+            loggedInAnonymously={loggedInAnonymously}
+            totalDataCount={totalDataCount ?? 0}
+            linearProgressHeight={linearProgressHeight}
+          />
+        </Grid>
+      </StyledGrid>
+    </Paper>
+  );
+};
+
+const PageContainer: React.FC = () => {
+  const location = useLocation();
+
+  return (
     <SwitchRouting location={location}>
       {/* Load the homepage */}
       <Route exact path={paths.homepage} component={TranslatedHomePage} />
       <Route exact path={paths.doiRedirect}>
         <DoiRedirect />
       </Route>
-      <Route
-        render={() => (
-          // Load the standard dataview pageContainer
-          <Paper square elevation={0} sx={{ backgroundColor: 'inherit' }}>
-            <NavBar
-              entityCount={totalDataCount ?? 0}
-              cartItems={cartItems ?? []}
-              navigateToSearch={navigateToSearch}
-              navigateToDownload={navigateToDownload}
-              loggedInAnonymously={loggedInAnonymously}
-            />
-
-            <StyledGrid container>
-              <Grid
-                item
-                xs={12}
-                sx={{ marginTop: '10px', marginBottom: '10px' }}
-              >
-                <StyledGrid container alignItems="baseline">
-                  {/* Toggle between the table and card view */}
-                  <Grid
-                    item
-                    style={{ display: 'flex', alignItems: 'baseline' }}
-                  >
-                    <Route
-                      exact
-                      path={Object.values(paths.myData)}
-                      render={() => <RoleSelector />}
-                    />
-                    <Route
-                      exact
-                      path={togglePaths}
-                      render={() => (
-                        <ViewButton
-                          viewCards={view === 'card'}
-                          handleButtonChange={handleButtonChange}
-                        />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path={Object.values(paths.myData).concat(
-                        Object.values(paths.toggle),
-                        Object.values(paths.standard),
-                        Object.values(paths.studyHierarchy.toggle),
-                        Object.values(paths.studyHierarchy.standard)
-                      )}
-                      render={() => (
-                        <ClearFiltersButton
-                          handleButtonClearFilters={handleButtonClearFilters}
-                          disabled={disabled}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={true}>
-                    <SelectionAlert
-                      selectedItems={cartItems ?? []}
-                      navigateToSelection={navigateToDownload}
-                      marginSide={'8px'}
-                      loggedInAnonymously={loggedInAnonymously}
-                    />
-                  </Grid>
-                </StyledGrid>
-              </Grid>
-
-              {/* Show loading progress if data is still being loaded */}
-              {loading && (
-                <Grid item xs={12}>
-                  <LinearProgress
-                    color="secondary"
-                    style={{ height: linearProgressHeight }}
-                  />
-                </Grid>
-              )}
-
-              {/* Hold the view for remainder of the page */}
-              <Grid item xs={12} aria-label="page-view">
-                <ViewRouting
-                  view={view}
-                  location={location}
-                  loadedCount={loadedCount}
-                  loggedInAnonymously={loggedInAnonymously}
-                  totalDataCount={totalDataCount ?? 0}
-                  linearProgressHeight={linearProgressHeight}
-                />
-              </Grid>
-            </StyledGrid>
-          </Paper>
-        )}
-      />
+      {/* Load the standard dataview pageContainer */}
+      <Route>
+        <DataviewPageContainer />
+      </Route>
     </SwitchRouting>
   );
 };
