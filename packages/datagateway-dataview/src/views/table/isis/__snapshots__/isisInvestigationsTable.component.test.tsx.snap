@@ -180,7 +180,7 @@ exports[`ISIS Investigations table component renders title and DOI as links 2`] 
 Array [
   <a
     class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
-    data-testid="isis-investigation-table-doi-link"
+    data-testid="isis-investigations-table-doi-link"
     href="https://doi.org/study pid"
   >
     study pid
@@ -204,7 +204,7 @@ exports[`ISIS Investigations table component renders title and DOI as links in S
 Array [
   <a
     class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
-    data-testid="isis-investigation-table-doi-link"
+    data-testid="isis-investigations-table-doi-link"
     href="https://doi.org/study pid"
   >
     study pid

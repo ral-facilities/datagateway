@@ -32,14 +32,14 @@ describe('ISIS - Investigations Table', () => {
   });
 
   it('should have the correct url for the DOI link', () => {
-    cy.get('[data-testid="isis-investigation-table-doi-link"]')
+    cy.get('[data-testid="isis-investigations-table-doi-link"]')
       .first()
       .then(($doi) => {
         const doi = $doi.text();
 
         const url = `https://doi.org/${doi}`;
 
-        cy.get('[data-testid="isis-investigation-table-doi-link"]')
+        cy.get('[data-testid="isis-investigations-table-doi-link"]')
           .first()
           .should('have.attr', 'href', url);
       });

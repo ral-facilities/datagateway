@@ -8,7 +8,7 @@ describe('Search Button component tests', () => {
   const testInitiateSearch = jest.fn();
 
   afterEach(() => {
-    testInitiateSearch.mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {

@@ -31,6 +31,9 @@ describe('Investigation details panel component', () => {
           study: {
             id: 12,
             pid: 'study pid',
+            name: 'study',
+            modTime: '2019-06-10',
+            createTime: '2019-06-11',
           },
         },
       ],

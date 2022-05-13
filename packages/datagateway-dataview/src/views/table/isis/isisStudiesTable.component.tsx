@@ -16,10 +16,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import PublicIcon from '@mui/icons-material/Public';
-import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import TitleIcon from '@mui/icons-material/Title';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { Public, Fingerprint, Title, CalendarToday } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { format, set } from 'date-fns';
 
@@ -108,7 +105,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     const instrumentChild = 'study';
     return [
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('studies.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
@@ -116,12 +113,12 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
             `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.id}`,
             cellProps.rowData.name,
             view,
-            'isis-mydata-table-name'
+            'isis-study-table-name'
           ),
         filterComponent: textFilter,
       },
       {
-        icon: TitleIcon,
+        icon: Title,
         label: t('studies.title'),
         dataKey: 'studyInvestigations.investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) =>
@@ -129,7 +126,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: PublicIcon,
+        icon: Public,
         label: t('studies.pid'),
         dataKey: 'pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -145,7 +142,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
@@ -155,7 +152,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         cellContentRenderer: (cellProps: TableCellProps) =>

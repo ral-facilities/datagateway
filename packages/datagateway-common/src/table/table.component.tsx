@@ -153,7 +153,6 @@ const VirtualizedTable = React.memo(
       allIds,
       onCheck,
       onUncheck,
-      loadMoreRows,
       loading,
       totalRowCount,
       detailsPanel,
@@ -163,8 +162,8 @@ const VirtualizedTable = React.memo(
     } = props;
 
     if (
-      (loadMoreRows && typeof totalRowCount === 'undefined') ||
-      (totalRowCount && typeof loadMoreRows === 'undefined')
+      (props.loadMoreRows && typeof totalRowCount === 'undefined') ||
+      (totalRowCount && typeof props.loadMoreRows === 'undefined')
     )
       throw new Error(
         'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
@@ -283,6 +282,11 @@ const VirtualizedTable = React.memo(
       [widthProps, setWidthProps]
     );
 
+    const loadMoreRows = React.useMemo(
+      () => props.loadMoreRows || (() => Promise.resolve()),
+      [props.loadMoreRows]
+    );
+
     return (
       <AutoSizer>
         {({ height, width }) => {
@@ -305,7 +309,7 @@ const VirtualizedTable = React.memo(
           return (
             <InfiniteLoader
               isRowLoaded={isRowLoaded}
-              loadMoreRows={loadMoreRows || (() => Promise.resolve())}
+              loadMoreRows={loadMoreRows}
               rowCount={rowCount}
               minimumBatchSize={25}
             >

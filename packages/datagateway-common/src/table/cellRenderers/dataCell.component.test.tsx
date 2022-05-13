@@ -12,7 +12,6 @@ describe('Data cell component', () => {
       test: 'non nested property',
       nested: { test: 'nested property' },
     },
-    className: 'test-class',
   };
 
   it('renders correctly', () => {

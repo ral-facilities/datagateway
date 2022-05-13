@@ -8,6 +8,7 @@ import {
   DownloadCartItem,
   DownloadCartTableItem,
   TextFilter,
+  ColumnType,
 } from 'datagateway-common';
 import {
   IconButton,
@@ -18,22 +19,24 @@ import {
   LinearProgress,
   Theme,
   Link,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import { RemoveCircle } from '@mui/icons-material';
 import {
-  fetchDownloadCartItems,
-  removeAllDownloadCartItems,
-  removeDownloadCartItem,
-  getSize,
-  getIsTwoLevel,
-  getDatafileCount,
-} from '../downloadApi';
-import chunk from 'lodash.chunk';
+  useCart,
+  useRemoveEntityFromCart,
+  useIsTwoLevel,
+  useRemoveAllFromCart,
+  useSizes,
+  useDatafileCounts,
+} from '../downloadApiHooks';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -48,150 +51,88 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [filters, setFilters] = React.useState<{
     [column: string]: { value?: string | number; type: string };
   }>({});
-  const [data, setData] = React.useState<DownloadCartTableItem[]>([]);
-  const [dataLoaded, setDataLoaded] = React.useState(false);
-  const [sizesLoaded, setSizesLoaded] = React.useState(true);
-  const [sizesFinished, setSizesFinished] = React.useState(true);
 
   const fileCountMax = settings.fileCountMax;
   const totalSizeMax = settings.totalSizeMax;
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
-  const [isTwoLevel, setIsTwoLevel] = React.useState(false);
 
-  const [t] = useTranslation();
-  const dgDownloadElement = document.getElementById('datagateway-download');
+  const { data: isTwoLevel } = useIsTwoLevel();
+  const { mutate: removeDownloadCartItem } = useRemoveEntityFromCart();
+  const {
+    mutate: removeAllDownloadCartItems,
+    isLoading: removingAll,
+  } = useRemoveAllFromCart();
+  const { data, isFetching: dataLoading } = useCart();
 
-  const totalSize = React.useMemo(() => {
-    if (sizesFinished) {
-      return data.reduce((accumulator, nextItem) => {
-        if (nextItem.size > -1) {
-          return accumulator + nextItem.size;
-        } else {
-          return accumulator;
-        }
-      }, 0);
-    } else {
-      return -1;
-    }
-  }, [data, sizesFinished]);
+  const queryClient = useQueryClient();
+  const setData = React.useCallback(
+    (newData: DownloadCartTableItem[]) => {
+      queryClient.setQueryData('cart', newData);
+    },
+    [queryClient]
+  );
+
+  const fileCountQueries = useDatafileCounts(data);
+  const sizeQueries = useSizes(data);
 
   const fileCount = React.useMemo(() => {
-    if (sizesFinished) {
-      return data.reduce((accumulator, nextItem) => {
-        if (nextItem.fileCount > -1) {
-          return accumulator + nextItem.fileCount;
+    return (
+      fileCountQueries?.reduce((accumulator, nextItem) => {
+        if (nextItem.data && nextItem.data > -1) {
+          return accumulator + nextItem.data;
         } else {
           return accumulator;
         }
-      }, 0);
-    } else {
-      return -1;
-    }
-  }, [data, sizesFinished]);
+      }, 0) ?? -1
+    );
+  }, [fileCountQueries]);
 
-  React.useEffect(() => {
-    const checkTwoLevel = async (): Promise<void> =>
-      setIsTwoLevel(await getIsTwoLevel({ idsUrl: settings.idsUrl }));
-
-    if (settings.idsUrl) checkTwoLevel();
-  }, [settings.idsUrl]);
-  React.useEffect(() => {
-    if (
-      settings.facilityName &&
-      settings.apiUrl &&
-      settings.downloadApiUrl &&
-      dgDownloadElement
-    )
-      fetchDownloadCartItems({
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
-      }).then((cartItems) => {
-        setData(
-          cartItems.map((cartItem) => ({
-            ...cartItem,
-            size: -1,
-            fileCount: -1,
-          }))
-        );
-        setDataLoaded(true);
-        setSizesLoaded(false);
-        setSizesFinished(false);
-      });
-  }, [
-    settings.facilityName,
-    settings.apiUrl,
-    settings.downloadApiUrl,
-    dgDownloadElement,
-  ]);
-
-  React.useEffect(() => {
-    if (!sizesLoaded) {
-      const chunkSize = 10;
-      const chunkedData = chunk(data, chunkSize);
-      const allPromises: Promise<void>[] = [];
-      chunkedData.forEach((chunk, chunkIndex) => {
-        const updatedData = [...data];
-        const chunkPromises: Promise<void>[] = [];
-
-        const chunkIndexOffset = chunkIndex * chunkSize;
-        chunk.forEach((cartItem, index) => {
-          const promiseSize = getSize(cartItem.entityId, cartItem.entityType, {
-            facilityName: settings.facilityName,
-            apiUrl: settings.apiUrl,
-            downloadApiUrl: settings.downloadApiUrl,
-          }).then((size) => {
-            updatedData[chunkIndexOffset + index].size = size;
-          });
-          const promiseFileCount = getDatafileCount(
-            cartItem.entityId,
-            cartItem.entityType,
-            {
-              apiUrl: settings.apiUrl,
-            }
-          ).then((fileCount) => {
-            updatedData[chunkIndexOffset + index].fileCount = fileCount;
-          });
-          chunkPromises.push(promiseSize);
-          allPromises.push(promiseSize);
-          chunkPromises.push(promiseFileCount);
-          allPromises.push(promiseFileCount);
-        });
-
-        Promise.all(chunkPromises).then(() => {
-          setData(updatedData);
-        });
-      });
-      Promise.all(allPromises).then(() => {
-        setSizesFinished(true);
-      });
-      setSizesLoaded(true);
-    }
-  }, [
-    data,
-    sizesLoaded,
-    settings.facilityName,
-    settings.apiUrl,
-    settings.downloadApiUrl,
-  ]);
-
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      onChange={(value: { value?: string | number; type: string } | null) => {
-        if (value) {
-          setFilters({ ...filters, [dataKey]: value });
+  const totalSize = React.useMemo(() => {
+    return (
+      sizeQueries?.reduce((accumulator, nextItem) => {
+        if (nextItem.data && nextItem.data > -1) {
+          return accumulator + nextItem.data;
         } else {
-          const { [dataKey]: value, ...restOfFilters } = filters;
-          setFilters(restOfFilters);
+          return accumulator;
         }
-      }}
-      value={filters[dataKey] as TextFilter}
-    />
+      }, 0) ?? -1
+    );
+  }, [sizeQueries]);
+
+  const sizesLoading = sizeQueries.some((query) => query.isLoading);
+  const fileCountsLoading = fileCountQueries.some((query) => query.isLoading);
+
+  const [t] = useTranslation();
+
+  const textFilter = React.useCallback(
+    (label: string, dataKey: string): React.ReactElement => (
+      <TextColumnFilter
+        label={label}
+        onChange={(value: { value?: string | number; type: string } | null) => {
+          if (value) {
+            setFilters({ ...filters, [dataKey]: value });
+          } else {
+            const { [dataKey]: value, ...restOfFilters } = filters;
+            setFilters(restOfFilters);
+          }
+        }}
+        value={filters[dataKey] as TextFilter}
+      />
+    ),
+    [filters]
   );
 
   const sortedAndFilteredData = React.useMemo(() => {
-    const filteredData = data.filter((item) => {
+    const sizeAndCountAddedData = data?.map(
+      (item, index) =>
+        ({
+          ...item,
+          size: sizeQueries?.[index]?.data ?? -1,
+          fileCount: fileCountQueries?.[index]?.data ?? -1,
+        } as DownloadCartTableItem)
+    );
+    const filteredData = sizeAndCountAddedData?.filter((item) => {
       for (const [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
         if (
@@ -230,10 +171,92 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       return 0;
     }
 
-    return filteredData.sort(sortCartItems);
-  }, [data, sort, filters]);
+    return filteredData?.sort(sortCartItems);
+  }, [data, sort, filters, sizeQueries, fileCountQueries]);
 
-  return data.length === 0 ? (
+  const columns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        label: t('downloadCart.name'),
+        dataKey: 'name',
+        filterComponent: textFilter,
+      },
+      {
+        label: t('downloadCart.type'),
+        dataKey: 'entityType',
+        filterComponent: textFilter,
+      },
+      {
+        label: t('downloadCart.size'),
+        dataKey: 'size',
+        cellContentRenderer: (props) => {
+          return formatBytes(props.cellData);
+        },
+      },
+      {
+        label: t('downloadCart.fileCount'),
+        dataKey: 'fileCount',
+        cellContentRenderer: (props) => {
+          if (props.cellData === -1) return 'Loading...';
+          return props.cellData;
+        },
+      },
+    ],
+    [t, textFilter]
+  );
+  const onSort = React.useCallback(
+    (column: string, order: 'desc' | 'asc' | null) => {
+      if (order) {
+        setSort({ ...sort, [column]: order });
+      } else {
+        const { [column]: order, ...restOfSort } = sort;
+        setSort(restOfSort);
+      }
+    },
+    [sort]
+  );
+  const actions = React.useMemo(
+    () => [
+      function RemoveButton({ rowData }: TableActionProps) {
+        const cartItem = rowData as DownloadCartItem;
+        const { entityId, entityType } = cartItem;
+        const [isDeleting, setIsDeleting] = React.useState(false);
+        return (
+          <IconButton
+            aria-label={t('downloadCart.remove', {
+              name: cartItem.name,
+            })}
+            key={`remove-${entityId}`}
+            size="small"
+            disabled={isDeleting}
+            // Remove the download when clicked.
+            onClick={() => {
+              setIsDeleting(true);
+              removeDownloadCartItem({
+                entityId,
+                entityType,
+              });
+            }}
+          >
+            <RemoveCircle
+              className="tour-download-remove-single"
+              color={isDeleting ? 'error' : 'inherit'}
+            />
+          </IconButton>
+        );
+      },
+    ],
+    [removeDownloadCartItem, t]
+  );
+
+  const emptyItems = React.useMemo(
+    () =>
+      sizeQueries.some((query) => query.data === 0) ||
+      fileCountQueries.some((query) => query.data === 0),
+    [sizeQueries, fileCountQueries]
+  );
+
+  return !dataLoading && data?.length === 0 ? (
     <div
       className="tour-download-results"
       data-testid="no-selections-message"
@@ -278,7 +301,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 >
                   search
                 </Link>{' '}
-                for data.
+                for data?.
               </Trans>
             </Typography>
           </Grid>
@@ -289,7 +312,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     <div>
       <Grid container direction="column">
         {/* Show loading progress if data is still being loaded */}
-        {!dataLoaded && (
+        {dataLoading && (
           <Grid item xs={12}>
             <LinearProgress color="secondary" />
           </Grid>
@@ -301,81 +324,24 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           <Paper
             className="tour-download-results"
             sx={{
-              height:
-                'calc(100vh - 64px - 48px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px))',
+              height: `calc(100vh - 64px - 48px - 48px - 48px - 3rem${
+                emptyItems ||
+                fileCount > fileCountMax ||
+                totalSize > totalSizeMax
+                  ? ' - 2rem'
+                  : ''
+              } - (1.75 * 0.875rem + 12px)`,
               minHeight: 230,
               overflowX: 'auto',
             }}
           >
             <Table
-              columns={[
-                {
-                  label: t('downloadCart.name'),
-                  dataKey: 'name',
-                  filterComponent: textFilter,
-                },
-                {
-                  label: t('downloadCart.type'),
-                  dataKey: 'entityType',
-                  filterComponent: textFilter,
-                },
-                {
-                  label: t('downloadCart.size'),
-                  dataKey: 'size',
-                  cellContentRenderer: (props) => {
-                    return formatBytes(props.cellData);
-                  },
-                },
-              ]}
+              columns={columns}
               sort={sort}
-              onSort={(column: string, order: 'desc' | 'asc' | null) => {
-                if (order) {
-                  setSort({ ...sort, [column]: order });
-                } else {
-                  const { [column]: order, ...restOfSort } = sort;
-                  setSort(restOfSort);
-                }
-              }}
-              data={sortedAndFilteredData}
-              loading={!dataLoaded}
-              actions={[
-                function RemoveButton({ rowData }: TableActionProps) {
-                  const cartItem = rowData as DownloadCartItem;
-                  const [isDeleting, setIsDeleting] = React.useState(false);
-                  return (
-                    <IconButton
-                      aria-label={t('downloadCart.remove', {
-                        name: cartItem.name,
-                      })}
-                      key="remove"
-                      size="small"
-                      // Remove the download when clicked.
-                      onClick={() => {
-                        setIsDeleting(true);
-                        removeDownloadCartItem(
-                          cartItem.entityId,
-                          cartItem.entityType,
-                          {
-                            facilityName: settings.facilityName,
-                            downloadApiUrl: settings.downloadApiUrl,
-                          }
-                        ).then(() => {
-                          setData(
-                            data.filter(
-                              (item) => item.entityId !== cartItem.entityId
-                            )
-                          );
-                        });
-                      }}
-                    >
-                      <RemoveCircle
-                        className="tour-download-remove-single"
-                        color={isDeleting ? 'error' : 'inherit'}
-                      />
-                    </IconButton>
-                  );
-                },
-              ]}
+              onSort={onSort}
+              data={sortedAndFilteredData ?? []}
+              loading={dataLoading}
+              actions={actions}
             />
           </Paper>
         </Grid>
@@ -392,18 +358,116 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             direction="column"
             xs
             alignContent="flex-end"
+            alignItems="flex-end"
             sx={{ marginRight: '1.2em' }}
+            spacing={1}
           >
-            <Typography id="fileCountDisplay">
-              {t('downloadCart.number_of_files')}:{' '}
-              {fileCount !== -1 ? fileCount : 'Calculating...'}
-              {fileCountMax !== -1 && ` / ${fileCountMax}`}
-            </Typography>
-            <Typography id="totalSizeDisplay">
-              {t('downloadCart.total_size')}:{' '}
-              {totalSize !== -1 ? formatBytes(totalSize) : 'Calculating...'}
-              {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
-            </Typography>
+            <Grid item>
+              {fileCountsLoading && (
+                <CircularProgress
+                  size={15}
+                  thickness={7}
+                  disableShrink={true}
+                  aria-label={t('downloadCart.calculating')}
+                />
+              )}
+              <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
+                {t('downloadCart.number_of_files')}:{' '}
+                {fileCount !== -1
+                  ? fileCount
+                  : `${t('downloadCart.calculating')}...`}
+                {fileCountMax !== -1 && ` / ${fileCountMax}`}
+              </Typography>
+            </Grid>
+            <Grid item>
+              {fileCount > fileCountMax && (
+                <Alert
+                  id="fileLimitAlert"
+                  variant="filled"
+                  severity="error"
+                  icon={false}
+                  style={{
+                    padding: '0px 8px',
+                    lineHeight: 0.6,
+                  }}
+                >
+                  {t('downloadCart.file_limit_error', {
+                    fileCountMax: fileCountMax,
+                  })}
+                </Alert>
+              )}
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            item
+            direction="column"
+            xs
+            alignContent="flex-end"
+            alignItems="flex-end"
+            sx={{ marginRight: '1.2em' }}
+            // spacing={1}
+          >
+            <Grid item>
+              {sizesLoading && (
+                <CircularProgress
+                  size={15}
+                  thickness={7}
+                  disableShrink={true}
+                  aria-label={t('downloadCart.calculating')}
+                />
+              )}
+              <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
+                {t('downloadCart.total_size')}:{' '}
+                {totalSize !== -1
+                  ? formatBytes(totalSize)
+                  : `${t('downloadCart.calculating')}...`}
+                {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
+              </Typography>
+            </Grid>
+            <Grid item>
+              {totalSize > totalSizeMax && (
+                <Alert
+                  id="sizeLimitAlert"
+                  variant="filled"
+                  severity="error"
+                  icon={false}
+                  style={{
+                    padding: '0px 8px',
+                    lineHeight: 0.6,
+                  }}
+                >
+                  {t('downloadCart.size_limit_error', {
+                    totalSizeMax: formatBytes(totalSizeMax),
+                  })}
+                </Alert>
+              )}
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            item
+            direction="column"
+            xs
+            alignContent="flex-end"
+            alignItems="flex-end"
+            sx={{ marginRight: '1.2em' }}
+            // spacing={1}
+          >
+            {emptyItems && (
+              <Alert
+                id="emptyFilesAlert"
+                variant="filled"
+                severity="error"
+                icon={false}
+                style={{
+                  padding: '0px 8px',
+                  lineHeight: 0.6,
+                }}
+              >
+                {t('downloadCart.empty_items_error')}
+              </Alert>
+            )}
           </Grid>
           <Grid
             container
@@ -414,17 +478,15 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             sx={{ marginRight: '1em' }}
           >
             <Grid item>
+              {/* Request to remove all selections is in progress. To prevent excessive requests, disable button during request */}
               <Button
                 className="tour-download-remove-button"
                 id="removeAllButton"
                 variant="contained"
                 color="primary"
-                onClick={() =>
-                  removeAllDownloadCartItems({
-                    facilityName: settings.facilityName,
-                    downloadApiUrl: settings.downloadApiUrl,
-                  }).then(() => setData([]))
-                }
+                disabled={removingAll}
+                startIcon={removingAll && <CircularProgress size={20} />}
+                onClick={() => removeAllDownloadCartItems()}
               >
                 {t('downloadCart.remove_all')}
               </Button>
@@ -439,6 +501,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 disabled={
                   fileCount <= 0 ||
                   totalSize <= 0 ||
+                  fileCountsLoading ||
+                  sizesLoading ||
+                  emptyItems ||
                   (fileCountMax !== -1 && fileCount > fileCountMax) ||
                   (totalSizeMax !== -1 && totalSize > totalSizeMax)
                 }
@@ -454,7 +519,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       <DownloadConfirmDialog
         aria-labelledby="downloadCartConfirmation"
         totalSize={totalSize}
-        isTwoLevel={isTwoLevel}
+        isTwoLevel={isTwoLevel ?? false}
         open={showConfirmation}
         redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}

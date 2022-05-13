@@ -56,28 +56,30 @@ describe('Generic download button', () => {
   });
 
   it('renders correctly', () => {
-    const textButtonWrapper = createWrapper({
+    const props: DownloadButtonProps = {
       entityType: 'datafile',
       entityName: 'test',
       entityId: 1,
-    });
+      entitySize: 1,
+    };
+    const textButtonWrapper = createWrapper(props);
     expect(textButtonWrapper.find('button').text()).toBe('buttons.download');
 
     const iconButtonWrapper = createWrapper({
-      entityType: 'datafile',
-      entityName: 'test',
-      entityId: 1,
+      ...props,
       variant: 'icon',
     });
     expect(iconButtonWrapper.find('button').text()).toBe('');
   });
 
   it('calls download investigation on button press for both text and icon buttons', () => {
-    let wrapper = createWrapper({
+    const props: DownloadButtonProps = {
       entityType: 'investigation',
       entityName: 'test',
       entityId: 1,
-    });
+      entitySize: 1,
+    };
+    let wrapper = createWrapper(props);
 
     wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadInvestigation).toHaveBeenCalledWith(
@@ -89,9 +91,7 @@ describe('Generic download button', () => {
     jest.clearAllMocks();
 
     wrapper = createWrapper({
-      entityType: 'investigation',
-      entityName: 'test',
-      entityId: 1,
+      ...props,
       variant: 'icon',
     });
 
@@ -104,11 +104,13 @@ describe('Generic download button', () => {
   });
 
   it('calls download dataset on button press for both text and icon buttons', () => {
-    let wrapper = createWrapper({
+    const props: DownloadButtonProps = {
       entityType: 'dataset',
       entityName: 'test',
       entityId: 1,
-    });
+      entitySize: 1,
+    };
+    let wrapper = createWrapper(props);
 
     wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDataset).toHaveBeenCalledWith(
@@ -120,9 +122,7 @@ describe('Generic download button', () => {
     jest.clearAllMocks();
 
     wrapper = createWrapper({
-      entityType: 'dataset',
-      entityName: 'test',
-      entityId: 1,
+      ...props,
       variant: 'icon',
     });
 
@@ -135,11 +135,13 @@ describe('Generic download button', () => {
   });
 
   it('calls download datafile on button press for both text and icon buttons', () => {
-    let wrapper = createWrapper({
+    const props: DownloadButtonProps = {
       entityType: 'datafile',
       entityName: 'test',
       entityId: 1,
-    });
+      entitySize: 1,
+    };
+    let wrapper = createWrapper(props);
 
     wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).toHaveBeenCalledWith(
@@ -151,14 +153,12 @@ describe('Generic download button', () => {
     jest.clearAllMocks();
 
     wrapper = createWrapper({
-      entityType: 'dataset',
-      entityName: 'test',
-      entityId: 1,
+      ...props,
       variant: 'icon',
     });
 
     wrapper.find('#download-btn-1').last().simulate('click');
-    expect(downloadDataset).toHaveBeenCalledWith(
+    expect(downloadDatafile).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
       'test'
@@ -170,8 +170,34 @@ describe('Generic download button', () => {
       entityType: 'datafile',
       entityName: undefined,
       entityId: 1,
+      entitySize: 1,
     });
 
     expect(wrapper.find(DownloadButton).children().length).toBe(0);
+  });
+
+  it('renders a tooltip and disabled button if entity size is zero', () => {
+    const props: DownloadButtonProps = {
+      entityType: 'datafile',
+      entityName: 'test',
+      entityId: 1,
+      entitySize: 0,
+    };
+    let wrapper = createWrapper(props);
+
+    expect(wrapper.exists('#tooltip-1'));
+    wrapper.find('#download-btn-1').last().simulate('click');
+    expect(downloadDatafile).not.toHaveBeenCalled();
+
+    jest.clearAllMocks();
+
+    wrapper = createWrapper({
+      ...props,
+      variant: 'icon',
+    });
+
+    expect(wrapper.exists('#tooltip-1'));
+    wrapper.find('#download-btn-1').last().simulate('click');
+    expect(downloadDatafile).not.toHaveBeenCalled();
   });
 });

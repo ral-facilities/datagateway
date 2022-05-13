@@ -1,8 +1,5 @@
 import React from 'react';
-import TitleIcon from '@mui/icons-material/Title';
-import ExploreIcon from '@mui/icons-material/Explore';
-import SaveIcon from '@mui/icons-material/Save';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { Title, Explore, Save, CalendarToday } from '@mui/icons-material';
 import {
   Table,
   formatBytes,
@@ -117,19 +114,19 @@ const DLSDatafilesTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: Title,
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,
       },
       {
-        icon: ExploreIcon,
+        icon: Explore,
         label: t('datafiles.location'),
         dataKey: 'location',
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('datafiles.size'),
         dataKey: 'fileSize',
         cellContentRenderer: (cellProps) => {
@@ -138,7 +135,7 @@ const DLSDatafilesTable = (
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datafiles.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,

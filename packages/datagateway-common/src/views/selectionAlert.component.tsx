@@ -59,30 +59,19 @@ const AnimatedPaper = styled(Paper, {
       background-color: ${selectionAlertColor};
     }`;
 
-  if (animating) {
-    return {
-      backgroundColor: selectionAlertColor,
-      color: 'black',
-      width: props.width === undefined ? 'auto' : `${props.width}`,
-      marginTop: '8px',
-      marginLeft: props.marginSide === undefined ? '0px' : props.marginSide,
-      marginRight: props.marginSide === undefined ? '0px' : props.marginSide,
-      paddingTop: '2px',
-      paddingBottom: '2px',
-      animation: `${pulsate} 700ms ${theme.transitions.easing.easeInOut}`,
-    };
-  } else {
-    return {
-      backgroundColor: selectionAlertColor,
-      color: 'black',
-      width: props.width === undefined ? 'auto' : props.width,
-      marginTop: '8px',
-      marginLeft: props.marginSide === undefined ? '0px' : props.marginSide,
-      marginRight: props.marginSide === undefined ? '0px' : props.marginSide,
-      paddingTop: '2px',
-      paddingBottom: '2px',
-    };
-  }
+  return {
+    backgroundColor: selectionAlertColor,
+    color: 'black',
+    width: props.width ?? 'auto',
+    marginTop: '8px',
+    marginLeft: props.marginSide ?? '0px',
+    marginRight: props.marginSide ?? '0px',
+    paddingTop: '2px',
+    paddingBottom: '2px',
+    animation: animating
+      ? `${pulsate} 700ms ${theme.transitions.easing.easeInOut}`
+      : undefined,
+  };
 });
 
 const SelectionAlert = React.memo(

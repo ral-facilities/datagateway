@@ -8,11 +8,11 @@ import {
   SelectChangeEvent,
   styled,
   Typography,
+  Button,
 } from '@mui/material';
 import { Mark } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from '@mui/material/Button';
 import axios, { AxiosError } from 'axios';
 import { FormattedUser } from './landing/isis/isisStudyLanding.component';
 import { useQuery, UseQueryResult } from 'react-query';

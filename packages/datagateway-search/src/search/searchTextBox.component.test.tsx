@@ -60,18 +60,11 @@ describe('Search text box component tests', () => {
   });
 
   afterEach(() => {
-    testInitiateSearch.mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = render(
-      <SearchTextBox
-        store={testStore}
-        searchText="test"
-        initiateSearch={testInitiateSearch}
-        onChange={handleChange}
-      />
-    );
+    const wrapper = createWrapper();
     expect(wrapper.asFragment()).toMatchSnapshot();
   });
 
@@ -81,6 +74,8 @@ describe('Search text box component tests', () => {
       'searchBox.search_text_arialabel'
     );
     fireEvent.change(input, { target: { value: 'test' } });
+    expect(handleChange).toHaveBeenCalled();
+    expect(testInitiateSearch).not.toHaveBeenCalled();
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(testInitiateSearch).toHaveBeenCalled();
   });

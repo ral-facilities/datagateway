@@ -1,3 +1,5 @@
+import { format } from 'date-fns-tz';
+
 describe('Download Status', () => {
   before(() => {
     // Ensure the downloads are cleared before running tests.
@@ -26,12 +28,6 @@ describe('Download Status', () => {
     });
   });
 
-  afterEach(() => {
-    // Ensure to clear sessionStorage to prevent the app
-    // storing tab data.
-    sessionStorage.clear();
-  });
-
   it('should load correctly and display download status table', () => {
     cy.title().should('equal', 'DataGateway Download');
     cy.get('#datagateway-download').should('be.visible');
@@ -50,6 +46,9 @@ describe('Download Status', () => {
 
   describe('should be able to sort download items by', () => {
     it('ascending order', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.contains('[role="button"]', 'Download Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
@@ -62,6 +61,9 @@ describe('Download Status', () => {
     });
 
     it('descending order', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.contains('[role="button"]', 'Download Name').click();
       cy.contains('[role="button"]', 'Download Name').click();
 
@@ -83,6 +85,9 @@ describe('Download Status', () => {
     });
 
     it('no order', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.contains('[role="button"]', 'Download Name').click();
       cy.contains('[role="button"]', 'Download Name').click();
       cy.contains('[role="button"]', 'Download Name').click();
@@ -106,6 +111,9 @@ describe('Download Status', () => {
     });
 
     it('multiple columns', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.contains('[role="button"]', 'Access Method').click();
       cy.contains('[role="button"]', 'Availability').click();
 
@@ -129,29 +137,14 @@ describe('Download Status', () => {
     });
 
     it('date between', () => {
-      cy.get('input[id="Requested Date filter from"]').type('2020-01-31');
+      cy.get('input[id="Requested Date filter from"]').type('2020-01-31 00:00');
 
       const date = new Date();
-      const month = date.toLocaleString('default', { month: 'long' });
-      const year = date.getFullYear();
-
-      cy.get('input[id="Requested Date filter to"]')
-        .parent()
-        .find('button')
-        .click();
-
-      cy.contains(`${month}`).should('exist');
-      cy.contains(`${year}`).should('exist');
-      cy.get('[aria-label="Previous month"]').click();
-
-      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
-
-      date.setDate(1);
-      date.setMonth(date.getMonth() - 1);
-
-      cy.get('input[id="Requested Date filter to"]').should(
-        'have.value',
-        date.toISOString().slice(0, 10)
+      // MUIv5 datetime pickers don't allow for time to be graphically selected
+      // This is because the relevant elements are <span> elements with pointer-events: none
+      // Therefore, we settle for typing the date and time instead
+      cy.get('input[id="Requested Date filter to"]').type(
+        format(date, 'yyyy-MM-dd HH:mm')
       );
 
       // There should not be results for this time period.
@@ -164,7 +157,7 @@ describe('Download Status', () => {
       cy.get('[aria-rowcount="4"]').should('exist');
 
       cy.get('input[id="Requested Date filter from"]').type(
-        currDate.toISOString().slice(0, 10)
+        format(currDate, 'yyyy-MM-dd HH:mm')
       );
 
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(

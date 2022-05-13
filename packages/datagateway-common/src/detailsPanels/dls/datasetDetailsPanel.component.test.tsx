@@ -3,6 +3,7 @@ import DatasetDetailsPanel from './datasetDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { mount, ReactWrapper } from 'enzyme';
 import { useDatasetDetails, useDatasetSize } from '../../api/datasets';
+import { Dataset, DatasetType } from '../../app.types';
 
 jest.mock('../../api/datasets');
 

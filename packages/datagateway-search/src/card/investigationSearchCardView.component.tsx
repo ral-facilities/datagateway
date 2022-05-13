@@ -353,12 +353,17 @@ const InvestigationCardView = (
                   entityType="investigation"
                   entityId={investigation.id}
                   entityName={investigation.name}
+                  entitySize={
+                    data
+                      ? sizeQueries[data.indexOf(investigation)]?.data ?? -1
+                      : -1
+                  }
                 />
               </ActionButtonDiv>
             ),
           ]
         : [],
-    [data, hierarchy]
+    [data, hierarchy, sizeQueries]
   );
 
   return (

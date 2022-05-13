@@ -145,7 +145,11 @@ exports[`Admin Download Status Table renders correctly 1`] = `
               loadMoreRows={[Function]}
               loading={true}
               onSort={[Function]}
-              sort={Object {}}
+              sort={
+                Object {
+                  "createdAt": "desc",
+                }
+              }
               totalRowCount={9007199254740991}
             />
           </ForwardRef(Paper)>

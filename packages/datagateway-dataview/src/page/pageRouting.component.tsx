@@ -441,9 +441,9 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.studyHierarchy.toggle.isisInstrument}
           render={() =>
             this.props.view === 'card' ? (
-              <ISISInstrumentsCardView studyHierarchy={true} />
+              <ISISInstrumentsCardView studyHierarchy={true} key="true" />
             ) : (
-              <ISISInstrumentsTable studyHierarchy={true} />
+              <ISISInstrumentsTable studyHierarchy={true} key="true" />
             )
           }
         />
@@ -557,9 +557,9 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.toggle.isisInstrument}
           render={() =>
             this.props.view === 'card' ? (
-              <ISISInstrumentsCardView studyHierarchy={false} />
+              <ISISInstrumentsCardView studyHierarchy={false} key="false" />
             ) : (
-              <ISISInstrumentsTable studyHierarchy={false} />
+              <ISISInstrumentsTable studyHierarchy={false} key="false" />
             )
           }
         />

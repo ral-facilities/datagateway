@@ -25,7 +25,7 @@ const MarkSVG = styled('svg', {
   shouldForwardProp: (prop) =>
     prop !== 'colour' && prop !== 'visible' && prop !== 'size',
 })<{ visible: boolean; size: number; colour?: string }>(
-  ({ theme, visible, size, colour }) => ({
+  ({ visible, size, colour }) => ({
     display: 'block',
     width: size,
     height: size,
@@ -46,7 +46,7 @@ const MarkSVG = styled('svg', {
 
 const MarkCircle = styled('circle', {
   shouldForwardProp: (prop) => prop !== 'colour',
-})<{ colour?: string }>(({ theme, colour }) => ({
+})<{ colour?: string }>(({ colour }) => ({
   strokeDasharray: 166,
   strokeDashoffset: 166,
   strokeWidth: 5,
@@ -57,7 +57,7 @@ const MarkCircle = styled('circle', {
   animation: `${stroke} 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards`,
 }));
 
-const MarkSymbol = styled('path')(({ theme }) => ({
+const MarkSymbol = styled('path')(() => ({
   transformOrigin: '50% 50%',
   strokeDasharray: '48px',
   strokeDashoffset: '48px',

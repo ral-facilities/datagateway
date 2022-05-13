@@ -43,7 +43,10 @@ Object {
       Object {
         "id": 11,
         "study": Object {
+          "createTime": "2019-06-11",
           "id": 12,
+          "modTime": "2019-06-10",
+          "name": "study",
           "pid": "study pid",
         },
       },
@@ -98,7 +101,10 @@ Object {
       Object {
         "id": 11,
         "study": Object {
+          "createTime": "2019-06-11",
           "id": 12,
+          "modTime": "2019-06-10",
+          "name": "study",
           "pid": "study pid",
         },
       },
@@ -190,7 +196,10 @@ Object {
       Object {
         "id": 11,
         "study": Object {
+          "createTime": "2019-06-11",
           "id": 12,
+          "modTime": "2019-06-10",
+          "name": "study",
           "pid": "study pid",
         },
       },
@@ -266,7 +275,10 @@ Object {
       Object {
         "id": 11,
         "study": Object {
+          "createTime": "2019-06-11",
           "id": 12,
+          "modTime": "2019-06-10",
+          "name": "study",
           "pid": "study pid",
         },
       },

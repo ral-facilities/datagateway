@@ -9,8 +9,7 @@ import {
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { isBefore, isValid } from 'date-fns';
-import DatePicker from '@mui/lab/DatePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { DatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { Box, TextField, Theme } from '@mui/material';
 
@@ -88,8 +87,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
     }
   };
 
-  const invalidDateRange =
-    startDate && endDate && isBefore(endDate, startDate) ? true : false;
+  const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);
 
   return (
     <div className="tour-search-dates">
@@ -115,7 +113,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             renderInput={(props) => {
               const error =
                 // eslint-disable-next-line react/prop-types
-                props.error || invalidDateRange;
+                (props.error || invalidDateRange) ?? undefined;
               let helperText = t('searchBox.invalid_date_message');
               if (invalidDateRange)
                 helperText = t('searchBox.invalid_date_range_message');
@@ -160,7 +158,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             renderInput={(props) => {
               const error =
                 // eslint-disable-next-line react/prop-types
-                props.error || invalidDateRange;
+                (props.error || invalidDateRange) ?? undefined;
               let helperText = t('searchBox.invalid_date_message');
               if (invalidDateRange)
                 helperText = t('searchBox.invalid_date_range_message');

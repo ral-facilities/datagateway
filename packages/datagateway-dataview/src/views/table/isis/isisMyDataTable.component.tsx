@@ -25,12 +25,14 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-import TitleIcon from '@mui/icons-material/Title';
-import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import PublicIcon from '@mui/icons-material/Public';
-import SaveIcon from '@mui/icons-material/Save';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import {
+  Title,
+  Fingerprint,
+  Public,
+  Save,
+  Assessment,
+  CalendarToday,
+} from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
 
@@ -167,7 +169,7 @@ const ISISMyDataTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: Title,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -187,7 +189,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: PublicIcon,
+        icon: Public,
         label: t('investigations.doi'),
         dataKey: 'studyInvestigations.study.pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -205,13 +207,13 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         filterComponent: textFilter,
       },
       {
-        icon: TitleIcon,
+        icon: Title,
         label: t('investigations.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -230,7 +232,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: AssessmentIcon,
+        icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -245,7 +247,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -253,14 +255,14 @@ const ISISMyDataTable = (): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,

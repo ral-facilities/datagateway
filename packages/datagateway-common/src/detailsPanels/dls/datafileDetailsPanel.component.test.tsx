@@ -1,5 +1,5 @@
 import React from 'react';
-import DatafilesDetailsPanel from './datafileDetailsPanel.component';
+import DatafileDetailsPanel from './datafileDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { mount, ReactWrapper } from 'enzyme';
 import { Datafile } from '../../app.types';
@@ -14,7 +14,7 @@ describe('Datafile details panel component', () => {
   const createWrapper = (): ReactWrapper => {
     return mount(
       <QueryClientProvider client={new QueryClient()}>
-        <DatafilesDetailsPanel
+        <DatafileDetailsPanel
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
         />
@@ -58,7 +58,7 @@ describe('Datafile details panel component', () => {
   it('does not call detailsPanelResize if not provided', () => {
     mount(
       <QueryClientProvider client={new QueryClient()}>
-        <DatafilesDetailsPanel rowData={rowData} />
+        <DatafileDetailsPanel rowData={rowData} />
       </QueryClientProvider>
     );
 

@@ -12,6 +12,17 @@ import {
 } from 'datagateway-common';
 import { DGThemeProvider } from 'datagateway-common';
 import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+      staleTime: 300000,
+    },
+  },
+});
 
 class App extends Component<unknown, { hasError: boolean }> {
   public constructor(props: unknown) {
@@ -70,20 +81,25 @@ class App extends Component<unknown, { hasError: boolean }> {
       <div className="App">
         <DGThemeProvider>
           <ConfigProvider>
-            <React.Suspense
-              fallback={<Preloader loading={true}>Finished loading</Preloader>}
-            >
-              <Router>
-                <Switch>
-                  <Route path="/admin/download">
-                    <AdminDownloadStatusTable />
-                  </Route>
-                  <Route path="/download">
-                    <DownloadTabs />
-                  </Route>
-                </Switch>
-              </Router>
-            </React.Suspense>
+            <QueryClientProvider client={queryClient}>
+              <React.Suspense
+                fallback={
+                  <Preloader loading={true}>Finished loading</Preloader>
+                }
+              >
+                <Router>
+                  <Switch>
+                    <Route path="/admin/download">
+                      <AdminDownloadStatusTable />
+                    </Route>
+                    <Route path="/download">
+                      <DownloadTabs />
+                    </Route>
+                  </Switch>
+                </Router>
+              </React.Suspense>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
           </ConfigProvider>
         </DGThemeProvider>
       </div>

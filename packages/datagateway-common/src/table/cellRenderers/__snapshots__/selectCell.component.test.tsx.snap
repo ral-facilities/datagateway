@@ -15,6 +15,7 @@ exports[`Select cell component renders correctly when checked 1`] = `
       />
     }
     className="tour-dataview-add-to-cart"
+    disabled={false}
     icon={
       <Memo
         fontSize="small"
@@ -46,6 +47,7 @@ exports[`Select cell component renders correctly when unchecked 1`] = `
       />
     }
     className="tour-dataview-add-to-cart"
+    disabled={false}
     icon={
       <Memo
         fontSize="small"

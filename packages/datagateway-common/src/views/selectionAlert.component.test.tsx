@@ -4,6 +4,7 @@ import { DownloadCartItem } from '../app.types';
 import { NotificationType } from '../state/actions/actions.types';
 import SelectionAlert from './selectionAlert.component';
 import { render, RenderResult } from '@testing-library/react';
+import { AnyAction } from 'redux';
 
 describe('SelectionAlert', () => {
   let events: CustomEvent<AnyAction>[] = [];

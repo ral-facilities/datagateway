@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import { mount, ReactWrapper, shallow } from 'enzyme';
 import { Download } from 'datagateway-common';
@@ -158,7 +157,7 @@ describe('Admin Download Status Table', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('fetches the download items on load', async () => {
+  it('fetches the download items and sorts by download requested time desc on load ', async () => {
     const wrapper = createWrapper();
 
     await act(async () => {
@@ -170,7 +169,7 @@ describe('Admin Download Status Table', () => {
     expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
       1,
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.createdAt) desc, UPPER(download.id) ASC LIMIT 0, 50"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -196,7 +195,7 @@ describe('Admin Download Status Table', () => {
     expect(fetchAdminDownloads).toHaveBeenCalledTimes(3);
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 5, 5"
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.createdAt) desc, UPPER(download.id) ASC LIMIT 5, 5"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -248,7 +247,7 @@ describe('Admin Download Status Table', () => {
     expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
       3,
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' ORDER BY UPPER(download.createdAt) desc, UPPER(download.id) ASC LIMIT 0, 50"
     );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
@@ -257,6 +256,17 @@ describe('Admin Download Status Table', () => {
     const wrapper = createWrapper();
 
     await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    const createdAtSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(6);
+    await act(async () => {
+      createdAtSortLabel.simulate('click');
       await flushPromises();
       wrapper.update();
     });
@@ -318,6 +328,17 @@ describe('Admin Download Status Table', () => {
     const wrapper = createWrapper();
 
     await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    const createdAtSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(6);
+    await act(async () => {
+      createdAtSortLabel.simulate('click');
       await flushPromises();
       wrapper.update();
     });
@@ -394,12 +415,23 @@ describe('Admin Download Status Table', () => {
       wrapper.update();
     });
 
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    const createdAtSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(6);
+    await act(async () => {
+      createdAtSortLabel.simulate('click');
+      await flushPromises();
+      wrapper.update();
+    });
+
     // Get the Requested Data From filter input
     const dateFromFilterInput = wrapper.find(
       'input[id="downloadStatus.createdAt filter from"]'
     );
     await act(async () => {
-      dateFromFilterInput.instance().value = '2020-01-01';
+      dateFromFilterInput.instance().value = '2020-01-01 00:00';
       dateFromFilterInput.simulate('change');
       await flushPromises();
       wrapper.update();
@@ -407,7 +439,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '9999-12-31 23:59:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00'} AND {ts '9999-12-31 23:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
 
     // Get the Requested Data To filter input
@@ -415,7 +447,7 @@ describe('Admin Download Status Table', () => {
       'input[id="downloadStatus.createdAt filter to"]'
     );
     await act(async () => {
-      dateToFilterInput.instance().value = '2020-01-02';
+      dateToFilterInput.instance().value = '2020-01-02 23:59';
       dateToFilterInput.simulate('change');
       await flushPromises();
       wrapper.update();
@@ -423,7 +455,7 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
       { downloadApiUrl: '', facilityName: '' },
-      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
+      "WHERE UPPER(download.facilityName) = '' AND UPPER(download.createdAt) BETWEEN {ts '2020-01-01 00:00'} AND {ts '2020-01-02 23:59'} ORDER BY UPPER(download.id) ASC LIMIT 0, 50"
     );
 
     dateFromFilterInput.instance().value = '';
@@ -538,7 +570,7 @@ describe('Admin Download Status Table', () => {
         '[aria-label="downloadStatus.pause {filename:test-file-5}"]'
       )
     ).toBeTruthy();
-  }, 10000);
+  });
 
   it('sends delete item request when delete button is clicked', async () => {
     const wrapper = createWrapper();

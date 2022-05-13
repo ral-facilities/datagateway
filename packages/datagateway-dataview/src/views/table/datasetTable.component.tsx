@@ -1,7 +1,5 @@
 import React from 'react';
-import TitleIcon from '@mui/icons-material/Title';
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { Title, ConfirmationNumber, CalendarToday } from '@mui/icons-material';
 import {
   Table,
   datasetLink,
@@ -105,7 +103,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: Title,
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps) => {
@@ -120,7 +118,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumberIcon,
+        icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
         dataKey: 'datafileCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -128,13 +126,13 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datasets.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,

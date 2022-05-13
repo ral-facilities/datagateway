@@ -24,12 +24,14 @@ import { useSelector } from 'react-redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import TitleIcon from '@mui/icons-material/Title';
-import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import PublicIcon from '@mui/icons-material/Public';
-import SaveIcon from '@mui/icons-material/Save';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import {
+  Title,
+  Fingerprint,
+  Public,
+  Save,
+  Assessment,
+  CalendarToday,
+} from '@mui/icons-material';
 
 const InvestigationTable = (): React.ReactElement => {
   const selectAllSetting = useSelector(
@@ -95,7 +97,7 @@ const InvestigationTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: Title,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -110,20 +112,20 @@ const InvestigationTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.name'),
         dataKey: 'name',
         filterComponent: textFilter,
         disableSort: true,
       },
       {
-        icon: PublicIcon,
+        icon: Public,
         label: t('investigations.doi'),
         dataKey: 'doi',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -138,7 +140,7 @@ const InvestigationTable = (): React.ReactElement => {
       },
 
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -146,7 +148,7 @@ const InvestigationTable = (): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: AssessmentIcon,
+        icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.name',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -161,7 +163,7 @@ const InvestigationTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
 
         label: t('investigations.start_date'),
         dataKey: 'startDate',
@@ -173,7 +175,7 @@ const InvestigationTable = (): React.ReactElement => {
         },
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,

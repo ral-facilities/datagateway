@@ -13,7 +13,9 @@ exports[`Dataset details panel component renders correctly 1`] = `
     <ForwardRef(Typography)
       variant="h6"
     >
-      <b />
+      <b>
+        Test 1
+      </b>
     </ForwardRef(Typography)>
     <Styled(ForwardRef(Divider)) />
   </ForwardRef(Grid)>

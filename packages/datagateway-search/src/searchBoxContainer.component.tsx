@@ -1,13 +1,11 @@
 import React from 'react';
-
 import { Grid, Typography, Link, Theme, Box, styled } from '@mui/material';
-
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
-import { Trans, useTranslation } from 'react-i18next';
 import AdvancedHelpDialogue from './search/advancedHelpDialogue.component';
+import { Trans, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';

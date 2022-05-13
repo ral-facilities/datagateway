@@ -1,11 +1,9 @@
 import React from 'react';
-
-import Dialog from '@mui/material/Dialog';
-import MuiDialogTitle from '@mui/material/DialogTitle';
-import MuiDialogContent from '@mui/material/DialogContent';
-import MuiDialogActions from '@mui/material/DialogActions';
-
 import {
+  Dialog,
+  DialogTitle as MuiDialogTitle,
+  DialogContent as MuiDialogContent,
+  DialogActions as MuiDialogActions,
   Typography,
   IconButton,
   Button,
@@ -16,6 +14,7 @@ import {
   InputLabel,
   FormHelperText,
   CircularProgress,
+  styled,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -32,7 +31,6 @@ import {
   getDownloadTypeStatus,
 } from '../downloadApi';
 
-import { styled } from '@mui/material/styles';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation, Trans } from 'react-i18next';
 

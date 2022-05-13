@@ -204,10 +204,11 @@ describe('ISIS FacilityCycles table component', () => {
     );
   });
 
-  it('renders facilitycycle name as a link', () => {
+  it('renders facilitycycle name as a link', async () => {
     const wrapper = createRTLWrapper();
 
-    expect(wrapper.findByText('Test 1')).toMatchSnapshot();
+    const result = await wrapper.findByText('Test 1');
+    expect(result).toMatchSnapshot();
   });
 
   it('renders fine with incomplete data', () => {

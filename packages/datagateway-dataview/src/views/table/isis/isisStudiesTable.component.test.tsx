@@ -251,7 +251,7 @@ describe('ISIS Studies table component', () => {
   it('renders studies name as a link', () => {
     const wrapper = createRTLWrapper();
 
-    expect(wrapper.getAllByTestId('isis-mydata-table-name')).toMatchSnapshot();
+    expect(wrapper.getAllByTestId('isis-study-table-name')).toMatchSnapshot();
   });
 
   it('displays Experiment DOI (PID) and renders the expected Link ', () => {

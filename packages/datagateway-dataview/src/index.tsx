@@ -124,7 +124,9 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
                 link: route['link'],
                 plugin: 'datagateway-dataview',
                 displayName: route['displayName'],
-                order: route['order'] ? route['order'] : 0,
+                order: route['order'] ?? 0,
+                hideFromMenu: route['hideFromMenu'] ?? false,
+                admin: route['admin'] ?? false,
                 helpSteps:
                   index === 0 && 'helpSteps' in settings
                     ? settings['helpSteps']

@@ -12,7 +12,7 @@ import {
   UseMutationResult,
 } from 'react-query';
 
-const fetchDownloadCart = (config: {
+export const fetchDownloadCart = (config: {
   facilityName: string;
   downloadApiUrl: string;
 }): Promise<DownloadCartItem[]> => {
@@ -45,7 +45,7 @@ const addToCart = (
     .then((response) => response.data.cartItems);
 };
 
-const removeFromCart = (
+export const removeFromCart = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   entityIds: number[],
   config: { facilityName: string; downloadApiUrl: string }

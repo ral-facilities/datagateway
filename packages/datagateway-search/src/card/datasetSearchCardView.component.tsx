@@ -358,6 +358,9 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
                   entityType="dataset"
                   entityId={dataset.id}
                   entityName={dataset.name}
+                  entitySize={
+                    data ? sizeQueries[data.indexOf(dataset)]?.data ?? -1 : -1
+                  }
                 />
               </ActionButtonDiv>
             ),
@@ -371,7 +374,8 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
               />
             ),
           ],
-    [data, hierarchy]
+
+    [data, hierarchy, sizeQueries]
   );
 
   return (
