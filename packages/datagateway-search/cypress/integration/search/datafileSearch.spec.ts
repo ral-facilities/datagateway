@@ -79,19 +79,14 @@ describe('Datafile search tab', () => {
     cy.get('[aria-label="Start date input"]').type('2012-02-02');
     cy.get('[aria-label="End date input"]').type('2012-02-03');
 
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="Submit search"]').click().wait('@datafilesCount', {
+      timeout: 10000,
+    });
 
     cy.get('[aria-label="Search table"]')
       .contains('Datafile')
       .contains('9')
-      .click()
-      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
-        timeout: 10000,
-      });
+      .click();
 
     cy.get('[aria-rowcount="9"]').should('exist');
 
