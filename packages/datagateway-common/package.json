@@ -20,6 +20,7 @@
     "i18next": "^21.6.13",
     "lodash.debounce": "^4.0.8",
     "loglevel": "^1.8.0",
+    "prettier": "^2.2.1",
     "react-draggable": "^4.4.3",
     "react-i18next": "^11.15.4",
     "react-query": "^3.18.1",
@@ -30,6 +31,8 @@
     "redux-mock-store": "^1.5.4",
     "redux-thunk": "^2.4.1",
     "resize-observer-polyfill": "^1.5.1",
+    "tslib": "^2.3.0",
+    "typescript": "4.5.3",
     "use-deep-compare-effect": "^1.8.1"
   },
   "peerDependencies": {
@@ -62,13 +65,10 @@
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-prettier": "^3.3.1",
     "lint-staged": "^10.5.4",
-    "prettier": "^2.2.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-router-dom": "^5.3.0",
-    "react-test-renderer": "17.0.2",
-    "tslib": "^2.3.0",
-    "typescript": "4.5.3"
+    "react-test-renderer": "17.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

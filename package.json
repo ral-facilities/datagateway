@@ -5,12 +5,15 @@
   "workspaces": [
     "packages/*"
   ],
-  "devDependencies": {
+  "dependencies": {
     "husky": "^7.0.4",
-    "lerna": "^4.0.0",
+    "lerna": "^4.0.0"
+  },
+  "devDependencies": {
     "lerna-update-wizard": "^1.1.0"
   },
   "scripts": {
+    "build": "lerna run build --ignore datagateway-common",
     "lint": "lerna run lint:js -- --max-warnings=0",
     "tsc": "lerna run tsc",
     "test": "yarn test:unit && yarn test:e2e",
