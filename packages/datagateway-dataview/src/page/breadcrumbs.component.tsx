@@ -1,5 +1,6 @@
 import {
   Breadcrumbs,
+  breadcrumbsClasses,
   Link as MaterialLink,
   Paper,
   styled,
@@ -211,7 +212,7 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
         // change skew to alter how shallow the arrow is
         transform: 'scale(0.707) rotate(45deg) skew(15deg,15deg)',
         zIndex: 1,
-        boxShadow: '2px -2px 0 2px white',
+        boxShadow: `2px -2px 0 2px ${theme.palette.background.default}`,
         borderRadius: ' 0 5px 0 50px',
         backgroundColor: theme.palette.primary.light,
       },
@@ -234,7 +235,7 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     '& a, p': {
       backgroundColor: theme.palette.primary.main,
       '&:after': {
-        borderLeftColor: theme.palette.primary.main,
+        backgroundColor: theme.palette.primary.main,
       },
     },
   },
@@ -263,7 +264,7 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  separator: {
+  [`& .${breadcrumbsClasses.separator}`]: {
     marginLeft: 0,
     marginRight: 0,
   },
