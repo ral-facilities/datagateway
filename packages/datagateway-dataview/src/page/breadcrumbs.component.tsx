@@ -81,7 +81,7 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
             // change skew to alter how shallow the arrow is
             transform: 'scale(0.707) rotate(45deg) skew(15deg,15deg)',
             zIndex: 1,
-            boxShadow: '2px -2px 0 2px white',
+            boxShadow: `2px -2px 0 2px ${theme.palette.background.default}`,
             borderRadius: ' 0 5px 0 50px',
             backgroundColor: theme.palette.primary.light,
           },
