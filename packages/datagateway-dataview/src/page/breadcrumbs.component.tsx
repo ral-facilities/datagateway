@@ -231,7 +231,7 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     },
   },
   /* Every even breadcrumb has a darker background */
-  '& li:nth-of-type(4n + 3)': {
+  '& li:nth-child(4n + 3)': {
     '& a, p': {
       backgroundColor: theme.palette.primary.main,
       '&:after': {
