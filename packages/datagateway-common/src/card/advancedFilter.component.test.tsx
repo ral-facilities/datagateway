@@ -1,6 +1,6 @@
 import React from 'react';
 import { createShallow } from '@material-ui/core/test-utils';
-import SubjectIcon from '@mui/icons-material/Subject';
+import SubjectIcon from '@material-ui/icons/Subject';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';

@@ -14,7 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import SubjectIcon from '@mui/icons-material/Subject';
+import SubjectIcon from '@material-ui/icons/Subject';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISFacilityCyclesTableProps {

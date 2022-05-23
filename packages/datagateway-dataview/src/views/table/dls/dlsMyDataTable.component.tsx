@@ -19,7 +19,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import SubjectIcon from '@mui/icons-material/Subject';
+import SubjectIcon from '@material-ui/icons/Subject';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import AssessmentIcon from '@material-ui/icons/Assessment';

@@ -32,7 +32,7 @@ import { useSelector } from 'react-redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import SubjectIcon from '@mui/icons-material/Subject';
+import SubjectIcon from '@material-ui/icons/Subject';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';

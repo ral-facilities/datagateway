@@ -1,5 +1,5 @@
 import React from 'react';
-import SubjectIcon from '@mui/icons-material/Subject';
+import SubjectIcon from '@material-ui/icons/Subject';
 import SaveIcon from '@material-ui/icons/Save';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import {

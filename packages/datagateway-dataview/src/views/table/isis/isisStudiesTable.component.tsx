@@ -18,7 +18,7 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 
 import PublicIcon from '@material-ui/icons/Public';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import SubjectIcon from '@mui/icons-material/Subject';
+import SubjectIcon from '@material-ui/icons/Subject';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useLocation } from 'react-router';
 import { format, set } from 'date-fns';

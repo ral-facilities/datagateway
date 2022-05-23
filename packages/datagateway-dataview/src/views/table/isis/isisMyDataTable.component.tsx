@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-import SubjectIcon from '@mui/icons-material/Subject';
+import SubjectIcon from '@material-ui/icons/Subject';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
