@@ -18,7 +18,7 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 
 import PublicIcon from '@material-ui/icons/Public';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import TitleIcon from '@material-ui/icons/Title';
+import SubjectIcon from '@mui/icons-material/Subject';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useLocation } from 'react-router';
 import { format, set } from 'date-fns';
@@ -120,7 +120,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('studies.title'),
         dataKey: 'studyInvestigations.investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) =>

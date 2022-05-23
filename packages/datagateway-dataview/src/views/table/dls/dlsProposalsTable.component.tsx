@@ -13,7 +13,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import TitleIcon from '@material-ui/icons/Title';
+import SubjectIcon from '@mui/icons-material/Subject';
 
 const DLSProposalsTable = (): React.ReactElement => {
   const location = useLocation();
@@ -58,7 +58,7 @@ const DLSProposalsTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -77,7 +77,7 @@ const DLSProposalsTable = (): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('investigations.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {

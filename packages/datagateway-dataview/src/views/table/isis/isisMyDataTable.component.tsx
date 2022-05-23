@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-import TitleIcon from '@material-ui/icons/Title';
+import SubjectIcon from '@mui/icons-material/Subject';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
@@ -167,7 +167,7 @@ const ISISMyDataTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -211,7 +211,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('investigations.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
