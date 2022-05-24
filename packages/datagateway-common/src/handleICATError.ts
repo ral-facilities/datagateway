@@ -15,10 +15,9 @@ const handleICATError = (error: AxiosError, broadcast = true): void => {
       // by scigateway refreshing the session ID - instead pass the message payload
       // in the token invalidation event
       !(
-        error.response?.status &&
-        (error.response.status === 403 ||
-          // TopCAT doesn't set 403 for session ID failure, so detect by looking at the message
-          message.toUpperCase().includes('SESSION'))
+        error.response?.status === 403 ||
+        // TopCAT doesn't set 403 for session ID failure, so detect by looking at the message
+        message.toUpperCase().includes('SESSION')
       )
     ) {
       document.dispatchEvent(
@@ -35,10 +34,9 @@ const handleICATError = (error: AxiosError, broadcast = true): void => {
     }
   }
   if (
-    error.response?.status &&
-    (error.response.status === 403 ||
-      // TopCAT doesn't set 403 for session ID failure, so detect by looking at the message
-      message.toUpperCase().includes('SESSION'))
+    error.response?.status === 403 ||
+    // TopCAT doesn't set 403 for session ID failure, so detect by looking at the message
+    message.toUpperCase().includes('SESSION')
   ) {
     document.dispatchEvent(
       new CustomEvent(MicroFrontendId, {
