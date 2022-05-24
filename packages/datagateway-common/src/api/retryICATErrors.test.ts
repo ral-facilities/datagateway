@@ -1,6 +1,9 @@
 import { AxiosError } from 'axios';
 import retryICATErrors from './retryICATErrors';
 
+// have to unmock here as we mock "globally" in setupTests.tsx
+jest.unmock('./retryICATErrors');
+
 describe('retryICATErrors', () => {
   let error: AxiosError;
 
