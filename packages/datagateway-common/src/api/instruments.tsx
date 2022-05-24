@@ -18,6 +18,7 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryResult,
 } from 'react-query';
+import retryICATErrors from './retryICATErrors';
 
 const fetchInstruments = (
   apiUrl: string,
@@ -89,6 +90,7 @@ export const useInstrumentsPaginated = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -121,6 +123,7 @@ export const useInstrumentsInfinite = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -162,6 +165,7 @@ export const useInstrumentCount = (): UseQueryResult<number, AxiosError> => {
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -196,6 +200,7 @@ export const useInstrumentDetails = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };

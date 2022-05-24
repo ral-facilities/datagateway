@@ -24,6 +24,7 @@ import {
 } from 'react-query';
 import { fetchDatasetCountQuery } from './datasets';
 import useDeepCompareEffect from 'use-deep-compare-effect';
+import retryICATErrors from './retryICATErrors';
 
 const fetchInvestigations = (
   apiUrl: string,
@@ -89,6 +90,7 @@ export const useInvestigation = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -142,6 +144,7 @@ export const useInvestigationsPaginated = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -181,6 +184,7 @@ export const useInvestigationsInfinite = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -234,6 +238,7 @@ export const useInvestigationSize = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
       enabled: false,
     }
   );
@@ -279,6 +284,7 @@ export const useInvestigationSizes = (
         onError: (error) => {
           handleICATError(error, false);
         },
+        retry: retryICATErrors,
         staleTime: Infinity,
       };
     });
@@ -366,6 +372,7 @@ export const useInvestigationsDatasetCount = (
         onError: (error) => {
           handleICATError(error, false);
         },
+        retry: retryICATErrors,
         staleTime: Infinity,
       };
     });
@@ -465,6 +472,7 @@ export const useInvestigationCount = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -502,6 +510,7 @@ export const useInvestigationDetails = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -642,6 +651,7 @@ export const useISISInvestigationsPaginated = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -719,6 +729,7 @@ export const useISISInvestigationsInfinite = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -796,6 +807,7 @@ export const useISISInvestigationCount = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -877,6 +889,7 @@ export const useISISInvestigationIds = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
       enabled,
     }
   );
