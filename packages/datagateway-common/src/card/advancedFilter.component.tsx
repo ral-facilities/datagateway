@@ -9,7 +9,7 @@ import {
   Theme,
 } from '@material-ui/core';
 import { CardViewDetails } from './cardView.component';
-import TitleIcon from '@material-ui/icons/Title';
+import SubjectIcon from '@material-ui/icons/Subject';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
@@ -71,7 +71,7 @@ export const UnmemoisedAdvancedFilter = (
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <TitleIcon className={classes.icon} />;
+      return <SubjectIcon className={classes.icon} />;
     } else if (
       (t('advanced_filters.icons.fingerprint', {
         returnObjects: true,

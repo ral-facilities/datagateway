@@ -1,5 +1,5 @@
 import React from 'react';
-import TitleIcon from '@material-ui/icons/Title';
+import SubjectIcon from '@material-ui/icons/Subject';
 import ExploreIcon from '@material-ui/icons/Explore';
 import SaveIcon from '@material-ui/icons/Save';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
@@ -116,7 +116,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,
