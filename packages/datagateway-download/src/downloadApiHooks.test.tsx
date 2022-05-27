@@ -22,6 +22,7 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     handleICATError: jest.fn(),
+    retryICATErrors: jest.fn().mockReturnValue(false),
   };
 });
 

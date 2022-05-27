@@ -11,6 +11,7 @@ import {
   useMutation,
   UseMutationResult,
 } from 'react-query';
+import retryICATErrors from './retryICATErrors';
 
 export const fetchDownloadCart = (config: {
   facilityName: string;
@@ -86,6 +87,7 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
       staleTime: 0,
     }
   );
@@ -115,6 +117,7 @@ export const useAddToCart = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -143,6 +146,7 @@ export const useRemoveFromCart = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
