@@ -250,22 +250,27 @@ describe('Download Status Table', () => {
 
     // Expect globus download items to have been disabled.
     expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.download_disabled_button {filename:test-file-2}"]'
-      )
-    ).toBe(true);
-    expect(
       wrapper
         .find(
-          'button[aria-label="downloadStatus.download_disabled_button {filename:test-file-2}"]'
+          'button[aria-label="downloadStatus.download {filename:test-file-2}"]'
         )
         .prop('disabled')
     ).toBe(true);
 
+    // Expect HTTPS download items with non-COMPLETE status to have been disabled.
+    expect(
+      wrapper
+        .find(
+          'button[aria-label="downloadStatus.download {filename:test-file-3}"]'
+        )
+        .prop('disabled')
+    ).toBe(true);
+
+    // Expect complete HTTPS download items to be downloadable
     // Check to see if the href contains the correct call.
     expect(
       wrapper
-        .find('a[aria-label="downloadStatus.download {filename:test-file-3}"]')
+        .find('a[aria-label="downloadStatus.download {filename:test-file-1}"]')
         .at(0)
         .props().href
     ).toContain('/getData');

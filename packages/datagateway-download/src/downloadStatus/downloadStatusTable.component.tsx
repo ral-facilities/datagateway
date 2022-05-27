@@ -300,14 +300,12 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             actions={[
               function DownloadButton({ rowData }: TableActionProps) {
                 const downloadItem = rowData as FormattedDownload;
-                const isHTTP = (downloadItem.transport as string).match(
-                  /https|http/
-                )
+                const isHTTP = downloadItem.transport.match(/https|http/)
                   ? true
                   : false;
 
                 const isComplete =
-                  downloadItem.status.toUpperCase() === 'COMPLETE'
+                  downloadItem.status === t('downloadStatus.complete')
                     ? true
                     : false;
 
@@ -330,30 +328,28 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                     // Disable error tooltip for downloadable HTTP(S) downloads.
                     disableHoverListener={isDownloadable}
                   >
-                    <div>
-                      {/* Provide a download button and set disabled if instant download is not supported. */}
-                      <IconButton
-                        component="a"
-                        href={
-                          isDownloadable
-                            ? getDataUrl(
-                                downloadItem.preparedId,
-                                downloadItem.fileName,
-                                settings.idsUrl
-                              )
-                            : undefined
-                        }
-                        target="_blank"
-                        aria-label={t('downloadStatus.download', {
-                          filename: downloadItem.fileName,
-                        })}
-                        key={`download-${downloadItem.id}`}
-                        size="small"
-                        disabled={!isDownloadable}
-                      >
-                        <GetApp />
-                      </IconButton>
-                    </div>
+                    {/* Provide a download button and set disabled if instant download is not supported. */}
+                    <IconButton
+                      {...(isDownloadable
+                        ? {
+                            component: 'a',
+                            href: getDataUrl(
+                              downloadItem.preparedId,
+                              downloadItem.fileName,
+                              settings.idsUrl
+                            ),
+                            target: '_blank',
+                          }
+                        : { component: 'button' })}
+                      aria-label={t('downloadStatus.download', {
+                        filename: downloadItem.fileName,
+                      })}
+                      key={`download-${downloadItem.id}`}
+                      size="small"
+                      disabled={!isDownloadable}
+                    >
+                      <GetApp />
+                    </IconButton>
                   </BlackTooltip>
                 );
               },
