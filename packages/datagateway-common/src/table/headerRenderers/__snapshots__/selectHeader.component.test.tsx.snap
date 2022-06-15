@@ -13,6 +13,7 @@ exports[`Select column header component renders correctly when checked 1`] = `
         fontSize="small"
       />
     }
+    disabled={false}
     icon={
       <Memo
         fontSize="small"
@@ -54,12 +55,95 @@ exports[`Select column header component renders correctly when indeterminate 1`]
         fontSize="small"
       />
     }
+    disabled={false}
     icon={
       <Memo
         fontSize="small"
       />
     }
     indeterminate={true}
+    indeterminateIcon={
+      <Memo
+        fontSize="small"
+      />
+    }
+    inputProps={
+      Object {
+        "aria-label": "select all rows",
+      }
+    }
+    onClick={[Function]}
+    size="small"
+    style={
+      Object {
+        "height": 20,
+        "margin": "auto",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`Select column header component renders correctly when loading is true 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
+  role="cell"
+>
+  <WithStyles(ForwardRef(Checkbox))
+    checked={false}
+    checkedIcon={
+      <Memo
+        fontSize="small"
+      />
+    }
+    disabled={true}
+    icon={
+      <Memo
+        fontSize="small"
+      />
+    }
+    indeterminateIcon={
+      <Memo
+        fontSize="small"
+      />
+    }
+    inputProps={
+      Object {
+        "aria-label": "select all rows",
+      }
+    }
+    onClick={[Function]}
+    size="small"
+    style={
+      Object {
+        "height": 20,
+        "margin": "auto",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`Select column header component renders correctly when selectedRows is undefined 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
+  role="cell"
+>
+  <WithStyles(ForwardRef(Checkbox))
+    checked={false}
+    checkedIcon={
+      <Memo
+        fontSize="small"
+      />
+    }
+    disabled={true}
+    icon={
+      <Memo
+        fontSize="small"
+      />
+    }
     indeterminateIcon={
       <Memo
         fontSize="small"
@@ -95,6 +179,7 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
         fontSize="small"
       />
     }
+    disabled={false}
     icon={
       <Memo
         fontSize="small"

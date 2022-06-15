@@ -15,6 +15,7 @@ describe('Select column header component', () => {
     onCheck,
     onUncheck,
     allIds: [1, 2, 3],
+    loading: false,
   };
 
   beforeEach(() => {
@@ -42,6 +43,24 @@ describe('Select column header component', () => {
   it('renders correctly when checked', () => {
     const wrapper = shallow(
       <SelectHeader {...selectHeaderProps} selectedRows={[1, 2, 3]} />
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly when selectedRows is undefined', () => {
+    const wrapper = shallow(
+      <SelectHeader {...selectHeaderProps} selectedRows={undefined} />
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly when loading is true', () => {
+    const wrapper = shallow(
+      <SelectHeader
+        {...selectHeaderProps}
+        loading={true}
+        selectedRows={undefined}
+      />
     );
     expect(wrapper).toMatchSnapshot();
   });

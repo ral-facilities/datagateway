@@ -6,27 +6,124 @@ exports[`Select cell component renders correctly when checked 1`] = `
   className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
   role="cell"
 >
-  <WithStyles(ForwardRef(Checkbox))
-    checked={true}
-    checkedIcon={
-      <Memo
-        fontSize="small"
+  <StyledTooltip
+    placement="right"
+    title=""
+  >
+    <span>
+      <WithStyles(ForwardRef(Checkbox))
+        checked={true}
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        className="tour-dataview-add-to-cart"
+        disabled={false}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select row 2",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        style={
+          Object {
+            "padding": "inherit",
+          }
+        }
       />
-    }
-    className="tour-dataview-add-to-cart"
-    icon={
-      <Memo
-        fontSize="small"
+    </span>
+  </StyledTooltip>
+</div>
+`;
+
+exports[`Select cell component renders correctly when selectedRows is undefined 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
+  role="cell"
+>
+  <StyledTooltip
+    placement="right"
+    title="Selection information failed to load, please reload the page or try again later"
+  >
+    <span>
+      <WithStyles(ForwardRef(Checkbox))
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        className="tour-dataview-add-to-cart"
+        disabled={true}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select row 2",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        style={
+          Object {
+            "padding": "inherit",
+          }
+        }
       />
-    }
-    inputProps={
-      Object {
-        "aria-label": "select row 2",
-      }
-    }
-    onClick={[Function]}
-    size="small"
-  />
+    </span>
+  </StyledTooltip>
+</div>
+`;
+
+exports[`Select cell component renders correctly when selectedRows loading is true 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
+  role="cell"
+>
+  <StyledTooltip
+    placement="right"
+    title=""
+  >
+    <span>
+      <WithStyles(ForwardRef(Checkbox))
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        className="tour-dataview-add-to-cart"
+        disabled={true}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select row 2",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        style={
+          Object {
+            "padding": "inherit",
+          }
+        }
+      />
+    </span>
+  </StyledTooltip>
 </div>
 `;
 
@@ -36,26 +133,39 @@ exports[`Select cell component renders correctly when unchecked 1`] = `
   className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
   role="cell"
 >
-  <WithStyles(ForwardRef(Checkbox))
-    checked={false}
-    checkedIcon={
-      <Memo
-        fontSize="small"
+  <StyledTooltip
+    placement="right"
+    title=""
+  >
+    <span>
+      <WithStyles(ForwardRef(Checkbox))
+        checked={false}
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        className="tour-dataview-add-to-cart"
+        disabled={false}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select row 2",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        style={
+          Object {
+            "padding": "inherit",
+          }
+        }
       />
-    }
-    className="tour-dataview-add-to-cart"
-    icon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    inputProps={
-      Object {
-        "aria-label": "select row 2",
-      }
-    }
-    onClick={[Function]}
-    size="small"
-  />
+    </span>
+  </StyledTooltip>
 </div>
 `;

@@ -6,9 +6,10 @@ import {
   CheckBox as CheckBoxIcon,
 } from '@material-ui/icons';
 import { Entity, ICATEntity } from '../../app.types';
+import { StyledTooltip } from '../../arrowtooltip.component';
 
 type SelectCellProps = TableCellProps & {
-  selectedRows: number[];
+  selectedRows: number[] | undefined;
   data: Entity[];
   className: string;
   onCheck: (selectedIndexes: number[]) => void;
@@ -41,43 +42,56 @@ const SelectCell = React.memo(
         className={className}
         variant="body"
       >
-        <Checkbox
-          className="tour-dataview-add-to-cart"
-          checked={selectedRows.includes(rowData.id)}
-          inputProps={{
-            'aria-label': `select row ${rowIndex}`,
-          }}
-          disabled={loading}
-          icon={<CheckBoxOutlineBlank fontSize="small" />}
-          checkedIcon={<CheckBoxIcon fontSize="small" />}
-          size="small"
-          onClick={(event) => {
-            if (event.shiftKey) {
-              const shiftClickedRows = Array(
-                Math.abs(rowIndex - lastChecked) + 1
-              )
-                .fill(Math.min(rowIndex, lastChecked))
-                .map((value, index) => {
-                  const icatEntity = data[value + index] as ICATEntity;
-                  return icatEntity.id;
-                });
+        <StyledTooltip
+          title={
+            !loading && typeof selectedRows === 'undefined'
+              ? 'Selection information failed to load, please reload the page or try again later'
+              : ''
+          }
+          placement="right"
+        >
+          <span>
+            <Checkbox
+              className="tour-dataview-add-to-cart"
+              // have to inherit as the padding="checkbox" is on the span
+              style={{ padding: 'inherit' }}
+              checked={selectedRows?.includes(rowData.id)}
+              inputProps={{
+                'aria-label': `select row ${rowIndex}`,
+              }}
+              disabled={loading || typeof selectedRows === 'undefined'}
+              icon={<CheckBoxOutlineBlank fontSize="small" />}
+              checkedIcon={<CheckBoxIcon fontSize="small" />}
+              size="small"
+              onClick={(event) => {
+                if (event.shiftKey) {
+                  const shiftClickedRows = Array(
+                    Math.abs(rowIndex - lastChecked) + 1
+                  )
+                    .fill(Math.min(rowIndex, lastChecked))
+                    .map((value, index) => {
+                      const icatEntity = data[value + index] as ICATEntity;
+                      return icatEntity.id;
+                    });
 
-              if (selectedRows.includes(rowData.id)) {
-                onUncheck(shiftClickedRows);
-              } else {
-                onCheck(shiftClickedRows);
-              }
-            } else {
-              const id = rowData.id;
-              if (selectedRows.includes(id)) {
-                onUncheck([id]);
-              } else {
-                onCheck([id]);
-              }
-            }
-            setLastChecked(rowIndex);
-          }}
-        />
+                  if (selectedRows?.includes(rowData.id)) {
+                    onUncheck(shiftClickedRows);
+                  } else {
+                    onCheck(shiftClickedRows);
+                  }
+                } else {
+                  const id = rowData.id;
+                  if (selectedRows?.includes(id)) {
+                    onUncheck([id]);
+                  } else {
+                    onCheck([id]);
+                  }
+                }
+                setLastChecked(rowIndex);
+              }}
+            />
+          </span>
+        </StyledTooltip>
       </TableCell>
     );
   }

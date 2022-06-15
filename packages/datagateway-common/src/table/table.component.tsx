@@ -335,7 +335,7 @@ const VirtualizedTable = React.memo(
                   // prevents screen readers outputting table contents on focus.
                   tabIndex={-1}
                 >
-                  {selectedRows && onCheck && onUncheck && (
+                  {onCheck && onUncheck && (
                     <Column
                       width={selectColumnWidth}
                       flexShrink={0}

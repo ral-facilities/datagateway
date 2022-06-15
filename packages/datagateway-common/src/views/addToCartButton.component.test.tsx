@@ -82,6 +82,33 @@ describe('Generic add to cart button', () => {
     expect(wrapper.find('button').text()).toBe('buttons.add_to_cart');
   });
 
+  it('renders as disabled when cart is loading', () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+    });
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
+    expect(wrapper.find('button').prop('disabled')).toBe(true);
+    expect(wrapper.find('StyledTooltip').prop('title')).toEqual('');
+  });
+
+  it('renders as disabled with tooltip when cart does not load', () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: undefined,
+    });
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
+    expect(wrapper.find('button').prop('disabled')).toBe(true);
+    expect(wrapper.find('StyledTooltip').prop('title')).not.toEqual('');
+  });
+
   it('calls addToCart action on button press with item not in cart', () => {
     const entityType = 'investigation';
     const wrapper = createWrapper({

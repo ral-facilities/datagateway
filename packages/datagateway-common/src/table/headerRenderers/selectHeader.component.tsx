@@ -10,7 +10,7 @@ import {
 type SelectHeaderProps = TableHeaderProps & {
   className: string;
   loading: boolean;
-  selectedRows: number[];
+  selectedRows: number[] | undefined;
   totalRowCount: number;
   onCheck: (selectedIds: number[]) => void;
   onUncheck: (selectedIds: number[]) => void;
@@ -39,17 +39,21 @@ const SelectHeader = React.memo(
       >
         <Checkbox
           indeterminate={
-            selectedRows.length > 0 && selectedRows.length < totalRowCount
+            selectedRows &&
+            selectedRows.length > 0 &&
+            selectedRows.length < totalRowCount
           }
-          disabled={loading}
+          disabled={loading || typeof selectedRows === 'undefined'}
           icon={<CheckBoxOutlineBlank fontSize="small" />}
           checkedIcon={<CheckBoxIcon fontSize="small" />}
           indeterminateIcon={<IndeterminateCheckBox fontSize="small" />}
           size="small"
-          checked={totalRowCount !== 0 && selectedRows.length === totalRowCount}
+          checked={
+            totalRowCount !== 0 && selectedRows?.length === totalRowCount
+          }
           inputProps={{ 'aria-label': 'select all rows' }}
           onClick={() => {
-            if (allIds.every((x) => selectedRows.includes(x))) {
+            if (allIds.every((x) => selectedRows?.includes(x))) {
               onUncheck(allIds);
             } else {
               onCheck(allIds);

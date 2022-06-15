@@ -26,14 +26,18 @@ export const getTooltipText = (node: React.ReactNode): string => {
   return '';
 };
 
+export const StyledTooltip = (props: TooltipProps): React.ReactElement => {
+  const { ...classes } = useStylesArrow();
+
+  return <Tooltip classes={classes} {...props} arrow={true} />;
+};
+
 const ArrowTooltip = (
   props: TooltipProps & {
     disableHoverListener?: boolean;
   }
 ): React.ReactElement => {
   const { disableHoverListener, ...tooltipProps } = props;
-
-  const { ...classes } = useStylesArrow();
 
   const [isTooltipVisible, setTooltipVisible] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -100,12 +104,10 @@ const ArrowTooltip = (
     shouldDisableHoverListener = disableHoverListener;
 
   return (
-    <Tooltip
+    <StyledTooltip
       ref={tooltipRef}
-      classes={classes}
       {...tooltipProps}
       disableHoverListener={shouldDisableHoverListener}
-      arrow={true}
       onOpen={onOpen}
       onClose={onClose}
       open={open}

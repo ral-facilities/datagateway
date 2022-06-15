@@ -247,14 +247,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 allIds={[parseInt(datasetId)]}
                 entityId={parseInt(datasetId)}
               />
-              <div style={{ margin: 'auto' }}>
-                <DownloadButton
-                  entityType="dataset"
-                  entityId={parseInt(datasetId)}
-                  entityName={data?.name ?? ''}
-                  entitySize={sizeQueries[0]?.data ?? -1}
-                />
-              </div>
+              <DownloadButton
+                entityType="dataset"
+                entityId={parseInt(datasetId)}
+                entityName={data?.name ?? ''}
+                entitySize={sizeQueries[0]?.data ?? -1}
+              />
             </div>
           </Grid>
         </Grid>

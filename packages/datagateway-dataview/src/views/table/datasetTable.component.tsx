@@ -63,7 +63,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'dataset'
   );
@@ -159,7 +159,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={addToCartLoading || removeFromCartLoading || cartLoading}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
