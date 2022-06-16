@@ -48,4 +48,5 @@ RUN sed -i '/Listen 80$/a\
 \    DocumentRoot "/usr/local/apache2/htdocs/datagateway-search"\n\
 \</VirtualHost>' httpd.conf
 
-
+# Switch to non-root user defined in httpd image
+USER www-data
