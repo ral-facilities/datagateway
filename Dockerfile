@@ -48,5 +48,10 @@ RUN sed -i '/Listen 80$/a\
 \    DocumentRoot "/usr/local/apache2/htdocs/datagateway-search"\n\
 \</VirtualHost>' httpd.conf
 
+RUN apk --no-cache add libcap \
+  # Privileged ports are permitted to root only by default.
+  # setcap to bind to privileged ports (80) as non-root.
+  && setcap 'cap_net_bind_service=+ep' /usr/local/apache2/bin/httpd
+
 # Switch to non-root user defined in httpd image
 USER www-data
