@@ -81,6 +81,7 @@ describe('DLS datafiles table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useDatafileCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -273,6 +274,7 @@ describe('DLS datafiles table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -306,6 +308,7 @@ describe('DLS datafiles table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();

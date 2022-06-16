@@ -127,6 +127,7 @@ describe('Investigation Search Table component', () => {
     ];
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useLuceneSearch as jest.Mock).mockReturnValue({
       data: [],
@@ -374,6 +375,7 @@ describe('Investigation Search Table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -407,6 +409,7 @@ describe('Investigation Search Table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();

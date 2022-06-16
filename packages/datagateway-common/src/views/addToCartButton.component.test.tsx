@@ -57,6 +57,7 @@ describe('Generic add to cart button', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -99,6 +100,7 @@ describe('Generic add to cart button', () => {
   it('renders as disabled with tooltip when cart does not load', () => {
     (useCart as jest.Mock).mockReturnValue({
       data: undefined,
+      isLoading: false,
     });
     const wrapper = createWrapper({
       allIds: [1],
@@ -133,6 +135,7 @@ describe('Generic add to cart button', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const entityType = 'investigation';

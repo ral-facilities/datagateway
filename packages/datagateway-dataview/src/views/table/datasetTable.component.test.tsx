@@ -82,6 +82,7 @@ describe('Dataset table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useDatasetCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -253,6 +254,7 @@ describe('Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();

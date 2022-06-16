@@ -141,6 +141,7 @@ describe('Datafile search table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useLuceneSearch as jest.Mock).mockReturnValue({
       data: [],
@@ -334,6 +335,7 @@ describe('Datafile search table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -367,6 +369,7 @@ describe('Datafile search table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();

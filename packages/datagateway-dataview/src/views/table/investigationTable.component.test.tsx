@@ -97,6 +97,7 @@ describe('Investigation table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useInvestigationCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -268,6 +269,7 @@ describe('Investigation table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -301,6 +303,7 @@ describe('Investigation table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();
