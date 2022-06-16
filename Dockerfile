@@ -51,7 +51,9 @@ RUN sed -i '/Listen 80$/a\
 RUN apk --no-cache add libcap \
   # Privileged ports are permitted to root only by default.
   # setcap to bind to privileged ports (80) as non-root.
-  && setcap 'cap_net_bind_service=+ep' /usr/local/apache2/bin/httpd
+  && setcap 'cap_net_bind_service=+ep' /usr/local/apache2/bin/httpd \
+  # Change access righs for logs from root to www-data
+  && chown www-data:www-data /usr/local/apache2/logs
 
 # Switch to non-root user defined in httpd image
 USER www-data
