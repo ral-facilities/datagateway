@@ -26,11 +26,14 @@ export const getTooltipText = (node: React.ReactNode): string => {
   return '';
 };
 
-export const StyledTooltip = (props: TooltipProps): React.ReactElement => {
-  const { ...classes } = useStylesArrow();
+export const StyledTooltip = React.forwardRef(
+  (props: TooltipProps, ref): React.ReactElement => {
+    const { ...classes } = useStylesArrow();
 
-  return <Tooltip classes={classes} {...props} arrow={true} />;
-};
+    return <Tooltip ref={ref} classes={classes} {...props} arrow={true} />;
+  }
+);
+StyledTooltip.displayName = 'StyledTooltip';
 
 const ArrowTooltip = (
   props: TooltipProps & {
