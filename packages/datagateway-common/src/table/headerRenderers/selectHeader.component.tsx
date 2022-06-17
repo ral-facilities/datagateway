@@ -6,6 +6,7 @@ import {
   CheckBox as CheckBoxIcon,
   IndeterminateCheckBox,
 } from '@material-ui/icons';
+import { StyledTooltip } from '../../arrowtooltip.component';
 
 type SelectHeaderProps = TableHeaderProps & {
   className: string;
@@ -37,30 +38,42 @@ const SelectHeader = React.memo(
         className={className}
         variant="head"
       >
-        <Checkbox
-          indeterminate={
-            selectedRows &&
-            selectedRows.length > 0 &&
-            selectedRows.length < totalRowCount
+        <StyledTooltip
+          title={
+            !loading && typeof selectedRows === 'undefined'
+              ? 'Selection information failed to load, please reload the page or try again later'
+              : ''
           }
-          disabled={loading || typeof selectedRows === 'undefined'}
-          icon={<CheckBoxOutlineBlank fontSize="small" />}
-          checkedIcon={<CheckBoxIcon fontSize="small" />}
-          indeterminateIcon={<IndeterminateCheckBox fontSize="small" />}
-          size="small"
-          checked={
-            totalRowCount !== 0 && selectedRows?.length === totalRowCount
-          }
-          inputProps={{ 'aria-label': 'select all rows' }}
-          onClick={() => {
-            if (allIds.every((x) => selectedRows?.includes(x))) {
-              onUncheck(allIds);
-            } else {
-              onCheck(allIds);
-            }
-          }}
-          style={{ height: 20, margin: 'auto' }}
-        />
+          placement="right"
+        >
+          <span>
+            <Checkbox
+              indeterminate={
+                selectedRows &&
+                selectedRows.length > 0 &&
+                selectedRows.length < totalRowCount
+              }
+              disabled={loading || typeof selectedRows === 'undefined'}
+              icon={<CheckBoxOutlineBlank fontSize="small" />}
+              checkedIcon={<CheckBoxIcon fontSize="small" />}
+              indeterminateIcon={<IndeterminateCheckBox fontSize="small" />}
+              size="small"
+              checked={
+                totalRowCount !== 0 && selectedRows?.length === totalRowCount
+              }
+              inputProps={{ 'aria-label': 'select all rows' }}
+              onClick={() => {
+                if (allIds.every((x) => selectedRows?.includes(x))) {
+                  onUncheck(allIds);
+                } else {
+                  onCheck(allIds);
+                }
+              }}
+              // have to inherit as the padding="checkbox" is on the span
+              style={{ height: 20, margin: 'auto', padding: 'inherit' }}
+            />
+          </span>
+        </StyledTooltip>
       </TableCell>
     );
   }

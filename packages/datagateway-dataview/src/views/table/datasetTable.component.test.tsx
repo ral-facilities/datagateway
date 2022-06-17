@@ -288,6 +288,7 @@ describe('Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();

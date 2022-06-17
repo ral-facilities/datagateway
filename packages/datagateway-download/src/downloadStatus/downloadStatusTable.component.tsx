@@ -318,7 +318,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                         ? t<string, string>(
                             'downloadStatus.non_https_download_disabled_tooltip',
                             { transport: downloadItem.transport }
-                            // for some reason it can't infer these types on its own
                           )
                         : t<string, string>(
                             'downloadStatus.https_download_disabled_tooltip'

@@ -70,7 +70,8 @@ describe('Select column header component', () => {
       <SelectHeader {...selectHeaderProps} selectedRows={[1]} />
     );
 
-    wrapper.childAt(0).prop('onClick')();
+    console.log(wrapper.debug());
+    wrapper.childAt(0).childAt(0).childAt(0).prop('onClick')();
     expect(onCheck).toHaveBeenCalledWith([1, 2, 3]);
   });
 
@@ -79,7 +80,7 @@ describe('Select column header component', () => {
       <SelectHeader {...selectHeaderProps} selectedRows={[1, 2, 3]} />
     );
 
-    wrapper.childAt(0).prop('onClick')();
+    wrapper.childAt(0).childAt(0).childAt(0).prop('onClick')();
     expect(onUncheck).toHaveBeenCalledWith([1, 2, 3]);
   });
 });
