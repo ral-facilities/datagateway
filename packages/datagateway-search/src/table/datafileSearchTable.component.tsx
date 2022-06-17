@@ -90,7 +90,7 @@ const DatafileSearchTable = (
       }),
     },
   ]);
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -287,7 +287,12 @@ const DatafileSearchTable = (
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading || cartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

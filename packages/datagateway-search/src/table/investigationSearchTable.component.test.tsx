@@ -140,6 +140,7 @@ describe('Investigation Search Table component', () => {
     });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),

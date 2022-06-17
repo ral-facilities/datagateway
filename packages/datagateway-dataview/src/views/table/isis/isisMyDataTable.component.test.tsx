@@ -144,6 +144,7 @@ describe('ISIS MyData table component', () => {
     ]);
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),

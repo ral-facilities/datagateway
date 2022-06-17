@@ -73,7 +73,7 @@ const ISISMyDataTable = (): React.ReactElement => {
       ]),
     },
   ]);
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'investigation',
     [
       {
@@ -271,7 +271,12 @@ const ISISMyDataTable = (): React.ReactElement => {
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading || cartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

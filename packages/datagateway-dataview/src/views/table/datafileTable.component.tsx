@@ -52,7 +52,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -161,7 +161,12 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading || cartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

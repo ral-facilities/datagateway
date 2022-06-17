@@ -137,6 +137,7 @@ describe('ISIS Investigations table component', () => {
     ]);
     (useISISInvestigationIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),

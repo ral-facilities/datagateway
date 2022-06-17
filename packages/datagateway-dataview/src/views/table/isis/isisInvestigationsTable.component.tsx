@@ -67,7 +67,7 @@ const ISISInvestigationsTable = (
     parseInt(instrumentChildId),
     studyHierarchy
   );
-  const { data: allIds } = useISISInvestigationIds(
+  const { data: allIds, isLoading: allIdsLoading } = useISISInvestigationIds(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
     studyHierarchy,
@@ -223,7 +223,12 @@ const ISISInvestigationsTable = (
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading || cartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
