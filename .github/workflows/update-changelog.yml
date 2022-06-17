@@ -1,0 +1,30 @@
+name: Update Changelog
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    name: Update Changelog
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: 'Generate changelog'
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: CHANGELOG-BASE.md
+          exclude-tags:
+            - snapshot
+            - snapshot-develop
+
+      - name: Commit updated CHANGELOG
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: main
+          commit_message: Update CHANGELOG
+          file_pattern: CHANGELOG.md
