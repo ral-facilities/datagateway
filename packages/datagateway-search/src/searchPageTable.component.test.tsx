@@ -18,6 +18,8 @@ import InvestigationSearchTable from './table/investigationSearchTable.component
 import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { createMemoryHistory, History } from 'history';
+import { act } from 'react-dom/test-utils';
+import { flushPromises } from './setupTests';
 
 jest.mock('datagateway-common', () => ({
   ...jest.requireActual('datagateway-common'),
@@ -70,11 +72,13 @@ describe('SearchPageTable', () => {
 
     (axios.get as jest.Mock).mockImplementation((url) => {
       if (url.includes('count')) {
-        return Promise.resolve({ data: 0 });
+        return Promise.resolve({ data: 0, isLoading: false });
       } else {
-        return Promise.resolve({ data: [] });
+        return Promise.resolve({ data: [], isLoading: false });
       }
     });
+
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
@@ -82,7 +86,7 @@ describe('SearchPageTable', () => {
     navigateToDownload.mockClear();
   });
 
-  it('renders correctly when request received', () => {
+  it('renders correctly when request received', async () => {
     state.dgsearch = {
       ...state.dgsearch,
       tabs: {
@@ -93,9 +97,9 @@ describe('SearchPageTable', () => {
     };
     (axios.get as jest.Mock).mockImplementation((url) => {
       if (url.includes('count')) {
-        return Promise.resolve({ data: 1 });
+        return Promise.resolve({ data: 1, isLoading: false });
       } else {
-        return Promise.resolve({ data: Array(1) });
+        return Promise.resolve({ data: Array(1), isLoading: false });
       }
     });
 
@@ -115,6 +119,10 @@ describe('SearchPageTable', () => {
 
     const testStore = mockStore(state);
     const wrapper = createWrapper(testStore);
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
     expect(wrapper).toMatchSnapshot();
   });
 

@@ -716,26 +716,26 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -759,18 +759,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -822,26 +822,26 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -865,18 +865,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -953,7 +953,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": false,
                     "promise": Promise {},
                   },
@@ -972,18 +972,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": 1,
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 Query {
@@ -1024,26 +1024,26 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -1067,18 +1067,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -1155,7 +1155,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": false,
                     "promise": Promise {},
                   },
@@ -1174,18 +1174,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": 1,
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 Query {
@@ -1226,26 +1226,26 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -1269,18 +1269,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -1357,7 +1357,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": false,
                     "promise": Promise {},
                   },
@@ -1376,18 +1376,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": 1,
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 Query {
@@ -1560,8 +1560,17 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": Object {
+                          "pageParams": Array [
+                            undefined,
+                          ],
+                          "pages": Array [
+                            Array [
+                              ,
+                            ],
+                          ],
+                        },
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
@@ -1570,22 +1579,22 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "hasNextPage": undefined,
                         "hasPreviousPage": undefined,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isFetchingNextPage": false,
                         "isFetchingPreviousPage": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -1617,18 +1626,27 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": Object {
+                          "pageParams": Array [
+                            undefined,
+                          ],
+                          "pages": Array [
+                            Array [
+                              ,
+                            ],
+                          ],
+                        },
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "fetchNextPage": [Function],
                       "fetchPreviousPage": [Function],
@@ -1728,7 +1746,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": true,
                     "promise": Promise {},
                   },
@@ -1747,18 +1765,27 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": Object {
+                      "pageParams": Array [
+                        undefined,
+                      ],
+                      "pages": Array [
+                        Array [
+                          ,
+                        ],
+                      ],
+                    },
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 Query {
@@ -1799,26 +1826,28 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": Array [
+                          ,
+                        ],
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -1842,18 +1871,20 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": Array [
+                          ,
+                        ],
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -1929,7 +1960,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": false,
                     "promise": Promise {},
                   },
@@ -1948,18 +1979,20 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": Array [
+                      ,
+                    ],
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 Query {
@@ -2272,26 +2305,26 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -2315,18 +2348,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -2403,7 +2436,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": false,
                     "promise": Promise {},
                   },
@@ -2422,18 +2455,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": 1,
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
@@ -2474,26 +2507,26 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -2517,18 +2550,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -2605,7 +2638,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": false,
                     "promise": Promise {},
                   },
@@ -2624,18 +2657,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": 1,
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
@@ -2676,26 +2709,26 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -2719,18 +2752,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -2782,26 +2815,26 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -2825,18 +2858,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": 1,
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -2913,7 +2946,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": false,
                     "promise": Promise {},
                   },
@@ -2932,18 +2965,18 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": 1,
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 "[\\"facilityCycle\\"]": Query {
@@ -3116,8 +3149,17 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": Object {
+                          "pageParams": Array [
+                            undefined,
+                          ],
+                          "pages": Array [
+                            Array [
+                              ,
+                            ],
+                          ],
+                        },
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
@@ -3126,22 +3168,22 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "hasNextPage": undefined,
                         "hasPreviousPage": undefined,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isFetchingNextPage": false,
                         "isFetchingPreviousPage": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -3173,18 +3215,27 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": Object {
+                          "pageParams": Array [
+                            undefined,
+                          ],
+                          "pages": Array [
+                            Array [
+                              ,
+                            ],
+                          ],
+                        },
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "fetchNextPage": [Function],
                       "fetchPreviousPage": [Function],
@@ -3284,7 +3335,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": true,
                     "promise": Promise {},
                   },
@@ -3303,18 +3354,27 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": Object {
+                      "pageParams": Array [
+                        undefined,
+                      ],
+                      "pages": Array [
+                        Array [
+                          ,
+                        ],
+                      ],
+                    },
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
@@ -3355,26 +3415,28 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "status": "idle",
                       },
                       "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
+                        "data": Array [
+                          ,
+                        ],
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
                         "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetched": true,
+                        "isFetchedAfterMount": true,
+                        "isFetching": false,
                         "isIdle": false,
-                        "isLoading": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
                         "isRefetchError": false,
                         "isStale": true,
-                        "isSuccess": false,
+                        "isSuccess": true,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "success",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
@@ -3398,18 +3460,20 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "retry": [Function],
                       },
                       "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
+                        "data": Array [
+                          ,
+                        ],
+                        "dataUpdateCount": 1,
+                        "dataUpdatedAt": 1,
                         "error": null,
                         "errorUpdateCount": 0,
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "success",
                       },
                       "listeners": Array [
                         [Function],
@@ -3485,7 +3549,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "continue": [Function],
                     "failureCount": 0,
                     "isPaused": false,
-                    "isResolved": false,
+                    "isResolved": true,
                     "isTransportCancelable": false,
                     "promise": Promise {},
                   },
@@ -3504,18 +3568,20 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
+                    "data": Array [
+                      ,
+                    ],
+                    "dataUpdateCount": 1,
+                    "dataUpdatedAt": 1,
                     "error": null,
                     "errorUpdateCount": 0,
                     "errorUpdatedAt": 0,
                     "fetchFailureCount": 0,
                     "fetchMeta": null,
-                    "isFetching": true,
+                    "isFetching": false,
                     "isInvalidated": false,
                     "isPaused": false,
-                    "status": "loading",
+                    "status": "success",
                   },
                 },
                 "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
@@ -4323,7 +4389,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                       }
                                                     }
                                                   >
-                                                    0
+                                                    1
                                                   </span>
                                                 }
                                                 id="investigation-badge"
@@ -4381,7 +4447,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                         }
                                                       }
                                                     >
-                                                      0
+                                                      1
                                                     </span>
                                                   }
                                                   id="investigation-badge"
@@ -4475,7 +4541,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                               }
                                                             }
                                                           >
-                                                            0
+                                                            1
                                                           </span>
                                                         }
                                                         id="investigation-badge"
@@ -4493,7 +4559,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                                 }
                                                               }
                                                             >
-                                                              0
+                                                              1
                                                             </span>
                                                           }
                                                           classes={
@@ -4516,7 +4582,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                                   }
                                                                 }
                                                               >
-                                                                0
+                                                                1
                                                               </span>
                                                             }
                                                             classes={
@@ -4571,7 +4637,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                                     }
                                                                   }
                                                                 >
-                                                                  0
+                                                                  1
                                                                 </span>
                                                               </span>
                                                             </span>
@@ -4620,7 +4686,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                             key=".1"
                                             label={
                                               <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                badgeContent={0}
+                                                badgeContent={1}
                                                 id="dataset-badge"
                                                 max={999}
                                                 showZero={true}
@@ -4666,7 +4732,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                               indicator={false}
                                               label={
                                                 <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                  badgeContent={0}
+                                                  badgeContent={1}
                                                   id="dataset-badge"
                                                   max={999}
                                                   showZero={true}
@@ -4748,13 +4814,13 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                       className="MuiTab-wrapper"
                                                     >
                                                       <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                        badgeContent={0}
+                                                        badgeContent={1}
                                                         id="dataset-badge"
                                                         max={999}
                                                         showZero={true}
                                                       >
                                                         <WithStyles(ForwardRef(Badge))
-                                                          badgeContent={0}
+                                                          badgeContent={1}
                                                           classes={
                                                             Object {
                                                               "badge": "WithStyles(ForwardRef(Badge))-badge-5",
@@ -4765,7 +4831,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                           showZero={true}
                                                         >
                                                           <ForwardRef(Badge)
-                                                            badgeContent={0}
+                                                            badgeContent={1}
                                                             classes={
                                                               Object {
                                                                 "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
@@ -4809,7 +4875,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                               <span
                                                                 className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5 MuiBadge-anchorOriginTopRightRectangle"
                                                               >
-                                                                0
+                                                                1
                                                               </span>
                                                             </span>
                                                           </ForwardRef(Badge)>
@@ -4857,7 +4923,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                             key=".2"
                                             label={
                                               <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                badgeContent={0}
+                                                badgeContent={1}
                                                 id="datafile-badge"
                                                 max={999}
                                                 showZero={true}
@@ -4903,7 +4969,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                               indicator={false}
                                               label={
                                                 <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                  badgeContent={0}
+                                                  badgeContent={1}
                                                   id="datafile-badge"
                                                   max={999}
                                                   showZero={true}
@@ -4985,13 +5051,13 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                       className="MuiTab-wrapper"
                                                     >
                                                       <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                        badgeContent={0}
+                                                        badgeContent={1}
                                                         id="datafile-badge"
                                                         max={999}
                                                         showZero={true}
                                                       >
                                                         <WithStyles(ForwardRef(Badge))
-                                                          badgeContent={0}
+                                                          badgeContent={1}
                                                           classes={
                                                             Object {
                                                               "badge": "WithStyles(ForwardRef(Badge))-badge-5",
@@ -5002,7 +5068,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                           showZero={true}
                                                         >
                                                           <ForwardRef(Badge)
-                                                            badgeContent={0}
+                                                            badgeContent={1}
                                                             classes={
                                                               Object {
                                                                 "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
@@ -5046,7 +5112,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                               <span
                                                                 className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5 MuiBadge-anchorOriginTopRightRectangle"
                                                               >
-                                                                0
+                                                                1
                                                               </span>
                                                             </span>
                                                           </ForwardRef(Badge)>
@@ -5455,6 +5521,11 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                             >
                               <InvestigationSearchTable>
                                 <mockConstructor
+                                  allIds={
+                                    Array [
+                                      ,
+                                    ]
+                                  }
                                   columns={
                                     Array [
                                       Object {
@@ -5514,7 +5585,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                   onSort={[Function]}
                                   onUncheck={[Function]}
                                   sort={Object {}}
-                                  totalRowCount={0}
+                                  totalRowCount={1}
                                 >
                                   MockedTable
                                 </mockConstructor>

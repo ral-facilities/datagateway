@@ -70,7 +70,6 @@ describe('Select column header component', () => {
       <SelectHeader {...selectHeaderProps} selectedRows={[1]} />
     );
 
-    console.log(wrapper.debug());
     wrapper.childAt(0).childAt(0).childAt(0).prop('onClick')();
     expect(onCheck).toHaveBeenCalledWith([1, 2, 3]);
   });
