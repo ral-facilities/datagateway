@@ -4,6 +4,7 @@ import {
   DownloadCartItem,
   handleICATError,
   fetchDownloadCart,
+  retryICATErrors,
 } from 'datagateway-common';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
@@ -38,6 +39,7 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
       staleTime: 0,
     }
   );
@@ -114,6 +116,7 @@ export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
     onError: (error) => {
       handleICATError(error);
     },
+    retry: retryICATErrors,
     staleTime: Infinity,
   });
 };
@@ -184,6 +187,7 @@ export const useSizes = (
             onError: (error) => {
               handleICATError(error, false);
             },
+            retry: retryICATErrors,
             staleTime: Infinity,
           };
         })
@@ -227,6 +231,7 @@ export const useDatafileCounts = (
             onError: (error) => {
               handleICATError(error, false);
             },
+            retry: retryICATErrors,
             staleTime: Infinity,
             enabled: entityType !== 'datafile',
             initialData: entityType === 'datafile' ? 1 : undefined,

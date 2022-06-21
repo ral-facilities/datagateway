@@ -15,6 +15,7 @@ import {
   handleICATError,
   parseSearchToQuery,
   readSciGatewayToken,
+  retryICATErrors,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -254,6 +255,7 @@ const useEntityInformation = (
           onError: (error) => {
             handleICATError(error, false);
           },
+          retry: retryICATErrors,
           staleTime: Infinity,
           select: (data: string) => ({
             displayName: data,

@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-import TitleIcon from '@material-ui/icons/Title';
+import SubjectIcon from '@material-ui/icons/Subject';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
@@ -131,7 +131,7 @@ const ISISInvestigationsTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
