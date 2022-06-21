@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Davies"
+  given-names: "Louise"
+- family-names: "Biju"
+  given-names: "Goel"
+- family-names: "Davies"
+  given-names: "Joel"
+- family-names: "Glendenning"
+  given-names: "Sam"
+- family-names: "Kitenge"
+  given-names: "Joshua"
+- family-names: "Austin"
+  given-names: "Patrick"
+- family-names: "Richards"
+  given-names: "Matthew"
+- family-names: "Tim"
+  given-names: "Swinbank"
+- family-names: "Akhil"
+  given-names: "Maganti"
+- family-names: "Lewis"
+  given-names: "Emily"
+- family-names: "Kyffin"
+  given-names: "Alan"
+- family-names: "Gonzalez-Beltran"
+  given-names: "Alejandra"
+  orcid: "https://orcid.org/0000-0003-3499-8262"
+title: "datagateway"
+version: 1.0.0
+doi: 
+date-released: 2022-03-31
+url: "https://github.com/ral-facilities/datagateway"
