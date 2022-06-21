@@ -1,6 +1,6 @@
 {
   "name": "datagateway-dataview",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.3",
@@ -14,7 +14,7 @@
     "axios": "^0.26.0",
     "connected-react-router": "^6.9.1",
     "custom-event-polyfill": "^1.0.7",
-    "datagateway-common": "1.0.0",
+    "datagateway-common": "^1.1.0",
     "date-fns": "^2.28.0",
     "history": "^4.10.1",
     "i18next": "^21.6.13",
