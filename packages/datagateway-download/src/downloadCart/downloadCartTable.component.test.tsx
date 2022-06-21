@@ -1,11 +1,7 @@
 import React from 'react';
 import { createMount } from '@material-ui/core/test-utils';
 import DownloadCartTable from './downloadCartTable.component';
-import {
-  DownloadCartItem,
-  fetchDownloadCart,
-  removeFromCart,
-} from 'datagateway-common';
+import { DownloadCartItem, fetchDownloadCart } from 'datagateway-common';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
@@ -17,6 +13,7 @@ import {
   getDatafileCount,
   getSize,
   removeAllDownloadCartItems,
+  removeFromCart,
 } from '../downloadApi';
 
 jest.mock('datagateway-common', () => {
@@ -26,7 +23,6 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     fetchDownloadCart: jest.fn(),
-    removeFromCart: jest.fn(),
   };
 });
 
@@ -39,6 +35,7 @@ jest.mock('../downloadApi', () => {
     getSize: jest.fn(),
     getDatafileCount: jest.fn(),
     getIsTwoLevel: jest.fn().mockResolvedValue(true),
+    removeFromCart: jest.fn(),
   };
 });
 

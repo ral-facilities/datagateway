@@ -4,7 +4,6 @@ import {
   DownloadCartItem,
   handleICATError,
   fetchDownloadCart,
-  removeFromCart,
   retryICATErrors,
 } from 'datagateway-common';
 import { DownloadSettingsContext } from './ConfigProvider';
@@ -20,6 +19,7 @@ import {
 import pLimit from 'p-limit';
 import {
   removeAllDownloadCartItems,
+  removeFromCart,
   getSize,
   getDatafileCount,
   getIsTwoLevel,
@@ -60,10 +60,17 @@ export const useRemoveAllFromCart = (): UseMutationResult<
       onSuccess: (data) => {
         queryClient.setQueryData('cart', []);
       },
+      retry: (failureCount, error) => {
+        // if we get 431 we know this is an intermittent error so retry
+        if (error.code === '431' && failureCount < 3) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       onError: (error) => {
         handleICATError(error);
       },
-      retry: retryICATErrors,
     }
   );
 };
@@ -87,10 +94,17 @@ export const useRemoveEntityFromCart = (): UseMutationResult<
       onSuccess: (data) => {
         queryClient.setQueryData('cart', data);
       },
+      retry: (failureCount, error) => {
+        // if we get 431 we know this is an intermittent error so retry
+        if (error.code === '431' && failureCount < 3) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       onError: (error) => {
         handleICATError(error);
       },
-      retry: retryICATErrors,
     }
   );
 };

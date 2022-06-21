@@ -182,12 +182,20 @@ describe('Download Cart API react-query hooks test', () => {
       );
     });
 
-    it('logs error upon unsuccessful response', async () => {
-      axios.delete = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
+    it('logs error upon unsuccessful response, with a retry on code 431', async () => {
+      axios.delete = jest
+        .fn()
+        .mockImplementationOnce(() =>
+          Promise.reject({
+            code: '431',
+            message: 'Test 431 error message',
+          })
+        )
+        .mockImplementation(() =>
+          Promise.reject({
+            message: 'Test error message',
+          })
+        );
 
       const { result, waitFor } = renderHook(() => useRemoveAllFromCart(), {
         wrapper: createReactQueryWrapper(),
@@ -195,7 +203,7 @@ describe('Download Cart API react-query hooks test', () => {
 
       result.current.mutate();
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => result.current.isError, { timeout: 2000 });
 
       expect(
         axios.delete
@@ -203,6 +211,8 @@ describe('Download Cart API react-query hooks test', () => {
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: '*' } }
       );
+      expect(result.current.failureCount).toBe(2);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
@@ -243,11 +253,19 @@ describe('Download Cart API react-query hooks test', () => {
     });
 
     it('logs error upon unsuccessful response', async () => {
-      axios.delete = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
+      axios.delete = jest
+        .fn()
+        .mockImplementationOnce(() =>
+          Promise.reject({
+            code: '431',
+            message: 'Test 431 error message',
+          })
+        )
+        .mockImplementation(() =>
+          Promise.reject({
+            message: 'Test error message',
+          })
+        );
 
       const { result, waitFor } = renderHook(() => useRemoveEntityFromCart(), {
         wrapper: createReactQueryWrapper(),
@@ -255,7 +273,7 @@ describe('Download Cart API react-query hooks test', () => {
 
       result.current.mutate({ entityId: 1, entityType: 'investigation' });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => result.current.isError, { timeout: 2000 });
 
       expect(
         axios.delete
@@ -263,6 +281,8 @@ describe('Download Cart API react-query hooks test', () => {
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: 'investigation 1' } }
       );
+      expect(result.current.failureCount).toBe(2);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
