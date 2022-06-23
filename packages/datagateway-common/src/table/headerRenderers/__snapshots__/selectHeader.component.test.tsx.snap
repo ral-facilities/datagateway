@@ -10,7 +10,13 @@ exports[`Select column header component renders correctly when checked 1`] = `
     placement="right"
     title=""
   >
-    <span>
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
+      }
+    >
       <WithStyles(ForwardRef(Checkbox))
         checked={true}
         checkedIcon={
@@ -40,7 +46,6 @@ exports[`Select column header component renders correctly when checked 1`] = `
         style={
           Object {
             "height": 20,
-            "margin": "auto",
             "padding": "inherit",
           }
         }
@@ -60,7 +65,13 @@ exports[`Select column header component renders correctly when indeterminate 1`]
     placement="right"
     title=""
   >
-    <span>
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
+      }
+    >
       <WithStyles(ForwardRef(Checkbox))
         checked={false}
         checkedIcon={
@@ -90,7 +101,6 @@ exports[`Select column header component renders correctly when indeterminate 1`]
         style={
           Object {
             "height": 20,
-            "margin": "auto",
             "padding": "inherit",
           }
         }
@@ -110,7 +120,13 @@ exports[`Select column header component renders correctly when loading is true 1
     placement="right"
     title=""
   >
-    <span>
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
+      }
+    >
       <WithStyles(ForwardRef(Checkbox))
         checked={false}
         checkedIcon={
@@ -139,7 +155,6 @@ exports[`Select column header component renders correctly when loading is true 1
         style={
           Object {
             "height": 20,
-            "margin": "auto",
             "padding": "inherit",
           }
         }
@@ -159,7 +174,13 @@ exports[`Select column header component renders correctly when selectedRows is u
     placement="right"
     title="Selection information failed to load, please reload the page or try again later"
   >
-    <span>
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
+      }
+    >
       <WithStyles(ForwardRef(Checkbox))
         checked={false}
         checkedIcon={
@@ -188,7 +209,6 @@ exports[`Select column header component renders correctly when selectedRows is u
         style={
           Object {
             "height": 20,
-            "margin": "auto",
             "padding": "inherit",
           }
         }
@@ -208,7 +228,13 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
     placement="right"
     title=""
   >
-    <span>
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
+      }
+    >
       <WithStyles(ForwardRef(Checkbox))
         checked={false}
         checkedIcon={
@@ -238,7 +264,6 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
         style={
           Object {
             "height": 20,
-            "margin": "auto",
             "padding": "inherit",
           }
         }

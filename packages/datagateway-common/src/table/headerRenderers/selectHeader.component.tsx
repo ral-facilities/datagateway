@@ -46,7 +46,7 @@ const SelectHeader = React.memo(
           }
           placement="right"
         >
-          <span>
+          <span style={{ margin: 'auto' }}>
             <Checkbox
               indeterminate={
                 selectedRows &&
@@ -70,7 +70,7 @@ const SelectHeader = React.memo(
                 }
               }}
               // have to inherit as the padding="checkbox" is on the span
-              style={{ height: 20, margin: 'auto', padding: 'inherit' }}
+              style={{ height: 20, padding: 'inherit' }}
             />
           </span>
         </StyledTooltip>
