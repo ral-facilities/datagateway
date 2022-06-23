@@ -1,0 +1,12 @@
+/.github
+/.husky
+/packages/datagateway-*/cypress
+/packages/datagateway-*/cypress.json
+/packages/datagateway-*/server
+/packages/datagateway-*/README.md
+.gitignore
+.prettierrc
+codecov.yml
+CODEOWNERS
+LICENSE.md
+README.md

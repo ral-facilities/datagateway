@@ -1,26 +1,22 @@
 # Multipart build dockerfile to build and serve datagateway
 
 FROM node:16.14-alpine3.15 as build
+
 WORKDIR /datagateway
-ENV PATH /datagateway/node_modules/.bin:$PATH
 
-# TODO: use yarn install --production:
-# https://github.com/ral-facilities/datagateway/issues/1155
-
-# Set Yarn version
-# TODO - Use Yarn 2 when project is upgraded
-RUN yarn set version 1.22
+ARG HOST_URL
 
 COPY . .
-ARG HOST_URL
-# Set the React production variables which hold reference to the paths of the plugin builds
-RUN echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=$HOST_URL/datagateway-dataview/" > packages/datagateway-dataview/.env.production
-RUN echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=$HOST_URL/datagateway-download/" > packages/datagateway-download/.env.production
-RUN echo "REACT_APP_SEARCH_BUILD_DIRECTORY=$HOST_URL/datagateway-search/" > packages/datagateway-search/.env.production
 
-# Install dependancies
-RUN yarn install
-RUN yarn build
+# TODO - Use Yarn 2 when project is upgraded
+RUN yarn set version 1.22 \
+  # Set the React production variables which hold reference to the paths of the plugin builds
+  && echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=$HOST_URL/datagateway-dataview/" > packages/datagateway-dataview/.env.production \
+  && echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=$HOST_URL/datagateway-download/" > packages/datagateway-download/.env.production \
+  && echo "REACT_APP_SEARCH_BUILD_DIRECTORY=$HOST_URL/datagateway-search/" > packages/datagateway-search/.env.production \
+  # TODO: use yarn install --production - https://github.com/ral-facilities/datagateway/issues/1155
+  && yarn install \
+  && yarn build
 
 # Put the output of the build into an apache server
 FROM httpd:2.4-alpine3.15
@@ -52,4 +48,12 @@ RUN sed -i '/Listen 80$/a\
 \    DocumentRoot "/usr/local/apache2/htdocs/datagateway-search"\n\
 \</VirtualHost>' httpd.conf
 
+RUN apk --no-cache add libcap \
+  # Privileged ports are permitted to root only by default.
+  # setcap to bind to privileged ports (80) as non-root.
+  && setcap 'cap_net_bind_service=+ep' /usr/local/apache2/bin/httpd \
+  # Change access righs for logs from root to www-data
+  && chown www-data:www-data /usr/local/apache2/logs
 
+# Switch to non-root user defined in httpd image
+USER www-data
