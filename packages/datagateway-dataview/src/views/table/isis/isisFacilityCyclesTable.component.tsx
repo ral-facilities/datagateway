@@ -14,7 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import TitleIcon from '@material-ui/icons/Title';
+import SubjectIcon from '@material-ui/icons/Subject';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISFacilityCyclesTableProps {
@@ -58,7 +58,7 @@ const ISISFacilityCyclesTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('facilitycycles.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>

@@ -205,11 +205,14 @@ const ISISInvestigationsCardView = (
             entityType="investigation"
             entityId={investigation.id}
             entityName={investigation.name}
+            entitySize={
+              data ? sizeQueries[data.indexOf(investigation)]?.data ?? -1 : -1
+            }
           />
         </div>
       ),
     ],
-    [classes.actionButtons, data]
+    [classes.actionButtons, data, sizeQueries]
   );
 
   const moreInformation = React.useCallback(

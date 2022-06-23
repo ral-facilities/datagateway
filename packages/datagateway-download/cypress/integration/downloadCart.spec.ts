@@ -98,7 +98,6 @@ describe('Download Cart', () => {
   it('should be able to remove individual items from the cart', () => {
     cy.intercept('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('[role="button"]', 'Name').click();
-    cy.contains('Calculating...', { timeout: 20000 }).should('not.exist');
 
     cy.contains(/^DATASET 1$/).should('be.visible');
     cy.get('[aria-label="Remove DATASET 1 from selection"]').click();
@@ -115,7 +114,6 @@ describe('Download Cart', () => {
   it('should be able to remove all items from the cart', () => {
     cy.intercept('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('[role="button"]', 'Name').click();
-    cy.contains('Calculating...', { timeout: 20000 }).should('not.exist');
 
     cy.contains(/^DATASET 1$/).should('be.visible');
     cy.contains('Remove All').click();
@@ -130,7 +128,9 @@ describe('Download Cart', () => {
   });
 
   it('should be able open and close the download confirmation dialog', () => {
-    cy.contains('Calculating...', { timeout: 20000 }).should('not.exist');
+    cy.get('[aria-label="Calculating"]', { timeout: 20000 }).should(
+      'not.exist'
+    );
     cy.contains('Download Selection').click();
 
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');

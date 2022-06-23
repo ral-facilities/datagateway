@@ -13,7 +13,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import TitleIcon from '@material-ui/icons/Title';
+import SubjectIcon from '@material-ui/icons/Subject';
 import { useLocation } from 'react-router-dom';
 
 interface ISISInstrumentsTableProps {
@@ -54,7 +54,7 @@ const ISISInstrumentsTable = (
     const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
     return [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('instruments.name'),
         dataKey: 'fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -70,7 +70,7 @@ const ISISInstrumentsTable = (
         defaultSort: 'asc',
       },
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('instruments.type'),
         dataKey: 'type',
         filterComponent: textFilter,
