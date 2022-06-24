@@ -534,7 +534,7 @@ jobs:
     # This job triggers only if all the other jobs succeed and does different things depending on the context.
     # The job builds the Docker image in all cases and also pushes the image to Harbor only if something is
     # pushed to the k8s-deployment branch.
-    needs: [test]
+    needs: [lint-and-unit-test, dataview-e2e-tests, download-e2e-tests, search-e2e-tests]
     name: Docker
     runs-on: ubuntu-20.04
     steps:
