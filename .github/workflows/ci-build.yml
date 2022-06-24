@@ -530,8 +530,8 @@ jobs:
           name: Search-Screenshots
           path: packages/datagateway-search/cypress/screenshots
 
-  push_to_registry:
-    name: Push Docker image to Harbor
+  docker:
+    name: Docker
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
