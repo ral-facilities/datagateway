@@ -531,7 +531,10 @@ jobs:
           path: packages/datagateway-search/cypress/screenshots
 
   docker:
-    needs: [lint-and-unit-test, dataview-e2e-tests, download-e2e-tests, search-e2e-tests]
+    # This job triggers only if all the other jobs succeed and does different things depending on the context.
+    # The job builds the Docker image in all cases and also pushes the image to Harbor only if something is
+    # pushed to the k8s-deployment branch.
+    needs: [test]
     name: Docker
     runs-on: ubuntu-20.04
     steps:
@@ -551,10 +554,12 @@ jobs:
         with:
           images: harbor.stfc.ac.uk/datagateway/plugins
 
+      # TODO - Change github.ref to refs/heads/main before merging k8s-deployment into main
       - name: ${{ github.event_name == 'push' && github.ref == 'refs/heads/k8s-deployment' && 'Build and push Docker image to Harbor' || 'Build Docker image' }}
         uses: docker/build-push-action@v2
         with:
           context: .
+          # TODO - Change github.ref to refs/heads/main before merging k8s-deployment into main
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/k8s-deployment' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
