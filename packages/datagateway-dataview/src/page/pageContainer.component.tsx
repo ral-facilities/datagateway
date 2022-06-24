@@ -41,16 +41,16 @@ import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
 import TranslatedHomePage from './translatedHomePage.component';
+import DoiRedirect from './doiRedirect.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
-const usePaperStyles = makeStyles(
-  (theme: Theme): StyleRules =>
+const usePaperStyles = makeStyles<Theme, { tablePaperHeight: string }>(
+  (theme: Theme) =>
     createStyles({
       cardPaper: { backgroundColor: 'inherit' },
       tablePaper: {
-        //Footer is 36px
-        height: 'calc(100vh - 180px - 36px)',
+        height: ({ tablePaperHeight }) => tablePaperHeight,
         width: '100%',
         minHeight: 500,
         backgroundColor: 'inherit',
@@ -106,6 +106,7 @@ const StyledGrid = withStyles(gridStyles)(Grid);
 export const paths = {
   homepage: '/datagateway',
   root: '/browse',
+  doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
   myData: {
     root: '/my-data',
     dls: '/my-data/DLS',
@@ -358,6 +359,7 @@ const StyledRouting = (props: {
   location: LocationType;
   displayFilterMessage: boolean;
   loggedInAnonymously: boolean;
+  linearProgressHeight: string;
 }): React.ReactElement => {
   const {
     view,
@@ -365,9 +367,29 @@ const StyledRouting = (props: {
     viewStyle,
     displayFilterMessage,
     loggedInAnonymously,
+    linearProgressHeight,
   } = props;
+
+  const breadcrumbDiv = document.getElementById('breadcrumbs');
+
+  const [breadcrumbHeight, setBreadcrumbHeight] = React.useState(
+    breadcrumbDiv ? `${breadcrumbDiv.clientHeight}px` : '30px'
+  );
+
+  React.useEffect(() => {
+    breadcrumbDiv
+      ? setBreadcrumbHeight(`${breadcrumbDiv.clientHeight}px`)
+      : setBreadcrumbHeight('30px');
+  }, [breadcrumbDiv, breadcrumbDiv?.clientHeight]);
+
+  // Footer is 36px
+  // Chrome's display is 1px shorter than Firefox's, so we subtract 1px extra to account for this
+  // We also don't want the <LinearProgress> bar to push the page down so subtract the height of this (4px if on-screen)
+  // Additional rows of breadcrumbs also push the page down so subtract the height of the breadcrumb div
+  const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
+
   const [t] = useTranslation();
-  const paperClasses = usePaperStyles();
+  const paperClasses = usePaperStyles({ tablePaperHeight });
   const tableClassName = displayFilterMessage
     ? paperClasses.tablePaperMessage
     : paperClasses.tablePaper;
@@ -408,6 +430,7 @@ const ViewRouting = React.memo(
     totalDataCount: number;
     location: LocationType;
     loggedInAnonymously: boolean;
+    linearProgressHeight: string;
   }): React.ReactElement => {
     const {
       view,
@@ -415,6 +438,7 @@ const ViewRouting = React.memo(
       totalDataCount,
       location,
       loggedInAnonymously,
+      linearProgressHeight,
     } = props;
     const displayFilterMessage = loadedCount && totalDataCount === 0;
 
@@ -442,6 +466,7 @@ const ViewRouting = React.memo(
             location={location}
             loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
 
@@ -453,6 +478,7 @@ const ViewRouting = React.memo(
             location={location}
             loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
       </SwitchRouting>
@@ -498,7 +524,7 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
     : false;
 };
 
-const PageContainer: React.FC = () => {
+const DataviewPageContainer: React.FC = () => {
   const location = useLocation();
   const { push } = useHistory();
   const prevLocationRef = React.useRef(location);
@@ -516,6 +542,10 @@ const PageContainer: React.FC = () => {
   });
   const loading = isFetchingNum > 0;
 
+  const [linearProgressHeight, setlinearProgressHeight] = React.useState(
+    loading ? '4px' : '0px'
+  );
+
   const queryClient = useQueryClient();
 
   // we need to run this hook every render to ensure we have the
@@ -530,6 +560,10 @@ const PageContainer: React.FC = () => {
       }) ?? 0;
     if (count !== totalDataCount) setTotalDataCount(count);
   });
+
+  React.useEffect(() => {
+    loading ? setlinearProgressHeight('4px') : setlinearProgressHeight('0px');
+  }, [loading]);
 
   const isCountFetchingNum = useIsFetching('count', {
     exact: false,
@@ -619,96 +653,102 @@ const PageContainer: React.FC = () => {
   };
 
   return (
+    <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
+      <NavBar
+        entityCount={totalDataCount ?? 0}
+        cartItems={cartItems ?? []}
+        navigateToSearch={navigateToSearch}
+        navigateToDownload={navigateToDownload}
+        loggedInAnonymously={loggedInAnonymously}
+      />
+
+      <StyledGrid container>
+        <Grid item xs={12} style={{ marginTop: '10px', marginBottom: '10px' }}>
+          <StyledGrid container alignItems="baseline">
+            {/* Toggle between the table and card view */}
+            <Grid item style={{ display: 'flex', alignItems: 'baseline' }}>
+              <Route
+                exact
+                path={Object.values(paths.myData)}
+                render={() => <RoleSelector />}
+              />
+              <Route
+                exact
+                path={togglePaths}
+                render={() => (
+                  <ViewButton
+                    viewCards={view === 'card'}
+                    handleButtonChange={handleButtonChange}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path={Object.values(paths.myData).concat(
+                  Object.values(paths.toggle),
+                  Object.values(paths.standard),
+                  Object.values(paths.studyHierarchy.toggle),
+                  Object.values(paths.studyHierarchy.standard)
+                )}
+                render={() => (
+                  <ClearFiltersButton
+                    handleButtonClearFilters={handleButtonClearFilters}
+                    disabled={disabled}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={true}>
+              <SelectionAlert
+                selectedItems={cartItems ?? []}
+                navigateToSelection={navigateToDownload}
+                marginSide={'8px'}
+                loggedInAnonymously={loggedInAnonymously}
+              />
+            </Grid>
+          </StyledGrid>
+        </Grid>
+
+        {/* Show loading progress if data is still being loaded */}
+        {loading && (
+          <Grid item xs={12}>
+            <LinearProgress
+              color="secondary"
+              style={{ height: linearProgressHeight }}
+            />
+          </Grid>
+        )}
+
+        {/* Hold the view for remainder of the page */}
+        <Grid item xs={12} aria-label="page-view">
+          <ViewRouting
+            view={view}
+            location={location}
+            loadedCount={loadedCount}
+            loggedInAnonymously={loggedInAnonymously}
+            totalDataCount={totalDataCount ?? 0}
+            linearProgressHeight={linearProgressHeight}
+          />
+        </Grid>
+      </StyledGrid>
+    </Paper>
+  );
+};
+
+const PageContainer: React.FC = () => {
+  const location = useLocation();
+
+  return (
     <SwitchRouting location={location}>
       {/* Load the homepage */}
       <Route exact path={paths.homepage} component={TranslatedHomePage} />
-      <Route
-        render={() => (
-          // Load the standard dataview pageContainer
-          <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
-            <NavBar
-              entityCount={totalDataCount ?? 0}
-              cartItems={cartItems ?? []}
-              navigateToSearch={navigateToSearch}
-              navigateToDownload={navigateToDownload}
-              loggedInAnonymously={loggedInAnonymously}
-            />
-
-            <StyledGrid container>
-              <Grid
-                item
-                xs={12}
-                style={{ marginTop: '10px', marginBottom: '10px' }}
-              >
-                <StyledGrid container alignItems="baseline">
-                  {/* Toggle between the table and card view */}
-                  <Grid
-                    item
-                    style={{ display: 'flex', alignItems: 'baseline' }}
-                  >
-                    <Route
-                      exact
-                      path={Object.values(paths.myData)}
-                      render={() => <RoleSelector />}
-                    />
-                    <Route
-                      exact
-                      path={togglePaths}
-                      render={() => (
-                        <ViewButton
-                          viewCards={view === 'card'}
-                          handleButtonChange={handleButtonChange}
-                        />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path={Object.values(paths.myData).concat(
-                        Object.values(paths.toggle),
-                        Object.values(paths.standard),
-                        Object.values(paths.studyHierarchy.toggle),
-                        Object.values(paths.studyHierarchy.standard)
-                      )}
-                      render={() => (
-                        <ClearFiltersButton
-                          handleButtonClearFilters={handleButtonClearFilters}
-                          disabled={disabled}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={true}>
-                    <SelectionAlert
-                      selectedItems={cartItems ?? []}
-                      navigateToSelection={navigateToDownload}
-                      marginSide={'8px'}
-                      loggedInAnonymously={loggedInAnonymously}
-                    />
-                  </Grid>
-                </StyledGrid>
-              </Grid>
-
-              {/* Show loading progress if data is still being loaded */}
-              {loading && (
-                <Grid item xs={12}>
-                  <LinearProgress color="secondary" />
-                </Grid>
-              )}
-
-              {/* Hold the view for remainder of the page */}
-              <Grid item xs={12} aria-label="page-view">
-                <ViewRouting
-                  view={view}
-                  location={location}
-                  loadedCount={loadedCount}
-                  loggedInAnonymously={loggedInAnonymously}
-                  totalDataCount={totalDataCount ?? 0}
-                />
-              </Grid>
-            </StyledGrid>
-          </Paper>
-        )}
-      />
+      <Route exact path={paths.doiRedirect}>
+        <DoiRedirect />
+      </Route>
+      {/* Load the standard dataview pageContainer */}
+      <Route>
+        <DataviewPageContainer />
+      </Route>
     </SwitchRouting>
   );
 };

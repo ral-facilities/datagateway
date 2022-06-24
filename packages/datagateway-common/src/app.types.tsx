@@ -208,14 +208,13 @@ export interface Download {
   transport: string;
   userName: string;
   email?: string;
-
-  [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
 export interface FormattedDownload
   extends Omit<Download, 'status' | 'isDeleted'> {
   isDeleted: string;
   status: string;
+  [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
 export interface SubmitCart {
