@@ -550,11 +550,11 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: harbor.stfc.ac.uk/datagateway/plugins
-      
-      - name: Build and push Docker image
+
+      - name: ${{ github.event_name == 'push' && github.ref == 'refs/heads/k8s-deployment' && 'Build and push Docker image to Harbor' || 'Build Docker image' }}
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: true
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/k8s-deployment' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
