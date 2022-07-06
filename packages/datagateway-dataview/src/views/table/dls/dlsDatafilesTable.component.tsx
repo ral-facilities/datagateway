@@ -1,5 +1,5 @@
 import React from 'react';
-import { Title, Explore, Save, CalendarToday } from '@mui/icons-material';
+import { Subject, Explore, Save, CalendarToday } from '@mui/icons-material';
 import {
   Table,
   formatBytes,
@@ -114,7 +114,7 @@ const DLSDatafilesTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: Title,
+        icon: Subject,
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,

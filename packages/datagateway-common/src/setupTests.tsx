@@ -50,6 +50,12 @@ setLogger({
   error: jest.fn(),
 });
 
+// mock retry function to ensure it doesn't slow down query failure tests
+jest.mock('./api/retryICATErrors', () => ({
+  __esModule: true,
+  default: jest.fn().mockReturnValue(false),
+}));
+
 export const createTestQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: {

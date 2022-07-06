@@ -13,6 +13,7 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryResult,
 } from 'react-query';
+import retryICATErrors from './retryICATErrors';
 
 const fetchFacilityCycles = (
   apiUrl: string,
@@ -69,6 +70,7 @@ export const useAllFacilityCycles = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
       enabled,
     }
   );
@@ -116,6 +118,8 @@ export const useFacilityCyclesByInvestigation = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
+
       enabled: !!investigationStartDate,
     }
   );
@@ -166,6 +170,7 @@ export const useFacilityCyclesPaginated = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -198,6 +203,7 @@ export const useFacilityCyclesInfinite = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -244,6 +250,7 @@ export const useFacilityCycleCount = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };

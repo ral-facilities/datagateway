@@ -18,6 +18,7 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryResult,
 } from 'react-query';
+import retryICATErrors from './retryICATErrors';
 
 const fetchDatafiles = (
   apiUrl: string,
@@ -94,6 +95,7 @@ export const useDatafilesPaginated = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -126,6 +128,7 @@ export const useDatafilesInfinite = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -182,6 +185,7 @@ export const useDatafileCount = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -229,6 +233,7 @@ export const useDatafileDetails = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };

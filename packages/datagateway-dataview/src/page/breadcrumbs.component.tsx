@@ -13,6 +13,7 @@ import {
   handleICATError,
   parseSearchToQuery,
   readSciGatewayToken,
+  retryICATErrors,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -163,6 +164,7 @@ const useEntityInformation = (
           onError: (error) => {
             handleICATError(error, false);
           },
+          retry: retryICATErrors,
           staleTime: Infinity,
           select: (data: string) => ({
             displayName: data,
@@ -231,7 +233,7 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     },
   },
   /* Every even breadcrumb has a darker background */
-  '& li:nth-child(4n + 3)': {
+  '& li:nth-of-type(4n + 3)': {
     '& a, p': {
       backgroundColor: theme.palette.primary.main,
       '&:after': {
@@ -239,12 +241,12 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
       },
     },
   },
-  '& li:first-child': {
+  '& li:first-of-type': {
     '& a, p': {
       paddingLeft: '14px',
     },
   },
-  '& li:last-child': {
+  '& li:last-of-type': {
     '& a, p': {
       /* Curve the last breadcrumb border */
       borderRadius: '0 5px 5px 0',

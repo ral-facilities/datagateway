@@ -16,7 +16,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import { Public, Fingerprint, Title, CalendarToday } from '@mui/icons-material';
+import {
+  Public,
+  Fingerprint,
+  Subject,
+  CalendarToday,
+} from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { format, set } from 'date-fns';
 
@@ -118,7 +123,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: Title,
+        icon: Subject,
         label: t('studies.title'),
         dataKey: 'studyInvestigations.investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) =>

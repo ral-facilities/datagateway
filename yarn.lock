@@ -8707,7 +8707,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"datagateway-common@0.1.0, datagateway-common@workspace:packages/datagateway-common":
+"datagateway-common@^1.1.0, datagateway-common@workspace:packages/datagateway-common":
   version: 0.0.0-use.local
   resolution: "datagateway-common@workspace:packages/datagateway-common"
   dependencies:
@@ -8808,7 +8808,7 @@ __metadata:
     custom-event-polyfill: ^1.0.7
     cypress: 9.5.1
     cypress-failed-log: ^2.9.1
-    datagateway-common: 0.1.0
+    datagateway-common: ^1.1.0
     date-fns: ^2.28.0
     enzyme: ^3.10.0
     enzyme-to-json: ^3.6.1
@@ -8822,7 +8822,7 @@ __metadata:
     i18next: ^21.6.13
     i18next-browser-languagedetector: ^6.1.2
     i18next-http-backend: ^1.3.2
-    jsrsasign: ^10.5.8
+    jsrsasign: ^10.5.25
     lint-staged: ^10.5.4
     lodash.debounce: ^4.0.8
     lodash.memoize: ^4.1.2
@@ -8878,7 +8878,7 @@ __metadata:
     cross-env: ^7.0.3
     cypress: 9.5.1
     cypress-failed-log: ^2.9.1
-    datagateway-common: 0.1.0
+    datagateway-common: ^1.1.0
     date-fns: ^2.28.0
     date-fns-tz: ^1.1.6
     enzyme: ^3.10.0
@@ -8892,7 +8892,7 @@ __metadata:
     i18next: ^21.6.13
     i18next-browser-languagedetector: ^6.1.2
     i18next-http-backend: ^1.3.2
-    jsrsasign: ^10.5.8
+    jsrsasign: ^10.5.25
     lint-staged: ^10.5.4
     lodash.chunk: ^4.2.0
     loglevel: ^1.8.0
@@ -8947,7 +8947,7 @@ __metadata:
     custom-event-polyfill: ^1.0.7
     cypress: 9.5.1
     cypress-failed-log: ^2.9.1
-    datagateway-common: 0.1.0
+    datagateway-common: ^1.1.0
     date-fns: ^2.28.0
     enzyme: ^3.10.0
     enzyme-to-json: ^3.6.1
@@ -8961,7 +8961,7 @@ __metadata:
     i18next: ^21.6.13
     i18next-browser-languagedetector: ^6.1.2
     i18next-http-backend: ^1.3.2
-    jsrsasign: ^10.5.8
+    jsrsasign: ^10.5.25
     lint-staged: ^10.5.4
     loglevel: ^1.8.0
     prettier: ^2.2.1
@@ -13578,10 +13578,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsrsasign@npm:^10.5.8":
-  version: 10.5.8
-  resolution: "jsrsasign@npm:10.5.8"
-  checksum: 8ad7cce77424fc659aa978587c70fcfaf2656ede9a2f7d43642eca96ccb5114414d6eac3b81bee842070649f050292b16b957d841fd40c1fe88f3f09a0cd4a08
+"jsrsasign@npm:^10.5.25":
+  version: 10.5.25
+  resolution: "jsrsasign@npm:10.5.25"
+  checksum: e789cd6d5e6e236edebe91936279cdef886aafaab8d4ebc7d40b8ba0c7b7cd0d6d3c53fba26ea96eb33cc77a05368b369ef31fc9182662bce2344143ad50ea0f
   languageName: node
   linkType: hard
 

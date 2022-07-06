@@ -1,7 +1,7 @@
 import React from 'react';
 import { Collapse, Typography, Link, Grid, Box, styled } from '@mui/material';
 import { CardViewDetails } from './cardView.component';
-import TitleIcon from '@mui/icons-material/Title';
+import SubjectIcon from '@mui/icons-material/Subject';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import PublicIcon from '@mui/icons-material/Public';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
@@ -49,7 +49,7 @@ export const UnmemoisedAdvancedFilter = (
         returnObjects: true,
       }) as string[]).includes(label)
     ) {
-      return <TitleIcon sx={iconStyle} />;
+      return <SubjectIcon sx={iconStyle} />;
     } else if (
       (t('advanced_filters.icons.fingerprint', {
         returnObjects: true,

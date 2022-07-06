@@ -4,7 +4,7 @@ import {
   DownloadCartItem,
   handleICATError,
   fetchDownloadCart,
-  removeFromCart,
+  retryICATErrors,
 } from 'datagateway-common';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
@@ -19,6 +19,7 @@ import {
 import pLimit from 'p-limit';
 import {
   removeAllDownloadCartItems,
+  removeFromCart,
   getSize,
   getDatafileCount,
   getIsTwoLevel,
@@ -38,6 +39,7 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
       staleTime: 0,
     }
   );
@@ -57,6 +59,14 @@ export const useRemoveAllFromCart = (): UseMutationResult<
     {
       onSuccess: (data) => {
         queryClient.setQueryData('cart', []);
+      },
+      retry: (failureCount, error) => {
+        // if we get 431 we know this is an intermittent error so retry
+        if (error.code === '431' && failureCount < 3) {
+          return true;
+        } else {
+          return false;
+        }
       },
       onError: (error) => {
         handleICATError(error);
@@ -84,6 +94,14 @@ export const useRemoveEntityFromCart = (): UseMutationResult<
       onSuccess: (data) => {
         queryClient.setQueryData('cart', data);
       },
+      retry: (failureCount, error) => {
+        // if we get 431 we know this is an intermittent error so retry
+        if (error.code === '431' && failureCount < 3) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       onError: (error) => {
         handleICATError(error);
       },
@@ -98,6 +116,7 @@ export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
     onError: (error) => {
       handleICATError(error);
     },
+    retry: retryICATErrors,
     staleTime: Infinity,
   });
 };
@@ -168,6 +187,7 @@ export const useSizes = (
             onError: (error) => {
               handleICATError(error, false);
             },
+            retry: retryICATErrors,
             staleTime: Infinity,
           };
         })
@@ -211,6 +231,7 @@ export const useDatafileCounts = (
             onError: (error) => {
               handleICATError(error, false);
             },
+            retry: retryICATErrors,
             staleTime: Infinity,
             enabled: entityType !== 'datafile',
             initialData: entityType === 'datafile' ? 1 : undefined,

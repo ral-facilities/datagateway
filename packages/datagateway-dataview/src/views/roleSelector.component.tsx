@@ -11,6 +11,7 @@ import {
   InvestigationUser,
   parseSearchToQuery,
   readSciGatewayToken,
+  retryICATErrors,
   StateType,
   usePushFilter,
 } from 'datagateway-common';
@@ -55,6 +56,7 @@ export const useRoles = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };

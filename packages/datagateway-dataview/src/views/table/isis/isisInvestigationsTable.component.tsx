@@ -27,7 +27,7 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
 import {
-  Title,
+  Subject,
   Fingerprint,
   Public,
   Save,
@@ -133,7 +133,7 @@ const ISISInvestigationsTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: Title,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {

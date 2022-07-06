@@ -26,7 +26,7 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
 import {
-  Title,
+  Subject,
   Fingerprint,
   Public,
   Save,
@@ -169,7 +169,7 @@ const ISISMyDataTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: Title,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -213,7 +213,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: Title,
+        icon: Subject,
         label: t('investigations.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {

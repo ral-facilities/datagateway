@@ -6,6 +6,8 @@ import {
   Download,
   readSciGatewayToken,
   handleICATError,
+  DownloadCart,
+  DownloadCartItem,
 } from 'datagateway-common';
 
 export const removeAllDownloadCartItems: (settings: {
@@ -28,6 +30,26 @@ export const removeAllDownloadCartItems: (settings: {
     .then(() => {
       // do nothing
     });
+};
+
+export const removeFromCart = (
+  entityType: 'investigation' | 'dataset' | 'datafile',
+  entityIds: number[],
+  config: { facilityName: string; downloadApiUrl: string }
+): Promise<DownloadCartItem[]> => {
+  const { facilityName, downloadApiUrl } = config;
+
+  return axios
+    .delete<DownloadCart>(
+      `${downloadApiUrl}/user/cart/${facilityName}/cartItems`,
+      {
+        params: {
+          sessionId: readSciGatewayToken().sessionId,
+          items: `${entityType} ${entityIds.join(`, ${entityType} `)}`,
+        },
+      }
+    )
+    .then((response) => response.data.cartItems);
 };
 
 export const getIsTwoLevel: (settings: {

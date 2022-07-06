@@ -1,5 +1,9 @@
 import React from 'react';
-import { Title, ConfirmationNumber, CalendarToday } from '@mui/icons-material';
+import {
+  Subject,
+  ConfirmationNumber,
+  CalendarToday,
+} from '@mui/icons-material';
 import {
   Table,
   datasetLink,
@@ -103,7 +107,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: Title,
+        icon: Subject,
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps) => {

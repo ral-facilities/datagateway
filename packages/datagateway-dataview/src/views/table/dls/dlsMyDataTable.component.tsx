@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
 import {
-  Title,
+  Subject,
   Fingerprint,
   ConfirmationNumber,
   Assessment,
@@ -83,7 +83,7 @@ const DLSMyDataTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: Title,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {

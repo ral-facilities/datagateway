@@ -1,5 +1,5 @@
 import React from 'react';
-import TitleIcon from '@mui/icons-material/Title';
+import SubjectIcon from '@mui/icons-material/Subject';
 import ExploreIcon from '@mui/icons-material/Explore';
 import SaveIcon from '@mui/icons-material/Save';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -119,7 +119,7 @@ const ISISDatafilesTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,

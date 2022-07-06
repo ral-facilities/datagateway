@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import TitleIcon from '@mui/icons-material/Title';
+import SubjectIcon from '@mui/icons-material/Subject';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import PublicIcon from '@mui/icons-material/Public';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
@@ -165,7 +165,7 @@ describe('AdvancedFilter', () => {
     ).toEqual('advanced_filters.hide');
   });
 
-  it('TitleIcon displays correctly', () => {
+  it('SubjectIcon displays correctly', () => {
     const wrapper = shallow(
       <AdvancedFilter
         title={{
@@ -181,7 +181,7 @@ describe('AdvancedFilter', () => {
       .first()
       .simulate('click');
     wrapper.update();
-    expect(wrapper.exists(TitleIcon)).toBeTruthy();
+    expect(wrapper.exists(SubjectIcon)).toBeTruthy();
   });
 
   it('FingerprintIcon displays correctly', () => {

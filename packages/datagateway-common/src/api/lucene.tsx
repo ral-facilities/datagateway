@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { StateType } from '..';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
+import retryICATErrors from './retryICATErrors';
 
 interface QueryParameters {
   target: string;
@@ -106,6 +107,7 @@ export const useLuceneSearch = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
       // we want to trigger search manually via refetch
       // so disable the query to disable automatic fetching
       enabled: false,

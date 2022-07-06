@@ -1,5 +1,5 @@
 import React from 'react';
-import TitleIcon from '@mui/icons-material/Title';
+import SubjectIcon from '@mui/icons-material/Subject';
 import SaveIcon from '@mui/icons-material/Save';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import {
@@ -123,7 +123,7 @@ const ISISDatasetsTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
