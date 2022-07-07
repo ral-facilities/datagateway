@@ -219,13 +219,13 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
         backgroundColor: theme.palette.primary.light,
       },
       '&:hover': {
-        backgroundColor: theme.palette.primary.light,
+        backgroundColor: `${theme.palette.primary.light} !important`,
         '&:after': {
-          backgroundColor: theme.palette.primary.light,
+          backgroundColor: `${theme.palette.primary.light} !important`,
         },
       },
       '&:active': {
-        backgroundColor: theme.palette.grey[600],
+        backgroundColor: `${theme.palette.grey[600]} !important`,
         '&:after': {
           backgroundColor: `${theme.palette.grey[600]} !important`,
         },
