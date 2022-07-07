@@ -525,7 +525,7 @@ const DataviewPageContainer: React.FC = () => {
   const loading = isFetchingNum > 0;
 
   const [linearProgressHeight, setlinearProgressHeight] = React.useState(
-    loading ? '5px' : '0px'
+    loading ? '4px' : '0px'
   );
 
   const queryClient = useQueryClient();
@@ -544,7 +544,7 @@ const DataviewPageContainer: React.FC = () => {
   });
 
   React.useEffect(() => {
-    loading ? setlinearProgressHeight('5px') : setlinearProgressHeight('0px');
+    loading ? setlinearProgressHeight('4px') : setlinearProgressHeight('0px');
   }, [loading]);
 
   const isCountFetchingNum = useIsFetching('count', {

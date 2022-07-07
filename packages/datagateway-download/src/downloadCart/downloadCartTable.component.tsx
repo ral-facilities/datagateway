@@ -319,8 +319,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         )}
         <Grid item>
           {/* Table should take up page but leave room for: SG appbar, 
-              SG footer, tabs, table padding, text below table, and buttons
-              (respectively). */}
+              SG footer, tabs, table padding, text below table, loading bar and
+              buttons (respectively). */}
           <Paper
             className="tour-download-results"
             sx={{
@@ -330,7 +330,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 totalSize > totalSizeMax
                   ? ' - 2rem'
                   : ''
-              } - (1.75 * 0.875rem + 12px))`,
+              }${dataLoading ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
               minHeight: 230,
               overflowX: 'auto',
             }}
