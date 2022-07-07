@@ -65,7 +65,11 @@ const InvestigationDetailsPanel = (
           {t('investigations.details.start_date')}
         </Typography>
         <Typography>
-          <b>{investigationData.startDate}</b>
+          <b>
+            {investigationData.startDate
+              ? new Date(investigationData.startDate).toLocaleDateString()
+              : investigationData.startDate}
+          </b>
         </Typography>
       </Grid>
       <Grid item xs>
@@ -73,7 +77,11 @@ const InvestigationDetailsPanel = (
           {t('investigations.details.end_date')}
         </Typography>
         <Typography>
-          <b>{investigationData.endDate}</b>
+          <b>
+            {investigationData.endDate
+              ? new Date(investigationData.endDate).toLocaleDateString()
+              : investigationData.endDate}
+          </b>
         </Typography>
       </Grid>
     </Grid>

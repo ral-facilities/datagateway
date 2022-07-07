@@ -10,6 +10,7 @@ import {
   AdditionalFilters,
   FiltersType,
   Investigation,
+  SearchResultSource,
   SortType,
 } from '../app.types';
 import { StateType } from '../state/app.types';
@@ -244,6 +245,7 @@ export const useInvestigationSizes = (
     | Investigation[]
     | InfiniteData<Investigation[]>
     | Investigation
+    | SearchResultSource[]
     | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const downloadApiUrl = useSelector(
@@ -332,6 +334,7 @@ export const useInvestigationsDatasetCount = (
     | Investigation[]
     | InfiniteData<Investigation[]>
     | Investigation
+    | SearchResultSource[]
     | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
@@ -477,7 +480,12 @@ const fetchInvestigationDetails = (
   params.append('where', JSON.stringify({ id: { eq: investigationId } }));
   params.append(
     'include',
-    JSON.stringify([{ investigationUsers: 'user' }, 'samples', 'publications'])
+    JSON.stringify([
+      { investigationUsers: 'user' },
+      { samples: 'type' },
+      { parameters: 'type' },
+      'publications',
+    ])
   );
 
   return axios

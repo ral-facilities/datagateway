@@ -81,7 +81,7 @@ describe('dgsearch reducer', () => {
   });
 
   it('should set maxNumResults property when configuring action is sent', () => {
-    expect(state.maxNumResults).toEqual(300);
+    expect(state.maxNumResults).toEqual(100);
 
     const updatedState = DGSearchReducer(state, loadMaxNumResults(200));
 

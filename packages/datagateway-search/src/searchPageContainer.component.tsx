@@ -21,7 +21,6 @@ import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
 import { useHistory } from 'react-router-dom';
 import {
-  useLuceneSearch,
   ViewsType,
   parseSearchToQuery,
   useUpdateView,
@@ -35,6 +34,7 @@ import {
   useUpdateQueryParam,
   ViewButton,
   ClearFiltersButton,
+  useLuceneSearchInfinite,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -195,12 +195,18 @@ const searchPageStyles = makeStyles<
       width: '98%',
       backgroundColor: '#00000000',
     },
+    // TODO idea for facets to be shared outside cardView
+    facetList: {
+      display: 'flex',
+      flexDirection: 'row',
+    },
   });
 });
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
   searchableEntities: string[];
+  minNumResults: number;
   maxNumResults: number;
   datafileTab: boolean;
   datasetTab: boolean;
@@ -228,6 +234,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     datafileTab,
     sideLayout,
     searchableEntities,
+    minNumResults,
     maxNumResults,
   } = props;
 
@@ -235,7 +242,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const { view, startDate, endDate } = queryParams;
+  const { view, startDate, endDate, sort, filters, restrict } = queryParams;
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
 
@@ -267,7 +274,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const pushSearchText = usePushSearchText();
   const pushCurrentTab = usePushCurrentTab();
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
-  const replaceSorts = useUpdateQueryParam('sort', 'replace');
   const replacePage = useUpdateQueryParam('page', 'replace');
   const replaceResults = useUpdateQueryParam('results', 'replace');
 
@@ -306,32 +312,68 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     refetch: searchInvestigations,
     isIdle: investigationsIdle,
     isFetching: investigationsFetching,
-  } = useLuceneSearch('Investigation', {
-    searchText: searchTextURL,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
+    isFetched: investigationsFetched,
+  } = useLuceneSearchInfinite(
+    'Investigation',
+    {
+      searchText: searchTextURL,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+      facets: [
+        { target: 'Investigation' },
+        {
+          target: 'InvestigationParameter',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+        {
+          target: 'Sample',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+      ],
+    },
+    filters
+  );
   const {
     refetch: searchDatasets,
     isIdle: datasetsIdle,
     isFetching: datasetsFetching,
-  } = useLuceneSearch('Dataset', {
-    searchText: searchTextURL,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
+    isFetched: datasetsFetched,
+  } = useLuceneSearchInfinite(
+    'Dataset',
+    {
+      searchText: searchTextURL,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+      facets: [{ target: 'Dataset' }],
+    },
+    filters
+  );
   const {
     refetch: searchDatafiles,
     isIdle: datafilesIdle,
     isFetching: datafilesFetching,
-  } = useLuceneSearch('Datafile', {
-    searchText: searchTextURL,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
+    isFetched: datafilesFetched,
+  } = useLuceneSearchInfinite(
+    'Datafile',
+    {
+      searchText: searchTextURL,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+    },
+    filters
+  );
 
   const requestReceived =
     !investigationsIdle || !datasetsIdle || !datafilesIdle;
@@ -346,26 +388,20 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     localStorage.removeItem('investigationFilters');
     localStorage.removeItem('datasetFilters');
     localStorage.removeItem('datafileFilters');
-    localStorage.removeItem('investigationSort');
-    localStorage.removeItem('datasetSort');
-    localStorage.removeItem('datafileSort');
     localStorage.removeItem('investigationPage');
     localStorage.removeItem('datasetPage');
     localStorage.removeItem('investigationResults');
     localStorage.removeItem('datasetResults');
     if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
-    if (Object.keys(queryParams.sort).length !== 0) replaceSorts({});
     if (queryParams.page !== null) replacePage(null);
     if (queryParams.results !== null) replaceResults(null);
   }, [
     pushSearchText,
     searchText,
     queryParams.filters,
-    queryParams.sort,
     queryParams.page,
     queryParams.results,
     replaceFilters,
-    replaceSorts,
     replacePage,
     replaceResults,
   ]);
@@ -429,6 +465,34 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     //Want to search whenever the search text in the URL changes so that clicking a react-router link also initiates the search
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTextURL]);
+
+  React.useEffect(() => {
+    if (
+      currentTab === 'investigation' &&
+      investigationTab &&
+      !investigationsFetched
+    ) {
+      searchInvestigations();
+    }
+    if (currentTab === 'dataset' && datasetTab && !datasetsFetched) {
+      searchDatasets();
+    }
+    if (currentTab === 'datafile' && datafileTab && !datafilesFetched) {
+      searchDatafiles();
+    }
+  }, [
+    currentTab,
+    datafileTab,
+    datafilesFetched,
+    datasetTab,
+    datasetsFetched,
+    filters,
+    investigationTab,
+    investigationsFetched,
+    searchDatafiles,
+    searchDatasets,
+    searchInvestigations,
+  ]);
 
   const [searchBoxHeight, setSearchBoxHeight] = React.useState(0);
 
@@ -528,6 +592,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                         handleButtonChange={handleButtonChange}
                         disabled={currentTab === 'datafile'}
                       />
+                      {/* <List className={classes.facetList}>
+                        {}
+                      </List> */}
                       <ClearFiltersButton
                         handleButtonClearFilters={handleButtonClearFilters}
                         disabled={disabled}
@@ -594,6 +661,7 @@ const mapDispatchToProps = (
 const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   sideLayout: state.dgsearch.sideLayout,
   searchableEntities: state.dgsearch.searchableEntities,
+  minNumResults: state.dgsearch.minNumResults,
   maxNumResults: state.dgsearch.maxNumResults,
   datafileTab: state.dgsearch.tabs.datafileTab,
   datasetTab: state.dgsearch.tabs.datasetTab,

@@ -49,6 +49,26 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       item={true}
       style={
         Object {
+          "marginTop": "8px",
+        }
+      }
+    >
+      <SortSelectComponent />
+    </WithStyles(ForwardRef(Grid))>
+    <WithStyles(ForwardRef(Grid))
+      item={true}
+      style={
+        Object {
+          "marginTop": "8px",
+        }
+      }
+    >
+      <MyDataCheckBox />
+    </WithStyles(ForwardRef(Grid))>
+    <WithStyles(ForwardRef(Grid))
+      item={true}
+      style={
+        Object {
           "display": "flex",
           "marginLeft": 6,
           "marginTop": "24px",
@@ -130,36 +150,6 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
        
       <AdvancedHelpDialogue />
     </WithStyles(ForwardRef(Typography))>
-    <div
-      className="makeStyles-rightText-4"
-    >
-      <div
-        style={
-          Object {
-            "alignItems": "center",
-            "display": "flex",
-            "flexWrap": "nowrap",
-          }
-        }
-      >
-        <Memo(ForwardRef(InfoOutlinedIcon))
-          className="makeStyles-infoIcon-1"
-          fontSize="small"
-        />
-         
-        <WithStyles(ForwardRef(Typography))
-          display="inline"
-          style={
-            Object {
-              "fontSize": "14px",
-              "paddingLeft": "6px",
-            }
-          }
-        >
-          searchBox.limited_results_message {maxNumResults:{tabs:{datasetTab:false,datafileTab:false,investigationTab:false},selectAllSetting:true,settingsLoaded:false,sideLayout:false,searchableEntities:[investigation,dataset,datafile],maxNumResults:300}}
-        </WithStyles(ForwardRef(Typography))>
-      </div>
-    </div>
   </div>
 </div>
 `;

@@ -189,7 +189,7 @@ const InvestigationDetailsPanel = (
               <b>
                 {investigationData.startDate &&
                 investigationData.startDate !== 'null'
-                  ? investigationData.startDate
+                  ? new Date(investigationData.startDate).toLocaleDateString()
                   : `${t('investigations.details.start_date')} not provided`}
               </b>
             </Typography>
@@ -202,7 +202,7 @@ const InvestigationDetailsPanel = (
               <b>
                 {investigationData.endDate &&
                 investigationData.endDate !== 'null'
-                  ? investigationData.endDate
+                  ? new Date(investigationData.endDate).toLocaleDateString()
                   : `${t('investigations.details.end_date')} not provided`}
               </b>
             </Typography>

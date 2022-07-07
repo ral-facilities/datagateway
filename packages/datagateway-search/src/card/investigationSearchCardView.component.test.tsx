@@ -3,18 +3,17 @@ import { createMount } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
   useAllFacilityCycles,
-  useLuceneSearch,
-  useInvestigationCount,
-  useInvestigationsPaginated,
+  useLuceneSearchInfinite,
   useInvestigationsDatasetCount,
   useInvestigationSizes,
-  Investigation,
   StateType,
-  AdvancedFilter,
   CardView,
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
   DLSVisitDetailsPanel,
+  SearchResponse,
+  SearchResult,
+  SearchResultSource,
 } from 'datagateway-common';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -28,7 +27,6 @@ import configureStore from 'redux-mock-store';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-import { Link, ListItemText } from '@material-ui/core';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -37,9 +35,7 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     useAllFacilityCycles: jest.fn(),
-    useLuceneSearch: jest.fn(),
-    useInvestigationCount: jest.fn(),
-    useInvestigationsPaginated: jest.fn(),
+    useLuceneSearchInfinite: jest.fn(),
     useInvestigationsDatasetCount: jest.fn(),
     useInvestigationSizes: jest.fn(),
   };
@@ -49,7 +45,9 @@ describe('Investigation - Card View', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  let cardData: Investigation[];
+  let cardData: SearchResultSource;
+  let searchResult: SearchResult;
+  let searchResponse: SearchResponse;
   let history: History;
 
   const createWrapper = (hierarchy?: string): ReactWrapper => {
@@ -66,47 +64,29 @@ describe('Investigation - Card View', () => {
 
   beforeEach(() => {
     mount = createMount();
-    cardData = [
-      {
-        id: 1,
-        name: 'Investigation test name',
-        size: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-        startDate: '2019-07-24',
-        endDate: '2019-07-25',
-        title: 'Test 1',
-        visitId: '1',
-        doi: 'doi 1',
-        investigationInstruments: [
-          {
-            id: 3,
-            instrument: {
-              id: 4,
-              name: 'LARMOR',
-            },
-          },
-        ],
-        studyInvestigations: [
-          {
-            id: 5,
-            study: {
-              id: 6,
-              pid: 'study pid',
-              name: 'study name',
-              modTime: '2019-06-10',
-              createTime: '2019-06-10',
-            },
-            investigation: {
-              id: 2,
-              title: 'Investigation test title',
-              name: 'Investigation test name',
-              visitId: '1',
-            },
-          },
-        ],
-      },
-    ];
+    cardData = {
+      id: 1,
+      name: 'Investigation test name',
+      startDate: 1563922800000,
+      endDate: 1564009200000,
+      title: 'Test 1',
+      visitId: '1',
+      doi: 'doi 1',
+      investigationinstrument: [
+        {
+          'instrument.id': 4,
+          'instrument.name': 'LARMOR',
+        },
+      ],
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: cardData,
+    };
+    searchResponse = {
+      results: [searchResult],
+    };
     history = createMemoryHistory();
 
     mockStore = configureStore([thunk]);
@@ -117,16 +97,9 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
-      data: 1,
-      isLoading: false,
-    });
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      isLoading: false,
-    });
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [],
+    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [searchResponse] },
+      fetchNextPage: jest.fn(),
     });
 
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
@@ -176,107 +149,40 @@ describe('Investigation - Card View', () => {
   });
 
   it('calls the correct data fetching hooks on load', () => {
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [1],
-    });
-
     createWrapper();
 
-    expect(useLuceneSearch).toHaveBeenCalledWith('Investigation', {
-      searchText: '',
-      startDate: null,
-      endDate: null,
-      maxCount: 300,
-    });
+    expect(useLuceneSearchInfinite).toHaveBeenCalledWith(
+      'Investigation',
+      {
+        searchText: '',
+        startDate: null,
+        endDate: null,
+        maxCount: 100,
+        minCount: 10,
+        restrict: true,
+        sort: {},
+        facets: [
+          {
+            target: 'Investigation',
+          },
+          {
+            dimensions: [{ dimension: 'type.name' }],
+            target: 'InvestigationParameter',
+          },
+          {
+            dimensions: [{ dimension: 'type.name' }],
+            target: 'Sample',
+          },
+        ],
+      },
+      {}
+    );
 
-    expect(useInvestigationCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useInvestigationsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigationInstruments: 'instrument',
-        }),
-      },
-    ]);
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(cardData);
+    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith([cardData]);
     expect(useInvestigationSizes).toHaveBeenCalledWith(undefined);
   });
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
-
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"title":{"value":"test","type":"include"}}'
-      )}`
-    );
-
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
-
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
-
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
-
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
-    );
-
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
-
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('investigations.title');
-    button.simulate('click');
-
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
-    );
-  });
-
   it('renders fine with incomplete data', () => {
-    (useInvestigationCount as jest.Mock).mockReturnValue({});
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({});
-
     expect(() => createWrapper()).not.toThrowError();
   });
 
@@ -326,7 +232,7 @@ describe('Investigation - Card View', () => {
 
     const wrapper = createWrapper('isis');
 
-    expect(useInvestigationSizes).toHaveBeenCalledWith(cardData);
+    expect(useInvestigationSizes).toHaveBeenCalledWith([cardData]);
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
@@ -370,70 +276,11 @@ describe('Investigation - Card View', () => {
         },
       ],
     });
-    delete cardData[0].investigationInstruments;
+    delete cardData.investigationinstrument;
 
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
-    expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
-    ).toEqual('Test 1');
-  });
-
-  it('displays only the dataset name when there is no generic investigation to link to', () => {
-    delete cardData[0].investigation;
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    const wrapper = createWrapper('data');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
-    expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
-    ).toEqual('Test 1');
-  });
-
-  it('displays only the dataset name when there is no DLS investigation to link to', () => {
-    delete cardData[0].investigation;
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    const wrapper = createWrapper('dls');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
-    expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
-    ).toEqual('Test 1');
-  });
-
-  it('displays only the dataset name when there is no ISIS investigation to link to', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-    delete cardData[0].investigation;
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
     ).toEqual('Test 1');

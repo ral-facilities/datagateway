@@ -6,20 +6,19 @@ import { StateType } from '../state/app.types';
 import {
   dGCommonInitialState,
   handleICATError,
-  Investigation,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
-  useIds,
-  useInvestigationCount,
   useInvestigationsDatasetCount,
-  useInvestigationsInfinite,
   useInvestigationSizes,
-  useLuceneSearch,
+  useLuceneSearchInfinite,
   useRemoveFromCart,
   ISISInvestigationDetailsPanel,
   InvestigationDetailsPanel,
   DLSVisitDetailsPanel,
+  SearchResultSource,
+  SearchResponse,
+  SearchResult,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -39,10 +38,7 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     handleICATError: jest.fn(),
     useCart: jest.fn(),
-    useLuceneSearch: jest.fn(),
-    useInvestigationCount: jest.fn(),
-    useInvestigationsInfinite: jest.fn(),
-    useIds: jest.fn(),
+    useLuceneSearchInfinite: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
     useAllFacilityCycles: jest.fn(),
@@ -57,7 +53,9 @@ describe('Investigation Search Table component', () => {
   let state: StateType;
   let history: History;
 
-  let rowData: Investigation[] = [];
+  let rowData: SearchResultSource;
+  let searchResult: SearchResult;
+  let searchResponse: SearchResponse;
 
   const createWrapper = (hierarchy?: string): ReactWrapper => {
     return mount(
@@ -81,65 +79,38 @@ describe('Investigation Search Table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    rowData = [
-      {
-        id: 1,
-        title: 'Test 1',
-        name: 'Test 1',
-        summary: 'foo bar',
-        visitId: '1',
-        doi: 'doi 1',
-        size: 1,
-        investigationInstruments: [
-          {
-            id: 1,
-            instrument: {
-              id: 3,
-              name: 'LARMOR',
-            },
-          },
-        ],
-        studyInvestigations: [
-          {
-            id: 6,
-            study: {
-              id: 7,
-              pid: 'study pid',
-              name: 'study name',
-              modTime: '2019-06-10',
-              createTime: '2019-06-10',
-            },
-            investigation: {
-              id: 1,
-              title: 'Test 1',
-              name: 'Test 1',
-              visitId: '1',
-            },
-          },
-        ],
-        startDate: '2019-06-10',
-        endDate: '2019-06-11',
-        facility: {
-          id: 2,
-          name: 'facility name',
+    rowData = {
+      id: 1,
+      title: 'Test 1',
+      name: 'Test 1',
+      summary: 'foo bar',
+      visitId: '1',
+      doi: 'doi 1',
+      investigationinstrument: [
+        {
+          'instrument.id': 3,
+          'instrument.name': 'LARMOR',
         },
-      },
-    ];
+      ],
+      startDate: 1560121200000,
+      endDate: 1560207600000,
+      'facility.name': 'facility name',
+      'facility.id': 2,
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: rowData,
+    };
+    searchResponse = {
+      results: [searchResult],
+    };
     (useCart as jest.Mock).mockReturnValue({
       data: [],
     });
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useInvestigationCount as jest.Mock).mockReturnValue({
-      data: 0,
-    });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
+    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [searchResponse] },
       fetchNextPage: jest.fn(),
-    });
-    (useIds as jest.Mock).mockReturnValue({
-      data: [1],
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -183,10 +154,7 @@ describe('Investigation Search Table component', () => {
     mount.cleanUp();
     (handleICATError as jest.Mock).mockClear();
     (useCart as jest.Mock).mockClear();
-    (useLuceneSearch as jest.Mock).mockClear();
-    (useInvestigationCount as jest.Mock).mockClear();
-    (useInvestigationsInfinite as jest.Mock).mockClear();
-    (useIds as jest.Mock).mockClear();
+    (useLuceneSearchInfinite as jest.Mock).mockClear();
     (useAddToCart as jest.Mock).mockClear();
     (useRemoveFromCart as jest.Mock).mockClear();
     (useAllFacilityCycles as jest.Mock).mockClear();
@@ -200,67 +168,46 @@ describe('Investigation Search Table component', () => {
   });
 
   it('calls the correct data fetching hooks on load', () => {
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [1],
-    });
-
     createWrapper();
 
     expect(useCart).toHaveBeenCalled();
-    expect(useLuceneSearch).toHaveBeenCalledWith('Investigation', {
-      searchText: '',
-      startDate: null,
-      endDate: null,
-      maxCount: 300,
-    });
-
-    expect(useInvestigationCount).toHaveBeenCalledWith([
+    expect(useLuceneSearchInfinite).toHaveBeenCalledWith(
+      'Investigation',
       {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
+        searchText: '',
+        startDate: null,
+        endDate: null,
+        maxCount: 100,
+        minCount: 10,
+        restrict: true,
+        sort: {},
+        facets: [
+          {
+            target: 'Investigation',
+          },
+          {
+            dimensions: [{ dimension: 'type.name' }],
+            target: 'InvestigationParameter',
+          },
+          {
+            dimensions: [{ dimension: 'type.name' }],
+            target: 'Sample',
+          },
+        ],
       },
-    ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigationInstruments: 'instrument',
-        }),
-      },
-    ]);
-    expect(useIds).toHaveBeenCalledWith(
-      'investigation',
-      [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { in: [1] },
-          }),
-        },
-      ],
-      true
+      {}
     );
 
     expect(useAddToCart).toHaveBeenCalledWith('investigation');
     expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
+    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith([rowData]);
     expect(useInvestigationSizes).toHaveBeenCalledWith(undefined);
   });
 
-  it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
+  it('calls fetchNextPage function of useLuceneSearchInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
+    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [searchResponse] },
       fetchNextPage,
     });
     const wrapper = createWrapper();
@@ -270,9 +217,8 @@ describe('Investigation Search Table component', () => {
       stopIndex: 74,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
+    // useLuceneSearchInfinite handles the parameters itself, so startIndex/stopIndex are not used
+    expect(fetchNextPage).toHaveBeenCalledWith();
   });
 
   it('displays DOI and renders the expected Link ', () => {
@@ -290,64 +236,6 @@ describe('Investigation Search Table component', () => {
         .first()
         .prop('href')
     ).toEqual('https://doi.org/doi 1');
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.title"]')
-      .first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"title":{"value":"test","type":"include"}}'
-      )}`
-    );
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper.find(
-      'input[id="investigations.end_date filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
-    );
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
-    );
   });
 
   it('calls addToCart mutate function on unchecked checkbox click', () => {
@@ -424,16 +312,6 @@ describe('Investigation Search Table component', () => {
 
     const wrapper = createWrapper();
 
-    expect(useIds).toHaveBeenCalledWith(
-      'investigation',
-      expect.anything(),
-      false
-    );
-    expect(useIds).not.toHaveBeenCalledWith(
-      'investigation',
-      expect.anything(),
-      true
-    );
     expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
   });
 
@@ -505,21 +383,14 @@ describe('Investigation Search Table component', () => {
   it('renders fine with incomplete data', () => {
     // this can happen when navigating between tables and the previous table's state still exists
     // also tests that empty arrays are fine for investigationInstruments
-    rowData = [
-      {
-        id: 1,
-        name: 'test',
-        title: 'test',
-        visitId: '1',
-        doi: 'Test 1',
-        investigationInstruments: [],
-      },
-    ];
-
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    rowData = {
+      id: 1,
+      name: 'test',
+      title: 'test',
+      visitId: '1',
+      doi: 'Test 1',
+      investigationinstrument: [],
+    };
 
     expect(() => createWrapper()).not.toThrowError();
   });
@@ -563,7 +434,7 @@ describe('Investigation Search Table component', () => {
 
     const wrapper = createWrapper('isis');
 
-    expect(useInvestigationSizes).toHaveBeenCalledWith({ pages: [rowData] });
+    expect(useInvestigationSizes).toHaveBeenCalledWith([rowData]);
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
@@ -584,12 +455,8 @@ describe('Investigation Search Table component', () => {
         },
       ],
     });
-    delete rowData[0].investigationInstruments;
+    delete rowData.investigationinstrument;
 
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);

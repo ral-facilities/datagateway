@@ -245,16 +245,6 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
         </Trans>
       </WithStyles(WithStyles(ForwardRef(DialogContent)))>
     </WithStyles(ForwardRef(Paper))>
-    <WithStyles(ForwardRef(Paper))
-      className="makeStyles-paper-4"
-    >
-      <WithStyles(WithStyles(ForwardRef(DialogTitle)))>
-        advanced_search_help.limited_search_results.title
-      </WithStyles(WithStyles(ForwardRef(DialogTitle)))>
-      <WithStyles(WithStyles(ForwardRef(DialogContent)))>
-        advanced_search_help.limited_search_results.description {maxNumResults:{tabs:{datasetTab:false,datafileTab:false,investigationTab:false},selectAllSetting:true,settingsLoaded:false,sideLayout:false,searchableEntities:[investigation,dataset,datafile],maxNumResults:300}}
-      </WithStyles(WithStyles(ForwardRef(DialogContent)))>
-    </WithStyles(ForwardRef(Paper))>
     <WithStyles(ForwardRef(Typography))
       className="makeStyles-root-1"
       gutterBottom={true}

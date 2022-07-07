@@ -234,11 +234,31 @@ const EntityCard = React.memo(
       }));
 
     const buttons = props.buttons?.map((button) => button(entity));
-    const tags = props.customFilters?.map((f) => ({
-      data: nestedValue(entity, f.dataKey),
-      label: f.label,
-      prefixLabel: f.prefixLabel ?? false,
-    }));
+    const tags = props.customFilters?.map((f) => {
+      let data: string;
+      // Specific dataKeySearch allows us to generate chips for Lucene formatted fields
+      if (f.dataKeySearch) {
+        const dataKeySearchSplit = f.dataKeySearch.split(' ');
+        if (dataKeySearchSplit.length === 2) {
+          data = '';
+          entity[dataKeySearchSplit[0]].forEach(
+            (nestedEntity: { [x: string]: string }) => {
+              data += '; ' + nestedEntity[dataKeySearchSplit[1]];
+            }
+          );
+          data = data.substring(2);
+        } else {
+          data = entity[f.dataKeySearch];
+        }
+      } else {
+        data = nestedValue(entity, f.dataKey);
+      }
+      return {
+        data: data,
+        label: f.label,
+        prefixLabel: f.prefixLabel ?? false,
+      };
+    });
 
     // The default collapsed height for card description is 100px.
     const defaultCollapsedHeight = 100;

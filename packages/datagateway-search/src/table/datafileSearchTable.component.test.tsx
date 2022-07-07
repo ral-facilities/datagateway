@@ -5,18 +5,17 @@ import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
-  Datafile,
   useAddToCart,
   useCart,
-  useDatafileCount,
-  useDatafilesInfinite,
-  useIds,
-  useLuceneSearch,
+  useLuceneSearchInfinite,
   useRemoveFromCart,
   useAllFacilityCycles,
   ISISDatafileDetailsPanel,
   DatafileDetailsPanel,
   DLSDatafileDetailsPanel,
+  SearchResultSource,
+  SearchResponse,
+  SearchResult,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -36,10 +35,7 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     handleICATError: jest.fn(),
     useCart: jest.fn(),
-    useLuceneSearch: jest.fn(),
-    useDatafileCount: jest.fn(),
-    useDatafilesInfinite: jest.fn(),
-    useIds: jest.fn(),
+    useLuceneSearchInfinite: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
     useAllFacilityCycles: jest.fn(),
@@ -52,7 +48,9 @@ describe('Datafile search table component', () => {
   let state: StateType;
   let history: History;
 
-  let rowData: Datafile[] = [];
+  let rowData: SearchResultSource;
+  let searchResult: SearchResult;
+  let searchResponse: SearchResponse;
 
   const createWrapper = (hierarchy?: string): ReactWrapper => {
     return mount(
@@ -77,83 +75,40 @@ describe('Datafile search table component', () => {
       })
     );
 
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-        dataset: {
-          id: 2,
-          name: 'Dataset test name',
-          size: 1,
-          modTime: '2019-07-23',
-          createTime: '2019-07-23',
-          startDate: '2019-07-24',
-          endDate: '2019-07-25',
-          investigation: {
-            id: 3,
-            title: 'Investigation test title',
-            name: 'Investigation test name',
-            summary: 'foo bar',
-            visitId: '1',
-            doi: 'doi 1',
-            size: 1,
-            investigationInstruments: [
-              {
-                id: 4,
-                instrument: {
-                  id: 5,
-                  name: 'LARMOR',
-                },
-              },
-            ],
-            studyInvestigations: [
-              {
-                id: 6,
-                study: {
-                  id: 7,
-                  pid: 'study pid',
-                  name: 'study name',
-                  modTime: '2019-06-10',
-                  createTime: '2019-06-10',
-                },
-                investigation: {
-                  id: 3,
-                  title: 'Investigation test title',
-                  name: 'Investigation test name',
-                  visitId: '1',
-                },
-              },
-            ],
-            startDate: '2019-06-10',
-            endDate: '2019-06-11',
-            facility: {
-              id: 8,
-              name: 'facility name',
-            },
-          },
+    rowData = {
+      id: 1,
+      name: 'Datafile test name',
+      location: '/datafiletest',
+      fileSize: 1,
+      date: 1563836400000,
+      'dataset.id': 2,
+      'dataset.name': 'Dataset test name',
+      'investigation.id': 3,
+      'investigation.title': 'Investigation test title',
+      'investigation.name': 'Investigation test name',
+      'investigation.startDate': 1560121200000,
+      investigationinstrument: [
+        {
+          'instrument.id': 5,
+          'instrument.name': 'LARMOR',
         },
-      },
-    ];
+      ],
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: rowData,
+    };
+    searchResponse = {
+      results: [searchResult],
+    };
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
     });
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useDatafileCount as jest.Mock).mockReturnValue({
-      data: 0,
-    });
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
+    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [searchResponse] },
       fetchNextPage: jest.fn(),
-    });
-    (useIds as jest.Mock).mockReturnValue({
-      data: [1],
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -179,135 +134,43 @@ describe('Datafile search table component', () => {
   });
 
   it('calls the correct data fetching hooks on load', () => {
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [1],
-    });
-
     createWrapper();
 
     expect(useCart).toHaveBeenCalled();
-    expect(useLuceneSearch).toHaveBeenCalledWith('Datafile', {
-      searchText: '',
-      startDate: null,
-      endDate: null,
-      maxCount: 300,
-    });
-
-    expect(useDatafileCount).toHaveBeenCalledWith([
+    expect(useLuceneSearchInfinite).toHaveBeenCalledWith(
+      'Datafile',
       {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
+        searchText: '',
+        startDate: null,
+        endDate: null,
+        maxCount: 100,
+        minCount: 10,
+        restrict: true,
+        sort: {},
       },
-    ]);
-    expect(useDatafilesInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          dataset: {
-            investigation: { investigationInstruments: 'instrument' },
-          },
-        }),
-      },
-    ]);
-    expect(useIds).toHaveBeenCalledWith(
-      'datafile',
-      [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { in: [1] },
-          }),
-        },
-      ],
-      true
+      {}
     );
 
     expect(useAddToCart).toHaveBeenCalledWith('datafile');
     expect(useRemoveFromCart).toHaveBeenCalledWith('datafile');
   });
 
-  it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
+  it('calls fetchNextPage function of useLuceneSearchInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
+    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [searchResponse] },
       fetchNextPage,
     });
     const wrapper = createWrapper();
 
+    // We don't actually use these in the call to Lucene since the searchAfter functionality is
+    // more complex, but it still needs to be consistent with the DB calls
     wrapper.find('VirtualizedTable').prop('loadMoreRows')({
       startIndex: 50,
       stopIndex: 74,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by datafiles.name"]')
-      .first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"name":{"value":"test","type":"include"}}'
-      )}`
-    );
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper.find(
-      'input[id="datafiles.modified_time filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
-    );
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
-    );
+    expect(fetchNextPage).toHaveBeenCalledWith();
   });
 
   it('calls addToCart mutate function on unchecked checkbox click', () => {
@@ -383,13 +246,6 @@ describe('Datafile search table component', () => {
     state.dgsearch.selectAllSetting = false;
 
     const wrapper = createWrapper();
-
-    expect(useIds).toHaveBeenCalledWith('datafile', expect.anything(), false);
-    expect(useIds).not.toHaveBeenCalledWith(
-      'datafile',
-      expect.anything(),
-      true
-    );
     expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
   });
 
@@ -433,20 +289,13 @@ describe('Datafile search table component', () => {
 
   it('renders fine with incomplete data', () => {
     // this can happen when navigating between tables and the previous table's state still exists
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        dataset: {},
-      },
-    ];
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    rowData = {
+      id: 1,
+      name: 'Datafile test name',
+      location: '/datafiletest',
+      fileSize: 1,
+      modTime: 1563836400000,
+    };
 
     expect(() => createWrapper()).not.toThrowError();
   });
@@ -506,11 +355,7 @@ describe('Datafile search table component', () => {
         },
       ],
     });
-    delete rowData[0].dataset?.investigation?.investigationInstruments;
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    delete rowData.investigationinstrument;
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
@@ -549,20 +394,10 @@ describe('Datafile search table component', () => {
   });
 
   it('displays only the datafile name when there is no generic dataset to link to', () => {
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        dataset: {},
-      },
-    ];
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    delete rowData['investigation.id'];
+    delete rowData['investigation.name'];
+    delete rowData['investigation.title'];
+    delete rowData['investigation.startDate'];
 
     const wrapper = createWrapper('data');
 
@@ -573,20 +408,10 @@ describe('Datafile search table component', () => {
   });
 
   it('displays only the datafile name when there is no DLS dataset to link to', () => {
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        dataset: {},
-      },
-    ];
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    delete rowData['investigation.id'];
+    delete rowData['investigation.name'];
+    delete rowData['investigation.title'];
+    delete rowData['investigation.startDate'];
 
     const wrapper = createWrapper('dls');
 
@@ -607,20 +432,10 @@ describe('Datafile search table component', () => {
         },
       ],
     });
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        dataset: {},
-      },
-    ];
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    delete rowData['investigation.id'];
+    delete rowData['investigation.name'];
+    delete rowData['investigation.title'];
+    delete rowData['investigation.startDate'];
 
     const wrapper = createWrapper('isis');
 

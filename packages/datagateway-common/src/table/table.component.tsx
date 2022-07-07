@@ -81,6 +81,16 @@ const styles = (theme: Theme): StyleRules =>
         paddingRight: 0,
       },
     },
+    shortHeaderTableCell: {
+      flex: 1,
+      height: rowHeight,
+      justifyContent: 'space-between',
+      padding: 0,
+      paddingLeft: 16,
+      '&:last-child': {
+        paddingRight: 0,
+      },
+    },
   });
 
 export interface ColumnType {
@@ -123,6 +133,7 @@ interface VirtualizedTableProps {
   onUncheck?: (selectedIds: number[]) => void;
   allIds?: number[];
   disableSelectAll?: boolean;
+  shortHeader?: boolean;
 }
 
 const VirtualizedTable = React.memo(
@@ -153,6 +164,7 @@ const VirtualizedTable = React.memo(
       sort,
       onSort,
       disableSelectAll,
+      shortHeader,
     } = props;
 
     if (
@@ -278,10 +290,13 @@ const VirtualizedTable = React.memo(
       classes.tableNoPadding,
       classes.flexContainer
     );
-    const headerTableCellClass = clsx(
-      classes.headerTableCell,
-      classes.headerFlexContainer
-    );
+    const headerTableCellClass = shortHeader
+      ? clsx(classes.shortHeaderTableCell, classes.headerFlexContainer)
+      : clsx(classes.headerTableCell, classes.headerFlexContainer);
+
+    const detailsHeaderTableCellClass = shortHeader
+      ? clsx(classes.shortHeaderTableCell, classes.flexContainer)
+      : clsx(classes.headerTableCell, classes.flexContainer);
 
     return (
       <AutoSizer>
@@ -322,7 +337,7 @@ const VirtualizedTable = React.memo(
                   width={Math.max(width, min_table_width)}
                   rowCount={data.length}
                   onRowsRendered={onRowsRendered}
-                  headerHeight={headerHeight}
+                  headerHeight={shortHeader ? rowHeight : headerHeight}
                   rowHeight={getRowHeight}
                   rowClassName={getRowClassName}
                   rowGetter={getRow}
@@ -385,10 +400,7 @@ const VirtualizedTable = React.memo(
                           size="small"
                           padding="checkbox"
                           component="div"
-                          className={clsx(
-                            classes.headerTableCell,
-                            classes.flexContainer
-                          )}
+                          className={detailsHeaderTableCellClass}
                           variant="head"
                         />
                       )}

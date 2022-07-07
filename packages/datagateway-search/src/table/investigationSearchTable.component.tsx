@@ -10,26 +10,24 @@ import {
   useAddToCart,
   useAllFacilityCycles,
   useCart,
-  useDateFilter,
-  useIds,
-  useInvestigationCount,
-  useInvestigationsInfinite,
   useSort,
   useRemoveFromCart,
-  useTextFilter,
   useInvestigationsDatasetCount,
   useInvestigationSizes,
   formatCountOrSize,
-  useLuceneSearch,
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
   DLSVisitDetailsPanel,
+  SearchResultSource,
+  useLuceneSearchInfinite,
+  SearchResponse,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { StateType } from '../state/app.types';
 import { useSelector } from 'react-redux';
+import { Paper, Typography } from '@material-ui/core';
 
 interface InvestigationTableProps {
   hierarchy: string;
@@ -47,64 +45,46 @@ const InvestigationSearchTable = (
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const { startDate, endDate } = queryParams;
+  const { startDate, endDate, sort, filters, restrict } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgsearch.selectAllSetting
   );
 
+  const minNumResults = useSelector(
+    (state: StateType) => state.dgsearch.minNumResults
+  );
+
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { data: luceneData } = useLuceneSearch('Investigation', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
-
   const [t] = useTranslation();
 
-  const { filters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
-
-  const { data: totalDataCount } = useInvestigationCount([
+  const { fetchNextPage, data, hasNextPage } = useLuceneSearchInfinite(
+    'Investigation',
     {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
+      searchText,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+      facets: [
+        { target: 'Investigation' },
+        {
+          target: 'InvestigationParameter',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+        {
+          target: 'Sample',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+      ],
     },
-  ]);
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigationInstruments: 'instrument',
-      }),
-    },
-  ]);
-  const { data: allIds } = useIds(
-    'investigation',
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: luceneData || [] },
-        }),
-      },
-    ],
-    selectAllSetting
+    filters
   );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
@@ -115,42 +95,68 @@ const InvestigationSearchTable = (
     isLoading: removeFromCartLoading,
   } = useRemoveFromCart('investigation');
 
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  function mapSource(response: SearchResponse): SearchResultSource[] {
+    return response.results?.map((result) => result.source) ?? [];
+  }
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
+  function mapIds(response: SearchResponse): number[] {
+    return response.results?.map((result) => result.id) ?? [];
+  }
+
+  const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {
+    const definedData = data ?? {
+      results: [],
+    };
+    if ('pages' in definedData) {
+      return {
+        aggregatedSource: definedData.pages
+          .map((response) => mapSource(response))
+          .flat(),
+        aggregatedIds: definedData.pages
+          .map((response) => mapIds(response))
+          .flat(),
+        aborted: definedData.pages[definedData.pages.length - 1].aborted,
+      };
+    } else {
+      return {
+        aggregatedSource: mapSource(definedData),
+        aggregatedIds: mapIds(definedData),
+        aborted: false,
+      };
+    }
+  }, [data]);
+
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 
-  const dlsLinkURL = (investigationData: Investigation): string =>
+  const dlsLinkURL = (investigationData: SearchResultSource): string =>
     `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`;
 
   const isisLinkURL = React.useCallback(
-    (investigationData: Investigation) => {
+    (investigationData: SearchResultSource) => {
       let instrumentId;
       let facilityCycleId;
-      if (investigationData.investigationInstruments?.length) {
+      if (investigationData.investigationinstrument?.length) {
         instrumentId =
-          investigationData.investigationInstruments[0].instrument?.id;
+          investigationData.investigationinstrument[0]['instrument.id'];
       } else {
         return null;
       }
 
       if (investigationData.startDate && facilityCycles?.length) {
+        const investigationDate = new Date(
+          investigationData.startDate
+        ).toISOString();
         const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
           (facilityCycle: FacilityCycle) =>
-            investigationData.startDate &&
             facilityCycle.startDate &&
             facilityCycle.endDate &&
-            investigationData.startDate >= facilityCycle.startDate &&
-            investigationData.startDate <= facilityCycle.endDate
+            investigationDate >= facilityCycle.startDate &&
+            investigationDate <= facilityCycle.endDate
         );
         if (filteredFacilityCycles.length) {
           facilityCycleId = filteredFacilityCycles[0].id;
@@ -165,16 +171,17 @@ const InvestigationSearchTable = (
   );
 
   const isisLink = React.useCallback(
-    (investigationData: Investigation) => {
+    (investigationData: SearchResultSource) => {
       const linkURL = isisLinkURL(investigationData);
 
-      if (linkURL) return tableLink(linkURL, investigationData.title);
+      if (linkURL && investigationData.title)
+        return tableLink(linkURL, investigationData.title);
       else return investigationData.title;
     },
     [isisLinkURL]
   );
 
-  const genericLinkURL = (investigationData: Investigation): string =>
+  const genericLinkURL = (investigationData: SearchResultSource): string =>
     `/browse/investigation/${investigationData.id}/dataset`;
 
   const hierarchyLinkURL = React.useMemo(() => {
@@ -189,17 +196,25 @@ const InvestigationSearchTable = (
 
   const hierarchyLink = React.useMemo(() => {
     if (hierarchy === 'dls') {
-      const dlsLink = (investigationData: Investigation): React.ReactElement =>
-        tableLink(dlsLinkURL(investigationData), investigationData.title);
+      const dlsLink = (
+        investigationData: SearchResultSource
+      ): React.ReactElement =>
+        tableLink(
+          dlsLinkURL(investigationData),
+          investigationData.title as string
+        );
 
       return dlsLink;
     } else if (hierarchy === 'isis') {
       return isisLink;
     } else {
       const genericLink = (
-        investigationData: Investigation
+        investigationData: SearchResultSource
       ): React.ReactElement =>
-        tableLink(genericLinkURL(investigationData), investigationData.title);
+        tableLink(
+          genericLinkURL(investigationData),
+          investigationData.title as string
+        );
 
       return genericLink;
     }
@@ -213,19 +228,19 @@ const InvestigationSearchTable = (
             cartItem.entityType === 'investigation' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
             (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+              (aggregatedIds && aggregatedIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, selectAllSetting, aggregatedIds]
   );
 
   // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
   // the correct calculation queries for each facility
   const datasetCountQueries = useInvestigationsDatasetCount(
-    hierarchy !== 'isis' ? data : undefined
+    hierarchy !== 'isis' ? aggregatedSource : undefined
   );
   const sizeQueries = useInvestigationSizes(
-    hierarchy === 'isis' ? data : undefined
+    hierarchy === 'isis' ? aggregatedSource : undefined
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -234,20 +249,20 @@ const InvestigationSearchTable = (
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigationData = cellProps.rowData as Investigation;
+          const investigationData = cellProps.rowData as SearchResultSource;
           return hierarchyLink(investigationData);
         },
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('investigations.name'),
         dataKey: 'name',
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('investigations.doi'),
@@ -260,7 +275,7 @@ const InvestigationSearchTable = (
             'investigation-search-table-doi-link'
           );
         },
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label:
@@ -281,52 +296,45 @@ const InvestigationSearchTable = (
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.investigationInstruments?.[0]?.instrument) {
-            return investigationData.investigationInstruments[0].instrument
-              .fullName;
-          } else {
-            return '';
-          }
+          const investigationData = cellProps.rowData as SearchResultSource;
+          const investigationInstrument =
+            investigationData.investigationinstrument?.[0];
+          return (
+            investigationInstrument?.['instrument.fullName'] ??
+            investigationInstrument?.['instrument.name'] ??
+            ''
+          );
         },
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
-        filterComponent: dateFilter,
         cellContentRenderer: (cellProps: TableCellProps) => {
           if (cellProps.cellData) {
-            return cellProps.cellData.toString().split(' ')[0];
+            return new Date(cellProps.cellData).toLocaleDateString();
           }
         },
+        disableSort: true,
       },
       {
         label: t('investigations.end_date'),
         dataKey: 'endDate',
-        filterComponent: dateFilter,
         cellContentRenderer: (cellProps: TableCellProps) => {
           if (cellProps.cellData) {
-            return cellProps.cellData.toString().split(' ')[0];
+            return new Date(cellProps.cellData).toLocaleDateString();
           }
         },
+        disableSort: true,
       },
     ],
-    [
-      t,
-      textFilter,
-      hierarchy,
-      dateFilter,
-      hierarchyLink,
-      sizeQueries,
-      datasetCountQueries,
-    ]
+    [t, hierarchy, hierarchyLink, sizeQueries, datasetCountQueries]
   );
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => {
       if (hierarchy === 'isis') {
-        const datasetsURL = hierarchyLinkURL(rowData as Investigation);
+        const datasetsURL = hierarchyLinkURL(rowData as SearchResultSource);
         return (
           <ISISInvestigationDetailsPanel
             rowData={rowData}
@@ -360,23 +368,34 @@ const InvestigationSearchTable = (
   );
 
   return (
-    <Table
-      loading={addToCartLoading || removeFromCartLoading}
-      data={aggregatedData}
-      loadMoreRows={loadMoreRows}
-      totalRowCount={totalDataCount ?? 0}
-      sort={sort}
-      onSort={handleSort}
-      detailsPanel={detailsPanel}
-      columns={columns}
-      {...(hierarchy !== 'dls' && {
-        selectedRows,
-        allIds,
-        onCheck: addToCart,
-        onUncheck: removeFromCart,
-        disableSelectAll: !selectAllSetting,
-      })}
-    />
+    <div>
+      {aborted ? (
+        <Paper>
+          <Typography align="center" variant="h6" component="h6">
+            {t('loading.abort_message')}
+          </Typography>
+        </Paper>
+      ) : (
+        <Table
+          loading={addToCartLoading || removeFromCartLoading}
+          data={aggregatedSource}
+          loadMoreRows={loadMoreRows}
+          totalRowCount={aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0}
+          sort={{}}
+          onSort={handleSort}
+          detailsPanel={detailsPanel}
+          columns={columns}
+          {...(hierarchy !== 'dls' && {
+            selectedRows,
+            aggregatedIds,
+            onCheck: addToCart,
+            onUncheck: removeFromCart,
+            disableSelectAll: !selectAllSetting,
+          })}
+          shortHeader={true}
+        />
+      )}
+    </div>
   );
 };
 

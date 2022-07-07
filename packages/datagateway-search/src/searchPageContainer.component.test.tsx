@@ -221,10 +221,14 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Datafile',
             lower: '201311110000',
@@ -248,15 +252,24 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Dataset',
             lower: '201311110000',
             text: 'hello',
             upper: '201611112359',
+            facets: [
+              {
+                target: 'Dataset',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -275,15 +288,32 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Investigation',
             lower: '201311110000',
             text: 'hello',
             upper: '201611112359',
+            facets: [
+              {
+                target: 'Investigation',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'InvestigationParameter',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'Sample',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -302,10 +332,14 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Datafile',
             lower: '201311110000',
@@ -328,14 +362,23 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Dataset',
             lower: '201311110000',
             upper: '9000012312359',
+            facets: [
+              {
+                target: 'Dataset',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -354,14 +397,31 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Investigation',
             lower: '201311110000',
             upper: '9000012312359',
+            facets: [
+              {
+                target: 'Investigation',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'InvestigationParameter',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'Sample',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -380,10 +440,14 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Datafile',
             lower: '0000001010000',
@@ -406,14 +470,23 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Dataset',
             lower: '0000001010000',
             upper: '201611112359',
+            facets: [
+              {
+                target: 'Dataset',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -432,14 +505,31 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Investigation',
             lower: '0000001010000',
             upper: '201611112359',
+            facets: [
+              {
+                target: 'Investigation',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'InvestigationParameter',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'Sample',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -456,10 +546,14 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Datafile',
           },
@@ -478,12 +572,21 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Dataset',
+            facets: [
+              {
+                target: 'Dataset',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -500,12 +603,29 @@ describe('SearchPageContainer - Tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Investigation',
+            facets: [
+              {
+                target: 'Investigation',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'InvestigationParameter',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'Sample',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -725,10 +845,14 @@ describe('SearchPageContainer - Tests', () => {
     wrapper.update();
 
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Datafile',
             lower: '201311110000',
@@ -748,10 +872,14 @@ describe('SearchPageContainer - Tests', () => {
     wrapper.update();
 
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Datafile',
           },
@@ -770,13 +898,30 @@ describe('SearchPageContainer - Tests', () => {
     wrapper.update();
 
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Investigation',
             text: 'hello',
+            facets: [
+              {
+                target: 'Investigation',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'InvestigationParameter',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'Sample',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -784,13 +929,22 @@ describe('SearchPageContainer - Tests', () => {
     );
 
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Dataset',
             text: 'hello',
+            facets: [
+              {
+                target: 'Dataset',
+              },
+            ],
           },
           sessionId: null,
         },
@@ -798,10 +952,14 @@ describe('SearchPageContainer - Tests', () => {
     );
 
     expect(axios.get).not.toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Datafile',
             text: 'hello',
@@ -824,13 +982,30 @@ describe('SearchPageContainer - Tests', () => {
     });
 
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: {
-          maxCount: 300,
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
           query: {
             target: 'Investigation',
             text: 'neutron AND scattering',
+            facets: [
+              {
+                target: 'Investigation',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'InvestigationParameter',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'Sample',
+              },
+            ],
           },
           sessionId: null,
         },

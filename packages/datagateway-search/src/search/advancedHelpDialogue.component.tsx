@@ -13,8 +13,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import { Link, Paper } from '@material-ui/core';
 import { Trans, useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { StateType } from '../state/app.types';
 import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -62,10 +60,6 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const [t] = useTranslation();
-
-  const maxNumResults = useSelector(
-    (state: StateType) => state.dgsearch.maxNumResults
-  );
 
   const handleClickOpen = (): void => {
     setOpen(true);
@@ -211,16 +205,6 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               &#39; will return results containing words like &#39;sodium&#39;
               and &#39;vanadium&#39;.
             </Trans>
-          </DialogueContent>
-        </Paper>
-        <Paper className={classes.paper}>
-          <DialogueHeading>
-            {t('advanced_search_help.limited_search_results.title')}
-          </DialogueHeading>
-          <DialogueContent>
-            {t('advanced_search_help.limited_search_results.description', {
-              maxNumResults,
-            })}
           </DialogueContent>
         </Paper>
         <Typography className={classes.root} gutterBottom>

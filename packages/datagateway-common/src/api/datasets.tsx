@@ -11,6 +11,7 @@ import {
   FiltersType,
   Dataset,
   SortType,
+  SearchResultSource,
 } from '../app.types';
 import { StateType } from '../state/app.types';
 import {
@@ -220,7 +221,12 @@ export const useDatasetSize = (
 };
 
 export const useDatasetSizes = (
-  data: Dataset[] | InfiniteData<Dataset[]> | Dataset | undefined
+  data:
+    | Dataset[]
+    | InfiniteData<Dataset[]>
+    | Dataset
+    | SearchResultSource[]
+    | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
@@ -300,7 +306,12 @@ export const useDatasetSizes = (
 };
 
 export const useDatasetsDatafileCount = (
-  data: Dataset[] | InfiniteData<Dataset[]> | Dataset | undefined
+  data:
+    | Dataset[]
+    | InfiniteData<Dataset[]>
+    | Dataset
+    | SearchResultSource[]
+    | undefined
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 

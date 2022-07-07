@@ -2,13 +2,14 @@
 
 exports[`Investigation Search Table component renders correctly 1`] = `
 Object {
-  "allIds": Array [
+  "aggregatedIds": Array [
     1,
   ],
   "classes": Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
     "headerTableCell": "VirtualizedTable-headerTableCell-8",
+    "shortHeaderTableCell": "VirtualizedTable-shortHeaderTableCell-9",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
     "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
@@ -19,23 +20,23 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "title",
-      "filterComponent": [Function],
+      "disableSort": true,
       "label": "investigations.title",
     },
     Object {
       "dataKey": "visitId",
-      "filterComponent": [Function],
+      "disableSort": true,
       "label": "investigations.visit_id",
     },
     Object {
       "dataKey": "name",
-      "filterComponent": [Function],
+      "disableSort": true,
       "label": "investigations.name",
     },
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "doi",
-      "filterComponent": [Function],
+      "disableSort": true,
       "label": "investigations.doi",
     },
     Object {
@@ -47,61 +48,37 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "investigationInstruments.instrument.fullName",
-      "filterComponent": [Function],
+      "disableSort": true,
       "label": "investigations.instrument",
     },
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "startDate",
-      "filterComponent": [Function],
+      "disableSort": true,
       "label": "investigations.start_date",
     },
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "endDate",
-      "filterComponent": [Function],
+      "disableSort": true,
       "label": "investigations.end_date",
     },
   ],
   "data": Array [
     Object {
       "doi": "doi 1",
-      "endDate": "2019-06-11",
-      "facility": Object {
-        "id": 2,
-        "name": "facility name",
-      },
+      "endDate": 1560207600000,
+      "facility.id": 2,
+      "facility.name": "facility name",
       "id": 1,
-      "investigationInstruments": Array [
+      "investigationinstrument": Array [
         Object {
-          "id": 1,
-          "instrument": Object {
-            "id": 3,
-            "name": "LARMOR",
-          },
+          "instrument.id": 3,
+          "instrument.name": "LARMOR",
         },
       ],
       "name": "Test 1",
-      "size": 1,
-      "startDate": "2019-06-10",
-      "studyInvestigations": Array [
-        Object {
-          "id": 6,
-          "investigation": Object {
-            "id": 1,
-            "name": "Test 1",
-            "title": "Test 1",
-            "visitId": "1",
-          },
-          "study": Object {
-            "createTime": "2019-06-10",
-            "id": 7,
-            "modTime": "2019-06-10",
-            "name": "study name",
-            "pid": "study pid",
-          },
-        },
-      ],
+      "startDate": 1560121200000,
       "summary": "foo bar",
       "title": "Test 1",
       "visitId": "1",
@@ -115,8 +92,9 @@ Object {
   "onSort": [Function],
   "onUncheck": [MockFunction],
   "selectedRows": Array [],
+  "shortHeader": true,
   "sort": Object {},
-  "totalRowCount": 0,
+  "totalRowCount": 1,
 }
 `;
 

@@ -5,7 +5,6 @@ import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
-  Dataset,
   dGCommonInitialState,
   DatasetDetailsPanel,
   ISISDatasetDetailsPanel,
@@ -13,13 +12,13 @@ import {
   useAddToCart,
   useAllFacilityCycles,
   useCart,
-  useDatasetCount,
   useDatasetsDatafileCount,
-  useDatasetsInfinite,
   useDatasetSizes,
-  useIds,
-  useLuceneSearch,
+  useLuceneSearchInfinite,
   useRemoveFromCart,
+  SearchResult,
+  SearchResponse,
+  SearchResultSource,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -37,10 +36,7 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     useCart: jest.fn(),
-    useLuceneSearch: jest.fn(),
-    useDatasetCount: jest.fn(),
-    useDatasetsInfinite: jest.fn(),
-    useIds: jest.fn(),
+    useLuceneSearchInfinite: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
     useAllFacilityCycles: jest.fn(),
@@ -55,7 +51,9 @@ describe('Dataset table component', () => {
   let state: StateType;
   let history: History;
 
-  let rowData: Dataset[] = [];
+  let rowData: SearchResultSource;
+  let searchResult: SearchResult;
+  let searchResponse: SearchResponse;
 
   const createWrapper = (hierarchy?: string): ReactWrapper => {
     return mount(
@@ -76,74 +74,36 @@ describe('Dataset table component', () => {
     state = JSON.parse(
       JSON.stringify({ dgcommon: dGCommonInitialState, dgsearch: initialState })
     );
-    rowData = [
-      {
-        id: 1,
-        name: 'Dataset test name',
-        size: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-        startDate: '2019-07-24',
-        endDate: '2019-07-25',
-        investigation: {
-          id: 2,
-          title: 'Investigation test title',
-          name: 'Investigation test name',
-          summary: 'foo bar',
-          visitId: '1',
-          doi: 'doi 1',
-          size: 1,
-          investigationInstruments: [
-            {
-              id: 3,
-              instrument: {
-                id: 4,
-                name: 'LARMOR',
-              },
-            },
-          ],
-          studyInvestigations: [
-            {
-              id: 5,
-              study: {
-                id: 6,
-                pid: 'study pid',
-                name: 'study name',
-                modTime: '2019-06-10',
-                createTime: '2019-06-10',
-              },
-              investigation: {
-                id: 2,
-                title: 'Investigation test title',
-                name: 'Investigation test name',
-                visitId: '1',
-              },
-            },
-          ],
-          startDate: '2019-06-10',
-          endDate: '2019-06-11',
-          facility: {
-            id: 7,
-            name: 'facility name',
-          },
+    rowData = {
+      id: 1,
+      name: 'Dataset test name',
+      startDate: 1563922800000,
+      endDate: 1564009200000,
+      investigationinstrument: [
+        {
+          'instrument.id': 4,
+          'instrument.name': 'LARMOR',
         },
-      },
-    ];
+      ],
+      'investigation.id': 2,
+      'investigation.title': 'Investigation test title',
+      'investigation.name': 'Investigation test name',
+      'investigation.startDate': 1560121200000,
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: rowData,
+    };
+    searchResponse = {
+      results: [searchResult],
+    };
     (useCart as jest.Mock).mockReturnValue({
       data: [],
     });
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useDatasetCount as jest.Mock).mockReturnValue({
-      data: 0,
-    });
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
+    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [searchResponse] },
       fetchNextPage: jest.fn(),
-    });
-    (useIds as jest.Mock).mockReturnValue({
-      data: [1],
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -193,65 +153,38 @@ describe('Dataset table component', () => {
   });
 
   it('calls the correct data fetching hooks on load', () => {
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [1],
-    });
-
     createWrapper();
 
     expect(useCart).toHaveBeenCalled();
-    expect(useLuceneSearch).toHaveBeenCalledWith('Dataset', {
-      searchText: '',
-      startDate: null,
-      endDate: null,
-      maxCount: 300,
-    });
-
-    expect(useDatasetCount).toHaveBeenCalledWith([
+    expect(useLuceneSearchInfinite).toHaveBeenCalledWith(
+      'Dataset',
       {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
+        searchText: '',
+        startDate: null,
+        endDate: null,
+        maxCount: 100,
+        minCount: 10,
+        restrict: true,
+        sort: {},
+        facets: [
+          {
+            target: 'Dataset',
+          },
+        ],
       },
-    ]);
-    expect(useDatasetsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigation: { investigationInstruments: 'instrument' },
-        }),
-      },
-    ]);
-    expect(useIds).toHaveBeenCalledWith(
-      'dataset',
-      [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { in: [1] },
-          }),
-        },
-      ],
-      true
+      {}
     );
 
     expect(useAddToCart).toHaveBeenCalledWith('dataset');
     expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith({ pages: [rowData] });
+    expect(useDatasetsDatafileCount).toHaveBeenCalledWith([rowData]);
     expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
-  it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
+  it('calls fetchNextPage function of useLuceneSearchInfinite when loadMoreRows is called', () => {
     const fetchNextPage = jest.fn();
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
+    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
+      data: { pages: [searchResponse] },
       fetchNextPage,
     });
     const wrapper = createWrapper();
@@ -261,67 +194,8 @@ describe('Dataset table component', () => {
       stopIndex: 74,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by datasets.name"]')
-      .first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"name":{"value":"test","type":"include"}}'
-      )}`
-    );
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper.find(
-      'input[id="datasets.modified_time filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
-    );
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
-    );
+    // useLuceneSearchInfinite handles the parameters itself, so startIndex/stopIndex are not used
+    expect(fetchNextPage).toHaveBeenCalledWith();
   });
 
   it('calls addToCart mutate function on unchecked checkbox click', () => {
@@ -398,8 +272,6 @@ describe('Dataset table component', () => {
 
     const wrapper = createWrapper();
 
-    expect(useIds).toHaveBeenCalledWith('dataset', expect.anything(), false);
-    expect(useIds).not.toHaveBeenCalledWith('dataset', expect.anything(), true);
     expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
   });
 
@@ -462,27 +334,12 @@ describe('Dataset table component', () => {
 
   it('renders fine with incomplete data', () => {
     // this can happen when navigating between tables and the previous table's state still exists
-    rowData = [
-      {
-        id: 1,
-        name: 'test',
-        size: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-        investigation: {},
-      },
-    ];
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    rowData = {
+      id: 1,
+      name: 'test',
+    };
 
     expect(() => createWrapper()).not.toThrowError();
-
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
   });
 
   it('renders generic link & pending count correctly', () => {
@@ -527,7 +384,7 @@ describe('Dataset table component', () => {
 
     const wrapper = createWrapper('isis');
 
-    expect(useDatasetSizes).toHaveBeenCalledWith({ pages: [rowData] });
+    expect(useDatasetSizes).toHaveBeenCalledWith([rowData]);
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
@@ -550,12 +407,8 @@ describe('Dataset table component', () => {
         },
       ],
     });
-    delete rowData[0].investigation?.investigationInstruments;
+    delete rowData.investigationinstrument;
 
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
@@ -594,11 +447,10 @@ describe('Dataset table component', () => {
   });
 
   it('displays only the dataset name when there is no generic investigation to link to', () => {
-    delete rowData[0].investigation;
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    delete rowData['investigation.id'];
+    delete rowData['investigation.name'];
+    delete rowData['investigation.title'];
+    delete rowData['investigation.startDate'];
 
     const wrapper = createWrapper('data');
 
@@ -609,11 +461,10 @@ describe('Dataset table component', () => {
   });
 
   it('displays only the dataset name when there is no DLS investigation to link to', () => {
-    delete rowData[0].investigation;
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    delete rowData['investigation.id'];
+    delete rowData['investigation.name'];
+    delete rowData['investigation.title'];
+    delete rowData['investigation.startDate'];
 
     const wrapper = createWrapper('dls');
 
@@ -634,11 +485,10 @@ describe('Dataset table component', () => {
         },
       ],
     });
-    delete rowData[0].investigation;
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    delete rowData['investigation.id'];
+    delete rowData['investigation.name'];
+    delete rowData['investigation.title'];
+    delete rowData['investigation.startDate'];
 
     const wrapper = createWrapper('isis');
 

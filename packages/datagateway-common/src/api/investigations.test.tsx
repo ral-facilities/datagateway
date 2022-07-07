@@ -1199,7 +1199,8 @@ describe('investigation api functions', () => {
         'include',
         JSON.stringify([
           { investigationUsers: 'user' },
-          'samples',
+          { samples: 'type' },
+          { parameters: 'type' },
           'publications',
         ])
       );

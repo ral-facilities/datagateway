@@ -1,0 +1,18 @@
+{
+  "facilityName": "DLS",
+  "features": {},
+  "idsUrl": "https://localhost:18181/ids",
+  "apiUrl": "http://localhost:5000/datagateway-api",
+  "downloadApiUrl": "https://localhost:18181/topcat",
+  "icatUrl": "https://localhost:8182/icat",
+  "maxNumResults": 50,
+  "routes": [
+    {
+      "section": "Test",
+      "link": "/search/data",
+      "displayName": "Search",
+      "order": 0
+    }
+  ],
+  "pluginHost": "http://localhost:5003"
+}

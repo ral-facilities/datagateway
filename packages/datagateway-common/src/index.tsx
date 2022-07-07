@@ -31,6 +31,7 @@ export * from './table/cellRenderers/cellContentRenderers';
 export { default as CardView } from './card/cardView.component';
 export type { CardViewDetails } from './card/cardView.component';
 export { default as AdvancedFilter } from './card/advancedFilter.component';
+export type { ParameterValueFilter } from './card/parameterFilterItem.component';
 
 export * from './state/actions/index';
 export * from './state/middleware/dgcommon.middleware';

@@ -39,7 +39,7 @@ const VisitDetailsPanel = (
 ): React.ReactElement => {
   const { rowData, detailsPanelResize } = props;
   const [value, setValue] = React.useState<
-    'details' | 'users' | 'samples' | 'publications'
+    'details' | 'users' | 'samples' | 'publications' | 'parameters'
   >('details');
   const [t] = useTranslation();
 
@@ -86,6 +86,14 @@ const VisitDetailsPanel = (
             aria-controls="visit-samples-panel"
             label={t('investigations.details.samples.label')}
             value="samples"
+          />
+        )}
+        {investigationData.parameters && (
+          <Tab
+            id="visit-parameters-tab"
+            aria-controls="visit-parameters-panel"
+            label={t('investigations.details.parameters.label')}
+            value="parameters"
           />
         )}
         {investigationData.publications && (
@@ -147,7 +155,7 @@ const VisitDetailsPanel = (
               <b>
                 {investigationData.startDate &&
                 investigationData.startDate !== 'null'
-                  ? investigationData.startDate
+                  ? new Date(investigationData.startDate).toLocaleDateString()
                   : `${t('investigations.details.start_date')} not provided`}
               </b>
             </Typography>
@@ -160,7 +168,7 @@ const VisitDetailsPanel = (
               <b>
                 {investigationData.endDate &&
                 investigationData.endDate !== 'null'
-                  ? investigationData.endDate
+                  ? new Date(investigationData.endDate).toLocaleDateString()
                   : `${t('investigations.details.end_date')} not provided`}
               </b>
             </Typography>
@@ -247,6 +255,7 @@ const VisitDetailsPanel = (
                 return (
                   <Grid key={sample.id} item xs>
                     <Typography>
+                      {sample.type?.name ? `${sample.type.name}: ` : ''}
                       <b>{sample.name}</b>
                     </Typography>
                   </Grid>
@@ -255,6 +264,75 @@ const VisitDetailsPanel = (
             ) : (
               <Typography data-testid="visit-details-panel-no-samples">
                 <b>{t('investigations.details.samples.no_samples')}</b>
+              </Typography>
+            )}
+          </Grid>
+        </div>
+      )}
+      {investigationData.parameters && (
+        <div
+          id="investigation-parameters-panel"
+          aria-labelledby="investigation-parameters-tab"
+          role="tabpanel"
+          hidden={value !== 'parameters'}
+        >
+          <Grid
+            id="parameter-grid"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            {investigationData.parameters.length > 0 ? (
+              investigationData.parameters.map((parameter) => {
+                if (parameter.type) {
+                  switch (parameter.type.valueType) {
+                    case 'STRING':
+                      return (
+                        <Grid key={parameter.id} item xs>
+                          <Typography variant="overline">
+                            {parameter.type.name}
+                          </Typography>
+                          <Typography>
+                            <b>{parameter.stringValue}</b>
+                          </Typography>
+                        </Grid>
+                      );
+                    case 'NUMERIC':
+                      return (
+                        <Grid key={parameter.id} item xs>
+                          <Typography variant="overline">
+                            {parameter.type.name}
+                          </Typography>
+                          <Typography>
+                            <b>{parameter.numericValue}</b>{' '}
+                            {parameter.type.units}
+                          </Typography>
+                        </Grid>
+                      );
+                    case 'DATE_AND_TIME':
+                      return (
+                        <Grid key={parameter.id} item xs>
+                          <Typography variant="overline">
+                            {parameter.type.name}
+                          </Typography>
+                          <Typography>
+                            <b>
+                              {parameter.dateTimeValue &&
+                                parameter.dateTimeValue.split(' ')[0]}
+                            </b>
+                          </Typography>
+                        </Grid>
+                      );
+                    default:
+                      return null;
+                  }
+                } else {
+                  return null;
+                }
+              })
+            ) : (
+              <Typography data-testid="investigation-details-panel-no-parameters">
+                <b>{t('investigations.details.parameters.no_parameters')}</b>
               </Typography>
             )}
           </Grid>

@@ -95,6 +95,9 @@
         "name_other": "Samples",
         "no_samples": "No samples"
       },
+      "parameters": {
+        "label": "Investigation Parameters"
+      },
       "publications": {
         "label": "Publications",
         "reference_one": "Reference",
@@ -157,6 +160,46 @@
       }
     }
   },
+  "investigation": {
+    "type": {
+      "name": "Type"
+    }
+  },
+  "investigationparameter": {
+    "type": {
+      "name": "Parameter Name"
+    }
+  },
+  "sample": {
+    "type": {
+      "name": "Sample Name"
+    }
+  },
+  "dataset": {
+    "type": {
+      "name": "Type"
+    }
+  },
+  "check_boxes": {
+    "my_data": "My data"
+  },
+  "sort": {
+    "label": "Sort by",
+    "_score": "Score",
+    "date_desc": "Date (Newest)",
+    "date_asc": "Date (Oldest)",
+    "name_asc": "Name"
+  },
+  "filter": {
+    "parameter": {
+      "value_type": "Type",
+      "name": "Parameter",
+      "min": "Min",
+      "max": "Max",
+      "units": "Units",
+      "apply": "Apply"
+    }
+  },
   "buttons": {
     "add_to_cart": "Add to selection",
     "remove_from_cart": "Remove from selection",
@@ -171,7 +214,8 @@
     "warning_message_session_token": "Please remember that your selection will be lost after 2 hours of inactivity on this site"
   },
   "loading": {
-    "filter_message": "No results found with current filters applied, please modify filter settings and try again."
+    "filter_message": "No results found with current filters applied, please modify filter settings and try again.",
+    "abort_message": "Search aborted for taking too long, please try more specific search terms."
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",

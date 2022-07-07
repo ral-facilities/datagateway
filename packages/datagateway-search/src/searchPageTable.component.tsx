@@ -23,20 +23,11 @@ import {
   ViewCartButton,
   CartProps,
   parseSearchToQuery,
-  useDatafileCount,
-  useDatasetCount,
-  useInvestigationCount,
-  useLuceneSearch,
-  useUpdateQueryParam,
+  useLuceneSearchInfinite,
+  SearchResponse,
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
-import { useIsFetching } from 'react-query';
-import {
-  getFilters,
-  getSorts,
-  storeFilters,
-  storeSort,
-} from './searchPageContainer.component';
+import { InfiniteData, useIsFetching } from 'react-query';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -87,6 +78,7 @@ export interface SearchTableProps {
 }
 
 interface SearchTableStoreProps {
+  minNumResults: number;
   maxNumResults: number;
   datasetTab: boolean;
   datafileTab: boolean;
@@ -132,6 +124,7 @@ const SearchPageTable = (
   props: SearchTableProps & SearchTableStoreProps & CartProps
 ): React.ReactElement => {
   const {
+    minNumResults,
     maxNumResults,
     investigationTab,
     datasetTab,
@@ -149,27 +142,98 @@ const SearchPageTable = (
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const { startDate, endDate } = queryParams;
+  const { startDate, endDate, sort, filters, restrict } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
-  const { data: investigation } = useLuceneSearch('Investigation', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
-  const { data: dataset } = useLuceneSearch('Dataset', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
-  const { data: datafile } = useLuceneSearch('Datafile', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
+  const {
+    data: investigations,
+    hasNextPage: investigationsHasNextPage,
+  } = useLuceneSearchInfinite(
+    'Investigation',
+    {
+      searchText: searchText,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+      facets: [
+        { target: 'Investigation' },
+        {
+          target: 'InvestigationParameter',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+        {
+          target: 'Sample',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+      ],
+    },
+    filters
+  );
+  const {
+    data: datasets,
+    hasNextPage: datasetsHasNextPage,
+  } = useLuceneSearchInfinite(
+    'Dataset',
+    {
+      searchText: searchText,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+      facets: [{ target: 'Dataset' }],
+    },
+    filters
+  );
+  const {
+    data: datafiles,
+    hasNextPage: datafilesHasNextPage,
+  } = useLuceneSearchInfinite(
+    'Datafile',
+    {
+      searchText: searchText,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict: restrict,
+    },
+    filters
+  );
+
+  const countSearchResults = (
+    searchResponses: InfiniteData<SearchResponse> | undefined,
+    hasNextPage: boolean | undefined
+  ): string => {
+    if (searchResponses) {
+      let numResults = 0;
+      searchResponses.pages.forEach((searchResponse) => {
+        numResults += searchResponse.results?.length ?? 0;
+      });
+      return String(numResults) + (hasNextPage ? '+' : '');
+    }
+    return '?';
+  };
+
+  const investigationCount = React.useMemo(
+    () => countSearchResults(investigations, investigationsHasNextPage),
+    [investigations, investigationsHasNextPage]
+  );
+
+  const datasetCount = React.useMemo(
+    () => countSearchResults(datasets, datasetsHasNextPage),
+    [datasets, datasetsHasNextPage]
+  );
+
+  const datafileCount = React.useMemo(
+    () => countSearchResults(datafiles, datafilesHasNextPage),
+    [datafiles, datafilesHasNextPage]
+  );
 
   const isFetchingNum = useIsFetching({
     predicate: (query) =>
@@ -179,75 +243,11 @@ const SearchPageTable = (
   });
   const loading = isFetchingNum > 0;
 
-  const { filters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
-
-  const replaceFilters = useUpdateQueryParam('filters', 'replace');
-  const replaceSorts = useUpdateQueryParam('sort', 'replace');
-
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    storeFilters(filters, currentTab);
-    storeSort(sort, currentTab);
-
     onTabChange(newValue);
-
-    replaceFilters({});
-    replaceSorts({});
-  };
-
-  React.useEffect(() => {
-    const filters = getFilters(currentTab);
-    const sorts = getSorts(currentTab);
-    if (filters) replaceFilters(filters);
-    if (sorts) replaceSorts(sorts);
-  }, [currentTab, replaceFilters, replaceSorts]);
-
-  const { data: investigationDataCount } = useInvestigationCount(
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: investigation || [] },
-        }),
-      },
-    ],
-    getFilters('investigation') ?? {},
-    currentTab
-  );
-
-  const { data: datasetDataCount } = useDatasetCount(
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: dataset || [] },
-        }),
-      },
-    ],
-    getFilters('dataset') ?? {},
-    currentTab
-  );
-
-  const { data: datafileDataCount } = useDatafileCount(
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: datafile || [] },
-        }),
-      },
-    ],
-    getFilters('datafile') ?? {},
-    currentTab
-  );
-
-  const badgeDigits = (length?: number): 3 | 2 | 1 => {
-    return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
   };
 
   return (
@@ -282,7 +282,7 @@ const SearchPageTable = (
                           marginTop: '1px',
                         }}
                       >
-                        {investigationDataCount ?? 0}
+                        {investigationCount}
                       </span>
                     }
                     showZero
@@ -291,12 +291,8 @@ const SearchPageTable = (
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          investigation?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          investigation?.length
-                        )}ch - 6px)`,
+                        marginRight: `calc(0.5 * ${investigationCount.length}ch + 6px)`,
+                        marginLeft: `calc(-0.5 * ${investigationCount.length}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -316,19 +312,15 @@ const SearchPageTable = (
                 label={
                   <StyledBadge
                     id="dataset-badge"
-                    badgeContent={datasetDataCount ?? 0}
+                    badgeContent={datasetCount}
                     showZero
                     max={999}
                   >
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          dataset?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          dataset?.length
-                        )}ch - 6px)`,
+                        marginRight: `calc(0.5 * ${datasetCount.length}ch + 6px)`,
+                        marginLeft: `calc(-0.5 * ${datasetCount.length}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -348,19 +340,15 @@ const SearchPageTable = (
                 label={
                   <StyledBadge
                     id="datafile-badge"
-                    badgeContent={datafileDataCount ?? 0}
+                    badgeContent={datafileCount}
                     showZero
                     max={999}
                   >
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          datafile?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          datafile?.length
-                        )}ch - 6px)`,
+                        marginRight: `calc(0.5 * ${datafileCount.length}ch + 6px)`,
+                        marginLeft: `calc(-0.5 * ${datafileCount.length}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -435,6 +423,7 @@ const SearchPageTable = (
 
 const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   return {
+    minNumResults: state.dgsearch.minNumResults,
     maxNumResults: state.dgsearch.maxNumResults,
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,

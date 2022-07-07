@@ -109,6 +109,7 @@ describe('generic api functions', () => {
         view: 'table',
         search: 'test',
         page: 1,
+        restrict: true,
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
@@ -130,6 +131,7 @@ describe('generic api functions', () => {
         view: 'table',
         search: null,
         page: null,
+        restrict: true,
         results: null,
         filters: {},
         sort: {},
@@ -163,6 +165,7 @@ describe('generic api functions', () => {
           startDate: new Date(NaN),
           endDate: new Date(NaN),
           currentTab: 'investigation',
+          restrict: true,
         })
       );
     });
@@ -189,6 +192,7 @@ describe('generic api functions', () => {
         search: 'test',
         page: 1,
         results: 10,
+        restrict: true,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
         searchText: null,
@@ -212,6 +216,7 @@ describe('generic api functions', () => {
         view: 'table',
         search: null,
         page: null,
+        restrict: true,
         results: null,
         filters: {},
         sort: {},
@@ -236,6 +241,7 @@ describe('generic api functions', () => {
         view: 'table',
         search: null,
         page: null,
+        restrict: true,
         results: null,
         filters: {},
         sort: {},

@@ -16,10 +16,9 @@ import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
 import { Trans, useTranslation } from 'react-i18next';
 import AdvancedHelpDialogue from './search/advancedHelpDialogue.component';
-import { useSelector } from 'react-redux';
-import { StateType } from './state/app.types';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { Link as RouterLink } from 'react-router-dom';
+import SortSelectComponent from './search/sortSelect.component';
+import MyDataCheckBox from './search/myDataCheckBox.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,10 +66,6 @@ const SearchBoxContainer = (
   const classes = useStyles();
   const [t] = useTranslation();
 
-  const maxNumResults = useSelector(
-    (state: StateType) => state.dgsearch.maxNumResults
-  );
-
   return (
     <Box className={classes.containerBox}>
       <Grid container direction="row" justify="center" id="container-searchbox">
@@ -88,6 +83,14 @@ const SearchBoxContainer = (
 
         <Grid item style={{ marginTop: '8px' }}>
           <SelectDates initiateSearch={initiateSearch} />
+        </Grid>
+
+        <Grid item style={{ marginTop: '8px' }}>
+          <SortSelectComponent />
+        </Grid>
+
+        <Grid item style={{ marginTop: '8px' }}>
+          <MyDataCheckBox />
         </Grid>
 
         <Grid
@@ -120,26 +123,6 @@ const SearchBoxContainer = (
           </Trans>{' '}
           <AdvancedHelpDialogue />
         </Typography>
-
-        <div className={classes.rightText}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexWrap: 'nowrap',
-            }}
-          >
-            <InfoOutlinedIcon className={classes.infoIcon} fontSize="small" />{' '}
-            <Typography
-              display="inline"
-              style={{ paddingLeft: '6px', fontSize: '14px' }}
-            >
-              {t('searchBox.limited_results_message', {
-                maxNumResults,
-              })}
-            </Typography>
-          </div>
-        </div>
       </div>
     </Box>
   );

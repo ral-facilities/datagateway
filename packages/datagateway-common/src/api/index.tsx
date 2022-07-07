@@ -70,6 +70,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const startDateString = query.get('startDate');
   const endDateString = query.get('endDate');
   const currentTab = query.get('currentTab');
+  const restrict = query.get('restrict');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -128,6 +129,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     startDate: startDate,
     endDate: endDate,
     currentTab: currentTab ? currentTab : 'investigation',
+    restrict: restrict !== null ? restrict === 'true' : true,
   };
 
   return params;
@@ -153,7 +155,8 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
           (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
           v === true
         ) &&
-        !(q === 'currentTab' && v === 'investigation')
+        !(q === 'currentTab' && v === 'investigation') &&
+        !(q === 'restrict' && v === true)
       )
         queryParams.append(q, v);
     }
@@ -288,6 +291,146 @@ export const useSort = (): ((
       });
     },
     [push, replace]
+  );
+};
+
+export const useSingleSort = (): ((
+  sortKey: string,
+  order: Order | null,
+  updateMethod: UpdateMethod
+) => void) => {
+  const { push, replace } = useHistory();
+
+  return React.useCallback(
+    (
+      sortKey: string,
+      order: Order | null,
+      updateMethod: UpdateMethod
+    ): void => {
+      let query = parseSearchToQuery(window.location.search);
+      if (order === null) {
+        query = {
+          ...query,
+          sort: {},
+        };
+      } else {
+        query = {
+          ...query,
+          sort: {
+            [sortKey]: order,
+          },
+        };
+      }
+      (updateMethod === 'push' ? push : replace)({
+        search: `?${parseQueryToSearch(query).toString()}`,
+      });
+    },
+    [push, replace]
+  );
+};
+
+export const usePushInvestigationFilter = (): ((
+  filterKey: string,
+  filter: Filter | null
+) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (filterKey: string, filter: Filter | null) => {
+      let query = parseSearchToQuery(window.location.search);
+      if (filter !== null) {
+        // if given an defined filter, update the relevant column in the sort state
+        query = {
+          ...query,
+          filters: {
+            ...query.filters,
+            ['investigation.' + filterKey]: filter,
+          },
+        };
+      } else {
+        // if filter is null, user no longer wants to filter by that column so remove column from filter state
+        const {
+          ['investigation.' + filterKey]: filter,
+          ...rest
+        } = query.filters;
+        query = {
+          ...query,
+          filters: {
+            ...rest,
+          },
+        };
+      }
+      push({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [push]
+  );
+};
+
+export const usePushDatasetFilter = (): ((
+  filterKey: string,
+  filter: Filter | null
+) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (filterKey: string, filter: Filter | null) => {
+      let query = parseSearchToQuery(window.location.search);
+      if (filter !== null) {
+        // if given an defined filter, update the relevant column in the sort state
+        query = {
+          ...query,
+          filters: {
+            ...query.filters,
+            ['dataset.' + filterKey]: filter,
+          },
+        };
+      } else {
+        // if filter is null, user no longer wants to filter by that column so remove column from filter state
+        const { ['dataset.' + filterKey]: filter, ...rest } = query.filters;
+        query = {
+          ...query,
+          filters: {
+            ...rest,
+          },
+        };
+      }
+      push({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [push]
+  );
+};
+
+export const usePushDatafileFilter = (): ((
+  filterKey: string,
+  filter: Filter | null
+) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (filterKey: string, filter: Filter | null) => {
+      let query = parseSearchToQuery(window.location.search);
+      if (filter !== null) {
+        // if given an defined filter, update the relevant column in the sort state
+        query = {
+          ...query,
+          filters: {
+            ...query.filters,
+            ['datafile.' + filterKey]: filter,
+          },
+        };
+      } else {
+        // if filter is null, user no longer wants to filter by that column so remove column from filter state
+        const { ['datafile.' + filterKey]: filter, ...rest } = query.filters;
+        query = {
+          ...query,
+          filters: {
+            ...rest,
+          },
+        };
+      }
+      push({ search: `?${parseQueryToSearch(query).toString()}` });
+    },
+    [push]
   );
 };
 
@@ -530,6 +673,21 @@ export const usePushSearchEndDate = (): ((endDate: Date | null) => void) => {
         searchParams.delete('endDate');
         push(`?${searchParams.toString()}`);
       }
+    },
+    [push]
+  );
+};
+
+export const usePushSearchRestrict = (): ((restrict: boolean) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (restrict: boolean) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        restrict,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
     },
     [push]
   );

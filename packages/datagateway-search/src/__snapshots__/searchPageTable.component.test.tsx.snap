@@ -92,7 +92,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "observers": Array [
-                    QueryObserver {
+                    InfiniteQueryObserver {
                       "client": [Circular],
                       "currentQuery": [Circular],
                       "currentQueryInitialState": Object {
@@ -115,10 +115,16 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
+                        "fetchNextPage": [Function],
+                        "fetchPreviousPage": [Function],
+                        "hasNextPage": undefined,
+                        "hasPreviousPage": undefined,
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
                         "isFetching": false,
+                        "isFetchingNextPage": false,
+                        "isFetchingPreviousPage": false,
                         "isIdle": true,
                         "isLoading": false,
                         "isLoadingError": false,
@@ -133,18 +139,47 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Investigation",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "InvestigationParameter",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "Sample",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -163,23 +198,54 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isPaused": false,
                         "status": "idle",
                       },
+                      "fetchNextPage": [Function],
+                      "fetchPreviousPage": [Function],
                       "listeners": Array [
                         [Function],
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Investigation",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "InvestigationParameter",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "Sample",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -192,7 +258,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       "staleTimeoutId": undefined,
                       "trackedProps": Array [],
                     },
-                    QueryObserver {
+                    InfiniteQueryObserver {
                       "client": [Circular],
                       "currentQuery": [Circular],
                       "currentQueryInitialState": Object {
@@ -215,10 +281,16 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
+                        "fetchNextPage": [Function],
+                        "fetchPreviousPage": [Function],
+                        "hasNextPage": undefined,
+                        "hasPreviousPage": undefined,
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
                         "isFetching": false,
+                        "isFetchingNextPage": false,
+                        "isFetchingPreviousPage": false,
                         "isIdle": true,
                         "isLoading": false,
                         "isLoadingError": false,
@@ -233,18 +305,47 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Investigation",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "InvestigationParameter",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "Sample",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -263,23 +364,54 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isPaused": false,
                         "status": "idle",
                       },
+                      "fetchNextPage": [Function],
+                      "fetchPreviousPage": [Function],
                       "listeners": Array [
                         [Function],
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Investigation",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "InvestigationParameter",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "Sample",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -295,30 +427,84 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
+                    "behavior": Object {
+                      "onFetch": [Function],
+                    },
                     "enabled": false,
+                    "getNextPageParam": [Function],
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Investigation",
                       Object {
                         "endDate": null,
-                        "maxCount": 300,
+                        "facets": Array [
+                          Object {
+                            "target": "Investigation",
+                          },
+                          Object {
+                            "dimensions": Array [
+                              Object {
+                                "dimension": "type.name",
+                              },
+                            ],
+                            "target": "InvestigationParameter",
+                          },
+                          Object {
+                            "dimensions": Array [
+                              Object {
+                                "dimension": "type.name",
+                              },
+                            ],
+                            "target": "Sample",
+                          },
+                        ],
+                        "filters": Object {},
+                        "maxCount": 100,
+                        "minCount": 10,
+                        "restrict": true,
                         "searchText": "",
+                        "sort": Object {},
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Investigation",
                     Object {
                       "endDate": null,
-                      "maxCount": 300,
+                      "facets": Array [
+                        Object {
+                          "target": "Investigation",
+                        },
+                        Object {
+                          "dimensions": Array [
+                            Object {
+                              "dimension": "type.name",
+                            },
+                          ],
+                          "target": "InvestigationParameter",
+                        },
+                        Object {
+                          "dimensions": Array [
+                            Object {
+                              "dimension": "type.name",
+                            },
+                          ],
+                          "target": "Sample",
+                        },
+                      ],
+                      "filters": Object {},
+                      "maxCount": 100,
+                      "minCount": 10,
+                      "restrict": true,
                       "searchText": "",
+                      "sort": Object {},
                       "startDate": null,
                     },
                   ],
@@ -357,7 +543,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "observers": Array [
-                    QueryObserver {
+                    InfiniteQueryObserver {
                       "client": [Circular],
                       "currentQuery": [Circular],
                       "currentQueryInitialState": Object {
@@ -380,10 +566,16 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
+                        "fetchNextPage": [Function],
+                        "fetchPreviousPage": [Function],
+                        "hasNextPage": undefined,
+                        "hasPreviousPage": undefined,
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
                         "isFetching": false,
+                        "isFetchingNextPage": false,
+                        "isFetchingPreviousPage": false,
                         "isIdle": true,
                         "isLoading": false,
                         "isLoadingError": false,
@@ -398,18 +590,31 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Dataset\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Dataset",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Dataset",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -428,23 +633,38 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isPaused": false,
                         "status": "idle",
                       },
+                      "fetchNextPage": [Function],
+                      "fetchPreviousPage": [Function],
                       "listeners": Array [
                         [Function],
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Dataset\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Dataset",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Dataset",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -460,30 +680,52 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
+                    "behavior": Object {
+                      "onFetch": [Function],
+                    },
                     "enabled": false,
+                    "getNextPageParam": [Function],
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Dataset\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Dataset",
                       Object {
                         "endDate": null,
-                        "maxCount": 300,
+                        "facets": Array [
+                          Object {
+                            "target": "Dataset",
+                          },
+                        ],
+                        "filters": Object {},
+                        "maxCount": 100,
+                        "minCount": 10,
+                        "restrict": true,
                         "searchText": "",
+                        "sort": Object {},
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Dataset\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Dataset",
                     Object {
                       "endDate": null,
-                      "maxCount": 300,
+                      "facets": Array [
+                        Object {
+                          "target": "Dataset",
+                        },
+                      ],
+                      "filters": Object {},
+                      "maxCount": 100,
+                      "minCount": 10,
+                      "restrict": true,
                       "searchText": "",
+                      "sort": Object {},
                       "startDate": null,
                     },
                   ],
@@ -522,7 +764,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "observers": Array [
-                    QueryObserver {
+                    InfiniteQueryObserver {
                       "client": [Circular],
                       "currentQuery": [Circular],
                       "currentQueryInitialState": Object {
@@ -545,10 +787,16 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
+                        "fetchNextPage": [Function],
+                        "fetchPreviousPage": [Function],
+                        "hasNextPage": undefined,
+                        "hasPreviousPage": undefined,
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
                         "isFetching": false,
+                        "isFetchingNextPage": false,
+                        "isFetchingPreviousPage": false,
                         "isIdle": true,
                         "isLoading": false,
                         "isLoadingError": false,
@@ -563,18 +811,26 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Datafile",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -593,23 +849,33 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isPaused": false,
                         "status": "idle",
                       },
+                      "fetchNextPage": [Function],
+                      "fetchPreviousPage": [Function],
                       "listeners": Array [
                         [Function],
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Datafile",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -625,30 +891,42 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
+                    "behavior": Object {
+                      "onFetch": [Function],
+                    },
                     "enabled": false,
+                    "getNextPageParam": [Function],
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Datafile",
                       Object {
                         "endDate": null,
-                        "maxCount": 300,
+                        "filters": Object {},
+                        "maxCount": 100,
+                        "minCount": 10,
+                        "restrict": true,
                         "searchText": "",
+                        "sort": Object {},
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Datafile",
                     Object {
                       "endDate": null,
-                      "maxCount": 300,
+                      "filters": Object {},
+                      "maxCount": 100,
+                      "minCount": 10,
+                      "restrict": true,
                       "searchText": "",
+                      "sort": Object {},
                       "startDate": null,
                     },
                   ],
@@ -665,707 +943,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "isInvalidated": false,
                     "isPaused": false,
                     "status": "idle",
-                  },
-                },
-                Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                    "queryKey": Array [
-                      "count",
-                      "investigation",
-                      Object {
-                        "filters": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                  "queryKey": Array [
-                    "count",
-                    "investigation",
-                    Object {
-                      "filters": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "dataset",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "dataset",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                    "queryKey": Array [
-                      "count",
-                      "dataset",
-                      Object {
-                        "filters": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                  "queryKey": Array [
-                    "count",
-                    "dataset",
-                    Object {
-                      "filters": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"datafile\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "datafile",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"datafile\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "datafile",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"count\\",\\"datafile\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                    "queryKey": Array [
-                      "count",
-                      "datafile",
-                      Object {
-                        "filters": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"count\\",\\"datafile\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                  "queryKey": Array [
-                    "count",
-                    "datafile",
-                    Object {
-                      "filters": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
                   },
                 },
                 Query {
@@ -1495,440 +1072,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "isInvalidated": false,
                     "isPaused": false,
                     "status": "idle",
-                  },
-                },
-                Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    InfiniteQueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "fetchNextPage": [Function],
-                        "fetchPreviousPage": [Function],
-                        "hasNextPage": undefined,
-                        "hasPreviousPage": undefined,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isFetchingNextPage": false,
-                        "isFetchingPreviousPage": false,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "behavior": Object {
-                          "onFetch": [Function],
-                        },
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
-                        "queryKey": Array [
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                            "sort": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                            Object {
-                              "filterType": "include",
-                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                            },
-                          ],
-                          undefined,
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "fetchNextPage": [Function],
-                      "fetchPreviousPage": [Function],
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "behavior": Object {
-                          "onFetch": [Function],
-                        },
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
-                        "queryKey": Array [
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                            "sort": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                            Object {
-                              "filterType": "include",
-                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                            },
-                          ],
-                          undefined,
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "behavior": Object {
-                      "onFetch": [Function],
-                    },
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
-                    "queryKey": Array [
-                      "investigation",
-                      Object {
-                        "filters": Object {},
-                        "sort": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                        Object {
-                          "filterType": "include",
-                          "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                        },
-                      ],
-                      undefined,
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
-                  "queryKey": Array [
-                    "investigation",
-                    Object {
-                      "filters": Object {},
-                      "sort": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                      Object {
-                        "filterType": "include",
-                        "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                      },
-                    ],
-                    undefined,
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": true,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "enabled": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "investigationIds",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "enabled": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "investigationIds",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "enabled": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                    "queryKey": Array [
-                      "investigationIds",
-                      Object {
-                        "filters": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                  "queryKey": Array [
-                    "investigationIds",
-                    Object {
-                      "filters": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
                   },
                 },
                 Query {
@@ -2197,707 +1340,6 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                 },
-                "[\\"count\\",\\"datafile\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"datafile\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "datafile",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"datafile\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "datafile",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"count\\",\\"datafile\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                    "queryKey": Array [
-                      "count",
-                      "datafile",
-                      Object {
-                        "filters": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"count\\",\\"datafile\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                  "queryKey": Array [
-                    "count",
-                    "datafile",
-                    Object {
-                      "filters": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "dataset",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "dataset",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                    "queryKey": Array [
-                      "count",
-                      "dataset",
-                      Object {
-                        "filters": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"count\\",\\"dataset\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                  "queryKey": Array [
-                    "count",
-                    "dataset",
-                    Object {
-                      "filters": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "count",
-                          "investigation",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                    "queryKey": Array [
-                      "count",
-                      "investigation",
-                      Object {
-                        "filters": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"count\\",\\"investigation\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                  "queryKey": Array [
-                    "count",
-                    "investigation",
-                    Object {
-                      "filters": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
                 "[\\"facilityCycle\\"]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
@@ -3027,7 +1469,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                 },
-                "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]": Query {
+                "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -3077,11 +1519,11 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isFetchingNextPage": false,
                         "isFetchingPreviousPage": false,
-                        "isIdle": false,
-                        "isLoading": true,
+                        "isIdle": true,
+                        "isLoading": false,
                         "isLoadingError": false,
                         "isPlaceholderData": false,
                         "isPreviousData": false,
@@ -3090,34 +1532,32 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isSuccess": false,
                         "refetch": [Function],
                         "remove": [Function],
-                        "status": "loading",
+                        "status": "idle",
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
                         "behavior": Object {
                           "onFetch": [Function],
                         },
+                        "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
-                          "investigation",
+                          "search",
+                          "Datafile",
                           Object {
+                            "endDate": null,
                             "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
+                            "searchText": "",
                             "sort": Object {},
+                            "startDate": null,
                           },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                            Object {
-                              "filterType": "include",
-                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                            },
-                          ],
-                          undefined,
                         ],
                       },
                       "currentResultState": Object {
@@ -3129,10 +1569,10 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "errorUpdatedAt": 0,
                         "fetchFailureCount": 0,
                         "fetchMeta": null,
-                        "isFetching": true,
+                        "isFetching": false,
                         "isInvalidated": false,
                         "isPaused": false,
-                        "status": "loading",
+                        "status": "idle",
                       },
                       "fetchNextPage": [Function],
                       "fetchPreviousPage": [Function],
@@ -3144,27 +1584,25 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "behavior": Object {
                           "onFetch": [Function],
                         },
+                        "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
+                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
-                          "investigation",
+                          "search",
+                          "Datafile",
                           Object {
+                            "endDate": null,
                             "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
+                            "searchText": "",
                             "sort": Object {},
+                            "startDate": null,
                           },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                            Object {
-                              "filterType": "include",
-                              "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                            },
-                          ],
-                          undefined,
                         ],
                       },
                       "previousQueryResult": undefined,
@@ -3181,433 +1619,39 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "behavior": Object {
                       "onFetch": [Function],
                     },
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
-                    "queryKey": Array [
-                      "investigation",
-                      Object {
-                        "filters": Object {},
-                        "sort": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                        Object {
-                          "filterType": "include",
-                          "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                        },
-                      ],
-                      undefined,
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigation\\",{\\"filters\\":{},\\"sort\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"},{\\"filterType\\":\\"include\\",\\"filterValue\\":\\"{\\\\\\"investigationInstruments\\\\\\":\\\\\\"instrument\\\\\\"}\\"}],null]",
-                  "queryKey": Array [
-                    "investigation",
-                    Object {
-                      "filters": Object {},
-                      "sort": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                      Object {
-                        "filterType": "include",
-                        "filterValue": "{\\"investigationInstruments\\":\\"instrument\\"}",
-                      },
-                    ],
-                    undefined,
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": true,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]": Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": true,
-                        "isIdle": false,
-                        "isLoading": true,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "loading",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "enabled": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "investigationIds",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": true,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "loading",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "enabled": true,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                        "queryKey": Array [
-                          "investigationIds",
-                          Object {
-                            "filters": Object {},
-                          },
-                          Array [
-                            Object {
-                              "filterType": "where",
-                              "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                            },
-                          ],
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
-                    "enabled": true,
-                    "onError": [Function],
-                    "optimisticResults": true,
-                    "queryFn": [Function],
-                    "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                    "queryKey": Array [
-                      "investigationIds",
-                      Object {
-                        "filters": Object {},
-                      },
-                      Array [
-                        Object {
-                          "filterType": "where",
-                          "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                        },
-                      ],
-                    ],
-                  },
-                  "promise": Promise {},
-                  "queryHash": "[\\"investigationIds\\",{\\"filters\\":{}},[{\\"filterType\\":\\"where\\",\\"filterValue\\":\\"{\\\\\\"id\\\\\\":{\\\\\\"in\\\\\\":[]}}\\"}]]",
-                  "queryKey": Array [
-                    "investigationIds",
-                    Object {
-                      "filters": Object {},
-                    },
-                    Array [
-                      Object {
-                        "filterType": "where",
-                        "filterValue": "{\\"id\\":{\\"in\\":[]}}",
-                      },
-                    ],
-                  ],
-                  "retryer": Retryer {
-                    "cancel": [Function],
-                    "cancelRetry": [Function],
-                    "continue": [Function],
-                    "failureCount": 0,
-                    "isPaused": false,
-                    "isResolved": false,
-                    "isTransportCancelable": false,
-                    "promise": Promise {},
-                  },
-                  "revertState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "state": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": true,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "loading",
-                  },
-                },
-                "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
-                  "cache": [Circular],
-                  "cacheTime": 300000,
-                  "defaultOptions": undefined,
-                  "gcTimeout": undefined,
-                  "initialState": Object {
-                    "data": undefined,
-                    "dataUpdateCount": 0,
-                    "dataUpdatedAt": 0,
-                    "error": null,
-                    "errorUpdateCount": 0,
-                    "errorUpdatedAt": 0,
-                    "fetchFailureCount": 0,
-                    "fetchMeta": null,
-                    "isFetching": false,
-                    "isInvalidated": false,
-                    "isPaused": false,
-                    "status": "idle",
-                  },
-                  "observers": Array [
-                    QueryObserver {
-                      "client": [Circular],
-                      "currentQuery": [Circular],
-                      "currentQueryInitialState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "currentResult": Object {
-                        "data": undefined,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdatedAt": 0,
-                        "failureCount": 0,
-                        "isError": false,
-                        "isFetched": false,
-                        "isFetchedAfterMount": false,
-                        "isFetching": false,
-                        "isIdle": true,
-                        "isLoading": false,
-                        "isLoadingError": false,
-                        "isPlaceholderData": false,
-                        "isPreviousData": false,
-                        "isRefetchError": false,
-                        "isStale": true,
-                        "isSuccess": false,
-                        "refetch": [Function],
-                        "remove": [Function],
-                        "status": "idle",
-                      },
-                      "currentResultOptions": Object {
-                        "_defaulted": true,
-                        "enabled": false,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
-                        "queryKey": Array [
-                          "search",
-                          "Datafile",
-                          Object {
-                            "endDate": null,
-                            "maxCount": 300,
-                            "searchText": "",
-                            "startDate": null,
-                          },
-                        ],
-                      },
-                      "currentResultState": Object {
-                        "data": undefined,
-                        "dataUpdateCount": 0,
-                        "dataUpdatedAt": 0,
-                        "error": null,
-                        "errorUpdateCount": 0,
-                        "errorUpdatedAt": 0,
-                        "fetchFailureCount": 0,
-                        "fetchMeta": null,
-                        "isFetching": false,
-                        "isInvalidated": false,
-                        "isPaused": false,
-                        "status": "idle",
-                      },
-                      "listeners": Array [
-                        [Function],
-                      ],
-                      "options": Object {
-                        "_defaulted": true,
-                        "enabled": false,
-                        "onError": [Function],
-                        "optimisticResults": true,
-                        "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
-                        "queryKey": Array [
-                          "search",
-                          "Datafile",
-                          Object {
-                            "endDate": null,
-                            "maxCount": 300,
-                            "searchText": "",
-                            "startDate": null,
-                          },
-                        ],
-                      },
-                      "previousQueryResult": undefined,
-                      "previousSelectError": null,
-                      "refetch": [Function],
-                      "refetchIntervalId": undefined,
-                      "remove": [Function],
-                      "staleTimeoutId": undefined,
-                      "trackedProps": Array [],
-                    },
-                  ],
-                  "options": Object {
-                    "_defaulted": true,
                     "enabled": false,
+                    "getNextPageParam": [Function],
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Datafile",
                       Object {
                         "endDate": null,
-                        "maxCount": 300,
+                        "filters": Object {},
+                        "maxCount": 100,
+                        "minCount": 10,
+                        "restrict": true,
                         "searchText": "",
+                        "sort": Object {},
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Datafile",
                     Object {
                       "endDate": null,
-                      "maxCount": 300,
+                      "filters": Object {},
+                      "maxCount": 100,
+                      "minCount": 10,
+                      "restrict": true,
                       "searchText": "",
+                      "sort": Object {},
                       "startDate": null,
                     },
                   ],
@@ -3626,7 +1670,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                 },
-                "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
+                "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Dataset\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -3646,7 +1690,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "observers": Array [
-                    QueryObserver {
+                    InfiniteQueryObserver {
                       "client": [Circular],
                       "currentQuery": [Circular],
                       "currentQueryInitialState": Object {
@@ -3669,10 +1713,16 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
+                        "fetchNextPage": [Function],
+                        "fetchPreviousPage": [Function],
+                        "hasNextPage": undefined,
+                        "hasPreviousPage": undefined,
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
                         "isFetching": false,
+                        "isFetchingNextPage": false,
+                        "isFetchingPreviousPage": false,
                         "isIdle": true,
                         "isLoading": false,
                         "isLoadingError": false,
@@ -3687,18 +1737,31 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Dataset\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Dataset",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Dataset",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -3717,23 +1780,38 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isPaused": false,
                         "status": "idle",
                       },
+                      "fetchNextPage": [Function],
+                      "fetchPreviousPage": [Function],
                       "listeners": Array [
                         [Function],
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Dataset\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Dataset",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Dataset",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -3749,30 +1827,52 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
+                    "behavior": Object {
+                      "onFetch": [Function],
+                    },
                     "enabled": false,
+                    "getNextPageParam": [Function],
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Dataset\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Dataset",
                       Object {
                         "endDate": null,
-                        "maxCount": 300,
+                        "facets": Array [
+                          Object {
+                            "target": "Dataset",
+                          },
+                        ],
+                        "filters": Object {},
+                        "maxCount": 100,
+                        "minCount": 10,
+                        "restrict": true,
                         "searchText": "",
+                        "sort": Object {},
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Dataset\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Dataset",
                     Object {
                       "endDate": null,
-                      "maxCount": 300,
+                      "facets": Array [
+                        Object {
+                          "target": "Dataset",
+                        },
+                      ],
+                      "filters": Object {},
+                      "maxCount": 100,
+                      "minCount": 10,
+                      "restrict": true,
                       "searchText": "",
+                      "sort": Object {},
                       "startDate": null,
                     },
                   ],
@@ -3791,7 +1891,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                 },
-                "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]": Query {
+                "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]": Query {
                   "cache": [Circular],
                   "cacheTime": 300000,
                   "defaultOptions": undefined,
@@ -3811,7 +1911,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                     "status": "idle",
                   },
                   "observers": Array [
-                    QueryObserver {
+                    InfiniteQueryObserver {
                       "client": [Circular],
                       "currentQuery": [Circular],
                       "currentQueryInitialState": Object {
@@ -3834,10 +1934,16 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
+                        "fetchNextPage": [Function],
+                        "fetchPreviousPage": [Function],
+                        "hasNextPage": undefined,
+                        "hasPreviousPage": undefined,
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
                         "isFetching": false,
+                        "isFetchingNextPage": false,
+                        "isFetchingPreviousPage": false,
                         "isIdle": true,
                         "isLoading": false,
                         "isLoadingError": false,
@@ -3852,18 +1958,47 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Investigation",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "InvestigationParameter",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "Sample",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -3882,23 +2017,54 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isPaused": false,
                         "status": "idle",
                       },
+                      "fetchNextPage": [Function],
+                      "fetchPreviousPage": [Function],
                       "listeners": Array [
                         [Function],
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Investigation",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "InvestigationParameter",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "Sample",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -3911,7 +2077,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       "staleTimeoutId": undefined,
                       "trackedProps": Array [],
                     },
-                    QueryObserver {
+                    InfiniteQueryObserver {
                       "client": [Circular],
                       "currentQuery": [Circular],
                       "currentQueryInitialState": Object {
@@ -3934,10 +2100,16 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "error": null,
                         "errorUpdatedAt": 0,
                         "failureCount": 0,
+                        "fetchNextPage": [Function],
+                        "fetchPreviousPage": [Function],
+                        "hasNextPage": undefined,
+                        "hasPreviousPage": undefined,
                         "isError": false,
                         "isFetched": false,
                         "isFetchedAfterMount": false,
                         "isFetching": false,
+                        "isFetchingNextPage": false,
+                        "isFetchingPreviousPage": false,
                         "isIdle": true,
                         "isLoading": false,
                         "isLoadingError": false,
@@ -3952,18 +2124,47 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                       },
                       "currentResultOptions": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Investigation",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "InvestigationParameter",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "Sample",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -3982,23 +2183,54 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                         "isPaused": false,
                         "status": "idle",
                       },
+                      "fetchNextPage": [Function],
+                      "fetchPreviousPage": [Function],
                       "listeners": Array [
                         [Function],
                       ],
                       "options": Object {
                         "_defaulted": true,
+                        "behavior": Object {
+                          "onFetch": [Function],
+                        },
                         "enabled": false,
+                        "getNextPageParam": [Function],
                         "onError": [Function],
                         "optimisticResults": true,
                         "queryFn": [Function],
-                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                        "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                         "queryKey": Array [
                           "search",
                           "Investigation",
                           Object {
                             "endDate": null,
-                            "maxCount": 300,
+                            "facets": Array [
+                              Object {
+                                "target": "Investigation",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "InvestigationParameter",
+                              },
+                              Object {
+                                "dimensions": Array [
+                                  Object {
+                                    "dimension": "type.name",
+                                  },
+                                ],
+                                "target": "Sample",
+                              },
+                            ],
+                            "filters": Object {},
+                            "maxCount": 100,
+                            "minCount": 10,
+                            "restrict": true,
                             "searchText": "",
+                            "sort": Object {},
                             "startDate": null,
                           },
                         ],
@@ -4014,30 +2246,84 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                   ],
                   "options": Object {
                     "_defaulted": true,
+                    "behavior": Object {
+                      "onFetch": [Function],
+                    },
                     "enabled": false,
+                    "getNextPageParam": [Function],
                     "onError": [Function],
                     "optimisticResults": true,
                     "queryFn": [Function],
-                    "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                    "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                     "queryKey": Array [
                       "search",
                       "Investigation",
                       Object {
                         "endDate": null,
-                        "maxCount": 300,
+                        "facets": Array [
+                          Object {
+                            "target": "Investigation",
+                          },
+                          Object {
+                            "dimensions": Array [
+                              Object {
+                                "dimension": "type.name",
+                              },
+                            ],
+                            "target": "InvestigationParameter",
+                          },
+                          Object {
+                            "dimensions": Array [
+                              Object {
+                                "dimension": "type.name",
+                              },
+                            ],
+                            "target": "Sample",
+                          },
+                        ],
+                        "filters": Object {},
+                        "maxCount": 100,
+                        "minCount": 10,
+                        "restrict": true,
                         "searchText": "",
+                        "sort": Object {},
                         "startDate": null,
                       },
                     ],
                   },
-                  "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"maxCount\\":300,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
+                  "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"facets\\":[{\\"target\\":\\"Investigation\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"InvestigationParameter\\"},{\\"dimensions\\":[{\\"dimension\\":\\"type.name\\"}],\\"target\\":\\"Sample\\"}],\\"filters\\":{},\\"maxCount\\":100,\\"minCount\\":10,\\"restrict\\":true,\\"searchText\\":\\"\\",\\"sort\\":{},\\"startDate\\":null}]",
                   "queryKey": Array [
                     "search",
                     "Investigation",
                     Object {
                       "endDate": null,
-                      "maxCount": 300,
+                      "facets": Array [
+                        Object {
+                          "target": "Investigation",
+                        },
+                        Object {
+                          "dimensions": Array [
+                            Object {
+                              "dimension": "type.name",
+                            },
+                          ],
+                          "target": "InvestigationParameter",
+                        },
+                        Object {
+                          "dimensions": Array [
+                            Object {
+                              "dimension": "type.name",
+                            },
+                          ],
+                          "target": "Sample",
+                        },
+                      ],
+                      "filters": Object {},
+                      "maxCount": 100,
+                      "minCount": 10,
+                      "restrict": true,
                       "searchText": "",
+                      "sort": Object {},
                       "startDate": null,
                     },
                   ],
@@ -4077,7 +2363,8 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
             datasetTab={true}
             dispatch={[Function]}
             investigationTab={true}
-            maxNumResults={300}
+            maxNumResults={100}
+            minNumResults={10}
             navigateToDownload={[MockFunction]}
             onTabChange={[MockFunction]}
           >
@@ -4255,7 +2542,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                       }
                                                     }
                                                   >
-                                                    0
+                                                    ?
                                                   </span>
                                                 }
                                                 id="investigation-badge"
@@ -4313,7 +2600,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                         }
                                                       }
                                                     >
-                                                      0
+                                                      ?
                                                     </span>
                                                   }
                                                   id="investigation-badge"
@@ -4407,7 +2694,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                               }
                                                             }
                                                           >
-                                                            0
+                                                            ?
                                                           </span>
                                                         }
                                                         id="investigation-badge"
@@ -4425,7 +2712,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                                 }
                                                               }
                                                             >
-                                                              0
+                                                              ?
                                                             </span>
                                                           }
                                                           classes={
@@ -4448,7 +2735,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                                   }
                                                                 }
                                                               >
-                                                                0
+                                                                ?
                                                               </span>
                                                             }
                                                             classes={
@@ -4503,7 +2790,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                                     }
                                                                   }
                                                                 >
-                                                                  0
+                                                                  ?
                                                                 </span>
                                                               </span>
                                                             </span>
@@ -4552,7 +2839,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                             key=".1"
                                             label={
                                               <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                badgeContent={0}
+                                                badgeContent="?"
                                                 id="dataset-badge"
                                                 max={999}
                                                 showZero={true}
@@ -4598,7 +2885,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                               indicator={false}
                                               label={
                                                 <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                  badgeContent={0}
+                                                  badgeContent="?"
                                                   id="dataset-badge"
                                                   max={999}
                                                   showZero={true}
@@ -4680,13 +2967,13 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                       className="MuiTab-wrapper"
                                                     >
                                                       <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                        badgeContent={0}
+                                                        badgeContent="?"
                                                         id="dataset-badge"
                                                         max={999}
                                                         showZero={true}
                                                       >
                                                         <WithStyles(ForwardRef(Badge))
-                                                          badgeContent={0}
+                                                          badgeContent="?"
                                                           classes={
                                                             Object {
                                                               "badge": "WithStyles(ForwardRef(Badge))-badge-5",
@@ -4697,7 +2984,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                           showZero={true}
                                                         >
                                                           <ForwardRef(Badge)
-                                                            badgeContent={0}
+                                                            badgeContent="?"
                                                             classes={
                                                               Object {
                                                                 "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
@@ -4741,7 +3028,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                               <span
                                                                 className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5 MuiBadge-anchorOriginTopRightRectangle"
                                                               >
-                                                                0
+                                                                ?
                                                               </span>
                                                             </span>
                                                           </ForwardRef(Badge)>
@@ -4789,7 +3076,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                             key=".2"
                                             label={
                                               <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                badgeContent={0}
+                                                badgeContent="?"
                                                 id="datafile-badge"
                                                 max={999}
                                                 showZero={true}
@@ -4835,7 +3122,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                               indicator={false}
                                               label={
                                                 <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                  badgeContent={0}
+                                                  badgeContent="?"
                                                   id="datafile-badge"
                                                   max={999}
                                                   showZero={true}
@@ -4917,13 +3204,13 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                       className="MuiTab-wrapper"
                                                     >
                                                       <WithStyles(WithStyles(ForwardRef(Badge)))
-                                                        badgeContent={0}
+                                                        badgeContent="?"
                                                         id="datafile-badge"
                                                         max={999}
                                                         showZero={true}
                                                       >
                                                         <WithStyles(ForwardRef(Badge))
-                                                          badgeContent={0}
+                                                          badgeContent="?"
                                                           classes={
                                                             Object {
                                                               "badge": "WithStyles(ForwardRef(Badge))-badge-5",
@@ -4934,7 +3221,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                           showZero={true}
                                                         >
                                                           <ForwardRef(Badge)
-                                                            badgeContent={0}
+                                                            badgeContent="?"
                                                             classes={
                                                               Object {
                                                                 "anchorOriginBottomLeftCircle": "MuiBadge-anchorOriginBottomLeftCircle",
@@ -4978,7 +3265,7 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                                                               <span
                                                                 className="MuiBadge-badge WithStyles(ForwardRef(Badge))-badge-5 MuiBadge-anchorOriginTopRightRectangle"
                                                               >
-                                                                0
+                                                                ?
                                                               </span>
                                                             </span>
                                                           </ForwardRef(Badge)>
@@ -5386,70 +3673,74 @@ exports[`SearchPageTable renders correctly when request received 1`] = `
                               }
                             >
                               <InvestigationSearchTable>
-                                <mockConstructor
-                                  columns={
-                                    Array [
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "title",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.title",
-                                      },
-                                      Object {
-                                        "dataKey": "visitId",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.visit_id",
-                                      },
-                                      Object {
-                                        "dataKey": "name",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.name",
-                                      },
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "doi",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.doi",
-                                      },
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "datasetCount",
-                                        "disableSort": true,
-                                        "label": "investigations.dataset_count",
-                                      },
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "investigationInstruments.instrument.fullName",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.instrument",
-                                      },
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "startDate",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.start_date",
-                                      },
-                                      Object {
-                                        "cellContentRenderer": [Function],
-                                        "dataKey": "endDate",
-                                        "filterComponent": [Function],
-                                        "label": "investigations.end_date",
-                                      },
-                                    ]
-                                  }
-                                  data={Array []}
-                                  detailsPanel={[Function]}
-                                  disableSelectAll={false}
-                                  loadMoreRows={[Function]}
-                                  loading={false}
-                                  onCheck={[Function]}
-                                  onSort={[Function]}
-                                  onUncheck={[Function]}
-                                  sort={Object {}}
-                                  totalRowCount={0}
-                                >
-                                  MockedTable
-                                </mockConstructor>
+                                <div>
+                                  <mockConstructor
+                                    aggregatedIds={Array []}
+                                    columns={
+                                      Array [
+                                        Object {
+                                          "cellContentRenderer": [Function],
+                                          "dataKey": "title",
+                                          "disableSort": true,
+                                          "label": "investigations.title",
+                                        },
+                                        Object {
+                                          "dataKey": "visitId",
+                                          "disableSort": true,
+                                          "label": "investigations.visit_id",
+                                        },
+                                        Object {
+                                          "dataKey": "name",
+                                          "disableSort": true,
+                                          "label": "investigations.name",
+                                        },
+                                        Object {
+                                          "cellContentRenderer": [Function],
+                                          "dataKey": "doi",
+                                          "disableSort": true,
+                                          "label": "investigations.doi",
+                                        },
+                                        Object {
+                                          "cellContentRenderer": [Function],
+                                          "dataKey": "datasetCount",
+                                          "disableSort": true,
+                                          "label": "investigations.dataset_count",
+                                        },
+                                        Object {
+                                          "cellContentRenderer": [Function],
+                                          "dataKey": "investigationInstruments.instrument.fullName",
+                                          "disableSort": true,
+                                          "label": "investigations.instrument",
+                                        },
+                                        Object {
+                                          "cellContentRenderer": [Function],
+                                          "dataKey": "startDate",
+                                          "disableSort": true,
+                                          "label": "investigations.start_date",
+                                        },
+                                        Object {
+                                          "cellContentRenderer": [Function],
+                                          "dataKey": "endDate",
+                                          "disableSort": true,
+                                          "label": "investigations.end_date",
+                                        },
+                                      ]
+                                    }
+                                    data={Array []}
+                                    detailsPanel={[Function]}
+                                    disableSelectAll={false}
+                                    loadMoreRows={[Function]}
+                                    loading={false}
+                                    onCheck={[Function]}
+                                    onSort={[Function]}
+                                    onUncheck={[Function]}
+                                    shortHeader={true}
+                                    sort={Object {}}
+                                    totalRowCount={0}
+                                  >
+                                    MockedTable
+                                  </mockConstructor>
+                                </div>
                               </InvestigationSearchTable>
                             </div>
                           </ForwardRef(Paper)>

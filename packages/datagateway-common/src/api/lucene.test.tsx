@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
-import { useLuceneSearch } from '.';
+import { LuceneSearchParams, useLuceneSearchInfinite } from '.';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 
@@ -23,7 +23,7 @@ describe('Lucene actions', () => {
       endDate: null,
     };
     const { result, waitFor } = renderHook(
-      () => useLuceneSearch('Investigation', luceneSearchParams),
+      () => useLuceneSearchInfinite('Investigation', luceneSearchParams, {}),
       {
         wrapper: createReactQueryWrapper(),
       }
@@ -41,15 +41,19 @@ describe('Lucene actions', () => {
       query: {
         target: 'Investigation',
       },
-      maxCount: 300,
+      maxCount: 100,
+      minCount: 10,
+      restrict: false,
+      search_after: '',
+      sort: '',
     };
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: params,
       }
     );
-    expect(result.current.data).toEqual([1]);
+    expect(result.current.data?.pages[0]).toEqual([{ id: 1 }]);
   });
 
   it('sends axios request to fetch lucene search results once refetch function is called and returns successful response with arguments', async () => {
@@ -61,10 +65,10 @@ describe('Lucene actions', () => {
       searchText: 'test',
       startDate: new Date(2000, 0, 1),
       endDate: new Date(2020, 11, 31),
-      maxCount: 100,
+      maxCount: 300,
     };
     const { result, waitFor } = renderHook(
-      () => useLuceneSearch('Datafile', luceneSearchParams),
+      () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
       {
         wrapper: createReactQueryWrapper(),
       }
@@ -85,15 +89,19 @@ describe('Lucene actions', () => {
         lower: '200001010000',
         upper: '202012312359',
       },
-      maxCount: 100,
+      maxCount: 300,
+      minCount: 10,
+      restrict: false,
+      search_after: '',
+      sort: '',
     };
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: params,
       }
     );
-    expect(result.current.data).toEqual([1]);
+    expect(result.current.data?.pages[0]).toEqual([{ id: 1 }]);
   });
 
   it('sends axios request to fetch lucene search results once refetch function is called and returns successful response with only one date set', async () => {
@@ -101,14 +109,14 @@ describe('Lucene actions', () => {
       data: [{ id: 1 }],
     });
 
-    const luceneSearchParams = {
+    const luceneSearchParams: LuceneSearchParams = {
       searchText: 'test',
       startDate: new Date(2000, 0, 1),
       endDate: null,
-      maxCount: 100,
+      maxCount: 300,
     };
     const startDateTest = renderHook(
-      () => useLuceneSearch('Datafile', luceneSearchParams),
+      () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
       {
         wrapper: createReactQueryWrapper(),
       }
@@ -129,15 +137,19 @@ describe('Lucene actions', () => {
         lower: '200001010000',
         upper: '9000012312359',
       },
-      maxCount: 100,
+      maxCount: 300,
+      minCount: 10,
+      restrict: false,
+      search_after: '',
+      sort: '',
     };
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: params,
       }
     );
-    expect(startDateTest.result.current.data).toEqual([1]);
+    expect(startDateTest.result.current.data?.pages[0]).toEqual([{ id: 1 }]);
 
     (axios.get as jest.Mock).mockClear();
 
@@ -145,7 +157,7 @@ describe('Lucene actions', () => {
     luceneSearchParams.startDate = null;
 
     const endDateTest = renderHook(
-      () => useLuceneSearch('Datafile', luceneSearchParams),
+      () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
       {
         wrapper: createReactQueryWrapper(),
       }
@@ -161,12 +173,12 @@ describe('Lucene actions', () => {
     params.query.upper = '202012312359';
     params.query.lower = '0000001010000';
     expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
+      'https://example.com/icat/search/documents',
       {
         params: params,
       }
     );
-    expect(endDateTest.result.current.data).toEqual([1]);
+    expect(endDateTest.result.current.data?.pages[0]).toEqual([{ id: 1 }]);
   });
 
   it('sends axios request to fetch lucene search results once refetch function is called and calls handleICATError on failure', async () => {
@@ -180,7 +192,7 @@ describe('Lucene actions', () => {
       endDate: null,
     };
     const { result, waitFor } = renderHook(
-      () => useLuceneSearch('Datafile', luceneSearchParams),
+      () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
       {
         wrapper: createReactQueryWrapper(),
       }

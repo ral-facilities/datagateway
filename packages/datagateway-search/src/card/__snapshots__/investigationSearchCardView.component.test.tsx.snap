@@ -2,53 +2,33 @@
 
 exports[`Investigation - Card View renders correctly 1`] = `
 Object {
+  "allIds": Array [
+    1,
+  ],
   "buttons": Array [
     [Function],
   ],
+  "customFilters": Array [],
   "data": Array [
     Object {
-      "createTime": "2019-07-23",
       "doi": "doi 1",
-      "endDate": "2019-07-25",
+      "endDate": 1564009200000,
       "id": 1,
-      "investigationInstruments": Array [
+      "investigationinstrument": Array [
         Object {
-          "id": 3,
-          "instrument": Object {
-            "id": 4,
-            "name": "LARMOR",
-          },
+          "instrument.id": 4,
+          "instrument.name": "LARMOR",
         },
       ],
-      "modTime": "2019-07-23",
       "name": "Investigation test name",
-      "size": 1,
-      "startDate": "2019-07-24",
-      "studyInvestigations": Array [
-        Object {
-          "id": 5,
-          "investigation": Object {
-            "id": 2,
-            "name": "Investigation test name",
-            "title": "Investigation test title",
-            "visitId": "1",
-          },
-          "study": Object {
-            "createTime": "2019-06-10",
-            "id": 6,
-            "modTime": "2019-06-10",
-            "name": "study name",
-            "pid": "study pid",
-          },
-        },
-      ],
+      "startDate": 1563922800000,
       "title": "Test 1",
       "visitId": "1",
     },
   ],
   "description": Object {
     "dataKey": "summary",
-    "filterComponent": [Function],
+    "disableSort": true,
     "label": "investigations.details.summary",
   },
   "filters": Object {},
@@ -56,7 +36,7 @@ Object {
     Object {
       "content": [Function],
       "dataKey": "doi",
-      "filterComponent": [Function],
+      "disableSort": true,
       "icon": Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
@@ -69,7 +49,7 @@ Object {
     },
     Object {
       "dataKey": "visitId",
-      "filterComponent": [Function],
+      "disableSort": true,
       "icon": Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
@@ -83,7 +63,6 @@ Object {
     Object {
       "dataKey": "name",
       "disableSort": true,
-      "filterComponent": [Function],
       "icon": Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
@@ -111,7 +90,7 @@ Object {
     Object {
       "content": [Function],
       "dataKey": "investigationInstruments.instrument.name",
-      "filterComponent": [Function],
+      "disableSort": true,
       "icon": Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
@@ -124,8 +103,9 @@ Object {
       "noTooltip": true,
     },
     Object {
+      "content": [Function],
       "dataKey": "startDate",
-      "filterComponent": [Function],
+      "disableSort": true,
       "icon": Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
@@ -137,8 +117,9 @@ Object {
       "label": "investigations.details.start_date",
     },
     Object {
+      "content": [Function],
       "dataKey": "endDate",
-      "filterComponent": [Function],
+      "disableSort": true,
       "icon": Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
@@ -163,7 +144,7 @@ Object {
   "title": Object {
     "content": [Function],
     "dataKey": "title",
-    "filterComponent": [Function],
+    "disableSort": true,
     "label": "investigations.title",
   },
   "totalDataCount": 1,

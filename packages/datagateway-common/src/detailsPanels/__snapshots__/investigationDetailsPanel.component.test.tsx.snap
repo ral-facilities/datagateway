@@ -48,7 +48,7 @@ exports[`Investigation details panel component renders correctly 1`] = `
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Typography))>
       <b>
-        2019-06-10
+        10/06/2019
       </b>
     </WithStyles(ForwardRef(Typography))>
   </WithStyles(ForwardRef(Grid))>
@@ -63,7 +63,7 @@ exports[`Investigation details panel component renders correctly 1`] = `
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Typography))>
       <b>
-        2019-06-11
+        11/06/2019
       </b>
     </WithStyles(ForwardRef(Typography))>
   </WithStyles(ForwardRef(Grid))>

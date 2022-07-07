@@ -19,27 +19,23 @@ import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
 import {
   parseSearchToQuery,
-  useDatafileCount,
-  useDatasetCount,
-  useInvestigationCount,
-  useLuceneSearch,
   useUpdateQueryParam,
   ViewCartButton,
   CartProps,
+  SearchResponse,
+  useLuceneSearchInfinite,
 } from 'datagateway-common';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
 import { useLocation } from 'react-router-dom';
-import { useIsFetching } from 'react-query';
+import { InfiniteData, useIsFetching } from 'react-query';
 import {
   getFilters,
   getPage,
   getResults,
-  getSorts,
   storeFilters,
   storePage,
   storeResults,
-  storeSort,
 } from './searchPageContainer.component';
 
 const badgeStyles = (theme: Theme): StyleRules =>
@@ -91,6 +87,7 @@ export interface SearchCardViewProps {
 }
 
 interface SearchCardViewStoreProps {
+  minNumResults: number;
   maxNumResults: number;
   datasetTab: boolean;
   datafileTab: boolean;
@@ -136,6 +133,7 @@ const SearchPageCardView = (
   props: SearchCardViewProps & SearchCardViewStoreProps & CartProps
 ): React.ReactElement => {
   const {
+    minNumResults,
     maxNumResults,
     investigationTab,
     datasetTab,
@@ -153,27 +151,98 @@ const SearchPageCardView = (
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const { startDate, endDate } = queryParams;
+  const { startDate, endDate, sort, filters, restrict } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
-  const { data: investigation } = useLuceneSearch('Investigation', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
-  const { data: dataset } = useLuceneSearch('Dataset', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
-  const { data: datafile } = useLuceneSearch('Datafile', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
+  const {
+    data: investigations,
+    hasNextPage: investigationsHasNextPage,
+  } = useLuceneSearchInfinite(
+    'Investigation',
+    {
+      searchText: searchText,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+      facets: [
+        { target: 'Investigation' },
+        {
+          target: 'InvestigationParameter',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+        {
+          target: 'Sample',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+      ],
+    },
+    filters
+  );
+  const {
+    data: datasets,
+    hasNextPage: datasetsHasNextPage,
+  } = useLuceneSearchInfinite(
+    'Dataset',
+    {
+      searchText: searchText,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+      facets: [{ target: 'Dataset' }],
+    },
+    filters
+  );
+  const {
+    data: datafiles,
+    hasNextPage: datafilesHasNextPage,
+  } = useLuceneSearchInfinite(
+    'Datafile',
+    {
+      searchText: searchText,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+    },
+    filters
+  );
+
+  const countSearchResults = (
+    searchResponses: InfiniteData<SearchResponse> | undefined,
+    hasNextPage: boolean | undefined
+  ): string => {
+    if (searchResponses) {
+      let numResults = 0;
+      searchResponses.pages.forEach((searchResponse) => {
+        numResults += searchResponse.results?.length ?? 0;
+      });
+      return String(numResults) + (hasNextPage ? '+' : '');
+    }
+    return '?';
+  };
+
+  const investigationCount = React.useMemo(
+    () => countSearchResults(investigations, investigationsHasNextPage),
+    [investigations, investigationsHasNextPage]
+  );
+
+  const datasetCount = React.useMemo(
+    () => countSearchResults(datasets, datasetsHasNextPage),
+    [datasets, datasetsHasNextPage]
+  );
+
+  const datafileCount = React.useMemo(
+    () => countSearchResults(datafiles, datafilesHasNextPage),
+    [datafiles, datafilesHasNextPage]
+  );
 
   const isFetchingNum = useIsFetching({
     predicate: (query) =>
@@ -183,13 +252,12 @@ const SearchPageCardView = (
   });
   const loading = isFetchingNum > 0;
 
-  const { filters, sort, page, results } = React.useMemo(
+  const { page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
 
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
-  const replaceSorts = useUpdateQueryParam('sort', 'replace');
   const replacePage = useUpdateQueryParam('page', 'replace');
   const replaceResults = useUpdateQueryParam('results', 'replace');
 
@@ -198,7 +266,6 @@ const SearchPageCardView = (
     newValue: string
   ): void => {
     storeFilters(filters, currentTab);
-    storeSort(sort, currentTab);
     if (page) {
       storePage(page, currentTab);
     }
@@ -209,64 +276,18 @@ const SearchPageCardView = (
     onTabChange(newValue);
 
     replaceFilters({});
-    replaceSorts({});
     replacePage(null);
     replaceResults(null);
   };
 
   React.useEffect(() => {
     const filters = getFilters(currentTab);
-    const sorts = getSorts(currentTab);
     const page = getPage(currentTab);
     const results = getResults(currentTab);
     if (filters) replaceFilters(filters);
-    if (sorts) replaceSorts(sorts);
     if (page) replacePage(page);
     if (results) replaceResults(results);
-  }, [currentTab, replaceFilters, replacePage, replaceResults, replaceSorts]);
-
-  const { data: investigationDataCount } = useInvestigationCount(
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: investigation || [] },
-        }),
-      },
-    ],
-    getFilters('investigation') ?? {},
-    currentTab
-  );
-
-  const { data: datasetDataCount } = useDatasetCount(
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: dataset || [] },
-        }),
-      },
-    ],
-    getFilters('dataset') ?? {},
-    currentTab
-  );
-
-  const { data: datafileDataCount } = useDatafileCount(
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: datafile || [] },
-        }),
-      },
-    ],
-    getFilters('datafile') ?? {},
-    currentTab
-  );
-
-  const badgeDigits = (length?: number): 3 | 2 | 1 => {
-    return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
-  };
+  }, [currentTab, replaceFilters, replacePage, replaceResults]);
 
   return (
     <div>
@@ -291,19 +312,15 @@ const SearchPageCardView = (
                 label={
                   <StyledBadge
                     id="investigation-badge"
-                    badgeContent={investigationDataCount ?? 0}
+                    badgeContent={investigationCount}
                     showZero
                     max={999}
                   >
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          investigation?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          investigation?.length
-                        )}ch - 6px)`,
+                        marginRight: `calc(0.5 * ${investigationCount.length}ch + 6px)`,
+                        marginLeft: `calc(-0.5 * ${investigationCount.length}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -323,19 +340,15 @@ const SearchPageCardView = (
                 label={
                   <StyledBadge
                     id="dataset-badge"
-                    badgeContent={datasetDataCount ?? 0}
+                    badgeContent={datasetCount}
                     showZero
                     max={999}
                   >
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          dataset?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          dataset?.length
-                        )}ch - 6px)`,
+                        marginRight: `calc(0.5 * ${datasetCount.length}ch + 6px)`,
+                        marginLeft: `calc(-0.5 * ${datasetCount.length}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -355,19 +368,15 @@ const SearchPageCardView = (
                 label={
                   <StyledBadge
                     id="datafile-badge"
-                    badgeContent={datafileDataCount ?? 0}
+                    badgeContent={datafileCount}
                     showZero
                     max={999}
                   >
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          datafile?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          datafile?.length
-                        )}ch - 6px)`,
+                        marginRight: `calc(0.5 * ${datafileCount.length}ch + 6px)`,
+                        marginLeft: `calc(-0.5 * ${datafileCount.length}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -425,6 +434,7 @@ const SearchPageCardView = (
 
 const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
   return {
+    minNumResults: state.dgsearch.minNumResults,
     maxNumResults: state.dgsearch.maxNumResults,
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,

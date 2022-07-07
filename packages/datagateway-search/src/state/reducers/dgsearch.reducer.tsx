@@ -24,7 +24,8 @@ export const initialState: DGSearchState = {
   settingsLoaded: false,
   sideLayout: false,
   searchableEntities: ['investigation', 'dataset', 'datafile'],
-  maxNumResults: 300,
+  minNumResults: 10,
+  maxNumResults: 100,
 };
 
 export function handleSettingsLoaded(state: DGSearchState): DGSearchState {

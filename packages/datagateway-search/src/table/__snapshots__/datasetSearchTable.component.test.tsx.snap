@@ -162,6 +162,7 @@ Object {
     "flexContainer": "VirtualizedTable-flexContainer-2",
     "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
     "headerTableCell": "VirtualizedTable-headerTableCell-8",
+    "shortHeaderTableCell": "VirtualizedTable-shortHeaderTableCell-9",
     "table": "VirtualizedTable-table-1",
     "tableCell": "VirtualizedTable-tableCell-6",
     "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
@@ -172,7 +173,7 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "name",
-      "filterComponent": [Function],
+      "disableSort": true,
       "label": "datasets.name",
     },
     Object {
@@ -184,71 +185,38 @@ Object {
     Object {
       "cellContentRenderer": [Function],
       "dataKey": "investigation.title",
-      "filterComponent": [Function],
+      "disableSort": true,
       "label": "datasets.investigation",
     },
     Object {
-      "dataKey": "createTime",
-      "filterComponent": [Function],
+      "cellContentRenderer": [Function],
+      "dataKey": "startDate",
+      "disableSort": true,
       "label": "datasets.create_time",
     },
     Object {
-      "dataKey": "modTime",
-      "filterComponent": [Function],
+      "cellContentRenderer": [Function],
+      "dataKey": "endDate",
+      "disableSort": true,
       "label": "datasets.modified_time",
     },
   ],
   "data": Array [
     Object {
-      "createTime": "2019-07-23",
-      "endDate": "2019-07-25",
+      "endDate": 1564009200000,
       "id": 1,
-      "investigation": Object {
-        "doi": "doi 1",
-        "endDate": "2019-06-11",
-        "facility": Object {
-          "id": 7,
-          "name": "facility name",
+      "investigation.id": 2,
+      "investigation.name": "Investigation test name",
+      "investigation.startDate": 1560121200000,
+      "investigation.title": "Investigation test title",
+      "investigationinstrument": Array [
+        Object {
+          "instrument.id": 4,
+          "instrument.name": "LARMOR",
         },
-        "id": 2,
-        "investigationInstruments": Array [
-          Object {
-            "id": 3,
-            "instrument": Object {
-              "id": 4,
-              "name": "LARMOR",
-            },
-          },
-        ],
-        "name": "Investigation test name",
-        "size": 1,
-        "startDate": "2019-06-10",
-        "studyInvestigations": Array [
-          Object {
-            "id": 5,
-            "investigation": Object {
-              "id": 2,
-              "name": "Investigation test name",
-              "title": "Investigation test title",
-              "visitId": "1",
-            },
-            "study": Object {
-              "createTime": "2019-06-10",
-              "id": 6,
-              "modTime": "2019-06-10",
-              "name": "study name",
-              "pid": "study pid",
-            },
-          },
-        ],
-        "summary": "foo bar",
-        "title": "Investigation test title",
-        "visitId": "1",
-      },
-      "modTime": "2019-07-23",
+      ],
       "name": "Dataset test name",
-      "size": 1,
-      "startDate": "2019-07-24",
+      "startDate": 1563922800000,
     },
   ],
   "detailsPanel": [Function],
@@ -259,7 +227,8 @@ Object {
   "onSort": [Function],
   "onUncheck": [MockFunction],
   "selectedRows": Array [],
+  "shortHeader": true,
   "sort": Object {},
-  "totalRowCount": 0,
+  "totalRowCount": 1,
 }
 `;

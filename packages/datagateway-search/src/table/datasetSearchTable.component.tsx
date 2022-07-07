@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Table,
-  Dataset,
   tableLink,
   FacilityCycle,
   ColumnType,
@@ -10,25 +9,23 @@ import {
   useAddToCart,
   useAllFacilityCycles,
   useCart,
-  useDatasetCount,
   useDatasetsDatafileCount,
-  useDatasetsInfinite,
   useDatasetSizes,
-  useDateFilter,
-  useIds,
-  useLuceneSearch,
   useSort,
   useRemoveFromCart,
-  useTextFilter,
   DatasetDetailsPanel,
   ISISDatasetDetailsPanel,
   DLSDatasetDetailsPanel,
+  useLuceneSearchInfinite,
+  SearchResponse,
+  SearchResultSource,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import { Paper, Typography } from '@material-ui/core';
 
 interface DatasetTableProps {
   hierarchy: string;
@@ -44,64 +41,37 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
   ]);
-  const { startDate, endDate } = queryParams;
+  const { startDate, endDate, sort, filters, restrict } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgsearch.selectAllSetting
   );
 
+  const minNumResults = useSelector(
+    (state: StateType) => state.dgsearch.minNumResults
+  );
+
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { data: luceneData } = useLuceneSearch('Dataset', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
+  const { fetchNextPage, data, hasNextPage } = useLuceneSearchInfinite(
+    'Dataset',
+    {
+      searchText,
+      startDate,
+      endDate,
+      sort,
+      minCount: minNumResults,
+      maxCount: maxNumResults,
+      restrict,
+      facets: [{ target: 'Dataset' }],
+    },
+    filters
+  );
   const [t] = useTranslation();
 
-  const { filters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
-
-  const { data: totalDataCount } = useDatasetCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
-  const { fetchNextPage, data } = useDatasetsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigation: { investigationInstruments: 'instrument' },
-      }),
-    },
-  ]);
-  const { data: allIds } = useIds(
-    'dataset',
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: luceneData || [] },
-        }),
-      },
-    ],
-    selectAllSetting
-  );
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'dataset'
@@ -111,42 +81,61 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     isLoading: removeFromCartLoading,
   } = useRemoveFromCart('dataset');
 
-  const aggregatedData: Dataset[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  function mapSource(response: SearchResponse): SearchResultSource[] {
+    return response.results?.map((result) => result.source) ?? [];
+  }
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
+  function mapIds(response: SearchResponse): number[] {
+    return response.results?.map((result) => result.id) ?? [];
+  }
+
+  const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {
+    if (data) {
+      return {
+        aggregatedSource: data.pages
+          .map((response) => mapSource(response))
+          .flat(),
+        aggregatedIds: data.pages.map((response) => mapIds(response)).flat(),
+        aborted: data.pages[data.pages.length - 1].aborted,
+      };
+    } else {
+      return {
+        aggregatedSource: [],
+        aggregatedIds: [],
+        aborted: false,
+      };
+    }
+  }, [data]);
+
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 
   const dlsLinkURL = (
-    datasetData: Dataset,
+    datasetData: SearchResultSource,
     linkType = 'dataset'
   ): string | null => {
-    if (datasetData.investigation) {
+    if (datasetData['investigation.name'] && datasetData['investigation.id']) {
       return linkType === 'investigation'
-        ? `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset`
-        : `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`;
+        ? `/browse/proposal/${datasetData['investigation.name']}/investigation/${datasetData['investigation.id']}/dataset`
+        : `/browse/proposal/${datasetData['investigation.name']}/investigation/${datasetData['investigation.id']}/dataset/${datasetData.id}/datafile`;
     }
     return null;
   };
 
   const dlsLink = React.useCallback(
     (
-      datasetData: Dataset,
+      datasetData: SearchResultSource,
       linkType = 'dataset'
     ): React.ReactElement | string => {
       const linkURL = dlsLinkURL(datasetData, linkType);
 
-      if (datasetData.investigation && linkURL) {
+      if (datasetData['investigation.title'] && linkURL) {
         return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData.investigation.title)
+          ? tableLink(linkURL, datasetData['investigation.title'])
           : tableLink(linkURL, datasetData.name);
       }
       return linkType === 'investigation' ? '' : datasetData.name;
@@ -155,24 +144,27 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   );
 
   const isisLinkURL = React.useCallback(
-    (datasetData: Dataset, linkType = 'dataset') => {
+    (datasetData: SearchResultSource, linkType = 'dataset') => {
       let instrumentId;
+      let investigationId;
       let facilityCycleId;
-      if (datasetData.investigation?.investigationInstruments?.length) {
-        instrumentId =
-          datasetData.investigation?.investigationInstruments[0].instrument?.id;
+      if (datasetData.investigationinstrument?.length) {
+        instrumentId = datasetData.investigationinstrument[0]['instrument.id'];
+        investigationId = datasetData['investigation.id'];
       } else {
         return null;
       }
 
-      if (facilityCycles?.length && datasetData.investigation?.startDate) {
+      if (facilityCycles?.length && datasetData['investigation.startDate']) {
+        const investigationDate = new Date(
+          datasetData['investigation.startDate']
+        ).toISOString();
         const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
           (facilityCycle: FacilityCycle) =>
-            datasetData.investigation?.startDate &&
             facilityCycle.startDate &&
             facilityCycle.endDate &&
-            datasetData.investigation.startDate >= facilityCycle.startDate &&
-            datasetData.investigation.startDate <= facilityCycle.endDate
+            investigationDate >= facilityCycle.startDate &&
+            investigationDate <= facilityCycle.endDate
         );
         if (filteredFacilityCycles.length) {
           facilityCycleId = filteredFacilityCycles[0].id;
@@ -181,8 +173,8 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
 
       if (facilityCycleId) {
         return linkType === 'investigation'
-          ? `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}`
-          : `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}`;
+          ? `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}`
+          : `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${datasetData.id}`;
       }
       return null;
     },
@@ -190,12 +182,12 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   );
 
   const isisLink = React.useCallback(
-    (datasetData: Dataset, linkType = 'dataset') => {
+    (datasetData: SearchResultSource, linkType = 'dataset') => {
       const linkURL = isisLinkURL(datasetData, linkType);
 
-      if (datasetData.investigation && linkURL) {
+      if (datasetData['investigation.title'] && linkURL) {
         return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData.investigation.title)
+          ? tableLink(linkURL, datasetData['investigation.title'])
           : tableLink(linkURL, datasetData.name);
       } else return linkType === 'investigation' ? '' : datasetData.name;
     },
@@ -203,11 +195,11 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   );
 
   const genericLinkURL = React.useCallback(
-    (datasetData: Dataset, linkType = 'dataset'): string | null => {
-      if (datasetData.investigation) {
+    (datasetData: SearchResultSource, linkType = 'dataset'): string | null => {
+      if (datasetData['investigation.id']) {
         return linkType === 'investigation'
-          ? `/browse/investigation/${datasetData.investigation.id}/dataset`
-          : `/browse/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`;
+          ? `/browse/investigation/${datasetData['investigation.id']}/dataset`
+          : `/browse/investigation/${datasetData['investigation.id']}/dataset/${datasetData.id}/datafile`;
       }
       return null;
     },
@@ -216,13 +208,13 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
 
   const genericLink = React.useCallback(
     (
-      datasetData: Dataset,
+      datasetData: SearchResultSource,
       linkType = 'dataset'
     ): React.ReactElement | string => {
       const linkURL = genericLinkURL(datasetData, linkType);
-      if (datasetData.investigation && linkURL) {
+      if (datasetData['investigation.title'] && linkURL) {
         return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData.investigation.title)
+          ? tableLink(linkURL, datasetData['investigation.title'])
           : tableLink(linkURL, datasetData.name);
       }
       return linkType === 'investigation' ? '' : datasetData.name;
@@ -258,18 +250,20 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
             cartItem.entityType === 'dataset' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
             (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+              (aggregatedIds && aggregatedIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, selectAllSetting, aggregatedIds]
   );
 
   // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
   // the correct calculation queries for each facility
   const datasetCountQueries = useDatasetsDatafileCount(
-    hierarchy !== 'isis' ? data : undefined
+    hierarchy !== 'isis' ? aggregatedSource : undefined
   );
-  const sizeQueries = useDatasetSizes(hierarchy === 'isis' ? data : undefined);
+  const sizeQueries = useDatasetSizes(
+    hierarchy === 'isis' ? aggregatedSource : undefined
+  );
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -277,10 +271,10 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const datasetData = cellProps.rowData as Dataset;
+          const datasetData = cellProps.rowData as SearchResultSource;
           return hierarchyLink(datasetData);
         },
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label:
@@ -301,37 +295,39 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         label: t('datasets.investigation'),
         dataKey: 'investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const datasetData = cellProps.rowData as Dataset;
+          const datasetData = cellProps.rowData as SearchResultSource;
           return hierarchyLink(datasetData, 'investigation');
         },
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('datasets.create_time'),
-        dataKey: 'createTime',
-        filterComponent: dateFilter,
+        dataKey: 'startDate',
+        disableSort: true,
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          if (cellProps.cellData) {
+            return new Date(cellProps.cellData).toLocaleDateString();
+          }
+        },
       },
       {
         label: t('datasets.modified_time'),
-        dataKey: 'modTime',
-        filterComponent: dateFilter,
+        dataKey: 'endDate',
+        disableSort: true,
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          if (cellProps.cellData) {
+            return new Date(cellProps.cellData).toLocaleDateString();
+          }
+        },
       },
     ],
-    [
-      t,
-      textFilter,
-      hierarchy,
-      dateFilter,
-      hierarchyLink,
-      sizeQueries,
-      datasetCountQueries,
-    ]
+    [t, hierarchy, hierarchyLink, sizeQueries, datasetCountQueries]
   );
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => {
       if (hierarchy === 'isis') {
-        const datafilesURL = hierarchyLinkURL(rowData as Dataset);
+        const datafilesURL = hierarchyLinkURL(rowData as SearchResultSource);
         return (
           <ISISDatasetDetailsPanel
             rowData={rowData}
@@ -365,21 +361,32 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   );
 
   return (
-    <Table
-      loading={addToCartLoading || removeFromCartLoading}
-      data={aggregatedData}
-      loadMoreRows={loadMoreRows}
-      totalRowCount={totalDataCount ?? 0}
-      sort={sort}
-      onSort={handleSort}
-      selectedRows={selectedRows}
-      disableSelectAll={!selectAllSetting}
-      allIds={allIds}
-      onCheck={addToCart}
-      onUncheck={removeFromCart}
-      detailsPanel={detailsPanel}
-      columns={columns}
-    />
+    <div>
+      {aborted ? (
+        <Paper>
+          <Typography align="center" variant="h6" component="h6">
+            {t('loading.abort_message')}
+          </Typography>
+        </Paper>
+      ) : (
+        <Table
+          loading={addToCartLoading || removeFromCartLoading}
+          data={aggregatedSource}
+          loadMoreRows={loadMoreRows}
+          totalRowCount={aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0}
+          sort={{}}
+          onSort={handleSort}
+          selectedRows={selectedRows}
+          disableSelectAll={!selectAllSetting}
+          allIds={aggregatedIds}
+          onCheck={addToCart}
+          onUncheck={removeFromCart}
+          detailsPanel={detailsPanel}
+          columns={columns}
+          shortHeader={true}
+        />
+      )}
+    </div>
   );
 };
 
