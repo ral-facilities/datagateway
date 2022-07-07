@@ -309,10 +309,12 @@ const AdminDownloadStatusTable: React.FC = () => {
               </Grid>
             )}
             <Grid item>
+              {/* Table should take up page but leave room for: SG appbar, SG footer,
+            tabs, admin header, table padding, and text above table (respectively). */}
               <Paper
                 style={{
                   height:
-                    'calc(100vh - 64px - 36px - 48px - 48px - (1.75rem + 40px))',
+                    'calc(100vh - 64px - 36px - 48px - (3rem * 1.167) - 32px - (1.75rem + 40px))',
                   minHeight: 230,
                   overflowX: 'auto',
                 }}
