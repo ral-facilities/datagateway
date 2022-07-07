@@ -192,7 +192,7 @@ describe('Download cart table component', () => {
     expect(wrapper.find('[aria-colindex=3]').find('p').first().text()).toEqual(
       '1 B'
     );
-    expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
+    expect(wrapper.find('span#totalSizeDisplay').text()).toEqual(
       expect.stringContaining('downloadCart.total_size: 4 B')
     );
   });
@@ -214,7 +214,7 @@ describe('Download cart table component', () => {
       '1'
     );
 
-    expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
+    expect(wrapper.find('span#fileCountDisplay').text()).toEqual(
       expect.stringContaining('downloadCart.number_of_files: 22 / 5000')
     );
   });

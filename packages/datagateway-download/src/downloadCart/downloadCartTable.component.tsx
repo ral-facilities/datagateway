@@ -351,16 +351,18 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           direction="column"
           alignItems="flex-end"
           justifyContent="space-between"
+          spacing={0.5}
+          sx={{ marginTop: 0 }}
         >
           <Grid
             container
             item
-            direction="column"
+            direction="row"
             xs
+            justifyContent="flex-end"
             alignContent="flex-end"
             alignItems="flex-end"
-            sx={{ marginRight: '1.2em' }}
-            spacing={1}
+            columnGap={1}
           >
             <Grid item>
               {fileCountsLoading && (
@@ -369,9 +371,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   thickness={7}
                   disableShrink={true}
                   aria-label={t('downloadCart.calculating')}
+                  sx={{ verticalAlign: -1 }}
                 />
               )}
-              <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
+              <Typography
+                id="fileCountDisplay"
+                style={{ marginLeft: '4px' }}
+                component="span"
+              >
                 {t('downloadCart.number_of_files')}:{' '}
                 {fileCount !== -1
                   ? fileCount
@@ -401,12 +408,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           <Grid
             container
             item
-            direction="column"
+            direction="row"
             xs
+            justifyContent="flex-end"
             alignContent="flex-end"
             alignItems="flex-end"
-            sx={{ marginRight: '1.2em' }}
-            // spacing={1}
+            columnGap={1}
           >
             <Grid item>
               {sizesLoading && (
@@ -415,9 +422,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   thickness={7}
                   disableShrink={true}
                   aria-label={t('downloadCart.calculating')}
+                  sx={{ verticalAlign: -1 }}
                 />
               )}
-              <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
+              <Typography
+                id="totalSizeDisplay"
+                style={{ marginLeft: '4px' }}
+                component="span"
+              >
                 {t('downloadCart.total_size')}:{' '}
                 {totalSize !== -1
                   ? formatBytes(totalSize)
@@ -444,17 +456,15 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               )}
             </Grid>
           </Grid>
-          <Grid
-            container
-            item
-            direction="column"
-            xs
-            alignContent="flex-end"
-            alignItems="flex-end"
-            sx={{ marginRight: '1.2em' }}
-            // spacing={1}
-          >
-            {emptyItems && (
+          {emptyItems && (
+            <Grid
+              container
+              item
+              direction="column"
+              xs
+              alignContent="flex-end"
+              alignItems="flex-end"
+            >
               <Alert
                 id="emptyFilesAlert"
                 variant="filled"
@@ -467,16 +477,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               >
                 {t('downloadCart.empty_items_error')}
               </Alert>
-            )}
-          </Grid>
-          <Grid
-            container
-            item
-            justifyContent="flex-end"
-            spacing={1}
-            xs
-            sx={{ marginRight: '1em' }}
-          >
+            </Grid>
+          )}
+          <Grid container item justifyContent="flex-end" columnGap={1} xs>
             <Grid item>
               {/* Request to remove all selections is in progress. To prevent excessive requests, disable button during request */}
               <Button
