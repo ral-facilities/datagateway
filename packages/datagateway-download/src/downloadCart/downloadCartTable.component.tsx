@@ -330,7 +330,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 totalSize > totalSizeMax
                   ? ' - 2rem'
                   : ''
-              } - (1.75 * 0.875rem + 12px)`,
+              } - (1.75 * 0.875rem + 12px))`,
               minHeight: 230,
               overflowX: 'auto',
             }}
