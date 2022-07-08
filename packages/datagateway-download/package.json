@@ -49,7 +49,7 @@
     "@testing-library/react-hooks": "^7.0.1",
     "@types/jsrsasign": "^9.0.3",
     "@types/lodash.chunk": "^4.2.6",
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.5.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
     "babel-eslint": "10.1.0",
