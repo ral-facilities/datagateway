@@ -43,9 +43,7 @@ describe('Dataset search tab', () => {
 
   it('should be able to search by text', () => {
     cy.clearDownloadCart();
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('police');
+    cy.get('#filled-search').type('police');
 
     cy.get('[aria-label="Submit search"]')
       .click()
@@ -117,9 +115,7 @@ describe('Dataset search tab', () => {
   });
 
   it('should link to a dataset', () => {
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('12');
+    cy.get('#filled-search').type('12');
     cy.get('[aria-label="Start date input"]').type('2003-01-01');
     cy.get('[aria-label="End date input"]').type('2004-01-01');
 
@@ -134,9 +130,7 @@ describe('Dataset search tab', () => {
   });
 
   it('should link to a parent investigation', () => {
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('12');
+    cy.get('#filled-search').type('12');
     cy.get('[aria-label="Start date input"]').type('2003-01-01');
     cy.get('[aria-label="End date input"]').type('2004-01-01');
 

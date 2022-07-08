@@ -1,16 +1,16 @@
 import React from 'react';
 import { TableCellProps, TableCellRenderer } from 'react-virtualized';
-import { Divider, TableCell, Typography } from '@material-ui/core';
+import { Divider, SxProps, TableCell, Typography } from '@mui/material';
 import ArrowTooltip, { getTooltipText } from '../../arrowtooltip.component';
 
 type CellRendererProps = TableCellProps & {
-  className: string;
+  sx: SxProps;
   cellContentRenderer?: TableCellRenderer;
 };
 
 const DataCell = React.memo(
   (props: CellRendererProps): React.ReactElement => {
-    const { className, dataKey, rowData, cellContentRenderer } = props;
+    const { sx, dataKey, rowData, cellContentRenderer } = props;
 
     // use . in dataKey name to drill down into nested row data
     // if cellContentRenderer not provided
@@ -21,16 +21,11 @@ const DataCell = React.memo(
         }, rowData);
 
     return (
-      <TableCell
-        size="small"
-        component="div"
-        className={className}
-        variant="body"
-      >
+      <TableCell size="small" component="div" sx={sx} variant="body">
         <ArrowTooltip
           title={getTooltipText(cellContent)}
           enterDelay={500}
-          style={{ flex: 1 }}
+          sx={{ flex: 1 }}
         >
           <Typography variant="body2" noWrap>
             {cellContent}
@@ -47,7 +42,7 @@ const DataCell = React.memo(
           <Divider
             orientation="vertical"
             flexItem
-            style={{
+            sx={{
               height: '100%',
             }}
           />

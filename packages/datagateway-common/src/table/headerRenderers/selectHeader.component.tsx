@@ -1,14 +1,14 @@
 import React from 'react';
 import { TableHeaderProps } from 'react-virtualized';
-import { TableCell, Checkbox } from '@material-ui/core';
+import { TableCell, Checkbox, SxProps } from '@mui/material';
 import {
   CheckBoxOutlineBlank,
   CheckBox as CheckBoxIcon,
   IndeterminateCheckBox,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 type SelectHeaderProps = TableHeaderProps & {
-  className: string;
+  sx: SxProps;
   loading: boolean;
   selectedRows: number[];
   totalRowCount: number;
@@ -20,7 +20,7 @@ type SelectHeaderProps = TableHeaderProps & {
 const SelectHeader = React.memo(
   (props: SelectHeaderProps): React.ReactElement => {
     const {
-      className,
+      sx,
       selectedRows,
       totalRowCount,
       onCheck,
@@ -34,7 +34,7 @@ const SelectHeader = React.memo(
         size="small"
         padding="checkbox"
         component="div"
-        className={className}
+        sx={sx}
         variant="head"
       >
         <Checkbox
@@ -55,7 +55,7 @@ const SelectHeader = React.memo(
               onCheck(allIds);
             }
           }}
-          style={{ height: 20, margin: 'auto' }}
+          sx={{ height: '20px', margin: 'auto' }}
         />
       </TableCell>
     );

@@ -1,8 +1,8 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ExploreIcon from '@material-ui/icons/Explore';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import SubjectIcon from '@mui/icons-material/Subject';
+import ExploreIcon from '@mui/icons-material/Explore';
+import SaveIcon from '@mui/icons-material/Save';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import {
   Table,
   TableActionProps,
@@ -23,7 +23,7 @@ import {
   ISISDatafileDetailsPanel,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';

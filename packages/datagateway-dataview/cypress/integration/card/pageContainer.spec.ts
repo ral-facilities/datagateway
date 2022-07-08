@@ -31,28 +31,6 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="page view Display as table"]').should('exist');
   });
 
-  it('should disable the hover tool tip by pressing escape (open data warning)', () => {
-    // The hover tool tip has an enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="arrow-tooltip-component-false"]')
-      .eq(2)
-      .trigger('mouseover')
-      .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
-      .should('exist');
-
-    cy.get('body').type('{esc}');
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="arrow-tooltip-component-false"]')
-      .eq(2)
-      .wait(700)
-      .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .eq(2)
-      .should('exist');
-  });
-
   it('should display correct entity count', () => {
     // Check that the entity count has displayed correctly.
     cy.get('[aria-label="view-count"]')
@@ -246,7 +224,7 @@ describe('PageContainer Component', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
   });
 
@@ -262,7 +240,7 @@ describe('PageContainer Component', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('not.exist');
   });
 });

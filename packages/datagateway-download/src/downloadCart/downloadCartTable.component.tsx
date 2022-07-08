@@ -17,14 +17,12 @@ import {
   Typography,
   Button,
   LinearProgress,
-  createStyles,
-  makeStyles,
   Theme,
   Link,
   CircularProgress,
-} from '@material-ui/core';
-import { RemoveCircle } from '@material-ui/icons';
-import { Alert } from '@material-ui/lab';
+  Alert,
+} from '@mui/material';
+import { RemoveCircle } from '@mui/icons-material';
 import {
   useCart,
   useRemoveEntityFromCart,
@@ -40,17 +38,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    noSelectionsMessage: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-    },
-  })
-);
-
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
 }
@@ -58,7 +45,6 @@ interface DownloadCartTableProps {
 const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   props: DownloadCartTableProps
 ) => {
-  const classes = useStyles();
   const settings = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
@@ -283,15 +269,27 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       }}
     >
       <Paper>
-        <Grid container direction="column" alignItems="center" justify="center">
+        <Grid
+          container
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+        >
           <Grid item>
-            <Typography className={classes.noSelectionsMessage}>
+            <Typography
+              sx={{
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                color: (theme: Theme) => (theme as any).colours?.contrastGrey,
+                paddingTop: 2,
+                paddingBottom: 2,
+              }}
+            >
               <Trans i18nKey="downloadCart.no_selections">
                 No data selected.{' '}
                 <Link
                   component={RouterLink}
                   to={t('downloadCart.browse_link')}
-                  style={{ fontWeight: 'bold' }}
+                  sx={{ fontWeight: 'bold' }}
                 >
                   Browse
                 </Link>{' '}
@@ -299,7 +297,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 <Link
                   component={RouterLink}
                   to={t('downloadCart.search_link')}
-                  style={{ fontWeight: 'bold' }}
+                  sx={{ fontWeight: 'bold' }}
                 >
                   search
                 </Link>{' '}
@@ -321,18 +319,18 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         )}
         <Grid item>
           {/* Table should take up page but leave room for: SG appbar, 
-              SG footer, tabs, table padding, text below table, and buttons
-              (respectively). */}
+              SG footer, tabs, table padding, text below table, loading bar and
+              buttons (respectively). */}
           <Paper
             className="tour-download-results"
-            style={{
+            sx={{
               height: `calc(100vh - 64px - 48px - 48px - 48px - 3rem${
                 emptyItems ||
                 fileCount > fileCountMax ||
                 totalSize > totalSizeMax
                   ? ' - 2rem'
                   : ''
-              } - (1.75 * 0.875rem + 12px)`,
+              }${dataLoading ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
               minHeight: 230,
               overflowX: 'auto',
             }}
@@ -352,16 +350,19 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           item
           direction="column"
           alignItems="flex-end"
-          justify="space-between"
+          justifyContent="space-between"
+          spacing={0.5}
+          sx={{ marginTop: 0 }}
         >
           <Grid
             container
             item
-            spacing={1}
-            justify="flex-end"
-            alignItems="center"
             direction="row"
-            style={{ marginRight: '1.2em' }}
+            xs
+            justifyContent="flex-end"
+            alignContent="flex-end"
+            alignItems="flex-end"
+            columnGap={1}
           >
             <Grid item>
               {fileCountsLoading && (
@@ -370,9 +371,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   thickness={7}
                   disableShrink={true}
                   aria-label={t('downloadCart.calculating')}
+                  sx={{ verticalAlign: -1 }}
                 />
               )}
-              <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
+              <Typography
+                id="fileCountDisplay"
+                style={{ marginLeft: '4px' }}
+                component="span"
+              >
                 {t('downloadCart.number_of_files')}:{' '}
                 {fileCount !== -1
                   ? fileCount
@@ -402,11 +408,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           <Grid
             container
             item
-            spacing={1}
-            justify="flex-end"
-            alignItems="center"
             direction="row"
-            style={{ marginRight: '1.2em' }}
+            xs
+            justifyContent="flex-end"
+            alignContent="flex-end"
+            alignItems="flex-end"
+            columnGap={1}
           >
             <Grid item>
               {sizesLoading && (
@@ -415,9 +422,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   thickness={7}
                   disableShrink={true}
                   aria-label={t('downloadCart.calculating')}
+                  sx={{ verticalAlign: -1 }}
                 />
               )}
-              <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
+              <Typography
+                id="totalSizeDisplay"
+                style={{ marginLeft: '4px' }}
+                component="span"
+              >
                 {t('downloadCart.total_size')}:{' '}
                 {totalSize !== -1
                   ? formatBytes(totalSize)
@@ -444,15 +456,15 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               )}
             </Grid>
           </Grid>
-          <Grid
-            container
-            item
-            justify="flex-end"
-            alignItems="center"
-            direction="row"
-            style={{ marginRight: '1.2em' }}
-          >
-            {emptyItems && (
+          {emptyItems && (
+            <Grid
+              container
+              item
+              direction="column"
+              xs
+              alignContent="flex-end"
+              alignItems="flex-end"
+            >
               <Alert
                 id="emptyFilesAlert"
                 variant="filled"
@@ -465,16 +477,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               >
                 {t('downloadCart.empty_items_error')}
               </Alert>
-            )}
-          </Grid>
-          <Grid
-            container
-            item
-            justify="flex-end"
-            spacing={1}
-            xs
-            style={{ marginRight: '1em' }}
-          >
+            </Grid>
+          )}
+          <Grid container item justifyContent="flex-end" columnGap={1} xs>
             <Grid item>
               {/* Request to remove all selections is in progress. To prevent excessive requests, disable button during request */}
               <Button

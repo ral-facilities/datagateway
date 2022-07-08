@@ -1,16 +1,13 @@
 import React, { useCallback, useMemo } from 'react';
 import {
   CircularProgress,
-  createStyles,
   Grid,
   IconButton,
   LinearProgress,
   Paper,
+  styled,
   Typography,
-  Theme,
-  StyleRules,
-  withStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import {
   DateColumnFilter,
@@ -38,22 +35,17 @@ import {
   PlayCircleFilled,
   RemoveCircle,
   Restore,
-} from '@material-ui/icons';
-import RefreshIcon from '@material-ui/icons/Refresh';
+  Refresh,
+} from '@mui/icons-material';
 import BlackTooltip from '../tooltip.component';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
 
-const paperStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.default,
-      overflow: 'hidden',
-    },
-  });
-
-const StyledPaper = withStyles(paperStyles)(Paper);
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  flexGrow: 1,
+  backgroundColor: theme.palette.background.default,
+  overflow: 'hidden',
+}));
 
 const AdminDownloadStatusTable: React.FC = () => {
   // Load the settings for use
@@ -288,8 +280,9 @@ const AdminDownloadStatusTable: React.FC = () => {
                     'downloadTab.refresh_download_status_arialabel'
                   )}
                   onClick={() => setRefreshDownloads(true)}
+                  size="large"
                 >
-                  <RefreshIcon />
+                  <Refresh />
                 </IconButton>
               </BlackTooltip>
             ) : (
@@ -316,10 +309,12 @@ const AdminDownloadStatusTable: React.FC = () => {
               </Grid>
             )}
             <Grid item>
+              {/* Table should take up page but leave room for: SG appbar, SG footer,
+            tabs, admin header, table padding, and text above table (respectively). */}
               <Paper
                 style={{
                   height:
-                    'calc(100vh - 64px - 36px - 48px - 48px - (1.75rem + 40px))',
+                    'calc(100vh - 64px - 36px - 48px - (3rem * 1.167) - 32px - (1.75rem + 40px))',
                   minHeight: 230,
                   overflowX: 'auto',
                 }}

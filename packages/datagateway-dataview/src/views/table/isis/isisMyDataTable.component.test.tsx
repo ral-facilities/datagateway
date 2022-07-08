@@ -1,4 +1,4 @@
-import { createMount } from '@material-ui/core/test-utils';
+import { render, RenderResult } from '@testing-library/react';
 import {
   dGCommonInitialState,
   Investigation,
@@ -15,15 +15,19 @@ import {
   useInvestigationSizes,
   useRemoveFromCart,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import React from 'react';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { AnyAction } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISMyDataTable from './isisMyDataTable.component';
@@ -48,7 +52,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS MyData table component', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
@@ -70,8 +73,22 @@ describe('ISIS MyData table component', () => {
     );
   };
 
+  const createRTLWrapper = (
+    element: React.ReactElement = <ISISMyDataTable />
+  ): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            {element}
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     events = [];
     history = createMemoryHistory();
 
@@ -171,7 +188,6 @@ describe('ISIS MyData table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -259,7 +275,7 @@ describe('ISIS MyData table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by investigations.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -278,6 +294,8 @@ describe('ISIS MyData table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -298,6 +316,8 @@ describe('ISIS MyData table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -332,7 +352,7 @@ describe('ISIS MyData table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -358,7 +378,7 @@ describe('ISIS MyData table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -414,7 +434,7 @@ describe('ISIS MyData table component', () => {
   it('displays details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
   });
@@ -431,7 +451,7 @@ describe('ISIS MyData table component', () => {
 
     detailsPanelWrapper
       .find('#investigation-datasets-tab')
-      .first()
+      .last()
       .simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/3/facilityCycle/8/investigation/1/dataset'
@@ -471,14 +491,12 @@ describe('ISIS MyData table component', () => {
   });
 
   it('renders title and name as links', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
+
+    expect(wrapper.getAllByTestId('isis-mydata-table-title')).toMatchSnapshot();
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
+      wrapper.getAllByTestId('isis-mydata-table-doi-link')
     ).toMatchSnapshot();
   });
 

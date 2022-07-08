@@ -1,7 +1,14 @@
 describe('Datasets Table', () => {
   beforeEach(() => {
+    cy.intercept('**/datasets/count?*').as('datasetsCount');
+    cy.intercept('**/datasets?order=*').as('datasetsOrder');
     cy.login();
-    cy.visit('/browse/investigation/1/dataset');
+    cy.visit('/browse/investigation/1/dataset').wait(
+      ['@datasetsCount', '@datasetsOrder'],
+      {
+        timeout: 10000,
+      }
+    );
   });
 
   it('should load correctly', () => {
@@ -147,14 +154,12 @@ describe('Datasets Table', () => {
         force: true,
       });
 
-      cy.get('button[aria-label="Create Time filter to, date picker"]')
+      cy.get('input[aria-label="Create Time filter to"]')
         .parent()
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-
-      cy.contains('OK').click();
+      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
 
       const date = new Date();
       date.setDate(1);

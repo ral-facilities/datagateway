@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import DatasetSearchTable from './datasetSearchTable.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
@@ -23,12 +22,15 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
+import { render, RenderResult } from '@testing-library/react';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -50,7 +52,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Dataset table component', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
@@ -69,8 +70,19 @@ describe('Dataset table component', () => {
     );
   };
 
+  const createRTLWrapper = (hierarchy?: string): RenderResult => {
+    return render(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DatasetSearchTable hierarchy={hierarchy ?? ''} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory();
 
     state = JSON.parse(
@@ -183,7 +195,6 @@ describe('Dataset table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -271,7 +282,7 @@ describe('Dataset table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by datasets.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -290,6 +301,8 @@ describe('Dataset table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -308,6 +321,8 @@ describe('Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -332,7 +347,7 @@ describe('Dataset table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -358,7 +373,7 @@ describe('Dataset table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -406,7 +421,7 @@ describe('Dataset table component', () => {
   it('displays generic details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
   });
@@ -414,7 +429,7 @@ describe('Dataset table component', () => {
   it('displays correct details panel for ISIS when expanded', () => {
     const wrapper = createWrapper('isis');
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
   });
 
@@ -432,11 +447,11 @@ describe('Dataset table component', () => {
 
     const wrapper = createWrapper('isis');
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
 
-    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    wrapper.find('#dataset-datafiles-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
     );
@@ -445,20 +460,16 @@ describe('Dataset table component', () => {
   it('displays correct details panel for DLS when expanded', () => {
     const wrapper = createWrapper('dls');
     expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders Dataset title as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('Dataset test name')).toMatchSnapshot();
   });
-
-  // new tests
 
   it('renders fine with incomplete data', () => {
     // this can happen when navigating between tables and the previous table's state still exists
@@ -478,11 +489,8 @@ describe('Dataset table component', () => {
     });
 
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-
     expect(() => createWrapper()).not.toThrowError();
-
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
+    expect(consoleSpy).not.toHaveBeenCalled();
   });
 
   it('renders generic link & pending count correctly', () => {

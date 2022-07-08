@@ -1,13 +1,13 @@
-import { MenuItem } from '@material-ui/core';
-import { createMount } from '@material-ui/core/test-utils';
+import { MenuItem } from '@mui/material';
 import axios from 'axios';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { flushPromises } from '../setupTests';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 import { handleICATError } from 'datagateway-common';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -21,12 +21,6 @@ jest.mock('datagateway-common', () => {
 
 const updateDialogWrapper = async (wrapper: ReactWrapper): Promise<void> => {
   // Update the wrapper with the loading dialog.
-  await act(async () => {
-    await flushPromises();
-    wrapper.update();
-  });
-
-  // Update the wrapper with the download confirmation dialog.
   await act(async () => {
     await flushPromises();
     wrapper.update();
@@ -54,10 +48,7 @@ const mockedSettings = {
 };
 
 describe('DownloadConfirmDialog', () => {
-  let mount;
-
   beforeEach(() => {
-    mount = createMount();
     (axios.get as jest.Mock).mockImplementation(() => {
       return Promise.resolve({
         data: { disabled: false, message: '' },
@@ -69,10 +60,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
-    (axios.get as jest.Mock).mockClear();
-    (axios.post as jest.Mock).mockClear();
-    (handleICATError as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
   const createWrapper = (
@@ -94,20 +82,47 @@ describe('DownloadConfirmDialog', () => {
     );
   };
 
+  const renderWrapper = (
+    size: number,
+    isTwoLevel: boolean,
+    open: boolean
+  ): RenderResult => {
+    return render(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadConfirmDialog
+          totalSize={size}
+          isTwoLevel={isTwoLevel}
+          open={open}
+          redirectToStatusTab={jest.fn()}
+          setClose={jest.fn()}
+          clearCart={jest.fn()}
+        />
+      </DownloadSettingsContext.Provider>
+    );
+  };
+
   it('renders correctly', async () => {
     // Pass in a size of 100 bytes and for the dialog to be open when mounted.
-    const wrapper = createWrapper(100, false, true);
-    await updateDialogWrapper(wrapper);
+    const wrapper = renderWrapper(100, false, true);
+    await act(async () => {
+      await flushPromises();
+    });
 
-    expect(wrapper).toMatchSnapshot();
+    expect(
+      wrapper.getByLabelText('downloadConfirmDialog.dialog_arialabel')
+    ).toMatchSnapshot();
   });
 
   it('does not load the download speed/time table when isTwoLevel is true', async () => {
     // Set isTwoLevel to true as a prop.
-    const wrapper = createWrapper(100, true, true);
-    await updateDialogWrapper(wrapper);
+    const wrapper = renderWrapper(100, true, true);
+    await act(async () => {
+      await flushPromises();
+    });
 
-    expect(wrapper).toMatchSnapshot();
+    expect(
+      wrapper.getByLabelText('downloadConfirmDialog.dialog_arialabel')
+    ).toMatchSnapshot();
   });
 
   it.skip('prevents a download if a selected access method is disabled', async () => {
@@ -590,10 +605,8 @@ describe('DownloadConfirmDialog', () => {
 });
 
 describe('DownloadConfirmDialog - renders the estimated download speed/time table with varying values', () => {
-  let timeMount;
-
   const timeWrapper = (size: number): ReactWrapper => {
-    return timeMount(
+    return mount(
       <DownloadSettingsContext.Provider value={mockedSettings}>
         <DownloadConfirmDialog
           totalSize={size}
@@ -608,7 +621,6 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
   };
 
   beforeEach(() => {
-    timeMount = createMount();
     (axios.get as jest.Mock).mockImplementation(() => {
       return Promise.resolve({
         data: { disabled: false, message: '' },
@@ -617,7 +629,7 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
   });
 
   afterEach(() => {
-    timeMount.cleanUp();
+    jest.clearAllMocks();
   });
 
   // Calculate the file size required to reach the given download time (at 1 Mbps).

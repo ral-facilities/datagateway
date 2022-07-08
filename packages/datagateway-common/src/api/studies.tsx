@@ -11,7 +11,7 @@ import {
   useInfiniteQuery,
 } from 'react-query';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { getApiParams, parseSearchToQuery } from '.';
 import { StateType } from '..';
 import retryICATErrors from './retryICATErrors';

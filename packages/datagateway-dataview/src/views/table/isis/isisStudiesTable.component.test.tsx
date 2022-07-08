@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import ISISStudiesTable from './isisStudiesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 
@@ -10,14 +9,19 @@ import {
   useStudyCount,
   useStudiesInfinite,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
 import { parse } from 'date-fns';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
+import { render, RenderResult } from '@testing-library/react';
 
 jest
   .useFakeTimers('modern')
@@ -35,7 +39,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Studies table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Study[];
@@ -54,8 +57,20 @@ describe('ISIS Studies table component', () => {
     );
   };
 
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISStudiesTable instrumentId="1" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -87,7 +102,6 @@ describe('ISIS Studies table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -166,7 +180,7 @@ describe('ISIS Studies table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by studies.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -184,6 +198,8 @@ describe('ISIS Studies table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find('input[id="studies.end_date filter to"]');
@@ -202,6 +218,8 @@ describe('ISIS Studies table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -231,11 +249,9 @@ describe('ISIS Studies table component', () => {
   });
 
   it('renders studies name as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=1]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getAllByTestId('isis-study-table-name')).toMatchSnapshot();
   });
 
   it('displays Experiment DOI (PID) and renders the expected Link ', () => {

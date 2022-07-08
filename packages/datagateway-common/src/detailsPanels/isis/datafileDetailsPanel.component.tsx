@@ -1,28 +1,16 @@
 import React from 'react';
-import {
-  Typography,
-  Grid,
-  createStyles,
-  makeStyles,
-  Theme,
-  Divider,
-  Tabs,
-  Tab,
-} from '@material-ui/core';
+import { Typography, Grid, Divider, Tabs, Tab, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Datafile, Entity } from '../../app.types';
 import { useDatafileDetails } from '../../api/datafiles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface DatafileDetailsPanelProps {
   rowData: Entity;
@@ -35,7 +23,6 @@ const DatafileDetailsPanel = (
   const { rowData, detailsPanelResize } = props;
   const [value, setValue] = React.useState<'details' | 'parameters'>('details');
   const [t] = useTranslation();
-  const classes = useStyles();
 
   const { data } = useDatafileDetails(rowData.id, [
     {
@@ -55,6 +42,8 @@ const DatafileDetailsPanel = (
     <div id="details-panel" style={{ minWidth: 0 }}>
       <Tabs
         variant="scrollable"
+        textColor="secondary"
+        indicatorColor="secondary"
         scrollButtons="auto"
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
@@ -81,12 +70,12 @@ const DatafileDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{datafileData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -112,7 +101,7 @@ const DatafileDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {datafileData.parameters && (
         <div
@@ -121,12 +110,7 @@ const DatafileDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'parameters'}
         >
-          <Grid
-            id="parameter-grid"
-            container
-            className={classes.root}
-            direction="column"
-          >
+          <StyledGrid id="parameter-grid" container direction="column">
             {datafileData.parameters.length > 0 ? (
               datafileData.parameters.map((parameter) => {
                 if (parameter.type) {
@@ -179,7 +163,7 @@ const DatafileDetailsPanel = (
                 <b>{t('datafiles.details.parameters.no_parameters')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

@@ -1,10 +1,9 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { StateType } from '../state/app.types';
@@ -12,7 +11,7 @@ import { createLocation, createMemoryHistory, History } from 'history';
 import { flushPromises } from '../setupTests';
 import PageBreadcrumbs from './breadcrumbs.component';
 import axios from 'axios';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 
 jest.mock('loglevel');
@@ -44,7 +43,6 @@ const DLSRoutes = {
 };
 
 describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
-  let mount;
   let state: StateType;
   let history: History;
 
@@ -65,7 +63,6 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory();
 
     state = JSON.parse(
@@ -108,7 +105,6 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     (axios.get as jest.Mock).mockClear();
   });
 

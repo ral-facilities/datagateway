@@ -2,14 +2,14 @@
 
 exports[`Text filter component renders correctly 1`] = `
 <div>
-  <WithStyles(ForwardRef(Input))
+  <ForwardRef(Input)
     aria-hidden={true}
     color="secondary"
     endAdornment={
-      <WithStyles(ForwardRef(InputAdornment))
+      <ForwardRef(InputAdornment)
         position="end"
       >
-        <WithStyles(ForwardRef(Select))
+        <ForwardRef(Select)
           IconComponent={
             Object {
               "$$typeof": Symbol(react.memo),
@@ -29,21 +29,22 @@ exports[`Text filter component renders correctly 1`] = `
           onChange={[Function]}
           renderValue={[Function]}
           value="include"
+          variant="standard"
         >
-          <WithStyles(ForwardRef(MenuItem))
+          <ForwardRef(MenuItem)
             id="select-filter-type-include"
             value="include"
           >
             Include
-          </WithStyles(ForwardRef(MenuItem))>
-          <WithStyles(ForwardRef(MenuItem))
+          </ForwardRef(MenuItem)>
+          <ForwardRef(MenuItem)
             id="select-filter-type-exclude"
             value="exclude"
           >
             Exclude
-          </WithStyles(ForwardRef(MenuItem))>
-        </WithStyles(ForwardRef(Select))>
-      </WithStyles(ForwardRef(InputAdornment))>
+          </ForwardRef(MenuItem)>
+        </ForwardRef(Select)>
+      </ForwardRef(InputAdornment)>
     }
     fullWidth={true}
     id="test-filter"
@@ -61,14 +62,14 @@ exports[`Text filter component renders correctly 1`] = `
 
 exports[`Text filter component usePrincipalExperimenterFilter hook returns a function which can generate a working PI filter 1`] = `
 <div>
-  <WithStyles(ForwardRef(Input))
+  <ForwardRef(Input)
     aria-hidden={true}
     color="secondary"
     endAdornment={
-      <WithStyles(ForwardRef(InputAdornment))
+      <ForwardRef(InputAdornment)
         position="end"
       >
-        <WithStyles(ForwardRef(Select))
+        <ForwardRef(Select)
           IconComponent={
             Object {
               "$$typeof": Symbol(react.memo),
@@ -88,21 +89,22 @@ exports[`Text filter component usePrincipalExperimenterFilter hook returns a fun
           onChange={[Function]}
           renderValue={[Function]}
           value="include"
+          variant="standard"
         >
-          <WithStyles(ForwardRef(MenuItem))
+          <ForwardRef(MenuItem)
             id="select-filter-type-include"
             value="include"
           >
             Include
-          </WithStyles(ForwardRef(MenuItem))>
-          <WithStyles(ForwardRef(MenuItem))
+          </ForwardRef(MenuItem)>
+          <ForwardRef(MenuItem)
             id="select-filter-type-exclude"
             value="exclude"
           >
             Exclude
-          </WithStyles(ForwardRef(MenuItem))>
-        </WithStyles(ForwardRef(Select))>
-      </WithStyles(ForwardRef(InputAdornment))>
+          </ForwardRef(MenuItem)>
+        </ForwardRef(Select)>
+      </ForwardRef(InputAdornment)>
     }
     fullWidth={true}
     id="Principal Investigator-filter"
@@ -120,14 +122,14 @@ exports[`Text filter component usePrincipalExperimenterFilter hook returns a fun
 
 exports[`Text filter component useTextFilter hook returns a function which can generate a working text filter 1`] = `
 <div>
-  <WithStyles(ForwardRef(Input))
+  <ForwardRef(Input)
     aria-hidden={true}
     color="secondary"
     endAdornment={
-      <WithStyles(ForwardRef(InputAdornment))
+      <ForwardRef(InputAdornment)
         position="end"
       >
-        <WithStyles(ForwardRef(Select))
+        <ForwardRef(Select)
           IconComponent={
             Object {
               "$$typeof": Symbol(react.memo),
@@ -147,21 +149,22 @@ exports[`Text filter component useTextFilter hook returns a function which can g
           onChange={[Function]}
           renderValue={[Function]}
           value="include"
+          variant="standard"
         >
-          <WithStyles(ForwardRef(MenuItem))
+          <ForwardRef(MenuItem)
             id="select-filter-type-include"
             value="include"
           >
             Include
-          </WithStyles(ForwardRef(MenuItem))>
-          <WithStyles(ForwardRef(MenuItem))
+          </ForwardRef(MenuItem)>
+          <ForwardRef(MenuItem)
             id="select-filter-type-exclude"
             value="exclude"
           >
             Exclude
-          </WithStyles(ForwardRef(MenuItem))>
-        </WithStyles(ForwardRef(Select))>
-      </WithStyles(ForwardRef(InputAdornment))>
+          </ForwardRef(MenuItem)>
+        </ForwardRef(Select)>
+      </ForwardRef(InputAdornment)>
     }
     fullWidth={true}
     id="Name-filter"

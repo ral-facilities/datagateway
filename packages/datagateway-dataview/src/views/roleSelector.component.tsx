@@ -1,14 +1,10 @@
 import {
-  createStyles,
   FormControl,
   InputLabel,
-  makeStyles,
   MenuItem,
   Select,
-  StyleRules,
-  Theme,
-  withStyles,
-} from '@material-ui/core';
+  SelectChangeEvent,
+} from '@mui/material';
 import axios, { AxiosError } from 'axios';
 import {
   handleICATError,
@@ -24,22 +20,6 @@ import { useTranslation } from 'react-i18next';
 import { UseQueryResult, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 100,
-    },
-  })
-);
-
-const selectStyles = (): StyleRules =>
-  createStyles({
-    root: { overflow: 'clip' },
-  });
-
-const StyledSelect = withStyles(selectStyles)(Select);
 
 const fetchRoles = (apiUrl: string, username: string): Promise<string[]> => {
   const params = new URLSearchParams();
@@ -82,7 +62,6 @@ export const useRoles = (
 };
 
 const RoleSelector: React.FC = () => {
-  const classes = useStyles();
   const location = useLocation();
   const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
@@ -99,7 +78,7 @@ const RoleSelector: React.FC = () => {
   const { data: roles } = useRoles(username);
   const pushFilter = usePushFilter();
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const handleChange = (event: SelectChangeEvent<string>): void => {
     pushFilter(
       'investigationUsers.role',
       event.target.value
@@ -112,12 +91,18 @@ const RoleSelector: React.FC = () => {
   };
 
   return (
-    <FormControl id="role-selector" className={classes.formControl}>
+    <FormControl
+      id="role-selector"
+      variant="standard"
+      sx={{ margin: 1, minWidth: '100px' }}
+    >
       <InputLabel>{t('my_data_table.role_selector')}</InputLabel>
-      <StyledSelect
-        className="tour-dataview-role-selector"
+      <Select
         value={roles?.includes(role) ? role : ''}
         onChange={handleChange}
+        variant="standard"
+        sx={{ overflow: 'clip' }}
+        className="tour-dataview-role-selector"
       >
         <MenuItem value={''}>
           <em>{t('my_data_table.all_roles')}</em>
@@ -127,7 +112,7 @@ const RoleSelector: React.FC = () => {
             {role.replace('_', ' ').toLowerCase()}
           </MenuItem>
         ))}
-      </StyledSelect>
+      </Select>
     </FormControl>
   );
 };

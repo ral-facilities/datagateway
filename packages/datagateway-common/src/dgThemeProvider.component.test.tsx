@@ -1,22 +1,16 @@
 import React from 'react';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 import DGThemeProvider from './dgThemeProvider.component';
-import { createShallow } from '@material-ui/core/test-utils';
+import { shallow } from 'enzyme';
 import { MicroFrontendId } from './app.types';
 import { SendThemeOptionsType } from './state/actions/actions.types';
 
 describe('DGThemeProvider', () => {
-  let shallow;
-
-  beforeEach(() => {
-    shallow = createShallow();
-  });
-
   it('receives and uses the theme options', () => {
     // Create a basic theme.
-    const theme = createMuiTheme({
+    const theme = createTheme({
       palette: {
-        type: 'dark',
+        mode: 'dark',
       },
     });
 
@@ -42,7 +36,7 @@ describe('DGThemeProvider', () => {
     // update since the theme options are from a global variable.
     wrapper.instance().forceUpdate();
 
-    expect(wrapper.props()).toHaveProperty('theme');
-    expect(wrapper.prop('theme')).toEqual(theme);
+    expect(wrapper.childAt(0).props()).toHaveProperty('theme');
+    expect(wrapper.childAt(0).prop('theme')).toEqual(theme);
   });
 });

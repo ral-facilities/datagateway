@@ -1,14 +1,13 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { useDatasetDetails, useDatasetSize } from '../../api/datasets';
+import { Dataset, DatasetType } from '../../app.types';
 
 jest.mock('../../api/datasets');
 
 describe('Dataset details panel component', () => {
-  let mount;
   let rowData: Dataset;
   let rowDatasetType: DatasetType;
   const detailsPanelResize = jest.fn();
@@ -25,7 +24,6 @@ describe('Dataset details panel component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowDatasetType = {
       id: 2,
       name: 'Test 2',
@@ -51,7 +49,6 @@ describe('Dataset details panel component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 

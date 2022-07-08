@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import { mount } from 'enzyme';
 import DownloadButton, {
   DownloadButtonProps,
 } from './downloadButton.component';
@@ -11,7 +11,7 @@ import { downloadInvestigation } from '../api/investigations';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 
@@ -20,7 +20,6 @@ jest.mock('../api/datasets');
 jest.mock('../api/investigations');
 
 describe('Generic download button', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
 
@@ -38,8 +37,6 @@ describe('Generic download button', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: {}, //Dont need to fill, since not part of the test
@@ -55,7 +52,6 @@ describe('Generic download button', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -85,7 +81,7 @@ describe('Generic download button', () => {
     };
     let wrapper = createWrapper(props);
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadInvestigation).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -99,7 +95,7 @@ describe('Generic download button', () => {
       variant: 'icon',
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadInvestigation).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -116,7 +112,7 @@ describe('Generic download button', () => {
     };
     let wrapper = createWrapper(props);
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDataset).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -130,7 +126,7 @@ describe('Generic download button', () => {
       variant: 'icon',
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDataset).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -147,7 +143,7 @@ describe('Generic download button', () => {
     };
     let wrapper = createWrapper(props);
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -161,7 +157,7 @@ describe('Generic download button', () => {
       variant: 'icon',
     });
 
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).toHaveBeenCalledWith(
       'https://www.example.com/ids',
       1,
@@ -190,7 +186,7 @@ describe('Generic download button', () => {
     let wrapper = createWrapper(props);
 
     expect(wrapper.exists('#tooltip-1'));
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).not.toHaveBeenCalled();
 
     jest.clearAllMocks();
@@ -201,7 +197,7 @@ describe('Generic download button', () => {
     });
 
     expect(wrapper.exists('#tooltip-1'));
-    wrapper.find('#download-btn-1').first().simulate('click');
+    wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).not.toHaveBeenCalled();
   });
 });

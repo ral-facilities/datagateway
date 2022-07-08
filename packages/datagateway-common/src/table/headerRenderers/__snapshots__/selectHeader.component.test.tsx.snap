@@ -1,18 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Select column header component renders correctly when checked 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="head"
 >
-  <WithStyles(ForwardRef(Checkbox))
+  <ForwardRef(Checkbox)
     checked={true}
     checkedIcon={
       <Memo
         fontSize="small"
       />
     }
+    disabled={false}
     icon={
       <Memo
         fontSize="small"
@@ -31,29 +33,31 @@ exports[`Select column header component renders correctly when checked 1`] = `
     }
     onClick={[Function]}
     size="small"
-    style={
+    sx={
       Object {
-        "height": 20,
+        "height": "20px",
         "margin": "auto",
       }
     }
   />
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Select column header component renders correctly when indeterminate 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="head"
 >
-  <WithStyles(ForwardRef(Checkbox))
+  <ForwardRef(Checkbox)
     checked={false}
     checkedIcon={
       <Memo
         fontSize="small"
       />
     }
+    disabled={false}
     icon={
       <Memo
         fontSize="small"
@@ -72,29 +76,31 @@ exports[`Select column header component renders correctly when indeterminate 1`]
     }
     onClick={[Function]}
     size="small"
-    style={
+    sx={
       Object {
-        "height": 20,
+        "height": "20px",
         "margin": "auto",
       }
     }
   />
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Select column header component renders correctly when unchecked 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="head"
 >
-  <WithStyles(ForwardRef(Checkbox))
+  <ForwardRef(Checkbox)
     checked={false}
     checkedIcon={
       <Memo
         fontSize="small"
       />
     }
+    disabled={false}
     icon={
       <Memo
         fontSize="small"
@@ -113,12 +119,12 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
     }
     onClick={[Function]}
     size="small"
-    style={
+    sx={
       Object {
-        "height": 20,
+        "height": "20px",
         "margin": "auto",
       }
     }
   />
-</div>
+</ForwardRef(TableCell)>
 `;

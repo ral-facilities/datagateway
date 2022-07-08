@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import ISISFacilityCyclesTable from './isisFacilityCyclesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import { StateType } from '../../../state/app.types';
@@ -9,13 +8,18 @@ import {
   useFacilityCyclesInfinite,
   dGCommonInitialState,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -29,7 +33,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS FacilityCycles table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: FacilityCycle[];
@@ -49,8 +52,20 @@ describe('ISIS FacilityCycles table component', () => {
     );
   };
 
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISFacilityCyclesTable instrumentId="1" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -82,7 +97,6 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -123,7 +137,7 @@ describe('ISIS FacilityCycles table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by facilitycycles.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -142,6 +156,8 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -160,6 +176,8 @@ describe('ISIS FacilityCycles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -186,12 +204,11 @@ describe('ISIS FacilityCycles table component', () => {
     );
   });
 
-  it('renders facilitycycle name as a link', () => {
-    const wrapper = createWrapper();
+  it('renders facilitycycle name as a link', async () => {
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=1]').find('p').children()
-    ).toMatchSnapshot();
+    const result = await wrapper.findByText('Test 1');
+    expect(result).toMatchSnapshot();
   });
 
   it('renders fine with incomplete data', () => {

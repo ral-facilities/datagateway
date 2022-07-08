@@ -1,21 +1,20 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
-import DatafilesDetailsPanel from './datafileDetailsPanel.component';
+import DatafileDetailsPanel from './datafileDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { useDatafileDetails } from '../../api/datafiles';
+import { Datafile } from '../../app.types';
 
 jest.mock('../../api/datafiles');
 
 describe('Datafile details panel component', () => {
-  let mount;
   let rowData: Datafile;
   const detailsPanelResize = jest.fn();
 
   const createWrapper = (): ReactWrapper => {
     return mount(
       <QueryClientProvider client={new QueryClient()}>
-        <DatafilesDetailsPanel
+        <DatafileDetailsPanel
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
         />
@@ -24,7 +23,6 @@ describe('Datafile details panel component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = {
       id: 1,
       name: 'Test 1',
@@ -40,7 +38,6 @@ describe('Datafile details panel component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -152,7 +149,7 @@ describe('Datafile details panel component', () => {
 
     const wrapper = mount(
       <QueryClientProvider client={new QueryClient()}>
-        <DatafilesDetailsPanel rowData={rowData} />
+        <DatafileDetailsPanel rowData={rowData} />
       </QueryClientProvider>
     );
 

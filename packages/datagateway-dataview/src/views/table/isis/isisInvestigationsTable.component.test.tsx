@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import ISISInvestigationsTable from './isisInvestigationsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -21,10 +20,15 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -44,7 +48,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Investigations table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Investigation[];
@@ -72,8 +75,28 @@ describe('ISIS Investigations table component', () => {
     );
   };
 
+  const createRTLWrapper = (
+    element: React.ReactElement = (
+      <ISISInvestigationsTable
+        studyHierarchy={false}
+        instrumentId="4"
+        instrumentChildId="5"
+      />
+    )
+  ): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            {element}
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -151,7 +174,6 @@ describe('ISIS Investigations table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -211,14 +233,14 @@ describe('ISIS Investigations table component', () => {
     const wrapper = createWrapper();
     expect(
       wrapper
-        .find('[data-testid="isis-investigation-table-doi-link"]')
+        .find('[data-testid="isis-investigations-table-doi-link"]')
         .first()
         .text()
     ).toEqual('study pid');
 
     expect(
       wrapper
-        .find('[data-testid="isis-investigation-table-doi-link"]')
+        .find('[data-testid="isis-investigations-table-doi-link"]')
         .first()
         .prop('href')
     ).toEqual('https://doi.org/study pid');
@@ -229,7 +251,7 @@ describe('ISIS Investigations table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by investigations.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -248,6 +270,8 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -268,6 +292,8 @@ describe('ISIS Investigations table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -302,7 +328,7 @@ describe('ISIS Investigations table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -328,7 +354,7 @@ describe('ISIS Investigations table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -376,7 +402,7 @@ describe('ISIS Investigations table component', () => {
   it('displays details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
   });
@@ -393,55 +419,41 @@ describe('ISIS Investigations table component', () => {
 
     detailsPanelWrapper
       .find('#investigation-datasets-tab')
-      .first()
+      .last()
       .simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
     );
   });
 
-  it('renders title, name and DOI as links', () => {
-    const wrapper = createWrapper();
+  it('renders title and DOI as links', () => {
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('isis-investigations-table-title')
     ).toMatchSnapshot();
 
     expect(
-      wrapper.find('[aria-colindex=4]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=5]').find('p').children()
+      wrapper.getAllByTestId('isis-investigations-table-doi-link')
     ).toMatchSnapshot();
   });
 
-  it('renders title, name and DOI as links in StudyHierarchy', () => {
-    const store = mockStore(state);
-    const wrapper = mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ISISInvestigationsTable
-              studyHierarchy={true}
-              instrumentId="4"
-              instrumentChildId="5"
-            />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
+  it('renders title and DOI as links in StudyHierarchy', () => {
+    const element: React.ReactElement = (
+      <ISISInvestigationsTable
+        studyHierarchy={true}
+        instrumentId="4"
+        instrumentChildId="5"
+      />
     );
+    const wrapper = createRTLWrapper(element);
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('isis-investigations-table-title')
     ).toMatchSnapshot();
 
     expect(
-      wrapper.find('[aria-colindex=4]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=5]').find('p').children()
+      wrapper.getAllByTestId('isis-investigations-table-doi-link')
     ).toMatchSnapshot();
   });
 

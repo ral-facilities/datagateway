@@ -1,5 +1,4 @@
-import { Link, ListItemText } from '@material-ui/core';
-import { createMount } from '@material-ui/core/test-utils';
+import { ListItemText } from '@mui/material';
 import {
   AdvancedFilter,
   dGCommonInitialState,
@@ -11,10 +10,10 @@ import {
   DownloadButton,
   ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
@@ -22,6 +21,10 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -36,7 +39,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Investigations - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: Investigation[];
@@ -61,7 +63,6 @@ describe('ISIS Investigations - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
@@ -111,7 +112,6 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -141,7 +141,7 @@ describe('ISIS Investigations - Card View', () => {
   it('correct link used when NOT in studyHierarchy', () => {
     const wrapper = createWrapper();
     expect(
-      wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
+      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
     ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1');
   });
 
@@ -149,7 +149,7 @@ describe('ISIS Investigations - Card View', () => {
     const wrapper = createWrapper(true);
 
     expect(
-      wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
+      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
     ).toEqual('/browseStudyHierarchy/instrument/1/study/1/investigation/1');
   });
 
@@ -157,7 +157,7 @@ describe('ISIS Investigations - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -178,10 +178,12 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').first().simulate('click');
     advancedFilter
       .find('input')
       .last()
@@ -197,6 +199,8 @@ describe('ISIS Investigations - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('displays DOI and renders the expected Link ', () => {
@@ -243,7 +247,7 @@ describe('ISIS Investigations - Card View', () => {
 
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('investigations.title');
-    button.simulate('click');
+    button.find('div').simulate('click');
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
@@ -264,12 +268,12 @@ describe('ISIS Investigations - Card View', () => {
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
 
-    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    wrapper.find('#investigation-datasets-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/1/facilityCycle/1/investigation/1/dataset'
     );

@@ -1,17 +1,16 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
-import { ReactWrapper } from 'enzyme';
+import { MemoryRouter } from 'react-router-dom';
+import { mount, ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import ViewButton, { ViewProps } from './viewButton.component';
+import { render, RenderResult } from '@testing-library/react';
 
 describe('Generic view button', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let props: ViewProps;
@@ -31,9 +30,20 @@ describe('Generic view button', () => {
     );
   };
 
-  beforeEach(() => {
-    mount = createMount();
+  const createRTLWrapper = (props: ViewProps): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ViewButton {...props} />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
 
+  beforeEach(() => {
     props = {
       viewCards: true,
       handleButtonChange: handleButtonChange,
@@ -55,14 +65,13 @@ describe('Generic view button', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
     handleButtonChange.mockClear();
   });
 
   it('renders correctly', () => {
-    const wrapper = createWrapper(props);
-    expect(wrapper).toMatchSnapshot();
+    const wrapper = createRTLWrapper(props);
+    expect(wrapper.asFragment()).toMatchSnapshot();
   });
 
   it('calls the handle button change when the view button is clicked', () => {
@@ -70,7 +79,7 @@ describe('Generic view button', () => {
 
     wrapper
       .find('[aria-label="page view app.view_table"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(handleButtonChange).toHaveBeenCalledTimes(1);
@@ -83,7 +92,7 @@ describe('Generic view button', () => {
 
     wrapper
       .find('[aria-label="page view app.view_table"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(handleButtonChange).toHaveBeenCalledTimes(2);
@@ -93,7 +102,7 @@ describe('Generic view button', () => {
     ).toBeTruthy();
   });
 
-  it(' is disabled when prop disabled is equal to true', () => {
+  it('is disabled when prop disabled is equal to true', () => {
     props = {
       viewCards: true,
       handleButtonChange: handleButtonChange,

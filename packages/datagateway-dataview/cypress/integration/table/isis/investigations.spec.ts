@@ -1,7 +1,12 @@
 describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
+    cy.intercept('**/investigations/count*').as('getInvestigationsCount');
+    cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/16/investigation');
+    cy.visit('/browse/instrument/1/facilityCycle/16/investigation').wait(
+      ['@getInvestigationsCount', '@getInvestigationsOrder'],
+      { timeout: 10000 }
+    );
     // Check that we have received the size from the API as this will produce
     // a re-render which can prevent some interactions.
     cy.contains('[aria-rowindex="2"] [aria-colindex="6"]', '10.96 GB').should(
@@ -27,14 +32,14 @@ describe('ISIS - Investigations Table', () => {
   });
 
   it('should have the correct url for the DOI link', () => {
-    cy.get('[data-testid="isis-investigation-table-doi-link"]')
+    cy.get('[data-testid="isis-investigations-table-doi-link"]')
       .first()
       .then(($doi) => {
         const doi = $doi.text();
 
         const url = `https://doi.org/${doi}`;
 
-        cy.get('[data-testid="isis-investigation-table-doi-link"]')
+        cy.get('[data-testid="isis-investigations-table-doi-link"]')
           .first()
           .should('have.attr', 'href', url);
       });
@@ -47,7 +52,7 @@ describe('ISIS - Investigations Table', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -56,9 +61,8 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[data-testid="isis-investigations-table-title"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   // Not enough investigations to test scrolling.
@@ -206,14 +210,12 @@ describe('ISIS - Investigations Table', () => {
     it('date between', () => {
       cy.get('input[id="Start Date filter from"]').type('2006-08-05');
 
-      cy.get('button[aria-label="Start Date filter to, date picker"]')
+      cy.get('input[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-
-      cy.contains('OK').click();
+      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
 
       const date = new Date();
       date.setDate(1);

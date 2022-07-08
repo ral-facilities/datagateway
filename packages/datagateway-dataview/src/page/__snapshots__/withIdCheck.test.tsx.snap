@@ -1,155 +1,132 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`withIdCheck renders component when checkingPromise resolves to be true 1`] = `
-<Test
-  message="test"
-/>
+<DocumentFragment>
+  <div>
+    test
+  </div>
+</DocumentFragment>
 `;
 
 exports[`withIdCheck renders error when checkingPromise does not resolve to be true 1`] = `
-<WithStyles(ForwardRef(Grid))
-  className="WithIdCheckComponent-container-13"
-  container={true}
-  direction="column"
-  item={true}
-  justify="center"
->
-  <WithStyles(ForwardRef(Grid))
-    alignItems="center"
-    container={true}
-    item={true}
-    justify="center"
+<DocumentFragment>
+  <div
+    class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-1ee6rd7-MuiGrid-root"
   >
-    <Memo(ForwardRef(BugReportIcon))
-      className="WithIdCheckComponent-bugIcon-14"
-    />
-    <WithStyles(ForwardRef(Typography))
-      className="WithIdCheckComponent-titleText-15"
-      variant="h1"
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item css-capmjd-MuiGrid-root"
     >
-      loading.oops
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    container={true}
-    item={true}
-    justify="center"
-  >
-    <WithStyles(ForwardRef(Typography))
-      className="WithIdCheckComponent-message-16"
-      variant="body1"
-    >
-      <Trans
-        i18nKey="loading.message"
-        t={[Function]}
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1xu1gwa-MuiSvgIcon-root"
+        data-testid="BugReportIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
       >
-        We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or
-         
-        <WithStyles(ForwardRef(Link))
-          component={
-            Object {
-              "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
-              "propTypes": Object {
-                "innerRef": [Function],
-                "onClick": [Function],
-                "replace": [Function],
-                "target": [Function],
-                "to": [Function],
-              },
-              "render": [Function],
-            }
-          }
-          to="/browse/investigation"
+        <path
+          d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5c-.49 0-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"
+        />
+      </svg>
+      <h1
+        class="MuiTypography-root MuiTypography-h1 css-e362x6-MuiTypography-root"
+      >
+        loading.oops
+      </h1>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item css-1h16bbz-MuiGrid-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-10k3s6n-MuiTypography-root"
+      >
+        We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or 
+        <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+          href="/browse/investigation"
         >
           go back to the top level
-        </WithStyles(ForwardRef(Link))>
+        </a>
         .
-      </Trans>
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-</WithStyles(ForwardRef(Grid))>
+      </p>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`withIdCheck renders error when checkingPromise is rejected 1`] = `
-<WithStyles(ForwardRef(Grid))
-  className="WithIdCheckComponent-container-9"
-  container={true}
-  direction="column"
-  item={true}
-  justify="center"
->
-  <WithStyles(ForwardRef(Grid))
-    alignItems="center"
-    container={true}
-    item={true}
-    justify="center"
+<DocumentFragment>
+  <div
+    class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-1ee6rd7-MuiGrid-root"
   >
-    <Memo(ForwardRef(BugReportIcon))
-      className="WithIdCheckComponent-bugIcon-10"
-    />
-    <WithStyles(ForwardRef(Typography))
-      className="WithIdCheckComponent-titleText-11"
-      variant="h1"
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item css-capmjd-MuiGrid-root"
     >
-      loading.oops
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    container={true}
-    item={true}
-    justify="center"
-  >
-    <WithStyles(ForwardRef(Typography))
-      className="WithIdCheckComponent-message-12"
-      variant="body1"
-    >
-      <Trans
-        i18nKey="loading.message"
-        t={[Function]}
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1xu1gwa-MuiSvgIcon-root"
+        data-testid="BugReportIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
       >
-        We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or
-         
-        <WithStyles(ForwardRef(Link))
-          component={
-            Object {
-              "$$typeof": Symbol(react.forward_ref),
-              "displayName": "Link",
-              "propTypes": Object {
-                "innerRef": [Function],
-                "onClick": [Function],
-                "replace": [Function],
-                "target": [Function],
-                "to": [Function],
-              },
-              "render": [Function],
-            }
-          }
-          to="/browse/investigation"
+        <path
+          d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5c-.49 0-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"
+        />
+      </svg>
+      <h1
+        class="MuiTypography-root MuiTypography-h1 css-e362x6-MuiTypography-root"
+      >
+        loading.oops
+      </h1>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item css-1h16bbz-MuiGrid-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-10k3s6n-MuiTypography-root"
+      >
+        We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or 
+        <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+          href="/browse/investigation"
         >
           go back to the top level
-        </WithStyles(ForwardRef(Link))>
+        </a>
         .
-      </Trans>
-    </WithStyles(ForwardRef(Typography))>
-  </WithStyles(ForwardRef(Grid))>
-</WithStyles(ForwardRef(Grid))>
+      </p>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`withIdCheck renders loading indicator when loading 1`] = `
-<WithStyles(ForwardRef(Grid))
-  alignItems="center"
-  className="WithIdCheckComponent-container-1"
-  container={true}
-  direction="column"
-  item={true}
-  justify="center"
->
-  <WithStyles(ForwardRef(CircularProgress)) />
-  <WithStyles(ForwardRef(Typography))
-    variant="body1"
+<DocumentFragment>
+  <div
+    class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-12b27yk-MuiGrid-root"
   >
-    loading.verifying
-  </WithStyles(ForwardRef(Typography))>
-</WithStyles(ForwardRef(Grid))>
+    <span
+      class="MuiCircularProgress-root MuiCircularProgress-indeterminate MuiCircularProgress-colorPrimary css-18lrjg1-MuiCircularProgress-root"
+      role="progressbar"
+      style="width: 40px; height: 40px;"
+    >
+      <svg
+        class="MuiCircularProgress-svg css-1idz92c-MuiCircularProgress-svg"
+        viewBox="22 22 44 44"
+      >
+        <circle
+          class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate css-176wh8e-MuiCircularProgress-circle"
+          cx="44"
+          cy="44"
+          fill="none"
+          r="20.2"
+          stroke-width="3.6"
+        />
+      </svg>
+    </span>
+    <p
+      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    >
+      loading.verifying
+    </p>
+  </div>
+</DocumentFragment>
 `;

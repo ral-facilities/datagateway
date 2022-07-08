@@ -1,21 +1,26 @@
-import { createMount } from '@material-ui/core/test-utils';
+import { render, RenderResult } from '@testing-library/react';
 import {
   dGCommonInitialState,
+  DLSVisitDetailsPanel,
   Investigation,
   readSciGatewayToken,
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsInfinite,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import React from 'react';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { AnyAction } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSMyDataTable from './dlsMyDataTable.component';
@@ -34,7 +39,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS MyData table component', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
@@ -54,8 +58,20 @@ describe('DLS MyData table component', () => {
     );
   };
 
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSMyDataTable />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     events = [];
     history = createMemoryHistory();
 
@@ -108,7 +124,6 @@ describe('DLS MyData table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -185,7 +200,7 @@ describe('DLS MyData table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by investigations.visit_id"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -202,6 +217,8 @@ describe('DLS MyData table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -218,6 +235,8 @@ describe('DLS MyData table component', () => {
     filterInput.simulate('change');
 
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -234,14 +253,12 @@ describe('DLS MyData table component', () => {
   });
 
   it('renders title and visit ID as a links', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
+
+    expect(wrapper.getAllByTestId('dls-mydata-table-name')).toMatchSnapshot();
 
     expect(
-      wrapper.find('[aria-colindex=2]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('dls-mydata-table-visitId')
     ).toMatchSnapshot();
   });
 
@@ -275,5 +292,13 @@ describe('DLS MyData table component', () => {
     wrapper = createWrapper();
 
     expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
+  });
+
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+
+    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 });

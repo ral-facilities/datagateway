@@ -140,30 +140,10 @@ describe('Download Status', () => {
       cy.get('input[id="Requested Date filter from"]').type('2020-01-31 00:00');
 
       const date = new Date();
-      const month = date.toLocaleString('default', { month: 'long' });
-      const year = date.getFullYear();
-
-      cy.get('input[id="Requested Date filter to"]')
-        .parent()
-        .find('button')
-        .click();
-
-      cy.contains(`${month} ${year}`)
-        .parent()
-        .parent()
-        .find('button')
-        .first()
-        .click();
-
-      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-
-      cy.contains('OK').click();
-
-      date.setDate(1);
-      date.setMonth(date.getMonth() - 1);
-
-      cy.get('input[id="Requested Date filter to"]').should(
-        'have.value',
+      // MUIv5 datetime pickers don't allow for time to be graphically selected
+      // This is because the relevant elements are <span> elements with pointer-events: none
+      // Therefore, we settle for typing the date and time instead
+      cy.get('input[id="Requested Date filter to"]').type(
         format(date, 'yyyy-MM-dd HH:mm')
       );
 

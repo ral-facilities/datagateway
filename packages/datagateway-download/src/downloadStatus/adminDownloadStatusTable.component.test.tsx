@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { mount, ReactWrapper, shallow } from 'enzyme';
 import { Download } from 'datagateway-common';
 import {
   adminDownloadDeleted,
@@ -8,14 +8,21 @@ import {
 } from '../downloadApi';
 import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
 import { act } from 'react-dom/test-utils';
-import { flushPromises } from '../setupTests';
-import { Select } from '@material-ui/core';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+  flushPromises,
+} from '../setupTests';
+import { Select } from '@mui/material';
 
 jest.mock('../downloadApi');
 
 describe('Admin Download Status Table', () => {
-  let shallow;
-  let mount;
+  let holder;
+
+  const createWrapper = (): ReactWrapper => {
+    return mount(<AdminDownloadStatusTable />, { attachTo: holder });
+  };
 
   const downloadItems: Download[] = [
     {
@@ -111,8 +118,11 @@ describe('Admin Download Status Table', () => {
   ];
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-    mount = createMount();
+    //https://stackoverflow.com/questions/43694975/jest-enzyme-using-mount-document-getelementbyid-returns-null-on-componen
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-download');
+    document.body.appendChild(holder);
+
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
         settings: { facilityName: string; downloadApiUrl: string },
@@ -134,7 +144,6 @@ describe('Admin Download Status Table', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     (fetchAdminDownloads as jest.Mock).mockClear();
     (adminDownloadDeleted as jest.Mock).mockClear();
     (adminDownloadStatus as jest.Mock).mockClear();
@@ -149,11 +158,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('fetches the download items and sorts by download requested time desc on load ', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -170,11 +175,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('fetches more download items when loadMoreRows is called', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -200,11 +201,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('translates the status strings correctly', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -229,11 +226,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('re-fetches the download items when the refresh button is clicked', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -260,11 +253,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends sort request on sort', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -336,11 +325,7 @@ describe('Admin Download Status Table', () => {
   }, 10000);
 
   it('sends filter request on text filter', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -361,7 +346,7 @@ describe('Admin Download Status Table', () => {
     // Get the Username filter input
     const usernameFilterInput = wrapper
       .find('[aria-label="Filter by downloadStatus.username"]')
-      .first();
+      .last();
     await act(async () => {
       usernameFilterInput.instance().value = 'test user';
       usernameFilterInput.simulate('change');
@@ -379,7 +364,7 @@ describe('Admin Download Status Table', () => {
     // Get the Availability filter input
     const availabilityFilterInput = wrapper
       .find('[aria-label="Filter by downloadStatus.status"]')
-      .first();
+      .last();
     await act(async () => {
       availabilityFilterInput.instance().value = 'downloadStatus.complete';
       availabilityFilterInput.simulate('change');
@@ -421,11 +406,9 @@ describe('Admin Download Status Table', () => {
   }, 10000);
 
   it('sends filter request on date filter', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    applyDatePickerWorkaround();
+
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -488,14 +471,12 @@ describe('Admin Download Status Table', () => {
       { downloadApiUrl: '', facilityName: '' },
       "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
     );
+
+    cleanupDatePickerWorkaround();
   }, 10000);
 
   it('sends restore item and item status requests when restore button is clicked', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -534,11 +515,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends pause restore request when pause button is clicked', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -567,11 +544,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends resume restore request when resume button is clicked', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
@@ -600,11 +573,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends delete item request when delete button is clicked', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       await flushPromises();
