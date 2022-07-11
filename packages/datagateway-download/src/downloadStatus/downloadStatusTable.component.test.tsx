@@ -7,34 +7,48 @@ import {
   flushPromises,
 } from '../setupTests';
 import { act } from 'react-dom/test-utils';
-import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
-import { Download } from 'datagateway-common';
+import { downloadDeleted, fetchDownloads, getDataUrl } from '../downloadApi';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { useDeleteDownload, useDownloads } from '../downloadApiHooks';
 
 jest.mock('../downloadApi');
+jest.mock('../downloadApiHooks');
+
+const createTestQueryClient = (): QueryClient =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
 
 const RefreshHOC: React.FC<{ refresh: boolean }> = (props: {
   refresh: boolean;
 }): React.ReactElement => {
   const [refreshTable, setRefreshTable] = React.useState(false);
+  const testQueryClient = createTestQueryClient();
 
   React.useEffect(() => {
     setRefreshTable(props.refresh);
   }, [props.refresh]);
 
   return (
-    <div id="datagateway-download">
-      <DownloadStatusTable
-        refreshTable={refreshTable}
-        setRefreshTable={setRefreshTable}
-        setLastChecked={jest.fn()}
-      />
-    </div>
+    <QueryClientProvider client={testQueryClient}>
+      <div id="datagateway-download">
+        <DownloadStatusTable
+          refreshTable={refreshTable}
+          setRefreshTable={setRefreshTable}
+          setLastChecked={jest.fn()}
+        />
+      </div>
+    </QueryClientProvider>
   );
 };
 
 describe('Download Status Table', () => {
   let holder;
-  const downloadItems: Download[] = [
+  const downloadItems: FormattedDownload[] = [
     {
       createdAt: '2020-02-25T15:05:29Z',
       downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
@@ -49,7 +63,7 @@ describe('Download Status Table', () => {
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 1000,
-      status: 'COMPLETE',
+      status: 'downloadStatus.complete',
       transport: 'https',
       userName: 'test user',
     },
@@ -67,7 +81,7 @@ describe('Download Status Table', () => {
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 2000,
-      status: 'PREPARING',
+      status: 'downloadStatus.preparing',
       transport: 'globus',
       userName: 'test user',
     },
@@ -85,7 +99,7 @@ describe('Download Status Table', () => {
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 3000,
-      status: 'RESTORING',
+      status: 'downloadStatus.restoring',
       transport: 'https',
       userName: 'test user',
     },
@@ -103,7 +117,7 @@ describe('Download Status Table', () => {
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 4000,
-      status: 'EXPIRED',
+      status: 'downloadStatus.expired',
       transport: 'globus',
       userName: 'test user',
     },
@@ -121,7 +135,7 @@ describe('Download Status Table', () => {
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 5000,
-      status: 'PAUSED',
+      status: 'downloadStatus.paused',
       transport: 'globus',
       userName: 'test user',
     },
@@ -144,6 +158,16 @@ describe('Download Status Table', () => {
     holder.setAttribute('id', 'datagateway-download');
     document.body.appendChild(holder);
 
+    (useDownloads as jest.Mock).mockReturnValue({
+      data: downloadItems,
+      isLoading: false,
+      isFetched: true,
+      refetch: jest.fn(),
+    });
+    (useDeleteDownload as jest.Mock).mockReturnValue({
+      isLoading: false,
+      mutate: jest.fn(),
+    });
     (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
     (fetchDownloads as jest.Mock).mockImplementation(() =>
       Promise.resolve(downloadItems)
@@ -156,6 +180,12 @@ describe('Download Status Table', () => {
   });
 
   it('renders correctly', () => {
+    (useDownloads as jest.Mock).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isFetched: false,
+      refetch: jest.fn(),
+    });
     const wrapper = shallow(
       <DownloadStatusTable
         refreshTable={false}
@@ -168,11 +198,6 @@ describe('Download Status Table', () => {
 
   it('translates the status strings correctly', async () => {
     const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
 
     expect(
       wrapper.find('[aria-rowindex=1]').find('[aria-colindex=3]').text()
@@ -191,26 +216,18 @@ describe('Download Status Table', () => {
     ).toEqual('downloadStatus.complete');
   });
 
-  it('fetches the download items on load', async () => {
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+  it('refreshes the tables when the refresh button has been clicked', async () => {
+    const mockRefetch = jest.fn().mockImplementation(() => Promise.resolve());
+    (useDownloads as jest.Mock).mockReturnValue({
+      data: downloadItems,
+      isLoading: false,
+      isFetched: true,
+      refetch: mockRefetch,
     });
 
-    expect(fetchDownloads).toHaveBeenCalled();
-  });
-
-  it('refreshes the tables when the refresh button has been clicked', async () => {
     // Use our RefreshHOC and only modify the refresh prop
     // we pass on to the DownloadStatusTable.
     const wrapper = mount(<RefreshHOC refresh={false} />);
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
 
     // Set the refresh prop to false.
     expect(wrapper.prop('refresh')).toBe(false);
@@ -225,17 +242,20 @@ describe('Download Status Table', () => {
 
     expect(wrapper.prop('refresh')).toBe(true);
 
-    // Expect the downloads to have been fetched twice (on load and on refresh).
-    expect(fetchDownloads).toHaveBeenCalledTimes(2);
-  });
+    // Expect the downloads to have been fetched
+    expect(mockRefetch).toHaveBeenCalledTimes(1);
 
-  it('should have a link for a download item', async () => {
-    const wrapper = createWrapper();
-
+    // should set refresh to false after refetching
     await act(async () => {
       await flushPromises();
       wrapper.update();
     });
+
+    expect(wrapper.find(DownloadStatusTable).prop('refreshTable')).toBe(false);
+  });
+
+  it('should have a link for a download item', async () => {
+    const wrapper = createWrapper();
 
     // Expect globus download items to have been disabled.
     expect(
@@ -266,27 +286,34 @@ describe('Download Status Table', () => {
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    const mockMutate = jest.fn();
+    (useDeleteDownload as jest.Mock).mockReturnValue({
+      isLoading: false,
+      mutate: mockMutate,
     });
+
+    const wrapper = createWrapper();
 
     wrapper
       .find('button[aria-label="downloadStatus.remove {filename:test-file-1}"]')
       .simulate('click');
 
-    await act(async () => {
-      await flushPromises();
+    expect(mockMutate).toHaveBeenCalled();
+    expect(mockMutate).toHaveBeenCalledWith(1);
+
+    // pretend mutation is complete
+    // remove the deleted item from downloadItems
+    (useDownloads as jest.Mock).mockReturnValue({
+      data: downloadItems.filter(({ id }) => id !== 1),
+      isLoading: false,
+      isFetched: true,
+      refetch: jest.fn(),
+    });
+    await act(() => {
+      // https://github.com/enzymejs/enzyme/issues/2169
       wrapper.update();
     });
 
-    expect(downloadDeleted).toHaveBeenCalled();
-    expect(downloadDeleted).toHaveBeenCalledWith(1, true, {
-      downloadApiUrl: '',
-      facilityName: '',
-    });
     expect(
       wrapper.exists(
         '[aria-label="downloadStatus.remove {filename:test-file-1}"]'

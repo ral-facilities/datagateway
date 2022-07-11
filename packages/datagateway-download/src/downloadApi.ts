@@ -1,13 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
 import * as log from 'loglevel';
 import {
-  SubmitCart,
   Datafile,
   Download,
-  readSciGatewayToken,
-  handleICATError,
   DownloadCart,
   DownloadCartItem,
+  handleICATError,
+  readSciGatewayToken,
+  SubmitCart,
 } from 'datagateway-common';
 
 export const removeAllDownloadCartItems: (settings: {
@@ -110,11 +110,19 @@ export const submitCart: (
     });
 };
 
+/**
+ * Settings for {@link fetchDownloads}
+ */
+export interface FetchDownloadsSettings {
+  facilityName: string;
+  downloadApiUrl: string;
+}
+
 export const fetchDownloads: (
-  settings: { facilityName: string; downloadApiUrl: string },
+  settings: FetchDownloadsSettings,
   queryOffset?: string
 ) => Promise<Download[]> = (
-  settings: { facilityName: string; downloadApiUrl: string },
+  settings: FetchDownloadsSettings,
   queryOffset?: string
 ) => {
   return axios
@@ -129,10 +137,6 @@ export const fetchDownloads: (
     })
     .then((response) => {
       return response.data;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return [];
     });
 };
 
@@ -265,17 +269,10 @@ export const downloadDeleted: (
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('value', JSON.stringify(deleted));
 
-  return axios
-    .put(
-      `${settings.downloadApiUrl}/user/download/${downloadId}/isDeleted`,
-      params
-    )
-    .then(() => {
-      // do nothing
-    })
-    .catch((error) => {
-      handleICATError(error);
-    });
+  return axios.put(
+    `${settings.downloadApiUrl}/user/download/${downloadId}/isDeleted`,
+    params
+  );
 };
 
 export const adminDownloadDeleted: (

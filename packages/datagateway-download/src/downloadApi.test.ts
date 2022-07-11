@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { handleICATError } from 'datagateway-common';
 import {
-  downloadDeleted,
-  downloadPreparedCart,
-  fetchDownloads,
-  getDownload,
-  submitCart,
-  getDataUrl,
-  fetchAdminDownloads,
   adminDownloadDeleted,
   adminDownloadStatus,
+  downloadDeleted,
+  downloadPreparedCart,
+  fetchAdminDownloads,
+  fetchDownloads,
+  getDataUrl,
+  getDownload,
+  submitCart,
 } from './downloadApi';
 
 jest.mock('datagateway-common', () => {
@@ -55,7 +55,7 @@ describe('Download Cart API functions test', () => {
         return Promise.resolve({
           data: {
             facilityName: mockedSettings.facilityName,
-            userName: 'test user',
+            rName: 'test user',
             cartItems: [],
             downloadId: 1,
           },
@@ -312,36 +312,6 @@ describe('Download Status API functions test', () => {
         }
       );
     });
-
-    it('returns empty array and logs error upon unsuccessful response', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      const returnData = await fetchDownloads({
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(returnData).toEqual([]);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/downloads`,
-        {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            queryOffset: 'where download.isDeleted = false',
-          },
-        }
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
-    });
   });
 
   describe('downloadDeleted', () => {
@@ -363,34 +333,6 @@ describe('Download Status API functions test', () => {
         `${mockedSettings.downloadApiUrl}/user/download/1/isDeleted`,
         params
       );
-    });
-
-    it('logs an error upon unsuccessful response', async () => {
-      axios.put = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      await downloadDeleted(1, true, {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      const params = new URLSearchParams();
-      params.append('facilityName', mockedSettings.facilityName);
-      params.append('sessionId', '');
-      params.append('value', 'true');
-
-      expect(axios.put).toHaveBeenCalled();
-      expect(axios.put).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/download/1/isDeleted`,
-        params
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
     });
   });
 
