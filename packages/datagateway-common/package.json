@@ -32,7 +32,7 @@
     "redux-thunk": "^2.4.1",
     "resize-observer-polyfill": "^1.5.1",
     "tslib": "^2.3.0",
-    "typescript": "4.5.3",
+    "typescript": "4.7.4",
     "use-deep-compare-effect": "^1.8.1"
   },
   "peerDependencies": {
