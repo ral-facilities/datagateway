@@ -1,6 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
-  ]
+    "config:base",
+    "schedule:nonOfficeHours"
+  ],
+  "labels": ["dependencies"],
+  "separateMinorPatch": true,
+  "patch": {
+    "enabled": false
+  }
 }
