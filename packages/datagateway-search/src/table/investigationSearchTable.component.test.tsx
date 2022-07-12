@@ -193,7 +193,6 @@ describe('Investigation Search Table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
