@@ -36,7 +36,7 @@ describe('DLS - Proposals Table', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -45,9 +45,8 @@ describe('DLS - Proposals Table', () => {
     cy.get('[data-testid="dls-proposals-table-title"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   it('should be able to resize a column', () => {
@@ -113,6 +112,7 @@ describe('DLS - Proposals Table', () => {
     beforeEach(() => {
       cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
     });
+
     it('text', () => {
       cy.get('[aria-label="Filter by Title"]').first().type('dog');
 

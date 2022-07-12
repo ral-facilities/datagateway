@@ -1,7 +1,7 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import SubjectIcon from '@mui/icons-material/Subject';
+import SaveIcon from '@mui/icons-material/Save';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import {
   Table,
   tableLink,
@@ -25,7 +25,7 @@ import {
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useHistory } from 'react-router';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 

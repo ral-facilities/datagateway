@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
@@ -22,13 +21,16 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 import InvestigationSearchTable from './investigationSearchTable.component';
+import { render, RenderResult } from '@testing-library/react';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -51,7 +53,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Investigation Search Table component', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
@@ -70,8 +71,19 @@ describe('Investigation Search Table component', () => {
     );
   };
 
+  const createRTLWrapper = (hierarchy?: string): RenderResult => {
+    return render(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <InvestigationSearchTable hierarchy={hierarchy ?? ''} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory();
 
     state = JSON.parse(
@@ -288,7 +300,7 @@ describe('Investigation Search Table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by investigations.title"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -307,6 +319,8 @@ describe('Investigation Search Table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -325,6 +339,8 @@ describe('Investigation Search Table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -349,7 +365,7 @@ describe('Investigation Search Table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -376,7 +392,7 @@ describe('Investigation Search Table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -433,7 +449,7 @@ describe('Investigation Search Table component', () => {
   it('displays generic details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
   });
@@ -441,7 +457,7 @@ describe('Investigation Search Table component', () => {
   it('displays correct details panel for ISIS when expanded', () => {
     const wrapper = createWrapper('isis');
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
   });
 
@@ -459,10 +475,10 @@ describe('Investigation Search Table component', () => {
 
     const wrapper = createWrapper('isis');
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
 
-    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    wrapper.find('#investigation-datasets-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/3/facilityCycle/4/investigation/1/dataset'
     );
@@ -471,28 +487,19 @@ describe('Investigation Search Table component', () => {
   it('displays correct details panel for DLS when expanded', () => {
     const wrapper = createWrapper('dls');
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders title, visit ID, Name and DOI as links', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    //Title and name
+    expect(wrapper.getAllByText('Test 1')).toMatchSnapshot();
 
-    expect(
-      wrapper.find('[aria-colindex=4]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getAllByText('1')).toMatchSnapshot();
 
-    expect(
-      wrapper.find('[aria-colindex=5]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('doi 1')).toMatchSnapshot();
   });
 
   it('renders fine with incomplete data', () => {

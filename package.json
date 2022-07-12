@@ -1,17 +1,19 @@
 {
   "name": "datagateway",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.1.0",
   "workspaces": [
     "packages/*"
   ],
+  "dependencies": {
+    "husky": "7.0.4",
+    "lerna": "4.0.0"
+  },
   "devDependencies": {
-    "husky": "^7.0.4",
-    "lerna": "^4.0.0",
-    "lerna-update-wizard": "^1.1.0"
+    "lerna-update-wizard": "1.1.0"
   },
   "scripts": {
-    "prepare": "lerna run prepare",
+    "build": "lerna run build --ignore datagateway-common",
     "lint": "lerna run lint:js -- --max-warnings=0",
     "tsc": "lerna run tsc",
     "test": "yarn test:unit && yarn test:e2e",
@@ -23,5 +25,5 @@
     "datagateway-search": "cd packages/datagateway-search && yarn start",
     "postinstall": "husky install"
   },
-  "dependencies": {}
+  "packageManager": "yarn@3.2.0"
 }

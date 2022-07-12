@@ -1,23 +1,17 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
 import {
+  AppBar,
   Badge,
+  badgeClasses,
+  Box,
   Paper,
-  Theme,
-  createStyles,
-  withStyles,
-  LinearProgress,
-} from '@material-ui/core';
-
-import { StyleRules } from '@material-ui/core/styles';
-import { StateType } from './state/app.types';
-import { connect } from 'react-redux';
-import DatafileSearchTable from './table/datafileSearchTable.component';
-import { useTranslation } from 'react-i18next';
+  styled,
+  Tab,
+  Tabs,
+  tabsClasses,
+} from '@mui/material';
 import {
+  CartProps,
   parseSearchToQuery,
   useDatafileCount,
   useDatasetCount,
@@ -25,77 +19,23 @@ import {
   useLuceneSearch,
   useUpdateQueryParam,
   ViewCartButton,
-  CartProps,
+  ViewsType,
 } from 'datagateway-common';
-import InvestigationCardView from './card/investigationSearchCardView.component';
-import DatasetCardView from './card/datasetSearchCardView.component';
-import { useLocation } from 'react-router-dom';
-import { useIsFetching } from 'react-query';
 import {
   getFilters,
-  getPage,
-  getResults,
   getSorts,
   storeFilters,
-  storePage,
-  storeResults,
   storeSort,
 } from './searchPageContainer.component';
-
-const badgeStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    badge: {
-      backgroundColor: '#CCCCCC',
-      //Increase contrast on high contrast modes by using black text
-      color:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).colours?.type === 'contrast' ? '#000000' : '#333333',
-      fontSize: '14px',
-      fontWeight: 'bold',
-      lineHeight: 'inherit',
-      top: '1em',
-    },
-  });
-
-const tabStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      backgroundColor: (theme as any).colours?.tabsGrey,
-      //Fixes contrast issue for unselected tabs in darkmode
-      color:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).palette.type === 'dark'
-          ? '#FFFFFF'
-          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (theme as any).colours?.blue,
-      boxShadow: 'none',
-    },
-    indicator: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      backgroundColor: (theme as any).colours?.blue,
-    },
-  });
-
-const boxStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    root: { backgroundColor: (theme as any).colours?.tabsGrey },
-  });
-
-export interface SearchCardViewProps {
-  containerHeight: string;
-  hierarchy: string;
-  onTabChange: (currentTab: string) => void;
-  currentTab: string;
-}
-
-interface SearchCardViewStoreProps {
-  maxNumResults: number;
-  datasetTab: boolean;
-  datafileTab: boolean;
-  investigationTab: boolean;
-}
+import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import { StateType } from './state/app.types';
+import InvestigationSearchTable from './table/investigationSearchTable.component';
+import InvestigationCardView from './card/investigationSearchCardView.component';
+import DatafileSearchTable from './table/datafileSearchTable.component';
+import DatasetCardView from './card/datasetSearchCardView.component';
+import DatasetSearchTable from './table/datasetSearchTable.component';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -116,7 +56,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
       border={0}
       {...other}
     >
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && <Box pt={1}>{children}</Box>}
     </Box>
   );
 }
@@ -128,18 +68,66 @@ function a11yProps(index: string): React.ReactFragment {
   };
 }
 
-const StyledBadge = withStyles(badgeStyles)(Badge);
-const StyledTabs = withStyles(tabStyles)(Tabs);
-const StyledBox = withStyles(boxStyles)(Box);
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  [`& .${badgeClasses.badge}`]: {
+    backgroundColor: '#CCCCCC',
+    //Increase contrast on high contrast modes by using black text
+    color:
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (theme as any).colours?.type === 'contrast' ? '#000000' : '#333333',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    lineHeight: 'inherit',
+    transform: 'none',
+    position: 'static',
+  },
+}));
 
-const SearchPageCardView = (
-  props: SearchCardViewProps & SearchCardViewStoreProps & CartProps
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  [`& .${tabsClasses.root}`]: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    backgroundColor: (theme as any).colours?.tabsGrey,
+    //Fixes contrast issue for unselected tabs in darkmode
+    color:
+      theme.palette.mode === 'dark'
+        ? '#FFFFFF'
+        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (theme as any).colours?.blue,
+    boxShadow: 'none',
+  },
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  backgroundColor: (theme as any).colours?.tabsGrey,
+}));
+
+interface SearchTabsStoreProps {
+  maxNumResults: number;
+  datasetTab: boolean;
+  datafileTab: boolean;
+  investigationTab: boolean;
+}
+
+export interface SearchTabsProps {
+  view: ViewsType;
+  containerHeight: string;
+  hierarchy: string;
+  onTabChange: (currentTab: string) => void;
+  currentTab: string;
+}
+
+const SearchTabs = (
+  props: SearchTabsProps & SearchTabsStoreProps & CartProps
 ): React.ReactElement => {
   const {
     maxNumResults,
     investigationTab,
     datasetTab,
     datafileTab,
+    view,
     containerHeight,
     hierarchy,
     onTabChange,
@@ -175,23 +163,13 @@ const SearchPageCardView = (
     maxCount: maxNumResults,
   });
 
-  const isFetchingNum = useIsFetching({
-    predicate: (query) =>
-      !query.queryHash.includes('InvestigationCount') &&
-      !query.queryHash.includes('DatasetCount') &&
-      !query.queryHash.includes('DatafileCount'),
-  });
-  const loading = isFetchingNum > 0;
-
-  const { filters, sort, page, results } = React.useMemo(
+  const { filters, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
 
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
   const replaceSorts = useUpdateQueryParam('sort', 'replace');
-  const replacePage = useUpdateQueryParam('page', 'replace');
-  const replaceResults = useUpdateQueryParam('results', 'replace');
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -199,31 +177,19 @@ const SearchPageCardView = (
   ): void => {
     storeFilters(filters, currentTab);
     storeSort(sort, currentTab);
-    if (page) {
-      storePage(page, currentTab);
-    }
-    if (results) {
-      storeResults(results, currentTab);
-    }
 
     onTabChange(newValue);
 
     replaceFilters({});
     replaceSorts({});
-    replacePage(null);
-    replaceResults(null);
   };
 
   React.useEffect(() => {
     const filters = getFilters(currentTab);
     const sorts = getSorts(currentTab);
-    const page = getPage(currentTab);
-    const results = getResults(currentTab);
     if (filters) replaceFilters(filters);
     if (sorts) replaceSorts(sorts);
-    if (page) replacePage(page);
-    if (results) replaceResults(results);
-  }, [currentTab, replaceFilters, replacePage, replaceResults, replaceSorts]);
+  }, [currentTab, replaceFilters, replaceSorts]);
 
   const { data: investigationDataCount } = useInvestigationCount(
     [
@@ -264,14 +230,8 @@ const SearchPageCardView = (
     currentTab
   );
 
-  const badgeDigits = (length?: number): 3 | 2 | 1 => {
-    return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
-  };
-
   return (
     <div>
-      {/* Show loading progress if data is still being loaded */}
-      {loading && <LinearProgress color="secondary" />}
       <AppBar position="static" elevation={0}>
         <StyledBox
           display="flex"
@@ -282,28 +242,34 @@ const SearchPageCardView = (
         >
           <StyledTabs
             className="tour-search-tab-select"
+            indicatorColor="secondary"
+            textColor="secondary"
             value={currentTab}
             onChange={handleChange}
-            aria-label={t('searchPageCardView.tabs_arialabel')}
+            aria-label={t('searchPageTable.tabs_arialabel')}
           >
             {investigationTab ? (
               <Tab
                 label={
                   <StyledBadge
                     id="investigation-badge"
-                    badgeContent={investigationDataCount ?? 0}
+                    badgeContent={
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: 'bold',
+                          marginTop: '1px',
+                        }}
+                      >
+                        {investigationDataCount ?? 0}
+                      </span>
+                    }
                     showZero
                     max={999}
                   >
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          investigation?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          investigation?.length
-                        )}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -316,7 +282,7 @@ const SearchPageCardView = (
                 {...a11yProps('investigation')}
               />
             ) : (
-              <Tab value="investigation" style={{ display: 'none' }} />
+              <Tab value="investigation" sx={{ display: 'none' }} />
             )}
             {datasetTab ? (
               <Tab
@@ -330,12 +296,6 @@ const SearchPageCardView = (
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          dataset?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          dataset?.length
-                        )}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -348,7 +308,7 @@ const SearchPageCardView = (
                 {...a11yProps('dataset')}
               />
             ) : (
-              <Tab value="dataset" style={{ display: 'none' }} />
+              <Tab value="dataset" sx={{ display: 'none' }} />
             )}
             {datafileTab ? (
               <Tab
@@ -362,12 +322,6 @@ const SearchPageCardView = (
                     <span
                       style={{
                         paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          datafile?.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          datafile?.length
-                        )}ch - 6px)`,
                         fontSize: '16px',
                         fontWeight: 'bold',
                       }}
@@ -380,7 +334,7 @@ const SearchPageCardView = (
                 {...a11yProps('datafile')}
               />
             ) : (
-              <Tab value="datafile" style={{ display: 'none' }} />
+              <Tab value="datafile" sx={{ display: 'none' }} />
             )}
           </StyledTabs>
           <StyledBox marginLeft="auto">
@@ -391,23 +345,48 @@ const SearchPageCardView = (
           </StyledBox>
         </StyledBox>
       </AppBar>
-
       {currentTab === 'investigation' && (
         <TabPanel value={currentTab} index={'investigation'}>
-          <InvestigationCardView hierarchy={hierarchy} />
+          {view === 'card' ? (
+            <InvestigationCardView hierarchy={hierarchy} />
+          ) : (
+            <Paper
+              sx={{
+                height: `calc(${containerHeight} - 56px)`,
+                minHeight: `calc(500px - 56px)`,
+                overflowX: 'auto',
+                overflowY: 'hidden',
+              }}
+              elevation={0}
+            >
+              <InvestigationSearchTable hierarchy={hierarchy} />
+            </Paper>
+          )}
         </TabPanel>
       )}
-
       {currentTab === 'dataset' && (
         <TabPanel value={currentTab} index={'dataset'}>
-          <DatasetCardView hierarchy={hierarchy} />
+          {view === 'card' ? (
+            <DatasetCardView hierarchy={hierarchy} />
+          ) : (
+            <Paper
+              sx={{
+                height: `calc(${containerHeight} - 56px)`,
+                minHeight: `calc(500px - 56px)`,
+                overflowX: 'auto',
+                overflowY: 'hidden',
+              }}
+              elevation={0}
+            >
+              <DatasetSearchTable hierarchy={hierarchy} />
+            </Paper>
+          )}
         </TabPanel>
       )}
-
       {currentTab === 'datafile' && (
         <TabPanel value={currentTab} index={'datafile'}>
           <Paper
-            style={{
+            sx={{
               height: `calc(${containerHeight} - 56px)`,
               minHeight: `calc(500px - 56px)`,
               overflowX: 'auto',
@@ -423,7 +402,7 @@ const SearchPageCardView = (
   );
 };
 
-const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
+const mapStateToProps = (state: StateType): SearchTabsStoreProps => {
   return {
     maxNumResults: state.dgsearch.maxNumResults,
     datasetTab: state.dgsearch.tabs.datasetTab,
@@ -432,4 +411,4 @@ const mapStateToProps = (state: StateType): SearchCardViewStoreProps => {
   };
 };
 
-export default connect(mapStateToProps)(SearchPageCardView);
+export default connect(mapStateToProps)(SearchTabs);

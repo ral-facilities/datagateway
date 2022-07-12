@@ -166,14 +166,12 @@ describe('ISIS - FacilityCycles Table', () => {
     it('date between', () => {
       cy.get('input[id="Start Date filter from"]').type('2010-04-02');
 
-      cy.get('button[aria-label="Start Date filter to, date picker"]')
+      cy.get('input[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-
-      cy.contains('OK').click();
+      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
 
       const date = new Date();
       date.setDate(1);

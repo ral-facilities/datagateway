@@ -1,5 +1,10 @@
-import { Button, IconButton } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
+import {
+  Button,
+  ButtonProps,
+  IconButton,
+  IconButtonProps,
+} from '@mui/material';
+import { GetApp } from '@mui/icons-material';
 import { downloadDatafile } from '../api/datafiles';
 import { downloadDataset } from '../api/datasets';
 import { downloadInvestigation } from '../api/investigations';
@@ -39,63 +44,59 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
     }
   };
 
+  const BaseDownloadButton = React.useCallback(
+    (props: ButtonProps & IconButtonProps): React.ReactElement => {
+      const OurButton = (props: ButtonProps): React.ReactElement => (
+        <Button
+          variant={variant && variant !== 'icon' ? variant : 'contained'}
+          color="primary"
+          startIcon={<GetApp />}
+          disableElevation
+          {...props}
+        >
+          {t('buttons.download')}
+        </Button>
+      );
+      const OurIconButton = (props: IconButtonProps): React.ReactElement => (
+        <IconButton size={'small'} {...props}>
+          <GetApp />
+        </IconButton>
+      );
+      const ButtonToUse = variant === 'icon' ? OurIconButton : OurButton;
+      return (
+        <ButtonToUse
+          id={`download-btn-${entityId}`}
+          aria-label={t('buttons.download')}
+          className="tour-dataview-download"
+          {...props}
+        />
+      );
+    },
+    [variant, t, entityId]
+  );
   if (!entityName) return null;
-  if (variant === 'icon') {
-    return (
-      <StyledTooltip
-        title={
-          entitySize <= 0
-            ? t<string, string>('buttons.unable_to_download_tooltip')
-            : ''
-        }
-        id={`tooltip-${entityId}`}
-        placement="left"
-      >
-        <span style={{ display: 'inherit' }}>
-          <IconButton
-            id={`download-btn-${entityId}`}
-            aria-label={t('buttons.download')}
-            size={'small'}
-            onClick={() => {
-              downloadData(entityType, entityId, entityName);
-            }}
-            className="tour-dataview-download"
-            disabled={entitySize <= 0}
-          >
-            <GetApp />
-          </IconButton>
-        </span>
-      </StyledTooltip>
-    );
-  } else {
-    return (
-      <StyledTooltip
-        title={
-          entitySize <= 0
-            ? t<string, string>('buttons.unable_to_download_tooltip')
-            : ''
-        }
-        id={`tooltip-${entityId}`}
-        placement="bottom"
-      >
-        <span style={{ display: 'inherit' }}>
-          <Button
-            id={`download-btn-${entityId}`}
-            aria-label="Download"
-            variant={variant ?? 'contained'}
-            color="primary"
-            startIcon={<GetApp />}
-            disableElevation
-            onClick={() => downloadData(entityType, entityId, entityName)}
-            className="tour-dataview-download"
-            disabled={entitySize <= 0}
-          >
-            {t('buttons.download')}
-          </Button>
-        </span>
-      </StyledTooltip>
-    );
-  }
+  return (
+    <StyledTooltip
+      title={
+        entitySize <= 0
+          ? t<string, string>('buttons.unable_to_download_tooltip')
+          : ''
+      }
+      id={`tooltip-${entityId}`}
+      placement="left"
+      arrow
+    >
+      {/* <span style={variant !== 'icon' ? { margin: 'auto' } : {}}> */}
+      <span style={{ display: 'inherit' }}>
+        <BaseDownloadButton
+          onClick={() => {
+            downloadData(entityType, entityId, entityName);
+          }}
+          disabled={entitySize <= 0}
+        />
+      </span>
+    </StyledTooltip>
+  );
 };
 
 export default DownloadButton;

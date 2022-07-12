@@ -1,11 +1,9 @@
 import React from 'react';
-
-import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-
 import {
+  Dialog,
+  DialogTitle as MuiDialogTitle,
+  DialogContent as MuiDialogContent,
+  DialogActions as MuiDialogActions,
   Typography,
   IconButton,
   Button,
@@ -16,8 +14,9 @@ import {
   InputLabel,
   FormHelperText,
   CircularProgress,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+  styled,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 import {
   formatBytes,
@@ -32,88 +31,61 @@ import {
   getDownloadTypeStatus,
 } from '../downloadApi';
 
-import {
-  Theme,
-  createStyles,
-  withStyles,
-  WithStyles,
-  StyleRules,
-} from '@material-ui/core/styles';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation, Trans } from 'react-i18next';
 
-const dialogTitleStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  });
+const TableContentDiv = styled('div')(({ theme }) => ({
+  paddingTop: '10px',
+  '& table': {
+    borderCollapse: 'collapse',
+    width: '100%',
+  },
+  '& th': {
+    border: '1px solid #dddddd',
+  },
+  '& td': {
+    border: '1px solid #dddddd',
+    textAlign: 'center',
+  },
+}));
 
-const dialogContentStyles = (): StyleRules =>
-  createStyles({
-    tableContent: {
-      '& table': {
-        borderCollapse: 'collapse',
-        width: '100%',
-      },
-      '& th': {
-        border: '1px solid #dddddd',
-      },
-      '& td': {
-        border: '1px solid #dddddd',
-        textAlign: 'center',
-      },
-    },
-  });
-
-interface DialogTitleProps extends WithStyles<typeof dialogTitleStyles> {
+interface DialogTitleProps {
   id: string;
   onClose: () => void;
   children?: React.ReactNode;
 }
 
-const DialogTitle = withStyles(dialogTitleStyles)((props: DialogTitleProps) => {
-  const { classes, children, onClose, ...other } = props;
+const DialogTitle = (props: DialogTitleProps): React.ReactElement => {
+  const { children, onClose, ...other } = props;
   const [t] = useTranslation();
 
   return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
+    <MuiDialogTitle sx={{ margin: 0, padding: 2 }} {...other}>
+      <Typography sx={{ fontSize: '1.25rem' }}>{children}</Typography>
       {onClose && (
         <IconButton
           aria-label={t('downloadConfirmDialog.close_arialabel')}
-          className={classes.closeButton}
+          sx={{ position: 'absolute', right: 2, top: 2, color: 'grey[500]' }}
           onClick={onClose}
+          size="large"
         >
           <CloseIcon />
         </IconButton>
       )}
     </MuiDialogTitle>
   );
-});
+};
 
-const DialogContent = withStyles((theme: Theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
+const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
 
-const DialogActions = withStyles((theme: Theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
+const DialogActions = styled(MuiDialogActions)(({ theme }) => ({
+  margin: 0,
+  padding: theme.spacing(1),
+}));
 
-interface DownloadConfirmDialogProps
-  extends WithStyles<typeof dialogContentStyles> {
+interface DownloadConfirmDialogProps {
   totalSize: number;
   isTwoLevel: boolean;
   open: boolean;
@@ -139,7 +111,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const {
     totalSize,
     isTwoLevel,
-    classes,
     redirectToStatusTab,
     setClose,
     clearCart,
@@ -506,17 +477,19 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     helperText={t(
                       'downloadConfirmDialog.download_name_helpertext'
                     )}
+                    variant="standard"
                   />
                 </Grid>
 
                 {/* Select the access method */}
                 <Grid item xs={12}>
                   <FormControl
-                    style={{ minWidth: 120 }}
+                    sx={{ minWidth: 120 }}
                     error={
                       statusMethods[selectedMethod].disabled ||
                       methodsUnavailable
                     }
+                    variant="standard"
                   >
                     <InputLabel htmlFor="confirm-access-method">
                       {t('downloadConfirmDialog.access_method_label')}
@@ -533,6 +506,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                           // Material UI select is not a real select element, so needs casting.
                           setSelectedMethod(e.target.value as string);
                       }}
+                      variant="standard"
                     >
                       {/* Access methods from settings as items for selection */}
                       {sortedMethods.map(([type, methodInfo], index) => {
@@ -620,10 +594,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     <Typography id="estimated-download-times">
                       {t('downloadConfirmDialog.estimated_download_times')}:
                     </Typography>
-                    <div
-                      style={{ paddingTop: '10px' }}
-                      className={classes.tableContent}
-                    >
+                    <TableContentDiv>
                       <table
                         id="download-table"
                         aria-labelledby="estimated-download-times"
@@ -647,7 +618,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                           </tr>
                         </tbody>
                       </table>
-                    </div>
+                    </TableContentDiv>
                   </Grid>
                 )}
 
@@ -686,6 +657,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                         setEmailValid(true);
                       }
                     }}
+                    variant="standard"
                   />
                 </Grid>
               </Grid>
@@ -721,7 +693,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               spacing={4}
               direction="column"
               alignItems="center"
-              justify="center"
+              justifyContent="center"
               style={{ paddingBottom: '25px' }}
             >
               <Grid item xs>
@@ -830,4 +802,4 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   );
 };
 
-export default withStyles(dialogContentStyles)(DownloadConfirmDialog);
+export default DownloadConfirmDialog;

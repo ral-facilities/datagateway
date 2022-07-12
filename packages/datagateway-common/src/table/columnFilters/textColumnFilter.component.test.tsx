@@ -1,10 +1,10 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { shallow, mount } from 'enzyme';
 import TextColumnFilter, {
   usePrincipalExperimenterFilter,
   useTextFilter,
 } from './textColumnFilter.component';
-import { Select } from '@material-ui/core';
+import { Select } from '@mui/material';
 import { act } from 'react-dom/test-utils';
 import { usePushFilter, usePushFilters } from '../../api';
 import { renderHook } from '@testing-library/react-hooks';
@@ -14,18 +14,6 @@ jest.useFakeTimers('modern');
 const DEBOUNCE_DELAY = 250;
 
 describe('Text filter component', () => {
-  let shallow;
-  let mount;
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-    mount = createMount();
-  });
-
-  afterEach(() => {
-    mount.cleanUp();
-  });
-
   it('renders correctly', () => {
     const wrapper = shallow(
       <TextColumnFilter

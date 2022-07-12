@@ -1,7 +1,9 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import {
+  Subject,
+  ConfirmationNumber,
+  CalendarToday,
+} from '@mui/icons-material';
 import {
   Table,
   tableLink,
@@ -23,7 +25,7 @@ import {
 } from 'datagateway-common';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 
@@ -106,19 +108,20 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
           tableLink(
             `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${cellProps.rowData.id}/datafile`,
             cellProps.rowData.name,
-            view
+            view,
+            'dls-datasets-table-title'
           ),
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumberIcon,
+        icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
         dataKey: 'datafileCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -126,14 +129,14 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
 
         label: t('datasets.modified_time'),
         dataKey: 'modTime',

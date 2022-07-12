@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
@@ -11,10 +11,9 @@ import {
   ClearFiltersButton,
 } from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
-import { createMount } from '@material-ui/core/test-utils';
 import { MemoryRouter, Router } from 'react-router-dom';
 import SearchPageContainer from './searchPageContainer.component';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 import { Provider } from 'react-redux';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
@@ -35,6 +34,7 @@ import {
   storeResults,
   storeSort,
 } from './searchPageContainer.component';
+import { render } from '@testing-library/react';
 
 jest.mock('loglevel');
 
@@ -53,7 +53,6 @@ jest.mock('datagateway-common', () => {
 
 describe('SearchPageContainer - Tests', () => {
   let state: StateType;
-  let mount;
   let queryClient: QueryClient;
   let history: History;
   let pushSpy;
@@ -80,7 +79,6 @@ describe('SearchPageContainer - Tests', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     queryClient = new QueryClient();
     history = createMemoryHistory({
       initialEntries: ['/search/data'],
@@ -137,7 +135,7 @@ describe('SearchPageContainer - Tests', () => {
 
   it('renders searchPageContainer correctly', () => {
     const mockStore = configureStore([thunk]);
-    const wrapper = mount(
+    const wrapper = render(
       <Provider store={mockStore(state)}>
         <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
           <QueryClientProvider client={queryClient}>
@@ -147,7 +145,7 @@ describe('SearchPageContainer - Tests', () => {
       </Provider>
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.asFragment()).toMatchSnapshot();
   });
 
   it('renders correctly at /search/data route', () => {
@@ -556,7 +554,7 @@ describe('SearchPageContainer - Tests', () => {
 
     wrapper
       .find('[data-testid="clear-filters-button"]')
-      .first()
+      .last()
       .simulate('click');
 
     wrapper.update();
@@ -860,7 +858,7 @@ describe('SearchPageContainer - Tests', () => {
     // Click view button
     wrapper
       .find('[aria-label="page view app.view_cards"]')
-      .first()
+      .last()
       .simulate('click');
     wrapper.update();
 

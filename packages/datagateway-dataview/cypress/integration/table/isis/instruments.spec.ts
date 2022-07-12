@@ -1,7 +1,12 @@
 describe('ISIS - Instruments Table', () => {
   beforeEach(() => {
+    cy.intercept('**/instruments/count*').as('getInstrumentsCount');
+    cy.intercept('**/instruments?order*').as('getInstrumentsOrder');
     cy.login();
-    cy.visit('/browse/instrument');
+    cy.visit('/browse/instrument').wait(
+      ['@getInstrumentsCount', '@getInstrumentsOrder'],
+      { timeout: 10000 }
+    );
   });
 
   it('should load correctly', () => {
@@ -32,7 +37,7 @@ describe('ISIS - Instruments Table', () => {
       .eq(2)
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -41,9 +46,8 @@ describe('ISIS - Instruments Table', () => {
     cy.get('[data-testid="isis-instrument-table-name"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   describe('should be able to sort by', () => {

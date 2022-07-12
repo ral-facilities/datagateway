@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import ISISInstrumentsTable from './isisInstrumentsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import { StateType } from '../../../state/app.types';
@@ -10,13 +9,14 @@ import {
   dGCommonInitialState,
   ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -30,7 +30,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Instruments table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Instrument[];
@@ -49,8 +48,20 @@ describe('ISIS Instruments table component', () => {
     );
   };
 
+  const createRTLWrapper = (studyHierarchy = false): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISInstrumentsTable studyHierarchy={studyHierarchy} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -87,7 +98,6 @@ describe('ISIS Instruments table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -168,24 +178,24 @@ describe('ISIS Instruments table component', () => {
   it('displays details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders names as links when NOT in studyHierarchy', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=2]').find('p').children()
+      wrapper.getAllByTestId('isis-instrument-table-name')
     ).toMatchSnapshot();
   });
 
   it('renders names as links in StudyHierarchy', () => {
-    const wrapper = createWrapper(true);
+    const wrapper = createRTLWrapper(true);
 
     expect(
-      wrapper.find('[aria-colindex=2]').find('p').children()
+      wrapper.getAllByTestId('isis-instrument-table-name')
     ).toMatchSnapshot();
   });
 

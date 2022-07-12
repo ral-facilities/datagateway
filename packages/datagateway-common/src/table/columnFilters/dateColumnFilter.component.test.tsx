@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { shallow, mount } from 'enzyme';
 import DateColumnFilter, {
   datesEqual,
   updateFilter,
@@ -8,19 +8,21 @@ import DateColumnFilter, {
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-test-renderer';
 import { usePushFilter } from '../../api';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../setupTests';
+
 jest.mock('../../api');
 
 describe('Date filter component', () => {
-  let shallow;
-  let mount;
-
   beforeEach(() => {
-    shallow = createShallow();
-    mount = createMount();
+    applyDatePickerWorkaround();
   });
 
   afterEach(() => {
-    mount.cleanUp();
+    cleanupDatePickerWorkaround();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
@@ -399,7 +401,7 @@ describe('Date filter component', () => {
   });
 
   describe('DateTimePicker functionality', () => {
-    it('calls the onChange method correctly when filling out the date/time inputs', () => {
+    it('calls the onChange method correctly when filling out the date-time inputs', () => {
       const onChange = jest.fn();
 
       const baseProps = {
@@ -539,7 +541,7 @@ describe('Date filter component', () => {
 
       expect(wrapper.find('p.Mui-error')).toHaveLength(2);
       expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Date format: yyyy-MM-dd HH:mm.'
+        'Date-time format: yyyy-MM-dd HH:mm.'
       );
     });
 
@@ -559,11 +561,11 @@ describe('Date filter component', () => {
 
       expect(wrapper.find('p.Mui-error')).toHaveLength(2);
       expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Date format: yyyy-MM-dd HH:mm.'
+        'Date-time format: yyyy-MM-dd HH:mm.'
       );
     });
 
-    it('displays error for invalid date/time range', () => {
+    it('displays error for invalid date-time range', () => {
       const onChange = jest.fn();
 
       const baseProps = {
@@ -579,7 +581,7 @@ describe('Date filter component', () => {
 
       expect(wrapper.find('p.Mui-error')).toHaveLength(2);
       expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Invalid date/time range'
+        'Invalid date-time range'
       );
     });
 

@@ -7,13 +7,14 @@ import {
   Box,
   Typography,
   Divider,
-} from '@material-ui/core';
+  SxProps,
+} from '@mui/material';
 import Draggable from 'react-draggable';
 
 const DataHeader = React.memo(
   (
     props: TableHeaderProps & {
-      className: string;
+      sx: SxProps;
       sort: { [column: string]: Order };
       onSort: (
         column: string,
@@ -28,7 +29,7 @@ const DataHeader = React.memo(
     }
   ): React.ReactElement => {
     const {
-      className,
+      sx,
       dataKey,
       sort,
       onSort,
@@ -70,15 +71,12 @@ const DataHeader = React.memo(
         direction={currSortDirection}
         onClick={() => onSort(dataKey, nextSortDirection, 'push')}
       >
-        <Typography
-          noWrap
-          style={{ fontSize: 'inherit', lineHeight: 'inherit' }}
-        >
+        <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
           {label}
         </Typography>
       </TableSortLabel>
     ) : (
-      <Typography noWrap style={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
+      <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
         {label}
       </Typography>
     );
@@ -87,7 +85,7 @@ const DataHeader = React.memo(
       <TableCell
         size="small"
         component="div"
-        className={className}
+        sx={sx}
         variant="head"
         sortDirection={currSortDirection}
       >
@@ -118,7 +116,7 @@ const DataHeader = React.memo(
             <Divider
               orientation="vertical"
               flexItem
-              style={{
+              sx={{
                 height: '100%',
               }}
             />

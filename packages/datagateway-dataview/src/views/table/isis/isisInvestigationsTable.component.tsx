@@ -26,14 +26,16 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-import SubjectIcon from '@material-ui/icons/Subject';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import PublicIcon from '@material-ui/icons/Public';
-import SaveIcon from '@material-ui/icons/Save';
-import PersonIcon from '@material-ui/icons/Person';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import {
+  Subject,
+  Fingerprint,
+  Public,
+  Save,
+  Person,
+  CalendarToday,
+} from '@mui/icons-material';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
@@ -131,7 +133,7 @@ const ISISInvestigationsTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -146,13 +148,13 @@ const ISISInvestigationsTable = (
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.name'),
         dataKey: 'name',
         filterComponent: textFilter,
       },
       {
-        icon: PublicIcon,
+        icon: Public,
         label: t('investigations.doi'),
         dataKey: 'studyInvestigations.study.pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -161,7 +163,7 @@ const ISISInvestigationsTable = (
             return externalSiteLink(
               `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
               investigationData.studyInvestigations[0].study.pid,
-              'isis-investigation-table-doi-link'
+              'isis-investigations-table-doi-link'
             );
           } else {
             return '';
@@ -170,7 +172,7 @@ const ISISInvestigationsTable = (
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -178,7 +180,7 @@ const ISISInvestigationsTable = (
         disableSort: true,
       },
       {
-        icon: PersonIcon,
+        icon: Person,
         label: t('investigations.principal_investigators'),
         dataKey: 'investigationUsers.user.fullName',
         disableSort: true,
@@ -196,14 +198,14 @@ const ISISInvestigationsTable = (
         filterComponent: principalExperimenterFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
 
         label: t('investigations.end_date'),
         dataKey: 'endDate',

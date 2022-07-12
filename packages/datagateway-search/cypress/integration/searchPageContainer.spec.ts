@@ -43,9 +43,7 @@ describe('SearchPageContainer Component', () => {
       cy.intercept('**/investigations?*').as('investigations');
 
       cy.clearDownloadCart();
-      cy.get('[aria-label="Search text input"]')
-        .find('#filled-search')
-        .type('dog');
+      cy.get('#filled-search').type('dog');
 
       cy.get('[aria-label="Submit search"]')
         .click()

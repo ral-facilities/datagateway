@@ -1,5 +1,5 @@
-import { Link } from '@material-ui/core';
-import { Title, Link as LinkIcon } from '@material-ui/icons';
+import { Link } from '@mui/material';
+import { Title, Link as LinkIcon } from '@mui/icons-material';
 import {
   CardView,
   CardViewDetails,
@@ -17,7 +17,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 interface ISISInstrumentsCVProps {
   studyHierarchy: boolean;

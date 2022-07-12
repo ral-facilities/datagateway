@@ -1,8 +1,5 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ExploreIcon from '@material-ui/icons/Explore';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { Subject, Explore, Save, CalendarToday } from '@mui/icons-material';
 import {
   Table,
   TableActionProps,
@@ -23,7 +20,7 @@ import {
   DownloadButton,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
 import { IndexRange } from 'react-virtualized';
@@ -116,19 +113,19 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,
       },
       {
-        icon: ExploreIcon,
+        icon: Explore,
         label: t('datafiles.location'),
         dataKey: 'location',
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('datafiles.size'),
         dataKey: 'fileSize',
         cellContentRenderer: (cellProps) => {
@@ -136,7 +133,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
         },
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datafiles.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,

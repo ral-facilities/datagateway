@@ -8,27 +8,21 @@ import {
   Grid,
   IconButton,
   CircularProgress,
-  Theme,
-} from '@material-ui/core';
-import Tab from '@material-ui/core/Tab';
+  styled,
+  Tab,
+} from '@mui/material';
 
 import DownloadCartTable from '../downloadCart/downloadCartTable.component';
 import DownloadStatusTable from '../downloadStatus/downloadStatusTable.component';
 
-import RefreshIcon from '@material-ui/icons/Refresh';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import BlackTooltip from '../tooltip.component';
 import { useTranslation } from 'react-i18next';
-import { StyleRules, createStyles, withStyles } from '@material-ui/core/styles';
 
-const paperStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.default,
-    },
-  });
-
-const StyledPaper = withStyles(paperStyles)(Paper);
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  flexGrow: 1,
+  backgroundColor: theme.palette.background.default,
+}));
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -135,6 +129,7 @@ const DownloadTabs: React.FC = () => {
                       'downloadTab.refresh_download_status_arialabel'
                     )}
                     onClick={() => setRefreshDownloads(true)}
+                    size="large"
                   >
                     <RefreshIcon />
                   </IconButton>

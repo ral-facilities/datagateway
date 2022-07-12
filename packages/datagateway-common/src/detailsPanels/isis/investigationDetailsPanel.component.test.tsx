@@ -1,15 +1,13 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import InvestigationDetailsPanel from './investigationDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { Investigation } from '../../app.types';
 import { useInvestigationDetails } from '../../api/investigations';
 
 jest.mock('../../api/investigations');
 
 describe('Investigation details panel component', () => {
-  let mount;
   let rowData: Investigation;
   const detailsPanelResize = jest.fn();
   const viewDatasets = jest.fn();
@@ -26,7 +24,6 @@ describe('Investigation details panel component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = {
       id: 1,
       title: 'Test 1',
@@ -50,6 +47,9 @@ describe('Investigation details panel component', () => {
           study: {
             id: 12,
             pid: 'study pid',
+            name: 'study',
+            modTime: '2019-06-10',
+            createTime: '2019-06-11',
           },
         },
       ],
@@ -63,7 +63,6 @@ describe('Investigation details panel component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 

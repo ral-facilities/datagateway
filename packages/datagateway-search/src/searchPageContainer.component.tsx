@@ -2,22 +2,19 @@ import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
-import { Switch, Route, RouteComponentProps } from 'react-router';
-import { Link, useLocation } from 'react-router-dom';
-
 import {
-  Grid,
-  Paper,
-  LinearProgress,
-  makeStyles,
-  createStyles,
-  Theme,
-} from '@material-ui/core';
+  Switch,
+  Route,
+  RouteComponentProps,
+  Link,
+  useLocation,
+} from 'react-router-dom';
 
-import SearchPageTable from './searchPageTable.component';
-import SearchPageCardView from './searchPageCardView.component';
+import { Grid, Paper, LinearProgress, styled } from '@mui/material';
+
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
+import SearchTabs from './searchTabs.component';
 
 import { useHistory } from 'react-router-dom';
 import {
@@ -43,6 +40,7 @@ import {
   setDatasetTab,
   setInvestigationTab,
 } from './state/actions/actions';
+import { useIsFetching } from 'react-query';
 
 export const storeFilters = (
   filters: FiltersType,
@@ -159,44 +157,34 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
     : false;
 };
 
-const searchPageStyles = makeStyles<
-  Theme,
-  { view: ViewsType; containerHeight: string }
->((theme: Theme) => {
-  return createStyles({
-    root: {
-      margin: 0,
-      width: '100%',
-    },
-    topLayout: {
-      height: '100%',
-      // make width of box bigger on smaller screens to prevent overflow
-      // decreasing the space for the search results
-      width: '100%',
-      '@media (min-width: 1000px) and (min-height: 700px)': {
-        width: '98%',
-      },
-      margin: '0 auto',
-    },
-    sideLayout: {
-      height: '100%',
-      width: '100%',
-    },
-    dataViewTopBar: {
-      width: '98%',
-      backgroundColor: '#00000000',
-    },
-    dataView: {
-      // Only use height for the paper component if the view is table.
-      // also ensure we account for the potential horizontal scrollbar
-      height: ({ view, containerHeight }) =>
-        view !== 'card' ? containerHeight : 'auto',
-      minHeight: 500,
-      width: '98%',
-      backgroundColor: '#00000000',
-    },
-  });
-});
+const TopSearchBoxPaper = styled(Paper)(({ theme }) => ({
+  height: '100%',
+  // make width of box bigger on smaller screens to prevent overflow
+  // decreasing the space for the search results
+  width: '100%',
+  '@media (min-width: 1000px) and (min-height: 700px)': {
+    width: '98%',
+  },
+  margin: '0 auto',
+}));
+
+const SideSearchBoxPaper = styled(Paper)(({ theme }) => ({
+  height: '100%',
+  width: '100%',
+}));
+
+const DataViewPaper = styled(Paper, {
+  shouldForwardProp: (prop) => prop !== 'view' && prop !== 'containerHeight',
+})<{ view: ViewsType; containerHeight: string }>(
+  ({ theme, view, containerHeight }) => ({
+    // Only use height for the paper component if the view is table.
+    // also ensure we account for the potential horizontal scrollbar
+    height: view !== 'card' ? containerHeight : 'auto',
+    minHeight: 500,
+    width: '98%',
+    backgroundColor: '#00000000',
+  })
+);
 
 interface SearchPageContainerStoreProps {
   sideLayout: boolean;
@@ -333,11 +321,21 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     maxCount: maxNumResults,
   });
 
+  const isFetchingNum = useIsFetching({
+    predicate: (query) =>
+      !query.queryHash.includes('InvestigationCount') &&
+      !query.queryHash.includes('DatasetCount') &&
+      !query.queryHash.includes('DatafileCount'),
+  });
+
   const requestReceived =
     !investigationsIdle || !datasetsIdle || !datafilesIdle;
 
   const loading =
-    investigationsFetching || datasetsFetching || datafilesFetching;
+    investigationsFetching ||
+    datasetsFetching ||
+    datafilesFetching ||
+    isFetchingNum > 0;
 
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
@@ -454,8 +452,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   // Table should take up page but leave room for: SG appbar, SG footer,
   // search box, search box padding, display as cards button, loading bar
-  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 47px${
-    loading ? '' : ' - 4px'
+  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 49px${
+    loading ? ' - 4px' : ''
   })`;
 
   const { data: cartItems } = useCart();
@@ -465,7 +463,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
-  const classes = searchPageStyles({ view, containerHeight });
 
   const disabled = Object.keys(queryParams.filters).length !== 0 ? false : true;
 
@@ -488,40 +485,43 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
           <Grid
             container
             direction={sideLayout ? 'row' : 'column'}
-            justify="center"
+            justifyContent="center"
             alignItems="center"
             spacing={1}
-            className={classes.root}
+            sx={{ margin: 0, width: '100%' }}
           >
             <Grid
               item
               id="container-search-filters"
               ref={searchBoxRef}
-              style={{ width: '100%' }}
+              sx={{ width: '100%' }}
             >
               {sideLayout ? (
-                <Paper className={classes.sideLayout}>
+                <SideSearchBoxPaper>
                   <SearchBoxContainerSide
                     searchText={searchText}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
                   />
-                </Paper>
+                </SideSearchBoxPaper>
               ) : (
-                <Paper className={classes.topLayout}>
+                <TopSearchBoxPaper>
                   <SearchBoxContainer
                     searchText={searchText}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
                   />
-                </Paper>
+                </TopSearchBoxPaper>
               )}
             </Grid>
 
             {requestReceived && (
               <div style={{ width: '100%' }}>
-                <Grid container justify="center">
-                  <Grid container className={classes.dataViewTopBar}>
+                <Grid container justifyContent="center">
+                  <Grid
+                    container
+                    sx={{ width: '98%', backgroundColor: '#00000000' }}
+                  >
                     <Grid item xs={'auto'}>
                       <ViewButton
                         viewCards={view === 'card'}
@@ -542,34 +542,28 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid container justify="center" id="container-search-table">
-                  <Paper className={classes.dataView}>
+                <Grid
+                  container
+                  justifyContent="center"
+                  id="container-search-table"
+                >
+                  <DataViewPaper view={view} containerHeight={containerHeight}>
                     {/* Show loading progress if data is still being loaded */}
                     {loading && (
                       <Grid item xs={12}>
                         <LinearProgress color="secondary" />
                       </Grid>
                     )}
-                    {view === 'card' ? (
-                      <SearchPageCardView
-                        containerHeight={containerHeight}
-                        hierarchy={match.params.hierarchy}
-                        onTabChange={pushCurrentTab}
-                        currentTab={currentTab}
-                        cartItems={cartItems ?? []}
-                        navigateToDownload={navigateToDownload}
-                      />
-                    ) : (
-                      <SearchPageTable
-                        containerHeight={containerHeight}
-                        hierarchy={match.params.hierarchy}
-                        onTabChange={pushCurrentTab}
-                        currentTab={currentTab}
-                        cartItems={cartItems ?? []}
-                        navigateToDownload={navigateToDownload}
-                      />
-                    )}
-                  </Paper>
+                    <SearchTabs
+                      view={view}
+                      containerHeight={containerHeight}
+                      hierarchy={match.params.hierarchy}
+                      onTabChange={pushCurrentTab}
+                      currentTab={currentTab}
+                      cartItems={cartItems ?? []}
+                      navigateToDownload={navigateToDownload}
+                    />
+                  </DataViewPaper>
                 </Grid>
               </div>
             )}

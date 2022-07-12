@@ -1,12 +1,6 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  StyleRules,
-  Theme,
-} from '@material-ui/core';
-import { Clear } from '@material-ui/icons';
 import React from 'react';
+import { Button, styled } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useTranslation } from 'react-i18next';
 
 export interface ClearFilterProps {
@@ -14,24 +8,19 @@ export interface ClearFilterProps {
   disabled: boolean;
 }
 
-const buttonStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      root: {
-        padding: theme.spacing(0.5),
-        display: 'inline-block',
-      },
-    })
-);
+const ButtonDiv = styled('div')(({ theme }) => ({
+  padding: `${theme.spacing(0.5)} 0px ${theme.spacing(0.5)} 0px`,
+  marginRight: theme.spacing(0.5),
+  display: 'inline-block',
+}));
 
 export const ClearFiltersButton = (
   props: ClearFilterProps
 ): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = buttonStyles();
 
   return (
-    <div className={classes.root}>
+    <ButtonDiv>
       <Button
         className="tour-dataview-clear-filter-button"
         data-testid="clear-filters-button"
@@ -42,12 +31,12 @@ export const ClearFiltersButton = (
         onClick={() => {
           props.handleButtonClearFilters();
         }}
-        startIcon={<Clear />}
+        startIcon={<ClearIcon />}
         disabled={props.disabled}
       >
         {t('app.clear_filters')}
       </Button>
-    </div>
+    </ButtonDiv>
   );
 };
 

@@ -1,13 +1,20 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
-import { ReactWrapper } from 'enzyme';
-import Sticky from './sticky.component';
-import { Paper } from '@material-ui/core';
+import { mount, shallow, ReactWrapper } from 'enzyme';
+import Sticky, { useSticky } from './sticky.component';
+import { Paper } from '@mui/material';
+import { act, renderHook } from '@testing-library/react-hooks';
 
 describe('Sticky component', () => {
-  let shallow;
-  const createWrapper = (): ReactWrapper => {
+  const createShallowWrapper = (): ReactWrapper => {
     return shallow(
+      <Sticky>
+        <div />
+      </Sticky>
+    );
+  };
+
+  const createWrapper = (): ReactWrapper => {
+    return mount(
       <Sticky>
         <div />
       </Sticky>
@@ -27,10 +34,6 @@ describe('Sticky component', () => {
     toJSON: jest.fn(),
   };
 
-  beforeEach(() => {
-    shallow = createShallow({});
-  });
-
   it('eventListener added and removed with useEffect', () => {
     // Allow cleanUp to be called manually
     let cleanUp;
@@ -42,7 +45,7 @@ describe('Sticky component', () => {
     const spyAdd = jest.spyOn(window, 'addEventListener');
     const spyRemove = jest.spyOn(window, 'removeEventListener');
 
-    createWrapper();
+    createShallowWrapper();
     expect(spyAdd).toHaveBeenCalledTimes(1);
     expect(spyRemove).toHaveBeenCalledTimes(0);
 
@@ -77,7 +80,7 @@ describe('Sticky component', () => {
     spyUseCallback.mockRestore();
   });
 
-  it('handleScroll correctly sets the elavation of component', () => {
+  it('useSticky works correctly', () => {
     // Allow handleScroll to be called manually
     let handleScrollMock;
     const spyUseCallback = jest
@@ -86,32 +89,30 @@ describe('Sticky component', () => {
         handleScrollMock = f;
         return f;
       });
-    // Mock the dimensions of the target element
-    const spyUseRef = jest.spyOn(React, 'useRef').mockImplementation(() => {
-      return { current: currentMock };
-    });
     const spyGetRect = jest
       .spyOn(currentMock, 'getBoundingClientRect')
       .mockImplementation(() => {
         return dimensionsMock;
       });
+    const { result } = renderHook(() => useSticky({ current: currentMock }));
 
-    // Elevation is initially 0 (not stickied)
-    const wrapper = createWrapper();
-    expect(wrapper.find(Paper).props().elevation).toEqual(0);
-
-    // Mock scrolling beyond bottom of getBoundingClientRect
-    Object.defineProperty(global.window, 'scrollY', { value: 2 });
-    handleScrollMock();
-    expect(wrapper.find(Paper).props().elevation).toEqual(1);
-
-    // Mock scrolling back above bottom of getBoundingClientRect
     Object.defineProperty(global.window, 'scrollY', { value: 0 });
-    handleScrollMock();
-    expect(wrapper.find(Paper).props().elevation).toEqual(0);
+    act(() => {
+      handleScrollMock();
+    });
+
+    expect(result.current.isSticky).toEqual(false);
+
+    Object.defineProperty(global.window, 'scrollY', { value: 2 });
+    act(() => {
+      handleScrollMock();
+    });
+
+    expect(result.current.isSticky).toEqual(true);
 
     spyUseCallback.mockRestore();
-    spyUseRef.mockRestore();
     spyGetRect.mockRestore();
   });
+
+  // Sticky functionality tested in dataview e2e breadcrumbs tests
 });

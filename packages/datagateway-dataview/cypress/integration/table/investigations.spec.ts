@@ -27,7 +27,7 @@ describe('Investigations Table', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -36,9 +36,8 @@ describe('Investigations Table', () => {
     cy.get('[data-testid="investigation-table-title"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   it('should have the correct url for the DOI link', () => {
@@ -183,14 +182,12 @@ describe('Investigations Table', () => {
     it('date between', () => {
       cy.get('input[id="Start Date filter from"]').type('2019-01-01');
 
-      cy.get('button[aria-label="Start Date filter to, date picker"]')
+      cy.get('input[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-
-      cy.contains('OK').click();
+      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
 
       const date = new Date();
       date.setDate(1);

@@ -92,7 +92,7 @@ describe('ISIS - Investigation Landing', () => {
       .first()
       .trigger('mouseover')
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -101,16 +101,15 @@ describe('ISIS - Investigation Landing', () => {
     cy.get('[data-testid="isis-investigations-landing-parent-doi-link"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="isis-investigation-landing-doi-link"]')
       .first()
       .trigger('mouseover')
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
 
     cy.get('body').type('{esc}');
@@ -119,9 +118,8 @@ describe('ISIS - Investigation Landing', () => {
     cy.get('[data-testid="isis-investigation-landing-doi-link"]')
       .wait(700)
       .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .first()
-      .should('exist');
+      .get('[role="tooltip"]')
+      .should('not.exist');
   });
 
   it('should be able to use the citation formatter', () => {

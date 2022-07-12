@@ -1,4 +1,3 @@
-import { createMount } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
   useDatasetCount,
@@ -9,10 +8,11 @@ import {
   useDatasetsInfinite,
   Dataset,
   useDatasetsDatafileCount,
+  DLSDatasetDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
@@ -20,6 +20,12 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import DLSDatasetsTable from './dlsDatasetsTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { createMemoryHistory, History } from 'history';
+import { mount, ReactWrapper } from 'enzyme';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -40,7 +46,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Dataset table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Dataset[];
@@ -59,8 +64,20 @@ describe('DLS Dataset table component', () => {
     );
   };
 
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSDatasetsTable proposalName="Proposal 1" investigationId="1" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -107,7 +124,6 @@ describe('DLS Dataset table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -178,7 +194,7 @@ describe('DLS Dataset table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by datasets.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -197,6 +213,8 @@ describe('DLS Dataset table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -215,6 +233,8 @@ describe('DLS Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -249,7 +269,7 @@ describe('DLS Dataset table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -276,7 +296,7 @@ describe('DLS Dataset table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -323,10 +343,18 @@ describe('DLS Dataset table component', () => {
   });
 
   it('renders Dataset title as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('dls-datasets-table-title')
     ).toMatchSnapshot();
+  });
+
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+
+    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
   });
 });

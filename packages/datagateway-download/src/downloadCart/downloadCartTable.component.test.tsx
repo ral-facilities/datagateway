@@ -1,22 +1,18 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import { mount, ReactWrapper } from 'enzyme';
 import DownloadCartTable from './downloadCartTable.component';
-import {
-  DownloadCartItem,
-  fetchDownloadCart,
-  removeFromCart,
-} from 'datagateway-common';
+import { DownloadCartItem, fetchDownloadCart } from 'datagateway-common';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { Router } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import {
   getDatafileCount,
   getSize,
   removeAllDownloadCartItems,
+  removeFromCart,
 } from '../downloadApi';
 
 jest.mock('datagateway-common', () => {
@@ -26,7 +22,6 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     fetchDownloadCart: jest.fn(),
-    removeFromCart: jest.fn(),
   };
 });
 
@@ -39,14 +34,12 @@ jest.mock('../downloadApi', () => {
     getSize: jest.fn(),
     getDatafileCount: jest.fn(),
     getIsTwoLevel: jest.fn().mockResolvedValue(true),
+    removeFromCart: jest.fn(),
   };
 });
 
 describe('Download cart table component', () => {
-  let mount;
-  let history;
-  let queryClient;
-
+  let history, holder, queryClient;
   let cartItems: DownloadCartItem[] = [];
 
   // Create our mocked datagateway-download settings file.
@@ -74,21 +67,31 @@ describe('Download cart table component', () => {
   const createWrapper = (): ReactWrapper => {
     queryClient = new QueryClient();
     return mount(
-      <div id="datagateway-download">
-        <Router history={history}>
-          <DownloadSettingsContext.Provider value={mockedSettings}>
-            <QueryClientProvider client={queryClient}>
-              <DownloadCartTable statusTabRedirect={jest.fn()} />
-            </QueryClientProvider>
-          </DownloadSettingsContext.Provider>
-        </Router>
-      </div>
+      <Router history={history}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <QueryClientProvider client={queryClient}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </QueryClientProvider>
+        </DownloadSettingsContext.Provider>
+      </Router>,
+      { attachTo: holder }
     );
   };
 
+  const resetDOM = (): void => {
+    if (holder) document.body.removeChild(holder);
+    holder = document.getElementById('datagateway-download');
+    if (holder) document.body.removeChild(holder);
+  };
+
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory();
+
+    //https://stackoverflow.com/questions/43694975/jest-enzyme-using-mount-document-getelementbyid-returns-null-on-componen
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-download');
+    document.body.appendChild(holder);
+
     cartItems = [
       {
         entityId: 1,
@@ -142,7 +145,7 @@ describe('Download cart table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
+    resetDOM();
     jest.clearAllMocks();
     jest.clearAllTimers();
     jest.useRealTimers();
@@ -189,7 +192,7 @@ describe('Download cart table component', () => {
     expect(wrapper.find('[aria-colindex=3]').find('p').first().text()).toEqual(
       '1 B'
     );
-    expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
+    expect(wrapper.find('span#totalSizeDisplay').text()).toEqual(
       expect.stringContaining('downloadCart.total_size: 4 B')
     );
   });
@@ -211,7 +214,7 @@ describe('Download cart table component', () => {
       '1'
     );
 
-    expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
+    expect(wrapper.find('span#fileCountDisplay').text()).toEqual(
       expect.stringContaining('downloadCart.number_of_files: 22 / 5000')
     );
   });
@@ -374,24 +377,15 @@ describe('Download cart table component', () => {
     });
 
     await act(async () => {
-      wrapper.update();
       await flushPromises();
+      wrapper.update();
     });
 
-    wrapper
-      .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`)
-      .simulate('click');
-
-    expect(
-      wrapper
-        .find(
-          `button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"] svg`
-        )
-        .parent()
-        .prop('color')
-    ).toEqual('error');
-
     await act(async () => {
+      wrapper
+        .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`)
+        .simulate('click');
+
       await flushPromises();
       wrapper.update();
     });
@@ -468,7 +462,7 @@ describe('Download cart table component', () => {
 
     const nameFilterInput = wrapper
       .find('[aria-label="Filter by downloadCart.name"]')
-      .first();
+      .last();
     nameFilterInput.instance().value = '1';
     nameFilterInput.simulate('change');
 
@@ -481,7 +475,7 @@ describe('Download cart table component', () => {
 
     const typeFilterInput = wrapper
       .find('[aria-label="Filter by downloadCart.type"]')
-      .first();
+      .last();
     typeFilterInput.instance().value = 'data';
     typeFilterInput.simulate('change');
 
@@ -525,6 +519,7 @@ describe('Download cart table component', () => {
     expect(wrapper.exists('div#fileLimitAlert')).toBeFalsy();
     expect(wrapper.exists('div#sizeLimitAlert')).toBeFalsy();
 
+    resetDOM();
     const oldSettings = mockedSettings;
     mockedSettings = {
       ...oldSettings,
@@ -541,6 +536,7 @@ describe('Download cart table component', () => {
     // Make sure size limit alert is displayed if over the limit
     expect(wrapper.exists('div#sizeLimitAlert')).toBeTruthy();
 
+    resetDOM();
     mockedSettings = {
       ...oldSettings,
       fileCountMax: 1,

@@ -271,7 +271,6 @@ describe('DLS - Datasets Table', () => {
 
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-
       cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '55').should(
         'exist'
       );

@@ -1,15 +1,15 @@
 import React from 'react';
 import { TableHeaderProps } from 'react-virtualized';
-import { TableCell, Checkbox } from '@material-ui/core';
+import { TableCell, Checkbox, SxProps } from '@mui/material';
 import {
   CheckBoxOutlineBlank,
   CheckBox as CheckBoxIcon,
   IndeterminateCheckBox,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { StyledTooltip } from '../../arrowtooltip.component';
 
 type SelectHeaderProps = TableHeaderProps & {
-  className: string;
+  sx: SxProps;
   loading: boolean;
   selectedRows: number[] | undefined;
   totalRowCount: number;
@@ -21,7 +21,7 @@ type SelectHeaderProps = TableHeaderProps & {
 const SelectHeader = React.memo(
   (props: SelectHeaderProps): React.ReactElement => {
     const {
-      className,
+      sx,
       selectedRows,
       totalRowCount,
       onCheck,
@@ -35,7 +35,7 @@ const SelectHeader = React.memo(
         size="small"
         padding="checkbox"
         component="div"
-        className={className}
+        sx={sx}
         variant="head"
       >
         <StyledTooltip
@@ -70,7 +70,7 @@ const SelectHeader = React.memo(
                 }
               }}
               // have to inherit as the padding="checkbox" is on the span
-              style={{ height: 20, padding: 'inherit' }}
+              sx={{ height: 20, padding: 'inherit' }}
             />
           </span>
         </StyledTooltip>

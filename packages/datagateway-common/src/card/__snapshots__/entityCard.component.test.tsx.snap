@@ -1,12 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Card renders correctly 1`] = `
-<WithStyles(ForwardRef(Card))
-  className="makeStyles-root-1"
+<ForwardRef(Card)
   data-testid="card"
+  sx={
+    Object {
+      "backgroundColor": "background.paper",
+      "display": "flex",
+      "width": "100%",
+    }
+  }
 >
-  <WithStyles(ForwardRef(CardContent))
-    style={
+  <ForwardRef(CardContent)
+    sx={
       Object {
         "minWidth": 0,
         "width": "100%",
@@ -14,10 +20,25 @@ exports[`Card renders correctly 1`] = `
     }
   >
     <div
-      className="makeStyles-highlight-3"
+      style={
+        Object {
+          "display": "flex",
+          "flexDirection": "row",
+        }
+      }
     >
-      <div
-        className="makeStyles-main-4"
+      <ForwardRef(Box)
+        sx={
+          Object {
+            "display": "flex",
+            "flexBasis": "45vw",
+            "flexDirection": "column",
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "minWidth": "30vw",
+            "paddingRight": "10px",
+          }
+        }
       >
         <div
           aria-label="main-content"
@@ -26,49 +47,54 @@ exports[`Card renders correctly 1`] = `
             enterDelay={500}
             title="Title"
           >
-            <WithStyles(ForwardRef(Typography))
-              className="makeStyles-title-5"
-              component="h5"
+            <ForwardRef(Typography)
+              aria-label="card-title"
+              noWrap={true}
+              sx={
+                Object {
+                  "display": "inline-block",
+                  "maxWidth": "100%",
+                  "overflow": "hidden",
+                  "textOverflow": "ellipsis",
+                }
+              }
               variant="h5"
             >
-              <span
-                aria-label="card-title"
-                style={
-                  Object {
-                    "whiteSpace": "nowrap",
-                  }
-                }
-              >
-                Title
-              </span>
-            </WithStyles(ForwardRef(Typography))>
+              Title
+            </ForwardRef(Typography)>
           </ArrowTooltip>
-          <div
-            className="makeStyles-description-6"
+          <ForwardRef(Box)
+            sx={
+              Object {
+                "& a": Object {
+                  "cursor": "pointer",
+                },
+              }
+            }
           >
-            <WithStyles(ForwardRef(Collapse))
-              collapsedHeight={100}
+            <ForwardRef(Collapse)
+              collapsedSize={100}
               in={false}
             >
-              <WithStyles(ForwardRef(Typography))
+              <ForwardRef(Typography)
                 aria-label="card-description"
                 paragraph={true}
                 variant="body1"
               >
                 entity_card.no_description
-              </WithStyles(ForwardRef(Typography))>
-            </WithStyles(ForwardRef(Collapse))>
-          </div>
+              </ForwardRef(Typography)>
+            </ForwardRef(Collapse)>
+          </ForwardRef(Box)>
         </div>
-      </div>
+      </ForwardRef(Box)>
       <div
         style={
           Object {
-            "paddingLeft": 15,
+            "paddingLeft": "15px",
           }
         }
       />
     </div>
-  </WithStyles(ForwardRef(CardContent))>
-</WithStyles(ForwardRef(Card))>
+  </ForwardRef(CardContent)>
+</ForwardRef(Card)>
 `;

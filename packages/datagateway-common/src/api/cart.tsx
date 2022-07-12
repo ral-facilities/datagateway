@@ -28,40 +28,24 @@ export const fetchDownloadCart = (config: {
     .then((response) => response.data.cartItems);
 };
 
-const addToCart = (
+const addOrRemoveFromCart = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   entityIds: number[],
-  config: { facilityName: string; downloadApiUrl: string }
+  config: { facilityName: string; downloadApiUrl: string },
+  remove?: boolean
 ): Promise<DownloadCartItem[]> => {
   const { facilityName, downloadApiUrl } = config;
   const params = new URLSearchParams();
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('items', `${entityType} ${entityIds.join(`, ${entityType} `)}`);
+  if (typeof remove !== 'undefined') {
+    params.append('remove', remove.toString());
+  }
 
   return axios
     .post<DownloadCart>(
       `${downloadApiUrl}/user/cart/${facilityName}/cartItems`,
       params
-    )
-    .then((response) => response.data.cartItems);
-};
-
-export const removeFromCart = (
-  entityType: 'investigation' | 'dataset' | 'datafile',
-  entityIds: number[],
-  config: { facilityName: string; downloadApiUrl: string }
-): Promise<DownloadCartItem[]> => {
-  const { facilityName, downloadApiUrl } = config;
-
-  return axios
-    .delete<DownloadCart>(
-      `${downloadApiUrl}/user/cart/${facilityName}/cartItems`,
-      {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-          items: `${entityType} ${entityIds.join(`, ${entityType} `)}`,
-        },
-      }
     )
     .then((response) => response.data.cartItems);
 };
@@ -106,7 +90,7 @@ export const useAddToCart = (
 
   return useMutation(
     (entityIds: number[]) =>
-      addToCart(entityType, entityIds, {
+      addOrRemoveFromCart(entityType, entityIds, {
         facilityName,
         downloadApiUrl,
       }),
@@ -114,10 +98,17 @@ export const useAddToCart = (
       onSuccess: (data) => {
         queryClient.setQueryData('cart', data);
       },
+      retry: (failureCount, error) => {
+        // if we get 431 we know this is an intermittent error so retry
+        if (error.code === '431' && failureCount < 3) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       onError: (error) => {
         handleICATError(error);
       },
-      retry: retryICATErrors,
     }
   );
 };
@@ -135,18 +126,30 @@ export const useRemoveFromCart = (
 
   return useMutation(
     (entityIds: number[]) =>
-      removeFromCart(entityType, entityIds, {
-        facilityName,
-        downloadApiUrl,
-      }),
+      addOrRemoveFromCart(
+        entityType,
+        entityIds,
+        {
+          facilityName,
+          downloadApiUrl,
+        },
+        true
+      ),
     {
       onSuccess: (data) => {
         queryClient.setQueryData('cart', data);
       },
+      retry: (failureCount, error) => {
+        // if we get 431 we know this is an intermittent error so retry
+        if (error.code === '431' && failureCount < 3) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       onError: (error) => {
         handleICATError(error);
       },
-      retry: retryICATErrors,
     }
   );
 };

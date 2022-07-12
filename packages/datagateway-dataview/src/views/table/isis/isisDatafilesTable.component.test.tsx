@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import ISISDatafilesTable from './isisDatafilesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -14,13 +13,18 @@ import {
   useRemoveFromCart,
   useDatafilesInfinite,
   DownloadButton,
+  ISISDatafileDetailsPanel,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -38,7 +42,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS datafiles table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Datafile[];
@@ -58,7 +61,6 @@ describe('ISIS datafiles table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -105,7 +107,6 @@ describe('ISIS datafiles table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -186,7 +187,7 @@ describe('ISIS datafiles table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by datafiles.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -205,6 +206,8 @@ describe('ISIS datafiles table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -223,6 +226,8 @@ describe('ISIS datafiles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -257,7 +262,7 @@ describe('ISIS datafiles table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -284,7 +289,7 @@ describe('ISIS datafiles table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -338,5 +343,13 @@ describe('ISIS datafiles table component', () => {
     const wrapper = createWrapper();
 
     expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
+  });
+
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(ISISDatafileDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+
+    expect(wrapper.find(ISISDatafileDetailsPanel).exists()).toBeTruthy();
   });
 });

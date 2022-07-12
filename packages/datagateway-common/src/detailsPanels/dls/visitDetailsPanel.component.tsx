@@ -2,14 +2,12 @@ import React from 'react';
 import {
   Typography,
   Grid,
-  createStyles,
-  makeStyles,
-  Theme,
   Divider,
   Tabs,
   Tab,
   Button,
-} from '@material-ui/core';
+  styled,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 import {
@@ -18,16 +16,13 @@ import {
 } from '../../api/investigations';
 import { Entity, Investigation } from '../../app.types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface VisitDetailsPanelProps {
   rowData: Entity;
@@ -42,8 +37,6 @@ const VisitDetailsPanel = (
     'details' | 'users' | 'samples' | 'publications'
   >('details');
   const [t] = useTranslation();
-
-  const classes = useStyles();
 
   const { data } = useInvestigationDetails(rowData.id);
   const { data: size, refetch: fetchSize } = useInvestigationSize(rowData.id);
@@ -61,6 +54,8 @@ const VisitDetailsPanel = (
     <div id="details-panel" style={{ minWidth: 0 }}>
       <Tabs
         variant="scrollable"
+        textColor="secondary"
+        indicatorColor="secondary"
         scrollButtons="auto"
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
@@ -103,12 +98,12 @@ const VisitDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{investigationData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -189,7 +184,7 @@ const VisitDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {investigationData.investigationUsers && (
         <div
@@ -198,7 +193,7 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'users'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.users.name', {
                 count: investigationData.investigationUsers.length,
@@ -226,7 +221,7 @@ const VisitDetailsPanel = (
                 <b>{t('investigations.details.users.no_name')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
       {investigationData.samples && (
@@ -236,7 +231,7 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'samples'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.samples.name', {
                 count: investigationData.samples.length,
@@ -257,7 +252,7 @@ const VisitDetailsPanel = (
                 <b>{t('investigations.details.samples.no_samples')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
       {investigationData.publications && (
@@ -267,7 +262,7 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'publications'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.publications.reference', {
                 count: investigationData.publications.length,
@@ -290,7 +285,7 @@ const VisitDetailsPanel = (
                 </b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

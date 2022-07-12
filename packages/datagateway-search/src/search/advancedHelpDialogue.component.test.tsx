@@ -1,12 +1,11 @@
 import React from 'react';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
 import AdvancedHelpDialogue from './advancedHelpDialogue.component';
 import { Provider, useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper, shallow } from 'enzyme';
 import { StateType } from '../state/app.types';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -16,14 +15,10 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('Advanced help dialogue component tests', () => {
-  let shallow;
-  let mount;
   let mockStore;
   let state: StateType;
 
   beforeEach(() => {
-    shallow = createShallow();
-    mount = createMount();
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
@@ -56,7 +51,7 @@ describe('Advanced help dialogue component tests', () => {
     const wrapper = createWrapper();
     wrapper
       .find('[aria-label="advanced_search_help.search_options_arialabel"]')
-      .first()
+      .last()
       .simulate('click');
     expect(
       wrapper
@@ -66,7 +61,7 @@ describe('Advanced help dialogue component tests', () => {
     ).toBe(true);
     wrapper
       .find('[aria-label="advanced_search_help.close_button_arialabel"]')
-      .first()
+      .last()
       .simulate('click');
     expect(
       wrapper

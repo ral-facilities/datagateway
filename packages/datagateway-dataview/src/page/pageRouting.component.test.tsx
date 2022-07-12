@@ -1,11 +1,10 @@
 import React from 'react';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 
-import { createMount } from '@material-ui/core/test-utils';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import PageRouting from './pageRouting.component';
 import { Provider } from 'react-redux';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
@@ -113,7 +112,6 @@ const DLSRoutes = {
 };
 
 describe('PageTable', () => {
-  let mount;
   let state: StateType;
   let history: History;
 
@@ -171,7 +169,6 @@ describe('PageTable', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory();
 
     state = JSON.parse(

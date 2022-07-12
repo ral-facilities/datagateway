@@ -1,7 +1,7 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { shallow } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
-import { Link } from '@material-ui/core';
+import { Link } from '@mui/material';
 import {
   formatBytes,
   datasetLink,
@@ -12,12 +12,6 @@ import {
 } from './cellContentRenderers';
 
 describe('Cell content renderers', () => {
-  let shallow;
-
-  beforeEach(() => {
-    shallow = createShallow({});
-  });
-
   describe('formatBytes', () => {
     it('converts to bytes correctly', () => {
       expect(formatBytes(10000)).toEqual('10 KB');

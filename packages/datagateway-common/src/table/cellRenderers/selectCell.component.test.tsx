@@ -1,9 +1,8 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { shallow } from 'enzyme';
 import SelectCell from './selectCell.component';
 
 describe('Select cell component', () => {
-  let shallow;
   const setLastChecked = jest.fn();
   const onCheck = jest.fn();
   const onUncheck = jest.fn();
@@ -27,7 +26,6 @@ describe('Select cell component', () => {
     isScrolling: false,
     rowIndex: 2,
     rowData: data[2],
-    className: 'test-class',
     selectedRows: [],
     data,
     lastChecked: -1,
@@ -35,11 +33,8 @@ describe('Select cell component', () => {
     setLastChecked,
     onCheck,
     onUncheck,
+    loading: false,
   };
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-  });
 
   afterEach(() => {
     setLastChecked.mockClear();

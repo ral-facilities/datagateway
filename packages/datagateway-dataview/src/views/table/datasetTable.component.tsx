@@ -1,7 +1,9 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import {
+  Subject,
+  ConfirmationNumber,
+  CalendarToday,
+} from '@mui/icons-material';
 import {
   Table,
   datasetLink,
@@ -22,7 +24,7 @@ import {
   useDatasetsDatafileCount,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
 import { TableCellProps, IndexRange } from 'react-virtualized';
@@ -105,7 +107,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps) => {
@@ -120,7 +122,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumberIcon,
+        icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
         dataKey: 'datafileCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -128,13 +130,13 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datasets.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,

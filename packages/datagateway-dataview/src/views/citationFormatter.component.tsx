@@ -1,37 +1,25 @@
 import {
   Box,
   CircularProgress,
-  createStyles,
   FormControl,
   FormHelperText,
-  makeStyles,
   MenuItem,
   Select,
-  Theme,
+  SelectChangeEvent,
+  styled,
   Typography,
-} from '@material-ui/core';
+  Button,
+} from '@mui/material';
 import { Mark } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from '@material-ui/core/Button';
 import axios, { AxiosError } from 'axios';
 import { FormattedUser } from './landing/isis/isisStudyLanding.component';
 import { useQuery, UseQueryResult } from 'react-query';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    subHeading: {
-      marginTop: theme.spacing(1),
-    },
-    formatSelect: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    spinner: {
-      marginLeft: theme.spacing(1),
-    },
-  })
-);
+const Subheading = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));
 
 const fetchCitation = (
   doi: string,
@@ -101,7 +89,6 @@ const CitationFormatter = (
   const { doi } = props;
 
   const [t] = useTranslation();
-  const classes = useStyles();
   const [copiedCitation, setCopiedCitation] = React.useState(false);
   const [format, setFormat] = React.useState('default');
   const { data: citation, isFetching: fetching, isError: error } = useCitation(
@@ -111,7 +98,7 @@ const CitationFormatter = (
     t('studies.details.citation_formatter.locale')
   );
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const handleChange = (event: SelectChangeEvent<string>): void => {
     setFormat(event.target.value as string);
   };
 
@@ -127,14 +114,9 @@ const CitationFormatter = (
 
   return (
     <Box className="tour-dataview-citation-formatter">
-      <Typography
-        className={classes.subHeading}
-        component="h6"
-        variant="h6"
-        data-testid="citation-formatter-title"
-      >
+      <Subheading variant="h6" data-testid="citation-formatter-title">
         {t('studies.details.citation_formatter.label')}
-      </Typography>
+      </Subheading>
       <Typography data-testid="citation-formatter-details">
         {t('studies.details.citation_formatter.details') +
           (doi
@@ -144,16 +126,17 @@ const CitationFormatter = (
             : '')}
       </Typography>
       {doi && (
-        <FormControl id="citation-formatter" error={error}>
+        <FormControl id="citation-formatter" error={error} variant="standard">
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Select
-              className={classes.formatSelect}
+              sx={{ my: 1 }}
               defaultValue="default"
               onChange={handleChange}
               aria-label={t(
                 'studies.details.citation_formatter.select_arialabel'
               )}
               aria-describedby="citation-formatter-error-message"
+              variant="standard"
             >
               <MenuItem value="default">
                 {t('studies.details.citation_formatter.default_format')}
@@ -168,7 +151,7 @@ const CitationFormatter = (
               <CircularProgress
                 data-testid="loading-spinner"
                 size={24}
-                className={classes.spinner}
+                sx={{ marginLeft: 1 }}
               />
             )}
           </div>

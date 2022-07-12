@@ -1,10 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Select cell component renders correctly when checked 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="body"
 >
   <StyledTooltip
     placement="right"
@@ -128,10 +129,11 @@ exports[`Select cell component renders correctly when selectedRows loading is tr
 `;
 
 exports[`Select cell component renders correctly when unchecked 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="body"
 >
   <StyledTooltip
     placement="right"

@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import DatafileSearchTable from './datafileSearchTable.component';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
@@ -17,16 +16,18 @@ import {
   ISISDatafileDetailsPanel,
   DatafileDetailsPanel,
   DLSDatafileDetailsPanel,
+  dGCommonInitialState,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
-import { dGCommonInitialState } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -47,7 +48,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Datafile search table component', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
@@ -67,7 +67,6 @@ describe('Datafile search table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory();
 
     state = JSON.parse(
@@ -171,7 +170,6 @@ describe('Datafile search table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -259,7 +257,7 @@ describe('Datafile search table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by datafiles.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -278,6 +276,8 @@ describe('Datafile search table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -296,6 +296,8 @@ describe('Datafile search table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -320,7 +322,7 @@ describe('Datafile search table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -347,7 +349,7 @@ describe('Datafile search table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -400,7 +402,7 @@ describe('Datafile search table component', () => {
   it('displays generic details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(DatafileDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(DatafileDetailsPanel).exists()).toBeTruthy();
   });
@@ -408,32 +410,17 @@ describe('Datafile search table component', () => {
   it('displays correct details panel for ISIS when expanded', () => {
     const wrapper = createWrapper('isis');
     expect(wrapper.find(ISISDatafileDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
     expect(wrapper.find(ISISDatafileDetailsPanel).exists()).toBeTruthy();
   });
 
   it('displays correct details panel for DLS when expanded', () => {
     const wrapper = createWrapper('dls');
     expect(wrapper.find(DLSDatafileDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(DLSDatafileDetailsPanel).exists()).toBeTruthy();
   });
-
-  // Not necessary as this should be a test of the formatBytes function
-  // it('renders file size as bytes', () => {
-  //   const wrapper = mount(
-  //     <Provider store={mockStore(state)}>
-  //       <MemoryRouter>
-  //         <DatafileSearchTable />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
-
-  //   expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('1 B');
-  // });
-
-  // new tests
 
   it('renders fine with incomplete data', () => {
     // this can happen when navigating between tables and the previous table's state still exists

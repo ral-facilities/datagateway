@@ -1,7 +1,3 @@
-import {
-  createGenerateClassName,
-  StylesProvider,
-} from '@material-ui/core/styles';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import {
   DGCommonMiddleware,
@@ -79,15 +75,6 @@ history.listen = (fn) => {
 };
 
 const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
-
-const generateClassName = createGenerateClassName({
-  productionPrefix: 'dgws',
-
-  // Only set disable when we are in production and not running e2e tests;
-  // ensures class selectors are working on tests.
-  disableGlobal:
-    process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
-});
 
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -187,19 +174,17 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={this.store}>
             <ConnectedRouter history={history}>
               <QueryClientProvider client={queryClient}>
-                <StylesProvider generateClassName={generateClassName}>
-                  <DGThemeProvider>
-                    <ConnectedPreloader>
-                      <React.Suspense
-                        fallback={
-                          <Preloader loading={true}>Finished loading</Preloader>
-                        }
-                      >
-                        <SearchPageContainer />
-                      </React.Suspense>
-                    </ConnectedPreloader>
-                  </DGThemeProvider>
-                </StylesProvider>
+                <DGThemeProvider>
+                  <ConnectedPreloader>
+                    <React.Suspense
+                      fallback={
+                        <Preloader loading={true}>Finished loading</Preloader>
+                      }
+                    >
+                      <SearchPageContainer />
+                    </React.Suspense>
+                  </ConnectedPreloader>
+                </DGThemeProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
               </QueryClientProvider>
             </ConnectedRouter>

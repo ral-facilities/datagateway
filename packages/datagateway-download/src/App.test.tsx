@@ -1,27 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { createMount } from '@material-ui/core/test-utils';
-import { mount as enzymeMount } from 'enzyme';
+import { mount } from 'enzyme';
 import * as log from 'loglevel';
 import { act } from 'react-dom/test-utils';
-import { StylesProvider } from '@material-ui/core/styles';
 import { flushPromises } from './setupTests';
+import { StyledEngineProvider } from '@mui/material/styles';
 
 jest.mock('loglevel');
 jest.mock('./ConfigProvider');
 
 describe('App', () => {
-  let mount: typeof enzymeMount;
-
-  beforeAll(() => {
-    mount = createMount();
-  });
-
-  afterAll(() => {
-    mount.cleanUp();
-  });
-
   it('renders without crashing', async () => {
     const div = document.createElement('div');
 
@@ -42,7 +31,7 @@ describe('App', () => {
       await flushPromises();
     });
 
-    wrapper.find(StylesProvider).simulateError(error);
+    wrapper.find(StyledEngineProvider).simulateError(error);
 
     expect(wrapper.exists('.error')).toBe(true);
 

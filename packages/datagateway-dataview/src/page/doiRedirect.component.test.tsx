@@ -1,5 +1,5 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import { mount } from 'enzyme';
 import {
   Investigation,
   Instrument,
@@ -9,7 +9,7 @@ import {
   useInstrumentsPaginated,
   NotificationType,
 } from 'datagateway-common';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import DoiRedirect from './doiRedirect.component';
@@ -45,7 +45,6 @@ jest.mock('react-router-dom', () => {
 });
 
 describe('DOI Redirect page', () => {
-  let mount;
   let history;
   let mockInvestigationData: Investigation[] = [];
   let mockInstrumentData: Instrument[] = [];
@@ -62,8 +61,6 @@ describe('DOI Redirect page', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
-
     history = createMemoryHistory({
       initialEntries: [createLocation('/doi-redirect/LILS/investigation/1')],
     });
@@ -108,7 +105,6 @@ describe('DOI Redirect page', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 

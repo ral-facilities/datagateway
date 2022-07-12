@@ -1,17 +1,17 @@
 import React from 'react';
 import { TableCellProps } from 'react-virtualized';
-import { TableCell, Checkbox } from '@material-ui/core';
+import { TableCell, Checkbox, SxProps } from '@mui/material';
 import {
   CheckBoxOutlineBlank,
   CheckBox as CheckBoxIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { Entity, ICATEntity } from '../../app.types';
 import { StyledTooltip } from '../../arrowtooltip.component';
 
 type SelectCellProps = TableCellProps & {
   selectedRows: number[] | undefined;
   data: Entity[];
-  className: string;
+  sx: SxProps;
   onCheck: (selectedIndexes: number[]) => void;
   onUncheck: (selectedIndexes: number[]) => void;
   lastChecked: number;
@@ -22,7 +22,7 @@ type SelectCellProps = TableCellProps & {
 const SelectCell = React.memo(
   (props: SelectCellProps): React.ReactElement => {
     const {
-      className,
+      sx,
       selectedRows,
       data,
       onCheck,
@@ -39,7 +39,7 @@ const SelectCell = React.memo(
         size="small"
         padding="checkbox"
         component="div"
-        className={className}
+        sx={sx}
         variant="body"
       >
         <StyledTooltip

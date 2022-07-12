@@ -12,7 +12,7 @@ import {
   ClearFiltersButton,
 } from 'datagateway-common';
 
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 import { createLocation, createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 
@@ -139,17 +139,17 @@ describe('PageContainer - Tests', () => {
   it('opens search plugin when icon clicked', () => {
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+    wrapper.find('[aria-label="view-search"]').last().simulate('click');
 
     expect(history.location.pathname).toBe('/search/data');
 
     history.push('/browse/instrument');
-    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+    wrapper.find('[aria-label="view-search"]').last().simulate('click');
 
     expect(history.location.pathname).toBe('/search/isis');
 
     history.push('/browse/proposal');
-    wrapper.find('[aria-label="view-search"]').first().simulate('click');
+    wrapper.find('[aria-label="view-search"]').last().simulate('click');
 
     expect(history.location.pathname).toBe('/search/dls');
   });
@@ -157,7 +157,7 @@ describe('PageContainer - Tests', () => {
   it('opens download plugin when Download Cart clicked', () => {
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="app.cart_arialabel"]').first().simulate('click');
+    wrapper.find('[aria-label="app.cart_arialabel"]').last().simulate('click');
 
     expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/download');
@@ -186,7 +186,7 @@ describe('PageContainer - Tests', () => {
 
     wrapper
       .find('[data-testid="clear-filters-button"]')
-      .first()
+      .last()
       .simulate('click');
 
     wrapper.update();
@@ -210,7 +210,7 @@ describe('PageContainer - Tests', () => {
 
     wrapper
       .find('[data-testid="clear-filters-button"]')
-      .first()
+      .last()
       .simulate('click');
 
     wrapper.update();
@@ -263,7 +263,7 @@ describe('PageContainer - Tests', () => {
     // Click view button
     wrapper
       .find('[aria-label="page view app.view_cards"]')
-      .first()
+      .last()
       .simulate('click');
     wrapper.update();
 

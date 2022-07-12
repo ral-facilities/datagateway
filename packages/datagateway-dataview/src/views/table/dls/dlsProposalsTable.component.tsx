@@ -13,7 +13,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import SubjectIcon from '@material-ui/icons/Subject';
+import SubjectIcon from '@mui/icons-material/Subject';
 
 const DLSProposalsTable = (): React.ReactElement => {
   const location = useLocation();
@@ -84,7 +84,8 @@ const DLSProposalsTable = (): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${cellProps.rowData.name}/investigation`,
             cellProps.rowData.name,
-            view
+            view,
+            'dls-proposals-table-name'
           );
         },
         filterComponent: textFilter,
