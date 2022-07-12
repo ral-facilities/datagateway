@@ -12,7 +12,7 @@ exports[`Select cell component renders correctly when checked 1`] = `
     title=""
   >
     <span>
-      <WithStyles(ForwardRef(Checkbox))
+      <ForwardRef(Checkbox)
         checked={true}
         checkedIcon={
           <Memo
@@ -41,21 +41,22 @@ exports[`Select cell component renders correctly when checked 1`] = `
       />
     </span>
   </StyledTooltip>
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Select cell component renders correctly when selectedRows is undefined 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="body"
 >
   <StyledTooltip
     placement="right"
-    title="Selection information failed to load, please reload the page or try again later"
+    title="buttons.cart_loading_failed_tooltip"
   >
     <span>
-      <WithStyles(ForwardRef(Checkbox))
+      <ForwardRef(Checkbox)
         checkedIcon={
           <Memo
             fontSize="small"
@@ -83,21 +84,22 @@ exports[`Select cell component renders correctly when selectedRows is undefined 
       />
     </span>
   </StyledTooltip>
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Select cell component renders correctly when selectedRows loading is true 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="body"
 >
   <StyledTooltip
     placement="right"
-    title=""
+    title="buttons.cart_loading_tooltip"
   >
     <span>
-      <WithStyles(ForwardRef(Checkbox))
+      <ForwardRef(Checkbox)
         checkedIcon={
           <Memo
             fontSize="small"
@@ -125,7 +127,7 @@ exports[`Select cell component renders correctly when selectedRows loading is tr
       />
     </span>
   </StyledTooltip>
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Select cell component renders correctly when unchecked 1`] = `
@@ -140,7 +142,7 @@ exports[`Select cell component renders correctly when unchecked 1`] = `
     title=""
   >
     <span>
-      <WithStyles(ForwardRef(Checkbox))
+      <ForwardRef(Checkbox)
         checked={false}
         checkedIcon={
           <Memo
@@ -169,5 +171,5 @@ exports[`Select cell component renders correctly when unchecked 1`] = `
       />
     </span>
   </StyledTooltip>
-</div>
+</ForwardRef(TableCell)>
 `;

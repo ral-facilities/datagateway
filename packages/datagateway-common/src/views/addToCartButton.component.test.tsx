@@ -77,6 +77,7 @@ describe('Generic add to cart button', () => {
       entityType: 'investigation',
     });
     expect(wrapper.find('button').text()).toBe('buttons.add_to_cart');
+    expect(wrapper.find('StyledTooltip').prop('title')).toEqual('');
   });
 
   it('renders as disabled when cart is loading', () => {
@@ -90,7 +91,9 @@ describe('Generic add to cart button', () => {
       entityType: 'investigation',
     });
     expect(wrapper.find('button').prop('disabled')).toBe(true);
-    expect(wrapper.find('StyledTooltip').prop('title')).toEqual('');
+    expect(wrapper.find('StyledTooltip').prop('title')).toEqual(
+      'buttons.cart_loading_tooltip'
+    );
   });
 
   it('renders as disabled with tooltip when cart does not load', () => {
@@ -104,7 +107,9 @@ describe('Generic add to cart button', () => {
       entityType: 'investigation',
     });
     expect(wrapper.find('button').prop('disabled')).toBe(true);
-    expect(wrapper.find('StyledTooltip').prop('title')).not.toEqual('');
+    expect(wrapper.find('StyledTooltip').prop('title')).toEqual(
+      'buttons.cart_loading_failed_tooltip'
+    );
   });
 
   it('calls addToCart action on button press with item not in cart', () => {
