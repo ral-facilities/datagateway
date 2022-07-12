@@ -1495,7 +1495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@craco/craco@npm:^6.4.3":
+"@craco/craco@npm:6.4.3":
   version: 6.4.3
   resolution: "@craco/craco@npm:6.4.3"
   dependencies:
@@ -1630,7 +1630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@date-io/date-fns@npm:^1.3.13":
+"@date-io/date-fns@npm:1.3.13":
   version: 1.3.13
   resolution: "@date-io/date-fns@npm:1.3.13"
   dependencies:
@@ -1755,7 +1755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.8.1":
+"@emotion/react@npm:11.8.1":
   version: 11.8.1
   resolution: "@emotion/react@npm:11.8.1"
   dependencies:
@@ -1799,7 +1799,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.8.1":
+"@emotion/styled@npm:11.8.1":
   version: 11.8.1
   resolution: "@emotion/styled@npm:11.8.1"
   dependencies:
@@ -2963,7 +2963,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^5.5.0":
+"@mui/icons-material@npm:5.5.0":
   version: 5.5.0
   resolution: "@mui/icons-material@npm:5.5.0"
   dependencies:
@@ -2979,7 +2979,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/lab@npm:^5.0.0-alpha.72":
+"@mui/lab@npm:5.0.0-alpha.72":
   version: 5.0.0-alpha.72
   resolution: "@mui/lab@npm:5.0.0-alpha.72"
   dependencies:
@@ -3020,7 +3020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^5.5.0":
+"@mui/material@npm:5.5.0":
   version: 5.5.0
   resolution: "@mui/material@npm:5.5.0"
   dependencies:
@@ -3704,7 +3704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react-hooks@npm:^7.0.1":
+"@testing-library/react-hooks@npm:7.0.1":
   version: 7.0.1
   resolution: "@testing-library/react-hooks@npm:7.0.1"
   dependencies:
@@ -3726,7 +3726,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^12.1.3":
+"@testing-library/react@npm:12.1.3":
   version: 12.1.3
   resolution: "@testing-library/react@npm:12.1.3"
   dependencies:
@@ -3884,7 +3884,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/enzyme@npm:^3.10.10":
+"@types/enzyme@npm:3.10.10":
   version: 3.10.10
   resolution: "@types/enzyme@npm:3.10.10"
   dependencies:
@@ -3970,7 +3970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/history@npm:*, @types/history@npm:^4.7.11":
+"@types/history@npm:*, @types/history@npm:4.7.11, @types/history@npm:^4.7.11":
   version: 4.7.11
   resolution: "@types/history@npm:4.7.11"
   checksum: c92e2ba407dcab0581a9afdf98f533aa41b61a71133420a6d92b1ca9839f741ab1f9395b17454ba5b88cb86020b70b22d74a1950ccfbdfd9beeaa5459fdc3464
@@ -4028,7 +4028,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^27.4.0":
+"@types/jest@npm:27.4.0":
   version: 27.4.0
   resolution: "@types/jest@npm:27.4.0"
   dependencies:
@@ -4052,14 +4052,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsrsasign@npm:^9.0.3":
+"@types/jsrsasign@npm:9.0.3":
   version: 9.0.3
   resolution: "@types/jsrsasign@npm:9.0.3"
   checksum: 9c181ca6e3600fafd8a131cdabad1cae8d9b184bf6634d1509f3ad6ae31ae8a90f17b04409f3fde0794a6c0dfe4bf7aa91765cfa4c0f1ad3b9eca05b61dca62a
   languageName: node
   linkType: hard
 
-"@types/lodash.chunk@npm:^4.2.6":
+"@types/lodash.chunk@npm:4.2.6":
   version: 4.2.6
   resolution: "@types/lodash.chunk@npm:4.2.6"
   dependencies:
@@ -4068,7 +4068,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.debounce@npm:^4.0.6":
+"@types/lodash.debounce@npm:4.0.6":
   version: 4.0.6
   resolution: "@types/lodash.debounce@npm:4.0.6"
   dependencies:
@@ -4077,7 +4077,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.memoize@npm:^4.1.6":
+"@types/lodash.memoize@npm:4.1.6":
   version: 4.1.6
   resolution: "@types/lodash.memoize@npm:4.1.6"
   dependencies:
@@ -4114,7 +4114,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^17.0.17":
+"@types/node@npm:*, @types/node@npm:17.0.17":
   version: 17.0.17
   resolution: "@types/node@npm:17.0.17"
   checksum: 8ddba2829acdf1684fbd8fd248ec13f033efb70ecd1085677b547c40ef8e936a006b95eac3bdc28c47939c62526f3f027afeb4a930e30e4394923bbae4626476
@@ -4177,7 +4177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:*, @types/react-dom@npm:>=16.9.0, @types/react-dom@npm:^17.0.9":
+"@types/react-dom@npm:*, @types/react-dom@npm:17.0.11, @types/react-dom@npm:>=16.9.0":
   version: 17.0.11
   resolution: "@types/react-dom@npm:17.0.11"
   dependencies:
@@ -4195,7 +4195,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-redux@npm:^7.1.19, @types/react-redux@npm:^7.1.20":
+"@types/react-redux@npm:7.1.22, @types/react-redux@npm:^7.1.20":
   version: 7.1.22
   resolution: "@types/react-redux@npm:7.1.22"
   dependencies:
@@ -4207,7 +4207,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-router-dom@npm:^5.3.3":
+"@types/react-router-dom@npm:5.3.3":
   version: 5.3.3
   resolution: "@types/react-router-dom@npm:5.3.3"
   dependencies:
@@ -4246,7 +4246,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-virtualized@npm:^9.21.10":
+"@types/react-virtualized@npm:9.21.10":
   version: 9.21.10
   resolution: "@types/react-virtualized@npm:9.21.10"
   dependencies:
@@ -4256,7 +4256,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:>=16.9.0, @types/react@npm:^17.0.29":
+"@types/react@npm:*, @types/react@npm:17.0.39, @types/react@npm:>=16.9.0":
   version: 17.0.39
   resolution: "@types/react@npm:17.0.39"
   dependencies:
@@ -4267,7 +4267,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/redux-logger@npm:^3.0.8":
+"@types/redux-logger@npm:3.0.8":
   version: 3.0.8
   resolution: "@types/redux-logger@npm:3.0.8"
   dependencies:
@@ -4276,7 +4276,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/redux-mock-store@npm:^1.0.3":
+"@types/redux-mock-store@npm:1.0.3":
   version: 1.0.3
   resolution: "@types/redux-mock-store@npm:1.0.3"
   dependencies:
@@ -4398,7 +4398,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.5.0":
+"@typescript-eslint/eslint-plugin@npm:5.11.0, @typescript-eslint/eslint-plugin@npm:^5.5.0":
   version: 5.11.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.11.0"
   dependencies:
@@ -4432,7 +4432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.5.0":
+"@typescript-eslint/parser@npm:5.11.0, @typescript-eslint/parser@npm:^5.5.0":
   version: 5.11.0
   resolution: "@typescript-eslint/parser@npm:5.11.0"
   dependencies:
@@ -4677,7 +4677,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@welldone-software/why-did-you-render@npm:^6.2.3":
+"@welldone-software/why-did-you-render@npm:6.2.3":
   version: 6.2.3
   resolution: "@welldone-software/why-did-you-render@npm:6.2.3"
   dependencies:
@@ -4688,7 +4688,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wojtekmaj/enzyme-adapter-react-17@npm:^0.6.3, @wojtekmaj/enzyme-adapter-react-17@npm:^0.6.6":
+"@wojtekmaj/enzyme-adapter-react-17@npm:0.6.6":
   version: 0.6.6
   resolution: "@wojtekmaj/enzyme-adapter-react-17@npm:0.6.6"
   dependencies:
@@ -5350,21 +5350,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:0.26.0":
+  version: 0.26.0
+  resolution: "axios@npm:0.26.0"
+  dependencies:
+    follow-redirects: ^1.14.8
+  checksum: d7a8b898f4157bedeb2e06c03b16133b91b354c041205bea732ce58b7a21f373d22057b0eea0d482838145ce6ff482b359750d9bcb8dd19d45e3928e3c65c280
+  languageName: node
+  linkType: hard
+
 "axios@npm:^0.21.1":
   version: 0.21.4
   resolution: "axios@npm:0.21.4"
   dependencies:
     follow-redirects: ^1.14.0
   checksum: 44245f24ac971e7458f3120c92f9d66d1fc695e8b97019139de5b0cc65d9b8104647db01e5f46917728edfc0cfd88eb30fc4c55e6053eef4ace76768ce95ff3c
-  languageName: node
-  linkType: hard
-
-"axios@npm:^0.26.0":
-  version: 0.26.0
-  resolution: "axios@npm:0.26.0"
-  dependencies:
-    follow-redirects: ^1.14.8
-  checksum: d7a8b898f4157bedeb2e06c03b16133b91b354c041205bea732ce58b7a21f373d22057b0eea0d482838145ce6ff482b359750d9bcb8dd19d45e3928e3c65c280
   languageName: node
   linkType: hard
 
@@ -6539,7 +6539,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connected-react-router@npm:^6.9.1":
+"connected-react-router@npm:6.9.1":
   version: 6.9.1
   resolution: "connected-react-router@npm:6.9.1"
   dependencies:
@@ -6795,7 +6795,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-env@npm:^7.0.3":
+"cross-env@npm:7.0.3":
   version: 7.0.3
   resolution: "cross-env@npm:7.0.3"
   dependencies:
@@ -7139,14 +7139,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"custom-event-polyfill@npm:^1.0.7":
+"custom-event-polyfill@npm:1.0.7":
   version: 1.0.7
   resolution: "custom-event-polyfill@npm:1.0.7"
   checksum: f9ff2cf13e482a75b3cf83dce9e2c6e3063c5ac1b9c23ac440e4f27e875b0873445b11811237f3f30aeb1216e9ad20f9f9d30ccf5b1b658a4e50dd0b3e67b629
   languageName: node
   linkType: hard
 
-"cypress-failed-log@npm:^2.9.1":
+"cypress-failed-log@npm:2.9.1":
   version: 2.9.1
   resolution: "cypress-failed-log@npm:2.9.1"
   dependencies:
@@ -7246,59 +7246,59 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-common@workspace:packages/datagateway-common"
   dependencies:
-    "@date-io/date-fns": ^1.3.13
-    "@emotion/react": ^11.8.1
-    "@emotion/styled": ^11.8.1
-    "@mui/icons-material": ^5.5.0
-    "@mui/lab": ^5.0.0-alpha.72
-    "@mui/material": ^5.5.0
-    "@testing-library/react": ^12.1.3
-    "@testing-library/react-hooks": ^7.0.1
-    "@types/enzyme": ^3.10.10
-    "@types/jest": ^27.4.0
-    "@types/lodash.debounce": ^4.0.6
-    "@types/node": ^17.0.17
-    "@types/react": ^17.0.29
-    "@types/react-router-dom": ^5.3.3
-    "@types/react-virtualized": ^9.21.10
-    "@typescript-eslint/eslint-plugin": ^5.5.0
-    "@typescript-eslint/parser": ^5.5.0
-    "@wojtekmaj/enzyme-adapter-react-17": ^0.6.6
-    axios: ^0.26.0
+    "@date-io/date-fns": 1.3.13
+    "@emotion/react": 11.8.1
+    "@emotion/styled": 11.8.1
+    "@mui/icons-material": 5.5.0
+    "@mui/lab": 5.0.0-alpha.72
+    "@mui/material": 5.5.0
+    "@testing-library/react": 12.1.3
+    "@testing-library/react-hooks": 7.0.1
+    "@types/enzyme": 3.10.10
+    "@types/jest": 27.4.0
+    "@types/lodash.debounce": 4.0.6
+    "@types/node": 17.0.17
+    "@types/react": 17.0.39
+    "@types/react-router-dom": 5.3.3
+    "@types/react-virtualized": 9.21.10
+    "@typescript-eslint/eslint-plugin": 5.11.0
+    "@typescript-eslint/parser": 5.11.0
+    "@wojtekmaj/enzyme-adapter-react-17": 0.6.6
+    axios: 0.26.0
     babel-eslint: 10.1.0
-    connected-react-router: ^6.9.1
-    date-fns: ^2.28.0
-    enzyme: ^3.10.0
-    enzyme-to-json: ^3.6.1
-    eslint: ^8.9.0
-    eslint-config-prettier: ^8.3.0
-    eslint-config-react-app: ^7.0.0
-    eslint-plugin-cypress: ^2.12.1
-    eslint-plugin-prettier: ^3.3.1
-    hex-to-rgba: ^2.0.1
-    history: ^4.10.1
-    i18next: ^21.6.13
-    lint-staged: ^10.5.4
-    lodash.debounce: ^4.0.8
-    loglevel: ^1.8.0
-    prettier: ^2.2.1
+    connected-react-router: 6.9.1
+    date-fns: 2.28.0
+    enzyme: 3.11.0
+    enzyme-to-json: 3.6.1
+    eslint: 8.9.0
+    eslint-config-prettier: 8.3.0
+    eslint-config-react-app: 7.0.0
+    eslint-plugin-cypress: 2.12.1
+    eslint-plugin-prettier: 3.3.1
+    hex-to-rgba: 2.0.1
+    history: 4.10.1
+    i18next: 21.6.13
+    lint-staged: 10.5.4
+    lodash.debounce: 4.0.8
+    loglevel: 1.8.0
+    prettier: 2.2.1
     react: 17.0.2
     react-dom: 17.0.2
-    react-draggable: ^4.4.3
-    react-i18next: ^11.15.4
-    react-query: ^3.18.1
-    react-redux: ^7.2.5
-    react-router-dom: ^5.3.0
+    react-draggable: 4.4.3
+    react-i18next: 11.15.4
+    react-query: 3.18.1
+    react-redux: 7.2.6
+    react-router-dom: 5.3.0
     react-scripts: 5.0.0
     react-test-renderer: 17.0.2
-    react-virtualized: ^9.22.3
-    redux: ^4.1.2
-    redux-mock-store: ^1.5.4
-    redux-thunk: ^2.4.1
-    resize-observer-polyfill: ^1.5.1
-    tslib: ^2.3.0
+    react-virtualized: 9.22.3
+    redux: 4.1.2
+    redux-mock-store: 1.5.4
+    redux-thunk: 2.4.1
+    resize-observer-polyfill: 1.5.1
+    tslib: 2.3.1
     typescript: 4.5.3
-    use-deep-compare-effect: ^1.8.1
+    use-deep-compare-effect: 1.8.1
   peerDependencies:
     "@mui/icons-material": ">= 5.5.0 < 6"
     "@mui/material": ">= 5.5.0 < 6"
@@ -7312,76 +7312,76 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-dataview@workspace:packages/datagateway-dataview"
   dependencies:
-    "@craco/craco": ^6.4.3
-    "@emotion/react": ^11.8.1
-    "@emotion/styled": ^11.8.1
-    "@mui/icons-material": ^5.5.0
-    "@mui/material": ^5.5.0
-    "@testing-library/react": ^12.1.3
-    "@types/enzyme": ^3.10.10
-    "@types/history": ^4.7.11
-    "@types/jest": ^27.4.0
-    "@types/jsrsasign": ^9.0.3
-    "@types/lodash.debounce": ^4.0.6
-    "@types/lodash.memoize": ^4.1.6
-    "@types/node": ^17.0.17
-    "@types/react": ^17.0.29
-    "@types/react-dom": ^17.0.9
-    "@types/react-redux": ^7.1.19
-    "@types/react-router-dom": ^5.3.3
-    "@types/react-virtualized": ^9.21.10
-    "@types/redux-logger": ^3.0.8
-    "@types/redux-mock-store": ^1.0.3
-    "@typescript-eslint/eslint-plugin": ^5.5.0
-    "@typescript-eslint/parser": ^5.5.0
-    "@welldone-software/why-did-you-render": ^6.2.3
-    "@wojtekmaj/enzyme-adapter-react-17": ^0.6.3
-    axios: ^0.26.0
+    "@craco/craco": 6.4.3
+    "@emotion/react": 11.8.1
+    "@emotion/styled": 11.8.1
+    "@mui/icons-material": 5.5.0
+    "@mui/material": 5.5.0
+    "@testing-library/react": 12.1.3
+    "@types/enzyme": 3.10.10
+    "@types/history": 4.7.11
+    "@types/jest": 27.4.0
+    "@types/jsrsasign": 9.0.3
+    "@types/lodash.debounce": 4.0.6
+    "@types/lodash.memoize": 4.1.6
+    "@types/node": 17.0.17
+    "@types/react": 17.0.39
+    "@types/react-dom": 17.0.11
+    "@types/react-redux": 7.1.22
+    "@types/react-router-dom": 5.3.3
+    "@types/react-virtualized": 9.21.10
+    "@types/redux-logger": 3.0.8
+    "@types/redux-mock-store": 1.0.3
+    "@typescript-eslint/eslint-plugin": 5.11.0
+    "@typescript-eslint/parser": 5.11.0
+    "@welldone-software/why-did-you-render": 6.2.3
+    "@wojtekmaj/enzyme-adapter-react-17": 0.6.6
+    axios: 0.26.0
     babel-eslint: 10.1.0
-    connected-react-router: ^6.9.1
-    cross-env: ^7.0.3
-    custom-event-polyfill: ^1.0.7
+    connected-react-router: 6.9.1
+    cross-env: 7.0.3
+    custom-event-polyfill: 1.0.7
     cypress: 9.5.1
-    cypress-failed-log: ^2.9.1
+    cypress-failed-log: 2.9.1
     datagateway-common: ^1.1.0
-    date-fns: ^2.28.0
-    enzyme: ^3.10.0
-    enzyme-to-json: ^3.6.1
-    eslint: ^8.9.0
-    eslint-config-prettier: ^8.3.0
-    eslint-config-react-app: ^7.0.0
-    eslint-plugin-cypress: ^2.12.1
-    eslint-plugin-prettier: ^3.3.1
-    express: ^4.17.1
-    history: ^4.10.1
-    i18next: ^21.6.13
-    i18next-browser-languagedetector: ^6.1.2
-    i18next-http-backend: ^1.3.2
-    jsrsasign: ^10.5.25
-    lint-staged: ^10.5.4
-    lodash.debounce: ^4.0.8
-    lodash.memoize: ^4.1.2
-    loglevel: ^1.8.0
-    prettier: ^2.2.1
-    react: ^17.0.2
-    react-app-polyfill: ^3.0.0
-    react-dom: ^17.0.2
-    react-i18next: ^11.15.4
-    react-query: ^3.18.1
-    react-redux: ^7.2.5
-    react-router-dom: ^5.3.0
+    date-fns: 2.28.0
+    enzyme: 3.11.0
+    enzyme-to-json: 3.6.1
+    eslint: 8.9.0
+    eslint-config-prettier: 8.3.0
+    eslint-config-react-app: 7.0.0
+    eslint-plugin-cypress: 2.12.1
+    eslint-plugin-prettier: 3.3.1
+    express: 4.17.1
+    history: 4.10.1
+    i18next: 21.6.13
+    i18next-browser-languagedetector: 6.1.2
+    i18next-http-backend: 1.3.2
+    jsrsasign: 10.5.25
+    lint-staged: 10.5.4
+    lodash.debounce: 4.0.8
+    lodash.memoize: 4.1.2
+    loglevel: 1.8.0
+    prettier: 2.2.1
+    react: 17.0.2
+    react-app-polyfill: 3.0.0
+    react-dom: 17.0.2
+    react-i18next: 11.15.4
+    react-query: 3.18.1
+    react-redux: 7.2.6
+    react-router-dom: 5.3.0
     react-scripts: 5.0.0
-    react-virtualized: ^9.22.3
-    redux: ^4.1.2
-    redux-logger: ^3.0.6
-    redux-mock-store: ^1.5.4
-    redux-thunk: ^2.4.1
-    serve: ^13.0.2
-    single-spa-react: ^4.3.1
-    start-server-and-test: ^1.14.0
-    tslib: ^2.3.0
+    react-virtualized: 9.22.3
+    redux: 4.1.2
+    redux-logger: 3.0.6
+    redux-mock-store: 1.5.4
+    redux-thunk: 2.4.1
+    serve: 13.0.2
+    single-spa-react: 4.3.1
+    start-server-and-test: 1.14.0
+    tslib: 2.3.1
     typescript: 4.5.3
-    url-search-params-polyfill: ^8.1.1
+    url-search-params-polyfill: 8.1.1
   languageName: unknown
   linkType: soft
 
@@ -7389,61 +7389,61 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-download@workspace:packages/datagateway-download"
   dependencies:
-    "@craco/craco": ^6.4.3
-    "@emotion/react": ^11.8.1
-    "@emotion/styled": ^11.8.1
-    "@mui/icons-material": ^5.5.0
-    "@mui/lab": ^5.0.0-alpha.72
-    "@mui/material": ^5.5.0
-    "@testing-library/react": ^12.1.3
-    "@testing-library/react-hooks": ^7.0.1
-    "@types/jest": ^27.4.0
-    "@types/jsrsasign": ^9.0.3
-    "@types/lodash.chunk": ^4.2.6
-    "@types/node": ^17.0.17
-    "@types/react": ^17.0.29
-    "@types/react-dom": ^17.0.9
-    "@types/react-router-dom": ^5.3.3
-    "@types/react-virtualized": ^9.21.10
-    "@typescript-eslint/eslint-plugin": ^5.5.0
-    "@typescript-eslint/parser": ^5.5.0
-    "@wojtekmaj/enzyme-adapter-react-17": ^0.6.3
-    axios: ^0.26.0
+    "@craco/craco": 6.4.3
+    "@emotion/react": 11.8.1
+    "@emotion/styled": 11.8.1
+    "@mui/icons-material": 5.5.0
+    "@mui/lab": 5.0.0-alpha.72
+    "@mui/material": 5.5.0
+    "@testing-library/react": 12.1.3
+    "@testing-library/react-hooks": 7.0.1
+    "@types/jest": 27.4.0
+    "@types/jsrsasign": 9.0.3
+    "@types/lodash.chunk": 4.2.6
+    "@types/node": 17.0.17
+    "@types/react": 17.0.39
+    "@types/react-dom": 17.0.11
+    "@types/react-router-dom": 5.3.3
+    "@types/react-virtualized": 9.21.10
+    "@typescript-eslint/eslint-plugin": 5.11.0
+    "@typescript-eslint/parser": 5.11.0
+    "@wojtekmaj/enzyme-adapter-react-17": 0.6.6
+    axios: 0.26.0
     babel-eslint: 10.1.0
-    cross-env: ^7.0.3
+    cross-env: 7.0.3
     cypress: 9.5.1
-    cypress-failed-log: ^2.9.1
+    cypress-failed-log: 2.9.1
     datagateway-common: ^1.1.0
-    date-fns: ^2.28.0
-    date-fns-tz: ^1.1.6
-    enzyme: ^3.10.0
-    enzyme-to-json: ^3.6.1
-    eslint: ^8.9.0
-    eslint-config-prettier: ^8.3.0
-    eslint-config-react-app: ^7.0.0
-    eslint-plugin-cypress: ^2.12.1
-    eslint-plugin-prettier: ^3.3.1
-    history: ^4.10.1
-    i18next: ^21.6.13
-    i18next-browser-languagedetector: ^6.1.2
-    i18next-http-backend: ^1.3.2
-    jsrsasign: ^10.5.25
-    lint-staged: ^10.5.4
-    lodash.chunk: ^4.2.0
-    loglevel: ^1.8.0
+    date-fns: 2.28.0
+    date-fns-tz: 1.1.6
+    enzyme: 3.11.0
+    enzyme-to-json: 3.6.1
+    eslint: 8.9.0
+    eslint-config-prettier: 8.3.0
+    eslint-config-react-app: 7.0.0
+    eslint-plugin-cypress: 2.12.1
+    eslint-plugin-prettier: 3.3.1
+    history: 4.10.1
+    i18next: 21.6.13
+    i18next-browser-languagedetector: 6.1.2
+    i18next-http-backend: 1.3.2
+    jsrsasign: 10.5.25
+    lint-staged: 10.5.4
+    lodash.chunk: 4.2.0
+    loglevel: 1.8.0
     p-limit: 3.1.0
-    prettier: ^2.2.1
+    prettier: 2.2.1
     react: 17.0.2
     react-dom: 17.0.2
-    react-i18next: ^11.15.4
-    react-query: ^3.18.1
-    react-router-dom: ^5.3.0
+    react-i18next: 11.15.4
+    react-query: 3.18.1
+    react-router-dom: 5.3.0
     react-scripts: 5.0.0
-    react-virtualized: ^9.22.3
-    serve: ^13.0.2
-    single-spa-react: ^4.3.1
-    start-server-and-test: ^1.14.0
-    tslib: ^2.3.0
+    react-virtualized: 9.22.3
+    serve: 13.0.2
+    single-spa-react: 4.3.1
+    start-server-and-test: 1.14.0
+    tslib: 2.3.1
     typescript: 4.5.3
   languageName: unknown
   linkType: soft
@@ -7452,74 +7452,74 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-search@workspace:packages/datagateway-search"
   dependencies:
-    "@craco/craco": ^6.4.3
-    "@date-io/date-fns": ^1.3.13
-    "@emotion/react": ^11.8.1
-    "@emotion/styled": ^11.8.1
-    "@mui/icons-material": ^5.5.0
-    "@mui/lab": ^5.0.0-alpha.72
-    "@mui/material": ^5.5.0
-    "@testing-library/react": ^12.1.3
-    "@types/enzyme": ^3.10.10
-    "@types/history": ^4.7.11
-    "@types/jest": ^27.4.0
-    "@types/jsrsasign": ^9.0.3
-    "@types/node": ^17.0.17
-    "@types/react": ^17.0.29
-    "@types/react-dom": ^17.0.9
-    "@types/react-redux": ^7.1.19
-    "@types/react-router-dom": ^5.3.3
-    "@types/react-virtualized": ^9.21.10
-    "@types/redux-logger": ^3.0.8
-    "@types/redux-mock-store": ^1.0.3
-    "@typescript-eslint/eslint-plugin": ^5.5.0
-    "@typescript-eslint/parser": ^5.5.0
-    "@wojtekmaj/enzyme-adapter-react-17": ^0.6.3
-    axios: ^0.26.0
+    "@craco/craco": 6.4.3
+    "@date-io/date-fns": 1.3.13
+    "@emotion/react": 11.8.1
+    "@emotion/styled": 11.8.1
+    "@mui/icons-material": 5.5.0
+    "@mui/lab": 5.0.0-alpha.72
+    "@mui/material": 5.5.0
+    "@testing-library/react": 12.1.3
+    "@types/enzyme": 3.10.10
+    "@types/history": 4.7.11
+    "@types/jest": 27.4.0
+    "@types/jsrsasign": 9.0.3
+    "@types/node": 17.0.17
+    "@types/react": 17.0.39
+    "@types/react-dom": 17.0.11
+    "@types/react-redux": 7.1.22
+    "@types/react-router-dom": 5.3.3
+    "@types/react-virtualized": 9.21.10
+    "@types/redux-logger": 3.0.8
+    "@types/redux-mock-store": 1.0.3
+    "@typescript-eslint/eslint-plugin": 5.11.0
+    "@typescript-eslint/parser": 5.11.0
+    "@wojtekmaj/enzyme-adapter-react-17": 0.6.6
+    axios: 0.26.0
     babel-eslint: 10.1.0
-    connected-react-router: ^6.9.1
-    cross-env: ^7.0.3
-    custom-event-polyfill: ^1.0.7
+    connected-react-router: 6.9.1
+    cross-env: 7.0.3
+    custom-event-polyfill: 1.0.7
     cypress: 9.5.1
-    cypress-failed-log: ^2.9.1
+    cypress-failed-log: 2.9.1
     datagateway-common: ^1.1.0
-    date-fns: ^2.28.0
-    enzyme: ^3.10.0
-    enzyme-to-json: ^3.6.1
-    eslint: ^8.9.0
-    eslint-config-prettier: ^8.3.0
-    eslint-config-react-app: ^7.0.0
-    eslint-plugin-cypress: ^2.12.1
-    eslint-plugin-prettier: ^3.3.1
-    express: ^4.17.1
-    history: ^4.10.1
-    i18next: ^21.6.13
-    i18next-browser-languagedetector: ^6.1.2
-    i18next-http-backend: ^1.3.2
-    jsrsasign: ^10.5.25
-    lint-staged: ^10.5.4
-    loglevel: ^1.8.0
-    prettier: ^2.2.1
+    date-fns: 2.28.0
+    enzyme: 3.11.0
+    enzyme-to-json: 3.6.1
+    eslint: 8.9.0
+    eslint-config-prettier: 8.3.0
+    eslint-config-react-app: 7.0.0
+    eslint-plugin-cypress: 2.12.1
+    eslint-plugin-prettier: 3.3.1
+    express: 4.17.1
+    history: 4.10.1
+    i18next: 21.6.13
+    i18next-browser-languagedetector: 6.1.2
+    i18next-http-backend: 1.3.2
+    jsrsasign: 10.5.25
+    lint-staged: 10.5.4
+    loglevel: 1.8.0
+    prettier: 2.2.1
     react: 17.0.2
-    react-app-polyfill: ^3.0.0
+    react-app-polyfill: 3.0.0
     react-dom: 17.0.2
-    react-i18next: ^11.15.4
-    react-query: ^3.18.1
-    react-redux: ^7.2.5
-    react-router-dom: ^5.3.0
+    react-i18next: 11.15.4
+    react-query: 3.18.1
+    react-redux: 7.2.6
+    react-router-dom: 5.3.0
     react-scripts: 5.0.0
-    react-virtualized: ^9.22.3
-    redux: ^4.1.2
-    redux-logger: ^3.0.6
-    redux-mock-store: ^1.5.4
-    redux-thunk: ^2.4.1
-    resize-observer-polyfill: ^1.5.1
-    serve: ^13.0.2
-    single-spa-react: ^4.3.1
-    start-server-and-test: ^1.14.0
-    tslib: ^2.3.0
+    react-virtualized: 9.22.3
+    redux: 4.1.2
+    redux-logger: 3.0.6
+    redux-mock-store: 1.5.4
+    redux-thunk: 2.4.1
+    resize-observer-polyfill: 1.5.1
+    serve: 13.0.2
+    single-spa-react: 4.3.1
+    start-server-and-test: 1.14.0
+    tslib: 2.3.1
     typescript: 4.5.3
-    url-search-params-polyfill: ^8.1.1
+    url-search-params-polyfill: 8.1.1
   languageName: unknown
   linkType: soft
 
@@ -7527,13 +7527,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway@workspace:."
   dependencies:
-    husky: ^7.0.4
-    lerna: ^4.0.0
-    lerna-update-wizard: ^1.1.0
+    husky: 7.0.4
+    lerna: 4.0.0
+    lerna-update-wizard: 1.1.0
   languageName: unknown
   linkType: soft
 
-"date-fns-tz@npm:^1.1.6":
+"date-fns-tz@npm:1.1.6":
   version: 1.1.6
   resolution: "date-fns-tz@npm:1.1.6"
   peerDependencies:
@@ -7542,7 +7542,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.28.0":
+"date-fns@npm:2.28.0":
   version: 2.28.0
   resolution: "date-fns@npm:2.28.0"
   checksum: a0516b2e4f99b8bffc6cc5193349f185f195398385bdcaf07f17c2c4a24473c99d933eb0018be4142a86a6d46cb0b06be6440ad874f15e795acbedd6fd727a1f
@@ -8280,7 +8280,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enzyme-to-json@npm:^3.6.1":
+"enzyme-to-json@npm:3.6.1":
   version: 3.6.1
   resolution: "enzyme-to-json@npm:3.6.1"
   dependencies:
@@ -8293,7 +8293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enzyme@npm:^3.10.0":
+"enzyme@npm:3.11.0":
   version: 3.11.0
   resolution: "enzyme@npm:3.11.0"
   dependencies:
@@ -8448,7 +8448,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.3.0":
+"eslint-config-prettier@npm:8.3.0":
   version: 8.3.0
   resolution: "eslint-config-prettier@npm:8.3.0"
   peerDependencies:
@@ -8459,7 +8459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-react-app@npm:^7.0.0":
+"eslint-config-react-app@npm:7.0.0, eslint-config-react-app@npm:^7.0.0":
   version: 7.0.0
   resolution: "eslint-config-react-app@npm:7.0.0"
   dependencies:
@@ -8504,7 +8504,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-cypress@npm:^2.12.1":
+"eslint-plugin-cypress@npm:2.12.1":
   version: 2.12.1
   resolution: "eslint-plugin-cypress@npm:2.12.1"
   dependencies:
@@ -8591,7 +8591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^3.3.1":
+"eslint-plugin-prettier@npm:3.3.1":
   version: 3.3.1
   resolution: "eslint-plugin-prettier@npm:3.3.1"
   dependencies:
@@ -8718,7 +8718,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.3.0, eslint@npm:^8.9.0":
+"eslint@npm:8.9.0, eslint@npm:^8.3.0":
   version: 8.9.0
   resolution: "eslint@npm:8.9.0"
   dependencies:
@@ -8959,7 +8959,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.1":
+"express@npm:4.17.1, express@npm:^4.17.1":
   version: 4.17.1
   resolution: "express@npm:4.17.1"
   dependencies:
@@ -9943,14 +9943,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hex-to-rgba@npm:^2.0.1":
+"hex-to-rgba@npm:2.0.1":
   version: 2.0.1
   resolution: "hex-to-rgba@npm:2.0.1"
   checksum: adbb81babe9d06cf743b925e2104968bb32d9e10f0de328b71c9e20ff52da4028fadde4623261866eaed4d9a3b975fb325fa34f2422eb035e839ed71ec462431
   languageName: node
   linkType: hard
 
-"history@npm:^4.10.1, history@npm:^4.9.0":
+"history@npm:4.10.1, history@npm:^4.9.0":
   version: 4.10.1
   resolution: "history@npm:4.10.1"
   dependencies:
@@ -10261,7 +10261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"husky@npm:^7.0.4":
+"husky@npm:7.0.4":
   version: 7.0.4
   resolution: "husky@npm:7.0.4"
   bin:
@@ -10270,7 +10270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-browser-languagedetector@npm:^6.1.2":
+"i18next-browser-languagedetector@npm:6.1.2":
   version: 6.1.2
   resolution: "i18next-browser-languagedetector@npm:6.1.2"
   dependencies:
@@ -10279,7 +10279,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:^1.3.2":
+"i18next-http-backend@npm:1.3.2":
   version: 1.3.2
   resolution: "i18next-http-backend@npm:1.3.2"
   dependencies:
@@ -10288,7 +10288,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^21.6.13":
+"i18next@npm:21.6.13":
   version: 21.6.13
   resolution: "i18next@npm:21.6.13"
   dependencies:
@@ -11790,7 +11790,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsrsasign@npm:^10.5.25":
+"jsrsasign@npm:10.5.25":
   version: 10.5.25
   resolution: "jsrsasign@npm:10.5.25"
   checksum: e789cd6d5e6e236edebe91936279cdef886aafaab8d4ebc7d40b8ba0c7b7cd0d6d3c53fba26ea96eb33cc77a05368b369ef31fc9182662bce2344143ad50ea0f
@@ -11851,7 +11851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lerna-update-wizard@npm:^1.1.0":
+"lerna-update-wizard@npm:1.1.0":
   version: 1.1.0
   resolution: "lerna-update-wizard@npm:1.1.0"
   dependencies:
@@ -11872,7 +11872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lerna@npm:^4.0.0":
+"lerna@npm:4.0.0":
   version: 4.0.0
   resolution: "lerna@npm:4.0.0"
   dependencies:
@@ -11966,7 +11966,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:^10.5.4":
+"lint-staged@npm:10.5.4":
   version: 10.5.4
   resolution: "lint-staged@npm:10.5.4"
   dependencies:
@@ -12117,14 +12117,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.chunk@npm:^4.2.0":
+"lodash.chunk@npm:4.2.0":
   version: 4.2.0
   resolution: "lodash.chunk@npm:4.2.0"
   checksum: 6286c6d06814fbeda502164015c42ef53a9194e6ebaac52ec2b41e83344aefe7bc3d94fdfec525adcd2c66cefdf05dc333b6a1128e4de739797342315c17cbc7
   languageName: node
   linkType: hard
 
-"lodash.debounce@npm:^4.0.8":
+"lodash.debounce@npm:4.0.8, lodash.debounce@npm:^4.0.8":
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
   checksum: a3f527d22c548f43ae31c861ada88b2637eb48ac6aa3eb56e82d44917971b8aa96fbb37aa60efea674dc4ee8c42074f90f7b1f772e9db375435f6c83a19b3bc6
@@ -12173,7 +12173,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.memoize@npm:^4.1.2":
+"lodash.memoize@npm:4.1.2, lodash.memoize@npm:^4.1.2":
   version: 4.1.2
   resolution: "lodash.memoize@npm:4.1.2"
   checksum: 9ff3942feeccffa4f1fafa88d32f0d24fdc62fd15ded5a74a5f950ff5f0c6f61916157246744c620173dddf38d37095a92327d5fd3861e2063e736a5c207d089
@@ -12264,7 +12264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loglevel@npm:^1.8.0":
+"loglevel@npm:1.8.0":
   version: 1.8.0
   resolution: "loglevel@npm:1.8.0"
   checksum: 41aeea17de24aba8dba68084a31fe9189648bce4f39c1277e021bb276c3c53a75b0d337395919cf271068ad40ecefabad0e4fdeb4a8f11908beee532b898f4a7
@@ -14833,7 +14833,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.2.1":
+"prettier@npm:2.2.1":
   version: 2.2.1
   resolution: "prettier@npm:2.2.1"
   bin:
@@ -15130,7 +15130,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-app-polyfill@npm:^3.0.0":
+"react-app-polyfill@npm:3.0.0, react-app-polyfill@npm:^3.0.0":
   version: 3.0.0
   resolution: "react-app-polyfill@npm:3.0.0"
   dependencies:
@@ -15176,7 +15176,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:17.0.2, react-dom@npm:^17.0.2":
+"react-dom@npm:17.0.2":
   version: 17.0.2
   resolution: "react-dom@npm:17.0.2"
   dependencies:
@@ -15189,7 +15189,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-draggable@npm:^4.4.3":
+"react-draggable@npm:4.4.3":
   version: 4.4.3
   resolution: "react-draggable@npm:4.4.3"
   dependencies:
@@ -15217,7 +15217,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:^11.15.4":
+"react-i18next@npm:11.15.4":
   version: 11.15.4
   resolution: "react-i18next@npm:11.15.4"
   dependencies:
@@ -15257,7 +15257,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-query@npm:^3.18.1":
+"react-query@npm:3.18.1":
   version: 3.18.1
   resolution: "react-query@npm:3.18.1"
   dependencies:
@@ -15275,7 +15275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:^7.2.5":
+"react-redux@npm:7.2.6":
   version: 7.2.6
   resolution: "react-redux@npm:7.2.6"
   dependencies:
@@ -15303,7 +15303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^5.3.0":
+"react-router-dom@npm:5.3.0":
   version: 5.3.0
   resolution: "react-router-dom@npm:5.3.0"
   dependencies:
@@ -15448,7 +15448,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-virtualized@npm:^9.22.3":
+"react-virtualized@npm:9.22.3":
   version: 9.22.3
   resolution: "react-virtualized@npm:9.22.3"
   dependencies:
@@ -15465,7 +15465,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:17.0.2, react@npm:^17.0.2":
+"react@npm:17.0.2":
   version: 17.0.2
   resolution: "react@npm:17.0.2"
   dependencies:
@@ -15662,7 +15662,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-logger@npm:^3.0.6":
+"redux-logger@npm:3.0.6":
   version: 3.0.6
   resolution: "redux-logger@npm:3.0.6"
   dependencies:
@@ -15671,7 +15671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-mock-store@npm:^1.5.4":
+"redux-mock-store@npm:1.5.4":
   version: 1.5.4
   resolution: "redux-mock-store@npm:1.5.4"
   dependencies:
@@ -15680,7 +15680,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-thunk@npm:^2.4.1":
+"redux-thunk@npm:2.4.1":
   version: 2.4.1
   resolution: "redux-thunk@npm:2.4.1"
   peerDependencies:
@@ -15689,7 +15689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4.0.0, redux@npm:^4.0.5, redux@npm:^4.1.2":
+"redux@npm:4.1.2, redux@npm:^4.0.0, redux@npm:^4.0.5":
   version: 4.1.2
   resolution: "redux@npm:4.1.2"
   dependencies:
@@ -15891,7 +15891,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resize-observer-polyfill@npm:^1.5.1":
+"resize-observer-polyfill@npm:1.5.1":
   version: 1.5.1
   resolution: "resize-observer-polyfill@npm:1.5.1"
   checksum: 57e7f79489867b00ba43c9c051524a5c8f162a61d5547e99333549afc23e15c44fd43f2f318ea0261ea98c0eb3158cca261e6f48d66e1ed1cd1f340a43977094
@@ -16429,7 +16429,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serve@npm:^13.0.2":
+"serve@npm:13.0.2":
   version: 13.0.2
   resolution: "serve@npm:13.0.2"
   dependencies:
@@ -16535,7 +16535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"single-spa-react@npm:^4.3.1":
+"single-spa-react@npm:4.3.1":
   version: 4.3.1
   resolution: "single-spa-react@npm:4.3.1"
   peerDependencies:
@@ -16900,7 +16900,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"start-server-and-test@npm:^1.14.0":
+"start-server-and-test@npm:1.14.0":
   version: 1.14.0
   resolution: "start-server-and-test@npm:1.14.0"
   dependencies:
@@ -17706,17 +17706,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:2.3.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0":
+  version: 2.3.1
+  resolution: "tslib@npm:2.3.1"
+  checksum: de17a98d4614481f7fcb5cd53ffc1aaf8654313be0291e1bfaee4b4bb31a20494b7d218ff2e15017883e8ea9626599b3b0e0229c18383ba9dce89da2adf15cb9
+  languageName: node
+  linkType: hard
+
 "tslib@npm:^1.8.1, tslib@npm:^1.9.0":
   version: 1.13.0
   resolution: "tslib@npm:1.13.0"
   checksum: 50e9327361f94f328c0715582a7f725f69838ab3c2559d143643c5367262fe14552768ba8cfc65bc7dc924a619aea599b3a28b6653458cdca77bbebaf9bc8df4
-  languageName: node
-  linkType: hard
-
-"tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0":
-  version: 2.3.1
-  resolution: "tslib@npm:2.3.1"
-  checksum: de17a98d4614481f7fcb5cd53ffc1aaf8654313be0291e1bfaee4b4bb31a20494b7d218ff2e15017883e8ea9626599b3b0e0229c18383ba9dce89da2adf15cb9
   languageName: node
   linkType: hard
 
@@ -18045,14 +18045,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"url-search-params-polyfill@npm:^8.1.1":
+"url-search-params-polyfill@npm:8.1.1":
   version: 8.1.1
   resolution: "url-search-params-polyfill@npm:8.1.1"
   checksum: c63169a8a70a256e73203c4404acf4fdbb38075f3f888ea38f92b09dc896190180cc9c072c927d7bb995c5a35e7729be8c4f7e876f83f8f8ab6fac263c971725
   languageName: node
   linkType: hard
 
-"use-deep-compare-effect@npm:^1.8.1":
+"use-deep-compare-effect@npm:1.8.1":
   version: 1.8.1
   resolution: "use-deep-compare-effect@npm:1.8.1"
   dependencies:
