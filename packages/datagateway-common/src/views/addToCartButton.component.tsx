@@ -53,7 +53,9 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
     <StyledTooltip
       title={
         !cartLoading && typeof selectedIds === 'undefined'
-          ? 'Selection information failed to load, please reload the page or try again later'
+          ? t<string, string>('buttons.cart_loading_failed_tooltip')
+          : cartLoading
+          ? t<string, string>('buttons.cart_loading_tooltip')
           : ''
       }
       placement="bottom"

@@ -1,6 +1,6 @@
 import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
-import { Tooltip, TooltipProps, tooltipClasses, styled } from '@mui/material';
+import { Tooltip, TooltipProps } from '@mui/material';
 
 export const getTooltipText = (node: React.ReactNode): string => {
   if (typeof node === 'string') return node;
@@ -12,19 +12,32 @@ export const getTooltipText = (node: React.ReactNode): string => {
   return '';
 };
 
-export const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} arrow={true} />
-))(({ theme }) => ({
-  margin: 'auto',
-  [`& .${tooltipClasses.tooltip}`]: {
-    position: 'relative',
-    backgroundColor: theme.palette.common.black,
-    fontSize: '0.875rem',
+const tooltipComponentProps = {
+  tooltip: {
+    sx: {
+      position: 'relative',
+      backgroundColor: 'common.black',
+      fontSize: '0.875rem',
+    },
   },
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.common.black,
+  arrow: {
+    sx: {
+      color: 'common.black',
+    },
   },
-}));
+};
+
+export const StyledTooltip = React.forwardRef(
+  (props: TooltipProps, ref): React.ReactElement => (
+    <Tooltip
+      ref={ref}
+      componentsProps={tooltipComponentProps}
+      {...props}
+      arrow
+    />
+  )
+);
+StyledTooltip.displayName = 'StyledTooltip';
 
 const ArrowTooltip = (
   props: TooltipProps & {

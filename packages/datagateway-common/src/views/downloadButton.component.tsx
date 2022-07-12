@@ -86,8 +86,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
       placement="left"
       arrow
     >
-      {/* <span style={variant !== 'icon' ? { margin: 'auto' } : {}}> */}
-      <span style={{ display: 'inherit' }}>
+      <span style={variant !== 'icon' ? { margin: 'auto' } : {}}>
         <BaseDownloadButton
           onClick={() => {
             downloadData(entityType, entityId, entityName);

@@ -6,6 +6,7 @@ import {
   CheckBox as CheckBoxIcon,
   IndeterminateCheckBox,
 } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import { StyledTooltip } from '../../arrowtooltip.component';
 
 type SelectHeaderProps = TableHeaderProps & {
@@ -29,6 +30,7 @@ const SelectHeader = React.memo(
       allIds,
       loading,
     } = props;
+    const { t } = useTranslation();
 
     return (
       <TableCell
@@ -41,7 +43,9 @@ const SelectHeader = React.memo(
         <StyledTooltip
           title={
             !loading && typeof selectedRows === 'undefined'
-              ? 'Selection information failed to load, please reload the page or try again later'
+              ? t<string, string>('buttons.cart_loading_failed_tooltip')
+              : loading
+              ? t<string, string>('buttons.cart_loading_tooltip')
               : ''
           }
           placement="right"
