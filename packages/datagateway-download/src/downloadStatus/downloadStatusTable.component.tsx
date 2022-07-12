@@ -54,7 +54,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const refreshTable = React.useCallback(async () => {
     await refetch();
     setRefreshTable(false);
-    console.log('refresh false');
   }, [refetch, setRefreshTable]);
 
   // detect table refresh and refetch data if needed

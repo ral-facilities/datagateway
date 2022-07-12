@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from 'react';
+import type { FormattedDownload } from 'datagateway-common';
 import DownloadStatusTable from './downloadStatusTable.component';
 import { mount, ReactWrapper, shallow } from 'enzyme';
 import {
@@ -57,7 +58,7 @@ describe('Download Status Table', () => {
       fileName: 'test-file-1',
       fullName: 'Person 1',
       id: 1,
-      isDeleted: false,
+      isDeleted: 'No',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
@@ -75,7 +76,7 @@ describe('Download Status Table', () => {
       fileName: 'test-file-2',
       fullName: 'Person 2',
       id: 2,
-      isDeleted: false,
+      isDeleted: 'No',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
@@ -93,7 +94,7 @@ describe('Download Status Table', () => {
       fileName: 'test-file-3',
       fullName: 'Person 3',
       id: 3,
-      isDeleted: false,
+      isDeleted: 'No',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
@@ -111,7 +112,7 @@ describe('Download Status Table', () => {
       fileName: 'test-file-4',
       fullName: 'Person 4',
       id: 4,
-      isDeleted: false,
+      isDeleted: 'No',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
@@ -129,7 +130,7 @@ describe('Download Status Table', () => {
       fileName: 'test-file-5',
       fullName: 'Person 5',
       id: 5,
-      isDeleted: false,
+      isDeleted: 'No',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
@@ -309,8 +310,12 @@ describe('Download Status Table', () => {
       isFetched: true,
       refetch: jest.fn(),
     });
-    await act(() => {
+
+    act(() => {
+      // calling wrapper.update will not trigger lifecycle hooks
+      // wrapper.mount will force all hooks to run again.
       // https://github.com/enzymejs/enzyme/issues/2169
+      wrapper.mount();
       wrapper.update();
     });
 
@@ -324,11 +329,6 @@ describe('Download Status Table', () => {
 
   it('sorts data when headers are clicked', async () => {
     const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
@@ -346,11 +346,11 @@ describe('Download Status Table', () => {
 
     accessMethodSortLabel.simulate('click');
 
-    expect(firstNameCell.text()).toEqual('test-file-5');
+    expect(firstNameCell.text()).toEqual('test-file-2');
 
     accessMethodSortLabel.simulate('click');
 
-    expect(firstNameCell.text()).toEqual('test-file-3');
+    expect(firstNameCell.text()).toEqual('test-file-1');
 
     // Get the download name sort header.
     const nameSortLabel = wrapper
@@ -367,7 +367,7 @@ describe('Download Status Table', () => {
 
     nameSortLabel.simulate('click');
 
-    expect(firstNameCell.text()).toEqual('test-file-3');
+    expect(firstNameCell.text()).toEqual('test-file-1');
   });
 
   it('filters data when text fields are typed into', async () => {
@@ -440,11 +440,6 @@ describe('Download Status Table', () => {
     applyDatePickerWorkaround();
 
     const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
 
     const dateFromFilterInput = wrapper.find(
       'input[id="downloadStatus.createdAt filter from"]'
