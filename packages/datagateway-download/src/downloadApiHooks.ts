@@ -1,6 +1,10 @@
 import React from 'react';
 import { AxiosError } from 'axios';
-import type { Download, FormattedDownload } from 'datagateway-common';
+import type {
+  Download,
+  DownloadStatus,
+  FormattedDownload,
+} from 'datagateway-common';
 import {
   DownloadCartItem,
   fetchDownloadCart,
@@ -9,6 +13,9 @@ import {
 } from 'datagateway-common';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
+  InfiniteData,
+  useInfiniteQuery,
+  UseInfiniteQueryResult,
   useMutation,
   UseMutationResult,
   useQueries,
@@ -19,7 +26,10 @@ import {
 } from 'react-query';
 import pLimit from 'p-limit';
 import {
+  adminDownloadDeleted,
+  adminDownloadStatus,
   downloadDeleted,
+  fetchAdminDownloads,
   fetchDownloads,
   getDatafileCount,
   getIsTwoLevel,
@@ -28,6 +38,7 @@ import {
   removeFromCart,
 } from './downloadApi';
 import { useTranslation } from 'react-i18next';
+import useDownloadFormatter from './downloadStatus/hooks/useDownloadFormatter';
 
 /**
  * An enumeration of react query keys.
@@ -37,7 +48,18 @@ export enum QueryKey {
    * Key for querying list of downloads.
    */
   DOWNLOADS = 'downloads',
+
+  /**
+   * Key for querying list of admin downloads
+   */
+  ADMIN_DOWNLOADS = 'admin-downloads',
 }
+
+/**
+ * Defines the function that when called will roll back any optimistic changes
+ * performed during a mutation.
+ */
+type RollbackFunction = () => void;
 
 export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
@@ -275,6 +297,7 @@ export const useDownloads = (): UseQueryResult<
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
   const [t] = useTranslation();
+  const downloadFormatter = useDownloadFormatter();
 
   return useQuery(
     QueryKey.DOWNLOADS,
@@ -284,34 +307,8 @@ export const useDownloads = (): UseQueryResult<
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
     {
-      select: (downloads: Download[]) =>
-        downloads.map((download) => {
-          const formattedIsDeleted = download.isDeleted ? 'Yes' : 'No';
-          let formattedStatus = '';
-          switch (download.status) {
-            case 'COMPLETE':
-              formattedStatus = t('downloadStatus.complete');
-              break;
-            case 'EXPIRED':
-              formattedStatus = t('downloadStatus.expired');
-              break;
-            case 'PAUSED':
-              formattedStatus = t('downloadStatus.paused');
-              break;
-            case 'PREPARING':
-              formattedStatus = t('downloadStatus.preparing');
-              break;
-            case 'RESTORING':
-              formattedStatus = t('downloadStatus.restoring');
-              break;
-          }
-          return {
-            ...download,
-            status: formattedStatus,
-            isDeleted: formattedIsDeleted,
-          };
-        }),
-      onError: (error: AxiosError) => {
+      select: (downloads) => downloads.map(downloadFormatter),
+      onError: (error) => {
         handleICATError(error);
       },
       retry: retryICATErrors,
@@ -325,7 +322,8 @@ export const useDownloads = (): UseQueryResult<
 export const useDeleteDownload = (): UseMutationResult<
   void,
   AxiosError,
-  number
+  number,
+  RollbackFunction
 > => {
   const queryClient = useQueryClient();
   // Load the download settings for use.
@@ -338,7 +336,9 @@ export const useDeleteDownload = (): UseMutationResult<
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
     {
-      onSuccess: (_, downloadId: number) => {
+      onMutate: (downloadId) => {
+        const prevDownloads = queryClient.getQueryData(QueryKey.DOWNLOADS);
+
         queryClient.setQueryData<FormattedDownload[] | undefined>(
           QueryKey.DOWNLOADS,
           // updater fn returns undefined if prev data is also undefined
@@ -360,13 +360,210 @@ export const useDeleteDownload = (): UseMutationResult<
             oldDownloads &&
             oldDownloads.filter((download) => download.id !== downloadId)
         );
+
+        return () =>
+          queryClient.setQueryData(QueryKey.DOWNLOADS, prevDownloads);
       },
-      onError: (error: AxiosError) => {
+
+      onError: (error, _, rollback) => {
         handleICATError(error);
+        if (rollback) rollback();
       },
+
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
         return error.code === '431' && failureCount < 3;
+      },
+    }
+  );
+};
+
+/**
+ * A React hook for querying admin downloads. Supports infinite scrolling.
+ *
+ * @param initialQueryOffset The initial query offset for the list of downloads.
+ */
+export const useAdminDownloads = ({
+  initialQueryOffset,
+}: {
+  initialQueryOffset: string;
+}): UseInfiniteQueryResult<FormattedDownload[], AxiosError> => {
+  // Load the download settings for use
+  const downloadSettings = React.useContext(DownloadSettingsContext);
+  const downloadFormatter = useDownloadFormatter();
+
+  return useInfiniteQuery(
+    QueryKey.ADMIN_DOWNLOADS,
+    ({ pageParam = initialQueryOffset }) =>
+      fetchAdminDownloads(
+        {
+          facilityName: downloadSettings.facilityName,
+          downloadApiUrl: downloadSettings.downloadApiUrl,
+        },
+        pageParam
+      ),
+    {
+      select: ({ pages, pageParams }) => ({
+        pageParams,
+        pages: pages.map((page) => page.map(downloadFormatter)),
+      }),
+
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+export interface AdminDownloadDeletedParams {
+  downloadId: number;
+  deleted: boolean;
+}
+
+/**
+ * A React hook that provides a mutation function for deleting/restoring admin downloads.
+ */
+export const useAdminDownloadDeleted = (): UseMutationResult<
+  void,
+  AxiosError,
+  AdminDownloadDeletedParams,
+  RollbackFunction
+> => {
+  const queryClient = useQueryClient();
+  // Load the download settings for use.
+  const downloadSettings = React.useContext(DownloadSettingsContext);
+
+  return useMutation(
+    ({ downloadId, deleted }) =>
+      adminDownloadDeleted(downloadId, deleted, {
+        facilityName: downloadSettings.facilityName,
+        downloadApiUrl: downloadSettings.downloadApiUrl,
+      }),
+    {
+      onSuccess: async (downloadId) => {
+        const downloads = await fetchAdminDownloads(
+          {
+            facilityName: downloadSettings.facilityName,
+            downloadApiUrl: downloadSettings.downloadApiUrl,
+          },
+          `WHERE download.id = ${downloadId}`
+        );
+        if (downloads.length > 0) {
+          const updatedDownload = downloads[0];
+          // updater fn returns undefined if prev data is also undefined
+          // note that it is not until v4 can the updater return undefined
+          // in v4, when the updater returns undefined, react-query will bail out
+          // and do nothing
+          //
+          // not sure how it works in v3, but returning an empty array feels wrong
+          // here because of semantics -
+          // undefined means the query is unavailable, but an empty array
+          // indicates there's no download item.
+          // hence FormattedDownload[] | undefined is passed to setQueryData
+          // to allow undefined to be returned
+          //
+          // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
+          //
+          // related issue: https://github.com/TanStack/query/issues/506
+          queryClient.setQueryData<InfiniteData<Download[]> | undefined>(
+            QueryKey.ADMIN_DOWNLOADS,
+            (oldData) =>
+              oldData && {
+                ...oldData,
+                pages: oldData.pages.map((page) =>
+                  page.map((download) =>
+                    download.id === updatedDownload.id
+                      ? updatedDownload
+                      : download
+                  )
+                ),
+              }
+          );
+        }
+      },
+
+      onError: (error) => {
+        handleICATError(error);
+      },
+
+      onSettled: () => {
+        queryClient.invalidateQueries(QueryKey.ADMIN_DOWNLOADS);
+      },
+    }
+  );
+};
+
+/**
+ * Parameters for {@link useAdminUpdateDownloadStatus} mutation.
+ */
+export interface AdminUpdateDownloadStatusParams {
+  downloadId: number;
+  status: DownloadStatus;
+}
+
+export const useAdminUpdateDownloadStatus = (): UseMutationResult<
+  void,
+  AxiosError,
+  AdminUpdateDownloadStatusParams,
+  RollbackFunction
+> => {
+  const queryClient = useQueryClient();
+  // Load the download settings for use.
+  const downloadSettings = React.useContext(DownloadSettingsContext);
+
+  return useMutation(
+    ({ downloadId, status }) =>
+      adminDownloadStatus(downloadId, status, {
+        facilityName: downloadSettings.facilityName,
+        downloadApiUrl: downloadSettings.downloadApiUrl,
+      }),
+    {
+      onMutate: ({ downloadId, status }) => {
+        const prevDownloads = queryClient.getQueryData(
+          QueryKey.ADMIN_DOWNLOADS
+        );
+
+        // updater fn returns undefined if prev data is also undefined
+        // note that it is not until v4 can the updater return undefined
+        // in v4, when the updater returns undefined, react-query will bail out
+        // and do nothing
+        //
+        // not sure how it works in v3, but returning an empty array feels wrong
+        // here because of semantics -
+        // undefined means the query is unavailable, but an empty array
+        // indicates there's no download item.
+        // hence FormattedDownload[] | undefined is passed to setQueryData
+        // to allow undefined to be returned
+        //
+        // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
+        //
+        // related issue: https://github.com/TanStack/query/issues/506
+        queryClient.setQueryData<InfiniteData<Download[]> | undefined>(
+          QueryKey.ADMIN_DOWNLOADS,
+          (oldData) =>
+            oldData && {
+              ...oldData,
+              pages: oldData.pages.map((page) =>
+                page.map((download) =>
+                  download.id === downloadId
+                    ? { ...download, status }
+                    : download
+                )
+              ),
+            }
+        );
+
+        return () =>
+          queryClient.setQueryData(QueryKey.ADMIN_DOWNLOADS, prevDownloads);
+      },
+
+      onError: (error, _, rollback) => {
+        handleICATError(error);
+        if (rollback) rollback();
+      },
+
+      onSettled: () => {
+        queryClient.invalidateQueries(QueryKey.ADMIN_DOWNLOADS);
       },
     }
   );

@@ -159,10 +159,6 @@ export const fetchAdminDownloads: (
     })
     .then((response) => {
       return response.data;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return [];
     });
 };
 

@@ -70,69 +70,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     }
   }, [isFetched, setLastChecked]);
 
-  // React.useEffect(() => {
-  //   if (!dataLoaded || refreshTable) {
-  //     // Clear the current contents, this will make sure
-  //     // there is visually a refresh of the table.
-  //     setData([]);
-  //
-  //     // Handle a refresh of the table.
-  //     if (refreshTable && dataLoaded) {
-  //       setDataLoaded(false);
-  //       setRefreshTable(false);
-  //     }
-  //
-  //     if (!dataLoaded && dgDownloadElement) {
-  //       fetchDownloads({
-  //         facilityName: settings.facilityName,
-  //         downloadApiUrl: settings.downloadApiUrl,
-  //       }).then((downloads) => {
-  //         // Replace the status field here
-  //         const formattedDownloads = downloads.map((download) => {
-  //           const formattedIsDeleted = download.isDeleted ? 'Yes' : 'No';
-  //           let formattedStatus = '';
-  //           switch (download.status) {
-  //             case 'COMPLETE':
-  //               formattedStatus = t('downloadStatus.complete');
-  //               break;
-  //             case 'EXPIRED':
-  //               formattedStatus = t('downloadStatus.expired');
-  //               break;
-  //             case 'PAUSED':
-  //               formattedStatus = t('downloadStatus.paused');
-  //               break;
-  //             case 'PREPARING':
-  //               formattedStatus = t('downloadStatus.preparing');
-  //               break;
-  //             case 'RESTORING':
-  //               formattedStatus = t('downloadStatus.restoring');
-  //               break;
-  //           }
-  //           return {
-  //             ...download,
-  //             status: formattedStatus,
-  //             isDeleted: formattedIsDeleted,
-  //           };
-  //         });
-  //         setData([...formattedDownloads].reverse());
-  //         setDataLoaded(true);
-  //
-  //         // Set the time at which we set the download data.
-  //         setLastChecked();
-  //       });
-  //     }
-  //   }
-  // }, [
-  //   dataLoaded,
-  //   refreshTable,
-  //   setRefreshTable,
-  //   setLastChecked,
-  //   settings.facilityName,
-  //   settings.downloadApiUrl,
-  //   dgDownloadElement,
-  //   t,
-  // ]);
-
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
