@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    "schedule:nonOfficeHours",
+    ":maintainLockFilesWeekly"
+  ],
+  "labels": ["dependencies"],
+  "separateMinorPatch": true,
+  "patch": {
+    "enabled": false
+  }
+}
