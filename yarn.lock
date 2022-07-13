@@ -7416,7 +7416,7 @@ __metadata:
     cypress-failed-log: 2.9.1
     datagateway-common: ^1.1.0
     date-fns: 2.28.0
-    date-fns-tz: 1.1.6
+    date-fns-tz: 1.3.5
     enzyme: 3.11.0
     enzyme-to-json: 3.6.1
     eslint: 8.19.0
@@ -7534,12 +7534,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"date-fns-tz@npm:1.1.6":
-  version: 1.1.6
-  resolution: "date-fns-tz@npm:1.1.6"
+"date-fns-tz@npm:1.3.5":
+  version: 1.3.5
+  resolution: "date-fns-tz@npm:1.3.5"
   peerDependencies:
-    date-fns: ">=2.0.0-alpha.13"
-  checksum: cfe4c799372fcb586b7f22d9c31e10df33dabc74452fbd92269ae02bbaed4024636c477b9aac06c521ec78a7391826d5526fedbcefbad2e5de25bcc00c61ad8f
+    date-fns: ">=2.0.0"
+  checksum: aeb099f751474a0e06b89447a7e3d7b3481082e2ef2319fc9e279f0f7c4b3f01e3c2fb1814ebd600368598d745afa6eabc9add3df274325fb4044a5f41a6ed4e
   languageName: node
   linkType: hard
 
