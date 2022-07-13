@@ -10,7 +10,7 @@ import {
 import { act } from 'react-dom/test-utils';
 import { downloadDeleted, fetchDownloads, getDataUrl } from '../downloadApi';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { useDeleteDownload, useDownloads } from '../downloadApiHooks';
+import { useDownloadDeleted, useDownloads } from '../downloadApiHooks';
 
 jest.mock('../downloadApi');
 jest.mock('../downloadApiHooks');
@@ -165,7 +165,7 @@ describe('Download Status Table', () => {
       isFetched: true,
       refetch: jest.fn(),
     });
-    (useDeleteDownload as jest.Mock).mockReturnValue({
+    (useDownloadDeleted as jest.Mock).mockReturnValue({
       isLoading: false,
       mutate: jest.fn(),
     });
@@ -288,7 +288,7 @@ describe('Download Status Table', () => {
 
   it("removes an item when said item's remove button is clicked", async () => {
     const mockMutate = jest.fn();
-    (useDeleteDownload as jest.Mock).mockReturnValue({
+    (useDownloadDeleted as jest.Mock).mockReturnValue({
       isLoading: false,
       mutate: mockMutate,
     });
@@ -299,8 +299,7 @@ describe('Download Status Table', () => {
       .find('button[aria-label="downloadStatus.remove {filename:test-file-1}"]')
       .simulate('click');
 
-    expect(mockMutate).toHaveBeenCalled();
-    expect(mockMutate).toHaveBeenCalledWith(1);
+    expect(mockMutate).toHaveBeenCalledWith({ deleted: true, downloadId: 1 });
 
     // pretend mutation is complete
     // remove the deleted item from downloadItems

@@ -32,6 +32,7 @@ import {
   fetchAdminDownloads,
   fetchDownloads,
   getDatafileCount,
+  getDownload,
   getIsTwoLevel,
   getSize,
   removeAllDownloadCartItems,
@@ -314,13 +315,18 @@ export const useDownloads = (): UseQueryResult<
   );
 };
 
+export interface UseDownloadDeletedParams {
+  downloadId: number;
+  deleted: boolean;
+}
+
 /**
  * A React query that provides a mutation for deleting a download item.
  */
-export const useDeleteDownload = (): UseMutationResult<
+export const useDownloadDeleted = (): UseMutationResult<
   void,
   AxiosError,
-  number,
+  UseDownloadDeletedParams,
   RollbackFunction
 > => {
   const queryClient = useQueryClient();
@@ -328,39 +334,58 @@ export const useDeleteDownload = (): UseMutationResult<
   const downloadSettings = React.useContext(DownloadSettingsContext);
 
   return useMutation(
-    (downloadId: number) =>
-      downloadDeleted(downloadId, true, {
+    ({ downloadId, deleted }) =>
+      downloadDeleted(downloadId, deleted, {
         facilityName: downloadSettings.facilityName,
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
     {
-      onMutate: (downloadId) => {
+      onMutate: ({ downloadId, deleted }) => {
         const prevDownloads = queryClient.getQueryData(QueryKey.DOWNLOADS);
 
-        queryClient.setQueryData<FormattedDownload[] | undefined>(
-          QueryKey.DOWNLOADS,
-          // updater fn returns undefined if prev data is also undefined
-          // note that it is not until v4 can the updater return undefined
-          // in v4, when the updater returns undefined, react-query will bail out
-          // and do nothing
-          //
-          // not sure how it works in v3, but returning an empty array feels wrong
-          // here because of semantics -
-          // undefined means the query is unavailable, but an empty array
-          // indicates there's no download item.
-          // hence FormattedDownload[] | undefined is passed to setQueryData
-          // to allow undefined to be returned
-          //
-          // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
-          //
-          // related issue: https://github.com/TanStack/query/issues/506
-          (oldDownloads) =>
-            oldDownloads &&
-            oldDownloads.filter((download) => download.id !== downloadId)
-        );
+        if (deleted) {
+          queryClient.setQueryData<Download[] | undefined>(
+            QueryKey.DOWNLOADS,
+            // updater fn returns undefined if prev data is also undefined
+            // note that it is not until v4 can the updater return undefined
+            // in v4, when the updater returns undefined, react-query will bail out
+            // and do nothing
+            //
+            // not sure how it works in v3, but returning an empty array feels wrong
+            // here because of semantics -
+            // undefined means the query is unavailable, but an empty array
+            // indicates there's no download item.
+            // hence FormattedDownload[] | undefined is passed to setQueryData
+            // to allow undefined to be returned
+            //
+            // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
+            //
+            // related issue: https://github.com/TanStack/query/issues/506
+            (oldDownloads) =>
+              oldDownloads &&
+              oldDownloads.filter((download) => download.id !== downloadId)
+          );
+        }
 
         return () =>
           queryClient.setQueryData(QueryKey.DOWNLOADS, prevDownloads);
+      },
+
+      onSuccess: async (_, { downloadId, deleted }) => {
+        if (!deleted) {
+          // download is restored (un-deleted), fetch the download info
+          const restoredDownload = await getDownload(downloadId, {
+            facilityName: downloadSettings.facilityName,
+            downloadApiUrl: downloadSettings.downloadApiUrl,
+          });
+
+          if (restoredDownload) {
+            queryClient.setQueryData<Download[] | undefined>(
+              QueryKey.DOWNLOADS,
+              (downloads) => downloads && [...downloads, restoredDownload]
+            );
+          }
+        }
       },
 
       onError: (error, _, rollback) => {

@@ -19,7 +19,7 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
-import { useDeleteDownload, useDownloads } from '../downloadApiHooks';
+import { useDownloadDeleted, useDownloads } from '../downloadApiHooks';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
@@ -317,8 +317,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               }: TableActionProps): JSX.Element {
                 const {
                   isLoading: isDeleting,
-                  mutate: deleteDownload,
-                } = useDeleteDownload();
+                  mutate: downloadDeleted,
+                } = useDownloadDeleted();
                 const downloadItem = rowData as FormattedDownload;
                 // const [isDeleting, setIsDeleting] = React.useState(false);
 
@@ -330,7 +330,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                     key="remove"
                     size="small"
                     onClick={() => {
-                      deleteDownload(downloadItem.id);
+                      downloadDeleted({
+                        downloadId: downloadItem.id,
+                        deleted: true,
+                      });
                     }}
                   >
                     <RemoveCircle color={isDeleting ? 'error' : 'inherit'} />

@@ -5,7 +5,7 @@ import { DownloadCartItem, handleICATError } from 'datagateway-common';
 import {
   useCart,
   useDatafileCounts,
-  useDeleteDownload,
+  useDownloadDeleted,
   useDownloads,
   useIsTwoLevel,
   useRemoveAllFromCart,
@@ -782,7 +782,7 @@ describe('Download Cart API react-query hooks test', () => {
     });
   });
 
-  describe('useDeleteDownload', () => {
+  describe('useDownloadDeleted', () => {
     it('should delete download with given id and update the download list upon success', async () => {
       const mockDownloadItems: Download[] = [
         {
@@ -811,7 +811,7 @@ describe('Download Cart API react-query hooks test', () => {
       const { result, waitFor } = renderHook(
         () => ({
           useDownloads: useDownloads(),
-          useDeleteDownload: useDeleteDownload(),
+          useDownloadDeleted: useDownloadDeleted(),
         }),
         { wrapper: createReactQueryWrapper() }
       );
@@ -819,11 +819,117 @@ describe('Download Cart API react-query hooks test', () => {
       // wait for useDownloads to finish loading mock download items
       await waitFor(() => result.current.useDownloads.isSuccess);
       // delete the mock item
-      result.current.useDeleteDownload.mutate(123);
+      result.current.useDownloadDeleted.mutate({
+        downloadId: 123,
+        deleted: true,
+      });
       // wait for mutation to complete
-      await waitFor(() => result.current.useDeleteDownload.isSuccess);
+      await waitFor(() => result.current.useDownloadDeleted.isSuccess);
 
       expect(result.current.useDownloads.data).toHaveLength(0);
+    });
+
+    it('should restore download with given id and update download list upon success', async () => {
+      const mockDownloadItems: Download[] = [
+        {
+          createdAt: 'created-at',
+          downloadItems: [],
+          facilityName: mockedSettings.facilityName,
+          fileName: 'file-name',
+          fullName: 'fullName',
+          id: 123,
+          isDeleted: false,
+          isEmailSent: false,
+          isTwoLevel: false,
+          preparedId: 'prepare-id',
+          sessionId: 'session-id',
+          size: 23,
+          status: 'PREPARING',
+          transport: 'http',
+          userName: 'username',
+          email: 'a@b.c',
+        },
+      ];
+
+      const mockRestoredDownload: Download = {
+        createdAt: 'created-at',
+        downloadItems: [],
+        facilityName: mockedSettings.facilityName,
+        fileName: 'file-name',
+        fullName: 'fullName',
+        id: 124,
+        isDeleted: false,
+        isEmailSent: false,
+        isTwoLevel: false,
+        preparedId: 'prepare-id',
+        sessionId: 'session-id',
+        size: 21,
+        status: 'PREPARING',
+        transport: 'http',
+        userName: 'username',
+        email: 'a@b.c',
+      };
+
+      const mockRestoredFormattedDownload: FormattedDownload = {
+        createdAt: 'created-at',
+        downloadItems: [],
+        facilityName: mockedSettings.facilityName,
+        fileName: 'file-name',
+        fullName: 'fullName',
+        id: 124,
+        isDeleted: 'No',
+        isEmailSent: false,
+        isTwoLevel: false,
+        preparedId: 'prepare-id',
+        sessionId: 'session-id',
+        size: 21,
+        status: 'downloadStatus.preparing',
+        transport: 'http',
+        userName: 'username',
+        email: 'a@b.c',
+      };
+
+      axios.get = jest.fn().mockImplementation((url, { params }) => {
+        if (
+          url === `${mockedSettings.downloadApiUrl}/user/downloads` &&
+          params.queryOffset === 'where download.isDeleted = false'
+        )
+          return Promise.resolve({ data: mockDownloadItems });
+
+        if (
+          url === `${mockedSettings.downloadApiUrl}/user/downloads` &&
+          params.queryOffset === 'where download.id = 124'
+        )
+          return Promise.resolve({ data: [mockRestoredDownload] });
+
+        return Promise.reject();
+      });
+
+      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+
+      const { result, waitFor } = renderHook(
+        () => ({
+          useDownloads: useDownloads(),
+          useDownloadDeleted: useDownloadDeleted(),
+        }),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.useDownloads.isSuccess);
+      result.current.useDownloadDeleted.mutate({
+        downloadId: 124,
+        deleted: false,
+      });
+      await waitFor(() => result.current.useDownloadDeleted.isSuccess);
+
+      const newList = result.current.useDownloads.data;
+
+      expect(newList).toHaveLength(2);
+      expect(newList?.find(({ id }) => id === 124)).toEqual(
+        mockRestoredFormattedDownload
+      );
     });
 
     it('should call handleICATError if an error is encountered', async () => {
@@ -831,11 +937,14 @@ describe('Download Cart API react-query hooks test', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useDeleteDownload(), {
+      const { result, waitFor } = renderHook(() => useDownloadDeleted(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      result.current.mutate(123);
+      result.current.mutate({
+        downloadId: 123,
+        deleted: true,
+      });
       await waitFor(() => result.current.isError);
 
       expect(handleICATError).toHaveBeenCalledWith({
