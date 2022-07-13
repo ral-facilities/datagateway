@@ -37,7 +37,6 @@ import {
   removeAllDownloadCartItems,
   removeFromCart,
 } from './downloadApi';
-import { useTranslation } from 'react-i18next';
 import useDownloadFormatter from './downloadStatus/hooks/useDownloadFormatter';
 
 /**
@@ -296,8 +295,7 @@ export const useDownloads = (): UseQueryResult<
 > => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
-  const [t] = useTranslation();
-  const downloadFormatter = useDownloadFormatter();
+  const { downloadFormatter } = useDownloadFormatter();
 
   return useQuery(
     QueryKey.DOWNLOADS,
@@ -390,7 +388,7 @@ export const useAdminDownloads = ({
 }): UseInfiniteQueryResult<FormattedDownload[], AxiosError> => {
   // Load the download settings for use
   const downloadSettings = React.useContext(DownloadSettingsContext);
-  const downloadFormatter = useDownloadFormatter();
+  const { downloadFormatter } = useDownloadFormatter();
 
   return useInfiniteQuery(
     QueryKey.ADMIN_DOWNLOADS,
@@ -440,7 +438,7 @@ export const useAdminDownloadDeleted = (): UseMutationResult<
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
     {
-      onSuccess: async (downloadId) => {
+      onSuccess: async (_, { downloadId }) => {
         const downloads = await fetchAdminDownloads(
           {
             facilityName: downloadSettings.facilityName,

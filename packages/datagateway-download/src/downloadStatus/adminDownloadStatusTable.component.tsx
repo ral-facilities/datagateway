@@ -114,7 +114,7 @@ const AdminDownloadStatusTable: React.FC = () => {
     fetchNextPage,
     refetch,
   } = useAdminDownloads({
-    initialQueryOffset: `${buildQueryOffset} LIMIT 0, 50`,
+    initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
   });
 
   const fetchMoreData = useCallback(

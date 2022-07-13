@@ -20,7 +20,8 @@ type DownloadStatusLabelMap = {
 };
 
 /**
- * A hook that a function for formatting {@link Download} objects.
+ * A React hook that provides a function for formatting {@link Download} objects,
+ * and a map for mapping {@link DownloadStatus} to the corresponding user-facing label.
  */
 function useDownloadFormatter(): {
   downloadFormatter: DownloadFormatter;

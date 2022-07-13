@@ -262,14 +262,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             actions={[
               function DownloadButton({ rowData }: TableActionProps) {
                 const downloadItem = rowData as FormattedDownload;
-                const isHTTP = downloadItem.transport.match(/https|http/)
-                  ? true
-                  : false;
+                const isHTTP = !!downloadItem.transport.match(/https|http/);
 
                 const isComplete =
-                  downloadItem.status === t('downloadStatus.complete')
-                    ? true
-                    : false;
+                  downloadItem.status === t('downloadStatus.complete');
 
                 const isDownloadable = isHTTP && isComplete;
 
