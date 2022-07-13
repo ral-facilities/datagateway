@@ -5,6 +5,7 @@
     "schedule:nonOfficeHours",
     ":maintainLockFilesWeekly"
   ],
+  "postUpdateOptions": ["yarnDedupeHighest"],
   "labels": ["dependencies"],
   "separateMinorPatch": true,
   "patch": {
