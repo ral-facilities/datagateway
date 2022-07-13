@@ -7,7 +7,9 @@ import {
 import { MicroFrontendId } from './app.types';
 
 const handleICATError = (error: AxiosError, broadcast = true): void => {
-  const message = error.response?.data.message ?? error.message;
+  const message =
+    (error as AxiosError<{ message?: string }>).response?.data?.message ??
+    error.message;
   log.error(message);
   if (broadcast) {
     if (

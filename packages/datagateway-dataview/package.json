@@ -19,7 +19,7 @@
     "@types/react-router-dom": "5.3.3",
     "@types/react-virtualized": "9.21.10",
     "@types/redux-logger": "3.0.8",
-    "axios": "0.26.0",
+    "axios": "0.27.2",
     "connected-react-router": "6.9.1",
     "custom-event-polyfill": "1.0.7",
     "datagateway-common": "^1.1.0",
