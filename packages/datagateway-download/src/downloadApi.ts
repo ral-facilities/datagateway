@@ -291,17 +291,10 @@ export const adminDownloadDeleted: (
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('value', JSON.stringify(deleted));
 
-  return axios
-    .put(
-      `${settings.downloadApiUrl}/admin/download/${downloadId}/isDeleted`,
-      params
-    )
-    .then(() => {
-      // do nothing
-    })
-    .catch((error) => {
-      handleICATError(error);
-    });
+  return axios.put(
+    `${settings.downloadApiUrl}/admin/download/${downloadId}/isDeleted`,
+    params
+  );
 };
 
 export const adminDownloadStatus: (
@@ -324,17 +317,10 @@ export const adminDownloadStatus: (
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('value', status);
 
-  return axios
-    .put(
-      `${settings.downloadApiUrl}/admin/download/${downloadId}/status`,
-      params
-    )
-    .then(() => {
-      // do nothing
-    })
-    .catch((error) => {
-      handleICATError(error);
-    });
+  return axios.put(
+    `${settings.downloadApiUrl}/admin/download/${downloadId}/status`,
+    params
+  );
 };
 
 export const getSize: (
