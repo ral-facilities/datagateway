@@ -1195,6 +1195,19 @@ describe('Download Cart API react-query hooks test', () => {
     });
 
     it('should restore download with the given id', async () => {
+      // the way the mocked mutation is handled is through this isMutated flag.
+      // initially, isMutated is false, and the mocked implementation
+      // of axios.get will return the unmodified download item list.
+      // after isMutated is set to true
+      // (which is done when manually calling the mutation function)
+      // axios.get will return the updated download item list instead,
+      // to simulate server updating the list.
+      //
+      // this is needed because after mutation is successful,
+      // onSettled is called which will call invalidateQueries, causing
+      // axios.get to be called again. without the flag,
+      // it will just always return the old list.
+
       let isMutated = false;
       const restoredDownload: Download = {
         createdAt: '2020-02-25T15:05:29Z',
@@ -1305,6 +1318,19 @@ describe('Download Cart API react-query hooks test', () => {
 
   describe('useAdminUpdateDownloadStatus', () => {
     it('should update status of download with the given id', async () => {
+      // the way the mocked mutation is handled is through this isMutated flag.
+      // initially, isMutated is false, and the mocked implementation
+      // of axios.get will return the unmodified download item list.
+      // after isMutated is set to true
+      // (which is done when manually calling the mutation function)
+      // axios.get will return the updated download item list instead,
+      // to simulate server updating the list.
+      //
+      // this is needed because after mutation is successful,
+      // onSettled is called which will call invalidateQueries, causing
+      // axios.get to be called again. without the flag,
+      // it will just always return the old list.
+
       let isMutated = false;
 
       const updatedDownload: Download = {

@@ -28,6 +28,7 @@ const TextColumnFilter = (props: {
   );
 
   const updateType = (type: string): void => {
+    console.log('updateType', type);
     onChange({ value: inputValue, type: type });
   };
 
@@ -39,6 +40,7 @@ const TextColumnFilter = (props: {
   };
 
   const handleSelectChange = (type: string): void => {
+    console.log('handleSelectChange', type);
     // Only trigger onChange if input is not empty
     if (inputValue !== '') {
       updateType(type);

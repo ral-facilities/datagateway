@@ -14,8 +14,15 @@ import {
   flushPromises,
 } from '../setupTests';
 import { Select } from '@mui/material';
+import {
+  useAdminDownloadDeleted,
+  useAdminDownloads,
+  useAdminUpdateDownloadStatus,
+} from '../downloadApiHooks';
+import { IndexRange } from 'react-virtualized';
 
 jest.mock('../downloadApi');
+jest.mock('../downloadApiHooks');
 
 describe('Admin Download Status Table', () => {
   let holder;
@@ -123,6 +130,22 @@ describe('Admin Download Status Table', () => {
     holder.setAttribute('id', 'datagateway-download');
     document.body.appendChild(holder);
 
+    (useAdminDownloadDeleted as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+    });
+    (useAdminUpdateDownloadStatus as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
+    });
+    (useAdminDownloads as jest.Mock).mockReturnValue({
+      data: {
+        pageParams: [],
+        pages: [downloadItems],
+      },
+      isLoading: false,
+      isFetched: true,
+      fetchNextPage: jest.fn(),
+      refetch: jest.fn(),
+    });
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
         settings: { facilityName: string; downloadApiUrl: string },
@@ -152,6 +175,13 @@ describe('Admin Download Status Table', () => {
   it('renders correctly', () => {
     const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0)).toUTCString();
     global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
+    (useAdminDownloads as jest.Mock).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isFetched: false,
+      fetchNextPage: jest.fn(),
+      refetch: jest.fn(),
+    });
 
     const wrapper = shallow(<AdminDownloadStatusTable />);
     expect(wrapper).toMatchSnapshot();
@@ -160,53 +190,48 @@ describe('Admin Download Status Table', () => {
   it('fetches the download items and sorts by download requested time desc on load ', async () => {
     const wrapper = createWrapper();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    expect(useAdminDownloads).toHaveBeenCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 0, 50",
     });
-
-    expect(fetchAdminDownloads).toHaveBeenCalledTimes(2);
-    expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
-      1,
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 0, 50"
-    );
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
 
   it('fetches more download items when loadMoreRows is called', async () => {
+    const mockFetchNextPage = jest.fn();
+    (useAdminDownloads as jest.Mock).mockReturnValue({
+      data: {
+        pageParams: [],
+        pages: [downloadItems],
+      },
+      isLoading: false,
+      isFetched: true,
+      fetchNextPage: mockFetchNextPage,
+      refetch: jest.fn(),
+    });
+
     const wrapper = createWrapper();
 
     await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    await act(async () => {
-      wrapper.find('VirtualizedTable').prop('loadMoreRows')({
+      (wrapper.find('VirtualizedTable').prop('loadMoreRows') as (
+        range: IndexRange
+      ) => void)({
         startIndex: 5,
         stopIndex: 9,
       });
-
-      await flushPromises();
+      wrapper.mount();
       wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenCalledTimes(3);
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 5, 5"
-    );
+    expect(mockFetchNextPage).toHaveBeenLastCalledWith({
+      pageParam:
+        "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 5, 5",
+    });
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
 
   it('translates the status strings correctly', async () => {
     const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
 
     expect(
       wrapper.find('[aria-rowindex=1]').find('[aria-colindex=6]').text()
@@ -226,12 +251,19 @@ describe('Admin Download Status Table', () => {
   });
 
   it('re-fetches the download items when the refresh button is clicked', async () => {
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    const mockRefetch = jest.fn().mockImplementation(() => Promise.resolve());
+    (useAdminDownloads as jest.Mock).mockReturnValue({
+      data: {
+        pageParams: [],
+        pages: [downloadItems],
+      },
+      isLoading: false,
+      isFetched: true,
+      fetchNextPage: jest.fn(),
+      refetch: mockRefetch,
     });
+
+    const wrapper = createWrapper();
 
     await act(async () => {
       wrapper
@@ -239,26 +271,14 @@ describe('Admin Download Status Table', () => {
           'button[aria-label="downloadTab.refresh_download_status_arialabel"]'
         )
         .simulate('click');
-      await flushPromises();
-      wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenCalledTimes(3);
-    expect(fetchAdminDownloads).toHaveBeenNthCalledWith(
-      3,
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 0, 50"
-    );
+    expect(mockRefetch).toHaveBeenCalledTimes(1);
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
 
   it('sends sort request on sort', async () => {
     const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
@@ -267,7 +287,7 @@ describe('Admin Download Status Table', () => {
       .at(6);
     await act(async () => {
       createdAtSortLabel.simulate('click');
-      await flushPromises();
+      wrapper.mount();
       wrapper.update();
     });
 
@@ -277,14 +297,14 @@ describe('Admin Download Status Table', () => {
       .at(2);
     await act(async () => {
       usernameSortLabel.simulate('click');
-      await flushPromises();
+      wrapper.mount();
       wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50",
+    });
 
     // Get the Access Method sort header.
     const accessMethodSortLabel = wrapper
@@ -296,10 +316,10 @@ describe('Admin Download Status Table', () => {
       wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50",
+    });
 
     await act(async () => {
       accessMethodSortLabel.simulate('click');
@@ -307,10 +327,10 @@ describe('Admin Download Status Table', () => {
       wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50",
+    });
 
     await act(async () => {
       accessMethodSortLabel.simulate('click');
@@ -318,19 +338,14 @@ describe('Admin Download Status Table', () => {
       wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50",
+    });
   }, 10000);
 
   it('sends filter request on text filter', async () => {
     const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
@@ -339,8 +354,6 @@ describe('Admin Download Status Table', () => {
       .at(6);
     await act(async () => {
       createdAtSortLabel.simulate('click');
-      await flushPromises();
-      wrapper.update();
     });
 
     // Get the Username filter input
@@ -350,14 +363,12 @@ describe('Admin Download Status Table', () => {
     await act(async () => {
       usernameFilterInput.instance().value = 'test user';
       usernameFilterInput.simulate('change');
-      await flushPromises();
-      wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50",
+    });
     usernameFilterInput.instance().value = '';
     usernameFilterInput.simulate('change');
 
@@ -368,14 +379,14 @@ describe('Admin Download Status Table', () => {
     await act(async () => {
       availabilityFilterInput.instance().value = 'downloadStatus.complete';
       availabilityFilterInput.simulate('change');
-      await flushPromises();
-      wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50",
+    });
+
+    console.log('==============================================');
 
     // We simulate a change in the select from 'include' to 'exclude'.
     const availabilityFilterSelect = wrapper.find(Select).at(5);
@@ -387,33 +398,26 @@ describe('Admin Download Status Table', () => {
       wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50",
+    });
 
     await act(async () => {
       availabilityFilterInput.instance().value = '';
       availabilityFilterInput.simulate('change');
-      await flushPromises();
-      wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50",
+    });
   }, 10000);
 
   it('sends filter request on date filter', async () => {
     applyDatePickerWorkaround();
 
     const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
@@ -422,8 +426,6 @@ describe('Admin Download Status Table', () => {
       .at(6);
     await act(async () => {
       createdAtSortLabel.simulate('click');
-      await flushPromises();
-      wrapper.update();
     });
 
     // Get the Requested Data From filter input
@@ -433,14 +435,12 @@ describe('Admin Download Status Table', () => {
     await act(async () => {
       dateFromFilterInput.instance().value = '2020-01-01 00:00';
       dateFromFilterInput.simulate('change');
-      await flushPromises();
-      wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '9999-12-31 23:59'} ORDER BY download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '9999-12-31 23:59'} ORDER BY download.id ASC LIMIT 0, 50",
+    });
 
     // Get the Requested Data To filter input
     const dateToFilterInput = wrapper.find(
@@ -453,10 +453,10 @@ describe('Admin Download Status Table', () => {
       wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '2020-01-02 23:59'} ORDER BY download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '2020-01-02 23:59'} ORDER BY download.id ASC LIMIT 0, 50",
+    });
 
     dateFromFilterInput.instance().value = '';
     dateFromFilterInput.simulate('change');
@@ -467,27 +467,37 @@ describe('Admin Download Status Table', () => {
       wrapper.update();
     });
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
-    );
+    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+      initialQueryOffset:
+        "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50",
+    });
 
     cleanupDatePickerWorkaround();
   }, 10000);
 
   it('sends restore item and item status requests when restore button is clicked', async () => {
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    const mockAdminDownloadDeleted = jest.fn();
+    (useAdminDownloadDeleted as jest.Mock).mockReturnValue({
+      mutate: mockAdminDownloadDeleted,
+    });
+    (useAdminDownloads as jest.Mock).mockReturnValue({
+      data: {
+        pageParams: [],
+        pages: [
+          {
+            ...downloadItems[0],
+            isDeleted: 'No',
+            status: 'downloadStatus.restoring',
+          },
+        ],
+      },
+      isLoading: false,
+      isFetched: true,
+      fetchNextPage: jest.fn(),
+      refetch: jest.fn(),
     });
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(() =>
-      Promise.resolve([
-        { ...downloadItems[0], isDeleted: false, status: 'RESTORING' },
-      ])
-    );
+    const wrapper = createWrapper();
 
     await act(async () => {
       wrapper
@@ -499,14 +509,10 @@ describe('Admin Download Status Table', () => {
       wrapper.update();
     });
 
-    expect(adminDownloadDeleted).toHaveBeenCalledWith(4, false, {
-      downloadApiUrl: '',
-      facilityName: '',
+    expect(mockAdminDownloadDeleted).toHaveBeenCalledWith({
+      downloadId: 4,
+      deleted: false,
     });
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      { downloadApiUrl: '', facilityName: '' },
-      'WHERE download.id = 4'
-    );
     expect(
       wrapper.exists(
         '[aria-label="downloadStatus.pause {filename:test-file-4}"]'
