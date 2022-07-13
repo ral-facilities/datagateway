@@ -140,6 +140,8 @@ describe('Download Status', () => {
       cy.get('input[id="Requested Date filter from"]').type('2020-01-31 00:00');
 
       const date = new Date();
+      date.setDate(1);
+      date.setMonth(date.getMonth() - 1);
       // MUIv5 datetime pickers don't allow for time to be graphically selected
       // This is because the relevant elements are <span> elements with pointer-events: none
       // Therefore, we settle for typing the date and time instead
@@ -151,6 +153,7 @@ describe('Download Status', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
 
       const currDate = new Date();
+      currDate.setHours(0, 0, 0, 0);
 
       cy.get('input[id="Requested Date filter from"]').clear();
       cy.get('input[id="Requested Date filter to"]').clear();
