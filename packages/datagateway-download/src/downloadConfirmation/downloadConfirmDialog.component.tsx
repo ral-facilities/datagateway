@@ -1,38 +1,34 @@
 import React from 'react';
 import {
-  Dialog,
-  DialogTitle as MuiDialogTitle,
-  DialogContent as MuiDialogContent,
-  DialogActions as MuiDialogActions,
-  Typography,
-  IconButton,
   Button,
-  TextField,
-  Grid,
-  Select,
-  FormControl,
-  InputLabel,
-  FormHelperText,
   CircularProgress,
+  Dialog,
+  DialogActions as MuiDialogActions,
+  DialogContent as MuiDialogContent,
+  DialogTitle as MuiDialogTitle,
+  FormControl,
+  FormHelperText,
+  Grid,
+  IconButton,
+  InputLabel,
+  Select,
   styled,
+  TextField,
+  Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 import {
   formatBytes,
+  Mark,
   MicroFrontendId,
   NotificationType,
-  Mark,
 } from 'datagateway-common';
-import {
-  submitCart,
-  getDownload,
-  downloadPreparedCart,
-  getDownloadTypeStatus,
-} from '../downloadApi';
+import { downloadPreparedCart, getDownloadTypeStatus } from '../downloadApi';
 
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { useTranslation, Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import { useDownload, useSubmitCart } from '../downloadApiHooks';
 
 const TableContentDiv = styled('div')(({ theme }) => ({
   paddingTop: '10px',
@@ -180,6 +176,20 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState(false);
 
   const [showDialog, setShowDialog] = React.useState(false);
+
+  const {
+    data: downloadId,
+    mutate: submitCart,
+    isSuccess: isCartSubmitted,
+  } = useSubmitCart();
+  // query download after cart is submitted
+  const {
+    data: downloadInfo,
+    isSuccess: isDownloadInfoAvailable,
+  } = useDownload({
+    id: downloadId ?? -1,
+    enabled: Boolean(downloadId) && isCartSubmitted,
+  });
 
   // Hide the confirmation dialog and clear the download cart
   // when the dialog is closed.
@@ -341,6 +351,27 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     t,
   ]);
 
+  React.useEffect(() => {
+    if (
+      isDownloadInfoAvailable &&
+      downloadInfo &&
+      downloadInfo.status === 'COMPLETE'
+    ) {
+      // Download the file as long as it is available for instant download.
+      downloadPreparedCart(
+        downloadInfo.preparedId,
+        downloadInfo.fileName,
+        // Use the idsUrl that has been defined for this access method.
+        { idsUrl: settings.accessMethods[selectedMethod].idsUrl }
+      );
+    }
+  }, [
+    downloadInfo,
+    isDownloadInfoAvailable,
+    selectedMethod,
+    settings.accessMethods,
+  ]);
+
   const getDefaultFileName = (): string => {
     const now = new Date(Date.now());
     const defaultName = `${settings.facilityName}_${now.getFullYear()}-${
@@ -392,39 +423,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setDownloadName(fileName);
     }
 
-    const downloadId = await submitCart(
-      selectedMethod,
+    submitCart({
       emailAddress,
       fileName,
-      {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
-      }
-    );
-
-    // Ensure that we have received a downloadId.
-    if (downloadId && downloadId !== -1) {
-      // If we are using HTTPS then start the download using
-      // the download ID we received.
-      if (selectedMethod.match(/https|http/)) {
-        const downloadInfo = await getDownload(downloadId, {
-          facilityName: settings.facilityName,
-          downloadApiUrl: settings.downloadApiUrl,
-        });
-
-        // Download the file as long as it is available for instant download.
-        if (downloadInfo != null && downloadInfo.status === 'COMPLETE')
-          downloadPreparedCart(
-            downloadInfo.preparedId,
-            downloadInfo.fileName,
-
-            // Use the idsUrl that has been defined for this access method.
-            { idsUrl: settings.accessMethods[selectedMethod].idsUrl }
-          );
-      }
-
-      setIsSubmitSuccessful(true);
-    }
+      transport: selectedMethod,
+    });
 
     // Enable submitted view.
     setIsSubmitted(true);
@@ -782,7 +785,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 </Grid>
               )}
 
-              {isSubmitSuccessful && (
+              {isCartSubmitted && (
                 <Grid item xs>
                   <Button
                     id="download-confirmation-status-link"

@@ -25,6 +25,7 @@ import {
   UseQueryResult,
 } from 'react-query';
 import pLimit from 'p-limit';
+import type { DownloadTypeStatus, SubmitCartZipType } from './downloadApi';
 import {
   adminDownloadDeleted,
   adminDownloadStatus,
@@ -33,10 +34,12 @@ import {
   fetchDownloads,
   getDatafileCount,
   getDownload,
+  getDownloadTypeStatus,
   getIsTwoLevel,
   getSize,
   removeAllDownloadCartItems,
   removeFromCart,
+  submitCart,
 } from './downloadApi';
 import useDownloadFormatter from './downloadStatus/hooks/useDownloadFormatter';
 
@@ -45,14 +48,29 @@ import useDownloadFormatter from './downloadStatus/hooks/useDownloadFormatter';
  */
 export enum QueryKey {
   /**
+   * Key for querying a particular download.
+   */
+  DOWNLOAD = 'download',
+
+  /**
    * Key for querying list of downloads.
    */
   DOWNLOADS = 'downloads',
 
   /**
+   * Key for querying the status of a particular download type
+   */
+  DOWNLOAD_TYPE_STATUS = 'download-type-status',
+
+  /**
    * Key for querying list of admin downloads
    */
   ADMIN_DOWNLOADS = 'admin-downloads',
+
+  /**
+   * Key for querying the download cart.
+   */
+  CART = 'cart',
 }
 
 /**
@@ -65,7 +83,7 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
   const { facilityName, downloadApiUrl } = settings;
   return useQuery(
-    'cart',
+    QueryKey.CART,
     () =>
       fetchDownloadCart({
         facilityName,
@@ -94,7 +112,7 @@ export const useRemoveAllFromCart = (): UseMutationResult<
     () => removeAllDownloadCartItems({ facilityName, downloadApiUrl }),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData('cart', []);
+        queryClient.setQueryData(QueryKey.CART, []);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
@@ -128,7 +146,7 @@ export const useRemoveEntityFromCart = (): UseMutationResult<
       }),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
+        queryClient.setQueryData(QueryKey.CART, data);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
@@ -157,43 +175,58 @@ export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
   });
 };
 
-// TODO: refactor rest of dg-download to use react-query
-// export const useSubmitCart = (): UseMutationResult<
-//   number,
-//   AxiosError,
-//   {
-//     transport: string;
-//     emailAddress: string;
-//     fileName: string;
-//     zipType?: 'ZIP' | 'ZIP_AND_COMPRESS';
-//   }
-// > => {
-//   const queryClient = useQueryClient();
-//   const settings = React.useContext(DownloadSettingsContext);
-//   const { facilityName, downloadApiUrl } = settings;
+/**
+ * A React hook for submitting a download cart.
+ * Returns the download id for the submitted cart, which can then be used
+ * to query more info.
+ */
+export const useSubmitCart = (): UseMutationResult<
+  number,
+  AxiosError,
+  {
+    transport: string;
+    emailAddress: string;
+    fileName: string;
+    zipType?: SubmitCartZipType;
+  },
+  RollbackFunction
+> => {
+  const queryClient = useQueryClient();
+  const settings = React.useContext(DownloadSettingsContext);
+  const { facilityName, downloadApiUrl } = settings;
 
-//   return useMutation(
-//     ({ transport, emailAddress, fileName, zipType }) =>
-//       submitCart(
-//         transport,
-//         emailAddress,
-//         fileName,
-//         {
-//           facilityName,
-//           downloadApiUrl,
-//         },
-//         zipType
-//       ),
-//     {
-//       onSuccess: (data) => {
-//         queryClient.setQueryData('cart', data);
-//       },
-//       onError: (error) => {
-//         handleICATError(error);
-//       },
-//     }
-//   );
-// };
+  return useMutation(
+    ({ transport, emailAddress, fileName, zipType }) =>
+      submitCart(
+        transport,
+        emailAddress,
+        fileName,
+        {
+          facilityName,
+          downloadApiUrl,
+        },
+        zipType
+      ),
+    {
+      onMutate: () => {
+        const prevCart = queryClient.getQueryData(QueryKey.CART);
+
+        queryClient.setQueryData(QueryKey.CART, []);
+
+        return () => queryClient.setQueryData(QueryKey.CART, prevCart);
+      },
+
+      onError: (error, _, rollback) => {
+        handleICATError(error);
+        if (rollback) rollback();
+      },
+
+      onSettled: () => {
+        queryClient.invalidateQueries(QueryKey.CART);
+      },
+    }
+  );
+};
 
 const sizesLimit = pLimit(20);
 
@@ -287,6 +320,49 @@ export const useDatafileCounts = (
   return queries;
 };
 
+export interface UseDownloadParams {
+  id: number;
+}
+
+/**
+ * A React hook that fetches a single download with the given id.
+ * useQuery options can be passed in, which will override the default used.
+ *
+ * Example:
+ * ```
+ * useDownload({
+ *   id: 123,
+ *   select: (download) => format(download)
+ * })
+ * ```
+ */
+export const useDownload = ({
+  id,
+  ...queryOptions
+}: UseDownloadParams & UseQueryOptions<Download, AxiosError>): UseQueryResult<
+  Download,
+  AxiosError
+> => {
+  // Load the download settings for use.
+  const downloadSettings = React.useContext(DownloadSettingsContext);
+
+  return useQuery(
+    [QueryKey.DOWNLOAD, id],
+    () =>
+      getDownload(id, {
+        facilityName: downloadSettings.facilityName,
+        downloadApiUrl: downloadSettings.downloadApiUrl,
+      }),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      retry: retryICATErrors,
+      ...queryOptions,
+    }
+  );
+};
+
 /**
  * A React hook that fetches all downloads created by the user.
  */
@@ -296,7 +372,7 @@ export const useDownloads = (): UseQueryResult<
 > => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
-  const { downloadFormatter } = useDownloadFormatter();
+  const { formatDownload } = useDownloadFormatter();
 
   return useQuery(
     QueryKey.DOWNLOADS,
@@ -306,7 +382,7 @@ export const useDownloads = (): UseQueryResult<
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
     {
-      select: (downloads) => downloads.map(downloadFormatter),
+      select: (downloads) => downloads.map(formatDownload),
       onError: (error) => {
         handleICATError(error);
       },
@@ -401,6 +477,42 @@ export const useDownloadDeleted = (): UseMutationResult<
   );
 };
 
+export const useDownloadTypeStatuses = ({
+  downloadTypes,
+}: {
+  downloadTypes: string[];
+}): UseQueryResult<DownloadTypeStatus, AxiosError>[] => {
+  // Load the download settings for use
+  const downloadSettings = React.useContext(DownloadSettingsContext);
+
+  const queryConfigs: UseQueryOptions<
+    DownloadTypeStatus,
+    AxiosError
+  >[] = downloadTypes.map((type) => ({
+    queryKey: [QueryKey.DOWNLOAD_TYPE_STATUS, type],
+    queryFn: () =>
+      getDownloadTypeStatus(type, {
+        facilityName: downloadSettings.facilityName,
+        downloadApiUrl: downloadSettings.downloadApiUrl,
+      }),
+    onError: (error) => {
+      handleICATError(error);
+    },
+  }));
+
+  // TODO: un-ignore ts when upgrading react-query to >=3.28
+  // useQueries doesn't allow generics until 3.28,
+  // so there is no way around of typing the result without suppressing
+  // typescript.
+  //
+  // note that the return type of this function is typed, so no type information
+  // is lost here.
+  //
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return useQueries(queryConfigs);
+};
+
 /**
  * A React hook for querying admin downloads. Supports infinite scrolling.
  *
@@ -413,7 +525,7 @@ export const useAdminDownloads = ({
 }): UseInfiniteQueryResult<FormattedDownload[], AxiosError> => {
   // Load the download settings for use
   const downloadSettings = React.useContext(DownloadSettingsContext);
-  const { downloadFormatter } = useDownloadFormatter();
+  const { formatDownload } = useDownloadFormatter();
 
   return useInfiniteQuery(
     QueryKey.ADMIN_DOWNLOADS,
@@ -428,7 +540,7 @@ export const useAdminDownloads = ({
     {
       select: ({ pages, pageParams }) => ({
         pageParams,
-        pages: pages.map((page) => page.map(downloadFormatter)),
+        pages: pages.map((page) => page.map(formatDownload)),
       }),
 
       onError: (error) => {

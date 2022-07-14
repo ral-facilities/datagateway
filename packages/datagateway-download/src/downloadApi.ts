@@ -1,14 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
 import * as log from 'loglevel';
-import {
+import type {
   Datafile,
   Download,
   DownloadCart,
   DownloadCartItem,
-  handleICATError,
-  readSciGatewayToken,
   SubmitCart,
 } from 'datagateway-common';
+import { handleICATError, readSciGatewayToken } from 'datagateway-common';
 
 export const removeAllDownloadCartItems: (settings: {
   facilityName: string;
@@ -62,6 +61,8 @@ export const getIsTwoLevel: (settings: {
     });
 };
 
+export type SubmitCartZipType = 'ZIP' | 'ZIP_AND_COMPRESS';
+
 export const submitCart: (
   transport: string,
   emailAddress: string,
@@ -70,16 +71,13 @@ export const submitCart: (
     facilityName: string;
     downloadApiUrl: string;
   },
-  zipType?: 'ZIP' | 'ZIP_AND_COMPRESS'
+  zipType?: SubmitCartZipType
 ) => Promise<number> = (
-  transport: string,
-  emailAddress: string,
-  fileName: string,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  },
-  zipType?: 'ZIP' | 'ZIP_AND_COMPRESS'
+  transport,
+  emailAddress,
+  fileName,
+  settings,
+  zipType
 ) => {
   const params = new URLSearchParams();
 
@@ -165,7 +163,7 @@ export const fetchAdminDownloads: (
 export const getDownload: (
   downloadId: number,
   settings: { facilityName: string; downloadApiUrl: string }
-) => Promise<Download | null> = (
+) => Promise<Download> = (
   downloadId: number,
   settings: { facilityName: string; downloadApiUrl: string }
 ) => {
@@ -180,10 +178,6 @@ export const getDownload: (
     .then((response) => {
       const download = response.data[0];
       return download;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return null;
     });
 };
 
@@ -212,10 +206,18 @@ export const downloadPreparedCart: (
   }
 };
 
+/**
+ * Describes the status of a download type.
+ */
+export interface DownloadTypeStatus {
+  disabled: boolean;
+  message: string;
+}
+
 export const getDownloadTypeStatus: (
   transportType: string,
   settings: { facilityName: string; downloadApiUrl: string }
-) => Promise<{ disabled: boolean; message: string } | null> = (
+) => Promise<DownloadTypeStatus> = (
   transportType: string,
   settings: { facilityName: string; downloadApiUrl: string }
 ) => {
@@ -238,11 +240,7 @@ export const getDownloadTypeStatus: (
       ) => {
         return response.data;
       }
-    )
-    .catch((error) => {
-      if (error) handleICATError(error);
-      return null;
-    });
+    );
 };
 
 export const downloadDeleted: (

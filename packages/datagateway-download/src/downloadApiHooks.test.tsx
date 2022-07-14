@@ -1414,4 +1414,10 @@ describe('Download Cart API react-query hooks test', () => {
       ]);
     });
   });
+
+  describe('useSubmitCart', () => {
+    it('should submit cart and clear cart on success', () => {
+      axios.put = jest.fn().mockResolvedValue(123);
+    });
+  });
 });

@@ -24,7 +24,7 @@ type DownloadStatusLabelMap = {
  * and a map for mapping {@link DownloadStatus} to the corresponding user-facing label.
  */
 function useDownloadFormatter(): {
-  downloadFormatter: DownloadFormatter;
+  formatDownload: DownloadFormatter;
   downloadStatusLabels: DownloadStatusLabelMap;
 } {
   const [t] = useTranslation();
@@ -48,7 +48,10 @@ function useDownloadFormatter(): {
     [statusLabels]
   );
 
-  return { downloadFormatter, downloadStatusLabels: statusLabels };
+  return {
+    formatDownload: downloadFormatter,
+    downloadStatusLabels: statusLabels,
+  };
 }
 
 export default useDownloadFormatter;
