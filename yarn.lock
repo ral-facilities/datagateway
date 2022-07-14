@@ -1440,7 +1440,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.17.2
   resolution: "@babel/runtime@npm:7.17.2"
   dependencies:
@@ -7278,7 +7278,7 @@ __metadata:
     eslint-plugin-prettier: 3.3.1
     hex-to-rgba: 2.0.1
     history: 4.10.1
-    i18next: 21.6.13
+    i18next: 21.8.14
     lint-staged: 10.5.4
     lodash.debounce: 4.0.8
     loglevel: 1.8.0
@@ -7355,7 +7355,7 @@ __metadata:
     eslint-plugin-prettier: 3.3.1
     express: 4.17.1
     history: 4.10.1
-    i18next: 21.6.13
+    i18next: 21.8.14
     i18next-browser-languagedetector: 6.1.2
     i18next-http-backend: 1.3.2
     jsrsasign: 10.5.25
@@ -7425,7 +7425,7 @@ __metadata:
     eslint-plugin-cypress: 2.12.1
     eslint-plugin-prettier: 3.3.1
     history: 4.10.1
-    i18next: 21.6.13
+    i18next: 21.8.14
     i18next-browser-languagedetector: 6.1.2
     i18next-http-backend: 1.3.2
     jsrsasign: 10.5.25
@@ -7494,7 +7494,7 @@ __metadata:
     eslint-plugin-prettier: 3.3.1
     express: 4.17.1
     history: 4.10.1
-    i18next: 21.6.13
+    i18next: 21.8.14
     i18next-browser-languagedetector: 6.1.2
     i18next-http-backend: 1.3.2
     jsrsasign: 10.5.25
@@ -9285,17 +9285,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0":
-  version: 1.14.8
-  resolution: "follow-redirects@npm:1.14.8"
-  peerDependenciesMeta:
-    debug:
-      optional: true
-  checksum: 40c67899c2e3149a27e8b6498a338ff27f39fe138fde8d7f0756cb44b073ba0bfec3d52af28f20c5bdd67263d564d0d8d7b5efefd431de95c18c42f7b4aef457
-  languageName: node
-  linkType: hard
-
-"follow-redirects@npm:^1.14.9":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.9":
   version: 1.15.1
   resolution: "follow-redirects@npm:1.15.1"
   peerDependenciesMeta:
@@ -10310,12 +10300,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:21.6.13":
-  version: 21.6.13
-  resolution: "i18next@npm:21.6.13"
+"i18next@npm:21.8.14":
+  version: 21.8.14
+  resolution: "i18next@npm:21.8.14"
   dependencies:
-    "@babel/runtime": ^7.12.0
-  checksum: ede7280351e4bb63cf746b6772996258771c6ea36921fd700ae8d79b6868f85411031fc3c4169f129dad8e21e52b925447fdb19709b205cbbcffcaf23b86cc0b
+    "@babel/runtime": ^7.17.2
+  checksum: 83b1a57d761c3d29b90f4e87eb9945902fa13d7750f11bc7f22e8c9999f7e5bf9b2a30c44a9b47569c8ea704573b02a562c2678cf2281073197ace07657d21be
   languageName: node
   linkType: hard
 
