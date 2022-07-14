@@ -1,12 +1,11 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount, ReactWrapper, shallow } from 'enzyme';
 import DownloadTabs from './downloadTab.component';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 // Create our mocked datagateway-download settings file.
@@ -58,7 +57,6 @@ describe('DownloadTab', () => {
     const wrapper = createWrapper();
 
     await act(async () => {
-      await flushPromises();
       wrapper.update();
     });
 
@@ -108,8 +106,6 @@ describe('DownloadTab', () => {
           'button[aria-label="downloadTab.refresh_download_status_arialabel"]'
         )
         .simulate('click');
-
-      await flushPromises();
       wrapper.update();
     });
 
@@ -118,15 +114,15 @@ describe('DownloadTab', () => {
       wrapper
         .find('button[aria-label="downloadTab.cart_tab_arialabel"]')
         .simulate('click');
-      await flushPromises();
+      wrapper.mount();
       wrapper.update();
-
-      expect(
-        wrapper
-          .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
-          .props().hidden
-      ).toBe(true);
     });
+
+    expect(
+      wrapper
+        .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
+        .props().hidden
+    ).toBe(true);
   });
 
   it('renders the selections tab on each mount', async () => {

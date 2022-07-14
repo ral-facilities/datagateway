@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount, ReactWrapper, shallow } from 'enzyme';
-import { Download } from 'datagateway-common';
+import { FormattedDownload, TextColumnFilter } from 'datagateway-common';
 import {
   adminDownloadDeleted,
   adminDownloadStatus,
@@ -13,7 +13,6 @@ import {
   cleanupDatePickerWorkaround,
   flushPromises,
 } from '../setupTests';
-import { Select } from '@mui/material';
 import {
   useAdminDownloadDeleted,
   useAdminDownloads,
@@ -31,7 +30,7 @@ describe('Admin Download Status Table', () => {
     return mount(<AdminDownloadStatusTable />, { attachTo: holder });
   };
 
-  const downloadItems: Download[] = [
+  const downloadItems: FormattedDownload[] = [
     {
       createdAt: '2020-02-25T15:05:29Z',
       downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
@@ -40,13 +39,13 @@ describe('Admin Download Status Table', () => {
       fileName: 'test-file-1',
       fullName: 'Person 1',
       id: 1,
-      isDeleted: false,
+      isDeleted: 'No',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 1000,
-      status: 'COMPLETE',
+      status: 'downloadStatus.complete',
       transport: 'https',
       userName: 'test user',
     },
@@ -58,13 +57,13 @@ describe('Admin Download Status Table', () => {
       fileName: 'test-file-2',
       fullName: 'Person 2',
       id: 2,
-      isDeleted: false,
+      isDeleted: 'No',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 2000,
-      status: 'PREPARING',
+      status: 'downloadStatus.preparing',
       transport: 'globus',
       userName: 'test user',
     },
@@ -76,13 +75,13 @@ describe('Admin Download Status Table', () => {
       fileName: 'test-file-3',
       fullName: 'Person 3',
       id: 3,
-      isDeleted: false,
+      isDeleted: 'No',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 3000,
-      status: 'RESTORING',
+      status: 'downloadStatus.restoring',
       transport: 'https',
       userName: 'test user',
     },
@@ -94,13 +93,13 @@ describe('Admin Download Status Table', () => {
       fileName: 'test-file-4',
       fullName: 'Person 4',
       id: 4,
-      isDeleted: true,
+      isDeleted: 'Yes',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 4000,
-      status: 'EXPIRED',
+      status: 'downloadStatus.expired',
       transport: 'globus',
       userName: 'test user',
     },
@@ -112,13 +111,13 @@ describe('Admin Download Status Table', () => {
       fileName: 'test-file-5',
       fullName: 'Person 5',
       id: 5,
-      isDeleted: false,
+      isDeleted: 'No',
       isEmailSent: true,
       isTwoLevel: false,
       preparedId: 'test-prepared-id',
       sessionId: 'test-session-id',
       size: 5000,
-      status: 'PAUSED',
+      status: 'downloadStatus.paused',
       transport: 'globus',
       userName: 'test user',
     },
@@ -273,7 +272,7 @@ describe('Admin Download Status Table', () => {
         .simulate('click');
     });
 
-    expect(mockRefetch).toHaveBeenCalledTimes(1);
+    expect(mockRefetch).toHaveBeenCalled();
     expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
 
@@ -386,15 +385,13 @@ describe('Admin Download Status Table', () => {
         "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50",
     });
 
-    console.log('==============================================');
-
     // We simulate a change in the select from 'include' to 'exclude'.
-    const availabilityFilterSelect = wrapper.find(Select).at(5);
+    const availabilityFilter = wrapper.find(TextColumnFilter).at(5);
     await act(async () => {
-      availabilityFilterSelect
+      availabilityFilter
         .props()
-        .onChange({ target: { value: 'exclude' } });
-      await flushPromises();
+        .onChange({ value: 'downloadStatus.complete', type: 'exclude' });
+      wrapper.mount();
       wrapper.update();
     });
 
@@ -480,15 +477,20 @@ describe('Admin Download Status Table', () => {
     (useAdminDownloadDeleted as jest.Mock).mockReturnValue({
       mutate: mockAdminDownloadDeleted,
     });
+
+    const wrapper = createWrapper();
+
     (useAdminDownloads as jest.Mock).mockReturnValue({
       data: {
         pageParams: [],
         pages: [
-          {
-            ...downloadItems[0],
-            isDeleted: 'No',
-            status: 'downloadStatus.restoring',
-          },
+          [
+            {
+              ...downloadItems[3],
+              isDeleted: 'No',
+              status: 'downloadStatus.restoring',
+            },
+          ],
         ],
       },
       isLoading: false,
@@ -497,15 +499,13 @@ describe('Admin Download Status Table', () => {
       refetch: jest.fn(),
     });
 
-    const wrapper = createWrapper();
-
     await act(async () => {
       wrapper
         .find(
           'button[aria-label="downloadStatus.restore {filename:test-file-4}"]'
         )
         .simulate('click');
-      await flushPromises();
+      wrapper.mount();
       wrapper.update();
     });
 
@@ -521,11 +521,30 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends pause restore request when pause button is clicked', async () => {
+    const mockAdminDownloadStatus = jest.fn();
+    (useAdminUpdateDownloadStatus as jest.Mock).mockReturnValue({
+      mutate: mockAdminDownloadStatus,
+    });
+
     const wrapper = createWrapper();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    (useAdminDownloads as jest.Mock).mockReturnValue({
+      data: {
+        pageParams: [],
+        pages: [
+          [
+            {
+              ...downloadItems[2],
+              isDeleted: 'No',
+              status: 'downloadStatus.paused',
+            },
+          ],
+        ],
+      },
+      isLoading: false,
+      isFetched: true,
+      fetchNextPage: jest.fn(),
+      refetch: jest.fn(),
     });
 
     await act(async () => {
@@ -534,13 +553,13 @@ describe('Admin Download Status Table', () => {
           'button[aria-label="downloadStatus.pause {filename:test-file-3}"]'
         )
         .simulate('click');
-      await flushPromises();
+      wrapper.mount();
       wrapper.update();
     });
 
-    expect(adminDownloadStatus).toHaveBeenCalledWith(3, 'PAUSED', {
-      downloadApiUrl: '',
-      facilityName: '',
+    expect(mockAdminDownloadStatus).toHaveBeenCalledWith({
+      downloadId: 3,
+      status: 'PAUSED',
     });
     expect(
       wrapper.exists(
@@ -550,11 +569,30 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends resume restore request when resume button is clicked', async () => {
+    const mockAdminDownloadStatus = jest.fn();
+    (useAdminUpdateDownloadStatus as jest.Mock).mockReturnValue({
+      mutate: mockAdminDownloadStatus,
+    });
+
     const wrapper = createWrapper();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    (useAdminDownloads as jest.Mock).mockReturnValue({
+      data: {
+        pageParams: [],
+        pages: [
+          [
+            {
+              ...downloadItems[4],
+              isDeleted: 'No',
+              status: 'downloadStatus.restoring',
+            },
+          ],
+        ],
+      },
+      isLoading: false,
+      isFetched: true,
+      fetchNextPage: jest.fn(),
+      refetch: jest.fn(),
     });
 
     await act(async () => {
@@ -563,13 +601,13 @@ describe('Admin Download Status Table', () => {
           'button[aria-label="downloadStatus.resume {filename:test-file-5}"]'
         )
         .simulate('click');
-      await flushPromises();
+      wrapper.mount();
       wrapper.update();
     });
 
-    expect(adminDownloadStatus).toHaveBeenCalledWith(5, 'RESTORING', {
-      downloadApiUrl: '',
-      facilityName: '',
+    expect(mockAdminDownloadStatus).toHaveBeenCalledWith({
+      downloadId: 5,
+      status: 'RESTORING',
     });
     expect(
       wrapper.exists(
@@ -579,25 +617,44 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends delete item request when delete button is clicked', async () => {
+    const mockAdminDownloadDeleted = jest.fn();
+    (useAdminDownloadDeleted as jest.Mock).mockReturnValue({
+      mutate: mockAdminDownloadDeleted,
+    });
+
     const wrapper = createWrapper();
 
+    (useAdminDownloads as jest.Mock).mockReturnValue({
+      data: {
+        pageParams: [],
+        pages: [
+          [
+            {
+              ...downloadItems[0],
+              isDeleted: 'Yes',
+            },
+          ],
+        ],
+      },
+      isLoading: false,
+      isFetched: true,
+      fetchNextPage: jest.fn(),
+      refetch: jest.fn(),
+    });
+
     await act(async () => {
-      await flushPromises();
+      wrapper
+        .find(
+          'button[aria-label="downloadStatus.delete {filename:test-file-1}"]'
+        )
+        .simulate('click');
+      wrapper.mount();
       wrapper.update();
     });
 
-    wrapper
-      .find('button[aria-label="downloadStatus.delete {filename:test-file-1}"]')
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(adminDownloadDeleted).toHaveBeenCalledWith(1, true, {
-      downloadApiUrl: '',
-      facilityName: '',
+    expect(mockAdminDownloadDeleted).toHaveBeenCalledWith({
+      downloadId: 1,
+      deleted: true,
     });
     expect(
       wrapper.exists(

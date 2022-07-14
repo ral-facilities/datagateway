@@ -69,8 +69,6 @@ const AdminDownloadStatusTable: React.FC = () => {
   const { mutate: adminDownloadDeleted } = useAdminDownloadDeleted();
   const { mutate: adminUpdateDownloadStatus } = useAdminUpdateDownloadStatus();
 
-  console.log('downloadStatuses', downloadStatuses);
-
   const buildQueryOffset = useCallback(() => {
     let queryOffset = `WHERE download.facilityName = '${settings.facilityName}'`;
     for (const [column, filter] of Object.entries(filters)) {
@@ -156,7 +154,7 @@ const AdminDownloadStatusTable: React.FC = () => {
     <TextColumnFilter
       label={label}
       onChange={(value: { value?: string | number; type: string } | null) => {
-        console.log('TextColumnFilter onChange', value);
+        console.log('onChange', value);
         if (value) {
           if (dataKey === 'status') {
             const downloadStatus = (Object.keys(

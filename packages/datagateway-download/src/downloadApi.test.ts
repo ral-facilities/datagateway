@@ -432,36 +432,6 @@ describe('Admin Download Status API functions test', () => {
         }
       );
     });
-
-    it('returns empty array and logs error upon unsuccessful response', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      const returnData = await fetchAdminDownloads({
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(returnData).toEqual([]);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/admin/downloads`,
-        {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            queryOffset: 'where download.isDeleted = false',
-          },
-        }
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
-    });
   });
 
   describe('adminDownloadDeleted', () => {
@@ -484,34 +454,6 @@ describe('Admin Download Status API functions test', () => {
         params
       );
     });
-
-    it('logs an error upon unsuccessful response', async () => {
-      axios.put = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      await adminDownloadDeleted(1, true, {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      const params = new URLSearchParams();
-      params.append('facilityName', mockedSettings.facilityName);
-      params.append('sessionId', '');
-      params.append('value', 'true');
-
-      expect(axios.put).toHaveBeenCalled();
-      expect(axios.put).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/admin/download/1/isDeleted`,
-        params
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
-    });
   });
 
   describe('adminDownloadStatus', () => {
@@ -533,34 +475,6 @@ describe('Admin Download Status API functions test', () => {
         `${mockedSettings.downloadApiUrl}/admin/download/1/status`,
         params
       );
-    });
-
-    it('logs an error upon unsuccessful response', async () => {
-      axios.put = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      await adminDownloadStatus(1, 'RESTORING', {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      const params = new URLSearchParams();
-      params.append('facilityName', mockedSettings.facilityName);
-      params.append('sessionId', '');
-      params.append('value', 'RESTORING');
-
-      expect(axios.put).toHaveBeenCalled();
-      expect(axios.put).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/admin/download/1/status`,
-        params
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
     });
   });
 });
