@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
@@ -96,7 +96,7 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -146,7 +146,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -184,7 +184,7 @@ jobs:
 
       # E2E tests
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -221,7 +221,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
@@ -237,7 +237,7 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -303,7 +303,7 @@ jobs:
         run: rm -f login_output
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -341,7 +341,7 @@ jobs:
 
       # E2E tests
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -378,7 +378,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
@@ -394,7 +394,7 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -442,7 +442,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -498,7 +498,7 @@ jobs:
 
       # E2E tests
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
