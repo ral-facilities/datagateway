@@ -5774,6 +5774,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"browserslist-config-single-spa@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "browserslist-config-single-spa@npm:1.0.1"
+  checksum: 7857db70f4733237caeef2022a3662cf373ee83ab813904aaa0ae40626666b4c5c72488aedb833e92b622c54154c3f452647f5e70499950d05898d81dc0f7109
+  languageName: node
+  linkType: hard
+
 "browserslist@npm:^4.0.0, browserslist@npm:^4.14.5, browserslist@npm:^4.16.6, browserslist@npm:^4.17.5, browserslist@npm:^4.18.1, browserslist@npm:^4.19.1":
   version: 4.19.1
   resolution: "browserslist@npm:4.19.1"
@@ -7380,7 +7387,7 @@ __metadata:
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
     serve: 13.0.2
-    single-spa-react: 4.3.1
+    single-spa-react: 4.6.1
     start-server-and-test: 1.14.0
     tslib: 2.3.1
     typescript: 4.5.3
@@ -7444,7 +7451,7 @@ __metadata:
     react-scripts: 5.0.0
     react-virtualized: 9.22.3
     serve: 13.0.2
-    single-spa-react: 4.3.1
+    single-spa-react: 4.6.1
     start-server-and-test: 1.14.0
     tslib: 2.3.1
     typescript: 4.5.3
@@ -7518,7 +7525,7 @@ __metadata:
     redux-thunk: 2.4.1
     resize-observer-polyfill: 1.5.1
     serve: 13.0.2
-    single-spa-react: 4.3.1
+    single-spa-react: 4.6.1
     start-server-and-test: 1.14.0
     tslib: 2.3.1
     typescript: 4.5.3
@@ -16548,14 +16555,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"single-spa-react@npm:4.3.1":
-  version: 4.3.1
-  resolution: "single-spa-react@npm:4.3.1"
+"single-spa-react@npm:4.6.1":
+  version: 4.6.1
+  resolution: "single-spa-react@npm:4.6.1"
+  dependencies:
+    browserslist-config-single-spa: ^1.0.1
   peerDependencies:
     "@types/react": "*"
     "@types/react-dom": "*"
     react: "*"
-  checksum: 501268d33d4874fb2618d86ff7579a6f8932f997f4777e4954d5eef69651bc0fafc718812ece15ac78425007204dc33a25dd9139ecc3964b9a3a66da1b59e1f8
+  checksum: 12383d3b1dfc328efb7386f1094cbd255cf7e4785685416cd854ff3e1ba5da7828a2edaada94859593c8bc0405c5982c9655d1f51b5b67a2a94a6c1908983428
   languageName: node
   linkType: hard
 
