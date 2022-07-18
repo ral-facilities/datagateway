@@ -7216,13 +7216,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-failed-log@npm:2.9.1":
-  version: 2.9.1
-  resolution: "cypress-failed-log@npm:2.9.1"
+"cypress-failed-log@npm:2.10.0":
+  version: 2.10.0
+  resolution: "cypress-failed-log@npm:2.10.0"
   dependencies:
-    debug: 4.3.1
+    debug: 4.3.4
     logdown: 3.3.1
-  checksum: 5a5ea5a0a7e87317057ef9a61b2d349820b3606014c2767cd6fca03433e69e0662f7400996525178c22965499e2bed460c27a7b313e67d628807c0336b9ce8b4
+  checksum: 05fb09ac19c5f3ee8b1883102efea3fa3f73e2710fe6254fb2a2cba9cd33d45bb9ee454ded31d18d008c84bd1cf00a1b65a0b581a408e1d2d2a311a62817f8ff
   languageName: node
   linkType: hard
 
@@ -7412,7 +7412,7 @@ __metadata:
     cross-env: 7.0.3
     custom-event-polyfill: 1.0.7
     cypress: 9.7.0
-    cypress-failed-log: 2.9.1
+    cypress-failed-log: 2.10.0
     datagateway-common: ^1.1.0
     date-fns: 2.28.0
     enzyme: 3.11.0
@@ -7482,7 +7482,7 @@ __metadata:
     babel-eslint: 10.1.0
     cross-env: 7.0.3
     cypress: 9.7.0
-    cypress-failed-log: 2.9.1
+    cypress-failed-log: 2.10.0
     datagateway-common: ^1.1.0
     date-fns: 2.28.0
     date-fns-tz: 1.3.5
@@ -7551,7 +7551,7 @@ __metadata:
     cross-env: 7.0.3
     custom-event-polyfill: 1.0.7
     cypress: 9.7.0
-    cypress-failed-log: 2.9.1
+    cypress-failed-log: 2.10.0
     datagateway-common: ^1.1.0
     date-fns: 2.28.0
     enzyme: 3.11.0
@@ -7642,7 +7642,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.2.0, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4":
+"debug@npm:4, debug@npm:4.3.4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.2.0, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:
@@ -7651,18 +7651,6 @@ __metadata:
     supports-color:
       optional: true
   checksum: 3dbad3f94ea64f34431a9cbf0bafb61853eda57bff2880036153438f50fb5a84f27683ba0d8e5426bf41a8c6ff03879488120cf5b3a761e77953169c0600a708
-  languageName: node
-  linkType: hard
-
-"debug@npm:4.3.1":
-  version: 4.3.1
-  resolution: "debug@npm:4.3.1"
-  dependencies:
-    ms: 2.1.2
-  peerDependenciesMeta:
-    supports-color:
-      optional: true
-  checksum: 2c3352e37d5c46b0d203317cd45ea0e26b2c99f2d9dfec8b128e6ceba90dfb65425f5331bf3020fe9929d7da8c16758e737f4f3bfc0fce6b8b3d503bae03298b
   languageName: node
   linkType: hard
 
