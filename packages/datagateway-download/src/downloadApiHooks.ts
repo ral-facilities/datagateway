@@ -9,6 +9,8 @@ import {
   DownloadCartItem,
   fetchDownloadCart,
   handleICATError,
+  MicroFrontendId,
+  NotificationType,
   retryICATErrors,
 } from 'datagateway-common';
 import { DownloadSettingsContext } from './ConfigProvider';
@@ -17,6 +19,7 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryResult,
   useMutation,
+  UseMutationOptions,
   UseMutationResult,
   useQueries,
   useQuery,
@@ -42,6 +45,7 @@ import {
   submitCart,
 } from './downloadApi';
 import useDownloadFormatter from './downloadStatus/hooks/useDownloadFormatter';
+import { useTranslation } from 'react-i18next';
 
 /**
  * An enumeration of react query keys.
@@ -175,20 +179,29 @@ export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
   });
 };
 
+export interface SubmitCartParams {
+  transport: string;
+  emailAddress: string;
+  fileName: string;
+  zipType?: SubmitCartZipType;
+}
+
 /**
  * A React hook for submitting a download cart.
  * Returns the download id for the submitted cart, which can then be used
  * to query more info.
  */
-export const useSubmitCart = (): UseMutationResult<
+export const useSubmitCart = (
+  options?: UseMutationOptions<
+    number,
+    AxiosError,
+    SubmitCartParams,
+    RollbackFunction
+  >
+): UseMutationResult<
   number,
   AxiosError,
-  {
-    transport: string;
-    emailAddress: string;
-    fileName: string;
-    zipType?: SubmitCartZipType;
-  },
+  SubmitCartParams,
   RollbackFunction
 > => {
   const queryClient = useQueryClient();
@@ -208,15 +221,8 @@ export const useSubmitCart = (): UseMutationResult<
         zipType
       ),
     {
-      onMutate: () => {
-        const prevCart = queryClient.getQueryData(QueryKey.CART);
-
-        queryClient.setQueryData(QueryKey.CART, []);
-
-        return () => queryClient.setQueryData(QueryKey.CART, prevCart);
-      },
-
       onError: (error, _, rollback) => {
+        console.log('error', error);
         handleICATError(error);
         if (rollback) rollback();
       },
@@ -224,6 +230,8 @@ export const useSubmitCart = (): UseMutationResult<
       onSettled: () => {
         queryClient.invalidateQueries(QueryKey.CART);
       },
+
+      ...(options ?? {}),
     }
   );
 };
@@ -477,17 +485,60 @@ export const useDownloadDeleted = (): UseMutationResult<
   );
 };
 
-export const useDownloadTypeStatuses = ({
+export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
   downloadTypes,
+  ...queryOptions
 }: {
   downloadTypes: string[];
-}): UseQueryResult<DownloadTypeStatus, AxiosError>[] => {
+} & UseQueryOptions<DownloadTypeStatus, AxiosError, TData>): UseQueryResult<
+  TData,
+  AxiosError
+>[] => {
   // Load the download settings for use
   const downloadSettings = React.useContext(DownloadSettingsContext);
+  const [t] = useTranslation();
+
+  const queryCount = downloadTypes.length;
+  const loadedQueries = React.useRef(0);
+  const downloadTypesWithError = React.useRef<string[]>([]);
+
+  function broadcastError(message: string): void {
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: NotificationType,
+          payload: {
+            severity: 'error',
+            message,
+          },
+        },
+      })
+    );
+  }
+
+  function handleQueryError(downloadType: string): void {
+    loadedQueries.current += 1;
+    downloadTypesWithError.current.push(downloadType);
+
+    if (loadedQueries.current === queryCount) {
+      if (downloadTypesWithError.current.length === queryCount) {
+        broadcastError(t('downloadConfirmDialog.access_methods_error'));
+      } else {
+        downloadTypesWithError.current.forEach((type) => {
+          broadcastError(
+            t('downloadConfirmDialog.access_method_error', {
+              method: type.toUpperCase(),
+            })
+          );
+        });
+      }
+    }
+  }
 
   const queryConfigs: UseQueryOptions<
     DownloadTypeStatus,
-    AxiosError
+    AxiosError,
+    TData
   >[] = downloadTypes.map((type) => ({
     queryKey: [QueryKey.DOWNLOAD_TYPE_STATUS, type],
     queryFn: () =>
@@ -495,9 +546,10 @@ export const useDownloadTypeStatuses = ({
         facilityName: downloadSettings.facilityName,
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
-    onError: (error) => {
-      handleICATError(error);
+    onError: (_) => {
+      handleQueryError(type);
     },
+    ...queryOptions,
   }));
 
   // TODO: un-ignore ts when upgrading react-query to >=3.28

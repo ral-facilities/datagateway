@@ -1,5 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
-import * as log from 'loglevel';
+import axios from 'axios';
 import type {
   Datafile,
   Download,
@@ -7,7 +6,7 @@ import type {
   DownloadCartItem,
   SubmitCart,
 } from 'datagateway-common';
-import { handleICATError, readSciGatewayToken } from 'datagateway-common';
+import { readSciGatewayToken } from 'datagateway-common';
 
 export const removeAllDownloadCartItems: (settings: {
   facilityName: string;
@@ -96,15 +95,10 @@ export const submitCart: (
       params
     )
     .then((response) => {
-      log.debug(response);
-
       // Get the downloadId that was returned from the IDS server.
+      console.log('response', response);
       const downloadId = response.data['downloadId'];
       return downloadId;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return -1;
     });
 };
 
@@ -210,6 +204,7 @@ export const downloadPreparedCart: (
  * Describes the status of a download type.
  */
 export interface DownloadTypeStatus {
+  type: string;
   disabled: boolean;
   message: string;
 }
@@ -217,12 +212,11 @@ export interface DownloadTypeStatus {
 export const getDownloadTypeStatus: (
   transportType: string,
   settings: { facilityName: string; downloadApiUrl: string }
-) => Promise<DownloadTypeStatus> = (
-  transportType: string,
-  settings: { facilityName: string; downloadApiUrl: string }
-) => {
-  return axios
-    .get(
+) => Promise<DownloadTypeStatus> = (transportType, settings) =>
+  axios
+    // the server doesn't put the transport type into the response object
+    // it will be put in after the fact so that it is easier to work with
+    .get<Omit<DownloadTypeStatus, 'type'>>(
       `${settings.downloadApiUrl}/user/downloadType/${transportType}/status`,
       {
         params: {
@@ -231,17 +225,10 @@ export const getDownloadTypeStatus: (
         },
       }
     )
-    .then(
-      (
-        response: AxiosResponse<{
-          disabled: boolean;
-          message: string;
-        }>
-      ) => {
-        return response.data;
-      }
-    );
-};
+    .then((response) => ({
+      type: transportType,
+      ...response.data,
+    }));
 
 export const downloadDeleted: (
   downloadId: number,
