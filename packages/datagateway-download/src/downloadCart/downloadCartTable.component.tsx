@@ -36,7 +36,6 @@ import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import { useQueryClient } from 'react-query';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -65,13 +64,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   } = useRemoveAllFromCart();
   const { data, isFetching: dataLoading } = useCart();
 
-  const queryClient = useQueryClient();
-  React.useCallback(
-    (newData: DownloadCartTableItem[]) => {
-      queryClient.setQueryData('cart', newData);
-    },
-    [queryClient]
-  );
   const fileCountQueries = useDatafileCounts(data);
   const sizeQueries = useSizes(data);
 
@@ -247,6 +239,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     ],
     [removeDownloadCartItem, t]
   );
+
+  console.log('sasdkjsakjd', showConfirmation);
 
   const emptyItems = React.useMemo(
     () =>
