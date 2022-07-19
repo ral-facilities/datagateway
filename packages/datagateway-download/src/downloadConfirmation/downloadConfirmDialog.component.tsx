@@ -87,7 +87,6 @@ interface DownloadConfirmDialogProps {
 
   redirectToStatusTab: () => void;
   setClose: () => void;
-  clearCart: () => void;
 }
 
 interface DownloadTypeInfo extends DownloadTypeStatus {

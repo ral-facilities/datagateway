@@ -523,9 +523,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         open={showConfirmation}
         redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}
-        clearCart={() => {
-          console.log('ask');
-        }}
       />
     </>
   );
