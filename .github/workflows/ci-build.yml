@@ -89,7 +89,7 @@ jobs:
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.6
           architecture: x64
@@ -230,7 +230,7 @@ jobs:
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.6
           architecture: x64
@@ -387,7 +387,7 @@ jobs:
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.6
           architecture: x64
