@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '14.x'
 
@@ -186,7 +186,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '14.x'
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
@@ -343,7 +343,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '14.x'
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
@@ -500,7 +500,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '14.x'
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
