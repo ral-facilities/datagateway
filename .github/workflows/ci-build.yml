@@ -84,8 +84,9 @@ jobs:
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
@@ -225,8 +226,9 @@ jobs:
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
@@ -382,8 +384,9 @@ jobs:
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
