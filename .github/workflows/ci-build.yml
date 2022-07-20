@@ -212,7 +212,7 @@ jobs:
         run: yarn workspace datagateway-dataview run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: DataView-Screenshots
           path: packages/datagateway-dataview/cypress/screenshots
@@ -370,7 +370,7 @@ jobs:
         run: yarn workspace datagateway-download run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: Download-Screenshots
           path: packages/datagateway-download/cypress/screenshots
@@ -528,7 +528,7 @@ jobs:
         run: yarn workspace datagateway-search run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: Search-Screenshots
           path: packages/datagateway-search/cypress/screenshots
