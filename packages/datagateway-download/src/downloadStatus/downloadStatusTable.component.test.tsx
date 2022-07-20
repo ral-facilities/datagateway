@@ -1,21 +1,19 @@
 import * as React from 'react';
-import type { FormattedDownload } from 'datagateway-common';
+import type { Download } from 'datagateway-common';
 import DownloadStatusTable from './downloadStatusTable.component';
-import { mount, ReactWrapper, shallow } from 'enzyme';
+import { render, RenderResult, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
-  flushPromises,
 } from '../setupTests';
-import { act } from 'react-dom/test-utils';
 import { downloadDeleted, fetchDownloads, getDataUrl } from '../downloadApi';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { useDownloadDeleted, useDownloads } from '../downloadApiHooks';
+import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 
 jest.mock('../downloadApi');
-jest.mock('../downloadApiHooks');
 
-const downloadItems: FormattedDownload[] = [
+const downloadItems: Download[] = [
   {
     createdAt: '2020-02-25T15:05:29Z',
     downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
@@ -24,13 +22,13 @@ const downloadItems: FormattedDownload[] = [
     fileName: 'test-file-1',
     fullName: 'Person 1',
     id: 1,
-    isDeleted: 'No',
+    isDeleted: false,
     isEmailSent: true,
     isTwoLevel: false,
     preparedId: 'test-prepared-id',
     sessionId: 'test-session-id',
     size: 1000,
-    status: 'downloadStatus.complete',
+    status: 'COMPLETE',
     transport: 'https',
     userName: 'test user',
   },
@@ -42,13 +40,13 @@ const downloadItems: FormattedDownload[] = [
     fileName: 'test-file-2',
     fullName: 'Person 2',
     id: 2,
-    isDeleted: 'No',
+    isDeleted: false,
     isEmailSent: true,
     isTwoLevel: false,
     preparedId: 'test-prepared-id',
     sessionId: 'test-session-id',
     size: 2000,
-    status: 'downloadStatus.preparing',
+    status: 'PREPARING',
     transport: 'globus',
     userName: 'test user',
   },
@@ -60,13 +58,13 @@ const downloadItems: FormattedDownload[] = [
     fileName: 'test-file-3',
     fullName: 'Person 3',
     id: 3,
-    isDeleted: 'No',
+    isDeleted: false,
     isEmailSent: true,
     isTwoLevel: false,
     preparedId: 'test-prepared-id',
     sessionId: 'test-session-id',
     size: 3000,
-    status: 'downloadStatus.restoring',
+    status: 'RESTORING',
     transport: 'https',
     userName: 'test user',
   },
@@ -78,13 +76,13 @@ const downloadItems: FormattedDownload[] = [
     fileName: 'test-file-4',
     fullName: 'Person 4',
     id: 4,
-    isDeleted: 'No',
+    isDeleted: false,
     isEmailSent: true,
     isTwoLevel: false,
     preparedId: 'test-prepared-id',
     sessionId: 'test-session-id',
     size: 4000,
-    status: 'downloadStatus.expired',
+    status: 'EXPIRED',
     transport: 'globus',
     userName: 'test user',
   },
@@ -96,13 +94,13 @@ const downloadItems: FormattedDownload[] = [
     fileName: 'test-file-5',
     fullName: 'Person 5',
     id: 5,
-    isDeleted: 'No',
+    isDeleted: false,
     isEmailSent: true,
     isTwoLevel: false,
     preparedId: 'test-prepared-id',
     sessionId: 'test-session-id',
     size: 5000,
-    status: 'downloadStatus.paused',
+    status: 'PAUSED',
     transport: 'globus',
     userName: 'test user',
   },
@@ -117,59 +115,23 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-const RefreshHOC: React.FC<{ refresh: boolean }> = (props: {
-  refresh: boolean;
-}): React.ReactElement => {
-  const [refreshTable, setRefreshTable] = React.useState(false);
-  const testQueryClient = createTestQueryClient();
-
-  React.useEffect(() => {
-    setRefreshTable(props.refresh);
-  }, [props.refresh]);
-
-  return (
-    <QueryClientProvider client={testQueryClient}>
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={refreshTable}
-          setRefreshTable={setRefreshTable}
-          setLastChecked={jest.fn()}
-        />
-      </div>
-    </QueryClientProvider>
-  );
-};
-
-describe('Download Status Table', () => {
-  let holder;
-
-  const createWrapper = (): ReactWrapper => {
-    return mount(
+const renderComponent = (): RenderResult =>
+  render(
+    <QueryClientProvider client={createTestQueryClient()}>
       <DownloadStatusTable
         refreshTable={false}
         setRefreshTable={jest.fn()}
         setLastChecked={jest.fn()}
-      />,
-      { attachTo: holder }
-    );
-  };
+      />
+    </QueryClientProvider>
+  );
+
+describe('Download Status Table', () => {
+  let user: UserEvent;
 
   beforeEach(() => {
-    //https://stackoverflow.com/questions/43694975/jest-enzyme-using-mount-document-getelementbyid-returns-null-on-componen
-    holder = document.createElement('div');
-    holder.setAttribute('id', 'datagateway-download');
-    document.body.appendChild(holder);
+    user = userEvent.setup();
 
-    (useDownloads as jest.Mock).mockReturnValue({
-      data: downloadItems,
-      isLoading: false,
-      isFetched: true,
-      refetch: jest.fn(),
-    });
-    (useDownloadDeleted as jest.Mock).mockReturnValue({
-      isLoading: false,
-      mutate: jest.fn(),
-    });
     (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
     (fetchDownloads as jest.Mock).mockImplementation(() =>
       Promise.resolve(downloadItems)
@@ -181,309 +143,254 @@ describe('Download Status Table', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    (useDownloads as jest.Mock).mockReturnValue({
-      data: undefined,
-      isLoading: true,
-      isFetched: false,
-      refetch: jest.fn(),
-    });
-    const wrapper = shallow(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />
+  it('should render correctly', () => {
+    const { asFragment } = renderComponent();
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should translate the status strings correctly', async () => {
+    renderComponent();
+
+    expect(
+      await screen.findByText('downloadStatus.paused')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('downloadStatus.expired')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('downloadStatus.restoring')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('downloadStatus.preparing')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('downloadStatus.complete')
+    ).toBeInTheDocument();
+  });
+
+  it('should refresh data when required', async () => {
+    const queryClient = createTestQueryClient();
+    const { rerender } = render(
+      <QueryClientProvider client={queryClient}>
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastChecked={jest.fn()}
+        />
+      </QueryClientProvider>
     );
-    expect(wrapper).toMatchSnapshot();
-  });
 
-  it('translates the status strings correctly', async () => {
-    const wrapper = createWrapper();
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
 
-    expect(
-      wrapper.find('[aria-rowindex=1]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.paused');
-    expect(
-      wrapper.find('[aria-rowindex=2]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.expired');
-    expect(
-      wrapper.find('[aria-rowindex=3]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.restoring');
-    expect(
-      wrapper.find('[aria-rowindex=4]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.preparing');
-    expect(
-      wrapper.find('[aria-rowindex=5]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.complete');
-  });
+    // pretend server returned a different list
+    (fetchDownloads as jest.Mock).mockReturnValueOnce([]);
+    rerender(
+      <QueryClientProvider client={queryClient}>
+        <DownloadStatusTable
+          refreshTable
+          setRefreshTable={jest.fn()}
+          setLastChecked={jest.fn()}
+        />
+      </QueryClientProvider>
+    );
 
-  it('refreshes the tables when the refresh button has been clicked', async () => {
-    const mockRefetch = jest.fn().mockImplementation(() => Promise.resolve());
-    (useDownloads as jest.Mock).mockReturnValue({
-      data: downloadItems,
-      isLoading: false,
-      isFetched: true,
-      refetch: mockRefetch,
+    await waitFor(() => {
+      expect(screen.queryByText('test-file-1')).toBeNull();
+      expect(screen.queryByText('test-file-2')).toBeNull();
+      expect(screen.queryByText('test-file-3')).toBeNull();
+      expect(screen.queryByText('test-file-4')).toBeNull();
+      expect(screen.queryByText('test-file-5')).toBeNull();
     });
-
-    // Use our RefreshHOC and only modify the refresh prop
-    // we pass on to the DownloadStatusTable.
-    const wrapper = mount(<RefreshHOC refresh={false} />);
-
-    // Set the refresh prop to false.
-    expect(wrapper.prop('refresh')).toBe(false);
-
-    await act(async () => {
-      // Set the refresh prop to true.
-      wrapper.setProps({ refresh: true });
-
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.prop('refresh')).toBe(true);
-
-    // Expect the downloads to have been fetched
-    expect(mockRefetch).toHaveBeenCalledTimes(1);
-
-    // should set refresh to false after refetching
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.find(DownloadStatusTable).prop('refreshTable')).toBe(false);
   });
 
   it('should have a link for a download item', async () => {
-    const wrapper = createWrapper();
+    renderComponent();
 
     // Expect globus download items to have been disabled.
     expect(
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.download {filename:test-file-2}"]'
-        )
-        .prop('disabled')
-    ).toBe(true);
+      await screen.findByRole('button', {
+        name: 'downloadStatus.download {filename:test-file-2}',
+      })
+    ).toBeDisabled();
 
     // Expect HTTPS download items with non-COMPLETE status to have been disabled.
     expect(
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.download {filename:test-file-3}"]'
-        )
-        .prop('disabled')
-    ).toBe(true);
+      await screen.findByRole('button', {
+        name: 'downloadStatus.download {filename:test-file-3}',
+      })
+    ).toBeDisabled();
 
     // Expect complete HTTPS download items to be downloadable
     // Check to see if the href contains the correct call.
     expect(
-      wrapper
-        .find('a[aria-label="downloadStatus.download {filename:test-file-1}"]')
-        .at(0)
-        .props().href
-    ).toContain('/getData');
+      await screen.findByRole('link', {
+        name: 'downloadStatus.download {filename:test-file-1}',
+      })
+    ).toHaveAttribute('href', '/getData');
   });
 
-  it("removes an item when said item's remove button is clicked", async () => {
-    const mockMutate = jest.fn();
-    (useDownloadDeleted as jest.Mock).mockReturnValue({
-      isLoading: false,
-      mutate: mockMutate,
+  it("should remove an item when said item's remove button is clicked", async () => {
+    // downloadStatus.remove {filename:test-file-1}
+    renderComponent();
+
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadStatus.remove {filename:test-file-1}',
+      })
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('test-file-1')).toBeNull();
     });
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="downloadStatus.remove {filename:test-file-1}"]')
-      .simulate('click');
-
-    expect(mockMutate).toHaveBeenCalledWith({ deleted: true, downloadId: 1 });
-
-    // pretend mutation is complete
-    // remove the deleted item from downloadItems
-    (useDownloads as jest.Mock).mockReturnValue({
-      data: downloadItems.filter(({ id }) => id !== 1),
-      isLoading: false,
-      isFetched: true,
-      refetch: jest.fn(),
-    });
-
-    act(() => {
-      // calling wrapper.update will not trigger lifecycle hooks
-      // wrapper.mount will force all hooks to run again.
-      // https://github.com/enzymejs/enzyme/issues/2169
-      wrapper.mount();
-      wrapper.update();
-    });
-
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
-      )
-    ).toBe(false);
-    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
   });
 
-  it('sorts data when headers are clicked', async () => {
-    const wrapper = createWrapper();
+  it('should sort data when headers are clicked', async () => {
+    renderComponent();
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
-    const createdAtSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(3);
-    createdAtSortLabel.simulate('click');
-
-    const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
+    await user.click(await screen.findByText('downloadStatus.createdAt'));
 
     // Get the access method sort header.
-    const accessMethodSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(1);
+    const accessMethodSortLabel = screen.getByText('downloadStatus.transport');
 
-    accessMethodSortLabel.simulate('click');
+    await user.click(accessMethodSortLabel);
 
-    expect(firstNameCell.text()).toEqual('test-file-2');
+    // access methods should be in asc order, globus < https
+    let rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-2');
+    expect(rows[1]).toHaveTextContent('test-file-4');
+    expect(rows[2]).toHaveTextContent('test-file-5');
+    expect(rows[3]).toHaveTextContent('test-file-1');
+    expect(rows[4]).toHaveTextContent('test-file-3');
 
-    accessMethodSortLabel.simulate('click');
+    await user.click(accessMethodSortLabel);
 
-    expect(firstNameCell.text()).toEqual('test-file-1');
+    // access methods should be in desc order, globus < https
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-1');
+    expect(rows[1]).toHaveTextContent('test-file-3');
+    expect(rows[2]).toHaveTextContent('test-file-2');
+    expect(rows[3]).toHaveTextContent('test-file-4');
+    expect(rows[4]).toHaveTextContent('test-file-5');
 
     // Get the download name sort header.
-    const nameSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(0);
+    const nameSortLabel = screen.getByText('downloadStatus.filename');
 
-    nameSortLabel.simulate('click');
+    await user.click(nameSortLabel);
 
-    expect(firstNameCell.text()).toEqual('test-file-1');
+    // name should be in asc order
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-1');
+    expect(rows[1]).toHaveTextContent('test-file-3');
+    expect(rows[2]).toHaveTextContent('test-file-2');
+    expect(rows[3]).toHaveTextContent('test-file-4');
+    expect(rows[4]).toHaveTextContent('test-file-5');
 
-    nameSortLabel.simulate('click');
+    await user.click(nameSortLabel);
 
-    expect(firstNameCell.text()).toEqual('test-file-3');
-
-    nameSortLabel.simulate('click');
-
-    expect(firstNameCell.text()).toEqual('test-file-1');
+    // name should be in desc order
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-3');
+    expect(rows[1]).toHaveTextContent('test-file-1');
+    expect(rows[2]).toHaveTextContent('test-file-5');
+    expect(rows[3]).toHaveTextContent('test-file-4');
+    expect(rows[4]).toHaveTextContent('test-file-2');
   });
 
-  it('filters data when text fields are typed into', async () => {
-    const wrapper = createWrapper();
+  it('should filter data when text fields are typed into', async () => {
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    const fileNameFilterBox = await screen.findByLabelText(
+      'Filter by downloadStatus.filename'
+    );
+    const downloadMethodFilterBox = await screen.findByLabelText(
+      'Filter by downloadStatus.transport'
+    );
+    const downloadStatusFilterBox = await screen.findByLabelText(
+      'Filter by downloadStatus.status'
+    );
 
-    const downloadNameFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.filename"]')
-      .last();
-    downloadNameFilterInput.instance().value = '1';
-    downloadNameFilterInput.simulate('change');
+    // type into file name filter textbox
+    await user.type(fileNameFilterBox, '1');
 
-    expect(wrapper.exists('[aria-rowcount=1]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
-      )
-    ).toBe(true);
+    // should only show file-name-1
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-2')).toBeNull();
 
-    const accessMethodFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.transport"]')
-      .last();
+    // clear file name filter textbox
+    await user.clear(fileNameFilterBox);
+    // type into download method filter textbox
+    await user.type(downloadMethodFilterBox, 'https');
 
-    downloadNameFilterInput.instance().value = '';
-    downloadNameFilterInput.simulate('change');
-    accessMethodFilterInput.instance().value = 'https';
-    accessMethodFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-2}"]'
-      )
-    ).toBe(false);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-4}"]'
-      )
-    ).toBe(false);
-
-    accessMethodFilterInput.instance().value = '';
-    accessMethodFilterInput.simulate('change');
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-4')).toBeNull();
 
     // Test varying download availabilities.
-    const availabilityFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.status"]')
-      .last();
+    await user.type(downloadStatusFilterBox, 'downloadStatus.complete');
 
-    availabilityFilterInput.instance().value = 'downloadStatus.complete';
-    availabilityFilterInput.simulate('change');
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-3')).toBeNull();
 
-    expect(wrapper.exists('[aria-rowcount=1]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
-      )
-    ).toBe(true);
+    await user.clear(downloadMethodFilterBox);
+    await user.clear(downloadStatusFilterBox);
 
-    availabilityFilterInput.instance().value = '';
-    availabilityFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
   });
 
-  it('filters data when date filter is altered', async () => {
+  it('should filter data when date filter is altered', async () => {
     applyDatePickerWorkaround();
+    renderComponent();
 
-    const wrapper = createWrapper();
+    const dateFromFilterInput = await screen.findByRole('textbox', {
+      name: 'downloadStatus.createdAt filter from',
+    });
+    const dateToFilterInput = await screen.findByRole('textbox', {
+      name: 'downloadStatus.createdAt filter to',
+    });
 
-    const dateFromFilterInput = wrapper.find(
-      'input[id="downloadStatus.createdAt filter from"]'
-    );
+    await user.type(dateFromFilterInput, '2020-01-01 00:00');
 
-    dateFromFilterInput.instance().value = '2020-01-01 00:00';
-    dateFromFilterInput.simulate('change');
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
 
-    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+    await user.type(dateToFilterInput, '2020-01-02 23:59');
 
-    const dateToFilterInput = wrapper.find(
-      'input[id="downloadStatus.createdAt filter to"]'
-    );
+    await waitFor(() => {
+      expect(screen.queryByText('test-file-1')).toBeNull();
+      expect(screen.queryByText('test-file-2')).toBeNull();
+      expect(screen.queryByText('test-file-3')).toBeNull();
+      expect(screen.queryByText('test-file-4')).toBeNull();
+      expect(screen.queryByText('test-file-5')).toBeNull();
+    });
 
-    dateToFilterInput.instance().value = '2020-01-02 23:59';
-    dateToFilterInput.simulate('change');
+    await user.clear(dateFromFilterInput);
+    await user.clear(dateToFilterInput);
+    await user.type(dateFromFilterInput, '2020-02-26 00:00');
+    await user.type(dateToFilterInput, '2020-02-27 23:59');
 
-    expect(wrapper.exists('[aria-rowcount=0]')).toBe(true);
-
-    dateFromFilterInput.instance().value = '2020-02-26 00:00';
-    dateFromFilterInput.simulate('change');
-    dateToFilterInput.instance().value = '2020-02-27 23:59';
-    dateToFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
-      )
-    ).toBe(false);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-4}"]'
-      )
-    ).toBe(false);
-
-    // Test when both date inputs are empty.
-    dateFromFilterInput.instance().value = '';
-    dateFromFilterInput.simulate('change');
-
-    dateToFilterInput.instance().value = '';
-    dateToFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-1')).toBeNull();
+    expect(screen.queryByText('test-file-4')).toBeNull();
+    expect(screen.queryByText('test-file-5')).toBeNull();
 
     cleanupDatePickerWorkaround();
   });
