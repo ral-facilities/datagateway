@@ -48,28 +48,28 @@ jobs:
       # Test coverage upload
       - name: Upload unit test coverage for the Common package
         if: success()
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           directory: ./packages/datagateway-common/
           flags: common
           fail_ci_if_error: true
       - name: Upload unit test coverage for the DataView package
         if: success()
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           directory: ./packages/datagateway-dataview/
           flags: dataview
           fail_ci_if_error: true
       - name: Upload unit test coverage for the Search package
         if: success()
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           directory: ./packages/datagateway-search/
           flags: search
           fail_ci_if_error: true
       - name: Upload unit test coverage for the Download package
         if: success()
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           directory: ./packages/datagateway-download/
           flags: download
