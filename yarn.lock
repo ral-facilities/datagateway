@@ -7356,7 +7356,7 @@ __metadata:
     react-dom: 17.0.2
     react-draggable: 4.4.3
     react-i18next: 11.15.4
-    react-query: 3.18.1
+    react-query: 3.39.2
     react-redux: 7.2.6
     react-router-dom: 5.3.0
     react-scripts: 5.0.0
@@ -7437,7 +7437,7 @@ __metadata:
     react-app-polyfill: 3.0.0
     react-dom: 17.0.2
     react-i18next: 11.15.4
-    react-query: 3.18.1
+    react-query: 3.39.2
     react-redux: 7.2.6
     react-router-dom: 5.3.0
     react-scripts: 5.0.0
@@ -7506,7 +7506,7 @@ __metadata:
     react: 17.0.2
     react-dom: 17.0.2
     react-i18next: 11.15.4
-    react-query: 3.18.1
+    react-query: 3.39.2
     react-router-dom: 5.3.0
     react-scripts: 5.0.0
     react-virtualized: 9.22.3
@@ -7574,7 +7574,7 @@ __metadata:
     react-app-polyfill: 3.0.0
     react-dom: 17.0.2
     react-i18next: 11.15.4
-    react-query: 3.18.1
+    react-query: 3.39.2
     react-redux: 7.2.6
     react-router-dom: 5.3.0
     react-scripts: 5.0.0
@@ -15325,21 +15325,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-query@npm:3.18.1":
-  version: 3.18.1
-  resolution: "react-query@npm:3.18.1"
+"react-query@npm:3.39.2":
+  version: 3.39.2
+  resolution: "react-query@npm:3.39.2"
   dependencies:
     "@babel/runtime": ^7.5.5
     broadcast-channel: ^3.4.1
     match-sorter: ^6.0.2
   peerDependencies:
-    react: ^16.8.0 || ^17.0.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
   peerDependenciesMeta:
     react-dom:
       optional: true
     react-native:
       optional: true
-  checksum: 189f36b465a623c913075da5e2cc10118e1a449669cb438736da5512d1c5894bf59f9e6abe097dc69f724b00ef7ed360a04ddc8f905eb44fae98c1cf64cca81f
+  checksum: 83b199e66af28ab67ec4d22e51da42f02447186623db926b75d27a1c09a3383da6ddc9e5b83d82578fac7abdba7e6f265aecbffdb91db61981950d3d59409346
   languageName: node
   linkType: hard
 
