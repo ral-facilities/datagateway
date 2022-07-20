@@ -240,14 +240,15 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     [removeDownloadCartItem, t]
   );
 
-  console.log('sasdkjsakjd', showConfirmation);
-
   const emptyItems = React.useMemo(
     () =>
       sizeQueries.some((query) => query.data === 0) ||
       fileCountQueries.some((query) => query.data === 0),
     [sizeQueries, fileCountQueries]
   );
+
+  console.log('data loading', dataLoading);
+  console.log('data length', data?.length);
 
   return (
     <>

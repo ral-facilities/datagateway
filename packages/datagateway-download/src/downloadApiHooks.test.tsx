@@ -1,7 +1,11 @@
 import axios from 'axios';
 import * as React from 'react';
 import type { Download, FormattedDownload } from 'datagateway-common';
-import { DownloadCartItem, handleICATError } from 'datagateway-common';
+import {
+  DownloadCartItem,
+  handleICATError,
+  NotificationType,
+} from 'datagateway-common';
 import {
   useAdminDownloadDeleted,
   useAdminDownloads,
@@ -10,6 +14,7 @@ import {
   useDatafileCounts,
   useDownloadDeleted,
   useDownloads,
+  useDownloadTypeStatuses,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
@@ -1418,6 +1423,78 @@ describe('Download Cart API react-query hooks test', () => {
   describe('useSubmitCart', () => {
     it('should submit cart and clear cart on success', () => {
       axios.put = jest.fn().mockResolvedValue(123);
+    });
+  });
+
+  describe('useDownloadTypeStatuses', () => {
+    const downloadTypes = ['https', 'globus'];
+
+    it('should query statuses of download types', async () => {
+      axios.get = jest.fn().mockResolvedValue({
+        data: {
+          disabled: false,
+          message: '',
+        },
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useDownloadTypeStatuses({ downloadTypes }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.every((query) => query.isSuccess));
+
+      const data = result.current.map(({ data }) => data);
+      expect(data).toEqual([
+        {
+          type: 'https',
+          disabled: false,
+          message: '',
+        },
+        {
+          type: 'globus',
+          disabled: false,
+          message: '',
+        },
+      ]);
+    });
+
+    it('should dispatch event with the error messages of download type queries with errors', async () => {
+      axios.get = jest
+        .fn()
+        .mockResolvedValueOnce({
+          data: {
+            disabled: false,
+            message: '',
+          },
+        })
+        .mockImplementationOnce(() =>
+          Promise.reject({
+            message: 'Test error message',
+          })
+        );
+
+      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+
+      const { result, waitFor } = renderHook(
+        () => useDownloadTypeStatuses({ downloadTypes }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() =>
+        result.current.every((query) => query.isSuccess || query.isError)
+      );
+
+      expect((dispatchEventSpy.mock.calls[0][0] as CustomEvent).detail).toEqual(
+        {
+          type: NotificationType,
+          payload: {
+            severity: 'error',
+            message:
+              'downloadConfirmDialog.access_method_error {method:GLOBUS}',
+          },
+        }
+      );
     });
   });
 });

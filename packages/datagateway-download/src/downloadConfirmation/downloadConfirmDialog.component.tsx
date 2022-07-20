@@ -98,8 +98,6 @@ interface DownloadTypeInfo extends DownloadTypeStatus {
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  console.log('<DownloadConfirmDialog />');
-
   const { totalSize, isTwoLevel, redirectToStatusTab, setClose } = props;
 
   // Load the settings for use.
@@ -127,8 +125,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [emailValid, setEmailValid] = React.useState(true);
   const [emailHelperText, setEmailHelperText] = React.useState(emailHelpText);
 
-  const [showDialog, setShowDialog] = React.useState(false);
-
   const downloadTypeStatusQueries = useDownloadTypeStatuses({
     downloadTypes: Object.keys(settings.accessMethods),
     enabled: props.open,
@@ -152,20 +148,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   );
 
   const {
-    status,
     data: downloadId,
     mutate: submitCart,
-    error: submitCartError,
     isLoading: isSubmittingCart,
     isSuccess: isCartSubmittedSuccessfully,
+    isError: hasSubmitCartFailed,
   } = useSubmitCart();
-  console.log({
-    status,
-    downloadId,
-    submitCartError,
-    isSubmittingCart,
-    isCartSubmittedSuccessfully,
-  });
   // query download after cart is submitted
   const {
     data: downloadInfo,
@@ -219,20 +207,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const dialogClose = (): void => {
     setClose();
   };
-
-  React.useEffect(() => {
-    if (
-      props.open &&
-      isDownloadTypeStatusesLoadedSuccessfully &&
-      sortedDownloadTypes
-    ) {
-      setShowDialog(true);
-    }
-  }, [
-    props.open,
-    isDownloadTypeStatusesLoadedSuccessfully,
-    sortedDownloadTypes,
-  ]);
 
   // check if every query for download type status failed
   React.useEffect(() => {
@@ -359,6 +333,15 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     });
   };
 
+  const shouldShowConfirmationForm =
+    props.open &&
+    isDownloadTypeStatusesLoadedSuccessfully &&
+    sortedDownloadTypes;
+
+  // whether to show result of submit cart (i.e. successful or failed)
+  const shouldShowSubmitCartResult =
+    isSubmittingCart || isCartSubmittedSuccessfully || hasSubmitCartFailed;
+
   return (
     <Dialog
       onClose={dialogClose}
@@ -367,7 +350,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       maxWidth={'sm'}
       aria-label={t('downloadConfirmDialog.dialog_arialabel')}
     >
-      {isSubmittingCart || isCartSubmittedSuccessfully ? (
+      {shouldShowSubmitCartResult ? (
         <div>
           <DialogTitle
             id="download-confirm-dialog-title"
@@ -484,16 +467,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             </Grid>
           </DialogContent>
         </div>
-      ) : !showDialog ? (
-        <DialogContent>
-          <div style={{ textAlign: 'center', padding: '25px' }}>
-            <CircularProgress />
-            <Typography style={{ paddingTop: '10px' }}>
-              {t('downloadConfirmDialog.loading_confirmation')}
-            </Typography>
-          </div>
-        </DialogContent>
-      ) : (
+      ) : shouldShowConfirmationForm ? (
         <div>
           {/* Custom title component which has a close button */}
           <DialogTitle id="download-confirm-dialog-title" onClose={dialogClose}>
@@ -738,6 +712,15 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             </Button>
           </DialogActions>
         </div>
+      ) : (
+        <DialogContent>
+          <div style={{ textAlign: 'center', padding: '25px' }}>
+            <CircularProgress />
+            <Typography style={{ paddingTop: '10px' }}>
+              {t('downloadConfirmDialog.loading_confirmation')}
+            </Typography>
+          </div>
+        </DialogContent>
       )}
     </Dialog>
   );

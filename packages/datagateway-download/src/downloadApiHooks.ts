@@ -499,7 +499,7 @@ export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
   const [t] = useTranslation();
 
   const queryCount = downloadTypes.length;
-  const loadedQueries = React.useRef(0);
+  const loadedQueriesCount = React.useRef(0);
   const downloadTypesWithError = React.useRef<string[]>([]);
 
   function broadcastError(message: string): void {
@@ -517,10 +517,9 @@ export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
   }
 
   function handleQueryError(downloadType: string): void {
-    loadedQueries.current += 1;
     downloadTypesWithError.current.push(downloadType);
 
-    if (loadedQueries.current === queryCount) {
+    if (loadedQueriesCount.current === queryCount) {
       if (downloadTypesWithError.current.length === queryCount) {
         broadcastError(t('downloadConfirmDialog.access_methods_error'));
       } else {
@@ -546,8 +545,9 @@ export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
         facilityName: downloadSettings.facilityName,
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
-    onError: (_) => {
-      handleQueryError(type);
+    onSettled: (_, error) => {
+      loadedQueriesCount.current += 1;
+      if (error) handleQueryError(type);
     },
     ...queryOptions,
   }));

@@ -9,6 +9,7 @@ import {
   fetchDownloads,
   getDataUrl,
   getDownload,
+  getDownloadTypeStatus,
   submitCart,
 } from './downloadApi';
 
@@ -86,42 +87,6 @@ describe('Download Cart API functions test', () => {
         params
       );
     });
-
-    it('returns -1 if an errors occurs and logs the error upon unsuccessful response', async () => {
-      axios.post = jest.fn().mockImplementation(() => {
-        return Promise.reject({
-          message: 'Test error message',
-        });
-      });
-
-      // Wait for our mocked response with a download id.
-      const downloadId = await submitCart(
-        'globus',
-        'test@email.com',
-        'test-file',
-        {
-          facilityName: mockedSettings.facilityName,
-          downloadApiUrl: mockedSettings.downloadApiUrl,
-        }
-      );
-      const params = new URLSearchParams();
-      params.append('sessionId', '');
-      params.append('transport', 'globus');
-      params.append('email', 'test@email.com');
-      params.append('fileName', 'test-file');
-      params.append('zipType', 'ZIP');
-
-      expect(downloadId).toBe(-1);
-      expect(axios.post).toHaveBeenCalled();
-      expect(axios.post).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/submit`,
-        params
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
-    });
   });
 
   describe('getDownload', () => {
@@ -173,36 +138,6 @@ describe('Download Cart API functions test', () => {
           },
         }
       );
-    });
-
-    it('returns null if error occurs and logs the error message upon unsuccessful response', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      const download = await getDownload(1, {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(download).toBe(null);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/downloads`,
-        {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            queryOffset: `where download.id = 1`,
-          },
-        }
-      );
-      expect(handleICATError).toHaveBeenCalled();
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
     });
   });
 
@@ -475,6 +410,28 @@ describe('Admin Download Status API functions test', () => {
         `${mockedSettings.downloadApiUrl}/admin/download/1/status`,
         params
       );
+    });
+  });
+
+  describe('getDownloadTypeStatus', () => {
+    it('should retrieve the status of the given download type', async () => {
+      axios.get = jest.fn().mockResolvedValue({
+        data: {
+          disabled: false,
+          message: '',
+        },
+      });
+
+      const response = await getDownloadTypeStatus('https', {
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+      });
+
+      expect(response).toEqual({
+        type: 'https',
+        disabled: false,
+        message: '',
+      });
     });
   });
 });

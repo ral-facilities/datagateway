@@ -155,6 +155,16 @@ describe('Download cart table component', () => {
     jest.useRealTimers();
   });
 
+  it('test', () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router history={createMemoryHistory()}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </Router>
+      </QueryClientProvider>
+    );
+  });
+
   it('should render no cart message correctly', async () => {
     (fetchDownloadCart as jest.Mock).mockResolvedValue([]);
 
@@ -185,14 +195,27 @@ describe('Download cart table component', () => {
     ).toBeTruthy();
   });
 
-  it('should show progress indicator when calculating file count of cart', () => {
-    render(
-      <Router history={createMemoryHistory()}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </Router>
+  it('should show progress indicator when calculating file count of cart', async () => {
+    (getDatafileCount as jest.Mock).mockImplementation(
+      () =>
+        new Promise((_) => {
+          // never resolve promise so that progress indicator stays visible.
+        })
     );
 
-    expect(screen.getByLabelText('downloadCart.calculating')).toBeTruthy();
+    jest.useFakeTimers();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router history={createMemoryHistory()}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </Router>
+      </QueryClientProvider>
+    );
+
+    expect(
+      await screen.findByLabelText('downloadCart.calculating')
+    ).toBeInTheDocument();
   });
 
   it('should show total file count of the cart', async () => {
@@ -218,13 +241,11 @@ describe('Download cart table component', () => {
       </QueryClientProvider>
     );
 
-    await waitFor(async () => {
-      // wait for everything to finish loading
-      await user.click(screen.getByText('downloadCart.download'));
-      expect(
-        await screen.findByLabelText('downloadConfirmDialog.dialog_arialabel')
-      ).toBeTruthy();
-    });
+    await user.click(await screen.findByText('downloadCart.download'));
+
+    expect(
+      await screen.findByLabelText('downloadConfirmDialog.dialog_arialabel')
+    ).toBeTruthy();
   });
 
   it('should remove all items from cart when Remove All button is clicked', async () => {
@@ -236,13 +257,11 @@ describe('Download cart table component', () => {
       </QueryClientProvider>
     );
 
-    await waitFor(async () => {
-      // wait for everything to finish loading
-      await user.click(screen.getByText('downloadCart.remove_all'));
-      expect(
-        await screen.findByText('No data selected', { exact: false })
-      ).toBeTruthy();
-    });
+    await user.click(await screen.findByText('downloadCart.remove_all'));
+
+    expect(
+      await screen.findByText('No data selected', { exact: false })
+    ).toBeTruthy();
   });
 
   it('disables remove all button while request is processing', async () => {
@@ -321,11 +340,11 @@ describe('Download cart table component', () => {
       </QueryClientProvider>
     );
 
-    await waitFor(async () => {
-      await user.click(
-        screen.getByLabelText('downloadCart.remove {name:INVESTIGATION 2}')
-      );
+    await user.click(
+      await screen.findByLabelText('downloadCart.remove {name:INVESTIGATION 2}')
+    );
 
+    await waitFor(async () => {
       expect(screen.queryByText('INVESTIGATION 2')).toBeNull();
     });
   });
