@@ -1,6 +1,6 @@
 import React from 'react';
-import { mount, ReactWrapper, shallow } from 'enzyme';
-import { FormattedDownload, TextColumnFilter } from 'datagateway-common';
+import { Download, TextColumnFilter } from 'datagateway-common';
+import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import {
   adminDownloadDeleted,
   adminDownloadStatus,
@@ -18,133 +18,145 @@ import {
   useAdminDownloads,
   useAdminUpdateDownloadStatus,
 } from '../downloadApiHooks';
-import { IndexRange } from 'react-virtualized';
+import userEvent from '@testing-library/user-event';
+import { render, RenderResult, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 jest.mock('../downloadApi');
-jest.mock('../downloadApiHooks');
+
+const downloadItems: Download[] = [
+  {
+    createdAt: '2020-02-25T15:05:29Z',
+    downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
+    email: 'test1@email.com',
+    facilityName: 'LILS',
+    fileName: 'test-file-1',
+    fullName: 'Person 1',
+    id: 1,
+    isDeleted: false,
+    isEmailSent: true,
+    isTwoLevel: false,
+    preparedId: 'test-prepared-id',
+    sessionId: 'test-session-id',
+    size: 1000,
+    status: 'COMPLETE',
+    transport: 'https',
+    userName: 'test user',
+  },
+  {
+    createdAt: '2020-02-26T15:05:35Z',
+    downloadItems: [{ entityId: 2, entityType: 'investigation', id: 2 }],
+    email: 'test2@email.com',
+    facilityName: 'LILS',
+    fileName: 'test-file-2',
+    fullName: 'Person 2',
+    id: 2,
+    isDeleted: false,
+    isEmailSent: true,
+    isTwoLevel: false,
+    preparedId: 'test-prepared-id',
+    sessionId: 'test-session-id',
+    size: 2000,
+    status: 'PREPARING',
+    transport: 'globus',
+    userName: 'test user',
+  },
+  {
+    createdAt: '2020-02-27T15:57:20Z',
+    downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
+    email: 'test3@email.com',
+    facilityName: 'LILS',
+    fileName: 'test-file-3',
+    fullName: 'Person 3',
+    id: 3,
+    isDeleted: false,
+    isEmailSent: true,
+    isTwoLevel: false,
+    preparedId: 'test-prepared-id',
+    sessionId: 'test-session-id',
+    size: 3000,
+    status: 'RESTORING',
+    transport: 'https',
+    userName: 'test user',
+  },
+  {
+    createdAt: '2020-02-28T15:57:28Z',
+    downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
+    email: 'test4@email.com',
+    facilityName: 'LILS',
+    fileName: 'test-file-4',
+    fullName: 'Person 4',
+    id: 4,
+    isDeleted: true,
+    isEmailSent: true,
+    isTwoLevel: false,
+    preparedId: 'test-prepared-id',
+    sessionId: 'test-session-id',
+    size: 4000,
+    status: 'EXPIRED',
+    transport: 'globus',
+    userName: 'test user',
+  },
+  {
+    createdAt: '2020-03-01T15:57:28Z[UTC]',
+    downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
+    email: 'test5@email.com',
+    facilityName: 'LILS',
+    fileName: 'test-file-5',
+    fullName: 'Person 5',
+    id: 5,
+    isDeleted: false,
+    isEmailSent: true,
+    isTwoLevel: false,
+    preparedId: 'test-prepared-id',
+    sessionId: 'test-session-id',
+    size: 5000,
+    status: 'PAUSED',
+    transport: 'globus',
+    userName: 'test user',
+  },
+  {
+    createdAt: '2020-03-02T15:57:28Z[UTC]',
+    downloadItems: [{ entityId: 6, entityType: 'investigation', id: 6 }],
+    email: 'test6@email.com',
+    facilityName: 'LILS',
+    fileName: 'test-file-6',
+    fullName: 'Person 6',
+    id: 6,
+    isDeleted: false,
+    isEmailSent: true,
+    isTwoLevel: false,
+    preparedId: 'test-prepared-id',
+    sessionId: 'test-session-id',
+    size: 6000,
+    status: 'PAUSED',
+    transport: 'globus',
+    userName: 'test user',
+  },
+];
+
+const createTestQueryClient = (): QueryClient =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+const renderComponent = (): RenderResult =>
+  render(
+    <QueryClientProvider client={createTestQueryClient()}>
+      <AdminDownloadStatusTable />
+    </QueryClientProvider>
+  );
 
 describe('Admin Download Status Table', () => {
-  let holder;
-
-  const createWrapper = (): ReactWrapper => {
-    return mount(<AdminDownloadStatusTable />, { attachTo: holder });
-  };
-
-  const downloadItems: FormattedDownload[] = [
-    {
-      createdAt: '2020-02-25T15:05:29Z',
-      downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
-      email: 'test1@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-1',
-      fullName: 'Person 1',
-      id: 1,
-      isDeleted: 'No',
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 1000,
-      status: 'downloadStatus.complete',
-      transport: 'https',
-      userName: 'test user',
-    },
-    {
-      createdAt: '2020-02-26T15:05:35Z',
-      downloadItems: [{ entityId: 2, entityType: 'investigation', id: 2 }],
-      email: 'test2@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-2',
-      fullName: 'Person 2',
-      id: 2,
-      isDeleted: 'No',
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 2000,
-      status: 'downloadStatus.preparing',
-      transport: 'globus',
-      userName: 'test user',
-    },
-    {
-      createdAt: '2020-02-27T15:57:20Z',
-      downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
-      email: 'test3@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-3',
-      fullName: 'Person 3',
-      id: 3,
-      isDeleted: 'No',
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 3000,
-      status: 'downloadStatus.restoring',
-      transport: 'https',
-      userName: 'test user',
-    },
-    {
-      createdAt: '2020-02-28T15:57:28Z',
-      downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
-      email: 'test4@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-4',
-      fullName: 'Person 4',
-      id: 4,
-      isDeleted: 'Yes',
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 4000,
-      status: 'downloadStatus.expired',
-      transport: 'globus',
-      userName: 'test user',
-    },
-    {
-      createdAt: '2020-03-01T15:57:28Z[UTC]',
-      downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
-      email: 'test5@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-5',
-      fullName: 'Person 5',
-      id: 5,
-      isDeleted: 'No',
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 5000,
-      status: 'downloadStatus.paused',
-      transport: 'globus',
-      userName: 'test user',
-    },
-  ];
+  let user: UserEvent;
 
   beforeEach(() => {
-    //https://stackoverflow.com/questions/43694975/jest-enzyme-using-mount-document-getelementbyid-returns-null-on-componen
-    holder = document.createElement('div');
-    holder.setAttribute('id', 'datagateway-download');
-    document.body.appendChild(holder);
+    user = userEvent.setup();
 
-    (useAdminDownloadDeleted as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-    });
-    (useAdminUpdateDownloadStatus as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-    });
-    (useAdminDownloads as jest.Mock).mockReturnValue({
-      data: {
-        pageParams: [],
-        pages: [downloadItems],
-      },
-      isLoading: false,
-      isFetched: true,
-      fetchNextPage: jest.fn(),
-      refetch: jest.fn(),
-    });
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
         settings: { facilityName: string; downloadApiUrl: string },
@@ -166,181 +178,114 @@ describe('Admin Download Status Table', () => {
   });
 
   afterEach(() => {
-    (fetchAdminDownloads as jest.Mock).mockClear();
-    (adminDownloadDeleted as jest.Mock).mockClear();
-    (adminDownloadStatus as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
+  it('should render correctly', () => {
     const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0)).toUTCString();
     global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
-    (useAdminDownloads as jest.Mock).mockReturnValue({
-      data: undefined,
-      isLoading: true,
-      isFetched: false,
-      fetchNextPage: jest.fn(),
-      refetch: jest.fn(),
-    });
 
-    const wrapper = shallow(<AdminDownloadStatusTable />);
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = renderComponent();
+
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('fetches the download items and sorts by download requested time desc on load ', async () => {
-    const wrapper = createWrapper();
+  it('fetches the download items and sorts by download requested time desc on load', async () => {
+    renderComponent();
 
-    expect(useAdminDownloads).toHaveBeenCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 0, 50",
-    });
-    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
-  });
-
-  it('fetches more download items when loadMoreRows is called', async () => {
-    const mockFetchNextPage = jest.fn();
-    (useAdminDownloads as jest.Mock).mockReturnValue({
-      data: {
-        pageParams: [],
-        pages: [downloadItems],
-      },
-      isLoading: false,
-      isFetched: true,
-      fetchNextPage: mockFetchNextPage,
-      refetch: jest.fn(),
-    });
-
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      (wrapper.find('VirtualizedTable').prop('loadMoreRows') as (
-        range: IndexRange
-      ) => void)({
-        startIndex: 5,
-        stopIndex: 9,
-      });
-      wrapper.mount();
-      wrapper.update();
-    });
-
-    expect(mockFetchNextPage).toHaveBeenLastCalledWith({
-      pageParam:
-        "WHERE download.facilityName = '' ORDER BY download.createdAt desc, download.id ASC LIMIT 5, 5",
-    });
-    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+    const rows = await screen.findAllByText(/^\d$/);
+    expect(rows).toHaveLength(5);
   });
 
   it('translates the status strings correctly', async () => {
-    const wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper.find('[aria-rowindex=1]').find('[aria-colindex=6]').text()
-    ).toEqual('downloadStatus.complete');
+      await screen.findByText('downloadStatus.paused')
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('[aria-rowindex=2]').find('[aria-colindex=6]').text()
-    ).toEqual('downloadStatus.preparing');
+      await screen.findByText('downloadStatus.expired')
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('[aria-rowindex=3]').find('[aria-colindex=6]').text()
-    ).toEqual('downloadStatus.restoring');
+      await screen.findByText('downloadStatus.restoring')
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('[aria-rowindex=4]').find('[aria-colindex=6]').text()
-    ).toEqual('downloadStatus.expired');
+      await screen.findByText('downloadStatus.preparing')
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('[aria-rowindex=5]').find('[aria-colindex=6]').text()
-    ).toEqual('downloadStatus.paused');
+      await screen.findByText('downloadStatus.complete')
+    ).toBeInTheDocument();
   });
 
   it('re-fetches the download items when the refresh button is clicked', async () => {
-    const mockRefetch = jest.fn().mockImplementation(() => Promise.resolve());
-    (useAdminDownloads as jest.Mock).mockReturnValue({
-      data: {
-        pageParams: [],
-        pages: [downloadItems],
-      },
-      isLoading: false,
-      isFetched: true,
-      fetchNextPage: jest.fn(),
-      refetch: mockRefetch,
+    renderComponent();
+
+    (fetchAdminDownloads as jest.Mock).mockResolvedValue([]);
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'downloadTab.refresh_download_status_arialabel',
+      })
+    );
+
+    await waitFor(() => {
+      expect(screen.queryAllByText(/^\d$/)).toHaveLength(0);
     });
-
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      wrapper
-        .find(
-          'button[aria-label="downloadTab.refresh_download_status_arialabel"]'
-        )
-        .simulate('click');
-    });
-
-    expect(mockRefetch).toHaveBeenCalled();
-    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
 
-  it('sends sort request on sort', async () => {
-    const wrapper = createWrapper();
+  it('should send sort request on sort', async () => {
+    renderComponent();
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
-    const createdAtSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(6);
-    await act(async () => {
-      createdAtSortLabel.simulate('click');
-      wrapper.mount();
-      wrapper.update();
-    });
+    await user.click(await screen.findByText('downloadStatus.createdAt'));
 
     // Get the Username sort header
-    const usernameSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(2);
-    await act(async () => {
-      usernameSortLabel.simulate('click');
-      wrapper.mount();
-      wrapper.update();
-    });
+    const usernameSortLabel = await screen.findByText(
+      'downloadStatus.username'
+    );
 
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50",
-    });
+    await user.click(usernameSortLabel);
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50"
+    );
 
     // Get the Access Method sort header.
-    const accessMethodSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(4);
-    await act(async () => {
-      accessMethodSortLabel.simulate('click');
-      await flushPromises();
-      wrapper.update();
-    });
+    const accessMethodSortLabel = await screen.findByText(
+      'downloadStatus.transport'
+    );
 
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50",
-    });
+    await user.click(accessMethodSortLabel);
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50"
+    );
 
-    await act(async () => {
-      accessMethodSortLabel.simulate('click');
-      await flushPromises();
-      wrapper.update();
-    });
+    await user.click(accessMethodSortLabel);
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50"
+    );
 
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50",
-    });
-
-    await act(async () => {
-      accessMethodSortLabel.simulate('click');
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50",
-    });
+    await user.click(accessMethodSortLabel);
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50"
+    );
   }, 10000);
 
   it('sends filter request on text filter', async () => {
@@ -364,7 +309,7 @@ describe('Admin Download Status Table', () => {
       usernameFilterInput.simulate('change');
     });
 
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+    expect(useAdminDownloads).toHaveBeenCalledWith({
       initialQueryOffset:
         "WHERE download.facilityName = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50",
     });
@@ -380,7 +325,7 @@ describe('Admin Download Status Table', () => {
       availabilityFilterInput.simulate('change');
     });
 
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+    expect(useAdminDownloads).toHaveBeenCalledWith({
       initialQueryOffset:
         "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50",
     });
@@ -395,7 +340,7 @@ describe('Admin Download Status Table', () => {
       wrapper.update();
     });
 
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+    expect(useAdminDownloads).toHaveBeenCalledWith({
       initialQueryOffset:
         "WHERE download.facilityName = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50",
     });
@@ -405,7 +350,7 @@ describe('Admin Download Status Table', () => {
       availabilityFilterInput.simulate('change');
     });
 
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
+    expect(useAdminDownloads).toHaveBeenCalledWith({
       initialQueryOffset:
         "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50",
     });
