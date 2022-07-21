@@ -344,7 +344,7 @@ export interface UseDownloadParams {
  * })
  * ```
  */
-export const useDownload = <T>({
+export const useDownload = <T = Download>({
   id,
   ...queryOptions
 }: UseDownloadParams &
