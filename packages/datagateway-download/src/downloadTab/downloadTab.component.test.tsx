@@ -256,15 +256,19 @@ describe('DownloadTab', () => {
 
     // Return back to the cart tab.
 
-    await user.click(await screen.findByLabelText('downloadTab.cart_tab'));
+    await user.click(await screen.findByText('downloadTab.cart_tab'));
 
-    expect(
-      await screen.findByLabelText('downloadTab.download_cart_panel_arialabel')
-    ).toBeVisible();
-    expect(
-      await screen.findByLabelText(
-        'downloadTab.download_status_panel_arialabel'
-      )
-    ).not.toBeVisible();
+    await waitFor(async () => {
+      expect(
+        await screen.findByLabelText(
+          'downloadTab.download_cart_panel_arialabel'
+        )
+      ).toBeVisible();
+      expect(
+        await screen.findByLabelText(
+          'downloadTab.download_status_panel_arialabel'
+        )
+      ).not.toBeVisible();
+    });
   });
 });

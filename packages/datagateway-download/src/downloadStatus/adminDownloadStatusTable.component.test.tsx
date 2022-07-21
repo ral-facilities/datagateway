@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Download } from 'datagateway-common';
 import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import {
@@ -285,78 +285,102 @@ describe('Admin Download Status Table', () => {
     );
   }, 10000);
 
-  it('should send filter request on text filter', async () => {
-    jest.useFakeTimers();
-    renderComponent();
+  describe('text filters', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
 
-    // Table is sorted by createdAt desc by default
-    // To keep working test, we will remove all sorts on the table beforehand
-    await user.click(await screen.findByText('downloadStatus.createdAt'));
+    afterEach(() => {
+      jest.useRealTimers();
+    });
 
-    // Get the Username filter input
-    const usernameFilterInput = await screen.findByLabelText(
-      'Filter by downloadStatus.username'
-    );
+    it('should filter username properly', async () => {
+      renderComponent();
 
-    await user.type(usernameFilterInput, 'test user');
-    jest.runAllTimers();
+      // Table is sorted by createdAt desc by default
+      // To keep working test, we will remove all sorts on the table beforehand
+      await user.click(await screen.findByText('downloadStatus.createdAt'));
 
-    expect(fetchAdminDownloads).toHaveBeenCalledWith(
-      {
-        downloadApiUrl: '',
-        facilityName: '',
-      },
-      "WHERE download.facilityName = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50"
-    );
+      // Get the Username filter input
+      const usernameFilterInput = await screen.findByLabelText(
+        'Filter by downloadStatus.username'
+      );
 
-    await user.clear(usernameFilterInput);
+      await user.type(usernameFilterInput, 'test user');
+      jest.runAllTimers();
 
-    // Get the Availability filter input
-    const availabilityFilterInput = screen.getByLabelText(
-      'Filter by downloadStatus.status'
-    );
+      expect(fetchAdminDownloads).toHaveBeenCalledWith(
+        {
+          downloadApiUrl: '',
+          facilityName: '',
+        },
+        "WHERE download.facilityName = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50"
+      );
 
-    await user.type(availabilityFilterInput, 'downloadStatus.complete');
-    jest.runAllTimers();
+      await user.clear(usernameFilterInput);
+      jest.runAllTimers();
 
-    expect(fetchAdminDownloads).toHaveBeenCalledWith(
-      {
-        downloadApiUrl: '',
-        facilityName: '',
-      },
-      "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
-    );
+      expect(fetchAdminDownloads).toHaveBeenCalledWith(
+        {
+          downloadApiUrl: '',
+          facilityName: '',
+        },
+        "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
+      );
+    }, 10000);
 
-    // We simulate a change in the select from 'include' to 'exclude'.
-    // click on the select box
-    await user.click(screen.getAllByLabelText('include or exclude')[5]);
-    // click on exclude option
-    await user.click(
-      within(await screen.findByRole('listbox')).getByText('Exclude')
-    );
-    jest.runAllTimers();
+    it('should filter download availablity properly', async () => {
+      renderComponent();
 
-    expect(fetchAdminDownloads).toHaveBeenCalledWith(
-      {
-        downloadApiUrl: '',
-        facilityName: '',
-      },
-      "WHERE download.facilityName = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
-    );
+      // Table is sorted by createdAt desc by default
+      // To keep working test, we will remove all sorts on the table beforehand
+      await user.click(await screen.findByText('downloadStatus.createdAt'));
 
-    await user.clear(availabilityFilterInput);
-    jest.runAllTimers();
+      // Get the Availability filter input
+      const availabilityFilterInput = screen.getByLabelText(
+        'Filter by downloadStatus.status'
+      );
 
-    expect(fetchAdminDownloads).toHaveBeenCalledWith(
-      {
-        downloadApiUrl: '',
-        facilityName: '',
-      },
-      "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
-    );
+      await user.type(availabilityFilterInput, 'downloadStatus.complete');
+      jest.runAllTimers();
 
-    jest.useRealTimers();
-  }, 10000);
+      expect(fetchAdminDownloads).toHaveBeenCalledWith(
+        {
+          downloadApiUrl: '',
+          facilityName: '',
+        },
+        "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
+      );
+
+      // We simulate a change in the select from 'include' to 'exclude'.
+      // click on the select box
+      await user.click(screen.getAllByLabelText('include or exclude')[5]);
+      // click on exclude option
+      await user.click(
+        within(await screen.findByRole('listbox')).getByText('Exclude')
+      );
+      jest.runAllTimers();
+
+      expect(fetchAdminDownloads).toHaveBeenCalledWith(
+        {
+          downloadApiUrl: '',
+          facilityName: '',
+        },
+        "WHERE download.facilityName = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
+      );
+
+      await user.clear(availabilityFilterInput);
+      jest.runAllTimers();
+
+      expect(fetchAdminDownloads).toHaveBeenCalledWith(
+        {
+          downloadApiUrl: '',
+          facilityName: '',
+        },
+        "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
+      );
+    }, 10000);
+  });
 
   it('sends filter request on date filter', async () => {
     jest.useFakeTimers();

@@ -247,9 +247,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     [sizeQueries, fileCountQueries]
   );
 
-  console.log('data loading', dataLoading);
-  console.log('data length', data?.length);
-
   return (
     <>
       {!dataLoading && data?.length === 0 ? (
