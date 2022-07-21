@@ -68,6 +68,9 @@ const AdminDownloadStatusTable: React.FC = () => {
   const { downloadStatusLabels: downloadStatuses } = useDownloadFormatter();
   const { mutate: adminDownloadDeleted } = useAdminDownloadDeleted();
   const { mutate: adminUpdateDownloadStatus } = useAdminUpdateDownloadStatus();
+  const refetchTimeout = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
 
   const buildQueryOffset = useCallback(() => {
     let queryOffset = `WHERE download.facilityName = '${settings.facilityName}'`;
@@ -146,15 +149,28 @@ const AdminDownloadStatusTable: React.FC = () => {
   }, [isFetched]);
 
   React.useEffect(() => {
-    // refetch table whenever sort or filter changes
+    // refetch table whenever filter changes
+    // debounced to avoid excessive calls
+    refetchTimeout.current = setTimeout(() => {
+      refetch();
+    }, 200);
+
+    return () => {
+      const prevTimeout = refetchTimeout.current;
+      if (prevTimeout) clearTimeout();
+    };
+  }, [refetch, filters]);
+
+  React.useEffect(() => {
+    // refetch table whenver sort changes
+    // NOT debounced because it is changed much less often than filters
     refetch();
-  }, [refetch, sort, filters]);
+  }, [refetch, sort]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
       onChange={(value: { value?: string | number; type: string } | null) => {
-        console.log('onChange', value);
         if (value) {
           if (dataKey === 'status') {
             const downloadStatus = (Object.keys(

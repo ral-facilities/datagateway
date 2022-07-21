@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, TextColumnFilter } from 'datagateway-common';
+import { Download } from 'datagateway-common';
 import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import {
   adminDownloadDeleted,
@@ -7,19 +7,18 @@ import {
   fetchAdminDownloads,
 } from '../downloadApi';
 import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
-import { act } from 'react-dom/test-utils';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
-  flushPromises,
 } from '../setupTests';
-import {
-  useAdminDownloadDeleted,
-  useAdminDownloads,
-  useAdminUpdateDownloadStatus,
-} from '../downloadApiHooks';
 import userEvent from '@testing-library/user-event';
-import { render, RenderResult, screen, waitFor } from '@testing-library/react';
+import {
+  render,
+  RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 jest.mock('../downloadApi');
@@ -155,7 +154,7 @@ describe('Admin Download Status Table', () => {
   let user: UserEvent;
 
   beforeEach(() => {
-    user = userEvent.setup();
+    user = userEvent.setup({ delay: null });
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -190,19 +189,17 @@ describe('Admin Download Status Table', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('fetches the download items and sorts by download requested time desc on load', async () => {
+  it('should fetch the download items and sorts by download requested time desc on load', async () => {
     renderComponent();
 
     const rows = await screen.findAllByText(/^\d$/);
-    expect(rows).toHaveLength(5);
+    expect(rows).toHaveLength(6);
   });
 
-  it('translates the status strings correctly', async () => {
+  it('should translate the status strings correctly', async () => {
     renderComponent();
 
-    expect(
-      await screen.findByText('downloadStatus.paused')
-    ).toBeInTheDocument();
+    expect(await screen.findAllByText('downloadStatus.paused')).toHaveLength(2);
     expect(
       await screen.findByText('downloadStatus.expired')
     ).toBeInTheDocument();
@@ -217,7 +214,7 @@ describe('Admin Download Status Table', () => {
     ).toBeInTheDocument();
   });
 
-  it('re-fetches the download items when the refresh button is clicked', async () => {
+  it('should re-fetch the download items when the refresh button is clicked', async () => {
     renderComponent();
 
     (fetchAdminDownloads as jest.Mock).mockResolvedValue([]);
@@ -288,323 +285,286 @@ describe('Admin Download Status Table', () => {
     );
   }, 10000);
 
-  it('sends filter request on text filter', async () => {
-    const wrapper = createWrapper();
+  it('should send filter request on text filter', async () => {
+    jest.useFakeTimers();
+    renderComponent();
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
-    const createdAtSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(6);
-    await act(async () => {
-      createdAtSortLabel.simulate('click');
-    });
+    await user.click(await screen.findByText('downloadStatus.createdAt'));
 
     // Get the Username filter input
-    const usernameFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.username"]')
-      .last();
-    await act(async () => {
-      usernameFilterInput.instance().value = 'test user';
-      usernameFilterInput.simulate('change');
-    });
+    const usernameFilterInput = await screen.findByLabelText(
+      'Filter by downloadStatus.username'
+    );
 
-    expect(useAdminDownloads).toHaveBeenCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50",
-    });
-    usernameFilterInput.instance().value = '';
-    usernameFilterInput.simulate('change');
+    await user.type(usernameFilterInput, 'test user');
+    jest.runAllTimers();
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50"
+    );
+
+    await user.clear(usernameFilterInput);
 
     // Get the Availability filter input
-    const availabilityFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.status"]')
-      .last();
-    await act(async () => {
-      availabilityFilterInput.instance().value = 'downloadStatus.complete';
-      availabilityFilterInput.simulate('change');
-    });
+    const availabilityFilterInput = screen.getByLabelText(
+      'Filter by downloadStatus.status'
+    );
 
-    expect(useAdminDownloads).toHaveBeenCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50",
-    });
+    await user.type(availabilityFilterInput, 'downloadStatus.complete');
+    jest.runAllTimers();
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
+    );
 
     // We simulate a change in the select from 'include' to 'exclude'.
-    const availabilityFilter = wrapper.find(TextColumnFilter).at(5);
-    await act(async () => {
-      availabilityFilter
-        .props()
-        .onChange({ value: 'downloadStatus.complete', type: 'exclude' });
-      wrapper.mount();
-      wrapper.update();
-    });
+    // click on the select box
+    await user.click(screen.getAllByLabelText('include or exclude')[5]);
+    // click on exclude option
+    await user.click(
+      within(await screen.findByRole('listbox')).getByText('Exclude')
+    );
+    jest.runAllTimers();
 
-    expect(useAdminDownloads).toHaveBeenCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50",
-    });
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
+    );
 
-    await act(async () => {
-      availabilityFilterInput.instance().value = '';
-      availabilityFilterInput.simulate('change');
-    });
+    await user.clear(availabilityFilterInput);
+    jest.runAllTimers();
 
-    expect(useAdminDownloads).toHaveBeenCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50",
-    });
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
+    );
+
+    jest.useRealTimers();
   }, 10000);
 
   it('sends filter request on date filter', async () => {
+    jest.useFakeTimers();
     applyDatePickerWorkaround();
-
-    const wrapper = createWrapper();
+    renderComponent();
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
-    const createdAtSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(6);
-    await act(async () => {
-      createdAtSortLabel.simulate('click');
-    });
+    await user.click(await screen.findByText('downloadStatus.createdAt'));
 
     // Get the Requested Data From filter input
-    const dateFromFilterInput = wrapper.find(
-      'input[id="downloadStatus.createdAt filter from"]'
-    );
-    await act(async () => {
-      dateFromFilterInput.instance().value = '2020-01-01 00:00';
-      dateFromFilterInput.simulate('change');
+    const dateFromFilterInput = screen.getByRole('textbox', {
+      name: 'downloadStatus.createdAt filter from',
     });
+    await user.type(dateFromFilterInput, '2020-01-01 00:00');
+    jest.runAllTimers();
 
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '9999-12-31 23:59'} ORDER BY download.id ASC LIMIT 0, 50",
-    });
+    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '9999-12-31 23:59'} ORDER BY download.id ASC LIMIT 0, 50"
+    );
 
     // Get the Requested Data To filter input
-    const dateToFilterInput = wrapper.find(
-      'input[id="downloadStatus.createdAt filter to"]'
+    const dateToFilterInput = screen.getByRole('textbox', {
+      name: 'downloadStatus.createdAt filter to',
+    });
+    await user.type(dateToFilterInput, '2020-01-02 23:59');
+    jest.runAllTimers();
+
+    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '2020-01-02 23:59'} ORDER BY download.id ASC LIMIT 0, 50"
     );
-    await act(async () => {
-      dateToFilterInput.instance().value = '2020-01-02 23:59';
-      dateToFilterInput.simulate('change');
-      await flushPromises();
-      wrapper.update();
-    });
 
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '2020-01-02 23:59'} ORDER BY download.id ASC LIMIT 0, 50",
-    });
+    await user.clear(dateFromFilterInput);
+    await user.clear(dateToFilterInput);
+    jest.runAllTimers();
 
-    dateFromFilterInput.instance().value = '';
-    dateFromFilterInput.simulate('change');
-    dateToFilterInput.instance().value = '';
-    dateToFilterInput.simulate('change');
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(useAdminDownloads).toHaveBeenLastCalledWith({
-      initialQueryOffset:
-        "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50",
-    });
+    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+      {
+        downloadApiUrl: '',
+        facilityName: '',
+      },
+      "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
+    );
 
     cleanupDatePickerWorkaround();
+    jest.useRealTimers();
   }, 10000);
 
-  it('sends restore item and item status requests when restore button is clicked', async () => {
-    const mockAdminDownloadDeleted = jest.fn();
-    (useAdminDownloadDeleted as jest.Mock).mockReturnValue({
-      mutate: mockAdminDownloadDeleted,
-    });
+  it('should send restore item and item status requests when restore button is clicked', async () => {
+    renderComponent();
 
-    const wrapper = createWrapper();
+    (fetchAdminDownloads as jest.Mock).mockImplementation(
+      (
+        settings: { facilityName: string; downloadApiUrl: string },
+        queryOffset?: string
+      ) => {
+        //Only return the 5 results when initialy requesting so that only a total
+        //of 5 results will be loaded
+        if (queryOffset?.endsWith('LIMIT 0, 50'))
+          return Promise.resolve(
+            downloadItems.map((d) =>
+              d.id === 4
+                ? {
+                    ...d,
+                    isDeleted: false,
+                    status: 'RESTORING',
+                  }
+                : d
+            )
+          );
+        return Promise.resolve([]);
+      }
+    );
 
-    (useAdminDownloads as jest.Mock).mockReturnValue({
-      data: {
-        pageParams: [],
-        pages: [
-          [
-            {
-              ...downloadItems[3],
-              isDeleted: 'No',
-              status: 'downloadStatus.restoring',
-            },
-          ],
-        ],
-      },
-      isLoading: false,
-      isFetched: true,
-      fetchNextPage: jest.fn(),
-      refetch: jest.fn(),
-    });
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadStatus.restore {filename:test-file-4}',
+      })
+    );
 
-    await act(async () => {
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.restore {filename:test-file-4}"]'
-        )
-        .simulate('click');
-      wrapper.mount();
-      wrapper.update();
-    });
-
-    expect(mockAdminDownloadDeleted).toHaveBeenCalledWith({
-      downloadId: 4,
-      deleted: false,
-    });
     expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.pause {filename:test-file-4}"]'
-      )
-    ).toBeTruthy();
+      await screen.findByRole('button', {
+        name: 'downloadStatus.pause {filename:test-file-4}',
+      })
+    ).toBeInTheDocument();
   });
 
-  it('sends pause restore request when pause button is clicked', async () => {
-    const mockAdminDownloadStatus = jest.fn();
-    (useAdminUpdateDownloadStatus as jest.Mock).mockReturnValue({
-      mutate: mockAdminDownloadStatus,
-    });
+  it('should send pause restore request when pause button is clicked', async () => {
+    renderComponent();
 
-    const wrapper = createWrapper();
+    (fetchAdminDownloads as jest.Mock).mockImplementation(
+      (
+        settings: { facilityName: string; downloadApiUrl: string },
+        queryOffset?: string
+      ) => {
+        //Only return the 5 results when initialy requesting so that only a total
+        //of 5 results will be loaded
+        if (queryOffset?.endsWith('LIMIT 0, 50'))
+          return Promise.resolve(
+            downloadItems.map((d) =>
+              d.id === 3
+                ? {
+                    ...d,
+                    isDeleted: false,
+                    status: 'PAUSED',
+                  }
+                : d
+            )
+          );
+        return Promise.resolve([]);
+      }
+    );
 
-    (useAdminDownloads as jest.Mock).mockReturnValue({
-      data: {
-        pageParams: [],
-        pages: [
-          [
-            {
-              ...downloadItems[2],
-              isDeleted: 'No',
-              status: 'downloadStatus.paused',
-            },
-          ],
-        ],
-      },
-      isLoading: false,
-      isFetched: true,
-      fetchNextPage: jest.fn(),
-      refetch: jest.fn(),
-    });
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadStatus.pause {filename:test-file-3}',
+      })
+    );
 
-    await act(async () => {
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.pause {filename:test-file-3}"]'
-        )
-        .simulate('click');
-      wrapper.mount();
-      wrapper.update();
-    });
-
-    expect(mockAdminDownloadStatus).toHaveBeenCalledWith({
-      downloadId: 3,
-      status: 'PAUSED',
-    });
     expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.resume {filename:test-file-3}"]'
-      )
-    ).toBeTruthy();
+      await screen.findByRole('button', {
+        name: 'downloadStatus.resume {filename:test-file-3}',
+      })
+    ).toBeInTheDocument();
   });
 
-  it('sends resume restore request when resume button is clicked', async () => {
-    const mockAdminDownloadStatus = jest.fn();
-    (useAdminUpdateDownloadStatus as jest.Mock).mockReturnValue({
-      mutate: mockAdminDownloadStatus,
-    });
+  it('should send resume restore request when resume button is clicked', async () => {
+    renderComponent();
 
-    const wrapper = createWrapper();
+    (fetchAdminDownloads as jest.Mock).mockImplementation(
+      (
+        settings: { facilityName: string; downloadApiUrl: string },
+        queryOffset?: string
+      ) => {
+        //Only return the 5 results when initialy requesting so that only a total
+        //of 5 results will be loaded
+        if (queryOffset?.endsWith('LIMIT 0, 50'))
+          return Promise.resolve(
+            downloadItems.map((d) =>
+              d.id === 5
+                ? {
+                    ...d,
+                    isDeleted: false,
+                    status: 'RESTORING',
+                  }
+                : d
+            )
+          );
+        return Promise.resolve([]);
+      }
+    );
 
-    (useAdminDownloads as jest.Mock).mockReturnValue({
-      data: {
-        pageParams: [],
-        pages: [
-          [
-            {
-              ...downloadItems[4],
-              isDeleted: 'No',
-              status: 'downloadStatus.restoring',
-            },
-          ],
-        ],
-      },
-      isLoading: false,
-      isFetched: true,
-      fetchNextPage: jest.fn(),
-      refetch: jest.fn(),
-    });
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadStatus.resume {filename:test-file-5}',
+      })
+    );
 
-    await act(async () => {
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.resume {filename:test-file-5}"]'
-        )
-        .simulate('click');
-      wrapper.mount();
-      wrapper.update();
-    });
-
-    expect(mockAdminDownloadStatus).toHaveBeenCalledWith({
-      downloadId: 5,
-      status: 'RESTORING',
-    });
     expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.pause {filename:test-file-5}"]'
-      )
-    ).toBeTruthy();
+      await screen.findByRole('button', {
+        name: 'downloadStatus.pause {filename:test-file-5}',
+      })
+    ).toBeInTheDocument();
   });
 
   it('sends delete item request when delete button is clicked', async () => {
-    const mockAdminDownloadDeleted = jest.fn();
-    (useAdminDownloadDeleted as jest.Mock).mockReturnValue({
-      mutate: mockAdminDownloadDeleted,
-    });
+    renderComponent();
 
-    const wrapper = createWrapper();
+    (fetchAdminDownloads as jest.Mock).mockImplementation(
+      (
+        settings: { facilityName: string; downloadApiUrl: string },
+        queryOffset?: string
+      ) => {
+        //Only return the 5 results when initialy requesting so that only a total
+        //of 5 results will be loaded
+        if (queryOffset?.endsWith('LIMIT 0, 50'))
+          return Promise.resolve(
+            downloadItems.map((d) =>
+              d.id === 1
+                ? {
+                    ...d,
+                    isDeleted: true,
+                  }
+                : d
+            )
+          );
+        return Promise.resolve([]);
+      }
+    );
 
-    (useAdminDownloads as jest.Mock).mockReturnValue({
-      data: {
-        pageParams: [],
-        pages: [
-          [
-            {
-              ...downloadItems[0],
-              isDeleted: 'Yes',
-            },
-          ],
-        ],
-      },
-      isLoading: false,
-      isFetched: true,
-      fetchNextPage: jest.fn(),
-      refetch: jest.fn(),
-    });
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadStatus.delete {filename:test-file-1}',
+      })
+    );
 
-    await act(async () => {
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.delete {filename:test-file-1}"]'
-        )
-        .simulate('click');
-      wrapper.mount();
-      wrapper.update();
-    });
-
-    expect(mockAdminDownloadDeleted).toHaveBeenCalledWith({
-      downloadId: 1,
-      deleted: true,
-    });
     expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.restore {filename:test-file-1}"]'
-      )
-    ).toBeTruthy();
+      await screen.findByRole('button', {
+        name: 'downloadStatus.restore {filename:test-file-1}',
+      })
+    ).toBeInTheDocument();
   });
 });
