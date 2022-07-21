@@ -344,13 +344,16 @@ export interface UseDownloadParams {
  * })
  * ```
  */
-export const useDownload = ({
+export const useDownload = <T>({
   id,
   ...queryOptions
-}: UseDownloadParams & UseQueryOptions<Download, AxiosError>): UseQueryResult<
-  Download,
-  AxiosError
-> => {
+}: UseDownloadParams &
+  UseQueryOptions<
+    Download,
+    AxiosError,
+    T,
+    (number | QueryKey)[]
+  >): UseQueryResult<T, AxiosError> => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
 
