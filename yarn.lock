@@ -4228,14 +4228,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:17.0.39":
-  version: 17.0.39
-  resolution: "@types/react@npm:17.0.39"
+"@types/react@npm:*, @types/react@npm:18.0.15":
+  version: 18.0.15
+  resolution: "@types/react@npm:18.0.15"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: bf04d3c2894559012710d595553e12b422d3b91cd8f4f7e122d8cb044ba9c2ba17f6e8a4e09581359cc5509ddc59cd8c8fabd6774f3505a40a45393f074d6e6e
+  checksum: e22cc388d1c145aa184787e44dc28db4789976c704cd5db475c170bb76a560eb81def5f346cfe750949bb3d43ad88822b8cbb9f19b1286e3795892a8263e7715
   languageName: node
   linkType: hard
 
@@ -7301,7 +7301,7 @@ __metadata:
     "@types/jest": 27.5.2
     "@types/lodash.debounce": 4.0.6
     "@types/node": 17.0.17
-    "@types/react": 17.0.39
+    "@types/react": 18.0.15
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.21.10
     "@typescript-eslint/eslint-plugin": 5.30.6
@@ -7368,7 +7368,7 @@ __metadata:
     "@types/lodash.debounce": 4.0.6
     "@types/lodash.memoize": 4.1.6
     "@types/node": 17.0.17
-    "@types/react": 17.0.39
+    "@types/react": 18.0.15
     "@types/react-dom": 17.0.11
     "@types/react-redux": 7.1.22
     "@types/react-router-dom": 5.3.3
@@ -7444,7 +7444,7 @@ __metadata:
     "@types/jsrsasign": 9.0.3
     "@types/lodash.chunk": 4.2.6
     "@types/node": 17.0.17
-    "@types/react": 17.0.39
+    "@types/react": 18.0.15
     "@types/react-dom": 17.0.11
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.21.10
@@ -7508,7 +7508,7 @@ __metadata:
     "@types/jest": 27.5.2
     "@types/jsrsasign": 9.0.3
     "@types/node": 17.0.17
-    "@types/react": 17.0.39
+    "@types/react": 18.0.15
     "@types/react-dom": 17.0.11
     "@types/react-redux": 7.1.22
     "@types/react-router-dom": 5.3.3
