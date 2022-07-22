@@ -1,4 +1,4 @@
-import React from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Button,
   CircularProgress,
@@ -16,20 +16,20 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import type { DownloadTypeStatus } from '../downloadApi';
-import { downloadPreparedCart } from '../downloadApi';
+import { formatBytes, Mark } from 'datagateway-common';
+import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { Trans, useTranslation } from 'react-i18next';
+import type { DownloadTypeStatus } from '../downloadApi';
+import { downloadPreparedCart } from '../downloadApi';
 import {
   useDownload,
   useDownloadTypeStatuses,
   useSubmitCart,
 } from '../downloadApiHooks';
-import { formatBytes, Mark } from 'datagateway-common';
 
-const TableContentDiv = styled('div')(({ theme }) => ({
+const TableContentDiv = styled('div')(() => ({
   paddingTop: '10px',
   '& table': {
     borderCollapse: 'collapse',
@@ -143,8 +143,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     },
   });
 
-  const isDownloadTypeStatusesLoadedSuccessfully = downloadTypeStatusQueries.every(
-    ({ isLoading, isSuccess }) => !isLoading && isSuccess
+  const hasFinishedLoadingDownloadTypeStatuses = downloadTypeStatusQueries.every(
+    ({ isLoading }) => !isLoading
   );
 
   const {
@@ -168,7 +168,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
    */
   const downloadTypeInfoMap = React.useMemo(
     () =>
-      isDownloadTypeStatusesLoadedSuccessfully
+      hasFinishedLoadingDownloadTypeStatuses
         ? downloadTypeStatusQueries.reduce((m, { data }) => {
             if (data && data.disabled !== undefined) {
               m.set(data.type, data);
@@ -176,7 +176,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             return m;
           }, new Map<string, DownloadTypeInfo>())
         : null,
-    [isDownloadTypeStatusesLoadedSuccessfully, downloadTypeStatusQueries]
+    [hasFinishedLoadingDownloadTypeStatuses, downloadTypeStatusQueries]
   );
 
   /**
@@ -335,8 +335,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   const shouldShowConfirmationForm =
     props.open &&
-    isDownloadTypeStatusesLoadedSuccessfully &&
-    sortedDownloadTypes;
+    hasFinishedLoadingDownloadTypeStatuses &&
+    Boolean(sortedDownloadTypes);
 
   // whether to show result of submit cart (i.e. successful or failed)
   const shouldShowSubmitCartResult =
@@ -701,6 +701,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               id="download-confirmation-download"
               disabled={
                 !emailValid ||
+                (!downloadTypeInfoMap?.has(selectedMethod) ?? true) ||
                 downloadTypeInfoMap?.get(selectedMethod)?.disabled ||
                 methodsUnavailable
               }

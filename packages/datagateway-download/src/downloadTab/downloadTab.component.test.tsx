@@ -1,10 +1,17 @@
-import * as React from 'react';
-import { shallow } from 'enzyme';
-import DownloadTabs from './downloadTab.component';
-import { DownloadSettingsContext } from '../ConfigProvider';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import {
+  DownloadCartItem,
+  fetchDownloadCart,
+  FormattedDownload,
+} from 'datagateway-common';
 import { createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
+import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Router } from 'react-router-dom';
+import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadDeleted,
   fetchDownloads,
@@ -14,15 +21,7 @@ import {
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
-import {
-  DownloadCartItem,
-  fetchDownloadCart,
-  FormattedDownload,
-} from 'datagateway-common';
-import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
-import userEvent from '@testing-library/user-event';
+import DownloadTabs from './downloadTab.component';
 
 jest.mock('datagateway-common', () => {
   const og = jest.requireActual('datagateway-common');
@@ -229,9 +228,9 @@ describe('DownloadTab', () => {
     );
   };
 
-  it('renders correctly', () => {
-    const wrapper = shallow(<DownloadTabs />);
-    expect(wrapper).toMatchSnapshot();
+  it('should render correctly', () => {
+    const { asFragment } = renderComponent();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('shows the appropriate table when clicking between tabs', async () => {

@@ -1,15 +1,4 @@
-import React from 'react';
-import {
-  ColumnType,
-  DownloadCartItem,
-  DownloadCartTableItem,
-  formatBytes,
-  Order,
-  Table,
-  TableActionProps,
-  TextColumnFilter,
-  TextFilter,
-} from 'datagateway-common';
+import { RemoveCircle } from '@mui/icons-material';
 import {
   Alert,
   Button,
@@ -22,7 +11,21 @@ import {
   Theme,
   Typography,
 } from '@mui/material';
-import { RemoveCircle } from '@mui/icons-material';
+import {
+  ColumnType,
+  DownloadCartItem,
+  DownloadCartTableItem,
+  formatBytes,
+  Order,
+  Table,
+  TableActionProps,
+  TextColumnFilter,
+  TextFilter,
+} from 'datagateway-common';
+import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
+import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
   useDatafileCounts,
@@ -33,9 +36,6 @@ import {
 } from '../downloadApiHooks';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;

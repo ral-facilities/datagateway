@@ -1,15 +1,15 @@
-import * as React from 'react';
-import type { Download } from 'datagateway-common';
-import DownloadStatusTable from './downloadStatusTable.component';
 import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import type { Download } from 'datagateway-common';
+import * as React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { downloadDeleted, fetchDownloads, getDataUrl } from '../downloadApi';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../setupTests';
-import { downloadDeleted, fetchDownloads, getDataUrl } from '../downloadApi';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import DownloadStatusTable from './downloadStatusTable.component';
 
 jest.mock('../downloadApi');
 
@@ -332,7 +332,7 @@ describe('Download Status Table', () => {
     await user.type(downloadMethodFilterBox, 'https');
 
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
-    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(screen.getByText('test-file-3')).toBeInTheDocument();
     expect(screen.queryByText('test-file-2')).toBeNull();
     expect(screen.queryByText('test-file-4')).toBeNull();
 
@@ -346,10 +346,10 @@ describe('Download Status Table', () => {
     await user.clear(downloadStatusFilterBox);
 
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
-    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
-    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
-    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
-    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
+    expect(screen.getByText('test-file-2')).toBeInTheDocument();
+    expect(screen.getByText('test-file-3')).toBeInTheDocument();
+    expect(screen.getByText('test-file-4')).toBeInTheDocument();
+    expect(screen.getByText('test-file-5')).toBeInTheDocument();
   });
 
   it('should filter data when date filter is altered', async () => {

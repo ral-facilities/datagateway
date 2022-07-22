@@ -1,4 +1,3 @@
-import React from 'react';
 import { AxiosError } from 'axios';
 import type {
   Download,
@@ -13,7 +12,9 @@ import {
   NotificationType,
   retryICATErrors,
 } from 'datagateway-common';
-import { DownloadSettingsContext } from './ConfigProvider';
+import pLimit from 'p-limit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   InfiniteData,
   useInfiniteQuery,
@@ -27,7 +28,7 @@ import {
   UseQueryOptions,
   UseQueryResult,
 } from 'react-query';
-import pLimit from 'p-limit';
+import { DownloadSettingsContext } from './ConfigProvider';
 import type { DownloadTypeStatus, SubmitCartZipType } from './downloadApi';
 import {
   adminDownloadDeleted,
@@ -45,7 +46,6 @@ import {
   submitCart,
 } from './downloadApi';
 import useDownloadFormatter from './downloadStatus/hooks/useDownloadFormatter';
-import { useTranslation } from 'react-i18next';
 
 /**
  * An enumeration of react query keys.
@@ -115,7 +115,7 @@ export const useRemoveAllFromCart = (): UseMutationResult<
   return useMutation(
     () => removeAllDownloadCartItems({ facilityName, downloadApiUrl }),
     {
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.setQueryData(QueryKey.CART, []);
       },
       retry: (failureCount, error) => {
