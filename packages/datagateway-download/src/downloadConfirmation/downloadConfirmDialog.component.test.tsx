@@ -5,7 +5,12 @@ import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { getDownloadTypeStatus, submitCart } from '../downloadApi';
+import {
+  downloadPreparedCart,
+  getDownload,
+  getDownloadTypeStatus,
+  submitCart,
+} from '../downloadApi';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
 jest.mock('../downloadApi');
@@ -229,6 +234,51 @@ describe('DownloadConfirmDialog', () => {
     // should show confirmation email address
     expect(await screen.findByText('test@email.com')).toBeInTheDocument();
     expect(await screen.findByText('custom download name')).toBeInTheDocument();
+  });
+
+  it('should download prepared cart upon successful submission of cart', async () => {
+    (submitCart as jest.Mock).mockResolvedValue(123);
+    (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
+      Promise.resolve({
+        type,
+        disabled: false,
+        message: '',
+      })
+    );
+    (getDownload as jest.Mock).mockResolvedValue({
+      preparedId: 1,
+      fileName: 'test-file-name',
+      status: 'COMPLETE',
+    });
+
+    renderWrapper(100, true, true);
+    // click on download button to begin download
+    await user.click(await screen.findByText('downloadConfirmDialog.download'));
+
+    await waitFor(() => {
+      expect(downloadPreparedCart).toHaveBeenCalledWith(1, 'test-file-name', {
+        idsUrl: 'https://example.com/ids',
+      });
+    });
+  });
+
+  it('should disable download when no download method is available', async () => {
+    (getDownloadTypeStatus as jest.Mock).mockRejectedValue({
+      error: 'test error',
+    });
+
+    renderWrapper(100, true, true);
+
+    expect(
+      await screen.findByText(
+        'downloadConfirmDialog.access_method_helpertext_all_disabled_error'
+      )
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', {
+        name: 'downloadConfirmDialog.download',
+      })
+    ).toBeDisabled();
   });
 
   it('should show error when download has failed', async () => {

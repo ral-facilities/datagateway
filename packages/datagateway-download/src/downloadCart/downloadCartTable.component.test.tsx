@@ -335,6 +335,15 @@ describe('Download cart table component', () => {
     expect(rows[1]).toHaveTextContent('INVESTIGATION 1');
     expect(rows[2]).toHaveTextContent('DATASET 1');
     expect(rows[3]).toHaveTextContent('DATAFILE 1');
+
+    await user.click(nameSortLabel);
+
+    rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
+    // row should be sorted by type desc.
+    expect(rows[0]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[1]).toHaveTextContent('INVESTIGATION 2');
+    expect(rows[2]).toHaveTextContent('DATASET 1');
+    expect(rows[3]).toHaveTextContent('DATAFILE 1');
   });
 
   it('should filter data when text fields are typed into', async () => {
@@ -352,6 +361,10 @@ describe('Download cart table component', () => {
     await waitFor(async () => {
       expect(screen.queryByText('INVESTIGATION 2')).toBeNull();
     });
+
+    await user.clear(nameFilterInput);
+
+    expect(await screen.findByText('INVESTIGATION 2')).toBeInTheDocument();
 
     // TEST TYPE FILTER INPUT
 

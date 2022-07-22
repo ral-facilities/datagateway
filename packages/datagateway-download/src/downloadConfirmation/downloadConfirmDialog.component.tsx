@@ -103,8 +103,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // Load the settings for use.
   const settings = React.useContext(DownloadSettingsContext);
 
-  const [methodsUnavailable, setMethodsUnavailable] = React.useState(false);
-
   // Download speed/time table.
   const [showDownloadTime, setShowDownloadTime] = React.useState(true);
   const [timeAtOne, setTimeAtOne] = React.useState(-1);
@@ -207,17 +205,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const dialogClose = (): void => {
     setClose();
   };
-
-  // check if every query for download type status failed
-  React.useEffect(() => {
-    if (
-      downloadTypeStatusQueries.every(
-        ({ isLoading, isError }) => !isLoading && isError
-      )
-    ) {
-      setMethodsUnavailable(true);
-    }
-  }, [downloadTypeStatusQueries]);
 
   // select the first download method available.
   React.useEffect(() => {
@@ -332,6 +319,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       transport: selectedMethod,
     });
   };
+
+  // check if every query for download type status failed
+  const methodsUnavailable = downloadTypeStatusQueries.every(
+    ({ isLoading, isError }) => !isLoading && isError
+  );
 
   const shouldShowConfirmationForm =
     props.open &&
@@ -563,16 +555,15 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   <FormHelperText id="confirm-access-method-help">
                     {(() => {
                       const method = downloadTypeInfoMap?.get(selectedMethod);
-                      if (!method)
-                        return t(
-                          'downloadConfirmDialog.access_method_helpertext'
-                        );
-
                       if (methodsUnavailable)
                         return t(
                           'downloadConfirmDialog.access_method_helpertext_all_disabled_error'
                         );
-
+                      if (!method) {
+                        return t(
+                          'downloadConfirmDialog.access_method_helpertext'
+                        );
+                      }
                       if (method.disabled)
                         return (
                           method.message ||
@@ -580,7 +571,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                             'downloadConfirmDialog.access_method_helpertext_disabled_error'
                           )
                         );
-
                       return t(
                         'downloadConfirmDialog.access_method_helpertext'
                       );
