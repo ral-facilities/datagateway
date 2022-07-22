@@ -4158,12 +4158,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:*, @types/react-dom@npm:17.0.11":
-  version: 17.0.11
-  resolution: "@types/react-dom@npm:17.0.11"
+"@types/react-dom@npm:*, @types/react-dom@npm:18.0.6":
+  version: 18.0.6
+  resolution: "@types/react-dom@npm:18.0.6"
   dependencies:
     "@types/react": "*"
-  checksum: 4d5730dffbef86c887cecad7e3cecda424ce6a64d0b5441c63b5b015d48219868660a2bb1aa15e897e565ad8867fa6b885d4358b04e1c4e589ba4c07c3fda55c
+  checksum: db571047af1a567631758700b9f7d143e566df939cfe5fbf7535347cc0c726a1cdbb5e3f8566d076e54cf708b6c1166689de194a9ba09ee35efc9e1d45911685
   languageName: node
   linkType: hard
 
@@ -7369,7 +7369,7 @@ __metadata:
     "@types/lodash.memoize": 4.1.6
     "@types/node": 17.0.17
     "@types/react": 17.0.39
-    "@types/react-dom": 17.0.11
+    "@types/react-dom": 18.0.6
     "@types/react-redux": 7.1.22
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.21.10
@@ -7445,7 +7445,7 @@ __metadata:
     "@types/lodash.chunk": 4.2.6
     "@types/node": 17.0.17
     "@types/react": 17.0.39
-    "@types/react-dom": 17.0.11
+    "@types/react-dom": 18.0.6
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.21.10
     "@typescript-eslint/eslint-plugin": 5.30.6
@@ -7509,7 +7509,7 @@ __metadata:
     "@types/jsrsasign": 9.0.3
     "@types/node": 17.0.17
     "@types/react": 17.0.39
-    "@types/react-dom": 17.0.11
+    "@types/react-dom": 18.0.6
     "@types/react-redux": 7.1.22
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.21.10
