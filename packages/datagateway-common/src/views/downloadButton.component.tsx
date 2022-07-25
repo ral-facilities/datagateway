@@ -3,11 +3,6 @@ import {
   ButtonProps,
   IconButton,
   IconButtonProps,
-  Tooltip,
-  tooltipClasses,
-  TooltipProps,
-  Typography,
-  styled,
 } from '@mui/material';
 import { GetApp } from '@mui/icons-material';
 import { downloadDatafile } from '../api/datafiles';
@@ -17,19 +12,7 @@ import { StateType } from '../state/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-
-const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  margin: 'auto',
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.black,
-    fontSize: '0.875rem',
-  },
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.common.black,
-  },
-}));
+import { StyledTooltip } from '../arrowtooltip.component';
 
 export interface DownloadButtonProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
@@ -92,30 +75,27 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
     [variant, t, entityId]
   );
   if (!entityName) return null;
-  if (entitySize <= 0) {
-    return (
-      <StyledTooltip
-        title={
-          <Typography>{t('buttons.unable_to_download_tooltip')}</Typography>
-        }
-        id={`tooltip-${entityId}`}
-        placement="left"
-        arrow
-      >
-        <span style={variant !== 'icon' ? { margin: 'auto' } : {}}>
-          <BaseDownloadButton disabled />
-        </span>
-      </StyledTooltip>
-    );
-  } else {
-    return (
-      <BaseDownloadButton
-        onClick={() => {
-          downloadData(entityType, entityId, entityName);
-        }}
-      />
-    );
-  }
+  return (
+    <StyledTooltip
+      title={
+        entitySize <= 0
+          ? t<string, string>('buttons.unable_to_download_tooltip')
+          : ''
+      }
+      id={`tooltip-${entityId}`}
+      placement="left"
+      arrow
+    >
+      <span style={variant !== 'icon' ? { margin: 'auto' } : {}}>
+        <BaseDownloadButton
+          onClick={() => {
+            downloadData(entityType, entityId, entityName);
+          }}
+          disabled={entitySize <= 0}
+        />
+      </span>
+    </StyledTooltip>
+  );
 };
 
 export default DownloadButton;

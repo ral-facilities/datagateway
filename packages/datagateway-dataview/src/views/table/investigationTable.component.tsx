@@ -54,8 +54,12 @@ const InvestigationTable = (): React.ReactElement => {
       }),
     },
   ]);
-  const { data: allIds } = useIds('investigation', undefined, selectAllSetting);
-  const { data: cartItems } = useCart();
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
+    'investigation',
+    undefined,
+    selectAllSetting
+  );
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'investigation'
   );
@@ -191,7 +195,12 @@ const InvestigationTable = (): React.ReactElement => {
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

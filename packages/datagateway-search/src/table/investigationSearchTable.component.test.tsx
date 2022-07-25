@@ -4,7 +4,6 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
   dGCommonInitialState,
-  handleICATError,
   Investigation,
   useAddToCart,
   useAllFacilityCycles,
@@ -139,6 +138,7 @@ describe('Investigation Search Table component', () => {
     ];
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useLuceneSearch as jest.Mock).mockReturnValue({
       data: [],
@@ -152,6 +152,7 @@ describe('Investigation Search Table component', () => {
     });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -192,17 +193,7 @@ describe('Investigation Search Table component', () => {
   });
 
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
-    (useCart as jest.Mock).mockClear();
-    (useLuceneSearch as jest.Mock).mockClear();
-    (useInvestigationCount as jest.Mock).mockClear();
-    (useInvestigationsInfinite as jest.Mock).mockClear();
-    (useIds as jest.Mock).mockClear();
-    (useAddToCart as jest.Mock).mockClear();
-    (useRemoveFromCart as jest.Mock).mockClear();
-    (useAllFacilityCycles as jest.Mock).mockClear();
-    (useInvestigationsDatasetCount as jest.Mock).mockClear();
-    (useInvestigationSizes as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
@@ -389,6 +380,7 @@ describe('Investigation Search Table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -422,6 +414,7 @@ describe('Investigation Search Table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();

@@ -316,14 +316,13 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                   <BlackTooltip
                     title={
                       !isHTTP
-                        ? (t(
+                        ? t<string, string>(
                             'downloadStatus.non_https_download_disabled_tooltip',
                             { transport: downloadItem.transport }
-                            // for some reason it can't infer these types on its own
-                          ) as string)
-                        : (t(
+                          )
+                        : t<string, string>(
                             'downloadStatus.https_download_disabled_tooltip'
-                          ) as string)
+                          )
                     }
                     enterDelay={500}
                     // Disable error tooltip for downloadable HTTP(S) downloads.

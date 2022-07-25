@@ -210,6 +210,8 @@
   },
   "buttons": {
     "add_to_cart": "Add to selection",
+    "cart_loading_tooltip": "Loading selection information...",
+    "cart_loading_failed_tooltip": "Selection information failed to load, please reload the page or try again later",
     "remove_from_cart": "Remove from selection",
     "download": "Download",
     "unable_to_download_tooltip": "Unable to download - this item is empty"
