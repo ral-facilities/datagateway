@@ -7,12 +7,13 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
-import { DownloadCartItem, fetchDownloadCart } from 'datagateway-common';
+import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { mockCartItems, mockedSettings } from '../testData';
 import {
   getDatafileCount,
   getSize,
@@ -43,59 +44,6 @@ jest.mock('../downloadApi', () => {
     removeFromCart: jest.fn(),
   };
 });
-
-const mockCartItems: DownloadCartItem[] = [
-  {
-    entityId: 1,
-    entityType: 'investigation',
-    id: 1,
-    name: 'INVESTIGATION 1',
-    parentEntities: [],
-  },
-  {
-    entityId: 2,
-    entityType: 'investigation',
-    id: 2,
-    name: 'INVESTIGATION 2',
-    parentEntities: [],
-  },
-  {
-    entityId: 3,
-    entityType: 'dataset',
-    id: 3,
-    name: 'DATASET 1',
-    parentEntities: [],
-  },
-  {
-    entityId: 4,
-    entityType: 'datafile',
-    id: 4,
-    name: 'DATAFILE 1',
-    parentEntities: [],
-  },
-];
-
-// Create our mocked datagateway-download settings file.
-const mockedSettings = {
-  facilityName: 'LILS',
-  apiUrl: 'https://example.com/api',
-  downloadApiUrl: 'https://example.com/downloadApi',
-  idsUrl: 'https://example.com/ids',
-  fileCountMax: 5000,
-  totalSizeMax: 1000000000000,
-  accessMethods: {
-    https: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'HTTPS',
-      description: 'Example description for HTTPS access method.',
-    },
-    globus: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'Globus',
-      description: 'Example description for Globus access method.',
-    },
-  },
-};
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -344,7 +292,7 @@ describe('Download cart table component', () => {
     expect(rows[1]).toHaveTextContent('INVESTIGATION 2');
     expect(rows[2]).toHaveTextContent('DATASET 1');
     expect(rows[3]).toHaveTextContent('DATAFILE 1');
-  });
+  }, 10000);
 
   it('should filter data when text fields are typed into', async () => {
     renderComponent();

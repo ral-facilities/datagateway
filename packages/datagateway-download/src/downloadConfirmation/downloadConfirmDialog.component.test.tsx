@@ -11,6 +11,7 @@ import {
   getDownloadTypeStatus,
   submitCart,
 } from '../downloadApi';
+import { mockedSettings } from '../testData';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
 jest.mock('../downloadApi');
@@ -23,26 +24,6 @@ jest.mock('datagateway-common', () => {
     handleICATError: jest.fn(),
   };
 });
-
-// Create our mocked datagateway-download settings file.
-const mockedSettings = {
-  facilityName: 'LILS',
-  apiUrl: 'https://example.com/api',
-  downloadApiUrl: 'https://example.com/downloadApi',
-  idsUrl: 'https://example.com/ids',
-  accessMethods: {
-    https: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'HTTPS',
-      description: 'Example description for <b>HTTPS</b> access method.',
-    },
-    globus: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'Globus',
-      description: 'Example description for Globus access method.',
-    },
-  },
-};
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({

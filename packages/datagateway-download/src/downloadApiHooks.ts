@@ -222,7 +222,6 @@ export const useSubmitCart = (
       ),
     {
       onError: (error, _, rollback) => {
-        console.log('error', error);
         handleICATError(error);
         if (rollback) rollback();
       },

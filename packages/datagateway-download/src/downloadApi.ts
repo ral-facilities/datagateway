@@ -96,9 +96,7 @@ export const submitCart: (
     )
     .then((response) => {
       // Get the downloadId that was returned from the IDS server.
-      console.log('response', response);
-      const downloadId = response.data['downloadId'];
-      return downloadId;
+      return response.data['downloadId'];
     });
 };
 

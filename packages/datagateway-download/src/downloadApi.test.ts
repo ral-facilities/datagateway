@@ -12,6 +12,7 @@ import {
   getDownloadTypeStatus,
   submitCart,
 } from './downloadApi';
+import { mockedSettings } from './testData';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -22,28 +23,6 @@ jest.mock('datagateway-common', () => {
     handleICATError: jest.fn(),
   };
 });
-
-// Create our mocked datagateway-download mockedSettings file.
-const mockedSettings = {
-  facilityName: 'LILS',
-  apiUrl: 'https://example.com/api',
-  downloadApiUrl: 'https://example.com/downloadApi',
-  idsUrl: 'https://example.com/ids',
-  fileCountMax: 5000,
-  totalSizeMax: 1000000000000,
-  accessMethods: {
-    https: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'HTTPS',
-      description: 'Example description for HTTPS access method.',
-    },
-    globus: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'Globus',
-      description: 'Example description for Globus access method.',
-    },
-  },
-};
 
 describe('Download Cart API functions test', () => {
   afterEach(() => {
@@ -56,7 +35,7 @@ describe('Download Cart API functions test', () => {
         return Promise.resolve({
           data: {
             facilityName: mockedSettings.facilityName,
-            rName: 'test user',
+            userrName: 'test user',
             cartItems: [],
             downloadId: 1,
           },

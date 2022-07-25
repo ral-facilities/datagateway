@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Download } from 'datagateway-common';
 import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import {
   adminDownloadDeleted,
@@ -20,119 +19,9 @@ import {
   within,
 } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { mockDownloadItems } from '../testData';
 
 jest.mock('../downloadApi');
-
-const downloadItems: Download[] = [
-  {
-    createdAt: '2020-02-25T15:05:29Z',
-    downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
-    email: 'test1@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-1',
-    fullName: 'Person 1',
-    id: 1,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 1000,
-    status: 'COMPLETE',
-    transport: 'https',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-26T15:05:35Z',
-    downloadItems: [{ entityId: 2, entityType: 'investigation', id: 2 }],
-    email: 'test2@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-2',
-    fullName: 'Person 2',
-    id: 2,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 2000,
-    status: 'PREPARING',
-    transport: 'globus',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-27T15:57:20Z',
-    downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
-    email: 'test3@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-3',
-    fullName: 'Person 3',
-    id: 3,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 3000,
-    status: 'RESTORING',
-    transport: 'https',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-28T15:57:28Z',
-    downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
-    email: 'test4@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-4',
-    fullName: 'Person 4',
-    id: 4,
-    isDeleted: true,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 4000,
-    status: 'EXPIRED',
-    transport: 'globus',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-03-01T15:57:28Z[UTC]',
-    downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
-    email: 'test5@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-5',
-    fullName: 'Person 5',
-    id: 5,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 5000,
-    status: 'PAUSED',
-    transport: 'globus',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-03-02T15:57:28Z[UTC]',
-    downloadItems: [{ entityId: 6, entityType: 'investigation', id: 6 }],
-    email: 'test6@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-6',
-    fullName: 'Person 6',
-    id: 6,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 6000,
-    status: 'PAUSED',
-    transport: 'globus',
-    userName: 'test user',
-  },
-];
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -164,7 +53,7 @@ describe('Admin Download Status Table', () => {
         //Only return the 5 results when initialy requesting so that only a total
         //of 5 results will be loaded
         if (queryOffset?.endsWith('LIMIT 0, 50'))
-          return Promise.resolve(downloadItems);
+          return Promise.resolve(mockDownloadItems);
         else return Promise.resolve([]);
       }
     );
@@ -193,13 +82,15 @@ describe('Admin Download Status Table', () => {
     renderComponent();
 
     const rows = await screen.findAllByText(/^\d$/);
-    expect(rows).toHaveLength(6);
+    expect(rows).toHaveLength(5);
   });
 
   it('should translate the status strings correctly', async () => {
     renderComponent();
 
-    expect(await screen.findAllByText('downloadStatus.paused')).toHaveLength(2);
+    expect(
+      await screen.findByText('downloadStatus.paused')
+    ).toBeInTheDocument();
     expect(
       await screen.findByText('downloadStatus.expired')
     ).toBeInTheDocument();
@@ -449,7 +340,7 @@ describe('Admin Download Status Table', () => {
         //of 5 results will be loaded
         if (queryOffset?.endsWith('LIMIT 0, 50'))
           return Promise.resolve(
-            downloadItems.map((d) =>
+            mockDownloadItems.map((d) =>
               d.id === 4
                 ? {
                     ...d,
@@ -464,9 +355,9 @@ describe('Admin Download Status Table', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', {
-        name: 'downloadStatus.restore {filename:test-file-4}',
-      })
+      await screen.findByLabelText(
+        'downloadStatus.restore {filename:test-file-4}'
+      )
     );
 
     expect(
@@ -488,7 +379,7 @@ describe('Admin Download Status Table', () => {
         //of 5 results will be loaded
         if (queryOffset?.endsWith('LIMIT 0, 50'))
           return Promise.resolve(
-            downloadItems.map((d) =>
+            mockDownloadItems.map((d) =>
               d.id === 3
                 ? {
                     ...d,
@@ -527,7 +418,7 @@ describe('Admin Download Status Table', () => {
         //of 5 results will be loaded
         if (queryOffset?.endsWith('LIMIT 0, 50'))
           return Promise.resolve(
-            downloadItems.map((d) =>
+            mockDownloadItems.map((d) =>
               d.id === 5
                 ? {
                     ...d,
@@ -566,7 +457,7 @@ describe('Admin Download Status Table', () => {
         //of 5 results will be loaded
         if (queryOffset?.endsWith('LIMIT 0, 50'))
           return Promise.resolve(
-            downloadItems.map((d) =>
+            mockDownloadItems.map((d) =>
               d.id === 1
                 ? {
                     ...d,
