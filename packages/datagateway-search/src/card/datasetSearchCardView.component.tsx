@@ -26,6 +26,7 @@ import {
   SearchResultSource,
   usePushDatasetFilter,
   FiltersType,
+  formatBytes,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -376,6 +377,12 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
             : t('datasets.datafile_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
         content: (dataset: SearchResultSource): string => {
+          if (
+            hierarchy === 'isis' &&
+            (dataset as SearchResultSource).fileSize
+          ) {
+            return formatBytes((dataset as SearchResultSource).fileSize);
+          }
           const index = paginatedSource?.findIndex(
             (item) => item.id === dataset.id
           );
@@ -489,6 +496,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
         </Paper>
       ) : (
         <CardView
+          entityName="Dataset"
           data={paginatedSource ?? []}
           totalDataCount={aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0}
           onPageChange={pushPage}

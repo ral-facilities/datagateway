@@ -82,6 +82,12 @@ const SortSelectComponent = (): React.ReactElement => {
           <MenuItem key="name asc" value="name asc">
             {t('sort.name_asc')}
           </MenuItem>
+          <MenuItem key="fileSize asc" value="fileSize asc">
+            {t('sort.size_asc')}
+          </MenuItem>
+          <MenuItem key="fileSize desc" value="fileSize desc">
+            {t('sort.size_desc')}
+          </MenuItem>
         </Select>
       </FormControl>
     </div>

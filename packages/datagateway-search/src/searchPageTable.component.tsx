@@ -202,6 +202,13 @@ const SearchPageTable = (
       minCount: minNumResults,
       maxCount: maxNumResults,
       restrict: restrict,
+      facets: [
+        { target: 'Datafile' },
+        {
+          target: 'DatafileParameter',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+      ],
     },
     filters
   );

@@ -3,8 +3,10 @@ import { Typography, Chip, Divider, List, ListItem } from '@material-ui/core';
 import ArrowTooltip from '../arrowtooltip.component';
 import { ParameterValueFacet } from './parameterFilterItem.component';
 import { SearchFilter } from '../app.types';
+import { DatasearchType } from '..';
 
 interface ParameterFacetListProps {
+  entityName: DatasearchType;
   parameterTypeName: string;
   facets: ParameterValueFacet[];
   changeFilter: (key: string, value: SearchFilter, remove?: boolean) => void;
@@ -16,6 +18,7 @@ export const ParameterFacetList = (
   props: ParameterFacetListProps
 ): React.ReactElement => {
   const {
+    entityName,
     parameterTypeName,
     facets,
     changeFilter,
@@ -33,8 +36,8 @@ export const ParameterFacetList = (
           disabled={facet.count === 0}
           onClick={() => {
             if (valueType === 'DATE_AND_TIME') {
-              changeFilter('investigationparameter', {
-                key: `investigationparameter.dateTimeValue.${parameterTypeName}`,
+              changeFilter(`${entityName.toLowerCase()}parameter`, {
+                key: `${entityName.toLowerCase()}parameter.dateTimeValue.${parameterTypeName}`,
                 label: facet.label,
                 filter: [
                   {
@@ -47,8 +50,8 @@ export const ParameterFacetList = (
                 ],
               });
             } else {
-              changeFilter('investigationparameter', {
-                key: `investigationparameter.stringValue.${parameterTypeName}`,
+              changeFilter(`${entityName.toLowerCase()}parameter`, {
+                key: `${entityName.toLowerCase()}parameter.stringValue.${parameterTypeName}`,
                 label: facet.label,
                 filter: [
                   { field: 'stringValue', value: facet.label },

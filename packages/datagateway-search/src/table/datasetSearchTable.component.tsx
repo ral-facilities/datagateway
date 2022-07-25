@@ -19,6 +19,7 @@ import {
   useLuceneSearchInfinite,
   SearchResponse,
   SearchResultSource,
+  formatBytes,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -283,6 +284,9 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
             : t('datasets.datafile_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string => {
+          if (hierarchy === 'isis' && cellProps.rowData.fileSize) {
+            return formatBytes(cellProps.rowData.fileSize);
+          }
           const query =
             hierarchy === 'isis'
               ? sizeQueries[cellProps.rowIndex]

@@ -17,13 +17,36 @@ import {
   useLuceneSearchInfinite,
   SearchResponse,
   SearchResultSource,
+  ArrowTooltip,
+  SearchFilter,
+  usePushDatafileFilter,
+  ParameterFilters,
+  FiltersType,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
-import { Paper, Typography } from '@material-ui/core';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Chip,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  Paper,
+  Typography,
+} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+  CVCustomFilters,
+  CVFilterInfo,
+  CVSelectedFilter,
+} from 'datagateway-common/lib/card/cardView.component';
 
 interface DatafileSearchTableProps {
   hierarchy: string;
@@ -55,6 +78,13 @@ const DatafileSearchTable = (
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
+  const [filterUpdate, setFilterUpdate] = React.useState(false);
+  const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
+  const [selectedChips, setSelectedChips] = React.useState<CVSelectedFilter[]>(
+    []
+  );
+  const pushFilter = usePushDatafileFilter();
+
   const { fetchNextPage, data, hasNextPage } = useLuceneSearchInfinite(
     'Datafile',
     {
@@ -65,6 +95,13 @@ const DatafileSearchTable = (
       minCount: minNumResults,
       maxCount: maxNumResults,
       restrict,
+      facets: [
+        { target: 'Datafile' },
+        {
+          target: 'DatafileParameter',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+      ],
     },
     filters
   );
@@ -80,35 +117,243 @@ const DatafileSearchTable = (
   } = useRemoveFromCart('datafile');
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    // TODO REVERT this, temporary workaround to test cart functions
+    return (
+      response.results?.map((result) => {
+        const source = result.source;
+        source.id = Number(source.id);
+        return source;
+      }) ?? []
+    );
   }
 
   function mapIds(response: SearchResponse): number[] {
     return response.results?.map((result) => result.id) ?? [];
   }
 
-  const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {
-    const definedData = data ?? {
-      results: [],
-    };
-    if ('pages' in definedData) {
+  const mapFacets = React.useCallback(
+    (responses: SearchResponse[]): CVCustomFilters[] => {
+      // Aggregate pages
+      const filters: { [dimension: string]: { [label: string]: number } } = {};
+      responses.forEach((response) => {
+        if (response.dimensions !== undefined) {
+          Object.entries(response.dimensions).forEach((dimension) => {
+            const dimensionKey = dimension[0];
+            const dimensionValue = dimension[1];
+            if (!Object.keys(filters).includes(dimensionKey)) {
+              filters[dimensionKey] = {};
+            }
+            Object.entries(dimensionValue).forEach((labelValue) => {
+              const label = labelValue[0];
+              const count =
+                typeof labelValue[1] === 'number'
+                  ? labelValue[1]
+                  : labelValue[1].count;
+              if (Object.keys(filters[dimensionKey]).includes(label)) {
+                filters[dimensionKey][label] += count;
+              } else {
+                filters[dimensionKey][label] = count;
+              }
+            });
+          });
+        }
+      });
+      // Convert to custom filters
+      return Object.entries(filters).map((dimension) => {
+        const dimensionKey = dimension[0].toLocaleLowerCase();
+        const dimensionValue = dimension[1];
+        return {
+          label: t(dimensionKey),
+          dataKey: dimensionKey,
+          dataKeySearch: dimensionKey
+            .replace('investigation.', '')
+            .replace('investigationparameter.', 'investigationparameter ')
+            .replace('sample.', 'sample '),
+          filterItems: Object.entries(dimensionValue).map((labelValue) => ({
+            name: labelValue[0],
+            count: labelValue[1].toString(),
+          })),
+          prefixLabel: true,
+        };
+      });
+    },
+    [t]
+  );
+
+  const {
+    aggregatedSource,
+    aggregatedIds,
+    customFilters,
+    aborted,
+  } = React.useMemo(() => {
+    if (data) {
       return {
-        aggregatedSource: definedData.pages
+        aggregatedSource: data.pages
           .map((response) => mapSource(response))
           .flat(),
-        aggregatedIds: definedData.pages
-          .map((response) => mapIds(response))
-          .flat(),
-        aborted: definedData.pages[definedData.pages.length - 1].aborted,
+        aggregatedIds: data.pages.map((response) => mapIds(response)).flat(),
+        customFilters: mapFacets(data.pages),
+        aborted: data.pages[data.pages.length - 1].aborted,
       };
     } else {
       return {
-        aggregatedSource: mapSource(definedData),
-        aggregatedIds: mapIds(definedData),
+        aggregatedSource: [],
+        aggregatedIds: [],
+        customFilters: [],
         aborted: false,
       };
     }
-  }, [data]);
+  }, [data, mapFacets]);
+
+  const parsedFilters = React.useMemo(() => {
+    const parsedFilters = {} as FiltersType;
+    Object.entries(filters).forEach((v) => {
+      parsedFilters[v[0].substring(9)] = v[1]; // 9 skips "datafile."
+    });
+    return parsedFilters;
+  }, [filters]);
+
+  // Set the filter information based on what was provided.
+  React.useEffect(() => {
+    const getSelectedFilter = (
+      filterKey: string,
+      filterValue: string
+    ): boolean => {
+      if (filterKey in parsedFilters) {
+        const v = parsedFilters[filterKey];
+        if (Array.isArray(v) && v.includes(filterValue)) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    // Get the updated info.
+    const info: CVFilterInfo = customFilters
+      ? Object.values(customFilters).reduce((o, filter) => {
+          const data: CVFilterInfo = {
+            ...o,
+            [filter.dataKey]: {
+              label: filter.label,
+              items: filter.filterItems.reduce(
+                (o, item) => ({
+                  ...o,
+                  [item.name]: {
+                    selected: getSelectedFilter(filter.dataKey, item.name),
+                    count: item.count,
+                  },
+                }),
+                {}
+              ),
+              hasSelectedItems: false,
+            },
+          };
+
+          // Update the selected count for each filter.
+          const selectedItems = Object.values(data[filter.dataKey].items).find(
+            (v) => v.selected === true
+          );
+          if (selectedItems) {
+            data[filter.dataKey].hasSelectedItems = true;
+          }
+          return data;
+        }, {})
+      : {};
+
+    setFiltersInfo(info);
+
+    const selectedChips: CVSelectedFilter[] = [];
+    Object.entries(parsedFilters).forEach(([key, filter]) => {
+      if (filter instanceof Array) {
+        filter.forEach((filterEntry) => {
+          if (typeof filterEntry === 'string') {
+            if (info[key]) {
+              selectedChips.push({
+                filterKey: key,
+                label: info[key].label,
+                items: Object.entries(info[key].items)
+                  .filter(([k, v]) => k === filterEntry && v.selected)
+                  .map(([i]) => i),
+              });
+            }
+          } else if ('filter' in filterEntry) {
+            selectedChips.push({
+              filterKey: key,
+              label: filterEntry.key.substring(
+                filterEntry.key.lastIndexOf('.') + 1
+              ),
+              items: [filterEntry.label],
+            });
+          }
+        });
+      }
+    });
+
+    setSelectedChips(selectedChips);
+  }, [customFilters, parsedFilters]);
+
+  const parameterNames = React.useMemo(() => {
+    const parameterNames: string[] = [];
+    Object.entries(filtersInfo).forEach(([filterKey, info]) => {
+      if (filterKey.includes('parameter')) {
+        Object.keys(info.items).forEach((label) => {
+          parameterNames.push(label);
+        });
+      }
+    });
+    return parameterNames;
+  }, [filtersInfo]);
+
+  const changeFilter = (
+    filterKey: string,
+    filterValue: SearchFilter,
+    remove?: boolean
+  ): void => {
+    const getNestedIndex = (updateItems: SearchFilter[]): number => {
+      let i = 0;
+      for (const updateItem of updateItems) {
+        if (
+          typeof updateItem !== 'string' &&
+          'label' in updateItem &&
+          updateItem.label === filterValue
+        ) {
+          return i;
+        }
+        i++;
+      }
+      return -1;
+    };
+
+    // Add or remove the filter value in the state.
+    let updateItems: SearchFilter[] = [];
+    if (filterKey in parsedFilters) {
+      const filterItems = parsedFilters[filterKey];
+      if (Array.isArray(filterItems)) {
+        updateItems = filterItems;
+      }
+    }
+
+    // Add or remove the filter value.
+    if (!remove && !updateItems.includes(filterValue)) {
+      // Add a filter item.
+      updateItems.push(filterValue);
+      pushFilter(filterKey, updateItems);
+    } else if (updateItems.length > 0) {
+      // Set to null if this is the last item in the array.
+      // Remove the item from the updated items array.
+      let i = updateItems.indexOf(filterValue);
+      i = i === -1 ? getNestedIndex(updateItems) : i;
+      if (i > -1) {
+        // Remove the filter value from the update items.
+        updateItems.splice(i, 1);
+        if (updateItems.length > 0) {
+          pushFilter(filterKey, updateItems);
+        } else {
+          pushFilter(filterKey, null);
+        }
+      }
+    }
+  };
 
   const handleSort = useSort();
 
@@ -286,7 +531,7 @@ const DatafileSearchTable = (
   else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
 
   return (
-    <div>
+    <div style={{ height: '100%' }}>
       {aborted ? (
         <Paper>
           <Typography align="center" variant="h6" component="h6">
@@ -294,22 +539,153 @@ const DatafileSearchTable = (
           </Typography>
         </Paper>
       ) : (
-        <Table
-          loading={addToCartLoading || removeFromCartLoading}
-          data={aggregatedSource}
-          loadMoreRows={loadMoreRows}
-          totalRowCount={aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0}
-          sort={{}}
-          onSort={handleSort}
-          selectedRows={selectedRows}
-          disableSelectAll={!selectAllSetting}
-          allIds={aggregatedIds}
-          onCheck={addToCart}
-          onUncheck={removeFromCart}
-          detailsPanel={detailsPanel}
-          columns={columns}
-          shortHeader={true}
-        />
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          style={{ height: '100%' }}
+        >
+          {/* Filtering options */}
+          {customFilters && (filterUpdate || aggregatedSource?.length > 0) && (
+            <Grid
+              item
+              xs={12}
+              md={3}
+              style={{ height: '100%', overflowY: 'auto' }}
+            >
+              <Paper>
+                <Box p={2}>
+                  <Typography variant="h5">Filter By</Typography>
+                </Box>
+
+                {/* Show the specific options available to filter by */}
+                <Box>
+                  {filtersInfo &&
+                    Object.entries(filtersInfo).map(
+                      ([filterKey, filter], filterIndex) => {
+                        return (
+                          <Accordion
+                            key={filterIndex}
+                            defaultExpanded={filter.hasSelectedItems}
+                          >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                              <Typography>{filter.label}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <div style={{ width: '100%' }}>
+                                <List
+                                  component="nav"
+                                  aria-label="filter-by-list"
+                                >
+                                  {Object.entries(filter.items).map(
+                                    ([name, data], valueIndex) => (
+                                      <ListItem
+                                        style={{ display: 'flex' }}
+                                        key={valueIndex}
+                                        button
+                                        disabled={data.selected}
+                                        onClick={() => {
+                                          changeFilter(filterKey, name);
+                                          setFilterUpdate(true);
+                                        }}
+                                        aria-label={`Filter by ${filter.label} ${name}`}
+                                      >
+                                        <div style={{ flex: 1 }}>
+                                          <Chip
+                                            label={
+                                              <ArrowTooltip title={name}>
+                                                <Typography>{name}</Typography>
+                                              </ArrowTooltip>
+                                            }
+                                          />
+                                        </div>
+                                        {data.count && (
+                                          <Divider
+                                            orientation="vertical"
+                                            flexItem
+                                          />
+                                        )}
+                                        {data.count && (
+                                          <Typography
+                                            style={{ paddingLeft: '5%' }}
+                                          >
+                                            {data.count}
+                                          </Typography>
+                                        )}
+                                      </ListItem>
+                                    )
+                                  )}
+                                </List>
+                              </div>
+                            </AccordionDetails>
+                          </Accordion>
+                        );
+                      }
+                    )}
+                </Box>
+                {aggregatedIds && (
+                  <Box p={2}>
+                    <ParameterFilters
+                      entityName="Datafile"
+                      parameterNames={parameterNames}
+                      allIds={aggregatedIds}
+                      changeFilter={changeFilter}
+                      setFilterUpdate={setFilterUpdate}
+                    />
+                  </Box>
+                )}
+              </Paper>
+            </Grid>
+          )}
+          <Grid item xs={12} md={9}>
+            {selectedChips.length > 0 &&
+              (filterUpdate || aggregatedSource?.length > 0) && (
+                <ul
+                  style={{
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap',
+                    listStyle: 'none',
+                    margin: 8,
+                  }}
+                >
+                  {selectedChips.map((filter, filterIndex) => (
+                    <li key={filterIndex}>
+                      {filter.items.map((item, itemIndex) => (
+                        <Chip
+                          key={itemIndex}
+                          style={{ margin: 4 }}
+                          label={`${filter.label} - ${item}`}
+                          onDelete={() => {
+                            changeFilter(filter.filterKey, item, true);
+                            setFilterUpdate(true);
+                          }}
+                        />
+                      ))}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            <Table
+              loading={addToCartLoading || removeFromCartLoading}
+              data={aggregatedSource}
+              loadMoreRows={loadMoreRows}
+              totalRowCount={
+                aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+              }
+              sort={{}}
+              onSort={handleSort}
+              selectedRows={selectedRows}
+              disableSelectAll={!selectAllSetting}
+              allIds={aggregatedIds}
+              onCheck={addToCart}
+              onUncheck={removeFromCart}
+              detailsPanel={detailsPanel}
+              columns={columns}
+              shortHeader={true}
+            />
+          </Grid>
+        </Grid>
       )}
     </div>
   );

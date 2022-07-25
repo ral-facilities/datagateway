@@ -170,6 +170,11 @@
       "name": "Parameter Name"
     }
   },
+  "datafileparameter": {
+    "type": {
+      "name": "Parameter Name"
+    }
+  },
   "sample": {
     "type": {
       "name": "Sample Name"
@@ -188,7 +193,9 @@
     "_score": "Score",
     "date_desc": "Date (Newest)",
     "date_asc": "Date (Oldest)",
-    "name_asc": "Name"
+    "name_asc": "Name",
+    "size_desc": "Largest",
+    "size_asc": "Smallest"
   },
   "filter": {
     "parameter": {

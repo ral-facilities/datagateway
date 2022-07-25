@@ -5,8 +5,10 @@ import ParameterFilterItem, {
   ParameterValueFilter,
 } from './parameterFilterItem.component';
 import { SearchFilter } from '../app.types';
+import { DatasearchType } from '../api';
 
 interface ParameterFiltersProps {
+  entityName: DatasearchType;
   parameterNames: string[];
   allIds: number[];
   changeFilter: (key: string, value: SearchFilter, remove?: boolean) => void;
@@ -14,7 +16,13 @@ interface ParameterFiltersProps {
 }
 
 const ParameterFilters = (props: ParameterFiltersProps): React.ReactElement => {
-  const { parameterNames, allIds, changeFilter, setFilterUpdate } = props;
+  const {
+    entityName,
+    parameterNames,
+    allIds,
+    changeFilter,
+    setFilterUpdate,
+  } = props;
 
   const [parameterFilters, setParameterFilters] = React.useState<
     ParameterValueFilter[]
@@ -26,6 +34,7 @@ const ParameterFilters = (props: ParameterFiltersProps): React.ReactElement => {
         {parameterFilters.map((filter, index) => (
           <ParameterFilterItem
             key={index}
+            entityName={entityName}
             parameterNames={parameterNames}
             filter={filter}
             allIds={allIds}

@@ -138,7 +138,8 @@ const DatafileDetailsPanel = (
                             {parameter.type.name}
                           </Typography>
                           <Typography>
-                            <b>{parameter.stringValue}</b>
+                            <b>{parameter.stringValue}</b>{' '}
+                            {parameter.type.units}
                           </Typography>
                         </Grid>
                       );
@@ -149,7 +150,8 @@ const DatafileDetailsPanel = (
                             {parameter.type.name}
                           </Typography>
                           <Typography>
-                            <b>{parameter.numericValue}</b>
+                            <b>{parameter.numericValue}</b>{' '}
+                            {parameter.type.units}
                           </Typography>
                         </Grid>
                       );

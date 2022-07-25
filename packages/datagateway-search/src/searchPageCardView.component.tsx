@@ -211,6 +211,13 @@ const SearchPageCardView = (
       minCount: minNumResults,
       maxCount: maxNumResults,
       restrict,
+      facets: [
+        { target: 'Datafile' },
+        {
+          target: 'DatafileParameter',
+          dimensions: [{ dimension: 'type.name' }],
+        },
+      ],
     },
     filters
   );

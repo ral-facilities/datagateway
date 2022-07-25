@@ -17,7 +17,7 @@ import LooksOneIcon from '@material-ui/icons/LooksOne';
 import { useTranslation } from 'react-i18next';
 import { ParameterFacetList } from './parameterFacetList';
 import { ParameterNumericRange } from './parameterNumericRange.component';
-import { FacetRequest, useLuceneFacet } from '../api';
+import { DatasearchType, FacetRequest, useLuceneFacet } from '../api';
 import { FiltersType, SearchFilter } from '../app.types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -69,6 +69,7 @@ export interface ParameterValueFilter {
 }
 
 interface ParameterFilterItemProps {
+  entityName: DatasearchType;
   parameterNames: string[];
   filter: ParameterValueFilter;
   allIds: number[];
@@ -82,6 +83,7 @@ const ParameterFilterItem = (
   const [t] = useTranslation();
   const classes = useStyles();
   const {
+    entityName,
     parameterNames,
     filter,
     allIds,
@@ -97,7 +99,7 @@ const ParameterFilterItem = (
     const newName = event.target.value as string;
     filter.name = newName;
     setFilters({
-      'investigation.id': allIds,
+      [`${entityName.toLowerCase()}.id`]: allIds,
       'type.name': newName,
     } as FiltersType);
   };
@@ -138,7 +140,7 @@ const ParameterFilterItem = (
         ];
         setFacetRequests([
           {
-            target: 'InvestigationParameter',
+            target: `${entityName}Parameter`,
             dimensions: [{ dimension: 'dateTimeValue', ranges: ranges }],
           },
         ]);
@@ -146,7 +148,7 @@ const ParameterFilterItem = (
       case 'STRING':
         setFacetRequests([
           {
-            target: 'InvestigationParameter',
+            target: `${entityName}Parameter`,
             dimensions: [{ dimension: 'stringValue' }],
           },
         ]);
@@ -156,11 +158,7 @@ const ParameterFilterItem = (
     }
   };
 
-  const { data, refetch } = useLuceneFacet(
-    'Investigation',
-    facetRequests,
-    filters
-  );
+  const { data, refetch } = useLuceneFacet(entityName, facetRequests, filters);
 
   React.useEffect(() => {
     if (facetRequests.length > 0 && Object.keys(filters).length > 0) {
@@ -248,6 +246,7 @@ const ParameterFilterItem = (
         filter.name &&
         facets ? (
           <ParameterFacetList
+            entityName={entityName}
             parameterTypeName={filter.name}
             facets={facets}
             changeFilter={changeFilter}
@@ -258,6 +257,7 @@ const ParameterFilterItem = (
           filter.valueType === 'NUMERIC' &&
           filter.name && (
             <ParameterNumericRange
+              entityName={entityName}
               parameterTypeName={filter.name}
               changeFilter={changeFilter}
               setFilterUpdate={setFilterUpdate}

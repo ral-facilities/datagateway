@@ -254,6 +254,7 @@ export interface SearchResultSource {
   summary?: string;
   location?: string;
   investigationinstrument?: SearchInstrumentSource[];
+  fileSize?: number;
   'dataset.id'?: number;
   'dataset.name'?: string;
   'investigation.id'?: number;

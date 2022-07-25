@@ -29,6 +29,7 @@ import {
   SearchResponse,
   usePushInvestigationFilter,
   FiltersType,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -388,6 +389,12 @@ const InvestigationCardView = (
             : t('investigations.dataset_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datasetCount',
         content: (investigation: Investigation): string => {
+          if (
+            hierarchy === 'isis' &&
+            (investigation as SearchResultSource).fileSize
+          ) {
+            return formatBytes((investigation as SearchResultSource).fileSize);
+          }
           const index = paginatedSource?.findIndex(
             (item) => item.id === investigation.id
           );
@@ -504,6 +511,7 @@ const InvestigationCardView = (
         </Paper>
       ) : (
         <CardView
+          entityName="Investigation"
           data={paginatedSource ?? []}
           totalDataCount={aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0}
           onPageChange={pushPage}

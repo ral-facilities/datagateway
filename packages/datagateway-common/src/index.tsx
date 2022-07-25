@@ -29,8 +29,13 @@ export { default as ExpandCellComponent } from './table/cellRenderers/expandCell
 export * from './table/cellRenderers/cellContentRenderers';
 
 export { default as CardView } from './card/cardView.component';
-export type { CardViewDetails } from './card/cardView.component';
+export type {
+  CardViewDetails,
+  CVFilterInfo,
+  CVSelectedFilter,
+} from './card/cardView.component';
 export { default as AdvancedFilter } from './card/advancedFilter.component';
+export { default as ParameterFilters } from './card/parameterFilters.component';
 export type { ParameterValueFilter } from './card/parameterFilterItem.component';
 
 export * from './state/actions/index';

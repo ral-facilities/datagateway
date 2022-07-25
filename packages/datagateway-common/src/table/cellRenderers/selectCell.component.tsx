@@ -68,7 +68,9 @@ const SelectCell = React.memo(
                 onCheck(shiftClickedRows);
               }
             } else {
-              const id = rowData.id;
+              // The id that comes from Lucene is a string
+              let id = rowData.id;
+              if (typeof id !== 'number') id = Number(id);
               if (selectedRows.includes(id)) {
                 onUncheck([id]);
               } else {

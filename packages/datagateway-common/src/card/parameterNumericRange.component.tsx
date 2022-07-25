@@ -2,8 +2,10 @@ import React from 'react';
 import { Grid, TextField, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { SearchFilter } from '../app.types';
+import { DatasearchType } from '..';
 
 interface ParameterNumericRangeProps {
+  entityName: DatasearchType;
   parameterTypeName: string;
   changeFilter: (key: string, value: SearchFilter, remove?: boolean) => void;
   setFilterUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,7 +16,12 @@ export const ParameterNumericRange = (
 ): React.ReactElement => {
   const [t] = useTranslation();
 
-  const { parameterTypeName, changeFilter, setFilterUpdate } = props;
+  const {
+    entityName,
+    parameterTypeName,
+    changeFilter,
+    setFilterUpdate,
+  } = props;
 
   const [units, setUnits] = React.useState('');
   const [min, setMin] = React.useState('');
@@ -29,19 +36,27 @@ export const ParameterNumericRange = (
     setMax(event.target.value);
   };
   const applyRange = (): void => {
-    changeFilter('investigationparameter', {
-      key: `investigationparameter.numericValue.${parameterTypeName}`,
-      label: `${min} to ${max} (${units})`,
-      filter: [
-        {
-          field: 'numericValue',
-          from: Number(min),
-          to: Number(max),
-          key: `${min} to ${max} (${units})`,
-          units: units,
-        },
-        { field: 'type.name', value: parameterTypeName },
-      ],
+    const label =
+      units === '' ? `${min} to ${max}` : `${min} to ${max} (${units})`;
+    const filter =
+      units === ''
+        ? {
+            field: 'numericValue',
+            from: Number(min),
+            to: Number(max),
+            key: label,
+          }
+        : {
+            field: 'numericValue',
+            from: Number(min),
+            to: Number(max),
+            key: label,
+            units: units,
+          };
+    changeFilter(`${entityName.toLowerCase()}parameter`, {
+      key: `${entityName.toLowerCase()}parameter.numericValue.${parameterTypeName}`,
+      label: label,
+      filter: [filter, { field: 'type.name', value: parameterTypeName }],
     });
     setFilterUpdate(true);
   };
@@ -90,7 +105,7 @@ export const ParameterNumericRange = (
         <Grid item>
           <Button
             variant="outlined"
-            disabled={units === '' || min === '' || max === ''}
+            disabled={min === '' || max === ''}
             onClick={applyRange}
           >
             {t('filter.parameter.apply')}

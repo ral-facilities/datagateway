@@ -35,6 +35,7 @@ import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
 import EntityCard, { EntityImageDetails } from './entityCard.component';
 import ParameterFilters from './parameterFilters.component';
+import { DatasearchType } from '../api';
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -129,9 +130,10 @@ export interface CardViewProps {
 
   paginationPosition?: CVPaginationPosition;
   allIds?: number[];
+  entityName?: DatasearchType;
 }
 
-interface CVFilterInfo {
+export interface CVFilterInfo {
   [filterKey: string]: {
     label: string;
     items: {
@@ -144,7 +146,7 @@ interface CVFilterInfo {
   };
 }
 
-interface CVSelectedFilter {
+export interface CVSelectedFilter {
   filterKey: string;
   label: string;
   items: string[];
@@ -188,6 +190,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
   // Props.
   const {
+    entityName,
     data,
     totalDataCount,
     customFilters,
@@ -755,9 +758,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           }
                         )}
                     </Box>
-                    {allIds && (
+                    {allIds && entityName && (
                       <Box p={2}>
                         <ParameterFilters
+                          entityName={entityName}
                           parameterNames={parameterNames}
                           allIds={allIds}
                           changeFilter={changeFilter}
