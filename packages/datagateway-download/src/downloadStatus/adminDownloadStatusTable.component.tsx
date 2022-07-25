@@ -1,4 +1,10 @@
-import React, { useCallback } from 'react';
+import {
+  PauseCircleFilled,
+  PlayCircleFilled,
+  Refresh,
+  RemoveCircle,
+  Restore,
+} from '@mui/icons-material';
 import {
   CircularProgress,
   Grid,
@@ -21,25 +27,20 @@ import {
   TextColumnFilter,
   TextFilter,
 } from 'datagateway-common';
+import { format } from 'date-fns';
+import { toDate } from 'date-fns-tz';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import {
-  PauseCircleFilled,
-  PlayCircleFilled,
-  Refresh,
-  RemoveCircle,
-  Restore,
-} from '@mui/icons-material';
-import BlackTooltip from '../tooltip.component';
-import { toDate } from 'date-fns-tz';
-import { format } from 'date-fns';
+import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useAdminDownloadDeleted,
   useAdminDownloads,
   useAdminUpdateDownloadStatus,
 } from '../downloadApiHooks';
-import { DownloadSettingsContext } from '../ConfigProvider';
+import BlackTooltip from '../tooltip.component';
+import DownloadProgressIndicator from './downloadProgressIndicator.component';
 import useDownloadFormatter from './hooks/useDownloadFormatter';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -312,6 +313,11 @@ const AdminDownloadStatusTable: React.FC = () => {
                       label: t('downloadStatus.status'),
                       dataKey: 'status',
                       filterComponent: textFilter,
+                    },
+                    {
+                      label: t('downloadStatus.progress'),
+                      dataKey: 'progress',
+                      cellContentRenderer: DownloadProgressIndicator,
                     },
                     {
                       label: t('downloadStatus.size'),

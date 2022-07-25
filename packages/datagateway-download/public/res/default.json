@@ -34,7 +34,8 @@
     "expired": "Expired",
     "paused": "Paused",
     "preparing": "Preparing",
-    "restoring": "Restoring from tape"
+    "restoring": "Restoring from tape",
+    "progress": "Progress"
   },
   "downloadConfirmDialog": {
     "close_arialabel": "Close download confirmation dialog",

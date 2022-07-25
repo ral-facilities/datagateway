@@ -1,4 +1,3 @@
-import React from 'react';
 import { AxiosError } from 'axios';
 import type {
   Download,
@@ -13,7 +12,9 @@ import {
   NotificationType,
   retryICATErrors,
 } from 'datagateway-common';
-import { DownloadSettingsContext } from './ConfigProvider';
+import pLimit from 'p-limit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   InfiniteData,
   useInfiniteQuery,
@@ -27,8 +28,12 @@ import {
   UseQueryOptions,
   UseQueryResult,
 } from 'react-query';
-import pLimit from 'p-limit';
-import type { DownloadTypeStatus, SubmitCartZipType } from './downloadApi';
+import { DownloadSettingsContext } from './ConfigProvider';
+import type {
+  DownloadProgress,
+  DownloadTypeStatus,
+  SubmitCartZipType,
+} from './downloadApi';
 import {
   adminDownloadDeleted,
   adminDownloadStatus,
@@ -39,13 +44,13 @@ import {
   getDownload,
   getDownloadTypeStatus,
   getIsTwoLevel,
+  getPercentageComplete,
   getSize,
   removeAllDownloadCartItems,
   removeFromCart,
   submitCart,
 } from './downloadApi';
 import useDownloadFormatter from './downloadStatus/hooks/useDownloadFormatter';
-import { useTranslation } from 'react-i18next';
 
 /**
  * An enumeration of react query keys.
@@ -65,6 +70,11 @@ export enum QueryKey {
    * Key for querying the status of a particular download type
    */
   DOWNLOAD_TYPE_STATUS = 'download-type-status',
+
+  /**
+   * Key for querying the progress of a download.
+   */
+  DOWNLOAD_PROGRESS = 'download-progress',
 
   /**
    * Key for querying list of admin downloads
@@ -344,7 +354,7 @@ export interface UseDownloadParams {
  * })
  * ```
  */
-export const useDownload = <T>({
+export const useDownload = <T = Download>({
   id,
   ...queryOptions
 }: UseDownloadParams &
@@ -755,6 +765,38 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
       onSettled: () => {
         queryClient.invalidateQueries(QueryKey.ADMIN_DOWNLOADS);
       },
+    }
+  );
+};
+
+/**
+ * Queries the progress of a {@link Download}.
+ * @param prepareId The prepare ID of the {@link Download}.
+ * @param queryOptions Optional `useQuery` option override.
+ */
+export const useDownloadPercentageComplete = <T = DownloadProgress>({
+  prepareId,
+  ...queryOptions
+}: { prepareId: string } & UseQueryOptions<
+  DownloadProgress,
+  AxiosError,
+  T,
+  string[]
+>): UseQueryResult<T, AxiosError> => {
+  const { idsUrl } = React.useContext(DownloadSettingsContext);
+
+  return useQuery(
+    [QueryKey.DOWNLOAD_PROGRESS, prepareId],
+    () =>
+      getPercentageComplete({
+        prepareId,
+        settings: { idsUrl },
+      }),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      ...queryOptions,
     }
   );
 };

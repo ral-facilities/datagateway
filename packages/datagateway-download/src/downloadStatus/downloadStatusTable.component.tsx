@@ -19,6 +19,7 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
+import DownloadProgressIndicator from './downloadProgressIndicator.component';
 import { useDownloadDeleted, useDownloads } from '../downloadApiHooks';
 
 interface DownloadStatusTableProps {
@@ -233,6 +234,12 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 label: t('downloadStatus.status'),
                 dataKey: 'status',
                 filterComponent: availabilityFilter,
+              },
+              {
+                label: t('downloadStatus.progress'),
+                dataKey: 'progress',
+                disableSort: true,
+                cellContentRenderer: DownloadProgressIndicator,
               },
               {
                 label: t('downloadStatus.createdAt'),
