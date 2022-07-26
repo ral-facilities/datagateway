@@ -69,13 +69,13 @@ const ISISInvestigationsTable = (
     parseInt(instrumentChildId),
     studyHierarchy
   );
-  const { data: allIds } = useISISInvestigationIds(
+  const { data: allIds, isLoading: allIdsLoading } = useISISInvestigationIds(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
     studyHierarchy,
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'investigation'
   );
@@ -225,7 +225,12 @@ const ISISInvestigationsTable = (
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

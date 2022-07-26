@@ -6,9 +6,11 @@ import {
   CheckBox as CheckBoxIcon,
 } from '@mui/icons-material';
 import { Entity, ICATEntity } from '../../app.types';
+import { useTranslation } from 'react-i18next';
+import { StyledTooltip } from '../../arrowtooltip.component';
 
 type SelectCellProps = TableCellProps & {
-  selectedRows: number[];
+  selectedRows: number[] | undefined;
   data: Entity[];
   sx: SxProps;
   onCheck: (selectedIndexes: number[]) => void;
@@ -32,6 +34,7 @@ const SelectCell = React.memo(
       rowIndex,
       loading,
     } = props;
+    const { t } = useTranslation();
 
     return (
       <TableCell
@@ -41,43 +44,58 @@ const SelectCell = React.memo(
         sx={sx}
         variant="body"
       >
-        <Checkbox
-          className="tour-dataview-add-to-cart"
-          checked={selectedRows.includes(rowData.id)}
-          inputProps={{
-            'aria-label': `select row ${rowIndex}`,
-          }}
-          disabled={loading}
-          icon={<CheckBoxOutlineBlank fontSize="small" />}
-          checkedIcon={<CheckBoxIcon fontSize="small" />}
-          size="small"
-          onClick={(event) => {
-            if (event.shiftKey) {
-              const shiftClickedRows = Array(
-                Math.abs(rowIndex - lastChecked) + 1
-              )
-                .fill(Math.min(rowIndex, lastChecked))
-                .map((value, index) => {
-                  const icatEntity = data[value + index] as ICATEntity;
-                  return icatEntity.id;
-                });
+        <StyledTooltip
+          title={
+            !loading && typeof selectedRows === 'undefined'
+              ? t<string, string>('buttons.cart_loading_failed_tooltip')
+              : loading
+              ? t<string, string>('buttons.cart_loading_tooltip')
+              : ''
+          }
+          placement="right"
+        >
+          <span>
+            <Checkbox
+              className="tour-dataview-add-to-cart"
+              // have to inherit as the padding="checkbox" is on the span
+              style={{ padding: 'inherit' }}
+              checked={selectedRows?.includes(rowData.id)}
+              inputProps={{
+                'aria-label': `select row ${rowIndex}`,
+              }}
+              disabled={loading || typeof selectedRows === 'undefined'}
+              icon={<CheckBoxOutlineBlank fontSize="small" />}
+              checkedIcon={<CheckBoxIcon fontSize="small" />}
+              size="small"
+              onClick={(event) => {
+                if (event.shiftKey) {
+                  const shiftClickedRows = Array(
+                    Math.abs(rowIndex - lastChecked) + 1
+                  )
+                    .fill(Math.min(rowIndex, lastChecked))
+                    .map((value, index) => {
+                      const icatEntity = data[value + index] as ICATEntity;
+                      return icatEntity.id;
+                    });
 
-              if (selectedRows.includes(rowData.id)) {
-                onUncheck(shiftClickedRows);
-              } else {
-                onCheck(shiftClickedRows);
-              }
-            } else {
-              const id = rowData.id;
-              if (selectedRows.includes(id)) {
-                onUncheck([id]);
-              } else {
-                onCheck([id]);
-              }
-            }
-            setLastChecked(rowIndex);
-          }}
-        />
+                  if (selectedRows?.includes(rowData.id)) {
+                    onUncheck(shiftClickedRows);
+                  } else {
+                    onCheck(shiftClickedRows);
+                  }
+                } else {
+                  const id = rowData.id;
+                  if (selectedRows?.includes(id)) {
+                    onUncheck([id]);
+                  } else {
+                    onCheck([id]);
+                  }
+                }
+                setLastChecked(rowIndex);
+              }}
+            />
+          </span>
+        </StyledTooltip>
       </TableCell>
     );
   }

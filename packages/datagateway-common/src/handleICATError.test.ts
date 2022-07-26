@@ -82,6 +82,28 @@ describe('handleICATError', () => {
     });
   });
 
+  it('logs network error message if there is no response', () => {
+    error = {
+      isAxiosError: true,
+      config: {},
+      name: 'Test error name',
+      message: 'Network Error',
+      toJSON: jest.fn(),
+    };
+
+    handleICATError(error);
+
+    expect(log.error).toHaveBeenCalledWith('Network Error');
+    expect(events.length).toBe(1);
+    expect(events[0].detail).toEqual({
+      type: NotificationType,
+      payload: {
+        severity: 'error',
+        message: 'Network Error, please reload the page or try again later',
+      },
+    });
+  });
+
   it('just logs an error if broadcast is false', () => {
     handleICATError(error, false);
 

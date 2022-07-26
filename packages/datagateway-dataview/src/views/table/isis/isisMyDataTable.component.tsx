@@ -75,7 +75,7 @@ const ISISMyDataTable = (): React.ReactElement => {
       ]),
     },
   ]);
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'investigation',
     [
       {
@@ -87,7 +87,7 @@ const ISISMyDataTable = (): React.ReactElement => {
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'investigation'
   );
@@ -273,7 +273,12 @@ const ISISMyDataTable = (): React.ReactElement => {
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

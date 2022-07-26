@@ -22,13 +22,18 @@ const handleICATError = (error: AxiosError, broadcast = true): void => {
         message.toUpperCase().includes('SESSION')
       )
     ) {
+      let broadcastMessage = message;
+      // no reponse so it's a network error
+      if (!error.response)
+        broadcastMessage =
+          'Network Error, please reload the page or try again later';
       document.dispatchEvent(
         new CustomEvent(MicroFrontendId, {
           detail: {
             type: NotificationType,
             payload: {
               severity: 'error',
-              message: message,
+              message: broadcastMessage,
             },
           },
         })

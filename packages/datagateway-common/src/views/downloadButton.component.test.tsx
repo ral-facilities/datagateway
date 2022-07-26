@@ -185,7 +185,7 @@ describe('Generic download button', () => {
     };
     let wrapper = createWrapper(props);
 
-    expect(wrapper.exists('#tooltip-1'));
+    expect(wrapper.find('#tooltip-1').first().prop('title')).not.toEqual('');
     wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).not.toHaveBeenCalled();
 
@@ -196,7 +196,7 @@ describe('Generic download button', () => {
       variant: 'icon',
     });
 
-    expect(wrapper.exists('#tooltip-1'));
+    expect(wrapper.find('#tooltip-1').first().prop('title')).not.toEqual('');
     wrapper.find('#download-btn-1').last().simulate('click');
     expect(downloadDatafile).not.toHaveBeenCalled();
   });

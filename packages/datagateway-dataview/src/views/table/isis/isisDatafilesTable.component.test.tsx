@@ -83,6 +83,7 @@ describe('ISIS datafiles table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useDatafileCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -93,6 +94,7 @@ describe('ISIS datafiles table component', () => {
     });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -276,6 +278,7 @@ describe('ISIS datafiles table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -309,6 +312,7 @@ describe('ISIS datafiles table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();
