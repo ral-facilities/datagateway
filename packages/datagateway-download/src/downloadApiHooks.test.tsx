@@ -17,7 +17,7 @@ import {
   useAdminUpdateDownloadStatus,
   useCart,
   useDatafileCounts,
-  useDownloadDeleted,
+  useDownloadOrRestoreDownload,
   useDownloads,
   useDownloadTypeStatuses,
   useIsTwoLevel,
@@ -589,7 +589,7 @@ describe('Download Cart API react-query hooks test', () => {
     });
   });
 
-  describe('useDownloadDeleted', () => {
+  describe('useDownloadOrRestoreDownload', () => {
     it('should delete download with given id and update the download list upon success', async () => {
       axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
@@ -597,7 +597,7 @@ describe('Download Cart API react-query hooks test', () => {
       const { result, waitFor } = renderHook(
         () => ({
           useDownloads: useDownloads(),
-          useDownloadDeleted: useDownloadDeleted(),
+          useDownloadOrRestoreDownload: useDownloadOrRestoreDownload(),
         }),
         { wrapper: createReactQueryWrapper() }
       );
@@ -605,12 +605,14 @@ describe('Download Cart API react-query hooks test', () => {
       // wait for useDownloads to finish loading mock download items
       await waitFor(() => result.current.useDownloads.isSuccess);
       // delete the mock item
-      result.current.useDownloadDeleted.mutate({
+      result.current.useDownloadOrRestoreDownload.mutate({
         downloadId: 1,
         deleted: true,
       });
       // wait for mutation to complete
-      await waitFor(() => result.current.useDownloadDeleted.isSuccess);
+      await waitFor(
+        () => result.current.useDownloadOrRestoreDownload.isSuccess
+      );
 
       expect(result.current.useDownloads.data).toHaveLength(
         mockDownloadItems.length - 1
@@ -682,7 +684,7 @@ describe('Download Cart API react-query hooks test', () => {
       const { result, waitFor } = renderHook(
         () => ({
           useDownloads: useDownloads(),
-          useDownloadDeleted: useDownloadDeleted(),
+          useDownloadOrRestoreDownload: useDownloadOrRestoreDownload(),
         }),
         {
           wrapper: createReactQueryWrapper(),
@@ -690,11 +692,13 @@ describe('Download Cart API react-query hooks test', () => {
       );
 
       await waitFor(() => result.current.useDownloads.isSuccess);
-      result.current.useDownloadDeleted.mutate({
+      result.current.useDownloadOrRestoreDownload.mutate({
         downloadId: 124,
         deleted: false,
       });
-      await waitFor(() => result.current.useDownloadDeleted.isSuccess);
+      await waitFor(
+        () => result.current.useDownloadOrRestoreDownload.isSuccess
+      );
 
       const newList = result.current.useDownloads.data;
 
@@ -709,9 +713,12 @@ describe('Download Cart API react-query hooks test', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useDownloadDeleted(), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () => useDownloadOrRestoreDownload(),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       result.current.mutate({
         downloadId: 123,

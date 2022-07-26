@@ -409,7 +409,7 @@ export interface UseDownloadDeletedParams {
 /**
  * A React query that provides a mutation for deleting a download item.
  */
-export const useDownloadDeleted = (): UseMutationResult<
+export const useDownloadOrRestoreDownload = (): UseMutationResult<
   void,
   AxiosError,
   UseDownloadDeletedParams,

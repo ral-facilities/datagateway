@@ -19,7 +19,10 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
-import { useDownloadDeleted, useDownloads } from '../downloadApiHooks';
+import {
+  useDownloadOrRestoreDownload,
+  useDownloads,
+} from '../downloadApiHooks';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
@@ -318,7 +321,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 const {
                   isLoading: isDeleting,
                   mutate: downloadDeleted,
-                } = useDownloadDeleted();
+                } = useDownloadOrRestoreDownload();
                 const downloadItem = rowData as FormattedDownload;
                 // const [isDeleting, setIsDeleting] = React.useState(false);
 
