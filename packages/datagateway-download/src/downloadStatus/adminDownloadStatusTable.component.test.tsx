@@ -43,6 +43,7 @@ describe('Admin Download Status Table', () => {
   let user: UserEvent;
 
   beforeEach(() => {
+    jest.useFakeTimers();
     user = userEvent.setup({ delay: null });
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
@@ -66,6 +67,7 @@ describe('Admin Download Status Table', () => {
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     jest.clearAllMocks();
   });
 
@@ -108,7 +110,22 @@ describe('Admin Download Status Table', () => {
   it('should re-fetch the download items when the refresh button is clicked', async () => {
     renderComponent();
 
-    (fetchAdminDownloads as jest.Mock).mockResolvedValue([]);
+    expect(await screen.findAllByText(/^\d$/)).toHaveLength(
+      mockDownloadItems.length
+    );
+
+    (fetchAdminDownloads as jest.Mock).mockImplementation(
+      (
+        settings: { facilityName: string; downloadApiUrl: string },
+        queryOffset?: string
+      ) => {
+        //Only return the 5 results when initialy requesting so that only a total
+        //of 5 results will be loaded
+        if (queryOffset?.endsWith('LIMIT 0, 50'))
+          return mockDownloadItems.slice(0, mockDownloadItems.length - 1);
+        return Promise.resolve([]);
+      }
+    );
 
     await user.click(
       screen.getByRole('button', {
@@ -117,7 +134,9 @@ describe('Admin Download Status Table', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryAllByText(/^\d$/)).toHaveLength(0);
+      expect(screen.queryAllByText(/^\d$/)).toHaveLength(
+        mockDownloadItems.length - 1
+      );
     });
   });
 
@@ -274,7 +293,6 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends filter request on date filter', async () => {
-    jest.useFakeTimers();
     applyDatePickerWorkaround();
     renderComponent();
 
@@ -287,14 +305,13 @@ describe('Admin Download Status Table', () => {
       name: 'downloadStatus.createdAt filter from',
     });
     await user.type(dateFromFilterInput, '2020-01-01 00:00');
-    jest.runAllTimers();
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
         downloadApiUrl: '',
         facilityName: '',
       },
-      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '9999-12-31 23:59'} ORDER BY download.id ASC LIMIT 0, 50"
+      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '9999-12-31 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50"
     );
 
     // Get the Requested Data To filter input
@@ -302,21 +319,24 @@ describe('Admin Download Status Table', () => {
       name: 'downloadStatus.createdAt filter to',
     });
     await user.type(dateToFilterInput, '2020-01-02 23:59');
-    jest.runAllTimers();
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
-      {
-        downloadApiUrl: '',
-        facilityName: '',
-      },
-      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00'} AND {ts '2020-01-02 23:59'} ORDER BY download.id ASC LIMIT 0, 50"
-    );
+    // have to wrap the expect in a waitFor because for some reason
+    // await user.type doesn't wait until the full thing is typed in before resolving
+    // causing fetchAdminDownloads to be called with partial values
+    await waitFor(() => {
+      expect(fetchAdminDownloads).toHaveBeenCalledWith(
+        {
+          downloadApiUrl: '',
+          facilityName: '',
+        },
+        "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50"
+      );
+    });
 
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
-    jest.runAllTimers();
 
-    expect(fetchAdminDownloads).toHaveBeenLastCalledWith(
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
         downloadApiUrl: '',
         facilityName: '',
@@ -325,11 +345,22 @@ describe('Admin Download Status Table', () => {
     );
 
     cleanupDatePickerWorkaround();
-    jest.useRealTimers();
   }, 10000);
 
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
+
+    // without waitFor,
+    // toBeInTheDocument will complain it can't find the element
+    // even though findBy didn't throw...
+    // (it throws when the elemenet actually doesn't exist)
+    await waitFor(async () => {
+      expect(
+        await screen.findByRole('button', {
+          name: 'downloadStatus.restore {filename:test-file-4}',
+        })
+      ).toBeInTheDocument();
+    });
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -355,9 +386,9 @@ describe('Admin Download Status Table', () => {
     );
 
     await user.click(
-      await screen.findByLabelText(
-        'downloadStatus.restore {filename:test-file-4}'
-      )
+      screen.getByRole('button', {
+        name: 'downloadStatus.restore {filename:test-file-4}',
+      })
     );
 
     expect(
@@ -369,6 +400,18 @@ describe('Admin Download Status Table', () => {
 
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
+
+    // without waitFor,
+    // toBeInTheDocument will complain it can't find the element
+    // even though findBy didn't throw...
+    // (it throws when the elemenet actually doesn't exist)
+    await waitFor(async () => {
+      expect(
+        await screen.findByRole('button', {
+          name: 'downloadStatus.pause {filename:test-file-3}',
+        })
+      ).toBeInTheDocument();
+    });
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -394,7 +437,7 @@ describe('Admin Download Status Table', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', {
+      screen.getByRole('button', {
         name: 'downloadStatus.pause {filename:test-file-3}',
       })
     );
@@ -408,6 +451,14 @@ describe('Admin Download Status Table', () => {
 
   it('should send resume restore request when resume button is clicked', async () => {
     renderComponent();
+
+    await waitFor(async () => {
+      expect(
+        await screen.findByRole('button', {
+          name: 'downloadStatus.resume {filename:test-file-5}',
+        })
+      ).toBeInTheDocument();
+    });
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -433,7 +484,7 @@ describe('Admin Download Status Table', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', {
+      screen.getByRole('button', {
         name: 'downloadStatus.resume {filename:test-file-5}',
       })
     );
@@ -447,6 +498,14 @@ describe('Admin Download Status Table', () => {
 
   it('sends delete item request when delete button is clicked', async () => {
     renderComponent();
+
+    await waitFor(async () => {
+      expect(
+        await screen.findByRole('button', {
+          name: 'downloadStatus.delete {filename:test-file-1}',
+        })
+      ).toBeInTheDocument();
+    });
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (

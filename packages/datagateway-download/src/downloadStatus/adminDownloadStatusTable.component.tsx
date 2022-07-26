@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   CircularProgress,
   Grid,
@@ -68,9 +68,8 @@ const AdminDownloadStatusTable: React.FC = () => {
   const { downloadStatusLabels: downloadStatuses } = useDownloadFormatter();
   const { mutate: adminDownloadDeleted } = useAdminDownloadDeleted();
   const { mutate: adminUpdateDownloadStatus } = useAdminUpdateDownloadStatus();
-  const refetchTimeout = React.useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  // whether this is component's first render.
+  const isFirstRender = useRef(true);
 
   const buildQueryOffset = useCallback(() => {
     let queryOffset = `WHERE download.facilityName = '${settings.facilityName}'`;
@@ -78,8 +77,13 @@ const AdminDownloadStatusTable: React.FC = () => {
       if (typeof filter === 'object') {
         if (!Array.isArray(filter)) {
           if ('startDate' in filter || 'endDate' in filter) {
-            const startDate = filter.startDate ?? '0001-01-01 00:00';
-            const endDate = filter.endDate ?? '9999-12-31 23:59';
+            // TODO: remove :00 when #1227 is fixed
+            const startDate = filter.startDate
+              ? `${filter.startDate}:00`
+              : '0001-01-01 00:00:00';
+            const endDate = filter.endDate
+              ? `${filter.endDate}:00`
+              : '9999-12-31 23:59:00';
 
             queryOffset += ` AND download.${column} BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
           }
@@ -114,6 +118,7 @@ const AdminDownloadStatusTable: React.FC = () => {
     data,
     isLoading,
     isFetched,
+    isRefetching,
     fetchNextPage,
     refetch,
   } = useAdminDownloads({
@@ -149,23 +154,21 @@ const AdminDownloadStatusTable: React.FC = () => {
   }, [isFetched]);
 
   React.useEffect(() => {
-    // refetch table whenever filter changes
-    // debounced to avoid excessive calls
-    refetchTimeout.current = setTimeout(() => {
-      refetch();
-    }, 200);
-
-    return () => {
-      const prevTimeout = refetchTimeout.current;
-      if (prevTimeout) clearTimeout();
-    };
-  }, [refetch, filters]);
-
-  React.useEffect(() => {
-    // refetch table whenver sort changes
-    // NOT debounced because it is changed much less often than filters
-    refetch();
-  }, [refetch, sort]);
+    // useEffect is always called on first render
+    // we don't want to refetch when the initial fetch is already going
+    // we only want to refetch when sort and filters changes
+    //
+    // here we use a ref that is true on first render
+    // and we use that to check if this effect is run on first render
+    // if it is true, set it to false,
+    // so that subsequent calls of this effect due to sort and filters changes
+    // will allow refetch.
+    if (!isFirstRender.current) {
+      refetch({ cancelRefetch: true });
+    } else {
+      isFirstRender.current = false;
+    }
+  }, [refetch, sort, filters]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -265,7 +268,7 @@ const AdminDownloadStatusTable: React.FC = () => {
         <Grid item xs>
           <Grid container direction="column">
             {/* Show loading progress if data is still being loaded */}
-            {isLoading && (
+            {(isLoading || isRefetching) && (
               <Grid item xs={12}>
                 <LinearProgress color="secondary" />
               </Grid>
