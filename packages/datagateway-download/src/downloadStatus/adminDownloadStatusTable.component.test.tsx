@@ -400,7 +400,7 @@ describe('Admin Download Status Table', () => {
         name: 'downloadStatus.pause {filename:test-file-4}',
       })
     ).toBeInTheDocument();
-  });
+  }, 10000);
 
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
