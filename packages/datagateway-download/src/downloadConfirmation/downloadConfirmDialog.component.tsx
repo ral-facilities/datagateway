@@ -303,7 +303,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     Boolean(sortedDownloadTypes);
 
   // whether the download request has failed
-  const hasDownloadFailed = hasSubmitCartFailed || isDownloadInfoUnavailable;
+  const hasDownloadFailed =
+    // cart submitted "successfully" but server doesn't return a download id
+    (isCartSubmittedSuccessfully && !downloadId) ||
+    hasSubmitCartFailed ||
+    isDownloadInfoUnavailable;
+
   // whether the download request is successful
   const isDownloadSuccess =
     isDownloadInfoAvailable && isCartSubmittedSuccessfully;
