@@ -242,7 +242,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 label: t('downloadStatus.progress'),
                 dataKey: 'progress',
                 disableSort: true,
-                cellContentRenderer: DownloadProgressIndicator,
+                cellContentRenderer: ({ rowData }) => (
+                  <DownloadProgressIndicator
+                    download={rowData as FormattedDownload}
+                  />
+                ),
               },
               {
                 label: t('downloadStatus.createdAt'),

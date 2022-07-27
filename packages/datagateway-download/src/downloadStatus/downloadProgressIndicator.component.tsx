@@ -1,14 +1,20 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import type { FormattedDownload } from 'datagateway-common';
+import type { Download, FormattedDownload } from 'datagateway-common';
 import React from 'react';
-import type { TableCellProps } from 'react-virtualized';
 import { useDownloadPercentageComplete } from '../downloadApiHooks';
 
-function DownloadProgressIndicator({
-  rowData,
-}: TableCellProps): React.ReactNode {
-  const download = rowData as FormattedDownload;
+interface DownloadProgressIndicatorProps {
+  download: FormattedDownload | Download;
+}
 
+/**
+ * A component for showing the download progress of the given download item.
+ * @param download The download item that this component should show the progress of.
+ * @constructor
+ */
+function DownloadProgressIndicator({
+  download,
+}: DownloadProgressIndicatorProps): JSX.Element {
   const { data: progress, isLoading } = useDownloadPercentageComplete({
     prepareId: download.preparedId,
   });
@@ -22,14 +28,14 @@ function DownloadProgressIndicator({
           <LinearProgress variant="determinate" value={progress} />
         </Box>
         <Box sx={{ minWidth: 32 }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography role="" variant="body2" color="text.secondary">
             {progress}%
           </Typography>
         </Box>
       </Box>
     );
 
-  return progress;
+  return <>{progress}</>;
 }
 
 export default DownloadProgressIndicator;

@@ -41,6 +41,7 @@ import {
 } from '../downloadApiHooks';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import useDownloadFormatter from './hooks/useDownloadFormatter';
+import DownloadProgressIndicator from './downloadProgressIndicator.component';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   flexGrow: 1,
@@ -319,7 +320,11 @@ const AdminDownloadStatusTable: React.FC = () => {
                     {
                       label: t('downloadStatus.progress'),
                       dataKey: 'progress',
-                      cellContentRenderer: DownloadProgressIndicator,
+                      cellContentRenderer: ({ rowData }) => (
+                        <DownloadProgressIndicator
+                          download={rowData as FormattedDownload}
+                        />
+                      ),
                     },
                     {
                       label: t('downloadStatus.size'),
