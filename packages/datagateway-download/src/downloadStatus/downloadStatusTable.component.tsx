@@ -238,16 +238,20 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 dataKey: 'status',
                 filterComponent: availabilityFilter,
               },
-              {
-                label: t('downloadStatus.progress'),
-                dataKey: 'progress',
-                disableSort: true,
-                cellContentRenderer: ({ rowData }) => (
-                  <DownloadProgressIndicator
-                    download={rowData as FormattedDownload}
-                  />
-                ),
-              },
+              ...(settings.uiFeatures.includes('DOWNLOAD_PROGRESS')
+                ? [
+                    {
+                      label: t('downloadStatus.progress'),
+                      dataKey: 'progress',
+                      disableSort: true,
+                      cellContentRenderer: ({ rowData }: TableCellProps) => (
+                        <DownloadProgressIndicator
+                          download={rowData as FormattedDownload}
+                        />
+                      ),
+                    },
+                  ]
+                : []),
               {
                 label: t('downloadStatus.createdAt'),
                 dataKey: 'createdAt',

@@ -317,15 +317,22 @@ const AdminDownloadStatusTable: React.FC = () => {
                       dataKey: 'status',
                       filterComponent: textFilter,
                     },
-                    {
-                      label: t('downloadStatus.progress'),
-                      dataKey: 'progress',
-                      cellContentRenderer: ({ rowData }) => (
-                        <DownloadProgressIndicator
-                          download={rowData as FormattedDownload}
-                        />
-                      ),
-                    },
+                    ...(settings.uiFeatures.includes('DOWNLOAD_PROGRESS')
+                      ? [
+                          {
+                            label: t('downloadStatus.progress'),
+                            dataKey: 'progress',
+                            disableSort: true,
+                            cellContentRenderer: ({
+                              rowData,
+                            }: TableCellProps) => (
+                              <DownloadProgressIndicator
+                                download={rowData as FormattedDownload}
+                              />
+                            ),
+                          },
+                        ]
+                      : []),
                     {
                       label: t('downloadStatus.size'),
                       dataKey: 'size',
