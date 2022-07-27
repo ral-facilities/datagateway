@@ -43,7 +43,6 @@ describe('Admin Download Status Table', () => {
   let user: UserEvent;
 
   beforeEach(() => {
-    jest.useFakeTimers();
     user = userEvent.setup({ delay: null });
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
@@ -67,7 +66,6 @@ describe('Admin Download Status Table', () => {
   });
 
   afterEach(() => {
-    jest.useRealTimers();
     jest.clearAllMocks();
   });
 
@@ -205,6 +203,7 @@ describe('Admin Download Status Table', () => {
     });
 
     it('should filter username properly', async () => {
+      jest.useFakeTimers();
       renderComponent();
 
       // Table is sorted by createdAt desc by default
@@ -237,9 +236,12 @@ describe('Admin Download Status Table', () => {
         },
         "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
       );
+
+      jest.useRealTimers();
     }, 10000);
 
     it('should filter download availablity properly', async () => {
+      jest.useFakeTimers();
       renderComponent();
 
       // Table is sorted by createdAt desc by default
@@ -289,6 +291,8 @@ describe('Admin Download Status Table', () => {
         },
         "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
       );
+
+      jest.useRealTimers();
     }, 10000);
   });
 
