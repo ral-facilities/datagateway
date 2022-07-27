@@ -125,7 +125,7 @@ export const useRemoveAllFromCart = (): UseMutationResult<
   return useMutation(
     () => removeAllDownloadCartItems({ facilityName, downloadApiUrl }),
     {
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.setQueryData(QueryKey.CART, []);
       },
       retry: (failureCount, error) => {
@@ -232,7 +232,6 @@ export const useSubmitCart = (
       ),
     {
       onError: (error, _, rollback) => {
-        console.log('error', error);
         handleICATError(error);
         if (rollback) rollback();
       },
@@ -281,15 +280,7 @@ export const useSizes = (
       : [];
   }, [data, facilityName, apiUrl, downloadApiUrl]);
 
-  // useQueries doesn't allow us to specify type info, so ignore this line
-  // since we strongly type the queries object anyway
-  // we also need to prettier-ignore to make sure we don't wrap onto next line
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // prettier-ignore
-  const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
-
-  return queries;
+  return useQueries(queryConfigs);
 };
 
 const datafileCountslimit = pLimit(20);
@@ -327,15 +318,7 @@ export const useDatafileCounts = (
       : [];
   }, [data, apiUrl]);
 
-  // useQueries doesn't allow us to specify type info, so ignore this line
-  // since we strongly type the queries object anyway
-  // we also need to prettier-ignore to make sure we don't wrap onto next line
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // prettier-ignore
-  const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
-
-  return queries;
+  return useQueries(queryConfigs);
 };
 
 export interface UseDownloadParams {
@@ -420,7 +403,7 @@ export interface UseDownloadDeletedParams {
 /**
  * A React query that provides a mutation for deleting a download item.
  */
-export const useDownloadDeleted = (): UseMutationResult<
+export const useDownloadOrRestoreDownload = (): UseMutationResult<
   void,
   AxiosError,
   UseDownloadDeletedParams,
@@ -547,11 +530,9 @@ export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
     }
   }
 
-  const queryConfigs: UseQueryOptions<
-    DownloadTypeStatus,
-    AxiosError,
-    TData
-  >[] = downloadTypes.map((type) => ({
+  const queries = downloadTypes.map<
+    UseQueryOptions<DownloadTypeStatus, AxiosError, TData>
+  >((type) => ({
     queryKey: [QueryKey.DOWNLOAD_TYPE_STATUS, type],
     queryFn: () =>
       getDownloadTypeStatus(type, {
@@ -565,17 +546,14 @@ export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
     ...queryOptions,
   }));
 
-  // TODO: un-ignore ts when upgrading react-query to >=3.28
-  // useQueries doesn't allow generics until 3.28,
-  // so there is no way around of typing the result without suppressing
-  // typescript.
-  //
-  // note that the return type of this function is typed, so no type information
-  // is lost here.
+  // I have spent hours on this trying to make the type work,
+  // but due to the limitation of TypeScript, it is basically impossible
+  // for the type system to infer the return type of select properly.
+  // https://github.com/TanStack/query/pull/2634#issuecomment-939537730
   //
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  return useQueries(queryConfigs);
+  return useQueries(queries);
 };
 
 /**

@@ -54,6 +54,7 @@ describe('Generic add to cart button', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -76,6 +77,39 @@ describe('Generic add to cart button', () => {
       entityType: 'investigation',
     });
     expect(wrapper.find('button').text()).toBe('buttons.add_to_cart');
+    expect(wrapper.find('StyledTooltip').prop('title')).toEqual('');
+  });
+
+  it('renders as disabled when cart is loading', () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+    });
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
+    expect(wrapper.find('button').prop('disabled')).toBe(true);
+    expect(wrapper.find('StyledTooltip').prop('title')).toEqual(
+      'buttons.cart_loading_tooltip'
+    );
+  });
+
+  it('renders as disabled with tooltip when cart does not load', () => {
+    (useCart as jest.Mock).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+    });
+    const wrapper = createWrapper({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
+    expect(wrapper.find('button').prop('disabled')).toBe(true);
+    expect(wrapper.find('StyledTooltip').prop('title')).toEqual(
+      'buttons.cart_loading_failed_tooltip'
+    );
   });
 
   it('calls addToCart action on button press with item not in cart', () => {
@@ -102,6 +136,7 @@ describe('Generic add to cart button', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const entityType = 'investigation';

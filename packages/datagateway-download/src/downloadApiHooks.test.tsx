@@ -1,30 +1,37 @@
+import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import axios from 'axios';
-import * as React from 'react';
 import type { Download, FormattedDownload } from 'datagateway-common';
 import {
   DownloadCartItem,
   handleICATError,
   NotificationType,
 } from 'datagateway-common';
+import { createMemoryHistory } from 'history';
+import * as React from 'react';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { Router } from 'react-router-dom';
+import { DownloadSettingsContext } from './ConfigProvider';
 import {
   useAdminDownloadDeleted,
   useAdminDownloads,
   useAdminUpdateDownloadStatus,
   useCart,
   useDatafileCounts,
-  useDownloadDeleted,
+  useDownloadOrRestoreDownload,
   useDownloads,
   useDownloadTypeStatuses,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
   useSizes,
+  useSubmitCart,
 } from './downloadApiHooks';
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
-import { createMemoryHistory } from 'history';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import { Router } from 'react-router-dom';
-import { DownloadSettingsContext } from './ConfigProvider';
+import {
+  mockCartItems,
+  mockDownloadItems,
+  mockedSettings,
+  mockFormattedDownloadItems,
+} from './testData';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -36,214 +43,6 @@ jest.mock('datagateway-common', () => {
     retryICATErrors: jest.fn().mockReturnValue(false),
   };
 });
-
-// Create our mocked datagateway-download mockedSettings file.
-const mockedSettings = {
-  facilityName: 'LILS',
-  apiUrl: 'https://example.com/api',
-  downloadApiUrl: 'https://example.com/downloadApi',
-  idsUrl: 'https://example.com/ids',
-  fileCountMax: 5000,
-  totalSizeMax: 1000000000000,
-  accessMethods: {
-    https: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'HTTPS',
-      description: 'Example description for HTTPS access method.',
-    },
-    globus: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'Globus',
-      description: 'Example description for Globus access method.',
-    },
-  },
-};
-
-const mockDownloadItems: Download[] = [
-  {
-    createdAt: '2020-02-25T15:05:29Z',
-    downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
-    email: 'test1@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-1',
-    fullName: 'Person 1',
-    id: 1,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 1000,
-    status: 'COMPLETE',
-    transport: 'https',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-26T15:05:35Z',
-    downloadItems: [{ entityId: 2, entityType: 'investigation', id: 2 }],
-    email: 'test2@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-2',
-    fullName: 'Person 2',
-    id: 2,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 2000,
-    status: 'PREPARING',
-    transport: 'globus',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-27T15:57:20Z',
-    downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
-    email: 'test3@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-3',
-    fullName: 'Person 3',
-    id: 3,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 3000,
-    status: 'RESTORING',
-    transport: 'https',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-28T15:57:28Z',
-    downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
-    email: 'test4@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-4',
-    fullName: 'Person 4',
-    id: 4,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 4000,
-    status: 'EXPIRED',
-    transport: 'globus',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-03-01T15:57:28Z[UTC]',
-    downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
-    email: 'test5@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-5',
-    fullName: 'Person 5',
-    id: 5,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 5000,
-    status: 'PAUSED',
-    transport: 'globus',
-    userName: 'test user',
-  },
-];
-
-const mockFormattedDownloadItems: FormattedDownload[] = [
-  {
-    createdAt: '2020-02-25T15:05:29Z',
-    downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
-    email: 'test1@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-1',
-    fullName: 'Person 1',
-    id: 1,
-    isDeleted: 'No',
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 1000,
-    status: 'downloadStatus.complete',
-    transport: 'https',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-26T15:05:35Z',
-    downloadItems: [{ entityId: 2, entityType: 'investigation', id: 2 }],
-    email: 'test2@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-2',
-    fullName: 'Person 2',
-    id: 2,
-    isDeleted: 'No',
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 2000,
-    status: 'downloadStatus.preparing',
-    transport: 'globus',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-27T15:57:20Z',
-    downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
-    email: 'test3@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-3',
-    fullName: 'Person 3',
-    id: 3,
-    isDeleted: 'No',
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 3000,
-    status: 'downloadStatus.restoring',
-    transport: 'https',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-28T15:57:28Z',
-    downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
-    email: 'test4@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-4',
-    fullName: 'Person 4',
-    id: 4,
-    isDeleted: 'No',
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 4000,
-    status: 'downloadStatus.expired',
-    transport: 'globus',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-03-01T15:57:28Z[UTC]',
-    downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
-    email: 'test5@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-5',
-    fullName: 'Person 5',
-    id: 5,
-    isDeleted: 'No',
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 5000,
-    status: 'downloadStatus.paused',
-    transport: 'globus',
-    userName: 'test user',
-  },
-];
 
 // silence react-query errors
 setLogger({
@@ -742,99 +541,6 @@ describe('Download Cart API react-query hooks test', () => {
 
   describe('useDownloads', () => {
     it('should retrieve user downloads', async () => {
-      const mockFormattedDownloadItems: FormattedDownload[] = [
-        {
-          createdAt: '2020-02-25T15:05:29Z',
-          downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
-          email: 'test1@email.com',
-          facilityName: 'LILS',
-          fileName: 'test-file-1',
-          fullName: 'Person 1',
-          id: 1,
-          isDeleted: 'No',
-          isEmailSent: true,
-          isTwoLevel: false,
-          preparedId: 'test-prepared-id',
-          sessionId: 'test-session-id',
-          size: 1000,
-          status: 'downloadStatus.complete',
-          transport: 'https',
-          userName: 'test user',
-        },
-        {
-          createdAt: '2020-02-26T15:05:35Z',
-          downloadItems: [{ entityId: 2, entityType: 'investigation', id: 2 }],
-          email: 'test2@email.com',
-          facilityName: 'LILS',
-          fileName: 'test-file-2',
-          fullName: 'Person 2',
-          id: 2,
-          isDeleted: 'No',
-          isEmailSent: true,
-          isTwoLevel: false,
-          preparedId: 'test-prepared-id',
-          sessionId: 'test-session-id',
-          size: 2000,
-          status: 'downloadStatus.preparing',
-          transport: 'globus',
-          userName: 'test user',
-        },
-        {
-          createdAt: '2020-02-27T15:57:20Z',
-          downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
-          email: 'test3@email.com',
-          facilityName: 'LILS',
-          fileName: 'test-file-3',
-          fullName: 'Person 3',
-          id: 3,
-          isDeleted: 'No',
-          isEmailSent: true,
-          isTwoLevel: false,
-          preparedId: 'test-prepared-id',
-          sessionId: 'test-session-id',
-          size: 3000,
-          status: 'downloadStatus.restoring',
-          transport: 'https',
-          userName: 'test user',
-        },
-        {
-          createdAt: '2020-02-28T15:57:28Z',
-          downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
-          email: 'test4@email.com',
-          facilityName: 'LILS',
-          fileName: 'test-file-4',
-          fullName: 'Person 4',
-          id: 4,
-          isDeleted: 'No',
-          isEmailSent: true,
-          isTwoLevel: false,
-          preparedId: 'test-prepared-id',
-          sessionId: 'test-session-id',
-          size: 4000,
-          status: 'downloadStatus.expired',
-          transport: 'globus',
-          userName: 'test user',
-        },
-        {
-          createdAt: '2020-03-01T15:57:28Z[UTC]',
-          downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
-          email: 'test5@email.com',
-          facilityName: 'LILS',
-          fileName: 'test-file-5',
-          fullName: 'Person 5',
-          id: 5,
-          isDeleted: 'No',
-          isEmailSent: true,
-          isTwoLevel: false,
-          preparedId: 'test-prepared-id',
-          sessionId: 'test-session-id',
-          size: 5000,
-          status: 'downloadStatus.paused',
-          transport: 'globus',
-          userName: 'test user',
-        },
-      ];
-
       axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
 
       const { result, waitFor } = renderHook(() => useDownloads(), {
@@ -883,36 +589,15 @@ describe('Download Cart API react-query hooks test', () => {
     });
   });
 
-  describe('useDownloadDeleted', () => {
+  describe('useDownloadOrRestoreDownload', () => {
     it('should delete download with given id and update the download list upon success', async () => {
-      const mockDownloadItems: Download[] = [
-        {
-          createdAt: 'created-at',
-          downloadItems: [],
-          facilityName: mockedSettings.facilityName,
-          fileName: 'file-name',
-          fullName: 'fullName',
-          id: 123,
-          isDeleted: false,
-          isEmailSent: false,
-          isTwoLevel: false,
-          preparedId: 'prepare-id',
-          sessionId: 'session-id',
-          size: 23,
-          status: 'PREPARING',
-          transport: 'http',
-          userName: 'username',
-          email: 'a@b.c',
-        },
-      ];
-
       axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
 
       const { result, waitFor } = renderHook(
         () => ({
           useDownloads: useDownloads(),
-          useDownloadDeleted: useDownloadDeleted(),
+          useDownloadOrRestoreDownload: useDownloadOrRestoreDownload(),
         }),
         { wrapper: createReactQueryWrapper() }
       );
@@ -920,14 +605,21 @@ describe('Download Cart API react-query hooks test', () => {
       // wait for useDownloads to finish loading mock download items
       await waitFor(() => result.current.useDownloads.isSuccess);
       // delete the mock item
-      result.current.useDownloadDeleted.mutate({
-        downloadId: 123,
+      result.current.useDownloadOrRestoreDownload.mutate({
+        downloadId: 1,
         deleted: true,
       });
       // wait for mutation to complete
-      await waitFor(() => result.current.useDownloadDeleted.isSuccess);
+      await waitFor(
+        () => result.current.useDownloadOrRestoreDownload.isSuccess
+      );
 
-      expect(result.current.useDownloads.data).toHaveLength(0);
+      expect(result.current.useDownloads.data).toHaveLength(
+        mockDownloadItems.length - 1
+      );
+      expect(
+        result.current.useDownloads.data.find(({ id }) => id === 123)
+      ).toBeUndefined();
     });
 
     it('should restore download with given id and update download list upon success', async () => {
@@ -992,7 +684,7 @@ describe('Download Cart API react-query hooks test', () => {
       const { result, waitFor } = renderHook(
         () => ({
           useDownloads: useDownloads(),
-          useDownloadDeleted: useDownloadDeleted(),
+          useDownloadOrRestoreDownload: useDownloadOrRestoreDownload(),
         }),
         {
           wrapper: createReactQueryWrapper(),
@@ -1000,11 +692,13 @@ describe('Download Cart API react-query hooks test', () => {
       );
 
       await waitFor(() => result.current.useDownloads.isSuccess);
-      result.current.useDownloadDeleted.mutate({
+      result.current.useDownloadOrRestoreDownload.mutate({
         downloadId: 124,
         deleted: false,
       });
-      await waitFor(() => result.current.useDownloadDeleted.isSuccess);
+      await waitFor(
+        () => result.current.useDownloadOrRestoreDownload.isSuccess
+      );
 
       const newList = result.current.useDownloads.data;
 
@@ -1019,9 +713,12 @@ describe('Download Cart API react-query hooks test', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useDownloadDeleted(), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () => useDownloadOrRestoreDownload(),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       result.current.mutate({
         downloadId: 123,
@@ -1421,8 +1118,68 @@ describe('Download Cart API react-query hooks test', () => {
   });
 
   describe('useSubmitCart', () => {
-    it('should submit cart and clear cart on success', () => {
-      axios.put = jest.fn().mockResolvedValue(123);
+    it('should submit cart and clear cart on success', async () => {
+      axios.post = jest.fn().mockResolvedValue({ data: 123 });
+      axios.get = jest
+        .fn()
+        .mockResolvedValueOnce({
+          data: {
+            cartItems: mockCartItems,
+          },
+        })
+        .mockResolvedValueOnce({ data: { cartItems: [] } });
+
+      const { result, waitFor } = renderHook(
+        () => ({
+          useSubmitCart: useSubmitCart(),
+          useCart: useCart(),
+        }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      // wait for the cart to finish loading
+      await waitFor(() => result.current.useCart.isSuccess);
+      // submit the cart
+      result.current.useSubmitCart.mutate({
+        emailAddress: 'cat@dog.com',
+        fileName: 'test-file',
+        transport: 'https',
+      });
+      // wait for cart submission to finish
+      await waitFor(() => result.current.useSubmitCart.isSuccess);
+
+      expect(result.current.useCart.data).toEqual([]);
+    });
+
+    it('should call handleICATError when an error is encountered', async () => {
+      axios.post = jest.fn().mockRejectedValue({
+        message: 'test error message',
+      });
+      axios.get = jest.fn().mockResolvedValueOnce({
+        data: {
+          cartItems: mockCartItems,
+        },
+      });
+
+      const { result, waitFor } = renderHook(
+        () => ({
+          useSubmitCart: useSubmitCart(),
+          useCart: useCart(),
+        }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.useCart.isSuccess);
+      result.current.useSubmitCart.mutate({
+        emailAddress: 'a@b.c',
+        fileName: 'test-file',
+        transport: 'https',
+      });
+      await waitFor(() => result.current.useSubmitCart.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'test error message',
+      });
     });
   });
 

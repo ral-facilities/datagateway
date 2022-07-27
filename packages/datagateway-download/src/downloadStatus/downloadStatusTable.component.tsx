@@ -20,7 +20,10 @@ import { useTranslation } from 'react-i18next';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
-import { useDownloadDeleted, useDownloads } from '../downloadApiHooks';
+import {
+  useDownloadOrRestoreDownload,
+  useDownloads,
+} from '../downloadApiHooks';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
@@ -280,14 +283,13 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                   <BlackTooltip
                     title={
                       !isHTTP
-                        ? (t(
+                        ? t<string, string>(
                             'downloadStatus.non_https_download_disabled_tooltip',
                             { transport: downloadItem.transport }
-                            // for some reason it can't infer these types on its own
-                          ) as string)
-                        : (t(
+                          )
+                        : t<string, string>(
                             'downloadStatus.https_download_disabled_tooltip'
-                          ) as string)
+                          )
                     }
                     enterDelay={500}
                     // Disable error tooltip for downloadable HTTP(S) downloads.
@@ -325,7 +327,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 const {
                   isLoading: isDeleting,
                   mutate: downloadDeleted,
-                } = useDownloadDeleted();
+                } = useDownloadOrRestoreDownload();
                 const downloadItem = rowData as FormattedDownload;
                 // const [isDeleting, setIsDeleting] = React.useState(false);
 

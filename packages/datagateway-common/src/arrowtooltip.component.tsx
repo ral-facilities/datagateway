@@ -1,6 +1,6 @@
 import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
-import Tooltip, { TooltipProps } from '@mui/material/Tooltip';
+import { Tooltip, TooltipProps } from '@mui/material';
 
 export const getTooltipText = (node: React.ReactNode): string => {
   if (typeof node === 'string') return node;
@@ -26,6 +26,18 @@ const tooltipComponentProps = {
     },
   },
 };
+
+export const StyledTooltip = React.forwardRef(
+  (props: TooltipProps, ref): React.ReactElement => (
+    <Tooltip
+      ref={ref}
+      componentsProps={tooltipComponentProps}
+      {...props}
+      arrow
+    />
+  )
+);
+StyledTooltip.displayName = 'StyledTooltip';
 
 const ArrowTooltip = (
   props: TooltipProps & {
@@ -81,12 +93,10 @@ const ArrowTooltip = (
     shouldDisableHoverListener = disableHoverListener;
 
   return (
-    <Tooltip
+    <StyledTooltip
       ref={tooltipRef}
-      componentsProps={tooltipComponentProps}
       {...tooltipProps}
       disableHoverListener={shouldDisableHoverListener}
-      arrow={true}
     />
   );
 };

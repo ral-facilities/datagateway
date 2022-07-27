@@ -4085,10 +4085,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsrsasign@npm:9.0.3":
-  version: 9.0.3
-  resolution: "@types/jsrsasign@npm:9.0.3"
-  checksum: 9c181ca6e3600fafd8a131cdabad1cae8d9b184bf6634d1509f3ad6ae31ae8a90f17b04409f3fde0794a6c0dfe4bf7aa91765cfa4c0f1ad3b9eca05b61dca62a
+"@types/jsrsasign@npm:10.5.2":
+  version: 10.5.2
+  resolution: "@types/jsrsasign@npm:10.5.2"
+  checksum: 390e54b8950efaa30305934d1f59d061c39b0a70318dae6f808cc5a3cec71ad020da51ded9fd63d438fce4914af3568f4e252e36f503f0e840e7bf00b515498e
   languageName: node
   linkType: hard
 
@@ -4771,14 +4771,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@welldone-software/why-did-you-render@npm:6.2.3":
-  version: 6.2.3
-  resolution: "@welldone-software/why-did-you-render@npm:6.2.3"
+"@welldone-software/why-did-you-render@npm:7.0.1":
+  version: 7.0.1
+  resolution: "@welldone-software/why-did-you-render@npm:7.0.1"
   dependencies:
     lodash: ^4
   peerDependencies:
-    react: ^16 || ^17
-  checksum: 6c012f0a67c94c19cd2e8221438d547990a26b0593b0d1e8fd57084253d7cd305f4904e5bda984fd38416390b35b95fb0c3631fa485bd41b0b317568f080376c
+    react: ^16 || ^17 || ^18
+  checksum: 0bfc59f1f8613e7dc5fbf189305e88b01c50ee278df2c9b69082ed6abcf8d71758eb468d027235916c6126934a755d6547e9704883007236544763fffad6f48c
   languageName: node
   linkType: hard
 
@@ -7415,7 +7415,7 @@ __metadata:
     eslint-config-prettier: 8.5.0
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.12.1
-    eslint-plugin-prettier: 3.4.1
+    eslint-plugin-prettier: 4.2.1
     hex-to-rgba: 2.0.1
     history: 4.10.1
     i18next: 21.6.13
@@ -7462,7 +7462,7 @@ __metadata:
     "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
     "@types/jest": 27.5.2
-    "@types/jsrsasign": 9.0.3
+    "@types/jsrsasign": 10.5.2
     "@types/lodash.debounce": 4.0.6
     "@types/lodash.memoize": 4.1.6
     "@types/node": 17.0.17
@@ -7475,7 +7475,7 @@ __metadata:
     "@types/redux-mock-store": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.30.6
     "@typescript-eslint/parser": 5.30.6
-    "@welldone-software/why-did-you-render": 6.2.3
+    "@welldone-software/why-did-you-render": 7.0.1
     "@wojtekmaj/enzyme-adapter-react-17": 0.6.6
     axios: 0.27.2
     babel-eslint: 10.1.0
@@ -7492,7 +7492,7 @@ __metadata:
     eslint-config-prettier: 8.5.0
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.12.1
-    eslint-plugin-prettier: 3.4.1
+    eslint-plugin-prettier: 4.2.1
     express: 4.18.1
     history: 4.10.1
     i18next: 21.6.13
@@ -7541,7 +7541,7 @@ __metadata:
     "@testing-library/react-hooks": 8.0.1
     "@testing-library/user-event": 14.2.6
     "@types/jest": 27.5.2
-    "@types/jsrsasign": 9.0.3
+    "@types/jsrsasign": 10.5.2
     "@types/lodash.chunk": 4.2.6
     "@types/node": 17.0.17
     "@types/react": 17.0.39
@@ -7550,7 +7550,6 @@ __metadata:
     "@types/react-virtualized": 9.21.10
     "@typescript-eslint/eslint-plugin": 5.30.6
     "@typescript-eslint/parser": 5.30.6
-    "@wojtekmaj/enzyme-adapter-react-17": 0.6.6
     axios: 0.27.2
     babel-eslint: 10.1.0
     cross-env: 7.0.3
@@ -7559,13 +7558,11 @@ __metadata:
     datagateway-common: ^1.1.0
     date-fns: 2.28.0
     date-fns-tz: 1.3.5
-    enzyme: 3.11.0
-    enzyme-to-json: 3.6.1
     eslint: 8.20.0
     eslint-config-prettier: 8.5.0
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.12.1
-    eslint-plugin-prettier: 3.4.1
+    eslint-plugin-prettier: 4.2.1
     history: 4.10.1
     i18next: 21.6.13
     i18next-browser-languagedetector: 6.1.2
@@ -7606,7 +7603,7 @@ __metadata:
     "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
     "@types/jest": 27.5.2
-    "@types/jsrsasign": 9.0.3
+    "@types/jsrsasign": 10.5.2
     "@types/node": 17.0.17
     "@types/react": 17.0.39
     "@types/react-dom": 17.0.11
@@ -7633,7 +7630,7 @@ __metadata:
     eslint-config-prettier: 8.5.0
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.12.1
-    eslint-plugin-prettier: 3.4.1
+    eslint-plugin-prettier: 4.2.1
     express: 4.18.1
     history: 4.10.1
     i18next: 21.6.13
@@ -7670,7 +7667,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway@workspace:."
   dependencies:
-    husky: 7.0.4
+    husky: 8.0.1
     lerna: 4.0.0
     lerna-update-wizard: 1.1.0
   languageName: unknown
@@ -8750,18 +8747,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:3.4.1":
-  version: 3.4.1
-  resolution: "eslint-plugin-prettier@npm:3.4.1"
+"eslint-plugin-prettier@npm:4.2.1":
+  version: 4.2.1
+  resolution: "eslint-plugin-prettier@npm:4.2.1"
   dependencies:
     prettier-linter-helpers: ^1.0.0
   peerDependencies:
-    eslint: ">=5.0.0"
-    prettier: ">=1.13.0"
+    eslint: ">=7.28.0"
+    prettier: ">=2.0.0"
   peerDependenciesMeta:
     eslint-config-prettier:
       optional: true
-  checksum: fa6a89f0d7cba1cc87064352f5a4a68dc3739448dd279bec2bced1bfa3b704467e603d13b69dcec853f8fa30b286b8b715912898e9da776e1b016cf0ee48bd99
+  checksum: b9e839d2334ad8ec7a5589c5cb0f219bded260839a857d7a486997f9870e95106aa59b8756ff3f37202085ebab658de382b0267cae44c3a7f0eb0bcc03a4f6d6
   languageName: node
   linkType: hard
 
@@ -10419,12 +10416,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"husky@npm:7.0.4":
-  version: 7.0.4
-  resolution: "husky@npm:7.0.4"
+"husky@npm:8.0.1":
+  version: 8.0.1
+  resolution: "husky@npm:8.0.1"
   bin:
     husky: lib/bin.js
-  checksum: c6ec4af63da2c9522da8674a20ad9b48362cc92704896cc8a58c6a2a39d797feb2b806f93fbd83a6d653fbdceb2c3b6e0b602c6b2e8565206ffc2882ef7db9e9
+  checksum: 943a73a13d0201318fd30e83d299bb81d866bd245b69e6277804c3b462638dc1921694cb94c2b8c920a4a187060f7d6058d3365152865406352e934c5fff70dc
   languageName: node
   linkType: hard
 

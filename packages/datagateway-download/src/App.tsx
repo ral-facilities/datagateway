@@ -1,19 +1,18 @@
-import React, { Component } from 'react';
-import * as log from 'loglevel';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-
-import DownloadTabs from './downloadTab/downloadTab.component';
-
-import ConfigProvider from './ConfigProvider';
 import {
+  DGThemeProvider,
   MicroFrontendId,
   Preloader,
   RequestPluginRerenderType,
 } from 'datagateway-common';
-import { DGThemeProvider } from 'datagateway-common';
-import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import React, { Component } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+import ConfigProvider from './ConfigProvider';
+import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
+
+import DownloadTabs from './downloadTab/downloadTab.component';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +22,26 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+/**
+ * A fallback component when the app fails to render.
+ */
+function ErrorFallback(): JSX.Element {
+  return (
+    <div className="error">
+      <div
+        style={{
+          padding: 20,
+          background: 'red',
+          color: 'white',
+          margin: 5,
+        }}
+      >
+        Something went wrong...
+      </div>
+    </div>
+  );
+}
 
 class App extends Component<unknown, { hasError: boolean }> {
   public constructor(props: unknown) {
@@ -54,29 +73,7 @@ class App extends Component<unknown, { hasError: boolean }> {
     document.removeEventListener(MicroFrontendId, this.handler);
   }
 
-  public componentDidCatch(error: Error | null): void {
-    this.setState({ hasError: true });
-    log.error(`datagateway-download failed with error: ${error}`);
-  }
-
   public render(): React.ReactNode {
-    if (this.state.hasError) {
-      return (
-        <div className="error">
-          <div
-            style={{
-              padding: 20,
-              background: 'red',
-              color: 'white',
-              margin: 5,
-            }}
-          >
-            Something went wrong...
-          </div>
-        </div>
-      );
-    }
-
     return (
       <div className="App">
         <DGThemeProvider>
@@ -108,3 +105,4 @@ class App extends Component<unknown, { hasError: boolean }> {
 }
 
 export default App;
+export { ErrorFallback };

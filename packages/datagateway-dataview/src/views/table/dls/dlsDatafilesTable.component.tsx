@@ -50,7 +50,7 @@ const DLSDatafilesTable = (
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -66,7 +66,7 @@ const DLSDatafilesTable = (
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'datafile'
   );
@@ -161,7 +161,12 @@ const DLSDatafilesTable = (
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

@@ -144,6 +144,7 @@ describe('ISIS Investigations table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useISISInvestigationCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -159,6 +160,7 @@ describe('ISIS Investigations table component', () => {
     ]);
     (useISISInvestigationIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -344,6 +346,7 @@ describe('ISIS Investigations table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -377,6 +380,7 @@ describe('ISIS Investigations table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();

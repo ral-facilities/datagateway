@@ -143,6 +143,7 @@ describe('Dataset table component', () => {
     ];
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useLuceneSearch as jest.Mock).mockReturnValue({
       data: [],
@@ -156,6 +157,7 @@ describe('Dataset table component', () => {
     });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -363,6 +365,7 @@ describe('Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -396,6 +399,7 @@ describe('Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();

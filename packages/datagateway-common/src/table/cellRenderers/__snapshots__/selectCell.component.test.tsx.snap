@@ -7,28 +7,126 @@ exports[`Select cell component renders correctly when checked 1`] = `
   size="small"
   variant="body"
 >
-  <ForwardRef(Checkbox)
-    checked={true}
-    checkedIcon={
-      <Memo
-        fontSize="small"
+  <StyledTooltip
+    placement="right"
+    title=""
+  >
+    <span>
+      <ForwardRef(Checkbox)
+        checked={true}
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        className="tour-dataview-add-to-cart"
+        disabled={false}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select row 2",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        style={
+          Object {
+            "padding": "inherit",
+          }
+        }
       />
-    }
-    className="tour-dataview-add-to-cart"
-    disabled={false}
-    icon={
-      <Memo
-        fontSize="small"
+    </span>
+  </StyledTooltip>
+</ForwardRef(TableCell)>
+`;
+
+exports[`Select cell component renders correctly when selectedRows is undefined 1`] = `
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="body"
+>
+  <StyledTooltip
+    placement="right"
+    title="buttons.cart_loading_failed_tooltip"
+  >
+    <span>
+      <ForwardRef(Checkbox)
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        className="tour-dataview-add-to-cart"
+        disabled={true}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select row 2",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        style={
+          Object {
+            "padding": "inherit",
+          }
+        }
       />
-    }
-    inputProps={
-      Object {
-        "aria-label": "select row 2",
-      }
-    }
-    onClick={[Function]}
-    size="small"
-  />
+    </span>
+  </StyledTooltip>
+</ForwardRef(TableCell)>
+`;
+
+exports[`Select cell component renders correctly when selectedRows loading is true 1`] = `
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="body"
+>
+  <StyledTooltip
+    placement="right"
+    title="buttons.cart_loading_tooltip"
+  >
+    <span>
+      <ForwardRef(Checkbox)
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        className="tour-dataview-add-to-cart"
+        disabled={true}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select row 2",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        style={
+          Object {
+            "padding": "inherit",
+          }
+        }
+      />
+    </span>
+  </StyledTooltip>
 </ForwardRef(TableCell)>
 `;
 
@@ -39,27 +137,39 @@ exports[`Select cell component renders correctly when unchecked 1`] = `
   size="small"
   variant="body"
 >
-  <ForwardRef(Checkbox)
-    checked={false}
-    checkedIcon={
-      <Memo
-        fontSize="small"
+  <StyledTooltip
+    placement="right"
+    title=""
+  >
+    <span>
+      <ForwardRef(Checkbox)
+        checked={false}
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        className="tour-dataview-add-to-cart"
+        disabled={false}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select row 2",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        style={
+          Object {
+            "padding": "inherit",
+          }
+        }
       />
-    }
-    className="tour-dataview-add-to-cart"
-    disabled={false}
-    icon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    inputProps={
-      Object {
-        "aria-label": "select row 2",
-      }
-    }
-    onClick={[Function]}
-    size="small"
-  />
+    </span>
+  </StyledTooltip>
 </ForwardRef(TableCell)>
 `;

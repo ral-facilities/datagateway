@@ -159,8 +159,11 @@
   },
   "buttons": {
     "add_to_cart": "Add to selection",
+    "cart_loading_tooltip": "Loading selection information...",
+    "cart_loading_failed_tooltip": "Selection information failed to load, please reload the page or try again later",
     "remove_from_cart": "Remove from selection",
-    "download": "Download"
+    "download": "Download",
+    "unable_to_download_tooltip": "Unable to download - this item is empty"
   },
   "selec_alert": {
     "added_one": "{{count}} item has been added to selection.",
@@ -177,22 +180,48 @@
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters",
     "icons": {
-      "title": ["Title", "Name", "Type"],
-      "fingerprint": ["Visit ID", "Name"],
-      "public": ["DOI"],
-      "confirmation_number": ["Dataset Count", " Datafile Count"],
-      "assessment": ["Instrument", "Beamline"],
+      "title": [
+        "Title",
+        "Name",
+        "Type"
+      ],
+      "fingerprint": [
+        "Visit ID",
+        "Name"
+      ],
+      "public": [
+        "DOI"
+      ],
+      "confirmation_number": [
+        "Dataset Count",
+        " Datafile Count"
+      ],
+      "assessment": [
+        "Instrument",
+        "Beamline"
+      ],
       "calendar_today": [
         "Start Date",
         "End Date",
         "Create Time",
         "Modified Time"
       ],
-      "explore": ["Location"],
-      "save": ["Size"],
-      "description": ["Description", "Summary"],
-      "link": ["URL"],
-      "person": ["Principal Investigator"]
+      "explore": [
+        "Location"
+      ],
+      "save": [
+        "Size"
+      ],
+      "description": [
+        "Description",
+        "Summary"
+      ],
+      "link": [
+        "URL"
+      ],
+      "person": [
+        "Principal Investigator"
+      ]
     }
   },
   "entity_card": {

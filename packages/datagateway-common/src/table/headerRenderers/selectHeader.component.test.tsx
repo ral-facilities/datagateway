@@ -41,12 +41,30 @@ describe('Select column header component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it('renders correctly when selectedRows is undefined', () => {
+    const wrapper = shallow(
+      <SelectHeader {...selectHeaderProps} selectedRows={undefined} />
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly when loading is true', () => {
+    const wrapper = shallow(
+      <SelectHeader
+        {...selectHeaderProps}
+        loading={true}
+        selectedRows={undefined}
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('calls onCheck when not all rows are selected and the checkbox is clicked', () => {
     const wrapper = shallow(
       <SelectHeader {...selectHeaderProps} selectedRows={[1]} />
     );
 
-    wrapper.childAt(0).prop('onClick')();
+    wrapper.childAt(0).childAt(0).childAt(0).prop('onClick')();
     expect(onCheck).toHaveBeenCalledWith([1, 2, 3]);
   });
 
@@ -55,7 +73,7 @@ describe('Select column header component', () => {
       <SelectHeader {...selectHeaderProps} selectedRows={[1, 2, 3]} />
     );
 
-    wrapper.childAt(0).prop('onClick')();
+    wrapper.childAt(0).childAt(0).childAt(0).prop('onClick')();
     expect(onUncheck).toHaveBeenCalledWith([1, 2, 3]);
   });
 });

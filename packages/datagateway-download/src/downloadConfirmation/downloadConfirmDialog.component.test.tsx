@@ -1,18 +1,18 @@
-import { MenuItem } from '@mui/material';
-import axios from 'axios';
-import { mount, ReactWrapper } from 'enzyme';
-import * as React from 'react';
-import { act } from 'react-dom/test-utils';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { flushPromises } from '../setupTests';
-import DownloadConfirmDialog from './downloadConfirmDialog.component';
-import { handleICATError } from 'datagateway-common';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { getDownloadTypeStatus, submitCart } from '../downloadApi';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { DownloadSettingsContext } from '../ConfigProvider';
+import {
+  downloadPreparedCart,
+  getDownload,
+  getDownloadTypeStatus,
+  submitCart,
+} from '../downloadApi';
+import { mockedSettings } from '../testData';
+import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
 jest.mock('../downloadApi');
 jest.mock('datagateway-common', () => {
@@ -25,52 +25,14 @@ jest.mock('datagateway-common', () => {
   };
 });
 
-const updateDialogWrapper = async (wrapper: ReactWrapper): Promise<void> => {
-  // Update the wrapper with the loading dialog.
-  await act(async () => {
-    await flushPromises();
-    wrapper.update();
+const createTestQueryClient = (): QueryClient =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
   });
-};
-
-// Create our mocked datagateway-download settings file.
-const mockedSettings = {
-  facilityName: 'LILS',
-  apiUrl: 'https://example.com/api',
-  downloadApiUrl: 'https://example.com/downloadApi',
-  idsUrl: 'https://example.com/ids',
-  accessMethods: {
-    https: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'HTTPS',
-      description: 'Example description for <b>HTTPS</b> access method.',
-    },
-    globus: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'Globus',
-      description: 'Example description for Globus access method.',
-    },
-  },
-};
-
-const createWrapper = (
-  size: number,
-  isTwoLevel: boolean,
-  open: boolean
-): ReactWrapper => {
-  return mount(
-    <DownloadSettingsContext.Provider value={mockedSettings}>
-      <DownloadConfirmDialog
-        totalSize={size}
-        isTwoLevel={isTwoLevel}
-        open={open}
-        redirectToStatusTab={jest.fn()}
-        setClose={jest.fn()}
-        clearCart={jest.fn()}
-      />
-    </DownloadSettingsContext.Provider>
-  );
-};
 
 const renderWrapper = (
   size: number,
@@ -78,7 +40,7 @@ const renderWrapper = (
   open: boolean
 ): RenderResult =>
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={createTestQueryClient()}>
       <DownloadSettingsContext.Provider value={mockedSettings}>
         <DownloadConfirmDialog
           totalSize={size}
@@ -179,41 +141,27 @@ describe('DownloadConfirmDialog', () => {
     renderWrapper(100, false, true);
 
     expect(
-      await screen.findByText('downloadConfirmDialog.download')
+      await screen.findByRole('button', {
+        name: 'downloadConfirmDialog.download',
+      })
     ).toBeDisabled();
   });
 
-  it.skip('prevent download of an access method where the status was not fetched', async () => {
+  it('should prevent download of an access method where the status was not fetched', async () => {
     // Return a response where one of the status requests has not been successful.
-    (axios.get as jest.Mock)
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          data: { disabled: true, message: '' },
-        })
+    (getDownloadTypeStatus as jest.Mock)
+      .mockImplementationOnce((type, _) =>
+        Promise.resolve({ type, disabled: true, message: '' })
       )
-      .mockImplementationOnce(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
+      .mockRejectedValueOnce({
+        message: 'Test error message',
+      });
 
-    const wrapper = createWrapper(100, false, true);
-    await updateDialogWrapper(wrapper);
+    renderWrapper(100, false, true);
 
-    // Ensure the access method for which we did not receive a status response has been disabled.
-    expect(wrapper.exists('[role="button"]#confirm-access-method')).toBe(true);
-    wrapper.find('[role="button"]#confirm-access-method').simulate('click');
-    expect(wrapper.find(MenuItem).at(1).prop('disabled')).toBe(true);
-
-    // Ensure the download button is present and it is disabled.
-    expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
-    expect(
-      wrapper.find('button#download-confirmation-download').prop('disabled')
-    ).toBe(true);
-
-    expect(handleICATError).toHaveBeenCalled();
-    expect(handleICATError).toHaveBeenCalledWith({
-      message: 'Test error message',
+    await waitFor(() => {
+      expect(screen.queryByRole('option', { name: 'GLOBUS' })).toBeNull();
+      expect(screen.getByRole('option', { name: 'HTTPS' })).toBeInTheDocument();
     });
   });
 
@@ -269,6 +217,51 @@ describe('DownloadConfirmDialog', () => {
     expect(await screen.findByText('custom download name')).toBeInTheDocument();
   });
 
+  it('should download prepared cart upon successful submission of cart', async () => {
+    (submitCart as jest.Mock).mockResolvedValue(123);
+    (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
+      Promise.resolve({
+        type,
+        disabled: false,
+        message: '',
+      })
+    );
+    (getDownload as jest.Mock).mockResolvedValue({
+      preparedId: 1,
+      fileName: 'test-file-name',
+      status: 'COMPLETE',
+    });
+
+    renderWrapper(100, true, true);
+    // click on download button to begin download
+    await user.click(await screen.findByText('downloadConfirmDialog.download'));
+
+    await waitFor(() => {
+      expect(downloadPreparedCart).toHaveBeenCalledWith(1, 'test-file-name', {
+        idsUrl: 'https://example.com/ids',
+      });
+    });
+  });
+
+  it('should disable download when no download method is available', async () => {
+    (getDownloadTypeStatus as jest.Mock).mockRejectedValue({
+      error: 'test error',
+    });
+
+    renderWrapper(100, true, true);
+
+    expect(
+      await screen.findByText(
+        'downloadConfirmDialog.access_method_helpertext_all_disabled_error'
+      )
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', {
+        name: 'downloadConfirmDialog.download',
+      })
+    ).toBeDisabled();
+  });
+
   it('should show error when download has failed', async () => {
     (submitCart as jest.Mock).mockRejectedValue({
       message: 'error',
@@ -302,11 +295,12 @@ describe('DownloadConfirmDialog', () => {
     // type in an incorrect email address
     await user.type(emailInput, 'cat-person@');
 
-    await waitFor(async () => {
-      expect(
-        await screen.findByText('downloadConfirmDialog.download')
-      ).toBeDisabled();
-    });
+    expect(
+      await screen.findByRole('button', {
+        name: 'downloadConfirmDialog.download',
+      })
+    ).toBeDisabled();
+
     // Simulate correct email address entry.
     await user.clear(emailInput);
     await user.type(emailInput, 'cat@person.com');

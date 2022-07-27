@@ -1,35 +1,34 @@
-import React from 'react';
 import {
   Button,
   CircularProgress,
   Dialog,
   DialogActions as MuiDialogActions,
-  DialogContent as MuiDialogContent,
-  DialogTitle as MuiDialogTitle,
   FormControl,
   FormHelperText,
   Grid,
-  IconButton,
   InputLabel,
   Select,
   styled,
   TextField,
   Typography,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import type { DownloadTypeStatus } from '../downloadApi';
-import { downloadPreparedCart } from '../downloadApi';
+import { formatBytes } from 'datagateway-common';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { Trans, useTranslation } from 'react-i18next';
+import type { DownloadTypeStatus } from '../downloadApi';
+import { downloadPreparedCart } from '../downloadApi';
 import {
   useDownload,
   useDownloadTypeStatuses,
   useSubmitCart,
 } from '../downloadApiHooks';
-import { formatBytes, Mark } from 'datagateway-common';
+import DialogContent from './dialogContent.component';
+import DialogTitle from './dialogTitle.component';
+import DownloadRequestResult from './downloadRequestResult.component';
 
-const TableContentDiv = styled('div')(({ theme }) => ({
+const TableContentDiv = styled('div')(() => ({
   paddingTop: '10px',
   '& table': {
     borderCollapse: 'collapse',
@@ -42,37 +41,6 @@ const TableContentDiv = styled('div')(({ theme }) => ({
     border: '1px solid #dddddd',
     textAlign: 'center',
   },
-}));
-
-interface DialogTitleProps {
-  id: string;
-  onClose: () => void;
-  children?: React.ReactNode;
-}
-
-const DialogTitle = (props: DialogTitleProps): React.ReactElement => {
-  const { children, onClose, ...other } = props;
-  const [t] = useTranslation();
-
-  return (
-    <MuiDialogTitle sx={{ margin: 0, padding: 2 }} {...other}>
-      <Typography sx={{ fontSize: '1.25rem' }}>{children}</Typography>
-      {onClose && (
-        <IconButton
-          aria-label={t('downloadConfirmDialog.close_arialabel')}
-          sx={{ position: 'absolute', right: 2, top: 2, color: 'grey[500]' }}
-          onClick={onClose}
-          size="large"
-        >
-          <CloseIcon />
-        </IconButton>
-      )}
-    </MuiDialogTitle>
-  );
-};
-
-const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
-  padding: theme.spacing(2),
 }));
 
 const DialogActions = styled(MuiDialogActions)(({ theme }) => ({
@@ -102,8 +70,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   // Load the settings for use.
   const settings = React.useContext(DownloadSettingsContext);
-
-  const [methodsUnavailable, setMethodsUnavailable] = React.useState(false);
 
   // Download speed/time table.
   const [showDownloadTime, setShowDownloadTime] = React.useState(true);
@@ -143,21 +109,23 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     },
   });
 
-  const isDownloadTypeStatusesLoadedSuccessfully = downloadTypeStatusQueries.every(
-    ({ isLoading, isSuccess }) => !isLoading && isSuccess
+  const hasFinishedLoadingDownloadTypeStatuses = downloadTypeStatusQueries.every(
+    ({ isLoading }) => !isLoading
   );
 
   const {
     data: downloadId,
     mutate: submitCart,
-    isLoading: isSubmittingCart,
     isSuccess: isCartSubmittedSuccessfully,
     isError: hasSubmitCartFailed,
+    reset: resetSubmitCartMutation,
   } = useSubmitCart();
   // query download after cart is submitted
   const {
     data: downloadInfo,
     isSuccess: isDownloadInfoAvailable,
+    isError: isDownloadInfoUnavailable,
+    remove: resetDownloadQuery,
   } = useDownload({
     id: downloadId ?? -1,
     enabled: Boolean(downloadId) && isCartSubmittedSuccessfully,
@@ -168,7 +136,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
    */
   const downloadTypeInfoMap = React.useMemo(
     () =>
-      isDownloadTypeStatusesLoadedSuccessfully
+      hasFinishedLoadingDownloadTypeStatuses
         ? downloadTypeStatusQueries.reduce((m, { data }) => {
             if (data && data.disabled !== undefined) {
               m.set(data.type, data);
@@ -176,7 +144,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             return m;
           }, new Map<string, DownloadTypeInfo>())
         : null,
-    [isDownloadTypeStatusesLoadedSuccessfully, downloadTypeStatusQueries]
+    [hasFinishedLoadingDownloadTypeStatuses, downloadTypeStatusQueries]
   );
 
   /**
@@ -208,17 +176,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     setClose();
   };
 
-  // check if every query for download type status failed
-  React.useEffect(() => {
-    if (
-      downloadTypeStatusQueries.every(
-        ({ isLoading, isError }) => !isLoading && isError
-      )
-    ) {
-      setMethodsUnavailable(true);
-    }
-  }, [downloadTypeStatusQueries]);
-
   // select the first download method available.
   React.useEffect(() => {
     if (sortedDownloadTypes && sortedDownloadTypes.length > 0) {
@@ -233,24 +190,26 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   React.useEffect(() => {
     if (props.open) {
-      // Reset checkmark view.
-      // Reset all fields for next time dialog is opened.
+      resetDownloadQuery();
+      resetSubmitCartMutation();
       setDownloadName('');
       setEmailAddress('');
     }
-  }, [props.open]);
+  }, [props.open, resetDownloadQuery, resetSubmitCartMutation]);
 
   React.useEffect(() => {
-    if (!isTwoLevel && props.open) {
-      // Calculate the download times as storage is not two-level;
-      // varied for 1 Mbps, 30 Mbps and 100 Mbps.
-      setTimeAtOne(totalSize / (1024 * 1024) / (1 / 8));
-      setTimeAtThirty(totalSize / (1024 * 1024) / (30 / 8));
-      setTimeAtHundred(totalSize / (1024 * 1024) / (100 / 8));
-    } else {
-      // If storage on IDS server is two-level,
-      // then do not show the download speed/time table.
-      setShowDownloadTime(false);
+    if (props.open) {
+      if (!isTwoLevel) {
+        // Calculate the download times as storage is not two-level;
+        // varied for 1 Mbps, 30 Mbps and 100 Mbps.
+        setTimeAtOne(totalSize / (1024 * 1024) / (1 / 8));
+        setTimeAtThirty(totalSize / (1024 * 1024) / (30 / 8));
+        setTimeAtHundred(totalSize / (1024 * 1024) / (100 / 8));
+      } else {
+        // If storage on IDS server is two-level,
+        // then do not show the download speed/time table.
+        setShowDownloadTime(false);
+      }
     }
   }, [isTwoLevel, props.open, totalSize]);
 
@@ -333,14 +292,29 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     });
   };
 
+  // check if every query for download type status failed
+  const methodsUnavailable = downloadTypeStatusQueries.every(
+    ({ isLoading, isError }) => !isLoading && isError
+  );
+
   const shouldShowConfirmationForm =
     props.open &&
-    isDownloadTypeStatusesLoadedSuccessfully &&
-    sortedDownloadTypes;
+    hasFinishedLoadingDownloadTypeStatuses &&
+    Boolean(sortedDownloadTypes);
+
+  // whether the download request has failed
+  const hasDownloadFailed =
+    // cart submitted "successfully" but server doesn't return a download id
+    (isCartSubmittedSuccessfully && !downloadId) ||
+    hasSubmitCartFailed ||
+    isDownloadInfoUnavailable;
+
+  // whether the download request is successful
+  const isDownloadSuccess =
+    isDownloadInfoAvailable && isCartSubmittedSuccessfully;
 
   // whether to show result of submit cart (i.e. successful or failed)
-  const shouldShowSubmitCartResult =
-    isSubmittingCart || isCartSubmittedSuccessfully || hasSubmitCartFailed;
+  const shouldShowSubmitCartResult = isDownloadSuccess || hasDownloadFailed;
 
   return (
     <Dialog
@@ -351,122 +325,20 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       aria-label={t('downloadConfirmDialog.dialog_arialabel')}
     >
       {shouldShowSubmitCartResult ? (
-        <div>
-          <DialogTitle
-            id="download-confirm-dialog-title"
-            onClose={dialogClose}
-          />
-
-          <DialogContent>
-            <Grid
-              container
-              spacing={4}
-              direction="column"
-              alignItems="center"
-              justifyContent="center"
-              style={{ paddingBottom: '25px' }}
-            >
-              <Grid item xs>
-                {isCartSubmittedSuccessfully ? (
-                  <Mark size={100} visible={props.open} colour="#3e863e" />
-                ) : (
-                  <Mark
-                    size={100}
-                    visible={props.open}
-                    colour="#a91b2e"
-                    isCross={true}
-                  />
-                )}
-              </Grid>
-
-              {isCartSubmittedSuccessfully ? (
-                <Grid item xs>
-                  <Typography id="download-confirmation-success">
-                    {t('downloadConfirmDialog.download_success')}
-                  </Typography>
-                </Grid>
-              ) : (
-                <div
-                  id="download-confirmation-unsuccessful"
-                  style={{ textAlign: 'center' }}
-                >
-                  <Typography>
-                    <Trans t={t} i18nKey="downloadConfirmDialog.download_error">
-                      <b>Your download request was unsuccessful</b>
-                      <br />
-                      (No download information was received)
-                    </Trans>
-                  </Typography>
-                </div>
-              )}
-
-              {/* Grid to show submitted download information */}
-              {isCartSubmittedSuccessfully && (
-                <Grid item xs>
-                  <div style={{ textAlign: 'center', margin: '0 auto' }}>
-                    <div style={{ float: 'left', textAlign: 'right' }}>
-                      <Typography>
-                        <b>
-                          {t(
-                            'downloadConfirmDialog.confirmation_download_name'
-                          )}
-                          :{' '}
-                        </b>
-                      </Typography>
-                      <Typography>
-                        <b>
-                          {t(
-                            'downloadConfirmDialog.confirmation_access_method'
-                          )}
-                          :{' '}
-                        </b>
-                      </Typography>
-                      {emailAddress && (
-                        <Typography>
-                          <b>
-                            {t('downloadConfirmDialog.confirmation_email')}:{' '}
-                          </b>
-                        </Typography>
-                      )}
-                    </div>
-                    <div
-                      style={{
-                        float: 'right',
-                        textAlign: 'left',
-                        paddingLeft: '25px',
-                      }}
-                    >
-                      <Typography id="confirm-success-download-name">
-                        {downloadName}
-                      </Typography>
-                      <Typography id="confirm-success-access-method">
-                        {selectedMethod.toUpperCase()}
-                      </Typography>
-                      {emailAddress && (
-                        <Typography id="confirm-success-email-address">
-                          {emailAddress}
-                        </Typography>
-                      )}
-                    </div>
-                  </div>
-                </Grid>
-              )}
-
-              {isCartSubmittedSuccessfully && (
-                <Grid item xs>
-                  <Button
-                    id="download-confirmation-status-link"
-                    variant="contained"
-                    color="primary"
-                    onClick={redirectToStatusTab}
-                  >
-                    {t('downloadConfirmDialog.view_my_downloads')}
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
-          </DialogContent>
-        </div>
+        <DownloadRequestResult
+          success={isDownloadSuccess}
+          closeDialog={setClose}
+          redirectToStatusTab={redirectToStatusTab}
+          requestInfo={
+            isDownloadSuccess
+              ? {
+                  downloadName,
+                  emailAddress,
+                  transport: selectedMethod,
+                }
+              : null
+          }
+        />
       ) : shouldShowConfirmationForm ? (
         <div>
           {/* Custom title component which has a close button */}
@@ -563,16 +435,15 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   <FormHelperText id="confirm-access-method-help">
                     {(() => {
                       const method = downloadTypeInfoMap?.get(selectedMethod);
-                      if (!method)
-                        return t(
-                          'downloadConfirmDialog.access_method_helpertext'
-                        );
-
                       if (methodsUnavailable)
                         return t(
                           'downloadConfirmDialog.access_method_helpertext_all_disabled_error'
                         );
-
+                      if (!method) {
+                        return t(
+                          'downloadConfirmDialog.access_method_helpertext'
+                        );
+                      }
                       if (method.disabled)
                         return (
                           method.message ||
@@ -580,7 +451,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                             'downloadConfirmDialog.access_method_helpertext_disabled_error'
                           )
                         );
-
                       return t(
                         'downloadConfirmDialog.access_method_helpertext'
                       );
@@ -701,6 +571,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               id="download-confirmation-download"
               disabled={
                 !emailValid ||
+                (!downloadTypeInfoMap?.has(selectedMethod) ?? true) ||
                 downloadTypeInfoMap?.get(selectedMethod)?.disabled ||
                 methodsUnavailable
               }
