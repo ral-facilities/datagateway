@@ -374,18 +374,16 @@ export type DownloadProgress = number | string;
  * This will normally be an integer value between 0 and 100 but can also be a status value such as "UNKNOWN"
  */
 export const getPercentageComplete = async ({
-  prepareId,
+  preparedId,
   settings: { idsUrl },
 }: {
-  prepareId: string;
+  preparedId: string;
   settings: { idsUrl: string };
 }): Promise<DownloadProgress> => {
-  return Math.floor(Math.random() * 100) + 1;
-
-  // const { data } = await axios.get(`${idsUrl}/getPercentageComplete`, {
-  //   params: { prepareId },
-  // });
-  // // if data is not a number (NaN), it is a status value
-  // const isStatus = isNaN(data);
-  // return isStatus ? data : Number(data);
+  const { data } = await axios.get(`${idsUrl}/getPercentageComplete`, {
+    params: { preparedId },
+  });
+  // if data is not a number (NaN), it is a status value
+  const isStatus = isNaN(data);
+  return isStatus ? data : Number(data);
 };

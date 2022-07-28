@@ -1,6 +1,6 @@
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import axios from 'axios';
-import type { Download, FormattedDownload } from 'datagateway-common';
+import type { Download } from 'datagateway-common';
 import {
   DownloadCartItem,
   handleICATError,
@@ -26,12 +26,7 @@ import {
   useSizes,
   useSubmitCart,
 } from './downloadApiHooks';
-import {
-  mockCartItems,
-  mockDownloadItems,
-  mockedSettings,
-  mockFormattedDownloadItems,
-} from './testData';
+import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -559,7 +554,7 @@ describe('Download Cart API react-query hooks test', () => {
           },
         }
       );
-      expect(result.current.data).toEqual(mockFormattedDownloadItems);
+      expect(result.current.data).toEqual(mockDownloadItems);
     });
 
     it('should call handleICATError on failure', async () => {
@@ -642,25 +637,6 @@ describe('Download Cart API react-query hooks test', () => {
         email: 'a@b.c',
       };
 
-      const mockRestoredFormattedDownload: FormattedDownload = {
-        createdAt: 'created-at',
-        downloadItems: [],
-        facilityName: mockedSettings.facilityName,
-        fileName: 'file-name',
-        fullName: 'fullName',
-        id: 124,
-        isDeleted: 'No',
-        isEmailSent: false,
-        isTwoLevel: false,
-        preparedId: 'prepare-id',
-        sessionId: 'session-id',
-        size: 21,
-        status: 'downloadStatus.preparing',
-        transport: 'http',
-        userName: 'username',
-        email: 'a@b.c',
-      };
-
       axios.get = jest.fn().mockImplementation((url, { params }) => {
         // api call from fetchDownloads
         if (
@@ -704,7 +680,7 @@ describe('Download Cart API react-query hooks test', () => {
 
       expect(newList).toHaveLength(mockDownloadItems.length + 1);
       expect(newList?.find(({ id }) => id === 124)).toEqual(
-        mockRestoredFormattedDownload
+        mockRestoredDownload
       );
     });
 
@@ -758,7 +734,7 @@ describe('Download Cart API react-query hooks test', () => {
           },
         }
       );
-      expect(result.current.data.pages).toEqual([mockFormattedDownloadItems]);
+      expect(result.current.data.pages).toEqual([mockDownloadItems]);
 
       // then test fetching next page
 
@@ -781,8 +757,8 @@ describe('Download Cart API react-query hooks test', () => {
         }
       );
       expect(result.current.data.pages).toEqual([
-        mockFormattedDownloadItems,
-        mockFormattedDownloadItems,
+        mockDownloadItems,
+        mockDownloadItems,
       ]);
     });
 
@@ -893,7 +869,7 @@ describe('Download Cart API react-query hooks test', () => {
         ({ id }) => id === 1
       );
 
-      expect(updated.isDeleted).toBe('Yes');
+      expect(updated.isDeleted).toBe(true);
     });
 
     it('should restore download with the given id', async () => {
@@ -994,7 +970,7 @@ describe('Download Cart API react-query hooks test', () => {
         ({ id }) => id === restoredDownload.id
       );
 
-      expect(updated.isDeleted).toBe('No');
+      expect(updated.isDeleted).toBe(false);
     });
 
     it('should call handleICATError when an error is encountered', async () => {
@@ -1040,11 +1016,6 @@ describe('Download Cart API react-query hooks test', () => {
         status: 'PREPARING',
       };
 
-      const updatedFormattedDownload: FormattedDownload = {
-        ...mockFormattedDownloadItems.find(({ id }) => id === 1),
-        status: 'downloadStatus.preparing',
-      };
-
       axios.get = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data: isMutated
@@ -1082,7 +1053,7 @@ describe('Download Cart API react-query hooks test', () => {
         result.current.useAdminDownloads.data.pages[0].find(
           ({ id }) => id === 1
         )
-      ).toEqual(updatedFormattedDownload);
+      ).toEqual(updatedDownload);
     });
 
     it('should call handleICATError and rollback optimistic changes if an error is encountered', async () => {
@@ -1112,7 +1083,7 @@ describe('Download Cart API react-query hooks test', () => {
         message: 'Test error message',
       });
       expect(result.current.useAdminDownloads.data.pages).toEqual([
-        mockFormattedDownloadItems,
+        mockDownloadItems,
       ]);
     });
   });

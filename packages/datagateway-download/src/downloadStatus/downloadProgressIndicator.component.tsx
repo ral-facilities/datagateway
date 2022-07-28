@@ -1,10 +1,13 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import type { Download, FormattedDownload } from 'datagateway-common';
 import React from 'react';
-import { useDownloadPercentageComplete } from '../downloadApiHooks';
+import {
+  useDownload,
+  useDownloadPercentageComplete,
+} from '../downloadApiHooks';
+import { useTranslation } from 'react-i18next';
 
 interface DownloadProgressIndicatorProps {
-  download: FormattedDownload | Download;
+  downloadId?: number;
 }
 
 /**
@@ -13,13 +16,35 @@ interface DownloadProgressIndicatorProps {
  * @constructor
  */
 function DownloadProgressIndicator({
-  download,
+  downloadId,
 }: DownloadProgressIndicatorProps): JSX.Element {
-  const { data: progress, isLoading } = useDownloadPercentageComplete({
-    prepareId: download.preparedId,
+  const [t] = useTranslation();
+  const { data: download, isLoading: isLoadingDownload } = useDownload({
+    id: downloadId ?? -1,
+    enabled: Boolean(downloadId),
+  });
+  const {
+    data: progress,
+    isLoading: isLoadingProgress,
+  } = useDownloadPercentageComplete({
+    preparedId: download?.preparedId ?? '',
+    enabled: Boolean(download?.preparedId) && download?.status === 'RESTORING',
   });
 
-  if (isLoading) return <LinearProgress />;
+  console.log(
+    'load progress',
+    Boolean(download?.preparedId) && download?.status === 'RESTORING'
+  );
+  console.log('status', download?.status);
+
+  if (isLoadingDownload || isLoadingProgress) {
+    console.log('show loading');
+    return <>{t('downloadStatus.calculating_progress')}</>;
+  }
+
+  // only show progress if download is being restored
+  if (!download || !progress || download.status !== 'RESTORING')
+    return <>{t('downloadStatus.progress_unavailable')}</>;
 
   if (typeof progress === 'number')
     return (
@@ -27,7 +52,7 @@ function DownloadProgressIndicator({
         <Box sx={{ width: '100%', mr: 1 }}>
           <LinearProgress variant="determinate" value={progress} />
         </Box>
-        <Box sx={{ minWidth: 32 }}>
+        <Box sx={{ minWidth: 36 }}>
           <Typography role="" variant="body2" color="text.secondary">
             {progress}%
           </Typography>

@@ -66,6 +66,7 @@ const AdminDownloadStatusTable: React.FC = () => {
     new Date().toLocaleString()
   );
   const [t] = useTranslation();
+  const { formatDownload } = useDownloadFormatter();
   const { downloadStatusLabels: downloadStatuses } = useDownloadFormatter();
   const { mutate: adminDownloadDeleted } = useAdminDownloadDeleted();
   const { mutate: adminUpdateDownloadStatus } = useAdminUpdateDownloadStatus();
@@ -215,8 +216,8 @@ const AdminDownloadStatusTable: React.FC = () => {
   );
 
   const tableItems = React.useMemo(
-    () => data?.pages.flatMap((page) => page) ?? [],
-    [data?.pages]
+    () => data?.pages.flatMap((page) => page.map(formatDownload)) ?? [],
+    [data?.pages, formatDownload]
   );
 
   return (
@@ -327,7 +328,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                               rowData,
                             }: TableCellProps) => (
                               <DownloadProgressIndicator
-                                download={rowData as FormattedDownload}
+                                downloadId={(rowData as FormattedDownload).id}
                               />
                             ),
                           },

@@ -24,6 +24,7 @@ import {
   useDownloadOrRestoreDownload,
   useDownloads,
 } from '../downloadApiHooks';
+import useDownloadFormatter from './hooks/useDownloadFormatter';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
@@ -36,6 +37,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 ) => {
   // Load the settings for use.
   const settings = React.useContext(DownloadSettingsContext);
+  const [t] = useTranslation();
+  const { formatDownload } = useDownloadFormatter();
 
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({
@@ -46,14 +49,15 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       | { value?: string | number; type: string }
       | { startDate?: string; endDate?: string };
   }>({});
-  const { data: downloads, isLoading, isFetched, refetch } = useDownloads();
+  const { data: downloads, isLoading, isFetched, refetch } = useDownloads({
+    select: (data) => data.map(formatDownload),
+  });
 
   const {
     refreshTable: shouldRefreshTable,
     setRefreshTable,
     setLastChecked,
   } = props;
-  const [t] = useTranslation();
 
   const refreshTable = React.useCallback(async () => {
     await refetch();
@@ -246,7 +250,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       disableSort: true,
                       cellContentRenderer: ({ rowData }: TableCellProps) => (
                         <DownloadProgressIndicator
-                          download={rowData as FormattedDownload}
+                          downloadId={(rowData as FormattedDownload).id}
                         />
                       ),
                     },

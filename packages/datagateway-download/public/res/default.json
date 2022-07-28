@@ -35,7 +35,9 @@
     "paused": "Paused",
     "preparing": "Preparing",
     "restoring": "Restoring from tape",
-    "progress": "Progress"
+    "progress": "Progress",
+    "calculating_progress": "Calculating...",
+    "progress_unavailable": "Unavailable"
   },
   "downloadConfirmDialog": {
     "close_arialabel": "Close download confirmation dialog",

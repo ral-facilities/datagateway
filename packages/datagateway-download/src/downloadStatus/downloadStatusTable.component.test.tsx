@@ -7,6 +7,7 @@ import {
   downloadDeleted,
   fetchDownloads,
   getDataUrl,
+  getDownload,
   getPercentageComplete,
 } from '../downloadApi';
 import {
@@ -311,6 +312,11 @@ describe('Download Status Table', () => {
   }, 10000);
 
   it('should show download progress ui if enabled', async () => {
+    (getDownload as jest.MockedFunction<
+      typeof getDownload
+    >).mockImplementation((id, _) =>
+      Promise.resolve(mockDownloadItems.find((download) => download.id === id))
+    );
     (getPercentageComplete as jest.MockedFunction<
       typeof getPercentageComplete
     >).mockResolvedValue(20);
@@ -325,9 +331,10 @@ describe('Download Status Table', () => {
     expect(
       await screen.findByText('downloadStatus.progress')
     ).toBeInTheDocument();
-    expect(screen.getAllByRole('progressbar')).toHaveLength(
-      mockDownloadItems.length
-    );
-    expect(screen.getAllByText('20%')).toHaveLength(mockDownloadItems.length);
+
+    await waitFor(() => {
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
+      expect(screen.getByText('20%')).toBeInTheDocument();
+    });
   });
 });

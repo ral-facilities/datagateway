@@ -1,9 +1,5 @@
 import { AxiosError } from 'axios';
-import type {
-  Download,
-  DownloadStatus,
-  FormattedDownload,
-} from 'datagateway-common';
+import type { Download, DownloadStatus } from 'datagateway-common';
 import {
   DownloadCartItem,
   fetchDownloadCart,
@@ -345,7 +341,7 @@ export const useDownload = <T = Download>({
     Download,
     AxiosError,
     T,
-    (number | QueryKey)[]
+    [QueryKey.DOWNLOAD, number]
   >): UseQueryResult<T, AxiosError> => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
@@ -370,13 +366,16 @@ export const useDownload = <T = Download>({
 /**
  * A React hook that fetches all downloads created by the user.
  */
-export const useDownloads = (): UseQueryResult<
-  FormattedDownload[],
-  AxiosError
-> => {
+export const useDownloads = <TData = Download[]>(
+  queryOptions?: UseQueryOptions<
+    Download[],
+    AxiosError,
+    TData,
+    QueryKey.DOWNLOADS
+  >
+): UseQueryResult<TData, AxiosError> => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
-  const { formatDownload } = useDownloadFormatter();
 
   return useQuery(
     QueryKey.DOWNLOADS,
@@ -386,11 +385,11 @@ export const useDownloads = (): UseQueryResult<
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
     {
-      select: (downloads) => downloads.map(formatDownload),
       onError: (error) => {
         handleICATError(error);
       },
       retry: retryICATErrors,
+      ...queryOptions,
     }
   );
 };
@@ -565,7 +564,7 @@ export const useAdminDownloads = ({
   initialQueryOffset,
 }: {
   initialQueryOffset: string;
-}): UseInfiniteQueryResult<FormattedDownload[], AxiosError> => {
+}): UseInfiniteQueryResult<Download[], AxiosError> => {
   // Load the download settings for use
   const downloadSettings = React.useContext(DownloadSettingsContext);
   const { formatDownload } = useDownloadFormatter();
@@ -581,11 +580,6 @@ export const useAdminDownloads = ({
         pageParam
       ),
     {
-      select: ({ pages, pageParams }) => ({
-        pageParams,
-        pages: pages.map((page) => page.map(formatDownload)),
-      }),
-
       onError: (error) => {
         handleICATError(error);
       },
@@ -753,9 +747,9 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
  * @param queryOptions Optional `useQuery` option override.
  */
 export const useDownloadPercentageComplete = <T = DownloadProgress>({
-  prepareId,
+  preparedId,
   ...queryOptions
-}: { prepareId: string } & UseQueryOptions<
+}: { preparedId: string } & UseQueryOptions<
   DownloadProgress,
   AxiosError,
   T,
@@ -764,10 +758,10 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
   const { idsUrl } = React.useContext(DownloadSettingsContext);
 
   return useQuery(
-    [QueryKey.DOWNLOAD_PROGRESS, prepareId],
+    [QueryKey.DOWNLOAD_PROGRESS, preparedId],
     () =>
       getPercentageComplete({
-        prepareId,
+        preparedId: preparedId,
         settings: { idsUrl },
       }),
     {

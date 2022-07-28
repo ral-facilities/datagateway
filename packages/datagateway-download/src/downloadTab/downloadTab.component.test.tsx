@@ -17,7 +17,7 @@ import {
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
-import { mockCartItems, mockDownloadItems } from '../testData';
+import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
 
 jest.mock('datagateway-common', () => {
@@ -29,26 +29,6 @@ jest.mock('datagateway-common', () => {
   };
 });
 jest.mock('../downloadApi');
-
-// Create our mocked datagateway-download settings file.
-const mockedSettings = {
-  facilityName: 'LILS',
-  apiUrl: 'https://example.com/api',
-  downloadApiUrl: 'https://example.com/downloadApi',
-  idsUrl: 'https://example.com/ids',
-  accessMethods: {
-    https: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'HTTPS',
-      description: 'Example description for HTTPS access method.',
-    },
-    globus: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'Globus',
-      description: 'Example description for Globus access method.',
-    },
-  },
-};
 
 describe('DownloadTab', () => {
   let history;
