@@ -46,7 +46,6 @@ import {
   removeFromCart,
   submitCart,
 } from './downloadApi';
-import useDownloadFormatter from './downloadStatus/hooks/useDownloadFormatter';
 
 /**
  * An enumeration of react query keys.
@@ -567,7 +566,6 @@ export const useAdminDownloads = ({
 }): UseInfiniteQueryResult<Download[], AxiosError> => {
   // Load the download settings for use
   const downloadSettings = React.useContext(DownloadSettingsContext);
-  const { formatDownload } = useDownloadFormatter();
 
   return useInfiniteQuery(
     QueryKey.ADMIN_DOWNLOADS,
