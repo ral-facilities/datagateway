@@ -62,11 +62,34 @@ describe('Download Confirmation', () => {
   });
 
   it('should be able to submit a download request and start immediate download with default values (HTTPS)', () => {
+    // this snippet here allows us to pause request to simulate loading
+    let sendRequest: () => void;
+    const intercept = new Promise((resolve) => {
+      sendRequest = resolve;
+    });
+
+    cy.intercept('POST', '**/user/cart/LILS/submit', (req) =>
+      // wait until sendRequest is called later,
+      // then continue the request
+      intercept.then(() => {
+        req.continue();
+      })
+    );
+
     // Ensure our access method is HTTPS before starting an immediate download.
     cy.contains('#confirm-access-method', 'HTTPS').should('exist');
 
     // Click on the download button.
     cy.get('#download-confirmation-download').click();
+
+    // when loading, should disable download button and show progress indicator
+    cy.get('#download-confirmation-download').should('be.disabled');
+    cy.get('#download-confirmation-download > [role="progressbar"]').should(
+      'exist'
+    );
+
+    // resume the request
+    sendRequest();
 
     // Ensure the correct message and download details are shown.
     cy.contains(

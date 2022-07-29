@@ -116,6 +116,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const {
     data: downloadId,
     mutate: submitCart,
+    isLoading: isSubmittingCart,
     isSuccess: isCartSubmittedSuccessfully,
     isError: hasSubmitCartFailed,
     reset: resetSubmitCartMutation,
@@ -123,6 +124,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // query download after cart is submitted
   const {
     data: downloadInfo,
+    isLoading: isFetchingDownloadInfo,
     isSuccess: isDownloadInfoAvailable,
     isError: isDownloadInfoUnavailable,
     remove: resetDownloadQuery,
@@ -315,6 +317,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   // whether to show result of submit cart (i.e. successful or failed)
   const shouldShowSubmitCartResult = isDownloadSuccess || hasDownloadFailed;
+
+  const isLoading = isSubmittingCart || isFetchingDownloadInfo;
 
   return (
     <Dialog
@@ -570,6 +574,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             <Button
               id="download-confirmation-download"
               disabled={
+                isLoading ||
                 !emailValid ||
                 (!downloadTypeInfoMap?.has(selectedMethod) ?? true) ||
                 downloadTypeInfoMap?.get(selectedMethod)?.disabled ||
@@ -579,7 +584,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               color="primary"
               variant="contained"
             >
-              {t('downloadConfirmDialog.download')}
+              {isLoading && <CircularProgress size={16} />}
+              <span style={{ paddingLeft: `${isLoading ? 8 : 0}px` }}>
+                {t('downloadConfirmDialog.download')}
+              </span>
             </Button>
           </DialogActions>
         </div>

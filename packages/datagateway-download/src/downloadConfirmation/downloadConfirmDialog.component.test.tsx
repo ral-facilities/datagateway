@@ -1,4 +1,4 @@
-import type { RenderResult } from '@testing-library/react';
+import { RenderResult, within } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
@@ -116,7 +116,9 @@ describe('DownloadConfirmDialog', () => {
     );
 
     expect(
-      await screen.findByText('downloadConfirmDialog.download')
+      await screen.findByRole('button', {
+        name: 'downloadConfirmDialog.download',
+      })
     ).toBeDisabled();
 
     await user.selectOptions(
@@ -345,6 +347,54 @@ describe('DownloadConfirmDialog', () => {
     );
 
     expect(closeFunction).toHaveBeenCalled();
+  });
+
+  it('should disable download button when processing download request', async () => {
+    let resolveSubmitCart: (downloadId: number) => void;
+    (submitCart as jest.MockedFunction<typeof submitCart>).mockReturnValue(
+      new Promise((_resolve) => {
+        // pretends submitCart is loading until it is resolved manually.
+        resolveSubmitCart = _resolve;
+      })
+    );
+    (getDownload as jest.MockedFunction<typeof getDownload>).mockReturnValue(
+      new Promise(() => {
+        // never resolve to pretend it is loading.
+      })
+    );
+
+    renderWrapper(100, false, true);
+
+    let downloadButton = await screen.findByRole('button', {
+      name: 'downloadConfirmDialog.download',
+    });
+
+    // should not show progress indicator initially
+    expect(within(downloadButton).queryByRole('progressbar')).toBeNull();
+
+    // click on download to trigger cart submission
+    await user.click(downloadButton);
+    // should now show progress indicator to indicate that download request
+    // is being processed
+    downloadButton = await screen.findByRole('button', {
+      name: 'downloadConfirmDialog.download',
+    });
+    expect(downloadButton).toBeDisabled();
+    expect(
+      await within(downloadButton).findByRole('progressbar')
+    ).toBeInTheDocument();
+
+    // pretend cart submission is complete
+    resolveSubmitCart(1);
+    // should continue showing progress indicator
+    // to wait for download info to be returned
+    downloadButton = await screen.findByRole('button', {
+      name: 'downloadConfirmDialog.download',
+    });
+    expect(downloadButton).toBeDisabled();
+    expect(
+      await within(downloadButton).findByRole('progressbar')
+    ).toBeInTheDocument();
   });
 });
 

@@ -293,7 +293,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
             tabindex="0"
             type="button"
           >
-            downloadConfirmDialog.download
+            <span
+              style="padding-left: 0px;"
+            >
+              downloadConfirmDialog.download
+            </span>
             <span
               class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
             />
@@ -331,14 +335,14 @@ exports[`DownloadConfirmDialog should not load the download speed/time table whe
     tabindex="-1"
   >
     <div
-      aria-labelledby="mui-2"
+      aria-labelledby="mui-1"
       class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation24 MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiDialog-paperFullWidth css-tlc64q-MuiPaper-root-MuiDialog-paper"
       role="dialog"
     >
       <div>
         <h2
           class="MuiTypography-root MuiTypography-h6 MuiDialogTitle-root css-140puxv-MuiTypography-root-MuiDialogTitle-root"
-          id="mui-2"
+          id="mui-1"
         >
           <p
             class="MuiTypography-root MuiTypography-body1 css-1654shd-MuiTypography-root"
@@ -552,7 +556,11 @@ exports[`DownloadConfirmDialog should not load the download speed/time table whe
             tabindex="0"
             type="button"
           >
-            downloadConfirmDialog.download
+            <span
+              style="padding-left: 0px;"
+            >
+              downloadConfirmDialog.download
+            </span>
             <span
               class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
             />
