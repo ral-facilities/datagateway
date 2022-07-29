@@ -456,9 +456,9 @@ describe('Admin Download Status Table', () => {
   it('should send resume restore request when resume button is clicked', async () => {
     renderComponent();
 
-    await waitFor(async () => {
+    await waitFor(() => {
       expect(
-        await screen.findByRole('button', {
+        screen.getByRole('button', {
           name: 'downloadStatus.resume {filename:test-file-5}',
         })
       ).toBeInTheDocument();
