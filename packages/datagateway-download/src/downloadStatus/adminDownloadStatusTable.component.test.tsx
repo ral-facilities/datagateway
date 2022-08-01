@@ -9,6 +9,7 @@ import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  flushPromises,
 } from '../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
@@ -404,6 +405,8 @@ describe('Admin Download Status Table', () => {
 
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
+
+    await flushPromises();
 
     // without waitFor,
     // toBeInTheDocument will complain it can't find the element
