@@ -22,7 +22,7 @@
     "loglevel": "1.8.0",
     "prettier": "2.2.1",
     "react-draggable": "4.4.3",
-    "react-i18next": "11.15.4",
+    "react-i18next": "11.18.3",
     "react-query": "3.39.2",
     "react-redux": "7.2.6",
     "react-scripts": "5.0.0",
