@@ -101,7 +101,14 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
   const datafileCountQueries = useDatasetsDatafileCount(data);
 
   const aggregatedData: Dataset[] = React.useMemo(
-    () => (data ? data.pages.flat() : []),
+    () =>
+      data
+        ? 'pages' in data
+          ? data.pages.flat()
+          : data instanceof Array
+          ? data
+          : []
+        : [],
     [data]
   );
 
