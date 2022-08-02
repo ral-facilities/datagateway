@@ -279,7 +279,7 @@ const AdminDownloadStatusTable: React.FC = () => {
               <Paper
                 style={{
                   height: `calc(100vh - 64px - 36px - 48px - (3rem * 1.167) - 32px - (1.75rem + 40px)${
-                    dataLoaded ? '' : ' - 4px'
+                    isLoading || isRefetching ? '' : ' - 4px'
                   })`,
                   minHeight: 230,
                   overflowX: 'auto',

@@ -47,7 +47,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
             style="padding-left: 10px;"
           >
             <b>
-              downloadTab.last_checked:
+              downloadTab.last_checked: 
             </b>
              Sat, 01 Feb 2020 00:00:00 GMT
           </p>
