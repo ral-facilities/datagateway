@@ -355,6 +355,8 @@ describe('Admin Download Status Table', () => {
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
 
+    await flushPromises();
+
     // without waitFor,
     // toBeInTheDocument will complain it can't find the element
     // even though findBy didn't throw...
@@ -459,6 +461,8 @@ describe('Admin Download Status Table', () => {
   it('should send resume restore request when resume button is clicked', async () => {
     renderComponent();
 
+    await flushPromises();
+
     await waitFor(() => {
       expect(
         screen.getByRole('button', {
@@ -503,8 +507,10 @@ describe('Admin Download Status Table', () => {
     ).toBeInTheDocument();
   });
 
-  it('sends delete item request when delete button is clicked', async () => {
+  it('should send delete item request when delete button is clicked', async () => {
     renderComponent();
+
+    await flushPromises();
 
     await waitFor(async () => {
       expect(
