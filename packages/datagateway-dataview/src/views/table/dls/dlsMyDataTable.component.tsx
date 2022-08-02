@@ -66,7 +66,7 @@ const DLSMyDataTable = (): React.ReactElement => {
   const datasetCountQueries = useInvestigationsDatasetCount(data);
 
   const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    () => (data ? data.pages.flat() : []),
     [data]
   );
 

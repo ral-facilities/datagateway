@@ -37,7 +37,7 @@ const ISISInstrumentsTable = (
   const { fetchNextPage, data } = useInstrumentsInfinite();
 
   const aggregatedData: Instrument[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    () => (data ? data.pages.flat() : []),
     [data]
   );
 

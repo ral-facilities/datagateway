@@ -99,7 +99,7 @@ const ISISInvestigationsTable = (
   );
 
   const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    () => (data ? data.pages.flat() : []),
     [data]
   );
 

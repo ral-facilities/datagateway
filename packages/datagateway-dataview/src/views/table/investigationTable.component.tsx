@@ -65,7 +65,7 @@ const InvestigationTable = (): React.ReactElement => {
   } = useRemoveFromCart('investigation');
 
   const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    () => (data ? data.pages.flat() : []),
     [data]
   );
 

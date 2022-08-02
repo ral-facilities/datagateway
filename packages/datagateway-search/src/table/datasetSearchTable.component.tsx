@@ -112,7 +112,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   } = useRemoveFromCart('dataset');
 
   const aggregatedData: Dataset[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    () => (data ? data.pages.flat() : []),
     [data]
   );
 

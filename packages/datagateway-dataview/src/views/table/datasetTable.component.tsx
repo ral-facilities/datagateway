@@ -100,7 +100,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
   const datafileCountQueries = useDatasetsDatafileCount(data);
 
   const aggregatedData: Dataset[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
+    () => (data ? data.pages.flat() : []),
     [data]
   );
 
