@@ -400,32 +400,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     {sortedDownloadTypes &&
                       sortedDownloadTypes.map(
                         ({ type, ...methodInfo }, index) => {
-                          if (methodInfo.disabled !== undefined) {
-                            // The display name will be shown as the menu item,
-                            // if defined in the settings, otherwise we show the type.
-                            const methodName =
-                              methodInfo.displayName || type.toUpperCase();
-                            return (
-                              <option
-                                key={index}
-                                id={`confirm-access-method-${type}`}
-                                aria-label={methodName}
-                                value={type}
-                                disabled={false}
-                              >
-                                {methodName}
-                              </option>
-                            );
-                          }
+                          const methodName =
+                            methodInfo?.displayName || type.toUpperCase();
                           return (
                             <option
-                              disabled
                               key={index}
                               id={`confirm-access-method-${type}`}
-                              aria-label={type.toUpperCase()}
+                              aria-label={methodName}
                               value={type}
+                              disabled={methodInfo.disabled === undefined}
                             >
-                              {type.toUpperCase()}
+                              {methodName}
                             </option>
                           );
                         }
