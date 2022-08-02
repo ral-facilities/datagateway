@@ -111,17 +111,18 @@ const DatafileSearchTable = (
     isLoading: removeFromCartLoading,
   } = useRemoveFromCart('datafile');
 
-  const aggregatedData: Dataset[] = React.useMemo(
-    () =>
-      data
-        ? 'pages' in data
-          ? data.pages.flat()
-          : data instanceof Array
-          ? data
-          : []
-        : [],
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Dataset[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if (data instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
