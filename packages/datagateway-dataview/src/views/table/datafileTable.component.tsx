@@ -49,7 +49,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -65,7 +65,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'datafile'
   );
@@ -158,7 +158,12 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

@@ -7,39 +7,52 @@ exports[`Select column header component renders correctly when checked 1`] = `
   size="small"
   variant="head"
 >
-  <ForwardRef(Checkbox)
-    checked={true}
-    checkedIcon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    disabled={false}
-    icon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    indeterminate={false}
-    indeterminateIcon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    inputProps={
-      Object {
-        "aria-label": "select all rows",
+  <StyledTooltip
+    placement="right"
+    title=""
+  >
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
       }
-    }
-    onClick={[Function]}
-    size="small"
-    sx={
-      Object {
-        "height": "20px",
-        "margin": "auto",
-      }
-    }
-  />
+    >
+      <ForwardRef(Checkbox)
+        checked={true}
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        disabled={false}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        indeterminate={false}
+        indeterminateIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select all rows",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        sx={
+          Object {
+            "height": 20,
+            "padding": "inherit",
+          }
+        }
+      />
+    </span>
+  </StyledTooltip>
 </ForwardRef(TableCell)>
 `;
 
@@ -50,39 +63,162 @@ exports[`Select column header component renders correctly when indeterminate 1`]
   size="small"
   variant="head"
 >
-  <ForwardRef(Checkbox)
-    checked={false}
-    checkedIcon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    disabled={false}
-    icon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    indeterminate={true}
-    indeterminateIcon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    inputProps={
-      Object {
-        "aria-label": "select all rows",
+  <StyledTooltip
+    placement="right"
+    title=""
+  >
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
       }
-    }
-    onClick={[Function]}
-    size="small"
-    sx={
-      Object {
-        "height": "20px",
-        "margin": "auto",
+    >
+      <ForwardRef(Checkbox)
+        checked={false}
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        disabled={false}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        indeterminate={true}
+        indeterminateIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select all rows",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        sx={
+          Object {
+            "height": 20,
+            "padding": "inherit",
+          }
+        }
+      />
+    </span>
+  </StyledTooltip>
+</ForwardRef(TableCell)>
+`;
+
+exports[`Select column header component renders correctly when loading is true 1`] = `
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="head"
+>
+  <StyledTooltip
+    placement="right"
+    title="buttons.cart_loading_tooltip"
+  >
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
       }
-    }
-  />
+    >
+      <ForwardRef(Checkbox)
+        checked={false}
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        disabled={true}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        indeterminateIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select all rows",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        sx={
+          Object {
+            "height": 20,
+            "padding": "inherit",
+          }
+        }
+      />
+    </span>
+  </StyledTooltip>
+</ForwardRef(TableCell)>
+`;
+
+exports[`Select column header component renders correctly when selectedRows is undefined 1`] = `
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="head"
+>
+  <StyledTooltip
+    placement="right"
+    title="buttons.cart_loading_failed_tooltip"
+  >
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
+      }
+    >
+      <ForwardRef(Checkbox)
+        checked={false}
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        disabled={true}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        indeterminateIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select all rows",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        sx={
+          Object {
+            "height": 20,
+            "padding": "inherit",
+          }
+        }
+      />
+    </span>
+  </StyledTooltip>
 </ForwardRef(TableCell)>
 `;
 
@@ -93,38 +229,51 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
   size="small"
   variant="head"
 >
-  <ForwardRef(Checkbox)
-    checked={false}
-    checkedIcon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    disabled={false}
-    icon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    indeterminate={false}
-    indeterminateIcon={
-      <Memo
-        fontSize="small"
-      />
-    }
-    inputProps={
-      Object {
-        "aria-label": "select all rows",
+  <StyledTooltip
+    placement="right"
+    title=""
+  >
+    <span
+      style={
+        Object {
+          "margin": "auto",
+        }
       }
-    }
-    onClick={[Function]}
-    size="small"
-    sx={
-      Object {
-        "height": "20px",
-        "margin": "auto",
-      }
-    }
-  />
+    >
+      <ForwardRef(Checkbox)
+        checked={false}
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        disabled={false}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        indeterminate={false}
+        indeterminateIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select all rows",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        sx={
+          Object {
+            "height": 20,
+            "padding": "inherit",
+          }
+        }
+      />
+    </span>
+  </StyledTooltip>
 </ForwardRef(TableCell)>
 `;
