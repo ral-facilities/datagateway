@@ -1,264 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DownloadConfirmDialog does not load the download speed/time table when isTwoLevel is true 1`] = `
-<div
-  aria-label="downloadConfirmDialog.dialog_arialabel"
-  class="MuiModal-root MuiDialog-root css-zw3mfo-MuiModal-root-MuiDialog-root"
-  role="presentation"
->
-  <div
-    aria-hidden="true"
-    class="MuiBackdrop-root css-yiavyu-MuiBackdrop-root-MuiDialog-backdrop"
-    style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
-  />
-  <div
-    data-test="sentinelStart"
-    tabindex="0"
-  />
-  <div
-    class="MuiDialog-container MuiDialog-scrollPaper css-hz1bth-MuiDialog-container"
-    role="presentation"
-    style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
-    tabindex="-1"
-  >
-    <div
-      aria-labelledby="mui-2"
-      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation24 MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiDialog-paperFullWidth css-tlc64q-MuiPaper-root-MuiDialog-paper"
-      role="dialog"
-    >
-      <div>
-        <h2
-          class="MuiTypography-root MuiTypography-h6 MuiDialogTitle-root css-140puxv-MuiTypography-root-MuiDialogTitle-root"
-          id="mui-2"
-        >
-          <p
-            class="MuiTypography-root MuiTypography-body1 css-1654shd-MuiTypography-root"
-          >
-            downloadConfirmDialog.dialog_title
-          </p>
-          <button
-            aria-label="downloadConfirmDialog.close_arialabel"
-            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1f5482o-MuiButtonBase-root-MuiIconButton-root"
-            tabindex="0"
-            type="button"
-          >
-            <svg
-              aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
-              data-testid="CloseIcon"
-              focusable="false"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-              />
-            </svg>
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
-          </button>
-        </h2>
-        <div
-          class="MuiDialogContent-root css-1738ltc-MuiDialogContent-root"
-        >
-          <div
-            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-mhc70k-MuiGrid-root"
-          >
-            <div
-              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
-            >
-              <div
-                class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
-              >
-                <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="false"
-                  for="confirm-download-name"
-                  id="confirm-download-name-label"
-                >
-                  downloadConfirmDialog.download_name_label
-                </label>
-                <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-ghsjzk-MuiInputBase-root-MuiInput-root"
-                >
-                  <input
-                    aria-describedby="confirm-download-name-helper-text"
-                    aria-invalid="false"
-                    class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-                    id="confirm-download-name"
-                    maxlength="255"
-                    placeholder="LILS_2020-1-1_1-1-1"
-                    type="text"
-                    value=""
-                  />
-                </div>
-                <p
-                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
-                  id="confirm-download-name-helper-text"
-                >
-                  downloadConfirmDialog.download_name_helpertext
-                </p>
-              </div>
-            </div>
-            <div
-              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
-            >
-              <div
-                class="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
-              >
-                <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="true"
-                  for="confirm-access-method"
-                >
-                  downloadConfirmDialog.access_method_label
-                </label>
-                <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl  css-88nv5c-MuiInputBase-root-MuiInput-root-MuiSelect-root"
-                >
-                  <select
-                    aria-invalid="false"
-                    class="MuiNativeSelect-select MuiNativeSelect-standard MuiInput-input MuiInputBase-input css-1dmqq7i-MuiNativeSelect-select-MuiInputBase-input-MuiInput-input"
-                    id="confirm-access-method"
-                    name="Access Method"
-                  >
-                    <option
-                      aria-label="HTTPS"
-                      id="confirm-access-method-https"
-                      value="https"
-                    >
-                      HTTPS
-                    </option>
-                    <option
-                      aria-label="Globus"
-                      id="confirm-access-method-globus"
-                      value="globus"
-                    >
-                      Globus
-                    </option>
-                  </select>
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiNativeSelect-icon MuiNativeSelect-iconStandard css-10bey84-MuiSvgIcon-root-MuiNativeSelect-icon"
-                    data-testid="ArrowDropDownIcon"
-                    focusable="false"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M7 10l5 5 5-5z"
-                    />
-                  </svg>
-                </div>
-                <p
-                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium MuiFormHelperText-filled css-1d1r5q-MuiFormHelperText-root"
-                  id="confirm-access-method-help"
-                >
-                  downloadConfirmDialog.access_method_helpertext
-                </p>
-              </div>
-            </div>
-            <div
-              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
-            >
-              <span
-                style="padding-top: 20px;"
-              >
-                <p
-                  class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-                >
-                  <b>
-                    downloadConfirmDialog.access_method_info
-                    :
-                  </b>
-                </p>
-                <p
-                  class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-                  id="confirm-access-method-https-description"
-                >
-                  Example description for 
-                  <b>
-                    HTTPS
-                  </b>
-                   access method.
-                </p>
-              </span>
-            </div>
-            <div
-              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
-            >
-              <p
-                class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-              >
-                <b>
-                  downloadConfirmDialog.download_size
-                  :
-                </b>
-                 
-                100 B
-              </p>
-            </div>
-            <div
-              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
-            >
-              <div
-                class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
-              >
-                <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="false"
-                  for="confirm-download-email"
-                  id="confirm-download-email-label"
-                >
-                  downloadConfirmDialog.email_label
-                </label>
-                <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-ghsjzk-MuiInputBase-root-MuiInput-root"
-                >
-                  <input
-                    aria-describedby="confirm-download-email-helper-text"
-                    aria-invalid="false"
-                    class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-                    id="confirm-download-email"
-                    maxlength="254"
-                    type="text"
-                    value=""
-                  />
-                </div>
-                <p
-                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
-                  id="confirm-download-email-helper-text"
-                >
-                  downloadConfirmDialog.email_help
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="MuiDialogActions-root MuiDialogActions-spacing css-17tk4tg-MuiDialogActions-root"
-        >
-          <button
-            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root  css-sghohy-MuiButtonBase-root-MuiButton-root"
-            id="download-confirmation-download"
-            tabindex="0"
-            type="button"
-          >
-            downloadConfirmDialog.download
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    data-test="sentinelEnd"
-    tabindex="0"
-  />
-</div>
-`;
-
 exports[`DownloadConfirmDialog renders correctly 1`] = `
 <div
   aria-label="downloadConfirmDialog.dialog_arialabel"
@@ -505,6 +246,265 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                   </tbody>
                 </table>
               </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
+            >
+              <div
+                class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="false"
+                  for="confirm-download-email"
+                  id="confirm-download-email-label"
+                >
+                  downloadConfirmDialog.email_label
+                </label>
+                <div
+                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-ghsjzk-MuiInputBase-root-MuiInput-root"
+                >
+                  <input
+                    aria-describedby="confirm-download-email-helper-text"
+                    aria-invalid="false"
+                    class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                    id="confirm-download-email"
+                    maxlength="254"
+                    type="text"
+                    value=""
+                  />
+                </div>
+                <p
+                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
+                  id="confirm-download-email-helper-text"
+                >
+                  downloadConfirmDialog.email_help
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiDialogActions-root MuiDialogActions-spacing css-17tk4tg-MuiDialogActions-root"
+        >
+          <button
+            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root  css-sghohy-MuiButtonBase-root-MuiButton-root"
+            id="download-confirmation-download"
+            tabindex="0"
+            type="button"
+          >
+            downloadConfirmDialog.download
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    data-test="sentinelEnd"
+    tabindex="0"
+  />
+</div>
+`;
+
+exports[`DownloadConfirmDialog should not load the download speed/time table when isTwoLevel is true 1`] = `
+<div
+  aria-label="downloadConfirmDialog.dialog_arialabel"
+  class="MuiModal-root MuiDialog-root css-zw3mfo-MuiModal-root-MuiDialog-root"
+  role="presentation"
+>
+  <div
+    aria-hidden="true"
+    class="MuiBackdrop-root css-yiavyu-MuiBackdrop-root-MuiDialog-backdrop"
+    style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+  />
+  <div
+    data-test="sentinelStart"
+    tabindex="0"
+  />
+  <div
+    class="MuiDialog-container MuiDialog-scrollPaper css-hz1bth-MuiDialog-container"
+    role="presentation"
+    style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+    tabindex="-1"
+  >
+    <div
+      aria-labelledby="mui-2"
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation24 MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiDialog-paperFullWidth css-tlc64q-MuiPaper-root-MuiDialog-paper"
+      role="dialog"
+    >
+      <div>
+        <h2
+          class="MuiTypography-root MuiTypography-h6 MuiDialogTitle-root css-140puxv-MuiTypography-root-MuiDialogTitle-root"
+          id="mui-2"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-1654shd-MuiTypography-root"
+          >
+            downloadConfirmDialog.dialog_title
+          </p>
+          <button
+            aria-label="downloadConfirmDialog.close_arialabel"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1f5482o-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+              data-testid="CloseIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </h2>
+        <div
+          class="MuiDialogContent-root css-1738ltc-MuiDialogContent-root"
+        >
+          <div
+            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-mhc70k-MuiGrid-root"
+          >
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
+            >
+              <div
+                class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="false"
+                  for="confirm-download-name"
+                  id="confirm-download-name-label"
+                >
+                  downloadConfirmDialog.download_name_label
+                </label>
+                <div
+                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-ghsjzk-MuiInputBase-root-MuiInput-root"
+                >
+                  <input
+                    aria-describedby="confirm-download-name-helper-text"
+                    aria-invalid="false"
+                    class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                    id="confirm-download-name"
+                    maxlength="255"
+                    placeholder="LILS_2020-1-1_1-1-1"
+                    type="text"
+                    value=""
+                  />
+                </div>
+                <p
+                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
+                  id="confirm-download-name-helper-text"
+                >
+                  downloadConfirmDialog.download_name_helpertext
+                </p>
+              </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
+            >
+              <div
+                class="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
+              >
+                <label
+                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="confirm-access-method"
+                >
+                  downloadConfirmDialog.access_method_label
+                </label>
+                <div
+                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl  css-88nv5c-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                >
+                  <select
+                    aria-invalid="false"
+                    class="MuiNativeSelect-select MuiNativeSelect-standard MuiInput-input MuiInputBase-input css-1dmqq7i-MuiNativeSelect-select-MuiInputBase-input-MuiInput-input"
+                    id="confirm-access-method"
+                    name="Access Method"
+                  >
+                    <option
+                      aria-label="HTTPS"
+                      id="confirm-access-method-https"
+                      value="https"
+                    >
+                      HTTPS
+                    </option>
+                    <option
+                      aria-label="Globus"
+                      id="confirm-access-method-globus"
+                      value="globus"
+                    >
+                      Globus
+                    </option>
+                  </select>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiNativeSelect-icon MuiNativeSelect-iconStandard css-10bey84-MuiSvgIcon-root-MuiNativeSelect-icon"
+                    data-testid="ArrowDropDownIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M7 10l5 5 5-5z"
+                    />
+                  </svg>
+                </div>
+                <p
+                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium MuiFormHelperText-filled css-1d1r5q-MuiFormHelperText-root"
+                  id="confirm-access-method-help"
+                >
+                  downloadConfirmDialog.access_method_helpertext
+                </p>
+              </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
+            >
+              <span
+                style="padding-top: 20px;"
+              >
+                <p
+                  class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                >
+                  <b>
+                    downloadConfirmDialog.access_method_info
+                    :
+                  </b>
+                </p>
+                <p
+                  class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                  id="confirm-access-method-https-description"
+                >
+                  Example description for 
+                  <b>
+                    HTTPS
+                  </b>
+                   access method.
+                </p>
+              </span>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
+            >
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+              >
+                <b>
+                  downloadConfirmDialog.download_size
+                  :
+                </b>
+                 
+                100 B
+              </p>
             </div>
             <div
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"

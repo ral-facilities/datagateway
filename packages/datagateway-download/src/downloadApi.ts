@@ -1,14 +1,13 @@
-import axios, { AxiosResponse } from 'axios';
-import * as log from 'loglevel';
-import {
-  SubmitCart,
+import axios from 'axios';
+import type {
   Datafile,
   Download,
-  readSciGatewayToken,
-  handleICATError,
   DownloadCart,
   DownloadCartItem,
+  SubmitCart,
 } from 'datagateway-common';
+import { readSciGatewayToken } from 'datagateway-common';
+import type { DownloadSettings } from './ConfigProvider';
 
 export const removeAllDownloadCartItems: (settings: {
   facilityName: string;
@@ -35,7 +34,7 @@ export const removeAllDownloadCartItems: (settings: {
 export const removeFromCart = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   entityIds: number[],
-  config: { facilityName: string; downloadApiUrl: string }
+  config: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>
 ): Promise<DownloadCartItem[]> => {
   const { facilityName, downloadApiUrl } = config;
 
@@ -57,29 +56,23 @@ export const getIsTwoLevel: (settings: {
 }) => Promise<boolean> = (settings: { idsUrl: string }) => {
   return axios
     .get<boolean>(`${settings.idsUrl}/isTwoLevel`)
-    .then((response) => {
-      return response.data;
-    });
+    .then((response) => response.data);
 };
+
+export type SubmitCartZipType = 'ZIP' | 'ZIP_AND_COMPRESS';
 
 export const submitCart: (
   transport: string,
   emailAddress: string,
   fileName: string,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  },
-  zipType?: 'ZIP' | 'ZIP_AND_COMPRESS'
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>,
+  zipType?: SubmitCartZipType
 ) => Promise<number> = (
-  transport: string,
-  emailAddress: string,
-  fileName: string,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  },
-  zipType?: 'ZIP' | 'ZIP_AND_COMPRESS'
+  transport,
+  emailAddress,
+  fileName,
+  settings,
+  zipType
 ) => {
   const params = new URLSearchParams();
 
@@ -98,25 +91,15 @@ export const submitCart: (
       params
     )
     .then((response) => {
-      log.debug(response);
-
       // Get the downloadId that was returned from the IDS server.
-      const downloadId = response.data['downloadId'];
-      return downloadId;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return -1;
+      return response.data['downloadId'];
     });
 };
 
 export const fetchDownloads: (
-  settings: { facilityName: string; downloadApiUrl: string },
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>,
   queryOffset?: string
-) => Promise<Download[]> = (
-  settings: { facilityName: string; downloadApiUrl: string },
-  queryOffset?: string
-) => {
+) => Promise<Download[]> = (settings, queryOffset) => {
   return axios
     .get<Download[]>(`${settings.downloadApiUrl}/user/downloads`, {
       params: {
@@ -127,22 +110,13 @@ export const fetchDownloads: (
           : queryOffset,
       },
     })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return [];
-    });
+    .then((response) => response.data);
 };
 
 export const fetchAdminDownloads: (
-  settings: { facilityName: string; downloadApiUrl: string },
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>,
   queryOffset?: string
-) => Promise<Download[]> = (
-  settings: { facilityName: string; downloadApiUrl: string },
-  queryOffset?: string
-) => {
+) => Promise<Download[]> = (settings, queryOffset) => {
   return axios
     .get<Download[]>(`${settings.downloadApiUrl}/admin/downloads`, {
       params: {
@@ -153,22 +127,13 @@ export const fetchAdminDownloads: (
           : queryOffset,
       },
     })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return [];
-    });
+    .then((response) => response.data);
 };
 
 export const getDownload: (
   downloadId: number,
-  settings: { facilityName: string; downloadApiUrl: string }
-) => Promise<Download | null> = (
-  downloadId: number,
-  settings: { facilityName: string; downloadApiUrl: string }
-) => {
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>
+) => Promise<Download> = (downloadId, settings) => {
   return axios
     .get<Download[]>(`${settings.downloadApiUrl}/user/downloads`, {
       params: {
@@ -177,14 +142,7 @@ export const getDownload: (
         queryOffset: `where download.id = ${downloadId}`,
       },
     })
-    .then((response) => {
-      const download = response.data[0];
-      return download;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return null;
-    });
+    .then((response) => response.data[0]);
 };
 
 export const downloadPreparedCart: (
@@ -212,15 +170,23 @@ export const downloadPreparedCart: (
   }
 };
 
+/**
+ * Describes the status of a download type.
+ */
+export interface DownloadTypeStatus {
+  type: string;
+  disabled: boolean;
+  message: string;
+}
+
 export const getDownloadTypeStatus: (
   transportType: string,
-  settings: { facilityName: string; downloadApiUrl: string }
-) => Promise<{ disabled: boolean; message: string } | null> = (
-  transportType: string,
-  settings: { facilityName: string; downloadApiUrl: string }
-) => {
-  return axios
-    .get(
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>
+) => Promise<DownloadTypeStatus> = (transportType, settings) =>
+  axios
+    // the server doesn't put the transport type into the response object
+    // it will be put in after the fact so that it is easier to work with
+    .get<Omit<DownloadTypeStatus, 'type'>>(
       `${settings.downloadApiUrl}/user/downloadType/${transportType}/status`,
       {
         params: {
@@ -229,29 +195,15 @@ export const getDownloadTypeStatus: (
         },
       }
     )
-    .then(
-      (
-        response: AxiosResponse<{
-          disabled: boolean;
-          message: string;
-        }>
-      ) => {
-        return response.data;
-      }
-    )
-    .catch((error) => {
-      if (error) handleICATError(error);
-      return null;
-    });
-};
+    .then((response) => ({
+      type: transportType,
+      ...response.data,
+    }));
 
 export const downloadDeleted: (
   downloadId: number,
   deleted: boolean,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  }
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>
 ) => Promise<void> = (
   downloadId: number,
   deleted: boolean,
@@ -265,26 +217,16 @@ export const downloadDeleted: (
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('value', JSON.stringify(deleted));
 
-  return axios
-    .put(
-      `${settings.downloadApiUrl}/user/download/${downloadId}/isDeleted`,
-      params
-    )
-    .then(() => {
-      // do nothing
-    })
-    .catch((error) => {
-      handleICATError(error);
-    });
+  return axios.put(
+    `${settings.downloadApiUrl}/user/download/${downloadId}/isDeleted`,
+    params
+  );
 };
 
 export const adminDownloadDeleted: (
   downloadId: number,
   deleted: boolean,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  }
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>
 ) => Promise<void> = (
   downloadId: number,
   deleted: boolean,
@@ -298,60 +240,36 @@ export const adminDownloadDeleted: (
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('value', JSON.stringify(deleted));
 
-  return axios
-    .put(
-      `${settings.downloadApiUrl}/admin/download/${downloadId}/isDeleted`,
-      params
-    )
-    .then(() => {
-      // do nothing
-    })
-    .catch((error) => {
-      handleICATError(error);
-    });
+  return axios.put(
+    `${settings.downloadApiUrl}/admin/download/${downloadId}/isDeleted`,
+    params
+  );
 };
 
 export const adminDownloadStatus: (
   downloadId: number,
   status: string,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  }
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>
 ) => Promise<void> = (
   downloadId: number,
   status: string,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  }
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>
 ) => {
   const params = new URLSearchParams();
   params.append('facilityName', settings.facilityName);
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('value', status);
 
-  return axios
-    .put(
-      `${settings.downloadApiUrl}/admin/download/${downloadId}/status`,
-      params
-    )
-    .then(() => {
-      // do nothing
-    })
-    .catch((error) => {
-      handleICATError(error);
-    });
+  return axios.put(
+    `${settings.downloadApiUrl}/admin/download/${downloadId}/status`,
+    params
+  );
 };
 
 export const getSize: (
   entityId: number,
   entityType: string,
-  settings: {
-    facilityName: string;
-    apiUrl: string;
-    downloadApiUrl: string;
-  }
+  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl' | 'apiUrl'>
 ) => Promise<number> = (
   entityId: number,
   entityType: string,
@@ -368,10 +286,7 @@ export const getSize: (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then((response) => {
-        const size = response.data['fileSize'] as number;
-        return size;
-      });
+      .then((response) => response.data['fileSize'] as number);
   } else {
     return axios
       .get<number>(`${settings.downloadApiUrl}/user/getSize`, {
@@ -391,12 +306,8 @@ export const getSize: (
 export const getDatafileCount: (
   entityId: number,
   entityType: string,
-  settings: { apiUrl: string }
-) => Promise<number> = (
-  entityId: number,
-  entityType: string,
-  settings: { apiUrl: string }
-) => {
+  settings: Pick<DownloadSettings, 'apiUrl'>
+) => Promise<number> = (entityId, entityType, settings) => {
   if (entityType === 'datafile') {
     // need to do this in a setTimeout to ensure it doesn't block the main thread
     return new Promise((resolve) =>

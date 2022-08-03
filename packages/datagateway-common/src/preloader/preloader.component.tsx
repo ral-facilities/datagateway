@@ -44,7 +44,7 @@ const spinnerStyle = (index: number): SpinnerStyle => {
 };
 
 const Preloader: React.FC<PreloaderProps> = (props: PreloaderProps) => (
-  <div>
+  <div role={props.loading ? 'progressbar' : undefined}>
     {props.loading ? (
       <Box
         sx={{
