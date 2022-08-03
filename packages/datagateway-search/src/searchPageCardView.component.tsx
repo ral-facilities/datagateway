@@ -1,18 +1,15 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
 import {
+  AppBar,
+  Tabs,
+  Tab,
+  Box,
   Badge,
   Paper,
-  Theme,
-  createStyles,
-  withStyles,
   LinearProgress,
-} from '@material-ui/core';
+  styled,
+} from '@mui/material';
 
-import { StyleRules } from '@material-ui/core/styles';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import DatafileSearchTable from './table/datafileSearchTable.component';
@@ -38,46 +35,40 @@ import {
   storeResults,
 } from './searchPageContainer.component';
 
-const badgeStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    badge: {
-      backgroundColor: '#CCCCCC',
-      //Increase contrast on high contrast modes by using black text
-      color:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).colours?.type === 'contrast' ? '#000000' : '#333333',
-      fontSize: '14px',
-      fontWeight: 'bold',
-      lineHeight: 'inherit',
-      top: '1em',
-    },
-  });
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#CCCCCC',
+    // Increase contrast on high contrast modes by using black text
+    color: (theme as any).colours?.type === 'contrast' ? '#000000' : '#333333',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    lineHeight: 'inherit',
+    top: '1em',
+  },
+}));
+/* eslint-enable */
 
-const tabStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      backgroundColor: (theme as any).colours?.tabsGrey,
-      //Fixes contrast issue for unselected tabs in darkmode
-      color:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).palette.type === 'dark'
-          ? '#FFFFFF'
-          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (theme as any).colours?.blue,
-      boxShadow: 'none',
-    },
-    indicator: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      backgroundColor: (theme as any).colours?.blue,
-    },
-  });
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  backgroundColor: (theme as any).colours?.tabsGrey,
+  // Fixes contrast issue for unselected tabs in darkmode
+  color:
+    (theme as any).palette.type === 'dark'
+      ? '#FFFFFF'
+      : (theme as any).colours?.blue,
+  boxShadow: 'none',
 
-const boxStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    root: { backgroundColor: (theme as any).colours?.tabsGrey },
-  });
+  '& .MuiTabs-indicator': {
+    backgroundColor: (theme as any).colours?.blue,
+  },
+}));
+/* eslint-enable */
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  root: { backgroundColor: (theme as any).colours?.tabsGrey },
+}));
 
 export interface SearchCardViewProps {
   containerHeight: string;
@@ -124,10 +115,6 @@ function a11yProps(index: string): React.ReactFragment {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
-
-const StyledBadge = withStyles(badgeStyles)(Badge);
-const StyledTabs = withStyles(tabStyles)(Tabs);
-const StyledBox = withStyles(boxStyles)(Box);
 
 const SearchPageCardView = (
   props: SearchCardViewProps & SearchCardViewStoreProps & CartProps

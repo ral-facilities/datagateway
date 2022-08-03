@@ -1,6 +1,6 @@
 import React from 'react';
 import axios, { AxiosError } from 'axios';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   AdditionalFilters,
   FiltersType,
@@ -24,6 +24,7 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 import format from 'date-fns/format';
 import { isValid } from 'date-fns';
+import retryICATErrors from './retryICATErrors';
 
 export * from './cart';
 export * from './facilityCycles';
@@ -755,6 +756,7 @@ export const useIds = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
       enabled,
     }
   );
@@ -839,6 +841,7 @@ export const useCustomFilter = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -946,6 +949,7 @@ export const useCustomFilterCount = (
         onError: (error) => {
           handleICATError(error, false);
         },
+        retry: retryICATErrors,
         staleTime: Infinity,
       };
     });

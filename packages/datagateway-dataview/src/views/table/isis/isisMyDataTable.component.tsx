@@ -25,14 +25,16 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-import TitleIcon from '@material-ui/icons/Title';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import PublicIcon from '@material-ui/icons/Public';
-import SaveIcon from '@material-ui/icons/Save';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import {
+  Subject,
+  Fingerprint,
+  Public,
+  Save,
+  Assessment,
+  CalendarToday,
+} from '@mui/icons-material';
 import { useSelector } from 'react-redux';
-import { useLocation, useHistory } from 'react-router';
+import { useLocation, useHistory } from 'react-router-dom';
 
 const ISISMyDataTable = (): React.ReactElement => {
   const selectAllSetting = useSelector(
@@ -73,7 +75,7 @@ const ISISMyDataTable = (): React.ReactElement => {
       ]),
     },
   ]);
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'investigation',
     [
       {
@@ -85,7 +87,7 @@ const ISISMyDataTable = (): React.ReactElement => {
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'investigation'
   );
@@ -167,7 +169,7 @@ const ISISMyDataTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -187,7 +189,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: PublicIcon,
+        icon: Public,
         label: t('investigations.doi'),
         dataKey: 'studyInvestigations.study.pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -205,13 +207,13 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         filterComponent: textFilter,
       },
       {
-        icon: TitleIcon,
+        icon: Subject,
         label: t('investigations.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -230,7 +232,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: AssessmentIcon,
+        icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -245,7 +247,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -253,14 +255,14 @@ const ISISMyDataTable = (): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,
@@ -271,7 +273,12 @@ const ISISMyDataTable = (): React.ReactElement => {
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

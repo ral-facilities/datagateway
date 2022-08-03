@@ -1,8 +1,5 @@
 import React from 'react';
-import TitleIcon from '@material-ui/icons/Title';
-import ExploreIcon from '@material-ui/icons/Explore';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { Subject, Explore, Save, CalendarToday } from '@mui/icons-material';
 import {
   Table,
   TableActionProps,
@@ -23,7 +20,7 @@ import {
   DownloadButton,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
 import { IndexRange } from 'react-virtualized';
@@ -52,7 +49,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -68,7 +65,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'datafile'
   );
@@ -116,19 +113,19 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: Subject,
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,
       },
       {
-        icon: ExploreIcon,
+        icon: Explore,
         label: t('datafiles.location'),
         dataKey: 'location',
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('datafiles.size'),
         dataKey: 'fileSize',
         cellContentRenderer: (cellProps) => {
@@ -136,7 +133,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
         },
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datafiles.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,
@@ -161,7 +158,12 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
@@ -180,6 +182,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
             entityId={rowData.id}
             entityName={(rowData as Datafile).location}
             variant="icon"
+            entitySize={(rowData as Datafile).fileSize ?? -1}
           />
         ),
       ]}

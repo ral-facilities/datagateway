@@ -1,4 +1,3 @@
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import axios, { AxiosError } from 'axios';
 import { format, set } from 'date-fns';
 import {
@@ -12,6 +11,7 @@ import { StateType } from '..';
 import { FiltersType, SearchResultSource, SortType } from '../app.types';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
+import retryICATErrors from './retryICATErrors';
 
 interface QueryParameters {
   target: string;
@@ -34,8 +34,8 @@ export type LuceneSearchParams = UrlBuilderParameters & {
 
 interface UrlBuilderParameters {
   searchText: string;
-  startDate: MaterialUiPickersDate;
-  endDate: MaterialUiPickersDate;
+  startDate: Date | null;
+  endDate: Date | null;
   filters?: FiltersType;
   facets?: FacetRequest[];
 }
@@ -241,20 +241,16 @@ export const useLuceneSearchInfinite = (
     [string, DatasearchType, LuceneSearchParams]
   >(
     ['search', datasearchType, luceneParams],
-    (queryFunctionContext) => {
-      return fetchLuceneData(
-        queryFunctionContext.queryKey[1],
-        {
-          ...queryFunctionContext.queryKey[2],
-          search_after: queryFunctionContext.pageParam ?? '',
-        },
-        { icatUrl }
-      );
+    () => {
+      return fetchLuceneData(datasearchType, luceneParams, { icatUrl });
     },
     {
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
+      // we want to trigger search manually via refetch
+      // so disable the query to disable automatic fetching
       enabled: false,
       getNextPageParam: (lastPage, pages) => lastPage.search_after,
     }

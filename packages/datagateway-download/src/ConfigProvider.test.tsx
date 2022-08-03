@@ -1,4 +1,4 @@
-import { createMount } from '@material-ui/core/test-utils';
+import { mount } from 'enzyme';
 import axios from 'axios';
 import { ReactWrapper } from 'enzyme';
 import * as log from 'loglevel';
@@ -42,17 +42,12 @@ jest.mock('./settings', () => ({
 }));
 
 describe('ConfigProvider', () => {
-  let mount;
-
   beforeEach(() => {
-    mount = createMount();
     global.document.dispatchEvent = jest.fn();
     global.CustomEvent = jest.fn();
   });
 
   afterEach(() => {
-    mount.cleanUp();
-
     (axios.get as jest.Mock).mockClear();
     (log.error as jest.Mock).mockClear();
     (CustomEvent as jest.Mock).mockClear();

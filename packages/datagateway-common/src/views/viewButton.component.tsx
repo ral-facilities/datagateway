@@ -1,14 +1,8 @@
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  StyleRules,
-  Theme,
-} from '@material-ui/core';
+import { Button, styled } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 
 export interface ViewProps {
   viewCards: boolean;
@@ -16,21 +10,17 @@ export interface ViewProps {
   disabled?: boolean;
 }
 
-const buttonStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      root: {
-        padding: theme.spacing(0.5),
-        display: 'inline-block',
-      },
-    })
-);
+const ButtonDiv = styled('div')(({ theme }) => ({
+  padding: `${theme.spacing(0.5)} 0px ${theme.spacing(0.5)} 0px`,
+  marginRight: theme.spacing(0.5),
+  display: 'inline-block',
+}));
+
 const ViewButton = (props: ViewProps): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = buttonStyles();
 
   return (
-    <div className={classes.root}>
+    <ButtonDiv>
       <Button
         className="tour-dataview-view-button"
         aria-label={`page view ${
@@ -45,7 +35,7 @@ const ViewButton = (props: ViewProps): React.ReactElement => {
       >
         {props.viewCards ? t('app.view_table') : t('app.view_cards')}
       </Button>
-    </div>
+    </ButtonDiv>
   );
 };
 

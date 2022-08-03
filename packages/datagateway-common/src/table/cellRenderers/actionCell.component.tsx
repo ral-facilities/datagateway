@@ -1,23 +1,24 @@
 import React from 'react';
 import { TableCellProps } from 'react-virtualized';
-import { TableCell } from '@material-ui/core';
+import { SxProps, TableCell } from '@mui/material';
 import { TableActionProps } from '../table.component';
 
 type CellRendererProps = TableCellProps & {
-  className: string;
+  sx: SxProps;
   actions: React.ComponentType<TableActionProps>[];
 };
 
 const ActionCell = React.memo(
   (props: CellRendererProps): React.ReactElement => {
-    const { className, actions, rowData } = props;
+    const { sx, actions, rowData, rowIndex } = props;
 
     return (
       <TableCell
         size="medium"
         component="div"
-        className={className}
+        sx={sx}
         variant="body"
+        key={rowData?.id || rowIndex}
       >
         {actions.map((TableAction, index) => (
           <TableAction key={index} rowData={rowData} />

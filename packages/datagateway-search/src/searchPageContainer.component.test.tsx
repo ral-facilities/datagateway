@@ -1,5 +1,5 @@
-import React from 'react';
-import { ReactWrapper } from 'enzyme';
+import * as React from 'react';
+import { mount, ReactWrapper } from 'enzyme';
 
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
@@ -11,10 +11,9 @@ import {
   ClearFiltersButton,
 } from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
-import { createMount } from '@material-ui/core/test-utils';
 import { MemoryRouter, Router } from 'react-router-dom';
 import SearchPageContainer from './searchPageContainer.component';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 import { Provider } from 'react-redux';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
@@ -35,6 +34,11 @@ import {
   storeResults,
   storeSort,
 } from './searchPageContainer.component';
+import type { RenderResult } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import type { DeepPartial } from 'redux';
+import userEvent from '@testing-library/user-event';
+import { render, screen } from '@testing-library/react';
 
 jest.mock('loglevel');
 
@@ -51,12 +55,24 @@ jest.mock('datagateway-common', () => {
   };
 });
 
+function renderComponent({ initialState, history }): RenderResult {
+  return render(
+    <Provider store={configureStore([thunk])(initialState)}>
+      <Router history={history}>
+        <QueryClientProvider client={new QueryClient()}>
+          <SearchPageContainer />
+        </QueryClientProvider>
+      </Router>
+    </Provider>
+  );
+}
+
 describe('SearchPageContainer - Tests', () => {
-  let state: StateType;
-  let mount;
+  let state: DeepPartial<StateType>;
   let queryClient: QueryClient;
   let history: History;
   let pushSpy;
+  let user: UserEvent;
 
   const localStorageGetItemMock = jest.spyOn(
     window.localStorage.__proto__,
@@ -80,12 +96,12 @@ describe('SearchPageContainer - Tests', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     queryClient = new QueryClient();
     history = createMemoryHistory({
       initialEntries: ['/search/data'],
     });
     pushSpy = jest.spyOn(history, 'push');
+    user = userEvent.setup();
 
     window.localStorage.__proto__.removeItem = jest.fn();
     window.localStorage.__proto__.setItem = jest.fn();
@@ -137,7 +153,7 @@ describe('SearchPageContainer - Tests', () => {
 
   it('renders searchPageContainer correctly', () => {
     const mockStore = configureStore([thunk]);
-    const wrapper = mount(
+    const wrapper = render(
       <Provider store={mockStore(state)}>
         <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
           <QueryClientProvider client={queryClient}>
@@ -147,7 +163,7 @@ describe('SearchPageContainer - Tests', () => {
       </Provider>
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.asFragment()).toMatchSnapshot();
   });
 
   it('renders correctly at /search/data route', () => {
@@ -210,16 +226,22 @@ describe('SearchPageContainer - Tests', () => {
     expect(wrapper.exists(LinearProgress)).toBeTruthy();
   });
 
-  it('builds correct parameters for datafile request if date and search text properties are in use', () => {
-    history.replace(
-      '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11'
+  it('builds correct parameters for datafile request if date and search text properties are in use', async () => {
+    renderComponent({
+      initialState: state,
+      history: createMemoryHistory({
+        initialEntries: [
+          '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11',
+        ],
+      }),
+    });
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'searchBox.search_button_arialabel',
+      })
     );
 
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
@@ -234,6 +256,13 @@ describe('SearchPageContainer - Tests', () => {
             lower: '201311110000',
             text: 'hello',
             upper: '201611112359',
+            facets: [
+              { target: 'Datafile' },
+              {
+                target: 'DatafileParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+            ],
           },
           sessionId: null,
         },
@@ -321,16 +350,22 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for datafile request if only start date is in use', () => {
-    history.replace(
-      '/search/data?dataset=false&investigation=false&startDate=2013-11-11'
+  it('builds correct parameters for datafile request if only start date is in use', async () => {
+    renderComponent({
+      initialState: state,
+      history: createMemoryHistory({
+        initialEntries: [
+          '/search/data?dataset=false&investigation=false&startDate=2013-11-11',
+        ],
+      }),
+    });
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'searchBox.search_button_arialabel',
+      })
     );
 
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
@@ -344,6 +379,13 @@ describe('SearchPageContainer - Tests', () => {
             target: 'Datafile',
             lower: '201311110000',
             upper: '9000012312359',
+            facets: [
+              { target: 'Datafile' },
+              {
+                target: 'DatafileParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+            ],
           },
           sessionId: null,
         },
@@ -429,16 +471,21 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for datafile request if only end date is in use', () => {
-    history.replace(
-      '/search/data?dataset=false&investigation=false&endDate=2016-11-11'
+  it('builds correct parameters for datafile request if only end date is in use', async () => {
+    renderComponent({
+      initialState: state,
+      history: createMemoryHistory({
+        initialEntries: [
+          '/search/data?dataset=false&investigation=false&endDate=2016-11-11',
+        ],
+      }),
+    });
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'searchBox.search_button_arialabel',
+      })
     );
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
@@ -452,6 +499,13 @@ describe('SearchPageContainer - Tests', () => {
             target: 'Datafile',
             lower: '0000001010000',
             upper: '201611112359',
+            facets: [
+              { target: 'Datafile' },
+              {
+                target: 'DatafileParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+            ],
           },
           sessionId: null,
         },
@@ -537,14 +591,20 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for datafile request if date and search text properties are not in use', () => {
-    history.replace('/search/data?dataset=false&investigation=false');
+  it('builds correct parameters for datafile request if date and search text properties are not in use', async () => {
+    renderComponent({
+      initialState: state,
+      history: createMemoryHistory({
+        initialEntries: ['/search/data?dataset=false&investigation=false'],
+      }),
+    });
 
-    const wrapper = createWrapper();
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'searchBox.search_button_arialabel',
+      })
+    );
 
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
@@ -556,6 +616,15 @@ describe('SearchPageContainer - Tests', () => {
           sort: {},
           query: {
             target: 'Datafile',
+            facets: [
+              {
+                target: 'Datafile',
+              },
+              {
+                target: 'DatafileParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+            ],
           },
           sessionId: null,
         },
@@ -676,7 +745,7 @@ describe('SearchPageContainer - Tests', () => {
 
     wrapper
       .find('[data-testid="clear-filters-button"]')
-      .first()
+      .last()
       .simulate('click');
 
     wrapper.update();
@@ -837,12 +906,14 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('initiates search when visiting a direct url', async () => {
-    history.replace(
-      '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11'
-    );
-
-    const wrapper = createWrapper();
-    wrapper.update();
+    renderComponent({
+      initialState: state,
+      history: createMemoryHistory({
+        initialEntries: [
+          '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11',
+        ],
+      }),
+    });
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -858,6 +929,13 @@ describe('SearchPageContainer - Tests', () => {
             lower: '201311110000',
             text: 'hello',
             upper: '201611112359',
+            facets: [
+              { target: 'Datafile' },
+              {
+                target: 'DatafileParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+            ],
           },
           sessionId: null,
         },
@@ -866,10 +944,12 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('initiates search when visiting a direct url with empty search text', async () => {
-    history.replace('/search/data?searchText=');
-
-    const wrapper = createWrapper();
-    wrapper.update();
+    renderComponent({
+      initialState: state,
+      history: createMemoryHistory({
+        initialEntries: ['/search/data?searchText='],
+      }),
+    });
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -882,6 +962,13 @@ describe('SearchPageContainer - Tests', () => {
           sort: {},
           query: {
             target: 'Datafile',
+            facets: [
+              { target: 'Datafile' },
+              {
+                target: 'DatafileParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+            ],
           },
           sessionId: null,
         },
@@ -1035,7 +1122,7 @@ describe('SearchPageContainer - Tests', () => {
     // Click view button
     wrapper
       .find('[aria-label="page view app.view_cards"]')
-      .first()
+      .last()
       .simulate('click');
     wrapper.update();
 

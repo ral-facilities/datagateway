@@ -1,5 +1,5 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
+import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 
 interface SearchTextProps {
@@ -34,7 +34,7 @@ const SearchTextBox = (props: SearchTextProps): React.ReactElement => {
       fullWidth
       variant="outlined"
       color="secondary"
-      InputProps={{
+      inputProps={{
         'aria-label': t('searchBox.search_text_arialabel'),
       }}
     />

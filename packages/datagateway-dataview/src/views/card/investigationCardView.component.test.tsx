@@ -1,12 +1,4 @@
-import {
-  // Chip,
-  // Accordion,
-  Link,
-  ListItemText,
-  // SvgIcon,
-} from '@material-ui/core';
-
-import { createMount } from '@material-ui/core/test-utils';
+import { ListItemText } from '@mui/material';
 import {
   AdvancedFilter,
   dGCommonInitialState,
@@ -16,10 +8,10 @@ import {
   useInvestigationsDatasetCount,
   AddToCartButton,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
@@ -27,6 +19,10 @@ import { initialState as dgDataViewInitialState } from '../../state/reducers/dgd
 import InvestigationCardView from './investigationCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -41,7 +37,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Investigation - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: Investigation[];
@@ -61,7 +56,6 @@ describe('Investigation - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
@@ -96,7 +90,6 @@ describe('Investigation - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -116,7 +109,7 @@ describe('Investigation - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -137,10 +130,12 @@ describe('Investigation - Card View', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').first().simulate('click');
     advancedFilter
       .find('input')
       .last()
@@ -156,6 +151,8 @@ describe('Investigation - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('displays DOI and renders the expected Link ', () => {
@@ -177,7 +174,7 @@ describe('Investigation - Card View', () => {
 
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('investigations.title');
-    button.simulate('click');
+    button.find('div').simulate('click');
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`

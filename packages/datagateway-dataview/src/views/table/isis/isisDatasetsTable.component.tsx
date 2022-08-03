@@ -1,7 +1,7 @@
 import React from 'react';
-import TitleIcon from '@material-ui/icons/Title';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import SubjectIcon from '@mui/icons-material/Subject';
+import SaveIcon from '@mui/icons-material/Save';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import {
   Table,
   tableLink,
@@ -25,7 +25,7 @@ import {
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useHistory } from 'react-router';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 
@@ -69,7 +69,7 @@ const ISISDatasetsTable = (
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'dataset',
     [
       {
@@ -81,7 +81,7 @@ const ISISDatasetsTable = (
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'dataset'
   );
@@ -123,7 +123,7 @@ const ISISDatasetsTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
@@ -186,7 +186,12 @@ const ISISDatasetsTable = (
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
@@ -205,6 +210,10 @@ const ISISDatasetsTable = (
             entityId={rowData.id}
             entityName={rowData.name}
             variant="icon"
+            entitySize={
+              sizeQueries[aggregatedData.indexOf(rowData as Dataset)]?.data ??
+              -1
+            }
           />
         ),
       ]}

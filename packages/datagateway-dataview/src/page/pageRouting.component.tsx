@@ -1,7 +1,12 @@
 import React from 'react';
 import { Location as LocationType } from 'history';
-import { Switch, Route, RouteComponentProps, Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
+import {
+  Switch,
+  Route,
+  RouteComponentProps,
+  Redirect,
+  Link,
+} from 'react-router-dom';
 
 import InvestigationTable from '../views/table/investigationTable.component';
 import DatasetTable from '../views/table/datasetTable.component';
@@ -436,9 +441,9 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.studyHierarchy.toggle.isisInstrument}
           render={() =>
             this.props.view === 'card' ? (
-              <ISISInstrumentsCardView studyHierarchy={true} />
+              <ISISInstrumentsCardView studyHierarchy={true} key="true" />
             ) : (
-              <ISISInstrumentsTable studyHierarchy={true} />
+              <ISISInstrumentsTable studyHierarchy={true} key="true" />
             )
           }
         />
@@ -552,9 +557,9 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.toggle.isisInstrument}
           render={() =>
             this.props.view === 'card' ? (
-              <ISISInstrumentsCardView studyHierarchy={false} />
+              <ISISInstrumentsCardView studyHierarchy={false} key="false" />
             ) : (
-              <ISISInstrumentsTable studyHierarchy={false} />
+              <ISISInstrumentsTable studyHierarchy={false} key="false" />
             )
           }
         />

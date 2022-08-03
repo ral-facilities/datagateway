@@ -1,161 +1,67 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Date filter component renders correctly 1`] = `
+exports[`Date filter component DatePicker functionality useTextFilter hook returns a function which can generate a working text filter 1`] = `
 <form>
-  <MuiPickersUtilsProvider
-    utils={[Function]}
+  <LocalizationProvider
+    dateAdapter={[Function]}
   >
-    <PickerWithState
-      KeyboardButtonProps={
+    <ForwardRef(DatePicker)
+      OpenPickerButtonProps={
         Object {
-          "aria-label": "test filter from, date picker",
+          "aria-label": "Start Date filter from, date picker",
           "size": "small",
         }
       }
-      allowKeyboardControl={true}
-      aria-hidden="true"
-      cancelLabel={
-        <span
-          style={
+      clearText={
+        <ForwardRef(Box)
+          sx={
             Object {
-              "color": undefined,
-            }
-          }
-        >
-          Cancel
-        </span>
-      }
-      clearLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
+              "color": [Function],
             }
           }
         >
           Clear
-        </span>
+        </ForwardRef(Box)>
       }
       clearable={true}
-      color="secondary"
-      format="yyyy-MM-dd"
-      id="test filter from"
-      inputProps={
-        Object {
-          "aria-label": "test filter",
-        }
-      }
-      invalidDateMessage="Date format: yyyy-MM-dd."
-      maxDate={2000-01-01T00:00:00.000Z}
-      maxDateMessage="Invalid date range"
-      minDate={1900-01-01T00:00:00.000Z}
-      minDateMessage="Date should not be before minimal date"
-      okLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          OK
-        </span>
-      }
-      onChange={[Function]}
-      openTo="date"
-      placeholder="From..."
-      style={
-        Object {
-          "whiteSpace": "nowrap",
-        }
-      }
-      value={1999-01-01T00:00:00.000Z}
-      views={
-        Array [
-          "year",
-          "month",
-          "date",
-        ]
-      }
-    />
-    <PickerWithState
-      KeyboardButtonProps={
-        Object {
-          "aria-label": "test filter to, date picker",
-          "size": "small",
-        }
-      }
-      allowKeyboardControl={true}
-      aria-hidden="true"
-      cancelLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          Cancel
-        </span>
-      }
-      clearLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          Clear
-        </span>
-      }
-      clearable={true}
-      color="secondary"
-      format="yyyy-MM-dd"
-      id="test filter to"
-      inputProps={
-        Object {
-          "aria-label": "test filter",
-        }
-      }
-      invalidDateMessage="Date format: yyyy-MM-dd."
+      inputFormat="yyyy-MM-dd"
+      mask="____-__-__"
       maxDate={2100-01-01T00:00:00.000Z}
-      maxDateMessage="Date should not be after maximal date"
-      minDate={1999-01-01T00:00:00.000Z}
-      minDateMessage="Invalid date range"
-      okLabel={
-        <span
-          style={
+      onChange={[Function]}
+      renderInput={[Function]}
+      value={null}
+    />
+    <ForwardRef(DatePicker)
+      OpenPickerButtonProps={
+        Object {
+          "aria-label": "Start Date filter to, date picker",
+          "size": "small",
+        }
+      }
+      clearText={
+        <ForwardRef(Box)
+          sx={
             Object {
-              "color": undefined,
+              "color": [Function],
             }
           }
         >
-          OK
-        </span>
+          Clear
+        </ForwardRef(Box)>
       }
+      clearable={true}
+      inputFormat="yyyy-MM-dd"
+      mask="____-__-__"
+      minDate={1984-01-01T00:00:00.000Z}
       onChange={[Function]}
-      openTo="date"
-      placeholder="To..."
-      style={
-        Object {
-          "whiteSpace": "nowrap",
-        }
-      }
-      value={2000-01-01T00:00:00.000Z}
-      views={
-        Array [
-          "year",
-          "month",
-          "date",
-        ]
-      }
+      renderInput={[Function]}
+      value={null}
     />
-  </MuiPickersUtilsProvider>
+  </LocalizationProvider>
 </form>
 `;
 
-exports[`Date filter component useTextFilter hook returns a function which can generate a working text filter 1`] = `
+exports[`Date filter component DateTimePicker functionality useTextFilter hook returns a function which can generate a working text filter 1`] = `
 <form>
   <MuiPickersUtilsProvider
     utils={[Function]}
@@ -307,5 +213,66 @@ exports[`Date filter component useTextFilter hook returns a function which can g
       }
     />
   </MuiPickersUtilsProvider>
+</form>
+`;
+
+exports[`Date filter component renders correctly 1`] = `
+<form>
+  <LocalizationProvider
+    dateAdapter={[Function]}
+  >
+    <ForwardRef(DatePicker)
+      OpenPickerButtonProps={
+        Object {
+          "aria-label": "test filter from, date picker",
+          "size": "small",
+        }
+      }
+      clearText={
+        <ForwardRef(Box)
+          sx={
+            Object {
+              "color": [Function],
+            }
+          }
+        >
+          Clear
+        </ForwardRef(Box)>
+      }
+      clearable={true}
+      inputFormat="yyyy-MM-dd"
+      mask="____-__-__"
+      maxDate={2000-01-01T00:00:00.000Z}
+      onChange={[Function]}
+      renderInput={[Function]}
+      value={1999-01-01T00:00:00.000Z}
+    />
+    <ForwardRef(DatePicker)
+      OpenPickerButtonProps={
+        Object {
+          "aria-label": "test filter to, date picker",
+          "size": "small",
+        }
+      }
+      clearText={
+        <ForwardRef(Box)
+          sx={
+            Object {
+              "color": [Function],
+            }
+          }
+        >
+          Clear
+        </ForwardRef(Box)>
+      }
+      clearable={true}
+      inputFormat="yyyy-MM-dd"
+      mask="____-__-__"
+      minDate={1999-01-01T00:00:00.000Z}
+      onChange={[Function]}
+      renderInput={[Function]}
+      value={2000-01-01T00:00:00.000Z}
+    />
+  </LocalizationProvider>
 </form>
 `;

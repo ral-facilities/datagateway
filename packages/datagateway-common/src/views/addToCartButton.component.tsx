@@ -1,11 +1,12 @@
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { useAddToCart, useCart, useRemoveFromCart } from '../api/cart';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { StyledTooltip } from '../arrowtooltip.component';
 
 export interface AddToCartButtonProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
@@ -21,7 +22,7 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
   const { entityType, entityId, allIds } = props;
   const [t] = useTranslation();
 
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart } = useAddToCart(entityType);
   const { mutate: removeFromCart } = useRemoveFromCart(entityType);
 
@@ -37,19 +38,7 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
     [cartItems, entityType, allIds]
   );
 
-  return !(selectedIds && selectedIds.includes(entityId)) ? (
-    <Button
-      id={`add-to-cart-btn-${entityType}-${entityId}`}
-      variant="contained"
-      color="primary"
-      startIcon={<AddCircleOutlineOutlined />}
-      disableElevation
-      onClick={() => addToCart([entityId])}
-      className="tour-dataview-add-to-cart"
-    >
-      {t('buttons.add_to_cart')}
-    </Button>
-  ) : (
+  return selectedIds && selectedIds.includes(entityId) ? (
     <Button
       id={`remove-from-cart-btn-${entityType}-${entityId}`}
       variant="contained"
@@ -60,6 +49,32 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
     >
       {t('buttons.remove_from_cart')}
     </Button>
+  ) : (
+    <StyledTooltip
+      title={
+        !cartLoading && typeof selectedIds === 'undefined'
+          ? t<string, string>('buttons.cart_loading_failed_tooltip')
+          : cartLoading
+          ? t<string, string>('buttons.cart_loading_tooltip')
+          : ''
+      }
+      placement="bottom"
+    >
+      <span style={{ display: 'inherit' }}>
+        <Button
+          id={`add-to-cart-btn-${entityType}-${entityId}`}
+          variant="contained"
+          color="primary"
+          disabled={cartLoading || typeof selectedIds === 'undefined'}
+          startIcon={<AddCircleOutlineOutlined />}
+          disableElevation
+          onClick={() => addToCart([entityId])}
+          className="tour-dataview-add-to-cart"
+        >
+          {t('buttons.add_to_cart')}
+        </Button>
+      </span>
+    </StyledTooltip>
   );
 };
 

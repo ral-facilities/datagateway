@@ -23,10 +23,10 @@ import {
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, Typography } from '@mui/material';
 
 interface DatasetTableProps {
   hierarchy: string;
@@ -73,7 +73,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   );
   const [t] = useTranslation();
 
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'dataset'
   );
@@ -374,7 +374,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         </Paper>
       ) : (
         <Table
-          loading={addToCartLoading || removeFromCartLoading}
+          loading={addToCartLoading || removeFromCartLoading || cartLoading}
           data={aggregatedSource}
           loadMoreRows={loadMoreRows}
           totalRowCount={aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0}

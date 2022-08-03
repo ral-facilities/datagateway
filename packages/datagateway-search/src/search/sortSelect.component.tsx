@@ -1,27 +1,9 @@
 import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
+import type { SelectChangeEvent } from '@mui/material';
+import { InputLabel, MenuItem, Select, FormControl } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Order, parseSearchToQuery, useSingleSort } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
-import { InputLabel, MenuItem, Select } from '@material-ui/core';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      maxWidth: 300,
-    },
-    select: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-    },
-  })
-);
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -35,7 +17,6 @@ const MenuProps = {
 };
 
 const SortSelectComponent = (): React.ReactElement => {
-  const classes = useStyles();
   const [t] = useTranslation();
 
   const location = useLocation();
@@ -46,8 +27,8 @@ const SortSelectComponent = (): React.ReactElement => {
   }, [location.search]);
   const pushSort = useSingleSort();
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
-    const sort = (event.target.value as string).split(' ');
+  const handleChange = (event: SelectChangeEvent<string>): void => {
+    const sort = event.target.value.split(' ');
     if (sort[0] === '_score') {
       pushSort(sort[0], null, 'replace');
     } else {
@@ -56,14 +37,21 @@ const SortSelectComponent = (): React.ReactElement => {
   };
 
   return (
-    <div className={classes.root}>
-      <FormControl className={classes.formControl}>
+    <div style={{ display: 'flex' }}>
+      <FormControl
+        sx={{
+          margin: 1,
+          minWidth: 120,
+          maxWidth: 300,
+        }}
+      >
         <InputLabel variant="outlined" shrink={true}>
           {t('sort.label')}
         </InputLabel>
         <Select
           label={t('sort.label')}
-          className={classes.select}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          sx={(theme) => ({ color: (theme as any).colours?.contrastGrey })}
           value={parsedSort}
           onChange={handleChange}
           variant="outlined"

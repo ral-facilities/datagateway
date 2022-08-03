@@ -1,13 +1,11 @@
 import {
   Breadcrumbs,
-  createStyles,
+  breadcrumbsClasses,
   Link as MaterialLink,
   Paper,
-  Theme,
+  styled,
   Typography,
-  withStyles,
-} from '@material-ui/core';
-import { StyleRules } from '@material-ui/core/styles';
+} from '@mui/material';
 import axios, { AxiosError } from 'axios';
 import {
   ArrowTooltip,
@@ -15,6 +13,7 @@ import {
   handleICATError,
   parseSearchToQuery,
   readSciGatewayToken,
+  retryICATErrors,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -50,113 +49,6 @@ const Breadcrumb: React.FC<BreadcrumbProps> = (props: BreadcrumbProps) => {
     );
   }
 };
-
-const breadcrumbsStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.background.default,
-      '& li': {
-        '& a, p': {
-          color: theme.palette.primary.contrastText,
-          backgroundColor: theme.palette.primary.light,
-          display: 'block',
-          textDecoration: 'none',
-          position: 'relative',
-
-          /* Positions breadcrumb */
-          height: '30px',
-          lineHeight: '30px',
-          padding: '0 5px 0 2px',
-          textAlign: 'center',
-
-          /* Adds between breadcrumbs */
-          marginRight: '1px',
-          '&:before, &:after': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            border: `0 solid ${theme.palette.primary.light}`,
-            borderWidth: '15px 7px',
-            width: 0,
-            height: 0,
-          },
-          '&:before': {
-            left: '-14px',
-            borderLeftColor: 'transparent',
-          },
-          '&:after': {
-            left: '100%',
-
-            /* Gap in between chevrons */
-            borderColor: 'transparent',
-            borderLeftColor: theme.palette.primary.light,
-          },
-          '&:hover': {
-            backgroundColor: theme.palette.primary.light,
-            '&:before': {
-              borderColor: theme.palette.primary.light,
-              borderLeftColor: 'transparent',
-            },
-            '&:after': {
-              borderLeftColor: theme.palette.primary.light,
-            },
-          },
-          '&:active': {
-            backgroundColor: theme.palette.grey[600],
-            '&:before': {
-              borderColor: `${theme.palette.grey[600]} !important`,
-              borderLeftColor: 'transparent !important',
-            },
-            '&:after': {
-              borderLeftColor: `${theme.palette.grey[600]} !important`,
-            },
-          },
-        },
-      },
-      /* Every even breadcrumb has a darker background */
-      '& li:nth-child(4n + 3)': {
-        '& a, p': {
-          backgroundColor: theme.palette.primary.main,
-          '&:before': {
-            borderColor: theme.palette.primary.main,
-            borderLeftColor: 'transparent',
-          },
-          '&:after': {
-            borderLeftColor: theme.palette.primary.main,
-          },
-        },
-      },
-      '& li:first-child': {
-        '& a, p': {
-          paddingLeft: '4px',
-          '&:before': {
-            border: 'none',
-          },
-        },
-      },
-      '& li:last-child': {
-        '& a, p': {
-          paddingRight: '7px',
-
-          /* Curve the last breadcrumb border */
-          borderRadius: '0 4px 4px 0',
-          '&:after': {
-            border: 'none',
-          },
-        },
-      },
-
-      /* Control the width and shortening of text */
-      '& span': {
-        display: 'block',
-        whiteSpace: 'nowrap',
-        // TODO: Remove use of "vw" here?
-        maxWidth: '20vw',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-      },
-    },
-  });
 
 const fetchEntityInformation = async (
   apiUrl: string,
@@ -272,6 +164,7 @@ const useEntityInformation = (
           onError: (error) => {
             handleICATError(error, false);
           },
+          retry: retryICATErrors,
           staleTime: Infinity,
           select: (data: string) => ({
             displayName: data,
@@ -293,7 +186,91 @@ const useEntityInformation = (
   return useQueries(queryConfigs);
 };
 
-const StyledBreadcrumbs = withStyles(breadcrumbsStyles)(Breadcrumbs);
+const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  '& li': {
+    '& a, p': {
+      color: theme.palette.primary.contrastText,
+      backgroundColor: theme.palette.primary.light,
+      display: 'block',
+      textDecoration: 'none',
+      position: 'relative',
+
+      /* Positions breadcrumb */
+      lineHeight: '28px',
+      padding: '0 4px 0 14px',
+      textAlign: 'center',
+
+      /* Add the arrow between breadcrumbs */
+      '&:after': {
+        content: '""',
+        position: 'absolute',
+        top: '3px',
+        // half the width/height
+        right: '-11px',
+        // width/height same as lineHeight - 2* top height
+        height: '22px',
+        width: '22px',
+        // change skew to alter how shallow the arrow is
+        transform: 'scale(0.707) rotate(45deg) skew(15deg,15deg)',
+        zIndex: 1,
+        boxShadow: `2px -2px 0 2px ${theme.palette.background.default}`,
+        borderRadius: ' 0 5px 0 50px',
+        backgroundColor: theme.palette.primary.light,
+      },
+      '&:hover': {
+        backgroundColor: `${theme.palette.primary.light} !important`,
+        '&:after': {
+          backgroundColor: `${theme.palette.primary.light} !important`,
+        },
+      },
+      '&:active': {
+        backgroundColor: `${theme.palette.grey[600]} !important`,
+        '&:after': {
+          backgroundColor: `${theme.palette.grey[600]} !important`,
+        },
+      },
+    },
+  },
+  /* Every even breadcrumb has a darker background */
+  '& li:nth-of-type(4n + 3)': {
+    '& a, p': {
+      backgroundColor: theme.palette.primary.main,
+      '&:after': {
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+  },
+  '& li:first-of-type': {
+    '& a, p': {
+      paddingLeft: '14px',
+    },
+  },
+  '& li:last-of-type': {
+    '& a, p': {
+      /* Curve the last breadcrumb border */
+      borderRadius: '0 5px 5px 0',
+      paddingLeft: '14px',
+      '&:after': {
+        content: 'none',
+      },
+    },
+  },
+
+  /* Control the width and shortening of text */
+  '& span': {
+    display: 'block',
+    whiteSpace: 'nowrap',
+    // TODO: Remove use of "vw" here?
+    maxWidth: '20vw',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  [`& .${breadcrumbsClasses.separator}`]: {
+    marginLeft: 0,
+    marginRight: 0,
+  },
+}));
 
 interface PageBreadcrumbsProps {
   landingPageEntities: string[];
@@ -317,7 +294,7 @@ const PageBreadcrumbs: React.FC<PageBreadcrumbsProps> = (
 
   const viewString = view ? `?view=${view}` : '';
   return (
-    <div>
+    <div id="breadcrumbs">
       <Paper square elevation={0}>
         {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
         {currentPathnames.length > 0 ? (

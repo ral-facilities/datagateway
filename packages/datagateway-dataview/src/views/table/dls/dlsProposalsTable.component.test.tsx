@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import DLSProposalsTable from './dlsProposalsTable.component';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -9,13 +8,14 @@ import {
   useInvestigationsInfinite,
   dGCommonInitialState,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -29,7 +29,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Proposals table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Investigation[];
@@ -48,8 +47,20 @@ describe('DLS Proposals table component', () => {
     );
   };
 
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DLSProposalsTable />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -93,7 +104,6 @@ describe('DLS Proposals table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -171,14 +181,14 @@ describe('DLS Proposals table component', () => {
   });
 
   it('renders title and name as links', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=2]').find('p').children()
+      wrapper.getAllByTestId('dls-proposals-table-title')
     ).toMatchSnapshot();
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('dls-proposals-table-name')
     ).toMatchSnapshot();
   });
 });

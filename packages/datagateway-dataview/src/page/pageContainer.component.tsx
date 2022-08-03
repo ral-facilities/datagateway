@@ -4,15 +4,11 @@ import {
   Paper,
   Typography,
   Theme,
-  withStyles,
-  createStyles,
   IconButton,
-  makeStyles,
-} from '@material-ui/core';
-
-import SearchIcon from '@material-ui/icons/Search';
-import InfoIcon from '@material-ui/icons/Info';
-import { StyleRules } from '@material-ui/core/styles';
+  styled,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import InfoIcon from '@mui/icons-material/Info';
 import {
   Sticky,
   ViewsType,
@@ -41,71 +37,55 @@ import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
 import TranslatedHomePage from './translatedHomePage.component';
+import DoiRedirect from './doiRedirect.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
-const usePaperStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      cardPaper: { backgroundColor: 'inherit' },
-      tablePaper: {
-        //Footer is 36px
-        height: 'calc(100vh - 180px - 36px)',
-        width: '100%',
-        minHeight: 500,
-        backgroundColor: 'inherit',
-        overflowX: 'auto',
-      },
-      tablePaperMessage: {
-        //Footer is 36px
-        height: 'calc(100vh - 244px - 4rem - 36px)',
-        width: '100%',
-        backgroundColor: 'inherit',
-        overflowX: 'auto',
-      },
-      noResultsPaper: {
-        padding: theme.spacing(2),
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        maxWidth: '960px',
-      },
-    })
-);
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const getTablePaperStyle = (
+  displayFilterMessage: boolean,
+  tablePaperHeight: string
+) => {
+  return {
+    height: displayFilterMessage
+      ? 'calc(100vh - 244px - 4rem - 36px)' // Footer is 36px
+      : tablePaperHeight,
+    width: '100%',
+    backgroundColor: 'inherit',
+    overflowX: 'auto',
+  };
+};
 
-const useNavBarStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      openDataPaper: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        backgroundColor: (theme as any).colours?.warning,
-        display: 'flex',
-        flexDirection: 'column',
-        paddingLeft: 0,
-        paddingRight: 20,
-        justifyContent: 'center',
-      },
-      openDataInfoIcon: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        color: (theme as any).colours?.information,
-      },
-    })
-);
+const cardPaperStyle = { backgroundColor: 'inherit' };
 
-const gridStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.background.default,
-    },
-  });
+const NoResultsPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  maxWidth: '960px',
+}));
 
-const StyledGrid = withStyles(gridStyles)(Grid);
+const OpenDataPaper = styled(Paper)(({ theme }) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  backgroundColor: (theme as any).colours?.warning,
+  display: 'flex',
+  flexDirection: 'column',
+  paddingLeft: 0,
+  paddingRight: 20,
+  justifyContent: 'center',
+}));
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+}));
 
 // Define all the supported paths for data-view.
 export const paths = {
   homepage: '/datagateway',
   root: '/browse',
+  doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
   myData: {
     root: '/my-data',
     dls: '/my-data/DLS',
@@ -178,12 +158,10 @@ const isisPaths = [
 // DLS base paths - required for linking to correct search view
 const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
 
-const BlackTextTypography = withStyles({
-  root: {
-    color: '#000000',
-    fontSize: '16px',
-  },
-})(Typography);
+const BlackTextTypography = styled(Typography)({
+  color: '#000000',
+  fontSize: '16px',
+});
 
 const NavBar = React.memo(
   (
@@ -194,7 +172,6 @@ const NavBar = React.memo(
     } & CartProps
   ): React.ReactElement => {
     const [t] = useTranslation();
-    const classes = useNavBarStyles();
     const isStudyHierarchy =
       useRouteMatch([
         ...Object.values(paths.studyHierarchy.toggle),
@@ -228,17 +205,16 @@ const NavBar = React.memo(
 
           {props.loggedInAnonymously || isStudyHierarchy ? (
             <Grid item>
-              <Paper square className={classes.openDataPaper}>
+              <OpenDataPaper square>
                 <Grid
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                   aria-label="open-data-warning"
                 >
                   <Grid item>
                     <ArrowTooltip
-                      interactive
                       title={
                         <h4>
                           {isStudyHierarchy
@@ -259,9 +235,16 @@ const NavBar = React.memo(
                     >
                       <IconButton
                         disableRipple
-                        style={{ backgroundColor: 'transparent' }}
+                        sx={{ backgroundColor: 'transparent' }}
+                        size="large"
                       >
-                        <InfoIcon className={classes.openDataInfoIcon} />
+                        <InfoIcon
+                          sx={{
+                            color: (theme: Theme) =>
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              (theme as any).colours?.information,
+                          }}
+                        />
                       </IconButton>
                     </ArrowTooltip>
                   </Grid>
@@ -271,7 +254,7 @@ const NavBar = React.memo(
                     </BlackTextTypography>
                   </Grid>
                 </Grid>
-              </Paper>
+              </OpenDataPaper>
             </Grid>
           ) : null}
 
@@ -289,7 +272,7 @@ const NavBar = React.memo(
               return (
                 <Grid
                   className="tour-dataview-results"
-                  style={{ textAlign: 'center' }}
+                  sx={{ textAlign: 'center' }}
                   item
                   sm={2}
                   xs={3}
@@ -297,7 +280,7 @@ const NavBar = React.memo(
                 >
                   <Paper
                     square
-                    style={{
+                    sx={{
                       backgroundColor: 'inherit',
                       height: '100%',
                       display: 'flex',
@@ -315,29 +298,30 @@ const NavBar = React.memo(
           />
           <Paper
             square
-            style={{
+            sx={{
               backgroundColor: 'inherit',
               display: 'flex',
-              paddingLeft: 6,
-              paddingRight: 6,
+              paddingLeft: '6px',
+              paddingRight: '6px',
             }}
           >
             <IconButton
               className="tour-dataview-search-icon"
               onClick={props.navigateToSearch}
               aria-label="view-search"
-              style={{ margin: 'auto' }}
+              sx={{ margin: 'auto' }}
+              size="large"
             >
               <SearchIcon />
             </IconButton>
           </Paper>
           <Paper
             square
-            style={{
+            sx={{
               backgroundColor: 'inherit',
               display: 'flex',
-              paddingLeft: 6,
-              paddingRight: 6,
+              paddingLeft: '6px',
+              paddingRight: '6px',
             }}
           >
             <ViewCartButton
@@ -358,6 +342,7 @@ const StyledRouting = (props: {
   location: LocationType;
   displayFilterMessage: boolean;
   loggedInAnonymously: boolean;
+  linearProgressHeight: string;
 }): React.ReactElement => {
   const {
     view,
@@ -365,16 +350,36 @@ const StyledRouting = (props: {
     viewStyle,
     displayFilterMessage,
     loggedInAnonymously,
+    linearProgressHeight,
   } = props;
+
+  const breadcrumbDiv = document.getElementById('breadcrumbs');
+
+  const [breadcrumbHeight, setBreadcrumbHeight] = React.useState(
+    breadcrumbDiv ? `${breadcrumbDiv.clientHeight}px` : '30px'
+  );
+
+  React.useEffect(() => {
+    breadcrumbDiv
+      ? setBreadcrumbHeight(`${breadcrumbDiv.clientHeight}px`)
+      : setBreadcrumbHeight('30px');
+  }, [breadcrumbDiv, breadcrumbDiv?.clientHeight]);
+
+  // Footer is 36px
+  // Chrome's display is 1px shorter than Firefox's, so we subtract 1px extra to account for this
+  // We also don't want the <LinearProgress> bar to push the page down so subtract the height of this (4px if on-screen)
+  // Additional rows of breadcrumbs also push the page down so subtract the height of the breadcrumb div
+  const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
+
   const [t] = useTranslation();
-  const paperClasses = usePaperStyles();
-  const tableClassName = displayFilterMessage
-    ? paperClasses.tablePaperMessage
-    : paperClasses.tablePaper;
+  const tableClassStyle = getTablePaperStyle(
+    displayFilterMessage,
+    tablePaperHeight
+  );
   return (
     <div>
       {viewStyle !== 'card' && displayFilterMessage && (
-        <Paper className={paperClasses.noResultsPaper}>
+        <NoResultsPaper>
           <Typography
             align="center"
             variant="h6"
@@ -383,13 +388,12 @@ const StyledRouting = (props: {
           >
             {t('loading.filter_message')}
           </Typography>
-        </Paper>
+        </NoResultsPaper>
       )}
       <Paper
         square
-        className={`${
-          viewStyle === 'card' ? paperClasses.cardPaper : tableClassName
-        } tour-dataview-data`}
+        sx={viewStyle === 'card' ? cardPaperStyle : tableClassStyle}
+        className="tour-dataview-data"
       >
         <PageRouting
           loggedInAnonymously={loggedInAnonymously}
@@ -408,6 +412,7 @@ const ViewRouting = React.memo(
     totalDataCount: number;
     location: LocationType;
     loggedInAnonymously: boolean;
+    linearProgressHeight: string;
   }): React.ReactElement => {
     const {
       view,
@@ -415,6 +420,7 @@ const ViewRouting = React.memo(
       totalDataCount,
       location,
       loggedInAnonymously,
+      linearProgressHeight,
     } = props;
     const displayFilterMessage = loadedCount && totalDataCount === 0;
 
@@ -442,6 +448,7 @@ const ViewRouting = React.memo(
             location={location}
             loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
 
@@ -453,6 +460,7 @@ const ViewRouting = React.memo(
             location={location}
             loggedInAnonymously={loggedInAnonymously}
             displayFilterMessage={displayFilterMessage}
+            linearProgressHeight={linearProgressHeight}
           />
         </Route>
       </SwitchRouting>
@@ -498,7 +506,7 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
     : false;
 };
 
-const PageContainer: React.FC = () => {
+const DataviewPageContainer: React.FC = () => {
   const location = useLocation();
   const { push } = useHistory();
   const prevLocationRef = React.useRef(location);
@@ -516,6 +524,10 @@ const PageContainer: React.FC = () => {
   });
   const loading = isFetchingNum > 0;
 
+  const [linearProgressHeight, setlinearProgressHeight] = React.useState(
+    loading ? '4px' : '0px'
+  );
+
   const queryClient = useQueryClient();
 
   // we need to run this hook every render to ensure we have the
@@ -530,6 +542,10 @@ const PageContainer: React.FC = () => {
       }) ?? 0;
     if (count !== totalDataCount) setTotalDataCount(count);
   });
+
+  React.useEffect(() => {
+    loading ? setlinearProgressHeight('4px') : setlinearProgressHeight('0px');
+  }, [loading]);
 
   const isCountFetchingNum = useIsFetching('count', {
     exact: false,
@@ -619,96 +635,102 @@ const PageContainer: React.FC = () => {
   };
 
   return (
+    <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
+      <NavBar
+        entityCount={totalDataCount ?? 0}
+        cartItems={cartItems ?? []}
+        navigateToSearch={navigateToSearch}
+        navigateToDownload={navigateToDownload}
+        loggedInAnonymously={loggedInAnonymously}
+      />
+
+      <StyledGrid container>
+        <Grid item xs={12} style={{ marginTop: '10px', marginBottom: '10px' }}>
+          <StyledGrid container alignItems="baseline">
+            {/* Toggle between the table and card view */}
+            <Grid item style={{ display: 'flex', alignItems: 'baseline' }}>
+              <Route
+                exact
+                path={Object.values(paths.myData)}
+                render={() => <RoleSelector />}
+              />
+              <Route
+                exact
+                path={togglePaths}
+                render={() => (
+                  <ViewButton
+                    viewCards={view === 'card'}
+                    handleButtonChange={handleButtonChange}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path={Object.values(paths.myData).concat(
+                  Object.values(paths.toggle),
+                  Object.values(paths.standard),
+                  Object.values(paths.studyHierarchy.toggle),
+                  Object.values(paths.studyHierarchy.standard)
+                )}
+                render={() => (
+                  <ClearFiltersButton
+                    handleButtonClearFilters={handleButtonClearFilters}
+                    disabled={disabled}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={true}>
+              <SelectionAlert
+                selectedItems={cartItems ?? []}
+                navigateToSelection={navigateToDownload}
+                marginSide={'8px'}
+                loggedInAnonymously={loggedInAnonymously}
+              />
+            </Grid>
+          </StyledGrid>
+        </Grid>
+
+        {/* Show loading progress if data is still being loaded */}
+        {loading && (
+          <Grid item xs={12}>
+            <LinearProgress
+              color="secondary"
+              style={{ height: linearProgressHeight }}
+            />
+          </Grid>
+        )}
+
+        {/* Hold the view for remainder of the page */}
+        <Grid item xs={12} aria-label="page-view">
+          <ViewRouting
+            view={view}
+            location={location}
+            loadedCount={loadedCount}
+            loggedInAnonymously={loggedInAnonymously}
+            totalDataCount={totalDataCount ?? 0}
+            linearProgressHeight={linearProgressHeight}
+          />
+        </Grid>
+      </StyledGrid>
+    </Paper>
+  );
+};
+
+const PageContainer: React.FC = () => {
+  const location = useLocation();
+
+  return (
     <SwitchRouting location={location}>
       {/* Load the homepage */}
       <Route exact path={paths.homepage} component={TranslatedHomePage} />
-      <Route
-        render={() => (
-          // Load the standard dataview pageContainer
-          <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
-            <NavBar
-              entityCount={totalDataCount ?? 0}
-              cartItems={cartItems ?? []}
-              navigateToSearch={navigateToSearch}
-              navigateToDownload={navigateToDownload}
-              loggedInAnonymously={loggedInAnonymously}
-            />
-
-            <StyledGrid container>
-              <Grid
-                item
-                xs={12}
-                style={{ marginTop: '10px', marginBottom: '10px' }}
-              >
-                <StyledGrid container alignItems="baseline">
-                  {/* Toggle between the table and card view */}
-                  <Grid
-                    item
-                    style={{ display: 'flex', alignItems: 'baseline' }}
-                  >
-                    <Route
-                      exact
-                      path={Object.values(paths.myData)}
-                      render={() => <RoleSelector />}
-                    />
-                    <Route
-                      exact
-                      path={togglePaths}
-                      render={() => (
-                        <ViewButton
-                          viewCards={view === 'card'}
-                          handleButtonChange={handleButtonChange}
-                        />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path={Object.values(paths.myData).concat(
-                        Object.values(paths.toggle),
-                        Object.values(paths.standard),
-                        Object.values(paths.studyHierarchy.toggle),
-                        Object.values(paths.studyHierarchy.standard)
-                      )}
-                      render={() => (
-                        <ClearFiltersButton
-                          handleButtonClearFilters={handleButtonClearFilters}
-                          disabled={disabled}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={true}>
-                    <SelectionAlert
-                      selectedItems={cartItems ?? []}
-                      navigateToSelection={navigateToDownload}
-                      marginSide={'8px'}
-                      loggedInAnonymously={loggedInAnonymously}
-                    />
-                  </Grid>
-                </StyledGrid>
-              </Grid>
-
-              {/* Show loading progress if data is still being loaded */}
-              {loading && (
-                <Grid item xs={12}>
-                  <LinearProgress color="secondary" />
-                </Grid>
-              )}
-
-              {/* Hold the view for remainder of the page */}
-              <Grid item xs={12} aria-label="page-view">
-                <ViewRouting
-                  view={view}
-                  location={location}
-                  loadedCount={loadedCount}
-                  loggedInAnonymously={loggedInAnonymously}
-                  totalDataCount={totalDataCount ?? 0}
-                />
-              </Grid>
-            </StyledGrid>
-          </Paper>
-        )}
-      />
+      <Route exact path={paths.doiRedirect}>
+        <DoiRedirect />
+      </Route>
+      {/* Load the standard dataview pageContainer */}
+      <Route>
+        <DataviewPageContainer />
+      </Route>
     </SwitchRouting>
   );
 };

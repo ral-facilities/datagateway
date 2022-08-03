@@ -43,13 +43,11 @@ describe('Datafile search tab', () => {
 
   it('should be able to search by text', () => {
     cy.clearDownloadCart();
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('2106');
+    cy.get('#filled-search').type('2106');
 
     cy.get('[aria-label="Submit search"]')
       .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+      .wait(['@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
 
@@ -81,15 +79,14 @@ describe('Datafile search tab', () => {
     cy.get('[aria-label="Start date input"]').type('2012-02-02');
     cy.get('[aria-label="End date input"]').type('2012-02-03');
 
-    cy.get('[aria-label="Submit search"]').click();
+    cy.get('[aria-label="Submit search"]').click().wait('@datafilesCount', {
+      timeout: 10000,
+    });
 
     cy.get('[aria-label="Search table"]')
       .contains('Datafile')
       .contains('9')
-      .click()
-      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
-        timeout: 10000,
-      });
+      .click();
 
     cy.get('[aria-rowcount="9"]').should('exist');
 
@@ -116,9 +113,7 @@ describe('Datafile search tab', () => {
   });
 
   it('should link to a parent dataset', () => {
-    cy.get('[aria-label="Search text input"]')
-      .find('#filled-search')
-      .type('1956');
+    cy.get('#filled-search').type('1956');
 
     cy.get('[aria-label="Submit search"]')
       .click()

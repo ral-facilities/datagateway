@@ -1,16 +1,13 @@
 import React, { useCallback, useMemo } from 'react';
 import {
   CircularProgress,
-  createStyles,
   Grid,
   IconButton,
   LinearProgress,
   Paper,
+  styled,
   Typography,
-  Theme,
-  StyleRules,
-  withStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import {
   DateColumnFilter,
@@ -38,28 +35,25 @@ import {
   PlayCircleFilled,
   RemoveCircle,
   Restore,
-} from '@material-ui/icons';
-import RefreshIcon from '@material-ui/icons/Refresh';
+  Refresh,
+} from '@mui/icons-material';
 import BlackTooltip from '../tooltip.component';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
 
-const paperStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.default,
-      overflow: 'hidden',
-    },
-  });
-
-const StyledPaper = withStyles(paperStyles)(Paper);
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  flexGrow: 1,
+  backgroundColor: theme.palette.background.default,
+  overflow: 'hidden',
+}));
 
 const AdminDownloadStatusTable: React.FC = () => {
   // Load the settings for use
   const settings = React.useContext(DownloadSettingsContext);
   // Sorting columns
-  const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
+  const [sort, setSort] = React.useState<{ [column: string]: Order }>({
+    createdAt: 'desc',
+  });
   const [filters, setFilters] = React.useState<{
     [column: string]:
       | { value?: string | number; type: string }
@@ -84,19 +78,15 @@ const AdminDownloadStatusTable: React.FC = () => {
   }, [t]);
 
   const buildQueryOffset = useCallback(() => {
-    let queryOffset = `WHERE UPPER(download.facilityName) = '${settings.facilityName}'`;
+    let queryOffset = `WHERE download.facilityName = '${settings.facilityName}'`;
     for (const [column, filter] of Object.entries(filters)) {
       if (typeof filter === 'object') {
         if (!Array.isArray(filter)) {
           if ('startDate' in filter || 'endDate' in filter) {
-            const startDate = filter.startDate
-              ? `${filter.startDate} 00:00:00`
-              : '0000-01-01 00:00:00';
-            const endDate = filter.endDate
-              ? `${filter.endDate} 23:59:59`
-              : '9999-12-31 23:59:59';
+            const startDate = filter.startDate ?? '0001-01-01 00:00';
+            const endDate = filter.endDate ?? '9999-12-31 23:59';
 
-            queryOffset += ` AND UPPER(download.${column}) BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
+            queryOffset += ` AND download.${column} BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
           }
 
           if ('type' in filter && filter.type) {
@@ -118,9 +108,9 @@ const AdminDownloadStatusTable: React.FC = () => {
 
     queryOffset += ' ORDER BY';
     for (const [column, order] of Object.entries(sort)) {
-      queryOffset += ` UPPER(download.${column}) ${order},`;
+      queryOffset += ` download.${column} ${order},`;
     }
-    queryOffset += ' UPPER(download.id) ASC';
+    queryOffset += ' download.id ASC';
 
     return queryOffset;
   }, [filters, settings.facilityName, sort]);
@@ -259,6 +249,7 @@ const AdminDownloadStatusTable: React.FC = () => {
         }
       }}
       value={filters[dataKey] as DateFilter}
+      filterByTime
     />
   );
 
@@ -289,8 +280,9 @@ const AdminDownloadStatusTable: React.FC = () => {
                     'downloadTab.refresh_download_status_arialabel'
                   )}
                   onClick={() => setRefreshDownloads(true)}
+                  size="large"
                 >
-                  <RefreshIcon />
+                  <Refresh />
                 </IconButton>
               </BlackTooltip>
             ) : (
@@ -317,10 +309,12 @@ const AdminDownloadStatusTable: React.FC = () => {
               </Grid>
             )}
             <Grid item>
+              {/* Table should take up page but leave room for: SG appbar, SG footer,
+            tabs, admin header, table padding, and text above table (respectively). */}
               <Paper
                 style={{
                   height:
-                    'calc(100vh - 64px - 36px - 48px - 48px - (1.75rem + 40px))',
+                    'calc(100vh - 64px - 36px - 48px - (3rem * 1.167) - 32px - (1.75rem + 40px))',
                   minHeight: 230,
                   overflowX: 'auto',
                 }}
@@ -428,7 +422,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                                   facilityName: settings.facilityName,
                                   downloadApiUrl: settings.downloadApiUrl,
                                 },
-                                `WHERE UPPER(download.id) = ${downloadItem.id}`
+                                `WHERE download.id = ${downloadItem.id}`
                               ).then((downloads) => {
                                 const formattedDownload = formatDownloads(
                                   downloads

@@ -39,7 +39,7 @@ describe('ISIS - MyData Table', () => {
         .first()
         .trigger('mouseover', { force: true })
         .wait(700)
-        .get('[data-testid="arrow-tooltip-component-true"]')
+        .get('[role="tooltip"]')
         .should('exist');
 
       cy.get('body').type('{esc}');
@@ -48,9 +48,8 @@ describe('ISIS - MyData Table', () => {
       cy.get('[data-testid="isis-mydata-table-title"]')
         .wait(700)
         .first()
-        .get('[data-testid="arrow-tooltip-component-false"]')
-        .first()
-        .should('exist');
+        .get('[role="tooltip"]')
+        .should('not.exist');
     });
 
     it('should be able to click an investigation to see its landing page', () => {
@@ -229,14 +228,12 @@ describe('ISIS - MyData Table', () => {
       it('date between', () => {
         cy.get('[aria-rowcount="4"]').should('exist');
 
-        cy.get('button[aria-label="Start Date filter to, date picker"]')
+        cy.get('input[aria-label="Start Date filter to"]')
           .parent()
           .find('button')
           .click();
 
-        cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-
-        cy.contains('OK').click();
+        cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
 
         const date = new Date();
         date.setDate(1);

@@ -1,5 +1,4 @@
-import { Link, ListItemText } from '@material-ui/core';
-import { createMount } from '@material-ui/core/test-utils';
+import { ListItemText } from '@mui/material';
 import {
   AdvancedFilter,
   dGCommonInitialState,
@@ -7,10 +6,10 @@ import {
   useStudiesPaginated,
   Study,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
@@ -19,6 +18,10 @@ import ISISStudiesCardView from './isisStudiesCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { parse } from 'date-fns';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest
   .useFakeTimers('modern')
@@ -36,7 +39,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Studies - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: Study[];
@@ -56,7 +58,6 @@ describe('ISIS Studies - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
@@ -90,7 +91,6 @@ describe('ISIS Studies - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -176,7 +176,7 @@ describe('ISIS Studies - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -197,10 +197,12 @@ describe('ISIS Studies - Card View', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').first().simulate('click');
     advancedFilter
       .find('input')
       .last()
@@ -218,6 +220,8 @@ describe('ISIS Studies - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -225,7 +229,7 @@ describe('ISIS Studies - Card View', () => {
 
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('studies.name');
-    button.simulate('click');
+    button.find('div').simulate('click');
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
@@ -261,7 +265,7 @@ describe('ISIS Studies - Card View', () => {
     const wrapper = createWrapper();
 
     expect(
-      wrapper.find('[aria-label="card-description"]').first().text()
+      wrapper.find('[aria-label="card-description"]').last().text()
     ).toEqual('Test investigation');
   });
 

@@ -1,15 +1,14 @@
 import {
-  createStyles,
+  Box,
   Divider,
   Grid,
   Link as MuiLink,
-  makeStyles,
   Paper,
+  styled,
   Tab,
   Tabs,
-  Theme,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Assessment,
   Business,
@@ -18,7 +17,7 @@ import {
   Public,
   Save,
   Storage,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import {
   Dataset,
   formatCountOrSize,
@@ -37,60 +36,44 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './isisBranding.component';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      margin: theme.spacing(1),
-      padding: theme.spacing(1),
-    },
-    tabPaper: {
-      marginLeft: -theme.spacing(1.5),
-      marginRight: -theme.spacing(1.5),
-      paddingLeft: theme.spacing(1.5),
-      paddingRight: theme.spacing(1.5),
-    },
-    subHeading: {
-      marginTop: theme.spacing(1),
-    },
-    shortInfoRow: {
-      display: 'flex',
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    shortInfoIcon: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-    },
-    shortInfoLabel: {
-      display: 'flex',
-      width: '50%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-    shortInfoValue: {
-      width: '50%',
-      textAlign: 'right',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-    shortInfoPart: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const Subheading = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));
+
+const ShortInfoRow = styled('div')(({ theme }) => ({
+  display: 'flex',
+  marginTop: theme.spacing(1),
+  marginBottom: theme.spacing(1),
+}));
+
+const shortInfoIconStyle = { mx: 1 };
+
+const ShortInfoLabel = styled(Typography)({
+  display: 'flex',
+  width: '50%',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+const ShortInfoValue = styled(Typography)({
+  width: '50%',
+  textAlign: 'right',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 interface FormattedUser {
   role: string;
@@ -122,7 +105,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}`;
-  const classes = useStyles();
 
   const { data } = useInvestigation(parseInt(investigationId), [
     {
@@ -200,7 +182,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     {
       content: (entity: Investigation) => entity.visitId,
       label: t('investigations.visit_id'),
-      icon: <Fingerprint className={classes.shortInfoIcon} />,
+      icon: <Fingerprint sx={shortInfoIconStyle} />,
     },
     {
       content: function doiFormat(entity: Investigation) {
@@ -216,7 +198,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         );
       },
       label: t('investigations.doi'),
-      icon: <Public className={classes.shortInfoIcon} />,
+      icon: <Public sx={shortInfoIconStyle} />,
     },
     {
       content: function parentDoiFormat(entity: Investigation) {
@@ -232,30 +214,30 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         );
       },
       label: t('investigations.parent_doi'),
-      icon: <Public className={classes.shortInfoIcon} />,
+      icon: <Public sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) => entity.name,
       label: t('investigations.name'),
-      icon: <Fingerprint className={classes.shortInfoIcon} />,
+      icon: <Fingerprint sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) => {
         return formatCountOrSize(sizeQueries[0], true);
       },
       label: t('investigations.size'),
-      icon: <Save className={classes.shortInfoIcon} />,
+      icon: <Save sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) => entity.facility?.name,
       label: t('investigations.details.facility'),
-      icon: <Business className={classes.shortInfoIcon} />,
+      icon: <Business sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) =>
         entity.investigationInstruments?.[0]?.instrument?.name,
       label: t('investigations.instrument'),
-      icon: <Assessment className={classes.shortInfoIcon} />,
+      icon: <Assessment sx={shortInfoIconStyle} />,
     },
     {
       content: function distributionFormat(entity: Investigation) {
@@ -266,22 +248,22 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         );
       },
       label: t('studies.details.format'),
-      icon: <Storage className={classes.shortInfoIcon} />,
+      icon: <Storage sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
       label: t('investigations.release_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) => entity.startDate?.slice(0, 10),
       label: t('investigations.start_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) => entity.endDate?.slice(0, 10),
       label: t('investigations.end_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
   ];
 
@@ -300,21 +282,23 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         );
       },
       label: t('datasets.doi'),
-      icon: <Public className={classes.shortInfoIcon} />,
+      icon: <Public sx={shortInfoIconStyle} />,
     },
   ];
 
   return (
-    <Paper className={classes.paper}>
-      <Grid container style={{ padding: 4 }}>
+    <Paper sx={{ margin: 1, padding: 1 }}>
+      <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
           <Branding />
         </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.tabPaper} square elevation={0}>
+          <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
             <Tabs
               value={value}
               onChange={(event, newValue) => setValue(newValue)}
+              indicatorColor="secondary"
+              textColor="secondary"
             >
               <Tab
                 id="investigation-details-tab"
@@ -340,14 +324,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         <Grid item container xs={12} id="investigation-details-panel">
           {/* Long format information */}
           <Grid item xs>
-            <Typography
-              className={classes.subHeading}
-              component="h5"
-              variant="h5"
-              aria-label="landing-investigation-title"
-            >
+            <Subheading variant="h5" aria-label="landing-investigation-title">
               {data?.[0]?.title}
-            </Typography>
+            </Subheading>
 
             <Typography aria-label="landing-investigation-summary">
               {data?.[0]?.summary && data[0].summary !== 'null'
@@ -356,14 +335,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             </Typography>
             {formattedUsers.length > 0 && (
               <div>
-                <Typography
-                  className={classes.subHeading}
-                  component="h6"
+                <Subheading
                   variant="h6"
                   aria-label="landing-investigation-users-label"
                 >
                   {t('investigations.details.users.label')}
-                </Typography>
+                </Subheading>
                 {formattedUsers.map((user, i) => (
                   <Typography
                     aria-label={`landing-investigation-user-${i}`}
@@ -375,14 +352,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               </div>
             )}
 
-            <Typography
-              className={classes.subHeading}
-              component="h6"
+            <Subheading
               variant="h6"
               aria-label="landing-investigation-publisher-label"
             >
               {t('studies.details.publisher')}
-            </Typography>
+            </Subheading>
             <Typography aria-label="landing-investigation-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
@@ -395,14 +370,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
             {formattedSamples && (
               <div>
-                <Typography
-                  className={classes.subHeading}
-                  component="h6"
+                <Subheading
                   variant="h6"
                   aria-label="landing-investigation-samples-label"
                 >
                   {t('investigations.details.samples.label')}
-                </Typography>
+                </Subheading>
                 {formattedSamples.length === 0 && (
                   <Typography data-testid="investigation-details-panel-no-samples">
                     {t('investigations.details.samples.no_samples')}
@@ -421,14 +394,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
             {formattedPublications && (
               <div>
-                <Typography
-                  className={classes.subHeading}
-                  component="h6"
+                <Subheading
                   variant="h6"
                   aria-label="landing-investigation-publications-label"
                 >
                   {t('investigations.details.publications.label')}
-                </Typography>
+                </Subheading>
                 {formattedPublications.length === 0 && (
                   <Typography data-testid="investigation-details-panel-no-publications">
                     {t('investigations.details.publications.no_publications')}
@@ -452,38 +423,36 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               (field, i) =>
                 data?.[0] &&
                 field.content(data[0] as Investigation) && (
-                  <div className={classes.shortInfoRow} key={i}>
-                    <Typography className={classes.shortInfoLabel}>
+                  <ShortInfoRow key={i}>
+                    <ShortInfoLabel>
                       {field.icon}
                       {field.label}:
-                    </Typography>
+                    </ShortInfoLabel>
                     <ArrowTooltip
                       title={getTooltipText(
                         field.content(data[0] as Investigation)
                       )}
                     >
-                      <Typography className={classes.shortInfoValue}>
+                      <ShortInfoValue>
                         {field.content(data[0] as Investigation)}
-                      </Typography>
+                      </ShortInfoValue>
                     </ArrowTooltip>
-                  </div>
+                  </ShortInfoRow>
                 )
             )}
             {/* Actions */}
-            <div className={classes.actionButtons}>
+            <ActionButtonsContainer>
               <AddToCartButton
                 entityType="investigation"
                 allIds={[parseInt(investigationId)]}
                 entityId={parseInt(investigationId)}
               />
-            </div>
+            </ActionButtonsContainer>
             {/* Parts */}
             {(data?.[0] as Investigation)?.datasets?.map((dataset, i) => (
-              <div key={i} className={classes.shortInfoPart}>
+              <Box key={i} sx={{ my: 1 }}>
                 <Divider />
-                <Typography
-                  className={classes.subHeading}
-                  component="h6"
+                <Subheading
                   variant="h6"
                   align="center"
                   aria-label="landing-investigation-part-label"
@@ -493,28 +462,28 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     `${t('datasets.dataset')}: ${dataset.name}`,
                     view
                   )}
-                </Typography>
+                </Subheading>
                 {shortDatasetInfo.map(
                   (field, i) =>
                     field.content(dataset as Dataset) && (
-                      <div className={classes.shortInfoRow} key={i}>
-                        <Typography className={classes.shortInfoLabel}>
+                      <ShortInfoRow key={i}>
+                        <ShortInfoLabel>
                           {field.icon}
                           {field.label}:
-                        </Typography>
+                        </ShortInfoLabel>
                         <ArrowTooltip
                           title={getTooltipText(
                             field.content(dataset as Dataset)
                           )}
                         >
-                          <Typography className={classes.shortInfoValue}>
+                          <ShortInfoValue>
                             {field.content(dataset as Dataset)}
-                          </Typography>
+                          </ShortInfoValue>
                         </ArrowTooltip>
-                      </div>
+                      </ShortInfoRow>
                     )
                 )}
-                <div className={classes.actionButtons}>
+                <ActionButtonsContainer>
                   <AddToCartButton
                     entityType="dataset"
                     allIds={[dataset.id]}
@@ -524,9 +493,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     entityType="dataset"
                     entityId={dataset.id}
                     entityName={dataset.name}
+                    entitySize={sizeQueries[0]?.data ?? -1}
                   />
-                </div>
-              </div>
+                </ActionButtonsContainer>
+              </Box>
             ))}
           </Grid>
         </Grid>

@@ -1,9 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Search Button component tests renders correctly 1`] = `
-<div>
-  <TranslatedSearchButton
-    initiateSearch={[MockFunction]}
-  />
-</div>
+<DocumentFragment>
+  <div>
+    <button
+      aria-label="searchBox.search_button_arialabel"
+      class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-fullWidth MuiButtonBase-root  css-189e9pj-MuiButtonBase-root-MuiButton-root"
+      tabindex="0"
+      type="button"
+    >
+      searchBox.search_button
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
+  </div>
+</DocumentFragment>
 `;

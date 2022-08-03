@@ -1,8 +1,8 @@
 import React from 'react';
-import TitleIcon from '@material-ui/icons/Title';
-import ExploreIcon from '@material-ui/icons/Explore';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import SubjectIcon from '@mui/icons-material/Subject';
+import ExploreIcon from '@mui/icons-material/Explore';
+import SaveIcon from '@mui/icons-material/Save';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import {
   Table,
   TableActionProps,
@@ -23,7 +23,7 @@ import {
   ISISDatafileDetailsPanel,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';
@@ -55,7 +55,7 @@ const ISISDatafilesTable = (
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -71,7 +71,7 @@ const ISISDatafilesTable = (
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
     'datafile'
   );
@@ -119,7 +119,7 @@ const ISISDatafilesTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: TitleIcon,
+        icon: SubjectIcon,
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,
@@ -165,7 +165,12 @@ const ISISDatafilesTable = (
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
@@ -184,6 +189,7 @@ const ISISDatafilesTable = (
             entityId={rowData.id}
             entityName={(rowData as Datafile).location}
             variant="icon"
+            entitySize={(rowData as Datafile).fileSize ?? -1}
           />
         ),
       ]}

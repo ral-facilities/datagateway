@@ -8,27 +8,21 @@ import {
   Grid,
   IconButton,
   CircularProgress,
-  Theme,
-} from '@material-ui/core';
-import Tab from '@material-ui/core/Tab';
+  styled,
+  Tab,
+} from '@mui/material';
 
 import DownloadCartTable from '../downloadCart/downloadCartTable.component';
 import DownloadStatusTable from '../downloadStatus/downloadStatusTable.component';
 
-import RefreshIcon from '@material-ui/icons/Refresh';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import BlackTooltip from '../tooltip.component';
 import { useTranslation } from 'react-i18next';
-import { StyleRules, createStyles, withStyles } from '@material-ui/core/styles';
 
-const paperStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.default,
-    },
-  });
-
-const StyledPaper = withStyles(paperStyles)(Paper);
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  flexGrow: 1,
+  backgroundColor: theme.palette.background.default,
+}));
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -62,21 +56,8 @@ function a11yProps(
 }
 
 const DownloadTabs: React.FC = () => {
-  // Setting the selected tab in session storage is required
-  // as the selected tab information is lost with each re-render
-  // (e.g. opening/closing the navigation drawer).
-  const getTab = (): number => {
-    const savedTab = sessionStorage.getItem('downloadStatusTab');
-
-    // If the tab has not been saved, then set it to the initial cart view (0).
-    if (!savedTab) sessionStorage.setItem('downloadStatusTab', '0');
-    else return parseInt(savedTab);
-
-    return 0;
-  };
-
   // Set the initial tab.
-  const [selectedTab, setSelectedTab] = React.useState(getTab());
+  const [selectedTab, setSelectedTab] = React.useState(0);
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
   const [lastChecked, setLastChecked] = React.useState('');
   const [t] = useTranslation();
@@ -85,8 +66,6 @@ const DownloadTabs: React.FC = () => {
     event: React.ChangeEvent<unknown>,
     setTab: number
   ): void => {
-    // Set the tab in the session storage.
-    sessionStorage.setItem('downloadStatusTab', setTab.toString());
     setSelectedTab(setTab);
   };
 
@@ -150,6 +129,7 @@ const DownloadTabs: React.FC = () => {
                       'downloadTab.refresh_download_status_arialabel'
                     )}
                     onClick={() => setRefreshDownloads(true)}
+                    size="large"
                   >
                     <RefreshIcon />
                   </IconButton>

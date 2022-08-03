@@ -25,7 +25,7 @@ import {
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 import {
@@ -40,8 +40,8 @@ import {
   ListItem,
   Paper,
   Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   CVCustomFilters,
   CVFilterInfo,
@@ -542,8 +542,8 @@ const DatafileSearchTable = (
         <Grid
           container
           direction="row"
-          justify="center"
-          style={{ height: '100%' }}
+          justifyContent="center"
+          sx={{ height: '100%' }}
         >
           {/* Filtering options */}
           {customFilters && (filterUpdate || aggregatedSource?.length > 0) && (

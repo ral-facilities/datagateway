@@ -1,6 +1,6 @@
 import React from 'react';
-import { Input, InputAdornment, MenuItem, Select } from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
+import { Input, InputAdornment, MenuItem, Select } from '@mui/material';
+import SettingsIcon from '@mui/icons-material/Settings';
 import debounce from 'lodash.debounce';
 import { FiltersType, TextFilter } from '../../app.types';
 import { usePushFilter, usePushFilters } from '../../api';
@@ -83,6 +83,7 @@ const TextColumnFilter = (props: {
               SelectDisplayProps={{
                 'aria-label': `include or exclude`,
               }}
+              variant="standard"
             >
               <MenuItem
                 key="include"

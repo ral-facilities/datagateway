@@ -11,9 +11,10 @@ import {
   useInfiniteQuery,
 } from 'react-query';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { getApiParams, parseSearchToQuery } from '.';
 import { StateType } from '..';
+import retryICATErrors from './retryICATErrors';
 
 const fetchStudies = (
   apiUrl: string,
@@ -92,6 +93,7 @@ export const useStudiesPaginated = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -124,6 +126,7 @@ export const useStudiesInfinite = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -162,6 +165,7 @@ export const useStudy = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -214,6 +218,7 @@ export const useStudyCount = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };

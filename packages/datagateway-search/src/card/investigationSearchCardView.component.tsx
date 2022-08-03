@@ -4,7 +4,7 @@ import {
   Fingerprint,
   Public,
   Assessment,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import {
   CardView,
   formatCountOrSize,
@@ -34,14 +34,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import {
-  Typography,
-  Link as MuiLink,
-  makeStyles,
-  createStyles,
-  Theme,
-  Paper,
-} from '@material-ui/core';
+import { Typography, Paper, Link as MuiLink, styled } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { CVCustomFilters } from 'datagateway-common/lib/card/cardView.component';
@@ -50,18 +43,14 @@ interface InvestigationCardProps {
   hierarchy: string;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const ActionButtonDiv = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 const InvestigationCardView = (
   props: InvestigationCardProps
@@ -118,7 +107,6 @@ const InvestigationCardView = (
         }
       }
 
-      console.log(instrumentId, facilityCycleId, investigationData.id); // TODO
       if (facilityCycleId)
         return `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`;
       else return null;
@@ -476,14 +464,12 @@ const InvestigationCardView = (
     [hierarchy, hierarchyLinkURL, push]
   );
 
-  const classes = useStyles();
-
   const buttons = React.useMemo(
     () =>
       hierarchy !== 'dls'
         ? [
-            (investigation: Investigation) => (
-              <div className={classes.actionButtons}>
+            (investigation: SearchResultSource) => (
+              <ActionButtonDiv>
                 <AddToCartButton
                   entityType="investigation"
                   allIds={aggregatedIds}
@@ -493,12 +479,16 @@ const InvestigationCardView = (
                   entityType="investigation"
                   entityId={investigation.id}
                   entityName={investigation.name}
+                  entitySize={
+                    sizeQueries[paginatedSource.indexOf(investigation)]?.data ??
+                    -1
+                  }
                 />
-              </div>
+              </ActionButtonDiv>
             ),
           ]
         : [],
-    [hierarchy, classes.actionButtons, aggregatedIds]
+    [hierarchy, aggregatedIds, sizeQueries, paginatedSource]
   );
 
   return (

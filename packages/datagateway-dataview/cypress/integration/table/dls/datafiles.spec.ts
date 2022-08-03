@@ -199,14 +199,12 @@ describe('DLS - Datafiles Table', () => {
     it('date between', () => {
       cy.get('input[id="Create Time filter from"]').type('2019-01-01');
 
-      cy.get('button[aria-label="Create Time filter to, date picker"]')
+      cy.get('input[aria-label="Create Time filter to"]')
         .parent()
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
-
-      cy.contains('OK').click();
+      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
 
       const date = new Date();
       date.setDate(1);

@@ -3,7 +3,7 @@ import {
   ConfirmationNumber,
   CalendarToday,
   Fingerprint,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import {
   CardView,
   parseSearchToQuery,
@@ -30,13 +30,7 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import {
-  createStyles,
-  makeStyles,
-  Paper,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { styled, Paper, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { CVCustomFilters } from 'datagateway-common/lib/card/cardView.component';
@@ -45,18 +39,14 @@ interface DatasetCardViewProps {
   hierarchy: string;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const ActionButtonDiv = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const [t] = useTranslation();
@@ -452,14 +442,12 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     [hierarchy, hierarchyLinkURL, push]
   );
 
-  const classes = useStyles();
-
   const buttons = React.useMemo(
     () =>
       hierarchy !== 'dls'
         ? [
             (dataset: SearchResultSource) => (
-              <div className={classes.actionButtons}>
+              <ActionButtonDiv>
                 <AddToCartButton
                   entityType="dataset"
                   allIds={aggregatedIds}
@@ -469,8 +457,11 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
                   entityType="dataset"
                   entityId={dataset.id}
                   entityName={dataset.name}
+                  entitySize={
+                    sizeQueries[paginatedSource.indexOf(dataset)]?.data ?? -1
+                  }
                 />
-              </div>
+              </ActionButtonDiv>
             ),
           ]
         : [
@@ -483,7 +474,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
             ),
           ],
 
-    [classes.actionButtons, aggregatedIds, hierarchy]
+    [hierarchy, aggregatedIds, sizeQueries, paginatedSource]
   );
 
   return (

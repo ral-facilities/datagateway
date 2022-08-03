@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Chip, Divider, List, ListItem } from '@material-ui/core';
+import { Typography, Chip, Divider, List, ListItemButton } from '@mui/material';
 import ArrowTooltip from '../arrowtooltip.component';
 import { ParameterValueFacet } from './parameterFilterItem.component';
 import { SearchFilter } from '../app.types';
@@ -29,10 +29,9 @@ export const ParameterFacetList = (
   return (
     <List component="nav" aria-label="filter-by-list">
       {facets.map((facet, index) => (
-        <ListItem
-          style={{ display: 'flex' }}
+        <ListItemButton
+          sx={{ display: 'flex' }}
           key={index}
-          button
           disabled={facet.count === 0}
           onClick={() => {
             if (valueType === 'DATE_AND_TIME') {
@@ -73,8 +72,8 @@ export const ParameterFacetList = (
             />
           </div>
           <Divider orientation="vertical" flexItem />
-          <Typography style={{ paddingLeft: '5%' }}>{facet.count}</Typography>
-        </ListItem>
+          <Typography sx={{ paddingLeft: '5%' }}>{facet.count}</Typography>
+        </ListItemButton>
       ))}
     </List>
   );

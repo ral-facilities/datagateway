@@ -43,9 +43,7 @@ describe('SearchPageContainer Component', () => {
       cy.intercept('**/investigations?*').as('investigations');
 
       cy.clearDownloadCart();
-      cy.get('[aria-label="Search text input"]')
-        .find('#filled-search')
-        .type('dog');
+      cy.get('#filled-search').type('dog');
 
       cy.get('[aria-label="Submit search"]')
         .click()
@@ -214,7 +212,11 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('select[id="select-max-results"]', {
         timeout: 10000,
-      }).select('20');
+      })
+        .select('20')
+        .wait(['@investigations', '@investigations', '@investigationsCount'], {
+          timeout: 10000,
+        });
       cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
         'have.length',
         20
@@ -222,7 +224,11 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('select[id="select-max-results"]', {
         timeout: 10000,
-      }).select('30');
+      })
+        .select('30')
+        .wait(['@investigations', '@investigations', '@investigationsCount'], {
+          timeout: 10000,
+        });
       cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
         'have.length',
         30

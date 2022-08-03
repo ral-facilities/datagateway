@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { SearchFilter } from '../app.types';
 import { DatasearchType } from '..';
@@ -70,10 +70,10 @@ export const ParameterNumericRange = (
       <Grid
         container
         direction="column"
-        justify="center"
+        justifyContent="center"
         alignItems="center"
         spacing={1}
-        style={{ marginBottom: 0 }}
+        sx={{ marginBottom: 0 }}
       >
         <Grid item>
           <TextField

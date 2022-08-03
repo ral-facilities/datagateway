@@ -1,0 +1,173 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchTabs renders correctly when request received 1`] = `
+<DocumentFragment>
+  <div>
+    <header
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-120r8wl-MuiPaper-root-MuiAppBar-root"
+    >
+      <div
+        class="MuiBox-root css-12nzfz8"
+      >
+        <div
+          class="MuiTabs-root tour-search-tab-select css-1sl6kf8-MuiTabs-root"
+        >
+          <div
+            class="MuiTabs-scroller MuiTabs-fixed css-jpln7h-MuiTabs-scroller"
+            style="overflow: hidden; margin-bottom: 0px;"
+          >
+            <div
+              aria-label="searchPageTable.tabs_arialabel"
+              class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+              role="tablist"
+            >
+              <button
+                aria-controls="simple-tabpanel-investigation"
+                aria-selected="true"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+                id="simple-tab-investigation"
+                role="tab"
+                tabindex="0"
+                type="button"
+              >
+                <span
+                  class="MuiBadge-root css-b49g95-MuiBadge-root"
+                  id="investigation-badge"
+                >
+                  <span
+                    style="padding-right: 1ch; font-size: 16px; font-weight: bold;"
+                  >
+                    tabs.investigation
+                  </span>
+                  <span
+                    class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-fvc8ir-MuiBadge-badge"
+                  >
+                    <span
+                      style="font-size: 14px; font-weight: bold; margin-top: 1px;"
+                    >
+                      ?
+                    </span>
+                  </span>
+                </span>
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-controls="simple-tabpanel-dataset"
+                aria-selected="false"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+                id="simple-tab-dataset"
+                role="tab"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  class="MuiBadge-root css-b49g95-MuiBadge-root"
+                  id="dataset-badge"
+                >
+                  <span
+                    style="padding-right: 1ch; font-size: 16px; font-weight: bold;"
+                  >
+                    tabs.dataset
+                  </span>
+                  <span
+                    class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-fvc8ir-MuiBadge-badge"
+                  >
+                    ?
+                  </span>
+                </span>
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-controls="simple-tabpanel-datafile"
+                aria-selected="false"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+                id="simple-tab-datafile"
+                role="tab"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  class="MuiBadge-root css-b49g95-MuiBadge-root"
+                  id="datafile-badge"
+                >
+                  <span
+                    style="padding-right: 1ch; font-size: 16px; font-weight: bold;"
+                  >
+                    tabs.datafile
+                  </span>
+                  <span
+                    class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-fvc8ir-MuiBadge-badge"
+                  >
+                    ?
+                  </span>
+                </span>
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+            </div>
+            <span
+              class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+              style="left: 0px; width: 0px;"
+            />
+          </div>
+        </div>
+        <div
+          class="MuiBox-root css-shc6j8"
+        >
+          <button
+            aria-label="app.cart_arialabel"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium tour-dataview-cart-icon css-4e50t7-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiBadge-root css-1c32n2y-MuiBadge-root"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="ShoppingCartIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
+                />
+              </svg>
+              <span
+                class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight MuiBadge-invisible css-1pi4uwz-MuiBadge-badge"
+              />
+            </span>
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </div>
+    </header>
+    <div
+      aria-labelledby="simple-tab-investigation"
+      class="MuiBox-root css-1k9h2vf"
+      id="simple-tabpanel-investigation"
+      role="tabpanel"
+    >
+      <div
+        class="MuiBox-root css-zoser8"
+      >
+        <div
+          class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 css-1dgr0mp-MuiPaper-root"
+        >
+          <div>
+            MockedTable
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -1,5 +1,4 @@
-import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import * as React from 'react';
 import {
   dGCommonInitialState,
   useAllFacilityCycles,
@@ -18,13 +17,12 @@ import {
 import InvestigationSearchCardView from './investigationSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
-import { ReactWrapper } from 'enzyme';
+import { Router } from 'react-router-dom';
+import { mount, ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
+import type { RenderResult } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 
@@ -41,8 +39,23 @@ jest.mock('datagateway-common', () => {
   };
 });
 
+function renderComponent({
+  initialState,
+  history = createMemoryHistory(),
+  hierarchy = '',
+}): RenderResult {
+  return render(
+    <Provider store={configureStore([thunk])(initialState)}>
+      <Router history={history}>
+        <QueryClientProvider client={new QueryClient()}>
+          <InvestigationSearchCardView hierarchy={hierarchy} />
+        </QueryClientProvider>
+      </Router>
+    </Provider>
+  );
+}
+
 describe('Investigation - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: SearchResultSource;
@@ -63,7 +76,6 @@ describe('Investigation - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = {
       id: 1,
       name: 'Investigation test name',
@@ -137,15 +149,14 @@ describe('Investigation - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
   //The below tests are modified from datasetSearchCardView
 
   it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
+    const { asFragment } = renderComponent({ initialState: state });
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('calls the correct data fetching hooks on load', () => {
@@ -282,7 +293,12 @@ describe('Investigation - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Test 1');
   });
 
@@ -291,7 +307,7 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
@@ -302,7 +318,7 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
@@ -324,12 +340,12 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
 
-    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    wrapper.find('#investigation-datasets-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/4/investigation/1/dataset'
     );
@@ -340,7 +356,7 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();

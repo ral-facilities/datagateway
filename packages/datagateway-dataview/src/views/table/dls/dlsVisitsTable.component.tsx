@@ -16,11 +16,13 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { useLocation } from 'react-router';
+import {
+  Fingerprint,
+  ConfirmationNumber,
+  Assessment,
+  CalendarToday,
+} from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 
 interface DLSVisitsTableProps {
   proposalName: string;
@@ -75,7 +77,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -83,13 +85,14 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${proposalName}/investigation/${investigationData.id}/dataset`,
             investigationData.visitId,
-            view
+            view,
+            'dls-visits-table-visitId'
           );
         },
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumberIcon,
+        icon: ConfirmationNumber,
         label: t('investigations.dataset_count'),
         dataKey: 'datasetCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -97,7 +100,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: AssessmentIcon,
+        icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.name',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -112,14 +115,14 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,

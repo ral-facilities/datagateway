@@ -1,152 +1,674 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Investigation - Card View renders correctly 1`] = `
-Object {
-  "allIds": Array [
-    1,
-  ],
-  "buttons": Array [
-    [Function],
-  ],
-  "customFilters": Array [],
-  "data": Array [
-    Object {
-      "doi": "doi 1",
-      "endDate": 1564009200000,
-      "id": 1,
-      "investigationinstrument": Array [
-        Object {
-          "instrument.id": 4,
-          "instrument.name": "LARMOR",
-        },
-      ],
-      "name": "Investigation test name",
-      "startDate": 1563922800000,
-      "title": "Test 1",
-      "visitId": "1",
-    },
-  ],
-  "description": Object {
-    "dataKey": "summary",
-    "disableSort": true,
-    "label": "investigations.details.summary",
-  },
-  "filters": Object {},
-  "information": Array [
-    Object {
-      "content": [Function],
-      "dataKey": "doi",
-      "disableSort": true,
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "investigations.doi",
-    },
-    Object {
-      "dataKey": "visitId",
-      "disableSort": true,
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "investigations.visit_id",
-    },
-    Object {
-      "dataKey": "name",
-      "disableSort": true,
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "investigations.details.name",
-    },
-    Object {
-      "content": [Function],
-      "dataKey": "datasetCount",
-      "disableSort": true,
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "investigations.dataset_count",
-    },
-    Object {
-      "content": [Function],
-      "dataKey": "investigationInstruments.instrument.name",
-      "disableSort": true,
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "investigations.instrument",
-      "noTooltip": true,
-    },
-    Object {
-      "content": [Function],
-      "dataKey": "startDate",
-      "disableSort": true,
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "investigations.details.start_date",
-    },
-    Object {
-      "content": [Function],
-      "dataKey": "endDate",
-      "disableSort": true,
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "investigations.details.end_date",
-    },
-  ],
-  "loadedCount": true,
-  "loadedData": true,
-  "moreInformation": [Function],
-  "onFilter": [Function],
-  "onPageChange": [Function],
-  "onResultsChange": [Function],
-  "onSort": [Function],
-  "page": null,
-  "results": null,
-  "sort": Object {},
-  "title": Object {
-    "content": [Function],
-    "dataKey": "title",
-    "disableSort": true,
-    "label": "investigations.title",
-  },
-  "totalDataCount": 1,
-}
+<DocumentFragment>
+  <div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-t0zib5-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-grid-xs-12 css-ktrjjf-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-grid-xs-12 css-1tni0hc-MuiGrid-root"
+        >
+          <div
+            class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+          >
+            <nav
+              aria-label="pagination"
+              class="MuiPagination-root MuiPagination-text tour-dataview-pagination css-12oj7ks-MuiPagination-root"
+            >
+              <ul
+                class="MuiPagination-ul css-wjh20t-MuiPagination-ul"
+              >
+                <li>
+                  <button
+                    aria-label="Go to first page"
+                    class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                    disabled=""
+                    tabindex="-1"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiPaginationItem-icon css-n8417t-MuiSvgIcon-root-MuiPaginationItem-icon"
+                      data-testid="FirstPageIcon"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z"
+                      />
+                    </svg>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    aria-current="true"
+                    aria-label="page 1"
+                    class="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-selected MuiPaginationItem-page css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                    tabindex="0"
+                    type="button"
+                  >
+                    1
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </button>
+                </li>
+                <li>
+                  <button
+                    aria-label="Go to last page"
+                    class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                    disabled=""
+                    tabindex="-1"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiPaginationItem-icon css-n8417t-MuiSvgIcon-root-MuiPaginationItem-icon"
+                      data-testid="LastPageIcon"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z"
+                      />
+                    </svg>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-2 css-1izk63j-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-iv7vbz-MuiGrid-root"
+        >
+          <div
+            class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column MuiGrid-grid-xs-12 css-1yjhyxt-MuiGrid-root"
+          >
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+            >
+              <div
+                class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-1ps6pg7-MuiPaper-root"
+              >
+                <div
+                  class="MuiBox-root css-19midj6"
+                >
+                  <h5
+                    class="MuiTypography-root MuiTypography-h5 css-ag7rrr-MuiTypography-root"
+                  >
+                    Filter By
+                  </h5>
+                </div>
+                <div
+                  class="MuiBox-root css-0"
+                />
+                <div
+                  class="MuiBox-root css-19midj6"
+                >
+                  <div>
+                    <ul
+                      class="MuiList-root MuiList-padding css-1lbrbe2-MuiList-root"
+                    />
+                    <div
+                      style="display: flex; justify-content: center;"
+                    >
+                      <button
+                        class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-1rwt2y5-MuiButtonBase-root-MuiButton-root"
+                        tabindex="0"
+                        type="button"
+                      >
+                        <span
+                          class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                            data-testid="AddIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                            />
+                          </svg>
+                        </span>
+                        Filter Parameter Value
+                        <span
+                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-9 css-b1im03-MuiGrid-root"
+        >
+          <ul
+            class="MuiList-root MuiList-padding css-2rzv8n-MuiList-root"
+          >
+            <li
+              class="MuiListItem-root MuiListItem-gutters MuiListItem-padding MuiListItem-alignItemsFlexStart css-1dmiho4-MuiListItem-root"
+            >
+              <div
+                class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1j5w3ub-MuiPaper-root-MuiCard-root"
+                data-testid="card"
+              >
+                <div
+                  class="MuiCardContent-root css-lxf44u-MuiCardContent-root"
+                >
+                  <div
+                    style="display: flex; flex-direction: row;"
+                  >
+                    <div
+                      class="MuiBox-root css-77wikq"
+                    >
+                      <div
+                        aria-label="main-content"
+                      >
+                        <h5
+                          aria-label="card-title"
+                          class="MuiTypography-root MuiTypography-h5 MuiTypography-noWrap css-15uf1rh-MuiTypography-root"
+                          data-mui-internal-clone-element="true"
+                        >
+                          <a
+                            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+                            href="/browse/investigation/1/dataset"
+                          >
+                            Test 1
+                          </a>
+                        </h5>
+                        <div
+                          class="MuiBox-root css-8i7nub"
+                        >
+                          <div
+                            class="MuiCollapse-root MuiCollapse-vertical css-1fkrdiv-MuiCollapse-root"
+                            style="min-height: 100px;"
+                          >
+                            <div
+                              class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                            >
+                              <div
+                                class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                              >
+                                <p
+                                  aria-label="card-description"
+                                  class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph css-z2eky3-MuiTypography-root"
+                                >
+                                  entity_card.no_description
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr
+                      class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1tk1bks-MuiDivider-root"
+                    />
+                    <div
+                      style="padding-left: 15px;"
+                    >
+                      <div
+                        class="css-qlc76b"
+                      >
+                        <div
+                          class="css-1oipu4"
+                        >
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                            data-testid="card-info-investigations.doi"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                              data-testid="PublicIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+                              />
+                            </svg>
+                            investigations.doi:
+                          </p>
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                            data-testid="card-info-investigations.visit_id"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                              data-testid="FingerprintIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M17.81 4.47c-.08 0-.16-.02-.23-.06C15.66 3.42 14 3 12.01 3c-1.98 0-3.86.47-5.57 1.41-.24.13-.54.04-.68-.2-.13-.24-.04-.55.2-.68C7.82 2.52 9.86 2 12.01 2c2.13 0 3.99.47 6.03 1.52.25.13.34.43.21.67-.09.18-.26.28-.44.28zM3.5 9.72c-.1 0-.2-.03-.29-.09-.23-.16-.28-.47-.12-.7.99-1.4 2.25-2.5 3.75-3.27C9.98 4.04 14 4.03 17.15 5.65c1.5.77 2.76 1.86 3.75 3.25.16.22.11.54-.12.7-.23.16-.54.11-.7-.12-.9-1.26-2.04-2.25-3.39-2.94-2.87-1.47-6.54-1.47-9.4.01-1.36.7-2.5 1.7-3.4 2.96-.08.14-.23.21-.39.21zm6.25 12.07c-.13 0-.26-.05-.35-.15-.87-.87-1.34-1.43-2.01-2.64-.69-1.23-1.05-2.73-1.05-4.34 0-2.97 2.54-5.39 5.66-5.39s5.66 2.42 5.66 5.39c0 .28-.22.5-.5.5s-.5-.22-.5-.5c0-2.42-2.09-4.39-4.66-4.39-2.57 0-4.66 1.97-4.66 4.39 0 1.44.32 2.77.93 3.85.64 1.15 1.08 1.64 1.85 2.42.19.2.19.51 0 .71-.11.1-.24.15-.37.15zm7.17-1.85c-1.19 0-2.24-.3-3.1-.89-1.49-1.01-2.38-2.65-2.38-4.39 0-.28.22-.5.5-.5s.5.22.5.5c0 1.41.72 2.74 1.94 3.56.71.48 1.54.71 2.54.71.24 0 .64-.03 1.04-.1.27-.05.53.13.58.41.05.27-.13.53-.41.58-.57.11-1.07.12-1.21.12zM14.91 22c-.04 0-.09-.01-.13-.02-1.59-.44-2.63-1.03-3.72-2.1-1.4-1.39-2.17-3.24-2.17-5.22 0-1.62 1.38-2.94 3.08-2.94 1.7 0 3.08 1.32 3.08 2.94 0 1.07.93 1.94 2.08 1.94s2.08-.87 2.08-1.94c0-3.77-3.25-6.83-7.25-6.83-2.84 0-5.44 1.58-6.61 4.03-.39.81-.59 1.76-.59 2.8 0 .78.07 2.01.67 3.61.1.26-.03.55-.29.64-.26.1-.55-.04-.64-.29-.49-1.31-.73-2.61-.73-3.96 0-1.2.23-2.29.68-3.24 1.33-2.79 4.28-4.6 7.51-4.6 4.55 0 8.25 3.51 8.25 7.83 0 1.62-1.38 2.94-3.08 2.94s-3.08-1.32-3.08-2.94c0-1.07-.93-1.94-2.08-1.94s-2.08.87-2.08 1.94c0 1.71.66 3.31 1.87 4.51.95.94 1.86 1.46 3.27 1.85.27.07.42.35.35.61-.05.23-.26.38-.47.38z"
+                              />
+                            </svg>
+                            investigations.visit_id:
+                          </p>
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                            data-testid="card-info-investigations.details.name"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                              data-testid="FingerprintIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M17.81 4.47c-.08 0-.16-.02-.23-.06C15.66 3.42 14 3 12.01 3c-1.98 0-3.86.47-5.57 1.41-.24.13-.54.04-.68-.2-.13-.24-.04-.55.2-.68C7.82 2.52 9.86 2 12.01 2c2.13 0 3.99.47 6.03 1.52.25.13.34.43.21.67-.09.18-.26.28-.44.28zM3.5 9.72c-.1 0-.2-.03-.29-.09-.23-.16-.28-.47-.12-.7.99-1.4 2.25-2.5 3.75-3.27C9.98 4.04 14 4.03 17.15 5.65c1.5.77 2.76 1.86 3.75 3.25.16.22.11.54-.12.7-.23.16-.54.11-.7-.12-.9-1.26-2.04-2.25-3.39-2.94-2.87-1.47-6.54-1.47-9.4.01-1.36.7-2.5 1.7-3.4 2.96-.08.14-.23.21-.39.21zm6.25 12.07c-.13 0-.26-.05-.35-.15-.87-.87-1.34-1.43-2.01-2.64-.69-1.23-1.05-2.73-1.05-4.34 0-2.97 2.54-5.39 5.66-5.39s5.66 2.42 5.66 5.39c0 .28-.22.5-.5.5s-.5-.22-.5-.5c0-2.42-2.09-4.39-4.66-4.39-2.57 0-4.66 1.97-4.66 4.39 0 1.44.32 2.77.93 3.85.64 1.15 1.08 1.64 1.85 2.42.19.2.19.51 0 .71-.11.1-.24.15-.37.15zm7.17-1.85c-1.19 0-2.24-.3-3.1-.89-1.49-1.01-2.38-2.65-2.38-4.39 0-.28.22-.5.5-.5s.5.22.5.5c0 1.41.72 2.74 1.94 3.56.71.48 1.54.71 2.54.71.24 0 .64-.03 1.04-.1.27-.05.53.13.58.41.05.27-.13.53-.41.58-.57.11-1.07.12-1.21.12zM14.91 22c-.04 0-.09-.01-.13-.02-1.59-.44-2.63-1.03-3.72-2.1-1.4-1.39-2.17-3.24-2.17-5.22 0-1.62 1.38-2.94 3.08-2.94 1.7 0 3.08 1.32 3.08 2.94 0 1.07.93 1.94 2.08 1.94s2.08-.87 2.08-1.94c0-3.77-3.25-6.83-7.25-6.83-2.84 0-5.44 1.58-6.61 4.03-.39.81-.59 1.76-.59 2.8 0 .78.07 2.01.67 3.61.1.26-.03.55-.29.64-.26.1-.55-.04-.64-.29-.49-1.31-.73-2.61-.73-3.96 0-1.2.23-2.29.68-3.24 1.33-2.79 4.28-4.6 7.51-4.6 4.55 0 8.25 3.51 8.25 7.83 0 1.62-1.38 2.94-3.08 2.94s-3.08-1.32-3.08-2.94c0-1.07-.93-1.94-2.08-1.94s-2.08.87-2.08 1.94c0 1.71.66 3.31 1.87 4.51.95.94 1.86 1.46 3.27 1.85.27.07.42.35.35.61-.05.23-.26.38-.47.38z"
+                              />
+                            </svg>
+                            investigations.details.name:
+                          </p>
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                            data-testid="card-info-investigations.dataset_count"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                              data-testid="ConfirmationNumberIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M22 10V6c0-1.11-.9-2-2-2H4c-1.1 0-1.99.89-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-9 7.5h-2v-2h2v2zm0-4.5h-2v-2h2v2zm0-4.5h-2v-2h2v2z"
+                              />
+                            </svg>
+                            investigations.dataset_count:
+                          </p>
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                            data-testid="card-info-investigations.instrument"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                              data-testid="AssessmentIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
+                              />
+                            </svg>
+                            investigations.instrument:
+                          </p>
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                            data-testid="card-info-investigations.details.start_date"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                              data-testid="CalendarTodayIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"
+                              />
+                            </svg>
+                            investigations.details.start_date:
+                          </p>
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                            data-testid="card-info-investigations.details.end_date"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                              data-testid="CalendarTodayIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"
+                              />
+                            </svg>
+                            investigations.details.end_date:
+                          </p>
+                        </div>
+                        <div
+                          class="css-7d16xm"
+                        >
+                          <div
+                            data-testid="card-info-data-investigations.doi"
+                          >
+                            <p
+                              aria-label="doi 1"
+                              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              <a
+                                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+                                data-testid="investigation-search-card-doi-link"
+                                href="https://doi.org/doi 1"
+                              >
+                                doi 1
+                              </a>
+                            </p>
+                          </div>
+                          <div
+                            data-testid="card-info-data-investigations.visit_id"
+                          >
+                            <p
+                              aria-label="1"
+                              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              1
+                            </p>
+                          </div>
+                          <div
+                            data-testid="card-info-data-investigations.details.name"
+                          >
+                            <p
+                              aria-label="Investigation test name"
+                              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              Investigation test name
+                            </p>
+                          </div>
+                          <div
+                            data-testid="card-info-data-investigations.dataset_count"
+                          >
+                            <p
+                              aria-label="1"
+                              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              1
+                            </p>
+                          </div>
+                          <div
+                            data-testid="card-info-data-investigations.instrument"
+                          >
+                            <p
+                              aria-label="LARMOR"
+                              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              LARMOR
+                            </p>
+                          </div>
+                          <div
+                            data-testid="card-info-data-investigations.details.start_date"
+                          >
+                            <p
+                              aria-label="24/07/2019"
+                              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              24/07/2019
+                            </p>
+                          </div>
+                          <div
+                            data-testid="card-info-data-investigations.details.end_date"
+                          >
+                            <p
+                              aria-label="25/07/2019"
+                              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              25/07/2019
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-label="card-buttons"
+                        class="css-1k96fjs"
+                      >
+                        <div
+                          aria-label="card-button-1"
+                        >
+                          <div
+                            class="css-fm09c2"
+                          >
+                            <span
+                              aria-label="buttons.cart_loading_failed_tooltip"
+                              class=""
+                              data-mui-internal-clone-element="true"
+                              style="display: inherit;"
+                            >
+                              <button
+                                class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButtonBase-root Mui-disabled tour-dataview-add-to-cart css-zddlty-MuiButtonBase-root-MuiButton-root"
+                                disabled=""
+                                id="add-to-cart-btn-investigation-1"
+                                tabindex="-1"
+                                type="button"
+                              >
+                                <span
+                                  class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                    data-testid="AddCircleOutlineOutlinedIcon"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                                    />
+                                  </svg>
+                                </span>
+                                buttons.add_to_cart
+                              </button>
+                            </span>
+                            <span
+                              aria-label="buttons.unable_to_download_tooltip"
+                              class=""
+                              data-mui-internal-clone-element="true"
+                              style="margin: auto;"
+                            >
+                              <button
+                                aria-label="buttons.download"
+                                class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButtonBase-root Mui-disabled tour-dataview-download css-zddlty-MuiButtonBase-root-MuiButton-root"
+                                disabled=""
+                                id="download-btn-1"
+                                tabindex="-1"
+                                type="button"
+                              >
+                                <span
+                                  class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                    data-testid="GetAppIcon"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                    />
+                                  </svg>
+                                </span>
+                                buttons.download
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style="padding-top: 10px;"
+                  >
+                    <hr
+                      class="MuiDivider-root MuiDivider-fullWidth css-9mgopn-MuiDivider-root"
+                    />
+                    <div
+                      aria-label="card-more-information"
+                      style="padding-top: 10px;"
+                    >
+                      <div
+                        class="MuiPaper-root MuiPaper-outlined MuiAccordion-root MuiAccordion-gutters tour-dataview-expand css-68i0v2-MuiPaper-root-MuiAccordion-root"
+                      >
+                        <div
+                          aria-expanded="false"
+                          aria-label="card-more-info-expand"
+                          class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-sh22l5-MuiButtonBase-root-MuiAccordionSummary-root"
+                          role="button"
+                          tabindex="0"
+                        >
+                          <div
+                            class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-o4b71y-MuiAccordionSummary-content"
+                          >
+                            <p
+                              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                            >
+                              More Information
+                            </p>
+                          </div>
+                          <div
+                            class="MuiAccordionSummary-expandIconWrapper css-yw020d-MuiAccordionSummary-expandIconWrapper"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                              data-testid="ExpandMoreIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                        <div
+                          class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden css-bz4dnt-MuiCollapse-root"
+                          style="min-height: 0px;"
+                        >
+                          <div
+                            class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                          >
+                            <div
+                              class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                            >
+                              <div
+                                class="MuiAccordion-region"
+                                role="region"
+                              >
+                                <div
+                                  aria-label="card-more-info-details"
+                                  class="MuiAccordionDetails-root css-15v22id-MuiAccordionDetails-root"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    aria-label="card-tags"
+                    style="padding-top: 10px;"
+                  >
+                    <hr
+                      class="MuiDivider-root MuiDivider-fullWidth css-9mgopn-MuiDivider-root"
+                    />
+                    <div
+                      style="padding-top: 10px;"
+                    />
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1es5dv5-MuiGrid-root"
+      >
+        <nav
+          aria-label="pagination"
+          class="MuiPagination-root MuiPagination-text tour-dataview-pagination css-12oj7ks-MuiPagination-root"
+        >
+          <ul
+            class="MuiPagination-ul css-wjh20t-MuiPagination-ul"
+          >
+            <li>
+              <button
+                aria-label="Go to first page"
+                class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiPaginationItem-icon css-n8417t-MuiSvgIcon-root-MuiPaginationItem-icon"
+                  data-testid="FirstPageIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z"
+                  />
+                </svg>
+              </button>
+            </li>
+            <li>
+              <button
+                aria-current="true"
+                aria-label="page 1"
+                class="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-selected MuiPaginationItem-page css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                tabindex="0"
+                type="button"
+              >
+                1
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+            </li>
+            <li>
+              <button
+                aria-label="Go to last page"
+                class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiPaginationItem-icon css-n8417t-MuiSvgIcon-root-MuiPaginationItem-icon"
+                  data-testid="LastPageIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z"
+                  />
+                </svg>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;

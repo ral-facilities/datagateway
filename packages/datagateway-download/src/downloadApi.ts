@@ -1,39 +1,14 @@
 import axios, { AxiosResponse } from 'axios';
 import * as log from 'loglevel';
 import {
-  DownloadCart,
   SubmitCart,
-  DownloadCartItem,
   Datafile,
   Download,
   readSciGatewayToken,
   handleICATError,
+  DownloadCart,
+  DownloadCartItem,
 } from 'datagateway-common';
-
-export const fetchDownloadCartItems: (settings: {
-  facilityName: string;
-  downloadApiUrl: string;
-}) => Promise<DownloadCartItem[]> = (settings: {
-  facilityName: string;
-  downloadApiUrl: string;
-}) => {
-  return axios
-    .get<DownloadCart>(
-      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}`,
-      {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-        },
-      }
-    )
-    .then((response) => {
-      return response.data.cartItems;
-    })
-    .catch((error) => {
-      handleICATError(error);
-      return [];
-    });
-};
 
 export const removeAllDownloadCartItems: (settings: {
   facilityName: string;
@@ -54,39 +29,27 @@ export const removeAllDownloadCartItems: (settings: {
     )
     .then(() => {
       // do nothing
-    })
-    .catch(handleICATError);
+    });
 };
 
-export const removeDownloadCartItem: (
-  entityId: number,
-  entityType: string,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  }
-) => Promise<void> = (
-  entityId: number,
-  entityType: string,
-  settings: {
-    facilityName: string;
-    downloadApiUrl: string;
-  }
-) => {
+export const removeFromCart = (
+  entityType: 'investigation' | 'dataset' | 'datafile',
+  entityIds: number[],
+  config: { facilityName: string; downloadApiUrl: string }
+): Promise<DownloadCartItem[]> => {
+  const { facilityName, downloadApiUrl } = config;
+
   return axios
-    .delete(
-      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+    .delete<DownloadCart>(
+      `${downloadApiUrl}/user/cart/${facilityName}/cartItems`,
       {
         params: {
           sessionId: readSciGatewayToken().sessionId,
-          items: `${entityType} ${entityId}`,
+          items: `${entityType} ${entityIds.join(`, ${entityType} `)}`,
         },
       }
     )
-    .then(() => {
-      // do nothing
-    })
-    .catch(handleICATError);
+    .then((response) => response.data.cartItems);
 };
 
 export const getIsTwoLevel: (settings: {
@@ -96,10 +59,6 @@ export const getIsTwoLevel: (settings: {
     .get<boolean>(`${settings.idsUrl}/isTwoLevel`)
     .then((response) => {
       return response.data;
-    })
-    .catch((error) => {
-      handleICATError(error, false);
-      return false;
     });
 };
 
@@ -412,10 +371,6 @@ export const getSize: (
       .then((response) => {
         const size = response.data['fileSize'] as number;
         return size;
-      })
-      .catch((error) => {
-        handleICATError(error, false);
-        return -1;
       });
   } else {
     return axios
@@ -429,10 +384,6 @@ export const getSize: (
       })
       .then((response) => {
         return response.data;
-      })
-      .catch((error) => {
-        handleICATError(error, false);
-        return -1;
       });
   }
 };
@@ -447,7 +398,12 @@ export const getDatafileCount: (
   settings: { apiUrl: string }
 ) => {
   if (entityType === 'datafile') {
-    return Promise.resolve(1);
+    // need to do this in a setTimeout to ensure it doesn't block the main thread
+    return new Promise((resolve) =>
+      window.setTimeout(() => {
+        resolve(1);
+      }, 0)
+    );
   } else if (entityType === 'dataset') {
     return axios
       .get<number>(`${settings.apiUrl}/datafiles/count`, {
@@ -457,7 +413,6 @@ export const getDatafileCount: (
               eq: entityId,
             },
           },
-          include: '"dataset"',
         },
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -465,16 +420,11 @@ export const getDatafileCount: (
       })
       .then((response) => {
         return response.data;
-      })
-      .catch((error) => {
-        handleICATError(error, false);
-        return -1;
       });
   } else {
     return axios
       .get<number>(`${settings.apiUrl}/datafiles/count`, {
         params: {
-          include: '{"dataset": "investigation"}',
           where: {
             'dataset.investigation.id': {
               eq: entityId,
@@ -487,72 +437,8 @@ export const getDatafileCount: (
       })
       .then((response) => {
         return response.data;
-      })
-      .catch((error) => {
-        handleICATError(error, false);
-        return -1;
       });
   }
-};
-
-export const getCartDatafileCount: (
-  cartItems: DownloadCartItem[],
-  settings: { apiUrl: string }
-) => Promise<number> = (
-  cartItems: DownloadCartItem[],
-  settings: { apiUrl: string }
-) => {
-  const getDatafileCountPromises: Promise<number>[] = [];
-  cartItems.forEach((cartItem) =>
-    getDatafileCountPromises.push(
-      getDatafileCount(cartItem.entityId, cartItem.entityType, {
-        apiUrl: settings.apiUrl,
-      })
-    )
-  );
-
-  return Promise.all(getDatafileCountPromises).then((counts) =>
-    counts.reduce(
-      (accumulator, nextCount) =>
-        nextCount > -1 ? accumulator + nextCount : accumulator,
-      0
-    )
-  );
-};
-
-export const getCartSize: (
-  cartItems: DownloadCartItem[],
-  settings: {
-    facilityName: string;
-    apiUrl: string;
-    downloadApiUrl: string;
-  }
-) => Promise<number> = (
-  cartItems: DownloadCartItem[],
-  settings: {
-    facilityName: string;
-    apiUrl: string;
-    downloadApiUrl: string;
-  }
-) => {
-  const getSizePromises: Promise<number>[] = [];
-  cartItems.forEach((cartItem) =>
-    getSizePromises.push(
-      getSize(cartItem.entityId, cartItem.entityType, {
-        facilityName: settings.facilityName,
-        apiUrl: settings.apiUrl,
-        downloadApiUrl: settings.downloadApiUrl,
-      })
-    )
-  );
-
-  return Promise.all(getSizePromises).then((sizes) =>
-    sizes.reduce(
-      (accumulator, nextSize) =>
-        nextSize > -1 ? accumulator + nextSize : accumulator,
-      0
-    )
-  );
 };
 
 export const getDataUrl = (

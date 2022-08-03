@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Paper, IconButton, LinearProgress } from '@material-ui/core';
+import { Grid, Paper, IconButton, LinearProgress } from '@mui/material';
 
 import {
   Table,
@@ -13,7 +13,7 @@ import {
 } from 'datagateway-common';
 import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
-import { RemoveCircle, GetApp } from '@material-ui/icons';
+import { RemoveCircle, GetApp } from '@mui/icons-material';
 import BlackTooltip from '../tooltip.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +33,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const settings = React.useContext(DownloadSettingsContext);
 
   // Sorting columns
-  const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
+  const [sort, setSort] = React.useState<{ [column: string]: Order }>({
+    createdAt: 'desc',
+  });
   const [filters, setFilters] = React.useState<{
     [column: string]:
       | { value?: string | number; type: string }
@@ -158,6 +160,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         }
       }}
       value={filters[dataKey] as DateFilter}
+      filterByTime
     />
   );
 
@@ -186,7 +189,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             const tableTimestamp = toDate(tableValue).getTime();
             const startTimestamp = toDate(value.startDate).getTime();
             const endTimestamp = value.endDate
-              ? new Date(`${value.endDate} 23:59:59`).getTime()
+              ? new Date(value.endDate).getTime()
               : Date.now();
 
             if (
@@ -243,11 +246,12 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       )}
       <Grid item>
         {/* Table should take up page but leave room for: SG appbar, SG footer,
-            tabs,table padding, and text above table (respectively). */}
+            tabs,table padding, loading bar and text above table (respectively). */}
         <Paper
-          style={{
-            height:
-              'calc(100vh - 64px - 36px - 48px - 48px - (1.75rem + 40px))',
+          sx={{
+            height: `calc(100vh - 64px - 36px - 48px - 48px${
+              !dataLoaded ? ' - 4px' : ''
+            } - (1.75rem + 40px))`,
             minHeight: 230,
             overflowX: 'auto',
           }}
@@ -297,59 +301,55 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             actions={[
               function DownloadButton({ rowData }: TableActionProps) {
                 const downloadItem = rowData as FormattedDownload;
-                const isDownloadable = (downloadItem.transport as string).match(
-                  /https|http/
-                )
+                const isHTTP = downloadItem.transport.match(/https|http/)
                   ? true
                   : false;
+
+                const isComplete =
+                  downloadItem.status === t('downloadStatus.complete')
+                    ? true
+                    : false;
+
+                const isDownloadable = isHTTP && isComplete;
 
                 return (
                   <BlackTooltip
                     title={
-                      t('downloadStatus.download_disabled_tooltip', {
-                        transport: downloadItem.transport,
-                      }) as string
+                      !isHTTP
+                        ? t<string, string>(
+                            'downloadStatus.non_https_download_disabled_tooltip',
+                            { transport: downloadItem.transport }
+                          )
+                        : t<string, string>(
+                            'downloadStatus.https_download_disabled_tooltip'
+                          )
                     }
                     enterDelay={500}
-                    // Disable tooltip for access methods that are not http(s).
+                    // Disable error tooltip for downloadable HTTP(S) downloads.
                     disableHoverListener={isDownloadable}
                   >
-                    <div>
-                      {/* Provide a download button and set disabled if instant download is not supported. */}
-                      {isDownloadable ? (
-                        <IconButton
-                          component="a"
-                          href={getDataUrl(
-                            downloadItem.preparedId as string,
-                            downloadItem.fileName as string,
-                            settings.idsUrl as string
-                          )}
-                          target="_blank"
-                          aria-label={t('downloadStatus.download', {
-                            filename: downloadItem.fileName,
-                          })}
-                          key="download"
-                          size="small"
-                        >
-                          <GetApp />
-                        </IconButton>
-                      ) : (
-                        <IconButton
-                          aria-label={t(
-                            'downloadStatus.download_disabled_button',
-                            {
-                              filename: downloadItem.fileName,
-                            }
-                          )}
-                          key="non-downloadable"
-                          size="small"
-                          // Set the button to be disabled if the transport type is not http(s).
-                          disabled={!isDownloadable}
-                        >
-                          <GetApp />
-                        </IconButton>
-                      )}
-                    </div>
+                    {/* Provide a download button and set disabled if instant download is not supported. */}
+                    <IconButton
+                      {...(isDownloadable
+                        ? {
+                            component: 'a',
+                            href: getDataUrl(
+                              downloadItem.preparedId,
+                              downloadItem.fileName,
+                              settings.idsUrl
+                            ),
+                            target: '_blank',
+                          }
+                        : { component: 'button' })}
+                      aria-label={t('downloadStatus.download', {
+                        filename: downloadItem.fileName,
+                      })}
+                      key={`download-${downloadItem.id}`}
+                      size="small"
+                      disabled={!isDownloadable}
+                    >
+                      <GetApp />
+                    </IconButton>
                   </BlackTooltip>
                 );
               },

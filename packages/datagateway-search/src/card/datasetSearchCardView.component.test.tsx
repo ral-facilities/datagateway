@@ -1,4 +1,3 @@
-import { createMount } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
   useLuceneSearchInfinite,
@@ -13,19 +12,19 @@ import {
   SearchResult,
   SearchResultSource,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
-import React from 'react';
+import { mount, ReactWrapper } from 'enzyme';
+import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import DatasetSearchCardView from './datasetSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
+import type { RenderResult } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -40,8 +39,19 @@ jest.mock('datagateway-common', () => {
   };
 });
 
+function renderComponent({ initialState, hierarchy = '' }): RenderResult {
+  return render(
+    <Provider store={configureStore([thunk])(initialState)}>
+      <Router history={createMemoryHistory()}>
+        <QueryClientProvider client={new QueryClient()}>
+          <DatasetSearchCardView hierarchy={hierarchy} />
+        </QueryClientProvider>
+      </Router>
+    </Provider>
+  );
+}
+
 describe('Dataset - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: SearchResultSource;
@@ -62,7 +72,6 @@ describe('Dataset - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = {
       id: 1,
       name: 'Dataset test name',
@@ -133,13 +142,14 @@ describe('Dataset - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
+    const { asFragment } = renderComponent({
+      initialState: state,
+    });
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('calls the correct data fetching hooks on load', () => {
@@ -257,7 +267,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -266,7 +281,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -286,7 +306,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -300,7 +325,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -314,7 +344,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -338,7 +373,12 @@ describe('Dataset - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Dataset test name');
   });
 
@@ -347,7 +387,7 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
@@ -358,7 +398,7 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
@@ -380,12 +420,12 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
 
-    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    wrapper.find('#dataset-datafiles-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
     );
@@ -396,7 +436,7 @@ describe('Dataset - Card View', () => {
     expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();

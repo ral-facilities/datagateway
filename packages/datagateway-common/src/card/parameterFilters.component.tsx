@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, List } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import { Button, List } from '@mui/material';
+import { Add } from '@mui/icons-material';
 import ParameterFilterItem, {
   ParameterValueFilter,
 } from './parameterFilterItem.component';
@@ -30,7 +30,7 @@ const ParameterFilters = (props: ParameterFiltersProps): React.ReactElement => {
 
   return (
     <div>
-      <List style={{ width: '100%' }}>
+      <List sx={{ width: '100%' }}>
         {parameterFilters.map((filter, index) => (
           <ParameterFilterItem
             key={index}

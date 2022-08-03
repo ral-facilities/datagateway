@@ -214,14 +214,14 @@ export interface Download {
   transport: string;
   userName: string;
   email?: string;
-
-  [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
 export interface FormattedDownload
   extends Omit<Download, 'status' | 'isDeleted'> {
   isDeleted: string;
   status: string;
+
+  [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
 export interface SubmitCart {
@@ -236,6 +236,7 @@ export type DownloadCartTableItem = DownloadCartItem & {
   fileCount: number;
   [key: string]: string | number | DownloadCartItem[];
 };
+
 export interface SearchInstrumentSource {
   'instrument.id': number;
   'instrument.name': string;

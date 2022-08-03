@@ -5,6 +5,8 @@ describe('PageContainer Component', () => {
       password: 'pw',
       mechanism: 'simple',
     });
+    cy.intercept('**/investigations/*').as('getInvestigations');
+    cy.visit('/browse/investigation/').wait('@getInvestigations');
     cy.get('[aria-label="page-breadcrumbs"]').should('exist');
     cy.get('[aria-label="open-data-warning"]').should('not.exist');
   });
@@ -30,28 +32,6 @@ describe('PageContainer Component', () => {
       cy.get('[data-testid="clear-filters-button"]').click();
       cy.url().should('eq', url);
     });
-  });
-
-  it('should disable the hover tool tip by pressing escape (open data warning)', () => {
-    // The hover tool tip has an enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="arrow-tooltip-component-false"]')
-      .eq(2)
-      .trigger('mouseover')
-      .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
-      .should('exist');
-
-    cy.get('body').type('{esc}');
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="arrow-tooltip-component-false"]')
-      .eq(2)
-      .wait(700)
-      .first()
-      .get('[data-testid="arrow-tooltip-component-false"]')
-      .eq(2)
-      .should('exist');
   });
 
   it('should load correctly', () => {
@@ -130,7 +110,7 @@ describe('PageContainer Component', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('exist');
   });
 
@@ -169,7 +149,7 @@ describe('PageContainer Component', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('not.exist');
   });
 
@@ -181,7 +161,7 @@ describe('PageContainer Component', () => {
       .first()
       .trigger('mouseover', { force: true })
       .wait(700)
-      .get('[data-testid="arrow-tooltip-component-true"]')
+      .get('[role="tooltip"]')
       .should('not.exist');
   });
 });

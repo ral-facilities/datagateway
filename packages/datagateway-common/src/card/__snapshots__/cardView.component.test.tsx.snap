@@ -1,32 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Card View renders correctly 1`] = `
-<WithStyles(ForwardRef(Grid))
+<ForwardRef(Grid)
   alignItems="center"
   container={true}
   direction="column"
 >
-  <WithStyles(ForwardRef(Grid))
+  <ForwardRef(Grid)
     alignItems="center"
     container={true}
     direction="row"
     item={true}
-    justify="center"
+    justifyContent="center"
     xs={12}
   >
-    <WithStyles(ForwardRef(Grid))
+    <ForwardRef(Grid)
       alignItems="center"
-      className="makeStyles-paginationGrid-5"
       container={true}
       direction="row"
       item={true}
-      justify="space-around"
+      justifyContent="space-around"
+      padding={2}
       xs={12}
     >
-      <WithStyles(ForwardRef(Grid))
+      <ForwardRef(Grid)
         item={true}
       >
-        <WithStyles(ForwardRef(Pagination))
+        <ForwardRef(Pagination)
           aria-label="pagination"
           className="tour-dataview-pagination"
           color="secondary"
@@ -38,33 +38,36 @@ exports[`Card View renders correctly 1`] = `
           showFirstButton={true}
           showLastButton={true}
           size="large"
-          style={
+          sx={
             Object {
               "textAlign": "center",
             }
           }
         />
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
+      </ForwardRef(Grid)>
+    </ForwardRef(Grid)>
+  </ForwardRef(Grid)>
+  <ForwardRef(Grid)
     container={true}
     direction="row"
-    justify="center"
+    item={true}
+    justifyContent="center"
+    padding={4}
+    spacing={2}
   >
-    <WithStyles(ForwardRef(Grid))
+    <ForwardRef(Grid)
       item={true}
       md={3}
       xs={12}
     >
-      <WithStyles(ForwardRef(Grid))
+      <ForwardRef(Grid)
         alignItems="stretch"
         container={true}
         direction="column"
         item={true}
-        justify="flex-start"
-        spacing={5}
-        style={
+        justifyContent="flex-start"
+        rowSpacing={4}
+        sx={
           Object {
             "marginBottom": 0,
             "marginLeft": 0,
@@ -73,47 +76,52 @@ exports[`Card View renders correctly 1`] = `
         }
         xs={12}
       >
-        <WithStyles(ForwardRef(Grid))
+        <ForwardRef(Grid)
           item={true}
           xs={true}
         >
-          <WithStyles(ForwardRef(Paper))>
-            <Styled(MuiBox)
+          <ForwardRef(Paper)>
+            <ForwardRef(Box)
               p={2}
             >
-              <WithStyles(ForwardRef(Typography))
+              <ForwardRef(Typography)
                 variant="h5"
               >
                 Sort By
-              </WithStyles(ForwardRef(Typography))>
-            </Styled(MuiBox)>
-            <Styled(MuiBox)>
-              <WithStyles(ForwardRef(List))
+              </ForwardRef(Typography)>
+            </ForwardRef(Box)>
+            <ForwardRef(Box)>
+              <ForwardRef(List)
                 aria-label="sort-by-list"
                 className="tour-dataview-sort"
                 component="nav"
               />
-            </Styled(MuiBox)>
-          </WithStyles(ForwardRef(Paper))>
-        </WithStyles(ForwardRef(Grid))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-    <WithStyles(ForwardRef(Grid))
+            </ForwardRef(Box)>
+          </ForwardRef(Paper)>
+        </ForwardRef(Grid)>
+      </ForwardRef(Grid)>
+    </ForwardRef(Grid)>
+    <ForwardRef(Grid)
       item={true}
       md={9}
       xs={12}
     >
-      <WithStyles(ForwardRef(List))
-        style={
+      <ForwardRef(List)
+        sx={
           Object {
-            "marginRight": 20,
+            "margin": 0,
             "padding": 0,
           }
         }
       >
-        <WithStyles(ForwardRef(ListItem))
+        <ForwardRef(ListItem)
           alignItems="flex-start"
           key="0"
+          sx={
+            Object {
+              "paddingRight": 0,
+            }
+          }
         >
           <EntityCard
             entity={
@@ -138,10 +146,15 @@ exports[`Card View renders correctly 1`] = `
               }
             }
           />
-        </WithStyles(ForwardRef(ListItem))>
-        <WithStyles(ForwardRef(ListItem))
+        </ForwardRef(ListItem)>
+        <ForwardRef(ListItem)
           alignItems="flex-start"
           key="1"
+          sx={
+            Object {
+              "paddingRight": 0,
+            }
+          }
         >
           <EntityCard
             entity={
@@ -166,10 +179,15 @@ exports[`Card View renders correctly 1`] = `
               }
             }
           />
-        </WithStyles(ForwardRef(ListItem))>
-        <WithStyles(ForwardRef(ListItem))
+        </ForwardRef(ListItem)>
+        <ForwardRef(ListItem)
           alignItems="flex-start"
           key="2"
+          sx={
+            Object {
+              "paddingRight": 0,
+            }
+          }
         >
           <EntityCard
             entity={
@@ -194,20 +212,20 @@ exports[`Card View renders correctly 1`] = `
               }
             }
           />
-        </WithStyles(ForwardRef(ListItem))>
-      </WithStyles(ForwardRef(List))>
-    </WithStyles(ForwardRef(Grid))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
+        </ForwardRef(ListItem)>
+      </ForwardRef(List)>
+    </ForwardRef(Grid)>
+  </ForwardRef(Grid)>
+  <ForwardRef(Grid)
     item={true}
-    style={
+    sx={
       Object {
         "padding": "50px",
       }
     }
     xs={true}
   >
-    <WithStyles(ForwardRef(Pagination))
+    <ForwardRef(Pagination)
       aria-label="pagination"
       className="tour-dataview-pagination"
       color="secondary"
@@ -219,12 +237,12 @@ exports[`Card View renders correctly 1`] = `
       showFirstButton={true}
       showLastButton={true}
       size="large"
-      style={
+      sx={
         Object {
           "textAlign": "center",
         }
       }
     />
-  </WithStyles(ForwardRef(Grid))>
-</WithStyles(ForwardRef(Grid))>
+  </ForwardRef(Grid)>
+</ForwardRef(Grid)>
 `;

@@ -4,10 +4,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import DownloadTabs from './downloadTab/downloadTab.component';
 
-import {
-  createGenerateClassName,
-  StylesProvider,
-} from '@material-ui/core/styles';
 import ConfigProvider from './ConfigProvider';
 import {
   MicroFrontendId,
@@ -16,14 +12,16 @@ import {
 } from 'datagateway-common';
 import { DGThemeProvider } from 'datagateway-common';
 import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
-const generateClassName = createGenerateClassName({
-  productionPrefix: 'dgwd',
-
-  // Only set disable when we are in production and not running e2e tests;
-  // ensures class selectors are working on tests.
-  disableGlobal:
-    process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+      staleTime: 300000,
+    },
+  },
 });
 
 class App extends Component<unknown, { hasError: boolean }> {
@@ -81,9 +79,9 @@ class App extends Component<unknown, { hasError: boolean }> {
 
     return (
       <div className="App">
-        <StylesProvider generateClassName={generateClassName}>
-          <DGThemeProvider>
-            <ConfigProvider>
+        <DGThemeProvider>
+          <ConfigProvider>
+            <QueryClientProvider client={queryClient}>
               <React.Suspense
                 fallback={
                   <Preloader loading={true}>Finished loading</Preloader>
@@ -100,9 +98,10 @@ class App extends Component<unknown, { hasError: boolean }> {
                   </Switch>
                 </Router>
               </React.Suspense>
-            </ConfigProvider>
-          </DGThemeProvider>
-        </StylesProvider>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+          </ConfigProvider>
+        </DGThemeProvider>
       </div>
     );
   }

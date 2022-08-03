@@ -1,11 +1,15 @@
-import React from 'react';
-import { ReactWrapper } from 'enzyme';
+import * as React from 'react';
+import { Provider } from 'react-redux';
+import type { RenderResult } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { MemoryRouter } from 'react-router-dom';
+import type { DeepPartial } from 'redux';
+import type { StateType } from './state/app.types';
 
-import { createShallow } from '@material-ui/core/test-utils';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
-import { useSelector } from 'react-redux';
-import { initialState } from './state/reducers/dgsearch.reducer';
 
 jest.mock('loglevel');
 
@@ -15,46 +19,66 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('SearchBoxContainer - Tests', () => {
-  let shallow;
+  function renderComponent({ initialState }): RenderResult {
+    return render(
+      <Provider store={configureStore([thunk])(initialState)}>
+        <MemoryRouter>
+          <SearchBoxContainer
+            initiateSearch={jest.fn()}
+            onSearchTextChange={jest.fn()}
+            searchText=""
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+  }
 
-  const testInitiateSearch = jest.fn();
-
-  const createWrapper = (path: string): ReactWrapper => {
-    return shallow(<SearchBoxContainer initiateSearch={testInitiateSearch} />);
-  };
+  let state: DeepPartial<StateType>;
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'Grid' });
-    useSelector.mockImplementation(() => {
-      return initialState;
-    });
+    state = {
+      dgsearch: {
+        sideLayout: true,
+        searchableEntities: [],
+      },
+    };
   });
 
   it('renders searchBoxContainer correctly', () => {
-    const wrapper = createWrapper('/');
-
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = renderComponent({ initialState: state });
+    expect(asFragment()).toMatchSnapshot();
   });
 });
 
 describe('SearchBoxContainerSide - Tests', () => {
-  let shallow;
-
-  const testInitiateSearch = jest.fn();
-
-  const createWrapper = (path: string): ReactWrapper => {
-    return shallow(
-      <SearchBoxContainerSide initiateSearch={testInitiateSearch} />
+  function renderComponent({ initialState }): RenderResult {
+    return render(
+      <Provider store={configureStore([thunk])(initialState)}>
+        <MemoryRouter>
+          <SearchBoxContainerSide
+            initiateSearch={jest.fn()}
+            onSearchTextChange={jest.fn()}
+            searchText=""
+          />
+        </MemoryRouter>
+      </Provider>
     );
-  };
+  }
+
+  let state: DeepPartial<StateType>;
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'Grid' });
+    state = {
+      dgsearch: {
+        sideLayout: true,
+        searchableEntities: [],
+      },
+    };
   });
 
   it('renders searchBoxContainerSide correctly', () => {
-    const wrapper = createWrapper('/');
+    const { asFragment } = renderComponent({ initialState: state });
 
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 });

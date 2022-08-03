@@ -1,48 +1,41 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import type { SelectChangeEvent } from '@mui/material';
 import {
   Grid,
-  createStyles,
-  Theme,
   ListItem,
   MenuItem,
   Select,
   Paper,
   FormControl,
   InputLabel,
-} from '@material-ui/core';
-import TitleIcon from '@material-ui/icons/Title';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import LooksOneIcon from '@material-ui/icons/LooksOne';
+  styled,
+} from '@mui/material';
+import { Title, CalendarToday, LooksOne } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { ParameterFacetList } from './parameterFacetList';
 import { ParameterNumericRange } from './parameterNumericRange.component';
 import { DatasearchType, FacetRequest, useLuceneFacet } from '../api';
 import { FiltersType, SearchFilter } from '../app.types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 144,
-    },
-    select: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-    },
-    formControlIcon: {
-      margin: theme.spacing(1),
-      minWidth: 96,
-    },
-    selectIcon: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-    },
-  })
-);
+const ParameterNameSelectControl = styled(FormControl)(({ theme }) => ({
+  margin: theme.spacing(1),
+  minWidth: 144,
+}));
+
+const ParameterNameSelect = styled(Select)(({ theme }) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  color: (theme as any).colours?.contrastGrey,
+}));
+
+const ParameterValueTypeSelectControl = styled(FormControl)(({ theme }) => ({
+  margin: theme.spacing(1),
+  minWidth: 96,
+}));
+
+const ParameterValueTypeSelect = styled(Select)(({ theme }) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  color: (theme as any).colours?.contrastGrey,
+}));
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -81,7 +74,6 @@ const ParameterFilterItem = (
   props: ParameterFilterItemProps
 ): React.ReactElement => {
   const [t] = useTranslation();
-  const classes = useStyles();
   const {
     entityName,
     parameterNames,
@@ -95,7 +87,7 @@ const ParameterFilterItem = (
   const [facetRequests, setFacetRequests] = React.useState<FacetRequest[]>([]);
   const [facets, setFacets] = React.useState<ParameterValueFacet[]>([]);
 
-  const onNameChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const onNameChange = (event: SelectChangeEvent<unknown>): void => {
     const newName = event.target.value as string;
     filter.name = newName;
     setFilters({
@@ -104,9 +96,7 @@ const ParameterFilterItem = (
     } as FiltersType);
   };
 
-  const onValueTypeChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ): void => {
+  const onValueTypeChange = (event: SelectChangeEvent<unknown>): void => {
     const newType = event.target.value as ValueType;
     filter.valueType = newType;
     switch (newType) {
@@ -189,19 +179,21 @@ const ParameterFilterItem = (
   }, [data, setFacets]);
 
   return (
-    <ListItem
-      style={{ paddingLeft: '0px', paddingRight: '0px', width: '100%' }}
-    >
-      <Paper style={{ width: '100%' }}>
-        <Grid container direction="row" justify="center" alignItems="center">
-          <Grid item xs="auto" style={{ flexGrow: 1 }}>
-            <FormControl className={classes.formControl}>
+    <ListItem sx={{ paddingLeft: '0px', paddingRight: '0px', width: '100%' }}>
+      <Paper sx={{ width: '100%' }}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid item xs="auto" sx={{ flexGrow: 1 }}>
+            <ParameterNameSelectControl>
               <InputLabel variant="outlined">
                 {t('filter.parameter.name')}
               </InputLabel>
-              <Select
+              <ParameterNameSelect
                 label={t('filter.parameter.name')}
-                className={classes.select}
                 value={filter.name}
                 onChange={onNameChange}
                 variant="outlined"
@@ -212,33 +204,32 @@ const ParameterFilterItem = (
                     {parameterName}
                   </MenuItem>
                 ))}
-              </Select>
-            </FormControl>
+              </ParameterNameSelect>
+            </ParameterNameSelectControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.formControlIcon}>
+            <ParameterValueTypeSelectControl>
               <InputLabel variant="outlined">
                 {t('filter.parameter.value_type')}
               </InputLabel>
-              <Select
+              <ParameterValueTypeSelect
                 label={t('filter.parameter.value_type')}
-                className={classes.selectIcon}
                 value={filter.valueType}
                 onChange={onValueTypeChange}
                 variant="outlined"
                 MenuProps={MenuProps}
               >
                 <MenuItem key="DATE_AND_TIME" value="DATE_AND_TIME">
-                  <CalendarTodayIcon />
+                  <CalendarToday />
                 </MenuItem>
                 <MenuItem key="NUMERIC" value="NUMERIC">
-                  <LooksOneIcon />
+                  <LooksOne />
                 </MenuItem>
                 <MenuItem key="STRING" value="STRING">
-                  <TitleIcon />
+                  <Title />
                 </MenuItem>
-              </Select>
-            </FormControl>
+              </ParameterValueTypeSelect>
+            </ParameterValueTypeSelectControl>
           </Grid>
         </Grid>
         {(filter.valueType === 'DATE_AND_TIME' ||

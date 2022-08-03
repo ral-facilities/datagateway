@@ -1,5 +1,3 @@
-import { createMount, createShallow } from '@material-ui/core/test-utils';
-// import axios from 'axios';
 import {
   Investigation,
   dGCommonInitialState,
@@ -10,20 +8,24 @@ import {
   useRemoveFromCart,
   useInvestigationsInfinite,
   useInvestigationSizes,
+  InvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
-import InvestigationTable, {
-  InvestigationDetailsPanel,
-} from './investigationTable.component';
+import InvestigationTable from './investigationTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import { render, RenderResult } from '@testing-library/react';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -42,8 +44,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Investigation table component', () => {
-  let shallow;
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Investigation[];
@@ -62,9 +62,20 @@ describe('Investigation table component', () => {
     );
   };
 
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <InvestigationTable />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    shallow = createShallow();
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -97,6 +108,7 @@ describe('Investigation table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useInvestigationCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -108,6 +120,7 @@ describe('Investigation table component', () => {
     (useInvestigationSizes as jest.Mock).mockReturnValue({ data: 1 });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -120,7 +133,6 @@ describe('Investigation table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -189,7 +201,7 @@ describe('Investigation table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by investigations.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -208,6 +220,8 @@ describe('Investigation table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -228,6 +242,8 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -252,7 +268,7 @@ describe('Investigation table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -268,6 +284,7 @@ describe('Investigation table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -278,7 +295,7 @@ describe('Investigation table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -301,13 +318,14 @@ describe('Investigation table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();
 
     const selectAllCheckbox = wrapper
       .find('[aria-label="select all rows"]')
-      .first();
+      .last();
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
@@ -323,21 +341,11 @@ describe('Investigation table component', () => {
     expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
   });
 
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <InvestigationDetailsPanel
-        rowData={rowData[0]}
-        detailsPanelResize={jest.fn()}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
-  });
-
   it('renders investigation title as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
+      wrapper.getAllByTestId('investigation-table-title')
     ).toMatchSnapshot();
   });
 
@@ -369,5 +377,13 @@ describe('Investigation table component', () => {
     });
 
     expect(() => createWrapper()).not.toThrowError();
+  });
+
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+
+    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
   });
 });

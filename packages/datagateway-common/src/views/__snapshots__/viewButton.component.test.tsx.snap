@@ -1,266 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Generic view button renders correctly 1`] = `
-<Provider
-  store={
-    Object {
-      "clearActions": [Function],
-      "dispatch": [Function],
-      "getActions": [Function],
-      "getState": [Function],
-      "replaceReducer": [Function],
-      "subscribe": [Function],
-    }
-  }
->
-  <MemoryRouter
-    initialEntries={
-      Array [
-        Object {
-          "key": "testKey",
-          "pathname": "/",
-        },
-      ]
-    }
+<DocumentFragment>
+  <div
+    class="css-1bl68gh"
   >
-    <Router
-      history={
-        Object {
-          "action": "POP",
-          "block": [Function],
-          "canGo": [Function],
-          "createHref": [Function],
-          "entries": Array [
-            Object {
-              "hash": "",
-              "key": "testKey",
-              "pathname": "/",
-              "search": "",
-            },
-          ],
-          "go": [Function],
-          "goBack": [Function],
-          "goForward": [Function],
-          "index": 0,
-          "length": 1,
-          "listen": [Function],
-          "location": Object {
-            "hash": "",
-            "key": "testKey",
-            "pathname": "/",
-            "search": "",
-          },
-          "push": [Function],
-          "replace": [Function],
-        }
-      }
+    <button
+      aria-label="page view app.view_table"
+      class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root tour-dataview-view-button css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+      tabindex="0"
+      type="button"
     >
-      <QueryClientProvider
-        client={
-          QueryClient {
-            "defaultOptions": Object {},
-            "mutationCache": MutationCache {
-              "config": Object {},
-              "listeners": Array [],
-              "mutationId": 0,
-              "mutations": Array [],
-            },
-            "mutationDefaults": Array [],
-            "queryCache": QueryCache {
-              "config": Object {},
-              "listeners": Array [],
-              "queries": Array [],
-              "queriesMap": Object {},
-            },
-            "queryDefaults": Array [],
-            "unsubscribeFocus": [Function],
-            "unsubscribeOnline": [Function],
-          }
-        }
+      <span
+        class="MuiButton-startIcon MuiButton-iconSizeSmall css-y6rp3m-MuiButton-startIcon"
       >
-        <ViewButton
-          disabled={false}
-          handleButtonChange={[MockFunction]}
-          viewCards={true}
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+          data-testid="ViewListIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
         >
-          <div
-            className="makeStyles-root-1"
-          >
-            <WithStyles(ForwardRef(Button))
-              aria-label="page view app.view_table"
-              className="tour-dataview-view-button"
-              color="primary"
-              disabled={false}
-              onClick={[Function]}
-              size="small"
-              startIcon={<Memo />}
-              variant="contained"
-            >
-              <ForwardRef(Button)
-                aria-label="page view app.view_table"
-                className="tour-dataview-view-button"
-                classes={
-                  Object {
-                    "colorInherit": "MuiButton-colorInherit",
-                    "contained": "MuiButton-contained",
-                    "containedPrimary": "MuiButton-containedPrimary",
-                    "containedSecondary": "MuiButton-containedSecondary",
-                    "containedSizeLarge": "MuiButton-containedSizeLarge",
-                    "containedSizeSmall": "MuiButton-containedSizeSmall",
-                    "disableElevation": "MuiButton-disableElevation",
-                    "disabled": "Mui-disabled",
-                    "endIcon": "MuiButton-endIcon",
-                    "focusVisible": "Mui-focusVisible",
-                    "fullWidth": "MuiButton-fullWidth",
-                    "iconSizeLarge": "MuiButton-iconSizeLarge",
-                    "iconSizeMedium": "MuiButton-iconSizeMedium",
-                    "iconSizeSmall": "MuiButton-iconSizeSmall",
-                    "label": "MuiButton-label",
-                    "outlined": "MuiButton-outlined",
-                    "outlinedPrimary": "MuiButton-outlinedPrimary",
-                    "outlinedSecondary": "MuiButton-outlinedSecondary",
-                    "outlinedSizeLarge": "MuiButton-outlinedSizeLarge",
-                    "outlinedSizeSmall": "MuiButton-outlinedSizeSmall",
-                    "root": "MuiButton-root",
-                    "sizeLarge": "MuiButton-sizeLarge",
-                    "sizeSmall": "MuiButton-sizeSmall",
-                    "startIcon": "MuiButton-startIcon",
-                    "text": "MuiButton-text",
-                    "textPrimary": "MuiButton-textPrimary",
-                    "textSecondary": "MuiButton-textSecondary",
-                    "textSizeLarge": "MuiButton-textSizeLarge",
-                    "textSizeSmall": "MuiButton-textSizeSmall",
-                  }
-                }
-                color="primary"
-                disabled={false}
-                onClick={[Function]}
-                size="small"
-                startIcon={<Memo />}
-                variant="contained"
-              >
-                <WithStyles(ForwardRef(ButtonBase))
-                  aria-label="page view app.view_table"
-                  className="MuiButton-root MuiButton-contained tour-dataview-view-button MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-sizeSmall"
-                  component="button"
-                  disabled={false}
-                  focusRipple={true}
-                  focusVisibleClassName="Mui-focusVisible"
-                  onClick={[Function]}
-                  type="button"
-                >
-                  <ForwardRef(ButtonBase)
-                    aria-label="page view app.view_table"
-                    className="MuiButton-root MuiButton-contained tour-dataview-view-button MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-sizeSmall"
-                    classes={
-                      Object {
-                        "disabled": "Mui-disabled",
-                        "focusVisible": "Mui-focusVisible",
-                        "root": "MuiButtonBase-root",
-                      }
-                    }
-                    component="button"
-                    disabled={false}
-                    focusRipple={true}
-                    focusVisibleClassName="Mui-focusVisible"
-                    onClick={[Function]}
-                    type="button"
-                  >
-                    <button
-                      aria-label="page view app.view_table"
-                      className="MuiButtonBase-root MuiButton-root MuiButton-contained tour-dataview-view-button MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-sizeSmall"
-                      disabled={false}
-                      onBlur={[Function]}
-                      onClick={[Function]}
-                      onDragLeave={[Function]}
-                      onFocus={[Function]}
-                      onKeyDown={[Function]}
-                      onKeyUp={[Function]}
-                      onMouseDown={[Function]}
-                      onMouseLeave={[Function]}
-                      onMouseUp={[Function]}
-                      onTouchEnd={[Function]}
-                      onTouchMove={[Function]}
-                      onTouchStart={[Function]}
-                      tabIndex={0}
-                      type="button"
-                    >
-                      <span
-                        className="MuiButton-label"
-                      >
-                        <span
-                          className="MuiButton-startIcon MuiButton-iconSizeSmall"
-                        >
-                          <ForwardRef(ViewListIcon)>
-                            <WithStyles(ForwardRef(SvgIcon))>
-                              <ForwardRef(SvgIcon)
-                                classes={
-                                  Object {
-                                    "colorAction": "MuiSvgIcon-colorAction",
-                                    "colorDisabled": "MuiSvgIcon-colorDisabled",
-                                    "colorError": "MuiSvgIcon-colorError",
-                                    "colorPrimary": "MuiSvgIcon-colorPrimary",
-                                    "colorSecondary": "MuiSvgIcon-colorSecondary",
-                                    "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
-                                    "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
-                                    "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
-                                    "root": "MuiSvgIcon-root",
-                                  }
-                                }
-                              >
-                                <svg
-                                  aria-hidden={true}
-                                  className="MuiSvgIcon-root"
-                                  focusable="false"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    d="M4 14h4v-4H4v4zm0 5h4v-4H4v4zM4 9h4V5H4v4zm5 5h12v-4H9v4zm0 5h12v-4H9v4zM9 5v4h12V5H9z"
-                                  />
-                                </svg>
-                              </ForwardRef(SvgIcon)>
-                            </WithStyles(ForwardRef(SvgIcon))>
-                          </ForwardRef(ViewListIcon)>
-                        </span>
-                        app.view_table
-                      </span>
-                      <WithStyles(memo)
-                        center={false}
-                      >
-                        <ForwardRef(TouchRipple)
-                          center={false}
-                          classes={
-                            Object {
-                              "child": "MuiTouchRipple-child",
-                              "childLeaving": "MuiTouchRipple-childLeaving",
-                              "childPulsate": "MuiTouchRipple-childPulsate",
-                              "ripple": "MuiTouchRipple-ripple",
-                              "ripplePulsate": "MuiTouchRipple-ripplePulsate",
-                              "rippleVisible": "MuiTouchRipple-rippleVisible",
-                              "root": "MuiTouchRipple-root",
-                            }
-                          }
-                        >
-                          <span
-                            className="MuiTouchRipple-root"
-                          >
-                            <TransitionGroup
-                              childFactory={[Function]}
-                              component={null}
-                              exit={true}
-                            />
-                          </span>
-                        </ForwardRef(TouchRipple)>
-                      </WithStyles(memo)>
-                    </button>
-                  </ForwardRef(ButtonBase)>
-                </WithStyles(ForwardRef(ButtonBase))>
-              </ForwardRef(Button)>
-            </WithStyles(ForwardRef(Button))>
-          </div>
-        </ViewButton>
-      </QueryClientProvider>
-    </Router>
-  </MemoryRouter>
-</Provider>
+          <path
+            d="M3 14h4v-4H3v4zm0 5h4v-4H3v4zM3 9h4V5H3v4zm5 5h13v-4H8v4zm0 5h13v-4H8v4zM8 5v4h13V5H8z"
+          />
+        </svg>
+      </span>
+      app.view_table
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
+  </div>
+</DocumentFragment>
 `;

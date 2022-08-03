@@ -19,23 +19,19 @@ import {
   DownloadButton,
   ISISDatasetDetailsPanel,
 } from 'datagateway-common';
-import { Save, CalendarToday } from '@material-ui/icons';
+import { Save, CalendarToday } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router';
-import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { useHistory, useLocation } from 'react-router-dom';
+import { styled } from '@mui/material';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 interface ISISDatasetCardViewProps {
   instrumentId: string;
@@ -144,12 +140,10 @@ const ISISDatasetsCardView = (
     [data, dateFilter, sizeQueries, t]
   );
 
-  const classes = useStyles();
-
   const buttons = React.useMemo(
     () => [
       (dataset: Dataset) => (
-        <div className={classes.actionButtons}>
+        <ActionButtonsContainer>
           <AddToCartButton
             entityType="dataset"
             allIds={data?.map((dataset) => dataset.id) ?? []}
@@ -159,11 +153,14 @@ const ISISDatasetsCardView = (
             entityType="dataset"
             entityId={dataset.id}
             entityName={dataset.name}
+            entitySize={
+              data ? sizeQueries[data.indexOf(dataset)]?.data ?? -1 : -1
+            }
           />
-        </div>
+        </ActionButtonsContainer>
       ),
     ],
-    [classes.actionButtons, data]
+    [data, sizeQueries]
   );
 
   const moreInformation = React.useCallback(
