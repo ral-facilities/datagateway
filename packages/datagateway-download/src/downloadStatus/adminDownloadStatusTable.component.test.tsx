@@ -11,6 +11,7 @@ import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  flushPromises,
 } from '../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
@@ -364,6 +365,8 @@ describe('Admin Download Status Table', () => {
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
 
+    await flushPromises();
+
     // without waitFor,
     // toBeInTheDocument will complain it can't find the element
     // even though findBy didn't throw...
@@ -414,6 +417,8 @@ describe('Admin Download Status Table', () => {
 
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
+
+    await flushPromises();
 
     // without waitFor,
     // toBeInTheDocument will complain it can't find the element
@@ -466,9 +471,11 @@ describe('Admin Download Status Table', () => {
   it('should send resume restore request when resume button is clicked', async () => {
     renderComponent();
 
-    await waitFor(async () => {
+    await flushPromises();
+
+    await waitFor(() => {
       expect(
-        await screen.findByRole('button', {
+        screen.getByRole('button', {
           name: 'downloadStatus.resume {filename:test-file-5}',
         })
       ).toBeInTheDocument();
@@ -510,8 +517,10 @@ describe('Admin Download Status Table', () => {
     ).toBeInTheDocument();
   });
 
-  it('sends delete item request when delete button is clicked', async () => {
+  it('should send delete item request when delete button is clicked', async () => {
     renderComponent();
+
+    await flushPromises();
 
     await waitFor(async () => {
       expect(
