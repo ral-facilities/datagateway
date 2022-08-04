@@ -18,6 +18,7 @@ import {
   useCart,
   useDatafileCounts,
   useDownloadOrRestoreDownload,
+  useDownloadPercentageComplete,
   useDownloads,
   useDownloadTypeStatuses,
   useIsTwoLevel,
@@ -1223,6 +1224,67 @@ describe('Download Cart API react-query hooks test', () => {
           },
         }
       );
+    });
+  });
+
+  describe('useDownloadPercentageComplete', () => {
+    it('should query progress of a download restore', async () => {
+      axios.get = jest.fn().mockResolvedValue({
+        data: '30',
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDownloadPercentageComplete({
+            preparedId: '123',
+          }),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => result.current.isSuccess);
+
+      expect(result.current.data).toEqual(30);
+    });
+
+    it('should query status of a download restore', async () => {
+      axios.get = jest.fn().mockResolvedValue({
+        data: 'UNKNOWN',
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDownloadPercentageComplete({
+            preparedId: '3213',
+          }),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => result.current.isSuccess);
+
+      expect(result.current.data).toEqual('UNKNOWN');
+    });
+
+    it('should call handleICATError when an error is encountered', async () => {
+      axios.get = jest.fn().mockRejectedValue({
+        message: 'Test error message',
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDownloadPercentageComplete({
+            preparedId: '34',
+          }),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => result.current.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 });
