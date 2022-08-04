@@ -7652,7 +7652,7 @@ __metadata:
     lint-staged: 13.0.3
     lodash.debounce: 4.0.8
     loglevel: 1.8.0
-    prettier: 2.2.1
+    prettier: 2.7.1
     react: 17.0.2
     react-dom: 17.0.2
     react-draggable: 4.4.3
@@ -7733,7 +7733,7 @@ __metadata:
     lodash.debounce: 4.0.8
     lodash.memoize: 4.1.2
     loglevel: 1.8.0
-    prettier: 2.2.1
+    prettier: 2.7.1
     react: 17.0.2
     react-app-polyfill: 3.0.0
     react-dom: 17.0.2
@@ -7804,7 +7804,7 @@ __metadata:
     lodash.chunk: 4.2.0
     loglevel: 1.8.0
     p-limit: 3.1.0
-    prettier: 2.2.1
+    prettier: 2.7.1
     react: 17.0.2
     react-dom: 17.0.2
     react-i18next: 11.18.3
@@ -7871,7 +7871,7 @@ __metadata:
     jsrsasign: 10.5.25
     lint-staged: 13.0.3
     loglevel: 1.8.0
-    prettier: 2.2.1
+    prettier: 2.7.1
     react: 17.0.2
     react-app-polyfill: 3.0.0
     react-dom: 17.0.2
@@ -8329,17 +8329,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-accessibility-api@npm:^0.5.6":
+"dom-accessibility-api@npm:^0.5.6, dom-accessibility-api@npm:^0.5.9":
   version: 0.5.14
   resolution: "dom-accessibility-api@npm:0.5.14"
   checksum: 782c813f75a09ba6735ef03b5e1624406a3829444ae49d5bdedd272a49d437ae3354f53e02ffc8c9fd9165880250f41546538f27461f839dd4ea1234e77e8d5e
-  languageName: node
-  linkType: hard
-
-"dom-accessibility-api@npm:^0.5.9":
-  version: 0.5.11
-  resolution: "dom-accessibility-api@npm:0.5.11"
-  checksum: 6928436f384e34f6c9279a887c7417fd0bf3c881b491f60a44b24eec37ce7318124f1440fcd4110b4cffc6dd0668548fde2837627eb76e3b75f840884c6bd7df
   languageName: node
   linkType: hard
 
@@ -15440,12 +15433,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:2.2.1":
-  version: 2.2.1
-  resolution: "prettier@npm:2.2.1"
+"prettier@npm:2.7.1":
+  version: 2.7.1
+  resolution: "prettier@npm:2.7.1"
   bin:
     prettier: bin-prettier.js
-  checksum: 800de2df3d37067ab24478c7f32c60ca0c57b01742133287829feeb4a70d239a7bf6bccb56196784777af591ad80fb9ba70c1a49b0fcecf9f5622a764d513edb
+  checksum: 55a4409182260866ab31284d929b3cb961e5fdb91fe0d2e099dac92eaecec890f36e524b4c19e6ceae839c99c6d7195817579cdffc8e2c80da0cb794463a748b
   languageName: node
   linkType: hard
 
