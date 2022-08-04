@@ -3,7 +3,9 @@
 exports[`Preloader component does not render when the site is not loading 1`] = `<div />`;
 
 exports[`Preloader component renders when the site is loading 1`] = `
-<div>
+<div
+  role="progressbar"
+>
   <ForwardRef(Box)
     sx={
       Object {

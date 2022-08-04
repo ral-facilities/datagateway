@@ -1,22 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import './i18n';
-import App from './App';
 import axios from 'axios';
-import jsrsasign from 'jsrsasign';
-import singleSpaReact from 'single-spa-react';
 import {
   MicroFrontendId,
   MicroFrontendToken,
   PluginRoute,
   RegisterRouteType,
 } from 'datagateway-common';
-import log from 'loglevel';
-import { DownloadSettings } from './ConfigProvider';
-import { setSettings } from './settings';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
+import jsrsasign from 'jsrsasign';
+import log from 'loglevel';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import singleSpaReact from 'single-spa-react';
+import App, { ErrorFallback } from './App';
+import { DownloadSettings } from './ConfigProvider';
+import './i18n';
+import './index.css';
+import { setSettings } from './settings';
 
 function domElementGetter(): HTMLElement {
   // Make sure there is a div for us to render into
@@ -33,6 +33,10 @@ const reactLifecycles = singleSpaReact({
   ReactDOM,
   rootComponent: App,
   domElementGetter,
+  errorBoundary(error) {
+    log.error(`datagateway-download failed with error: ${error}`);
+    return <ErrorFallback />;
+  },
 });
 
 const render = (): void => {

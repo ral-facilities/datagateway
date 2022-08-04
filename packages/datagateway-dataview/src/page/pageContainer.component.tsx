@@ -369,7 +369,7 @@ const StyledRouting = (props: {
   // Chrome's display is 1px shorter than Firefox's, so we subtract 1px extra to account for this
   // We also don't want the <LinearProgress> bar to push the page down so subtract the height of this (4px if on-screen)
   // Additional rows of breadcrumbs also push the page down so subtract the height of the breadcrumb div
-  const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
+  const tablePaperHeight = `calc(100vh - 152px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
 
   const [t] = useTranslation();
   const tableClassStyle = getTablePaperStyle(

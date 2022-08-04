@@ -36,12 +36,24 @@ describe('Download Status', () => {
   });
 
   it('should refresh the table when clicking the refresh downloads button', () => {
+    cy.get('[aria-label="Refresh Downloads"]')
+      .next()
+      .children()
+      .first()
+      .then(($refreshTimeElem) => {
+        cy.wrap($refreshTimeElem.text()).as('lastRefreshTime');
+      });
+
     cy.get('[aria-label="Refresh download status table"]').should('exist');
-    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
-      'have.text',
-      'test-file-4'
-    );
     cy.get('[aria-label="Refresh download status table"]').click();
+
+    cy.get('[aria-label="Refresh Downloads"]')
+      .next()
+      .children()
+      .first()
+      .then(($refreshTimeElem) => {
+        cy.get('@lastRefreshTime').should('not.equal', $refreshTimeElem.text());
+      });
   });
 
   describe('should be able to sort download items by', () => {
@@ -101,12 +113,12 @@ describe('Download Status', () => {
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        'test-file-4'
+        'test-file-1'
       );
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
         'have.text',
-        'Expired'
+        'Available'
       );
     });
 
@@ -126,13 +138,13 @@ describe('Download Status', () => {
 
   describe('should be able to filter download items by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Download Name"]').first().type('file');
+      cy.get('[aria-label="Filter by Download Name"]').first().type('4');
 
-      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        'Expired'
+        'test-file-4'
       );
     });
 
@@ -165,12 +177,12 @@ describe('Download Status', () => {
 
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        'test-file-4'
+        'test-file-1'
       );
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
         'have.text',
-        'globus'
+        'https'
       );
 
       cy.get('[aria-rowcount="4"]').should('exist');

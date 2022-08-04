@@ -1,0 +1,148 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DownloadRequestResult should render correctly 1`] = `
+<DocumentFragment>
+  <div>
+    <h2
+      class="MuiTypography-root MuiTypography-h6 MuiDialogTitle-root css-140puxv-MuiTypography-root-MuiDialogTitle-root"
+      id="download-confirm-dialog-title"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1654shd-MuiTypography-root"
+      />
+      <button
+        aria-label="downloadConfirmDialog.close_arialabel"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1f5482o-MuiButtonBase-root-MuiIconButton-root"
+        tabindex="0"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+          data-testid="CloseIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+          />
+        </svg>
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+    </h2>
+    <div
+      class="MuiDialogContent-root css-1738ltc-MuiDialogContent-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-4 MuiGrid-direction-xs-column css-k0gg1l-MuiGrid-root"
+        style="padding-bottom: 25px;"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <svg
+            class="css-mvaooh"
+            viewBox="0 0 52 52"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              class="css-w6mxps"
+              cx="26"
+              cy="26"
+              fill="none"
+              r="25"
+            />
+            <path
+              class="css-39tpth"
+              d="M14.1 27.2l7.1 7.2 16.7-16.8"
+              fill="none"
+            />
+          </svg>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            id="download-confirmation-success"
+          >
+            downloadConfirmDialog.download_success
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <div
+            style="text-align: center; margin: 0px auto;"
+          >
+            <div
+              style="float: left; text-align: right;"
+            >
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+              >
+                <b>
+                  downloadConfirmDialog.confirmation_download_name: 
+                </b>
+              </p>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+              >
+                <b>
+                  downloadConfirmDialog.confirmation_access_method: 
+                </b>
+              </p>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+              >
+                <b>
+                  downloadConfirmDialog.confirmation_email: 
+                </b>
+              </p>
+            </div>
+            <div
+              style="float: right; text-align: left; padding-left: 25px;"
+            >
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                id="confirm-success-download-name"
+              >
+                download-name
+              </p>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                id="confirm-success-access-method"
+              >
+                HTTPS
+              </p>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                id="confirm-success-email-address"
+              >
+                test@email.com
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <button
+            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root  css-sghohy-MuiButtonBase-root-MuiButton-root"
+            id="download-confirmation-status-link"
+            tabindex="0"
+            type="button"
+          >
+            downloadConfirmDialog.view_my_downloads
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
