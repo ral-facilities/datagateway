@@ -3914,6 +3914,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/user-event@npm:^14.4.1":
+  version: 14.4.1
+  resolution: "@testing-library/user-event@npm:14.4.1"
+  peerDependencies:
+    "@testing-library/dom": ">=7.21.4"
+  checksum: 01f2318097d64ab99c400a2825680b241451c7d87e69fbda9135b7c896d4205afff46b55b25fcfff47542732d38918c6ca49d2e937892931f6f93346ccbc1950
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:1":
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
@@ -7832,6 +7841,7 @@ __metadata:
     "@mui/lab": 5.0.0-alpha.72
     "@mui/material": 5.5.0
     "@testing-library/react": 12.1.3
+    "@testing-library/user-event": ^14.4.1
     "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
     "@types/jest": 27.5.2
