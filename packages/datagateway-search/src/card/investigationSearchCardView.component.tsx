@@ -61,9 +61,10 @@ const InvestigationCardView = (
   const location = useLocation();
   const { push } = useHistory();
 
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { filters, sort, page, results, startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -163,17 +164,15 @@ const InvestigationCardView = (
     maxCount: maxNumResults,
   });
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useInvestigationCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
+  const { data: totalDataCount, isLoading: countLoading } =
+    useInvestigationCount([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          id: { in: luceneData || [] },
+        }),
+      },
+    ]);
   const { isLoading: dataLoading, data } = useInvestigationsPaginated([
     {
       filterType: 'where',

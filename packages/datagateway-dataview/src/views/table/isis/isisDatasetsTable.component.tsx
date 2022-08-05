@@ -39,12 +39,8 @@ interface ISISDatasetsTableProps {
 const ISISDatasetsTable = (
   props: ISISDatasetsTableProps
 ): React.ReactElement => {
-  const {
-    investigationId,
-    instrumentChildId,
-    instrumentId,
-    studyHierarchy,
-  } = props;
+  const { investigationId, instrumentChildId, instrumentId, studyHierarchy } =
+    props;
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
@@ -82,13 +78,10 @@ const ISISDatasetsTable = (
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'dataset'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('dataset');
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('dataset');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('dataset');
 
   const { data: totalDataCount } = useDatasetCount([
     {

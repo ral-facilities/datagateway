@@ -138,9 +138,10 @@ const SearchTabs = (
   const [t] = useTranslation();
 
   const location = useLocation();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 

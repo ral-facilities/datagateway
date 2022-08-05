@@ -117,9 +117,10 @@ describe('ISIS Studies table component', () => {
       {
         filterType: 'where',
         filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-            eq: instrumentId,
-          },
+          'studyInvestigations.investigation.investigationInstruments.instrument.id':
+            {
+              eq: instrumentId,
+            },
         }),
       },
       {
@@ -135,9 +136,10 @@ describe('ISIS Studies table component', () => {
       {
         filterType: 'where',
         filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-            eq: instrumentId,
-          },
+          'studyInvestigations.investigation.investigationInstruments.instrument.id':
+            {
+              eq: instrumentId,
+            },
         }),
       },
       {

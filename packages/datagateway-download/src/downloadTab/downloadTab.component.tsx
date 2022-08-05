@@ -46,9 +46,10 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
   );
 }
 
-function a11yProps(
-  index: number
-): { id: string; [ariaControls: string]: string } {
+function a11yProps(index: number): {
+  id: string;
+  [ariaControls: string]: string;
+} {
   return {
     id: `tab-${index}`,
     'aria-controls': `tabpanel-${index}`,

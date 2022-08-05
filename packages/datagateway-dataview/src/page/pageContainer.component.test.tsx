@@ -413,16 +413,16 @@ describe('PageContainer - Tests', () => {
     history.replace(paths.toggle.isisInvestigation);
     let wrapper = createWrapper();
 
-    expect(
-      wrapper.find('PageBreadcrumbs').prop('landingPageEntities')
-    ).toEqual(['investigation', 'dataset']);
+    expect(wrapper.find('PageBreadcrumbs').prop('landingPageEntities')).toEqual(
+      ['investigation', 'dataset']
+    );
 
     history.replace(paths.studyHierarchy.toggle.isisInvestigation);
     wrapper = createWrapper();
 
-    expect(
-      wrapper.find('PageBreadcrumbs').prop('landingPageEntities')
-    ).toEqual(['study', 'investigation', 'dataset']);
+    expect(wrapper.find('PageBreadcrumbs').prop('landingPageEntities')).toEqual(
+      ['study', 'investigation', 'dataset']
+    );
   });
 
   it('does not fetch cart when on homepage (cart request errors when user is viewing homepage unauthenticated)', () => {

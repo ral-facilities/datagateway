@@ -76,13 +76,10 @@ const ISISInvestigationsTable = (
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'investigation'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('investigation');
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('investigation');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('investigation');
 
   const selectedRows = React.useMemo(
     () =>
@@ -186,9 +183,10 @@ const ISISInvestigationsTable = (
         disableSort: true,
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          const principal_investigators = investigationData?.investigationUsers?.filter(
-            (iu) => iu.role === 'principal_experimenter'
-          );
+          const principal_investigators =
+            investigationData?.investigationUsers?.filter(
+              (iu) => iu.role === 'principal_experimenter'
+            );
           if (principal_investigators && principal_investigators.length !== 0) {
             return principal_investigators?.[0].user?.fullName;
           } else {

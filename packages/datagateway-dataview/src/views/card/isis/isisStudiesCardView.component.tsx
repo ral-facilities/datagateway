@@ -53,9 +53,10 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
+        'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          {
+            eq: instrumentId,
+          },
       }),
     },
     {
@@ -72,9 +73,10 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
+        'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          {
+            eq: instrumentId,
+          },
       }),
     },
     {

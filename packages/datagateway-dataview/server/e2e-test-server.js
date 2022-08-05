@@ -4,7 +4,7 @@ var serveStatic = require('serve-static');
 
 var app = express();
 
-app.get('/datagateway-dataview-settings.json', function(req, res) {
+app.get('/datagateway-dataview-settings.json', function (req, res) {
   res.sendFile(path.resolve('./server/e2e-settings.json'));
 });
 
@@ -13,7 +13,7 @@ app.use(
   serveStatic(path.resolve('./build'), { index: ['index.html', 'index.htm'] })
 );
 
-app.get('/*', function(req, res) {
+app.get('/*', function (req, res) {
   res.sendFile(path.resolve('./build/index.html'));
 });
 

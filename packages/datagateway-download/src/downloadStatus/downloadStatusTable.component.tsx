@@ -317,10 +317,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               function RemoveButton({
                 rowData,
               }: TableActionProps): JSX.Element {
-                const {
-                  isLoading: isDeleting,
-                  mutate: downloadDeleted,
-                } = useDownloadOrRestoreDownload();
+                const { isLoading: isDeleting, mutate: downloadDeleted } =
+                  useDownloadOrRestoreDownload();
                 const downloadItem = rowData as FormattedDownload;
                 // const [isDeleting, setIsDeleting] = React.useState(false);
 

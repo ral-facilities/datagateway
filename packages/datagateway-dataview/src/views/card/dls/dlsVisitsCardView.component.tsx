@@ -51,15 +51,13 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useInvestigationCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({ name: { eq: proposalName } }),
-    },
-  ]);
+  const { data: totalDataCount, isLoading: countLoading } =
+    useInvestigationCount([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ name: { eq: proposalName } }),
+      },
+    ]);
   const { isLoading: dataLoading, data } = useInvestigationsPaginated([
     {
       filterType: 'where',

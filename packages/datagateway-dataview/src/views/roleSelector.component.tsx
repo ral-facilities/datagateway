@@ -63,9 +63,10 @@ export const useRoles = (
 
 const RoleSelector: React.FC = () => {
   const location = useLocation();
-  const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const { filters } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const [t] = useTranslation();
   const username = readSciGatewayToken().username ?? '';
   const role =

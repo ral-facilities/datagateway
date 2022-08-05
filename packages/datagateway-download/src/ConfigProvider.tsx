@@ -37,9 +37,8 @@ const initialConfiguration = {
   helpSteps: [],
 };
 
-export const DownloadSettingsContext = React.createContext<DownloadSettings>(
-  initialConfiguration
-);
+export const DownloadSettingsContext =
+  React.createContext<DownloadSettings>(initialConfiguration);
 
 class ConfigProvider extends React.Component<
   { children: React.ReactNode },
