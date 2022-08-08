@@ -203,7 +203,6 @@ const VirtualizedTable = React.memo(
 
     const detailsPanelResize = React.useCallback((): void => {
       if (detailPanelRef && detailPanelRef.current) {
-        console.log('panel height', detailPanelRef.current.clientHeight);
         setDetailPanelHeight(detailPanelRef.current.clientHeight);
       }
       if (tableRef) {
