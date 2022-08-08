@@ -1,238 +1,1159 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Visit details panel component checks if multiple publications result in change of title to plural version 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "doi": "doi 1",
-    "endDate": "2019-06-11",
-    "id": 1,
-    "investigationInstruments": Array [
-      Object {
-        "id": 1,
-        "instrument": Object {
-          "id": 3,
-          "name": "LARMOR",
-        },
-      },
-    ],
-    "name": "Test 1",
-    "publications": Array [
-      Object {
-        "fullReference": "Test publication",
-        "id": 8,
-      },
-      Object {
-        "fullReference": "Test publication 1",
-        "id": 9,
-      },
-    ],
-    "size": 1,
-    "startDate": "2019-06-10",
-    "summary": "foo bar",
-    "title": "Test 1",
-    "visitId": "1",
-  },
-}
+exports[`Visit details panel component should check if multiple publications result in change of title to plural version 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="investigations.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="visit-details-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-details-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="visit-publications-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-publications-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.publications.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-details-tab"
+      hidden=""
+      id="visit-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.title
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.visit_id
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.summary
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              foo bar
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.start_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-10
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.end_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-11
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.size
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <button
+                class="MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                id="calculate-size-btn"
+                tabindex="0"
+                type="button"
+              >
+                investigations.details.calculate
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-publications-tab"
+      hidden=""
+      id="visit-publications-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+        >
+          investigations.details.publications.reference
+        </span>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test publication
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test publication 1
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
-exports[`Visit details panel component checks if multiple samples result in change of title to plural version 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "doi": "doi 1",
-    "endDate": "2019-06-11",
-    "id": 1,
-    "investigationInstruments": Array [
-      Object {
-        "id": 1,
-        "instrument": Object {
-          "id": 3,
-          "name": "LARMOR",
-        },
-      },
-    ],
-    "name": "Test 1",
-    "samples": Array [
-      Object {
-        "id": 7,
-        "name": "Test sample",
-      },
-      Object {
-        "id": 8,
-        "name": "Test sample 1",
-      },
-    ],
-    "size": 1,
-    "startDate": "2019-06-10",
-    "summary": "foo bar",
-    "title": "Test 1",
-    "visitId": "1",
-  },
-}
+exports[`Visit details panel component should check if multiple samples result in change of title to plural version 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="investigations.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="visit-details-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-details-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="visit-samples-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-samples-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.samples.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-details-tab"
+      hidden=""
+      id="visit-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.title
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.visit_id
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.summary
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              foo bar
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.start_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-10
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.end_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-11
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.size
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <button
+                class="MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                id="calculate-size-btn"
+                tabindex="0"
+                type="button"
+              >
+                investigations.details.calculate
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-samples-tab"
+      hidden=""
+      id="visit-samples-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+        >
+          investigations.details.samples.name
+        </span>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test sample
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test sample 1
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
-exports[`Visit details panel component gracefully handles InvestigationUsers without Users 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "doi": "doi 1",
-    "endDate": "2019-06-11",
-    "id": 1,
-    "investigationInstruments": Array [
-      Object {
-        "id": 1,
-        "instrument": Object {
-          "id": 3,
-          "name": "LARMOR",
-        },
-      },
-    ],
-    "investigationUsers": Array [
-      Object {
-        "id": 4,
-        "role": "Investigator",
-      },
-    ],
-    "name": "Test 1",
-    "size": 1,
-    "startDate": "2019-06-10",
-    "summary": "foo bar",
-    "title": "Test 1",
-    "visitId": "1",
-  },
-}
+exports[`Visit details panel component should gracefully handles InvestigationUsers without Users 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="investigations.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="visit-details-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-details-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="visit-users-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-users-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.users.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-details-tab"
+      hidden=""
+      id="visit-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.title
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.visit_id
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.summary
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              foo bar
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.start_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-10
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.end_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-11
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.size
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <button
+                class="MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                id="calculate-size-btn"
+                tabindex="0"
+                type="button"
+              >
+                investigations.details.calculate
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-users-tab"
+      hidden=""
+      id="visit-users-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+        >
+          investigations.details.users.name
+        </span>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
-exports[`Visit details panel component renders correctly 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "doi": "doi 1",
-    "endDate": "2019-06-11",
-    "id": 1,
-    "investigationInstruments": Array [
-      Object {
-        "id": 1,
-        "instrument": Object {
-          "id": 3,
-          "name": "LARMOR",
-        },
-      },
-    ],
-    "name": "Test 1",
-    "size": 1,
-    "startDate": "2019-06-10",
-    "summary": "foo bar",
-    "title": "Test 1",
-    "visitId": "1",
-  },
-}
+exports[`Visit details panel component should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="investigations.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="visit-details-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-details-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-details-tab"
+      hidden=""
+      id="visit-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.title
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.visit_id
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.summary
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              foo bar
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.start_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-10
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.end_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-11
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.size
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <button
+                class="MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                id="calculate-size-btn"
+                tabindex="0"
+                type="button"
+              >
+                investigations.details.calculate
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
-exports[`Visit details panel component renders user, sample and publication tabs when present in the data 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "doi": "doi 1",
-    "endDate": "2019-06-11",
-    "id": 1,
-    "investigationInstruments": Array [
-      Object {
-        "id": 1,
-        "instrument": Object {
-          "id": 3,
-          "name": "LARMOR",
-        },
-      },
-    ],
-    "investigationUsers": Array [
-      Object {
-        "id": 4,
-        "role": "Investigator",
-        "user": Object {
-          "fullName": "Louise Davies",
-          "id": 5,
-          "name": "Louise",
-        },
-      },
-      Object {
-        "id": 9,
-        "role": "Investigator",
-        "user": Object {
-          "id": 10,
-          "name": "Louise",
-        },
-      },
-    ],
-    "name": "Test 1",
-    "publications": Array [
-      Object {
-        "fullReference": "Test publication",
-        "id": 8,
-      },
-    ],
-    "samples": Array [
-      Object {
-        "id": 7,
-        "name": "Test sample",
-      },
-    ],
-    "size": 1,
-    "startDate": "2019-06-10",
-    "summary": "foo bar",
-    "title": "Test 1",
-    "visitId": "1",
-  },
-}
+exports[`Visit details panel component should render user, sample and publication tabs when present in the data 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="investigations.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="visit-details-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-details-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="visit-users-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-users-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.users.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="visit-samples-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-samples-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.samples.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="visit-publications-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="visit-publications-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            investigations.details.publications.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-details-tab"
+      hidden=""
+      id="visit-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.title
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.visit_id
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              1
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.summary
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              foo bar
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.start_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-10
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.end_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-11
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.size
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <button
+                class="MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                id="calculate-size-btn"
+                tabindex="0"
+                type="button"
+              >
+                investigations.details.calculate
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-users-tab"
+      hidden=""
+      id="visit-users-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+        >
+          investigations.details.users.name
+        </span>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Louise Davies
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Louise
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-samples-tab"
+      hidden=""
+      id="visit-samples-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+        >
+          investigations.details.samples.name
+        </span>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test sample
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="visit-publications-tab"
+      hidden=""
+      id="visit-publications-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+        >
+          investigations.details.publications.reference
+        </span>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test publication
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;

@@ -1,8 +1,15 @@
 import React from 'react';
 import { Typography, Grid, Divider, Tabs, Tab, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useDatasetDetails } from '../../api/datasets';
+import { useDispatch, useSelector } from 'react-redux';
+import { useDatasetDetails } from '../../api';
 import { Dataset, Entity } from '../../app.types';
+import type { IsisDatasetDetailsPanelChangeTabPayload } from '../../state/actions/actions.types';
+import { IsisDatasetDetailsPanelChangeTabType } from '../../state/actions/actions.types';
+import type { StateType } from '../../state/app.types';
+import type { Action } from '../../state/reducers/createReducer';
+
+const DEFAULT_TAB: IsisDatasetDetailsPanelTab = 'details';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -18,19 +25,56 @@ interface DatasetDetailsPanelProps {
   viewDatafiles?: (id: number) => void;
 }
 
+/**
+ * Available tabs in the ISIS dataset details panel.
+ */
+export type IsisDatasetDetailsPanelTab = 'details' | 'type';
+
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize, viewDatafiles } = props;
-  const [value, setValue] = React.useState<'details' | 'type'>('details');
-  const [t] = useTranslation();
 
+  const [t] = useTranslation();
   const { data } = useDatasetDetails(rowData.id);
   const datasetData: Dataset = { ...data, ...(rowData as Dataset) };
+  const selectedTab = useSelector<
+    StateType,
+    IsisDatasetDetailsPanelTab | undefined
+  >(
+    (state) =>
+      data && state.dgcommon.isisDatasetDetailsPanel[data.id]?.selectedTab
+  );
+  const dispatch = useDispatch();
+
+  const changeTab = React.useCallback(
+    (newTab: IsisDatasetDetailsPanelTab) => {
+      const id = data?.id;
+      if (id) {
+        dispatch<Action>({
+          type: IsisDatasetDetailsPanelChangeTabType,
+          payload: {
+            newTab,
+            datasetId: id,
+          } as IsisDatasetDetailsPanelChangeTabPayload,
+        });
+      }
+    },
+    [data?.id, dispatch]
+  );
 
   React.useLayoutEffect(() => {
-    if (detailsPanelResize) detailsPanelResize();
-  }, [value, detailsPanelResize]);
+    if (detailsPanelResize && selectedTab) detailsPanelResize();
+  }, [selectedTab, detailsPanelResize]);
+
+  React.useEffect(() => {
+    if (data && !selectedTab) {
+      // register the selected tab for this dataset's details panel
+      // for the first time.
+      // go to the default tab on first render
+      changeTab(DEFAULT_TAB);
+    }
+  }, [data, selectedTab, changeTab]);
 
   return (
     <div id="details-panel" style={{ minWidth: 0 }}>
@@ -39,8 +83,8 @@ const DatasetDetailsPanel = (
         textColor="secondary"
         indicatorColor="secondary"
         scrollButtons="auto"
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={selectedTab ?? DEFAULT_TAB}
+        onChange={(event, newValue) => changeTab(newValue)}
         aria-label={t('datasets.details.tabs_label')}
       >
         <Tab
@@ -69,7 +113,7 @@ const DatasetDetailsPanel = (
         id="dataset-details-panel"
         aria-labelledby="dataset-details-tab"
         role="tabpanel"
-        hidden={value !== 'details'}
+        hidden={selectedTab !== 'details'}
       >
         <StyledGrid container direction="column">
           <Grid item xs>
@@ -97,7 +141,7 @@ const DatasetDetailsPanel = (
           id="dataset-type-panel"
           aria-labelledby="dataset-type-tab"
           role="tabpanel"
-          hidden={value !== 'type'}
+          hidden={selectedTab !== 'type'}
         >
           <StyledGrid container direction="column">
             <Grid item xs>

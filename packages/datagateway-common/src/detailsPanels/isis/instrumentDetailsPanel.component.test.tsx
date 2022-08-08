@@ -1,28 +1,46 @@
-import React from 'react';
-import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import axios from 'axios';
+import * as React from 'react';
+import { Provider } from 'react-redux';
+import { combineReducers, createStore } from 'redux';
+import { StateType } from '../../../lib';
+import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { mount, ReactWrapper } from 'enzyme';
-import { Instrument } from '../../app.types';
-import { useInstrumentDetails } from '../../api/instruments';
+import type { Instrument } from '../../app.types';
+import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
 
-jest.mock('../../api/instruments');
-
-describe('Instrument details panel component', () => {
-  let rowData: Instrument;
-  const detailsPanelResize = jest.fn();
-
-  const createWrapper = (): ReactWrapper => {
-    return mount(
+function renderComponent({
+  rowData,
+  detailsPanelResize,
+}: {
+  rowData: Instrument;
+  detailsPanelResize?: () => void;
+}): RenderResult {
+  return render(
+    <Provider
+      store={createStore(
+        combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+      )}
+    >
       <QueryClientProvider client={new QueryClient()}>
         <InstrumentDetailsPanel
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
         />
       </QueryClientProvider>
-    );
-  };
+    </Provider>
+  );
+}
+
+describe('Instrument details panel component', () => {
+  let rowData: Instrument;
+  let user: UserEvent;
 
   beforeEach(() => {
+    user = userEvent.setup();
     rowData = {
       id: 1,
       name: 'Test',
@@ -32,8 +50,8 @@ describe('Instrument details panel component', () => {
       url: 'www.example.com',
     };
 
-    (useInstrumentDetails as jest.Mock).mockReturnValue({
-      data: rowData,
+    axios.get = jest.fn().mockResolvedValue({
+      data: [rowData],
     });
   });
 
@@ -41,12 +59,12 @@ describe('Instrument details panel component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('InstrumentDetailsPanel').props()).toMatchSnapshot();
+  it('should render correctly', () => {
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders users tab when present in the data', () => {
+  it('should render users tab when present in the data', () => {
     rowData.instrumentScientists = [
       {
         id: 4,
@@ -65,112 +83,117 @@ describe('Instrument details panel component', () => {
       },
     ];
 
-    const wrapper = createWrapper();
-    expect(wrapper.find('InstrumentDetailsPanel').props()).toMatchSnapshot();
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('calls useInstrumentDetails hook on load', () => {
-    createWrapper();
-    expect(useInstrumentDetails).toHaveBeenCalledWith(rowData.id);
-  });
-
-  it('calls detailsPanelResize on load and when tabs are switched between', () => {
+  it('should let user switch between tabs', async () => {
     rowData.instrumentScientists = [
       {
         id: 4,
         user: {
           id: 5,
-          name: 'Louise',
-          fullName: 'Louise Davies',
+          name: 'Rick',
+          fullName: 'Rick Ashley',
         },
       },
     ];
 
-    const wrapper = createWrapper();
+    renderComponent({ rowData });
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(1);
-
-    wrapper.find('#instrument-users-tab').hostNodes().simulate('click');
-
-    expect(detailsPanelResize).toHaveBeenCalledTimes(2);
-  });
-
-  it('detailsPanelResize not called when not provided', () => {
-    rowData.instrumentScientists = [
-      {
-        id: 4,
-        user: {
-          id: 5,
-          name: 'Louise',
-          fullName: 'Louise Davies',
-        },
-      },
-    ];
-
-    const wrapper = mount(
-      <QueryClientProvider client={new QueryClient()}>
-        <InstrumentDetailsPanel rowData={rowData} />
-      </QueryClientProvider>
-    );
-
-    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
-
-    wrapper.find('#instrument-users-tab').hostNodes().simulate('click');
-
-    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
-  });
-
-  it('gracefully handles InstrumentScientists without Users', () => {
-    rowData.instrumentScientists = [
-      {
-        id: 4,
-      },
-    ];
-
-    (useInstrumentDetails as jest.Mock).mockReturnValueOnce({
-      data: rowData,
-    });
-
-    const wrapper = createWrapper();
-    expect(wrapper.find('InstrumentDetailsPanel').props()).toMatchSnapshot();
-  });
-
-  it('renders users tab and text "No Scientists" when no data is present', () => {
-    rowData.instrumentScientists = [];
-    const wrapper = createWrapper();
     expect(
-      wrapper.find('[data-testid="instrument-details-panel-no-name"]').exists()
-    ).toBeTruthy();
+      await screen.findByRole('tabpanel', { name: 'instruments.details.label' })
+    ).toBeVisible();
+
+    // switch tab
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'instruments.details.instrument_scientists.label',
+      })
+    );
+
+    expect(
+      await screen.findByRole('tabpanel', {
+        name: 'instruments.details.instrument_scientists.label',
+      })
+    ).toBeVisible();
   });
 
-  it('Shows "No <field> provided" incase of a null field', () => {
-    const { description, type, url, ...amendedRowData } = rowData;
+  it('should call detailsPanelResize on load and when tabs are switched between', async () => {
+    rowData.instrumentScientists = [
+      {
+        id: 4,
+        user: {
+          id: 5,
+          name: 'Louise',
+          fullName: 'Louise Davies',
+        },
+      },
+    ];
 
-    (useInstrumentDetails as jest.Mock).mockReturnValueOnce({
-      data: amendedRowData,
+    const mockDetailsPanelResize = jest.fn();
+
+    renderComponent({
+      rowData,
+      detailsPanelResize: mockDetailsPanelResize,
     });
 
-    const wrapper = mount(
-      <QueryClientProvider client={new QueryClient()}>
-        <InstrumentDetailsPanel
-          rowData={amendedRowData}
-          detailsPanelResize={detailsPanelResize}
-        />
-      </QueryClientProvider>
+    await waitFor(() => {
+      expect(mockDetailsPanelResize).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'instruments.details.instrument_scientists.label',
+      })
     );
 
-    expect(wrapper.html()).toContain(
-      '<b>instruments.details.description not provided</b>'
-    );
-    expect(wrapper.html()).toContain(
-      '<b>instruments.details.type not provided</b>'
-    );
-    expect(wrapper.html()).toContain(
-      '<b>instruments.details.url not provided</b>'
-    );
+    await waitFor(() => {
+      expect(mockDetailsPanelResize).toHaveBeenCalledTimes(2);
+    });
   });
 
-  it('displays shortened instrument name if full name not provided', () => {
+  it('should gracefully handle InstrumentScientists without Users', () => {
+    rowData.instrumentScientists = [
+      {
+        id: 4,
+      },
+    ];
+
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should render users tab and text "No Scientists" when no data is present', async () => {
+    rowData.instrumentScientists = [];
+    renderComponent({ rowData });
+    expect(
+      await screen.findByText(
+        'instruments.details.instrument_scientists.no_name'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('should show "No <field> provided" incase of a null field', async () => {
+    const { description, type, url, ...amendedRowData } = rowData;
+    axios.get = jest.fn().mockResolvedValue({
+      data: [amendedRowData],
+    });
+
+    renderComponent({ rowData: amendedRowData });
+
+    expect(
+      await screen.findByText('instruments.details.description not provided')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('instruments.details.type not provided')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('instruments.details.url not provided')
+    ).toBeInTheDocument();
+  });
+
+  it('should display shortened instrument name if full name not provided', async () => {
     rowData = {
       id: 1,
       name: 'My test instrument',
@@ -179,11 +202,8 @@ describe('Instrument details panel component', () => {
       url: 'www.example.com',
     };
 
-    (useInstrumentDetails as jest.Mock).mockReturnValueOnce({
-      data: rowData,
-    });
+    renderComponent({ rowData });
 
-    const wrapper = createWrapper();
-    expect(wrapper.html()).toContain('<b>My test instrument</b>');
+    expect(await screen.findByText('My test instrument')).toBeInTheDocument();
   });
 });

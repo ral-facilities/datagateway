@@ -1,16 +1,23 @@
-import React from 'react';
 import {
-  Typography,
-  Grid,
-  Divider,
-  Tabs,
-  Tab,
   Button,
+  Divider,
+  Grid,
   styled,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDatasetDetails, useDatasetSize } from '../../api/datasets';
+import { useDispatch, useSelector } from 'react-redux';
+import { useDatasetDetails, useDatasetSize } from '../../api';
 import { Dataset, Entity } from '../../app.types';
+import {
+  DlsDatasetDetailsPanelChangeTabPayload,
+  DlsDatasetDetailsPanelChangeTabType,
+} from '../../state/actions/actions.types';
+import { StateType } from '../../state/app.types';
+import { Action } from '../../state/reducers/createReducer';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -26,13 +33,15 @@ interface DatasetDetailsPanelProps {
   detailsPanelResize?: () => void;
 }
 
+const DEFAULT_TAB: DlsDatasetDetailsPanelTab = 'details';
+
+export type DlsDatasetDetailsPanelTab = 'details' | 'type';
+
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize } = props;
-  const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
-
   const { data } = useDatasetDetails(rowData.id);
   const { data: size, refetch: fetchSize } = useDatasetSize(rowData.id);
   const datasetData: Dataset = {
@@ -40,10 +49,43 @@ const DatasetDetailsPanel = (
     ...(rowData as Dataset),
     size,
   };
+  const selectedTab = useSelector<
+    StateType,
+    DlsDatasetDetailsPanelTab | undefined
+  >(
+    (state) =>
+      data && state.dgcommon.dlsDatasetDetailsPanel[data.id]?.selectedTab
+  );
+  const dispatch = useDispatch();
+
+  const changeTab = React.useCallback(
+    (newTab: DlsDatasetDetailsPanelTab) => {
+      const id = data?.id;
+      if (id) {
+        dispatch<Action>({
+          type: DlsDatasetDetailsPanelChangeTabType,
+          payload: {
+            newTab,
+            datasetId: id,
+          } as DlsDatasetDetailsPanelChangeTabPayload,
+        });
+      }
+    },
+    [data?.id, dispatch]
+  );
 
   React.useLayoutEffect(() => {
-    if (detailsPanelResize) detailsPanelResize();
-  }, [value, detailsPanelResize]);
+    if (detailsPanelResize && selectedTab) detailsPanelResize();
+  }, [selectedTab, detailsPanelResize]);
+
+  React.useEffect(() => {
+    if (data && !selectedTab) {
+      // register the selected tab for this dataset's details panel
+      // for the first time.
+      // go to the default tab on first render
+      changeTab(DEFAULT_TAB);
+    }
+  }, [data, selectedTab, changeTab]);
 
   return (
     <div id="details-panel" style={{ minWidth: 0 }}>
@@ -52,8 +94,8 @@ const DatasetDetailsPanel = (
         textColor="secondary"
         indicatorColor="secondary"
         scrollButtons="auto"
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={selectedTab ?? DEFAULT_TAB}
+        onChange={(event, newValue) => changeTab(newValue)}
         aria-label={t('datasets.details.tabs_label')}
       >
         <Tab
@@ -75,7 +117,7 @@ const DatasetDetailsPanel = (
         id="dataset-details-panel"
         aria-labelledby="dataset-details-tab"
         role="tabpanel"
-        hidden={value !== 'details'}
+        hidden={selectedTab !== 'details'}
       >
         <StyledGrid container direction="column">
           <Grid item xs>
@@ -137,6 +179,7 @@ const DatasetDetailsPanel = (
                     color="secondary"
                     size="small"
                     id="calculate-size-btn"
+                    role="button"
                   >
                     {t('datasets.details.calculate')}
                   </Button>
@@ -151,7 +194,7 @@ const DatasetDetailsPanel = (
           id="dataset-type-panel"
           aria-labelledby="dataset-type-tab"
           role="tabpanel"
-          hidden={value !== 'type'}
+          hidden={selectedTab !== 'type'}
         >
           <StyledGrid container direction="column">
             <Grid item xs>
