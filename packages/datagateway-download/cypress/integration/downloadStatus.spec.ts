@@ -175,17 +175,12 @@ describe('Download Status', () => {
         format(currDate, 'yyyy-MM-dd HH:mm')
       );
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
-        'have.text',
-        'test-file-1'
-      );
-
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
-        'have.text',
-        'https'
-      );
-
       cy.get('[aria-rowcount="4"]').should('exist');
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
+        'have.text',
+        format(currDate, 'yyyy-MM-dd HH:mm:ss')
+      );
     });
 
     it('multiple columns', () => {
