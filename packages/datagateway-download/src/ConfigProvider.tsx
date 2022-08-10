@@ -10,13 +10,6 @@ export interface DownloadSettingsAccessMethod {
   };
 }
 
-/**
- * A union of all available UI feature flags.
- *
- * - DOWNLOAD_PROGRESS: enables download progress to be displayed in download status tables.
- */
-export type UiFeature = 'DOWNLOAD_PROGRESS';
-
 export interface DownloadSettings {
   facilityName: string;
   apiUrl: string;
@@ -32,12 +25,17 @@ export interface DownloadSettings {
   pluginHost?: string;
 
   /**
-   * An array of flags that enables certain UI features.
+   * A map of UI flags that can toggle certain UI features..
    */
-  uiFeatures: UiFeature[];
+  uiFeatures: {
+    /**
+     * Enables download progress to be displayed in download status tables when set to true.
+     */
+    downloadProgress: boolean;
+  };
 }
 
-const initialConfiguration = {
+const initialConfiguration: DownloadSettings = {
   facilityName: '',
   apiUrl: '',
   downloadApiUrl: '',
@@ -47,7 +45,9 @@ const initialConfiguration = {
   accessMethods: {},
   routes: [],
   helpSteps: [],
-  uiFeatures: [],
+  uiFeatures: {
+    downloadProgress: false,
+  },
 };
 
 export const DownloadSettingsContext = React.createContext<DownloadSettings>(

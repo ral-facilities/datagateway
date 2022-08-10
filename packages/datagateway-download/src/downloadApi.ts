@@ -383,7 +383,9 @@ export const getPercentageComplete = async ({
   const { data } = await axios.get(`${idsUrl}/getPercentageComplete`, {
     params: { preparedId },
   });
+  // try to parse the incoming data as a float
+  const maybeNumber = parseFloat(data);
   // if data is not a number (NaN), it is a status value
-  const isStatus = isNaN(data);
-  return isStatus ? data : Number(data);
+  const isStatus = Number.isNaN(maybeNumber);
+  return isStatus ? data : maybeNumber;
 };

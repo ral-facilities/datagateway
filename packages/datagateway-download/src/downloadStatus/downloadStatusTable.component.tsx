@@ -239,10 +239,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               },
               {
                 label: t('downloadStatus.status'),
-                dataKey: 'status',
+                dataKey: 'formattedStatus',
                 filterComponent: availabilityFilter,
               },
-              ...(settings.uiFeatures.includes('DOWNLOAD_PROGRESS')
+              ...(settings.uiFeatures.downloadProgress
                 ? [
                     {
                       label: t('downloadStatus.progress'),
@@ -250,7 +250,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       disableSort: true,
                       cellContentRenderer: ({ rowData }: TableCellProps) => (
                         <DownloadProgressIndicator
-                          downloadId={(rowData as FormattedDownload).id}
+                          download={rowData as FormattedDownload}
                         />
                       ),
                     },
@@ -286,8 +286,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 const downloadItem = rowData as FormattedDownload;
                 const isHTTP = !!downloadItem.transport.match(/https|http/);
 
-                const isComplete =
-                  downloadItem.status === t('downloadStatus.complete');
+                const isComplete = downloadItem.status === 'COMPLETE';
 
                 const isDownloadable = isHTTP && isComplete;
 

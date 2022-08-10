@@ -177,7 +177,7 @@ const AdminDownloadStatusTable: React.FC = () => {
       label={label}
       onChange={(value: { value?: string | number; type: string } | null) => {
         if (value) {
-          if (dataKey === 'status') {
+          if (dataKey === 'formattedStatus') {
             const downloadStatus = (Object.keys(
               downloadStatuses
             ) as DownloadStatus[]).find(
@@ -188,8 +188,11 @@ const AdminDownloadStatusTable: React.FC = () => {
             if (typeof downloadStatus !== 'undefined') {
               value.value = downloadStatus;
             }
+
+            setFilters({ ...filters, status: value });
+          } else {
+            setFilters({ ...filters, [dataKey]: value });
           }
-          setFilters({ ...filters, [dataKey]: value });
         } else {
           const { [dataKey]: value, ...restOfFilters } = filters;
           setFilters(restOfFilters);
@@ -316,10 +319,10 @@ const AdminDownloadStatusTable: React.FC = () => {
                     },
                     {
                       label: t('downloadStatus.status'),
-                      dataKey: 'status',
+                      dataKey: 'formattedStatus',
                       filterComponent: textFilter,
                     },
-                    ...(settings.uiFeatures.includes('DOWNLOAD_PROGRESS')
+                    ...(settings.uiFeatures.downloadProgress
                       ? [
                           {
                             label: t('downloadStatus.progress'),
@@ -329,7 +332,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                               rowData,
                             }: TableCellProps) => (
                               <DownloadProgressIndicator
-                                downloadId={(rowData as FormattedDownload).id}
+                                download={rowData as FormattedDownload}
                               />
                             ),
                           },
@@ -356,7 +359,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                     },
                     {
                       label: t('downloadStatus.deleted'),
-                      dataKey: 'isDeleted',
+                      dataKey: 'formattedIsDeleted',
                     },
                   ]}
                   sort={sort}
@@ -380,7 +383,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                         downloadItem.isDeleted
                       );
 
-                      if (isDeleted === 'No') {
+                      if (!isDeleted) {
                         return null;
                       }
 
@@ -409,7 +412,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                         downloadItem.isDeleted
                       );
 
-                      if (isDeleted === 'Yes') {
+                      if (isDeleted) {
                         return null;
                       }
 
@@ -439,10 +442,10 @@ const AdminDownloadStatusTable: React.FC = () => {
                       );
 
                       if (
-                        isDeleted === 'Yes' ||
-                        downloadItem.status === t('downloadStatus.complete') ||
-                        downloadItem.status === t('downloadStatus.expired') ||
-                        downloadItem.status !== t('downloadStatus.paused')
+                        isDeleted ||
+                        downloadItem.status === 'COMPLETE' ||
+                        downloadItem.status === 'EXPIRED' ||
+                        downloadItem.status !== 'PAUSED'
                       ) {
                         return null;
                       }
@@ -473,10 +476,10 @@ const AdminDownloadStatusTable: React.FC = () => {
                       );
 
                       if (
-                        isDeleted === 'Yes' ||
-                        downloadItem.status === t('downloadStatus.complete') ||
-                        downloadItem.status === t('downloadStatus.expired') ||
-                        downloadItem.status === t('downloadStatus.paused')
+                        isDeleted ||
+                        downloadItem.status === 'COMPLETE' ||
+                        downloadItem.status === 'EXPIRED' ||
+                        downloadItem.status === 'PAUSED'
                       ) {
                         return null;
                       }

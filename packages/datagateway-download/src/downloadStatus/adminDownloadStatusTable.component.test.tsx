@@ -251,7 +251,7 @@ describe('Admin Download Status Table', () => {
       jest.useRealTimers();
     }, 10000);
 
-    it('should filter download availablity properly', async () => {
+    it('should filter download availability properly', async () => {
       jest.useFakeTimers();
       renderComponent();
 
@@ -573,7 +573,9 @@ describe('Admin Download Status Table', () => {
     renderComponent({
       settings: {
         ...mockedSettings,
-        uiFeatures: ['DOWNLOAD_PROGRESS'],
+        uiFeatures: {
+          downloadProgress: true,
+        },
       },
     });
 

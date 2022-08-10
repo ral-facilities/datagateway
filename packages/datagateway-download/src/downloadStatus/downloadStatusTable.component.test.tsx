@@ -7,7 +7,6 @@ import {
   downloadDeleted,
   fetchDownloads,
   getDataUrl,
-  getDownload,
   getPercentageComplete,
 } from '../downloadApi';
 import {
@@ -312,11 +311,6 @@ describe('Download Status Table', () => {
   }, 10000);
 
   it('should show download progress ui if enabled', async () => {
-    (getDownload as jest.MockedFunction<
-      typeof getDownload
-    >).mockImplementation((id, _) =>
-      Promise.resolve(mockDownloadItems.find((download) => download.id === id))
-    );
     (getPercentageComplete as jest.MockedFunction<
       typeof getPercentageComplete
     >).mockResolvedValue(20);
@@ -324,7 +318,9 @@ describe('Download Status Table', () => {
     renderComponent({
       settings: {
         ...mockedSettings,
-        uiFeatures: ['DOWNLOAD_PROGRESS'],
+        uiFeatures: {
+          downloadProgress: true,
+        },
       },
     });
 
