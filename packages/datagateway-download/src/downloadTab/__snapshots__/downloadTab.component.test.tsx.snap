@@ -148,11 +148,11 @@ exports[`DownloadTab should render correctly 1`] = `
                             <div>
                               <div
                                 aria-hidden="true"
-                                class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-lgol22-MuiInputBase-root-MuiInput-root"
+                                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
                                   aria-label="Filter by downloadCart.name"
-                                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                  class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                   id="downloadCart.name-filter"
                                   placeholder="Include"
                                   type="text"
@@ -162,14 +162,14 @@ exports[`DownloadTab should render correctly 1`] = `
                                   class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                                 >
                                   <div
-                                    class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary  css-194ccxm-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                    class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                   >
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
                                       aria-label="include or exclude"
                                       aria-labelledby="downloadCart.name-select-filter-type"
-                                      class="MuiSelect-select MuiSelect-standard MuiInput-input MuiInputBase-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                      class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadCart.name-select-filter-type"
                                       role="button"
                                       tabindex="0"
@@ -259,11 +259,11 @@ exports[`DownloadTab should render correctly 1`] = `
                             <div>
                               <div
                                 aria-hidden="true"
-                                class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-lgol22-MuiInputBase-root-MuiInput-root"
+                                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
                                   aria-label="Filter by downloadCart.type"
-                                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                  class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                   id="downloadCart.type-filter"
                                   placeholder="Include"
                                   type="text"
@@ -273,14 +273,14 @@ exports[`DownloadTab should render correctly 1`] = `
                                   class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                                 >
                                   <div
-                                    class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary  css-194ccxm-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                    class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                   >
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
                                       aria-label="include or exclude"
                                       aria-labelledby="downloadCart.type-select-filter-type"
-                                      class="MuiSelect-select MuiSelect-standard MuiInput-input MuiInputBase-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                      class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadCart.type-select-filter-type"
                                       role="button"
                                       tabindex="0"
@@ -516,7 +516,7 @@ exports[`DownloadTab should render correctly 1`] = `
                   class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
                 >
                   <button
-                    class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root tour-download-remove-button css-sghohy-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium tour-download-remove-button css-sghohy-MuiButtonBase-root-MuiButton-root"
                     id="removeAllButton"
                     tabindex="0"
                     type="button"
@@ -531,7 +531,7 @@ exports[`DownloadTab should render correctly 1`] = `
                   class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
                 >
                   <button
-                    class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root Mui-disabled tour-download-download-button css-sghohy-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium tour-download-download-button css-sghohy-MuiButtonBase-root-MuiButton-root"
                     disabled=""
                     id="downloadCartButton"
                     tabindex="-1"
