@@ -324,12 +324,12 @@
       "link4": "?searchText=scatter*"
     },
     "special_characters": {
-      "title": "Using wildcards",
+      "title": "Special characters",
       "description": "In addition to whitespace, there are other characters used to split <strong>terms</strong> based on context. A <strong>.</strong> character is treated as a separator only when between a mixture of letters and numbers, but is preserved when in-between two letters or two numbers. <strong>-</strong> is always treated as a separator. This can make searching for file extension difficult, as a searching for <9>1234.dat</9> will match any result containing the <strong>term</strong> 1234 or dat, but not for example abcd.dat as that is treated as one single <strong>term</strong>.<br/> <br/> When building a <strong>phrase</strong>, special characters in the <strong>phrase</strong> will not perform their special function and instead are treated as white space. This can be a useful way of effectively ignoring slashes in a file path, but will also prevent wildcards from working.",
       "link1": "?searchText=1234.dat"
     },
     "fields": {
-      "title": "Using wildcards",
+      "title": "Fields",
       "description": "By default, <strong>terms</strong> are applied to several <strong>fields</strong> of the metadata. However more specific searches are possible based on the list of supported <strong>fields</strong> below (note that not all <strong>fields</strong> will always have a value and the <strong>fields</strong> differ between entities). For example, to find results that mention calibration in their summary but not their title, search for <16>summary:calibration -title:calibration</16><br/> <br/> <strong>Investigation</strong><22><0>title</0><1>summary</1><2>name</2><3>type.name</3><4>visitId</4><5>facility.name</5><6>doi </6></22><strong>Dataset</strong><24><0>name</0><1>description</1><2>type.name</2><3>visitId</3><4>sample.name</4><5>sample.type.name</5><6>doi </6></24><strong>Datafile</strong><26><0>name</0><1>description</1><2>location</2><3>datafileFormat.name</3><4>visitId</4><5>sample.name</5><6>sample.type.name</6><7>doi </7></26>",
       "link1": "?searchText=summary%3Acalibration+-title%3Acalibration"
     },
