@@ -90,7 +90,7 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', (credentials) => {
-  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
     const settings = response.body;
     let body = {
       username: '',
@@ -118,7 +118,7 @@ Cypress.Commands.add('login', (credentials) => {
 });
 
 Cypress.Commands.add('clearDownloadCart', () => {
-  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
     const settings = response.body;
     cy.request({
       method: 'DELETE',
@@ -138,7 +138,7 @@ Cypress.Commands.add('seedDownloadCart', () => {
     .map((value, index) => `${entities[index % 2]} ${index}`)
     .join(', ');
 
-  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
     const settings = response.body;
     cy.request({
       method: 'POST',
@@ -153,7 +153,7 @@ Cypress.Commands.add('seedDownloadCart', () => {
 });
 
 Cypress.Commands.add('addCartItem', (cartItem) => {
-  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
     const settings = response.body;
     cy.request({
       method: 'POST',
@@ -168,7 +168,7 @@ Cypress.Commands.add('addCartItem', (cartItem) => {
 });
 
 Cypress.Commands.add('seedDownloads', () => {
-  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
     const settings = response.body;
     let i = 1;
     for (var info of downloadsInfo) {
@@ -225,7 +225,7 @@ Cypress.Commands.add('seedDownloads', () => {
 });
 
 Cypress.Commands.add('clearDownloads', () => {
-  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
     const settings = response.body;
     cy.request({
       method: 'GET',

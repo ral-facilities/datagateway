@@ -55,7 +55,7 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', () => {
-  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+  return cy.request('datagateway-search-settings.json').then((response) => {
     const settings = response.body;
     cy.request('POST', `${settings.apiUrl}/sessions`, {
       username: '',
@@ -79,7 +79,7 @@ Cypress.Commands.add('login', () => {
 });
 
 Cypress.Commands.add('clearDownloadCart', () => {
-  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+  return cy.request('datagateway-search-settings.json').then((response) => {
     const settings = response.body;
     cy.request({
       method: 'DELETE',
