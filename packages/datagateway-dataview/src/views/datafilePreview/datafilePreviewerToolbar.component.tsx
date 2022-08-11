@@ -7,6 +7,7 @@ import {
   Stack,
   Switch,
 } from '@mui/material';
+import { downloadDatafile } from 'datagateway-common';
 import type { Datafile } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,14 +29,15 @@ interface DatafilePreviewerToolbarProps {
  * @constructor
  */
 function DatafilePreviewerToolbar({
+  datafile,
   datafileContent,
 }: DatafilePreviewerToolbarProps): JSX.Element {
   const isDetailsPanelShown = useSelector<StateType, boolean>(
     (state) => state.dgdataview.isisDatafilePreviewer.isDetailsPaneShown
   );
-  // const idsUrl = useSelector<StateType, string>(
-  //   (state) => state.dgcommon.urls.idsUrl
-  // );
+  const idsUrl = useSelector<StateType, string>(
+    (state) => state.dgcommon.urls.idsUrl
+  );
   const dispatch = useDispatch();
   const [t] = useTranslation();
 
@@ -48,11 +50,40 @@ function DatafilePreviewerToolbar({
     });
   }
 
+  /**
+   * Download the datafile to the user computer,
+   * depending on whether the content is already downloaded or not.
+   */
+  function download(): void {
+    if (datafileContent) {
+      const link = document.createElement('a');
+      const url = window.URL.createObjectURL(datafileContent);
+      link.href = url;
+      link.style.display = 'none';
+      if (datafile.location) {
+        link.download = datafile.location;
+      }
+
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        link.remove();
+      }, 0);
+    } else if (datafile.location) {
+      downloadDatafile(idsUrl, datafile.id, datafile.location);
+    }
+  }
+
   return (
     <Paper sx={{ padding: 1 }}>
       <Stack direction="row" justifyContent="space-between">
         <Stack direction="row" spacing={1}>
-          <Button variant="text" startIcon={<Download />}>
+          <Button
+            variant="text"
+            startIcon={<Download />}
+            onClick={() => download()}
+          >
             {t('buttons.download')}
           </Button>
           <Button variant="text" startIcon={<CopyAll />}>
