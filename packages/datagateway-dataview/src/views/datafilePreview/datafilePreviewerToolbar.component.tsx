@@ -1,9 +1,11 @@
 import { CopyAll, Download, ZoomIn, ZoomOut } from '@mui/icons-material';
 import {
+  Alert,
   Button,
   ButtonGroup,
   FormControlLabel,
   Paper,
+  Snackbar,
   Stack,
   Switch,
 } from '@mui/material';
@@ -32,6 +34,10 @@ function DatafilePreviewerToolbar({
   datafile,
   datafileContent,
 }: DatafilePreviewerToolbarProps): JSX.Element {
+  const [
+    isCopyLinkSuccessfulMessageShown,
+    setIsCopyLinkSuccessfulMessageShown,
+  ] = React.useState(false);
   const isDetailsPanelShown = useSelector<StateType, boolean>(
     (state) => state.dgdataview.isisDatafilePreviewer.isDetailsPaneShown
   );
@@ -75,6 +81,11 @@ function DatafilePreviewerToolbar({
     }
   }
 
+  async function copyLink(): Promise<void> {
+    await navigator.clipboard.writeText(window.location.href);
+    setIsCopyLinkSuccessfulMessageShown(true);
+  }
+
   return (
     <Paper sx={{ padding: 1 }}>
       <Stack direction="row" justifyContent="space-between">
@@ -86,7 +97,11 @@ function DatafilePreviewerToolbar({
           >
             {t('buttons.download')}
           </Button>
-          <Button variant="text" startIcon={<CopyAll />}>
+          <Button
+            variant="text"
+            startIcon={<CopyAll />}
+            onClick={() => copyLink()}
+          >
             {t('datafiles.preview.toolbar.copy_link')}
           </Button>
           <ButtonGroup
@@ -112,6 +127,21 @@ function DatafilePreviewerToolbar({
           label={t('datafiles.preview.toolbar.show_details')}
         />
       </Stack>
+
+      <Snackbar
+        open={isCopyLinkSuccessfulMessageShown}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={3000}
+        onClose={() => setIsCopyLinkSuccessfulMessageShown(false)}
+      >
+        <Alert
+          severity="success"
+          elevation={4}
+          onClose={() => setIsCopyLinkSuccessfulMessageShown(false)}
+        >
+          Link copied to clipboard
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 }
