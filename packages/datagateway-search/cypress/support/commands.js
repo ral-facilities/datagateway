@@ -55,7 +55,8 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     cy.request('POST', `${settings.apiUrl}/sessions`, {
       username: '',
       password: '',
@@ -78,7 +79,8 @@ Cypress.Commands.add('login', () => {
 });
 
 Cypress.Commands.add('clearDownloadCart', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'DELETE',
       url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,

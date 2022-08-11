@@ -90,7 +90,8 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', (credentials) => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     let body = {
       username: '',
       password: '',
@@ -117,7 +118,8 @@ Cypress.Commands.add('login', (credentials) => {
 });
 
 Cypress.Commands.add('clearDownloadCart', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'DELETE',
       url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
@@ -136,7 +138,8 @@ Cypress.Commands.add('seedDownloadCart', () => {
     .map((value, index) => `${entities[index % 2]} ${index}`)
     .join(', ');
 
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'POST',
       url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
@@ -150,7 +153,8 @@ Cypress.Commands.add('seedDownloadCart', () => {
 });
 
 Cypress.Commands.add('addCartItem', (cartItem) => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'POST',
       url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
@@ -164,7 +168,8 @@ Cypress.Commands.add('addCartItem', (cartItem) => {
 });
 
 Cypress.Commands.add('seedDownloads', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     let i = 1;
     for (var info of downloadsInfo) {
       // Seed a single cart item as items are cleared after each download.
@@ -220,7 +225,8 @@ Cypress.Commands.add('seedDownloads', () => {
 });
 
 Cypress.Commands.add('clearDownloads', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.readFile('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'GET',
       url: `${settings.downloadApiUrl}/user/downloads`,
