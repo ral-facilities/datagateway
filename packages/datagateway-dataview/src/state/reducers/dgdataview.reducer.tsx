@@ -1,5 +1,9 @@
-import { DGDataViewState } from '../app.types';
 import { createReducer } from 'datagateway-common';
+import {
+  datafilePreviewerInitialState,
+  datafilePreviewerReducer,
+} from '../../views/datafilePreview/state/reducer';
+import { DGDataViewState } from '../app.types';
 import {
   FeatureSwitchesPayload,
   ConfigureFeatureSwitchesType,
@@ -21,6 +25,7 @@ export const initialState: DGDataViewState = {
   selectAllSetting: true,
   pluginHost: '',
   facilityImageURL: '',
+  isisDatafilePreviewer: datafilePreviewerInitialState,
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
@@ -89,6 +94,7 @@ const DGDataViewReducer = createReducer(initialState, {
   [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
   [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
   [ConfigureFacilityImageSettingType]: handleConfigureFacilityImageSetting,
+  ...datafilePreviewerReducer,
 });
 
 export default DGDataViewReducer;

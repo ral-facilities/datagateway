@@ -195,6 +195,21 @@
       "parameters": {
         "label": "Datafile Parameters",
         "no_parameters": "No parameters"
+      },
+      "unknown": "Unknown"
+    },
+    "preview": {
+      "cannot_preview": "Cannot preview datafile",
+      "cannot_load_content": "Cannot load datafile content.",
+      "unknown_type": "Datafile type not specified.",
+      "unsupported": "Unsupported datafile type: {{ext}}",
+      "unexpected_error": "An unexpected error has occurred",
+      "toolbar": {
+        "copy_link": "Copy link",
+        "zoom_control": "Zoom level control for datafile content",
+        "zoom_in": "Zoom in",
+        "zoom_out": "Zoom out",
+        "show_details": "Show details"
       }
     }
   },
@@ -214,28 +229,56 @@
     "cart_loading_failed_tooltip": "Selection information failed to load, please reload the page or try again later",
     "remove_from_cart": "Remove from selection",
     "download": "Download",
-    "unable_to_download_tooltip": "Unable to download - this item is empty"
+    "unable_to_download_tooltip": "Unable to download - this item is empty",
+    "preview": "Preview datafile",
+    "preview_tooltip": "Preview this datafile"
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters",
     "icons": {
-      "title": ["Title", "Name", "Type"],
-      "fingerprint": ["Visit ID", "Name"],
-      "public": ["DOI"],
-      "confirmation_number": ["Dataset Count", " Datafile Count"],
-      "assessment": ["Instrument", "Beamline"],
+      "title": [
+        "Title",
+        "Name",
+        "Type"
+      ],
+      "fingerprint": [
+        "Visit ID",
+        "Name"
+      ],
+      "public": [
+        "DOI"
+      ],
+      "confirmation_number": [
+        "Dataset Count",
+        " Datafile Count"
+      ],
+      "assessment": [
+        "Instrument",
+        "Beamline"
+      ],
       "calendar_today": [
         "Start Date",
         "End Date",
         "Create Time",
         "Modified Time"
       ],
-      "explore": ["Location"],
-      "save": ["Size"],
-      "description": ["Description", "Summary"],
-      "link": ["URL"],
-      "person": ["Principal Investigator"]
+      "explore": [
+        "Location"
+      ],
+      "save": [
+        "Size"
+      ],
+      "description": [
+        "Description",
+        "Summary"
+      ],
+      "link": [
+        "URL"
+      ],
+      "person": [
+        "Principal Investigator"
+      ]
     }
   },
   "entity_card": {

@@ -22,8 +22,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { StateType } from '../../state/app.types';
 import { IndexRange } from 'react-virtualized';
+import type { StateType } from '../../state/app.types';
+import PreviewDatafileButton from '../datafilePreview/previewDatafileButton.component';
 
 interface DatafileTableProps {
   datasetId: string;
@@ -184,6 +185,9 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
             variant="icon"
             entitySize={(rowData as Datafile).fileSize ?? -1}
           />
+        ),
+        ({ rowData }: TableActionProps) => (
+          <PreviewDatafileButton datafile={rowData as Datafile} />
         ),
       ]}
       columns={columns}

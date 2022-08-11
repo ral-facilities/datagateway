@@ -7,6 +7,7 @@ import {
   Redirect,
   Link,
 } from 'react-router-dom';
+import DatafilePreviewer from '../views/datafilePreview/datafilePreviewer.component';
 
 import InvestigationTable from '../views/table/investigationTable.component';
 import DatasetTable from '../views/table/datasetTable.component';
@@ -654,6 +655,13 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
               investigationId={match.params.investigationId as string}
               datasetId={match.params.datasetId as string}
             />
+          )}
+        />
+        <Route
+          exact
+          path={paths.preview.isisDatafilePreview}
+          render={({ match }) => (
+            <DatafilePreviewer datafileId={Number(match.params.datafileId)} />
           )}
         />
 

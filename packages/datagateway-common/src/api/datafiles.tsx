@@ -12,12 +12,12 @@ import {
   SortType,
 } from '../app.types';
 import { StateType } from '../state/app.types';
-import {
-  useQuery,
+import type {
   UseQueryResult,
-  useInfiniteQuery,
   UseInfiniteQueryResult,
+  UseQueryOptions,
 } from 'react-query';
+import { useQuery, useInfiniteQuery } from 'react-query';
 import retryICATErrors from './retryICATErrors';
 
 const fetchDatafiles = (
@@ -53,6 +53,46 @@ const fetchDatafiles = (
     .then((response) => {
       return response.data;
     });
+};
+
+/**
+ * Queries the {@link Datafile} with the given ID.
+ *
+ * @param id The ID of the {@link Datafile} to be queried.
+ * @param queryOptions Additional {@link useQuery} options. Overrides default options.
+ */
+export const useDatafile = ({
+  id,
+  ...queryOptions
+}: {
+  id: Datafile['id'];
+} & UseQueryOptions<
+  Datafile | null,
+  AxiosError,
+  Datafile | null,
+  [string, number]
+>): UseQueryResult<Datafile | null, AxiosError> => {
+  const apiUrl = useSelector<StateType, string>(
+    (state) => state.dgcommon.urls.apiUrl
+  );
+  return useQuery(
+    ['datafile', id],
+    () =>
+      fetchDatafiles(apiUrl, { sort: {}, filters: {} }, [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { eq: id },
+          }),
+        },
+      ]).then((results) => (results.length === 0 ? null : results[0])),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      ...queryOptions,
+    }
+  );
 };
 
 export const useDatafilesPaginated = (
@@ -234,6 +274,75 @@ export const useDatafileDetails = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+    }
+  );
+};
+
+/**
+ * Downloads the datafile with the given ID to memory, instead of storage.
+ *
+ * @param idsUrl: URL of the IDS server
+ * @param datafileId The ID of the datafile to be downloaded
+ * @param onDownloadProgress An optional callback that is called whenever download progress is made.
+ */
+const downloadDatafileToMemory = ({
+  idsUrl,
+  datafileId,
+  onDownloadProgress,
+}: {
+  idsUrl: string;
+  datafileId: Datafile['id'];
+  onDownloadProgress?: (progressEvent: ProgressEvent) => void;
+}): Promise<Blob> =>
+  axios
+    .get(`${idsUrl}/getData`, {
+      onDownloadProgress,
+      params: {
+        datafileIds: `${datafileId}`,
+        sessionId: readSciGatewayToken().sessionId,
+        compress: false,
+      },
+    })
+    .then((response) => new Blob([response.data]));
+
+/**
+ * A React hook that fetches the content of the {@link Datafile} with the given ID
+ * as a {@link Blob}.
+ *
+ * @param datafileId The ID of the {@link Datafile} to be fetched.
+ * @param onDownloadProgress A callback that is called with the download progress of the {@link Datafile} content.
+ * @param queryOptions Additional {@link useQuery} options. Overrides default options.
+ */
+export const useDatafileContent = ({
+  datafileId,
+  onDownloadProgress,
+  ...queryOptions
+}: {
+  datafileId: Datafile['id'];
+  onDownloadProgress: (progressEvent: ProgressEvent) => void;
+} & UseQueryOptions<
+  Blob,
+  AxiosError,
+  Blob,
+  ['datafile', 'content', number]
+>): UseQueryResult<Blob, AxiosError> => {
+  const idsUrl = useSelector<StateType, string>(
+    (state) => state.dgcommon.urls.idsUrl
+  );
+
+  return useQuery(
+    ['datafile', 'content', datafileId],
+    () =>
+      downloadDatafileToMemory({
+        idsUrl,
+        datafileId,
+        onDownloadProgress,
+      }),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      ...queryOptions,
     }
   );
 };
