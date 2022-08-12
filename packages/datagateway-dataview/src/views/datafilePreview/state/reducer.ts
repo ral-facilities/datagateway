@@ -50,9 +50,13 @@ function decDatafilePreviewerZoomLevel(
     ...state,
     isisDatafilePreviewer: {
       ...state.isisDatafilePreviewer,
-      zoomLevel:
-        state.isisDatafilePreviewer.zoomLevel -
+      // zoom level should not go lower than zoomLevelStep
+      // otherwise will result in zoom level <= 0.
+      zoomLevel: Math.max(
         DATAFILE_PREVIEWER_DEFAULT.zoomLevelStep,
+        state.isisDatafilePreviewer.zoomLevel -
+          DATAFILE_PREVIEWER_DEFAULT.zoomLevelStep
+      ),
     },
   };
 }
