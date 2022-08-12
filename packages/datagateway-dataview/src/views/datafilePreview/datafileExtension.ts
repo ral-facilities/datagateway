@@ -1,6 +1,6 @@
 import { Datafile } from 'datagateway-common';
 
-const supportedDatafileExtensions = ['txt'];
+const supportedDatafileExtensions = new Set(['txt']);
 
 /**
  * File extension of a datafile.
@@ -28,7 +28,7 @@ function extensionOf(datafile: Datafile): string | null {
 function isExtensionSupported(
   extension: string
 ): extension is DatafileExtension {
-  return supportedDatafileExtensions.includes(extension);
+  return supportedDatafileExtensions.has(extension);
 }
 
 export { extensionOf, isExtensionSupported };

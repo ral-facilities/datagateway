@@ -1,4 +1,3 @@
-import ErrorIcon from '@mui/icons-material/Error';
 import {
   Box,
   CircularProgress,
@@ -17,11 +16,11 @@ import { StateType } from '../../state/app.types';
 import { extensionOf, isExtensionSupported } from './datafileExtension';
 import type { DatafilePreviewerContextShape } from './datafilePreviewerContext';
 import DatafilePreviewerContext from './datafilePreviewerContext';
-import DatafilePreviewerToolbar from './toolbar/datafilePreviewerToolbar.component';
 import DetailsPane from './detailsPane.component';
 import { PreviewerStatus } from './previewerStatus';
 import PreviewPane from './previewPane.component';
 import PreviewStatusView from './previewStatusView.component';
+import DatafilePreviewerToolbar from './toolbar/datafilePreviewerToolbar.component';
 
 const AnimatedGrid = styled(Grid)(({ theme }) => ({
   transition: theme.transitions.create('all', {
@@ -48,14 +47,13 @@ function DatafilePreviewer({
   datafileId,
 }: DatafilePreviewerProps): JSX.Element {
   const [status, setStatus] = React.useState<PreviewerStatus>({
-    loading: { progress: 0 },
+    loadingContent: { progress: 0 },
   });
 
   const {
     data: datafile,
     isLoading: isLoadingMetadata,
-    isError,
-    error,
+    error: loadDatafileMetaError,
   } = useDatafile({
     id: datafileId,
     enabled: !Number.isNaN(datafileId),
@@ -76,7 +74,7 @@ function DatafilePreviewer({
       Boolean(supportsExtension),
     onDownloadProgress: (event) => {
       setStatus({
-        loading: { progress: (event.loaded / event.total) * 100 },
+        loadingContent: { progress: (event.loaded / event.total) * 100 },
       });
     },
   });
@@ -137,6 +135,12 @@ function DatafilePreviewer({
       setStatus({
         unknownExtension: true,
       });
+    } else if (loadDatafileMetaError) {
+      setStatus({
+        metadataUnavailable: {
+          errorMessage: loadDatafileMetaError.message,
+        },
+      });
     } else if (loadDatafileContentError) {
       setStatus({
         contentUnavailable: {
@@ -154,6 +158,7 @@ function DatafilePreviewer({
     datafileExtension,
     isLoadingMetadata,
     loadDatafileContentError,
+    loadDatafileMetaError,
     supportsExtension,
   ]);
 
@@ -166,18 +171,12 @@ function DatafilePreviewer({
     );
   }
 
-  if (isError || !datafile) {
-    return (
-      <Stack alignItems="center" justifyContent="center">
-        <ErrorIcon fontSize="large" sx={{ paddingBottom: 1 }} />
-        <Typography>Unable to load metadata</Typography>
-        {error && <Typography variant="body2">{error}</Typography>}
-      </Stack>
-    );
+  if (status.metadataUnavailable) {
+    return <PreviewStatusView status={status} />;
   }
 
-  if (Number.isNaN(datafileId)) {
-    return <div>Invalid datafile</div>;
+  if (Number.isNaN(datafileId) || !datafile) {
+    return <Typography>Invalid datafile</Typography>;
   }
 
   const context: DatafilePreviewerContextShape = {
@@ -189,7 +188,7 @@ function DatafilePreviewer({
     <DatafilePreviewerContext.Provider value={context}>
       <AnimatedGrid container spacing={2} sx={{ px: 2 }}>
         <Grid item xs={12}>
-          <Grow in={Boolean(status.loading)} mountOnEnter unmountOnExit>
+          <Grow in={Boolean(status.loadingContent)} mountOnEnter unmountOnExit>
             <Box>
               <DatafilePreviewerToolbar />
             </Box>

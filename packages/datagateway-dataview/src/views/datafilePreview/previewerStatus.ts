@@ -8,7 +8,13 @@ interface PreviewerStatus {
   /**
    * This field is set when the datafile previewer is loading the datafile content.
    */
-  loading?: { progress: number };
+  loadingContent?: { progress: number };
+
+  /**
+   * This field is set when the datafile previewer is unable to load
+   * the metadata of the datafile.
+   */
+  metadataUnavailable?: { errorMessage?: string };
 
   /**
    * This field is set when the datafile previewer is unable to determine the

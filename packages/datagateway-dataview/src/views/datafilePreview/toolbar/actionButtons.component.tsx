@@ -26,6 +26,15 @@ import {
   ResetDatafilePreviewerZoomLevelType,
 } from '../state/actions';
 
+/**
+ * Buttons in {@link DatafilePreviewerToolbar} that performs various actions.
+ *
+ * Contains the following controls:
+ *   - Download datafile button
+ *   - Copy datafile link button
+ *   - Zoom controls
+ *   - Reset zoom (if zoom level is changed)
+ */
 function ActionButtons(): JSX.Element {
   const [
     isCopyLinkSuccessfulMessageShown,
@@ -36,6 +45,7 @@ function ActionButtons(): JSX.Element {
   const idsUrl = useSelector<StateType, string>(
     (state) => state.dgcommon.urls.idsUrl
   );
+  // zoom level is considered changed if it is different from the default zoom level.
   const isZoomLevelChanged = useSelector<StateType, boolean>(
     (state) =>
       state.dgdataview.isisDatafilePreviewer.zoomLevel !==

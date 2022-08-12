@@ -21,16 +21,37 @@ const StatusContainer = styled('div')({
   margin: '0 auto',
 });
 
+/**
+ * @see PreviewStatusView
+ */
 interface PreviewStatusViewProps {
   status: PreviewerStatus;
 }
 
+/**
+ * Displays a user-friendly UI/message given the status of datafile previewer.
+
+ * @param status The current status of datafile previewer.
+ */
 function PreviewStatusView({ status }: PreviewStatusViewProps): JSX.Element {
   const [t] = useTranslation();
   const content = React.useMemo(() => {
-    if (status.loading) {
+    if (status.loadingContent) {
       return (
-        <ContentDownloadProgressIndicator progress={status.loading.progress} />
+        <ContentDownloadProgressIndicator
+          progress={status.loadingContent.progress}
+        />
+      );
+    }
+
+    if (status.metadataUnavailable) {
+      return (
+        <StatusContainer>
+          <PreviewErrorMessage
+            title={t('datafiles.preview.cannot_load_metadata')}
+            description={status.metadataUnavailable.errorMessage}
+          />
+        </StatusContainer>
       );
     }
 
@@ -71,7 +92,8 @@ function PreviewStatusView({ status }: PreviewStatusViewProps): JSX.Element {
     }
   }, [
     status.contentUnavailable,
-    status.loading,
+    status.loadingContent,
+    status.metadataUnavailable,
     status.unknownExtension,
     status.unsupportedExtension,
     t,

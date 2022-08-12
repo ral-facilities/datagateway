@@ -6,6 +6,10 @@ interface DatafilePreviewerContextShape {
   datafileContent?: Blob;
 }
 
+/**
+ * Provides the current datafile being previewed in the datafile previewer,
+ * and its content.
+ */
 const DatafilePreviewerContext = React.createContext<DatafilePreviewerContextShape | null>(
   null
 );
