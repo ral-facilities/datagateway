@@ -31,5 +31,13 @@ function isExtensionSupported(
   return supportedDatafileExtensions.has(extension);
 }
 
-export { extensionOf, isExtensionSupported };
+/**
+ * Determines whether the given {@link Datafile} can be previewed by the previewer.
+ * @return true if the datafile can be previewed by the previewer, false otherwise.
+ */
+function isDatafilePreviewable(datafile: Datafile): boolean {
+  return isExtensionSupported(extensionOf(datafile) ?? '');
+}
+
+export { extensionOf, isExtensionSupported, isDatafilePreviewable };
 export type { DatafileExtension };
