@@ -42,6 +42,18 @@ function DetailsPane(): JSX.Element {
             fileSize ? formatBytes(fileSize) : t('datafiles.details.unknown')
           }
         />
+        <FieldRow
+          name={t('datafiles.details.location')}
+          value={datafile.location || t('datafiles.details.unknown')}
+        />
+        <FieldRow
+          name={t('datafiles.details.mod_time')}
+          value={datafile.modTime || t('datafiles.details.unknown')}
+        />
+        <FieldRow
+          name={t('datafiles.details.create_time')}
+          value={datafile.createTime || t('datafiles.details.unknown')}
+        />
       </Stack>
     </Paper>
   );
@@ -56,7 +68,7 @@ function FieldRow({ name, value }: FieldRowProps): JSX.Element {
   return (
     <Stack>
       <b>{name}</b>
-      <Typography>{value}</Typography>
+      <Typography noWrap={false}>{value}</Typography>
     </Stack>
   );
 }
