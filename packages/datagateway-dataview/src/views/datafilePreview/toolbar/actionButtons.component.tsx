@@ -1,0 +1,153 @@
+import {
+  CopyAll,
+  Download,
+  RestartAlt,
+  ZoomIn,
+  ZoomOut,
+} from '@mui/icons-material';
+import {
+  Alert,
+  Button,
+  ButtonGroup,
+  Fade,
+  Snackbar,
+  Stack,
+} from '@mui/material';
+import { downloadDatafile } from 'datagateway-common';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { StateType } from '../../../state/app.types';
+import DatafilePreviewerContext from '../datafilePreviewerContext';
+import DATAFILE_PREVIEWER_DEFAULT from '../defaults';
+import {
+  DecrementDatafilePreviewerZoomLevelType,
+  IncrementDatafilePreviewerZoomLevelType,
+  ResetDatafilePreviewerZoomLevelType,
+} from '../state/actions';
+
+function ActionButtons(): JSX.Element {
+  const [
+    isCopyLinkSuccessfulMessageShown,
+    setIsCopyLinkSuccessfulMessageShown,
+  ] = React.useState(false);
+  const previewerContext = React.useContext(DatafilePreviewerContext);
+  const dispatch = useDispatch();
+  const idsUrl = useSelector<StateType, string>(
+    (state) => state.dgcommon.urls.idsUrl
+  );
+  const isZoomLevelChanged = useSelector<StateType, boolean>(
+    (state) =>
+      state.dgdataview.isisDatafilePreviewer.zoomLevel !==
+      DATAFILE_PREVIEWER_DEFAULT.zoomLevel
+  );
+  const [t] = useTranslation();
+
+  if (!previewerContext) return <></>;
+
+  const { datafile, datafileContent } = previewerContext;
+
+  function zoomIn(): void {
+    dispatch({
+      type: IncrementDatafilePreviewerZoomLevelType,
+    });
+  }
+
+  function zoomOut(): void {
+    dispatch({
+      type: DecrementDatafilePreviewerZoomLevelType,
+    });
+  }
+
+  function resetZoom(): void {
+    dispatch({
+      type: ResetDatafilePreviewerZoomLevelType,
+    });
+  }
+
+  /**
+   * Download the datafile to the user computer,
+   * depending on whether the content is already downloaded or not.
+   */
+  function download(): void {
+    if (datafileContent) {
+      const link = document.createElement('a');
+      const url = window.URL.createObjectURL(datafileContent);
+      link.href = url;
+      link.style.display = 'none';
+      if (datafile.location) {
+        link.download = datafile.location;
+      }
+
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        link.remove();
+      }, 0);
+    } else if (datafile.location) {
+      downloadDatafile(idsUrl, datafile.id, datafile.location);
+    }
+  }
+
+  /**
+   * Copies the link to the current datafile to the clipboard.
+   */
+  async function copyLink(): Promise<void> {
+    await navigator.clipboard.writeText(window.location.href);
+    setIsCopyLinkSuccessfulMessageShown(true);
+  }
+
+  return (
+    <>
+      <Stack direction="row" spacing={1}>
+        <Button
+          variant="text"
+          startIcon={<Download />}
+          onClick={() => download()}
+        >
+          {t('buttons.download')}
+        </Button>
+        <Button
+          variant="text"
+          startIcon={<CopyAll />}
+          onClick={() => copyLink()}
+        >
+          {t('datafiles.preview.toolbar.copy_link')}
+        </Button>
+        <ButtonGroup
+          variant="text"
+          aria-label={t('datafiles.preview.toolbar.zoom_control')}
+        >
+          <Button startIcon={<ZoomIn />} onClick={zoomIn}>
+            {t('datafiles.preview.toolbar.zoom_in')}
+          </Button>
+          <Button startIcon={<ZoomOut />} onClick={zoomOut}>
+            {t('datafiles.preview.toolbar.zoom_out')}
+          </Button>
+        </ButtonGroup>
+        <Fade in={isZoomLevelChanged} mountOnEnter unmountOnExit>
+          <Button variant="text" startIcon={<RestartAlt />} onClick={resetZoom}>
+            {t('datafiles.preview.toolbar.reset_zoom')}
+          </Button>
+        </Fade>
+      </Stack>
+      <Snackbar
+        open={isCopyLinkSuccessfulMessageShown}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={3000}
+        onClose={() => setIsCopyLinkSuccessfulMessageShown(false)}
+      >
+        <Alert
+          severity="success"
+          elevation={4}
+          onClose={() => setIsCopyLinkSuccessfulMessageShown(false)}
+        >
+          Link copied to clipboard
+        </Alert>
+      </Snackbar>
+    </>
+  );
+}
+
+export default ActionButtons;

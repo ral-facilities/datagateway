@@ -3,6 +3,7 @@ import {
   Box,
   CircularProgress,
   Grid,
+  Grow,
   Slide,
   Stack,
   styled,
@@ -14,7 +15,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
 import { extensionOf, isExtensionSupported } from './datafileExtension';
-import DatafilePreviewerToolbar from './datafilePreviewerToolbar.component';
+import type { DatafilePreviewerContextShape } from './datafilePreviewerContext';
+import DatafilePreviewerContext from './datafilePreviewerContext';
+import DatafilePreviewerToolbar from './toolbar/datafilePreviewerToolbar.component';
 import DetailsPane from './detailsPane.component';
 import { PreviewerStatus } from './previewerStatus';
 import PreviewPane from './previewPane.component';
@@ -93,8 +96,7 @@ function DatafilePreviewer({
   React.useEffect(() => {
     // This effect controls the appearance of details panel
     //
-    // isDetailsPaneShown (from redux store) indicates whether the details pane should be shown,
-    // and the animation entrance/exit is determined by it.
+    // isDetailsPaneShown (from redux store) indicates whether the details pane should be shown.
     //
     // The animation itself is controlled by 2 variables: isDetailsPaneIn, and isDetailsPaneGridVisible.
     // When the details pane should be animated in, we need to make room for the details pane.
@@ -178,39 +180,44 @@ function DatafilePreviewer({
     return <div>Invalid datafile</div>;
   }
 
+  const context: DatafilePreviewerContextShape = {
+    datafile,
+    datafileContent,
+  };
+
   return (
-    <AnimatedGrid container spacing={2} sx={{ px: 2 }}>
-      <Grid item xs={12}>
-        <DatafilePreviewerToolbar
-          datafile={datafile}
-          datafileContent={datafileContent}
-        />
-      </Grid>
-      <AnimatedGrid item xs={12} md={isDetailsPaneGridVisible ? 10 : 12}>
-        {datafileExtension && datafileContent && supportsExtension ? (
-          <PreviewPane
-            datafile={datafile}
-            datafileExtension={datafileExtension}
-            datafileContent={datafileContent}
-          />
-        ) : (
-          <PreviewStatusView status={status} />
-        )}
+    <DatafilePreviewerContext.Provider value={context}>
+      <AnimatedGrid container spacing={2} sx={{ px: 2 }}>
+        <Grid item xs={12}>
+          <Grow in={Boolean(status.loading)} mountOnEnter unmountOnExit>
+            <Box>
+              <DatafilePreviewerToolbar />
+            </Box>
+          </Grow>
+        </Grid>
+        <AnimatedGrid item xs={12} md={isDetailsPaneGridVisible ? 10 : 12}>
+          {/* Only show preview if content is loaded and extension is supported, otherwise show current status of previewer */}
+          {datafileExtension && datafileContent && supportsExtension ? (
+            <PreviewPane datafileExtension={datafileExtension} />
+          ) : (
+            <PreviewStatusView status={status} />
+          )}
+        </AnimatedGrid>
+        <AnimatedGrid item xs={12} md={isDetailsPaneGridVisible ? 2 : 0}>
+          <Slide
+            direction="left"
+            in={isDetailsPaneIn}
+            onExited={() => setIsDetailsPaneGridVisible(false)}
+            mountOnEnter
+            unmountOnExit
+          >
+            <Box>
+              <DetailsPane />
+            </Box>
+          </Slide>
+        </AnimatedGrid>
       </AnimatedGrid>
-      <AnimatedGrid item xs={12} md={isDetailsPaneGridVisible ? 2 : 0}>
-        <Slide
-          direction="left"
-          in={isDetailsPaneIn}
-          onExited={() => setIsDetailsPaneGridVisible(false)}
-          mountOnEnter
-          unmountOnExit
-        >
-          <Box>
-            <DetailsPane datafile={datafile} />
-          </Box>
-        </Slide>
-      </AnimatedGrid>
-    </AnimatedGrid>
+    </DatafilePreviewerContext.Provider>
   );
 }
 

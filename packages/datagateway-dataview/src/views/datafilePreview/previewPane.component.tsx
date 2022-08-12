@@ -1,16 +1,14 @@
 import { Paper } from '@mui/material';
-import { Datafile } from 'datagateway-common';
-import React from 'react';
+import React, { useContext } from 'react';
 import { DatafileExtension } from './datafileExtension';
+import DatafilePreviewerContext from './datafilePreviewerContext';
 import { previewComponents } from './previewComponents/previewComponents';
 
 /**
  * @see PreviewPane
  */
 interface PreviewPaneProps {
-  datafile: Datafile;
   datafileExtension: DatafileExtension;
-  datafileContent: Blob;
 }
 
 /**
@@ -23,11 +21,15 @@ interface PreviewPaneProps {
  * @see DetailsPane
  * @constructor
  */
-function PreviewPane({
-  datafile,
-  datafileExtension,
-  datafileContent,
-}: PreviewPaneProps): JSX.Element {
+function PreviewPane({ datafileExtension }: PreviewPaneProps): JSX.Element {
+  const previewerContext = useContext(DatafilePreviewerContext);
+
+  if (!previewerContext) return <></>;
+
+  const { datafile, datafileContent } = previewerContext;
+
+  if (!datafileContent) return <></>;
+
   const PreviewComponent = previewComponents[datafileExtension];
   return (
     <Paper

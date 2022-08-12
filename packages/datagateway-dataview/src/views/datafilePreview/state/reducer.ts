@@ -1,18 +1,19 @@
+import DATAFILE_PREVIEWER_DEFAULT from '../defaults';
 import {
+  DecrementDatafilePreviewerZoomLevelType,
+  IncrementDatafilePreviewerZoomLevelType,
+  ResetDatafilePreviewerZoomLevelType,
   ToggleDatafilePreviewerDetailsPanePayload,
   ToggleDatafilePreviewerDetailsPaneType,
 } from './actions';
 import { DGDataViewState } from '../../../state/app.types';
-import { Datafile } from 'datagateway-common';
 
 /**
  * Defines the shape of the redux state for {@link DatafilePreviewer}
  */
 interface DatafilePreviewerState {
-  datafile?: Datafile;
-  datafileContent?: Blob;
-  downloadProgress: number;
   isDetailsPaneShown: boolean;
+  zoomLevel: number;
 }
 
 function toggleDatafilePreviewerDetailsPane(
@@ -28,13 +29,56 @@ function toggleDatafilePreviewerDetailsPane(
   };
 }
 
+function incDatafilePreviewerZoomLevel(
+  state: DGDataViewState
+): DGDataViewState {
+  return {
+    ...state,
+    isisDatafilePreviewer: {
+      ...state.isisDatafilePreviewer,
+      zoomLevel:
+        state.isisDatafilePreviewer.zoomLevel +
+        DATAFILE_PREVIEWER_DEFAULT.zoomLevelStep,
+    },
+  };
+}
+
+function decDatafilePreviewerZoomLevel(
+  state: DGDataViewState
+): DGDataViewState {
+  return {
+    ...state,
+    isisDatafilePreviewer: {
+      ...state.isisDatafilePreviewer,
+      zoomLevel:
+        state.isisDatafilePreviewer.zoomLevel -
+        DATAFILE_PREVIEWER_DEFAULT.zoomLevelStep,
+    },
+  };
+}
+
+function resetDatafilePreviewerZoomLevel(
+  state: DGDataViewState
+): DGDataViewState {
+  return {
+    ...state,
+    isisDatafilePreviewer: {
+      ...state.isisDatafilePreviewer,
+      zoomLevel: DATAFILE_PREVIEWER_DEFAULT.zoomLevel,
+    },
+  };
+}
+
 const datafilePreviewerInitialState: DatafilePreviewerState = {
-  isDetailsPaneShown: true,
-  downloadProgress: 0,
+  isDetailsPaneShown: DATAFILE_PREVIEWER_DEFAULT.showDetailsPane,
+  zoomLevel: DATAFILE_PREVIEWER_DEFAULT.zoomLevel,
 };
 
 const datafilePreviewerReducer = {
   [ToggleDatafilePreviewerDetailsPaneType]: toggleDatafilePreviewerDetailsPane,
+  [IncrementDatafilePreviewerZoomLevelType]: incDatafilePreviewerZoomLevel,
+  [DecrementDatafilePreviewerZoomLevelType]: decDatafilePreviewerZoomLevel,
+  [ResetDatafilePreviewerZoomLevelType]: resetDatafilePreviewerZoomLevel,
 };
 
 export {

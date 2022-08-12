@@ -209,6 +209,8 @@
         "zoom_control": "Zoom level control for datafile content",
         "zoom_in": "Zoom in",
         "zoom_out": "Zoom out",
+        "reset_zoom": "Reset zoom",
+        "scroll_to_zoom": "Scroll here to zoom in/out",
         "show_details": "Show details"
       }
     }

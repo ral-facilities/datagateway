@@ -1,11 +1,8 @@
 import { Paper, Stack, Typography } from '@mui/material';
-import { Datafile, formatBytes } from 'datagateway-common';
+import { formatBytes } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
-interface DetailsPaneProps {
-  datafile: Datafile;
-}
+import DatafilePreviewerContext from './datafilePreviewerContext';
 
 /**
  * A pane in {@link DatafilePreviewer} that displays the metadata of the given {@link Datafile}
@@ -14,8 +11,13 @@ interface DetailsPaneProps {
  * @see PreviewPane
  * @constructor
  */
-function DetailsPane({ datafile }: DetailsPaneProps): JSX.Element {
+function DetailsPane(): JSX.Element {
   const [t] = useTranslation();
+  const previewerContext = React.useContext(DatafilePreviewerContext);
+
+  if (!previewerContext) return <></>;
+
+  const { datafile } = previewerContext;
   const { fileSize } = datafile;
 
   return (
