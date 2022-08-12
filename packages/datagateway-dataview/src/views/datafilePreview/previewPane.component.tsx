@@ -1,4 +1,4 @@
-import { Paper } from '@mui/material';
+import { Paper, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
 import { DatafileExtension } from './datafileExtension';
 import DatafilePreviewerContext from './datafilePreviewerContext';
@@ -23,6 +23,7 @@ interface PreviewPaneProps {
  */
 function PreviewPane({ datafileExtension }: PreviewPaneProps): JSX.Element {
   const previewerContext = useContext(DatafilePreviewerContext);
+  const theme = useTheme();
 
   if (!previewerContext) return <></>;
 
@@ -35,8 +36,9 @@ function PreviewPane({ datafileExtension }: PreviewPaneProps): JSX.Element {
     <Paper
       variant="outlined"
       sx={{
-        height: 'calc(100vh - 64px - 36px - 48px - 48px)',
-        padding: 2,
+        height: `calc(100vh - 64px - 36px - 48px - 48px + ${theme.spacing(
+          2
+        )} * 2)`,
         overflowY: 'auto',
         display: 'flex',
       }}
