@@ -183,6 +183,7 @@ const ISISDatafilesTable = (
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
       detailsPanel={ISISDatafileDetailsPanel}
+      actionsWidth={96}
       actions={[
         ({ rowData }: TableActionProps) => (
           <DownloadButton
