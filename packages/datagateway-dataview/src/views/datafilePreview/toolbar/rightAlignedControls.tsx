@@ -4,9 +4,8 @@ import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
+import useScrollToZoom from '../hooks/useScrollToZoom';
 import {
-  DecrementDatafilePreviewerZoomLevelType,
-  IncrementDatafilePreviewerZoomLevelType,
   ToggleDatafilePreviewerDetailsPanePayload,
   ToggleDatafilePreviewerDetailsPaneType,
 } from '../state/actions';
@@ -33,29 +32,9 @@ function RightAlignedControls(): JSX.Element {
   const dispatch = useDispatch();
   const [t] = useTranslation();
 
-  // called when users scroll on the zoom level chip
-  const handleScrollingOnChip = React.useCallback(
-    (event: WheelEvent) => {
-      if (event.deltaY > 0) {
-        // scrolling down, zoom in content
-        dispatch({ type: IncrementDatafilePreviewerZoomLevelType });
-      } else if (event.deltaY < 0) {
-        // scrolling up, zoom out content
-        dispatch({ type: DecrementDatafilePreviewerZoomLevelType });
-      }
-    },
-    [dispatch]
-  );
-
-  React.useEffect(() => {
-    const elem = zoomLevelChipRef.current;
-    // detect scrolling on the zoom level chip
-    // let users adjust zoom by scrolling on the chip
-    elem?.addEventListener('wheel', handleScrollingOnChip);
-    return () => {
-      elem?.removeEventListener('wheel', handleScrollingOnChip);
-    };
-  }, [dispatch, handleScrollingOnChip, zoomLevelChipRef]);
+  useScrollToZoom({
+    targetElement: zoomLevelChipRef.current,
+  });
 
   function toggleDetailsPane(shouldShow: boolean): void {
     dispatch({

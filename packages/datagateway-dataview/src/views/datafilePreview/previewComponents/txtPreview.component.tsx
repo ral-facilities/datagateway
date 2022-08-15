@@ -72,8 +72,6 @@ function TxtPreview({ datafileContent }: PreviewComponentProps): JSX.Element {
     return <Typography>Reading content...</Typography>;
   }
 
-  console.log('lines', textContent.split('\n'));
-
   return (
     <TextContainer fontSize={fontSize}>
       {textContent.split('\n').map((line, i) => (
