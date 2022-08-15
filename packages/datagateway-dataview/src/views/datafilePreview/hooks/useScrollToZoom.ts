@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
   DecrementDatafilePreviewerZoomLevelType,
@@ -20,7 +20,6 @@ function useScrollToZoom({
 }: {
   targetElement: HTMLElement | null;
 }): void {
-  const isCtrlKeyDown = useRef(false);
   const dispatch = useDispatch();
 
   // called when users scroll on the zoom level chip
@@ -36,28 +35,6 @@ function useScrollToZoom({
     },
     [dispatch]
   );
-
-  const onKeyDown = React.useCallback((event: KeyboardEvent) => {
-    if (event.ctrlKey) {
-      isCtrlKeyDown.current = true;
-    }
-  }, []);
-
-  const onKeyUp = React.useCallback((event: KeyboardEvent) => {
-    if (!event.ctrlKey) {
-      isCtrlKeyDown.current = false;
-    }
-  }, []);
-
-  // listen to ctrl key down/up
-  React.useEffect(() => {
-    document.addEventListener('keydown', onKeyDown);
-    document.addEventListener('keyup', onKeyUp);
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-      document.removeEventListener('keyup', onKeyUp);
-    };
-  });
 
   // listen to mouse wheel events
   React.useEffect(() => {
