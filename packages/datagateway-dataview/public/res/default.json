@@ -192,6 +192,9 @@
       "description": "Description",
       "size": "Size",
       "location": "Location",
+      "mod_time": "Last modified on",
+      "create_time": "Created on",
+      "doi": "DOI",
       "parameters": {
         "label": "Datafile Parameters",
         "no_parameters": "No parameters"
@@ -199,8 +202,11 @@
       "unknown": "Unknown"
     },
     "preview": {
+      "preview_datafile": "Preview this datafile",
+      "preview_unsupported": "Preview not supported for this datafile",
       "cannot_preview": "Cannot preview datafile",
       "cannot_load_content": "Cannot load datafile content.",
+      "cannot_load_metadata": "Unable to load metadata",
       "unknown_type": "Datafile type not specified.",
       "unsupported": "Unsupported datafile type: {{ext}}",
       "unexpected_error": "An unexpected error has occurred",
