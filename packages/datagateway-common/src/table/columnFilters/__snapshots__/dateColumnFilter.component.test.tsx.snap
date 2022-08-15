@@ -12,18 +12,20 @@ exports[`Date filter component DatePicker functionality useTextFilter hook retur
           "size": "small",
         }
       }
-      clearText={
-        <ForwardRef(Box)
-          sx={
-            Object {
-              "color": [Function],
-            }
-          }
-        >
-          Clear
-        </ForwardRef(Box)>
+      components={
+        Object {
+          "ActionBar": [Function],
+        }
       }
-      clearable={true}
+      componentsProps={
+        Object {
+          "actionBar": Object {
+            "actions": Array [
+              "clear",
+            ],
+          },
+        }
+      }
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"
       maxDate={2100-01-01T00:00:00.000Z}
@@ -38,18 +40,20 @@ exports[`Date filter component DatePicker functionality useTextFilter hook retur
           "size": "small",
         }
       }
-      clearText={
-        <ForwardRef(Box)
-          sx={
-            Object {
-              "color": [Function],
-            }
-          }
-        >
-          Clear
-        </ForwardRef(Box)>
+      components={
+        Object {
+          "ActionBar": [Function],
+        }
       }
-      clearable={true}
+      componentsProps={
+        Object {
+          "actionBar": Object {
+            "actions": Array [
+              "clear",
+            ],
+          },
+        }
+      }
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"
       minDate={1984-01-01T00:00:00.000Z}
@@ -228,18 +232,20 @@ exports[`Date filter component renders correctly 1`] = `
           "size": "small",
         }
       }
-      clearText={
-        <ForwardRef(Box)
-          sx={
-            Object {
-              "color": [Function],
-            }
-          }
-        >
-          Clear
-        </ForwardRef(Box)>
+      components={
+        Object {
+          "ActionBar": [Function],
+        }
       }
-      clearable={true}
+      componentsProps={
+        Object {
+          "actionBar": Object {
+            "actions": Array [
+              "clear",
+            ],
+          },
+        }
+      }
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"
       maxDate={2000-01-01T00:00:00.000Z}
@@ -254,18 +260,20 @@ exports[`Date filter component renders correctly 1`] = `
           "size": "small",
         }
       }
-      clearText={
-        <ForwardRef(Box)
-          sx={
-            Object {
-              "color": [Function],
-            }
-          }
-        >
-          Clear
-        </ForwardRef(Box)>
+      components={
+        Object {
+          "ActionBar": [Function],
+        }
       }
-      clearable={true}
+      componentsProps={
+        Object {
+          "actionBar": Object {
+            "actions": Array [
+              "clear",
+            ],
+          },
+        }
+      }
       inputFormat="yyyy-MM-dd"
       mask="____-__-__"
       minDate={1999-01-01T00:00:00.000Z}

@@ -7,7 +7,6 @@
     "@emotion/react": "11.10.0",
     "@emotion/styled": "11.10.0",
     "@mui/icons-material": "5.8.4",
-    "@mui/lab": "5.0.0-alpha.72",
     "@mui/material": "5.10.0",
     "@types/jest": "27.5.2",
     "@types/jsrsasign": "10.5.2",
