@@ -20,9 +20,11 @@ const LineNumber = styled('span')(({ theme }) => ({
   paddingRight: theme.spacing(3),
   paddingTop: theme.spacing(0.5),
   paddingBottom: theme.spacing(0.5),
-
   opacity: 0.8,
   borderRight: `1px solid ${theme.palette.text.disabled}`,
+  // disable text select on line numbers, it makes text selection a lot easier
+  // user can drag their mouse to select multiple lines without also selecting the line numbers
+  userSelect: 'none',
 }));
 
 const TextLine = styled('code')(({ theme }) => ({
