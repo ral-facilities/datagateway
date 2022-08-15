@@ -1,5 +1,6 @@
 import { styled, Typography } from '@mui/material';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import type { PreviewComponentProps } from './previewComponents';
@@ -46,7 +47,10 @@ const BASE_FONT_SIZE = 12;
  * A {@link PreviewComponent} that previews Datafile with .txt extension.
  * @see PreviewComponent
  */
-function TxtPreview({ datafileContent }: PreviewComponentProps): JSX.Element {
+function TxtPreview({
+  datafile,
+  datafileContent,
+}: PreviewComponentProps): JSX.Element {
   const [isReadingContent, setIsReadingContent] = React.useState(true);
   const [textContent, setTextContent] = React.useState('');
   // derive preview font size based on current zoom level
@@ -57,6 +61,7 @@ function TxtPreview({ datafileContent }: PreviewComponentProps): JSX.Element {
       (BASE_FONT_SIZE * state.dgdataview.isisDatafilePreviewer.zoomLevel) / 100
     )
   );
+  const [t] = useTranslation();
 
   React.useEffect(() => {
     // read the datafile content as text.
@@ -71,11 +76,18 @@ function TxtPreview({ datafileContent }: PreviewComponentProps): JSX.Element {
   }, [datafileContent]);
 
   if (isReadingContent) {
-    return <Typography>Reading content...</Typography>;
+    return (
+      <Typography>{t('datafiles.preview.txt.reading_content')}</Typography>
+    );
   }
 
   return (
-    <TextContainer fontSize={fontSize}>
+    <TextContainer
+      fontSize={fontSize}
+      aria-label={t('datafiles.preview.txt.file_content_label', {
+        fileName: datafile.name,
+      })}
+    >
       {textContent.split('\n').map((line, i) => (
         <React.Fragment key={i}>
           <LineNumber>{i + 1}</LineNumber>

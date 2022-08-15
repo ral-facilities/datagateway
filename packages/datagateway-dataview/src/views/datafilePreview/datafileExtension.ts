@@ -17,7 +17,7 @@ function extensionOf(datafile: Datafile): string | null {
   const part = datafile.name.split('.');
   // if part has only one element, that means the filename doesn't have an extension
   // otherwise, the last element will always be the extension of the datafile.
-  return part.length <= 0 ? null : part[part.length - 1];
+  return part.length <= 1 ? null : part[part.length - 1];
 }
 
 /**

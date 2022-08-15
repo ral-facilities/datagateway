@@ -347,10 +347,21 @@ export const useDatafileContent = ({
   );
 };
 
+/**
+ * Download the datafile with the given datafile ID. If the content of the datafile is provided, the download will be immediately available.
+ *
+ * @param idsUrl URL of the IDS server.
+ * @param datafileId ID of the datafile to be downloaded
+ * @param filename The name of the file that will contain the content of the downloaded datafile.
+ * @param content Content of the datafile as a {@link Blob}. Useful when the content is already previously downloaded.
+ *                downloadDatafile will use this content to create a download file instead of downloading it again
+ *                from IDS.
+ */
 export const downloadDatafile = (
   idsUrl: string,
   datafileId: number,
-  filename: string
+  filename: string,
+  content?: Blob
 ): void => {
   const params = {
     sessionId: readSciGatewayToken().sessionId,
@@ -360,13 +371,29 @@ export const downloadDatafile = (
   };
 
   const link = document.createElement('a');
-  link.href = `${idsUrl}/getData?${Object.entries(params)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&')}`;
+  const objectUrl = content && window.URL.createObjectURL(content);
+
+  console.log('content', content);
+  console.log('objectUrl ', objectUrl);
+
+  link.href =
+    content && objectUrl
+      ? objectUrl
+      : `${idsUrl}/getData?${Object.entries(params)
+          .map(([key, value]) => `${key}=${value}`)
+          .join('&')}`;
+
+  if (objectUrl) {
+    link.download = filename;
+  }
 
   link.style.display = 'none';
   link.target = '_blank';
   document.body.appendChild(link);
   link.click();
   link.remove();
+
+  if (objectUrl) {
+    window.URL.revokeObjectURL(objectUrl);
+  }
 };

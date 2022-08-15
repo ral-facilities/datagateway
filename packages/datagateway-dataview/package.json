@@ -61,7 +61,7 @@
     "test": "craco test --env=jsdom --coverage --watchAll=false",
     "test:watch": "craco test --env=jsdom --watch",
     "build:e2e": "cross-env REACT_APP_E2E_TESTING=true GENERATE_SOURCEMAP=false craco build",
-    "e2e:serve": "yarn build:e2e && node ./server/e2e-test-server.js",
+    "e2e:serve": "node ./server/e2e-test-server.js",
     "e2e:interactive": "start-server-and-test e2e:serve http://localhost:3000 cy:open",
     "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run",
     "cy:open": "cypress open",
@@ -107,7 +107,9 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "12.1.3",
+    "@testing-library/user-event": "^14.4.3",
     "@types/enzyme": "3.10.10",
     "@types/react-redux": "7.1.22",
     "@types/redux-mock-store": "1.0.3",
@@ -116,6 +118,7 @@
     "@welldone-software/why-did-you-render": "7.0.1",
     "@wojtekmaj/enzyme-adapter-react-17": "0.6.6",
     "babel-eslint": "10.1.0",
+    "blob-polyfill": "^7.0.20220408",
     "cross-env": "7.0.3",
     "cypress": "9.7.0",
     "cypress-failed-log": "2.10.0",

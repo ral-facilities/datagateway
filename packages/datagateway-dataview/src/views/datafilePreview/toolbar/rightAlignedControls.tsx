@@ -33,7 +33,7 @@ function RightAlignedControls(): JSX.Element {
   const [t] = useTranslation();
 
   useScrollToZoom({
-    targetElement: zoomLevelChipRef.current,
+    targetElement: zoomLevelChipRef,
   });
 
   function toggleDetailsPane(shouldShow: boolean): void {

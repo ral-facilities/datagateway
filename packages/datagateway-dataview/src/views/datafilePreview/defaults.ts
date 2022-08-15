@@ -16,6 +16,11 @@ const DATAFILE_PREVIEWER_DEFAULT = {
    * The increment/decrement step for changing zoom level, in %.
    */
   zoomLevelStep: 10,
+
+  /**
+   * The minimum zoom level that the datafile previewer will show
+   */
+  minZoomLevel: 10,
 };
 
 export default DATAFILE_PREVIEWER_DEFAULT;

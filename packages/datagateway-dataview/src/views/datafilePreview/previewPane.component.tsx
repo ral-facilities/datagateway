@@ -25,6 +25,7 @@ function PreviewPane({ datafileExtension }: PreviewPaneProps): JSX.Element {
   const previewerContext = useContext(DatafilePreviewerContext);
   const theme = useTheme();
 
+  // this should only occur when DatafilePreviewerContext is not provided
   if (!previewerContext) return <></>;
 
   const { datafile, datafileContent } = previewerContext;

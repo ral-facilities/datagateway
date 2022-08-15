@@ -392,7 +392,7 @@ describe('datafile api functions', () => {
   });
 
   describe('downloadDatafile', () => {
-    it('clicks on IDS link upon downloadDatafile action', async () => {
+    it('should create a download for the datafile with a server URL', async () => {
       jest.spyOn(document, 'createElement');
       jest.spyOn(document.body, 'appendChild');
 
@@ -401,6 +401,26 @@ describe('datafile api functions', () => {
       expect(document.createElement).toHaveBeenCalledWith('a');
       const link = document.createElement('a');
       link.href = `https://www.example.com/ids/getData?sessionId=${null}&datafileIds=${1}&compress=${false}&outname=${'test'}`;
+      link.target = '_blank';
+      link.style.display = 'none';
+      expect(document.body.appendChild).toHaveBeenCalledWith(link);
+    });
+
+    it('should create a download for the datafile with the given Blob content', async () => {
+      jest.spyOn(document, 'createElement');
+      jest.spyOn(document.body, 'appendChild');
+
+      downloadDatafile(
+        'https://www.example.com/ids',
+        1,
+        'test',
+        new Blob(['text'])
+      );
+
+      expect(document.createElement).toHaveBeenCalledWith('a');
+      const link = document.createElement('a');
+      link.href = 'testObjectUrl';
+      link.download = 'test';
       link.target = '_blank';
       link.style.display = 'none';
       expect(document.body.appendChild).toHaveBeenCalledWith(link);

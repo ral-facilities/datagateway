@@ -210,6 +210,11 @@
       "unknown_type": "Datafile type not specified.",
       "unsupported": "Unsupported datafile type: {{ext}}",
       "unexpected_error": "An unexpected error has occurred",
+      "link_copied": "Link copied to clipboard",
+      "txt": {
+        "file_content_label": "Text content of {{fileName}}",
+        "reading_content": "Reading content"
+      },
       "toolbar": {
         "copy_link": "Copy link",
         "zoom_control": "Zoom level control for datafile content",

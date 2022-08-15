@@ -53,7 +53,7 @@ function decDatafilePreviewerZoomLevel(
       // zoom level should not go lower than zoomLevelStep
       // otherwise will result in zoom level <= 0.
       zoomLevel: Math.max(
-        DATAFILE_PREVIEWER_DEFAULT.zoomLevelStep,
+        DATAFILE_PREVIEWER_DEFAULT.minZoomLevel,
         state.isisDatafilePreviewer.zoomLevel -
           DATAFILE_PREVIEWER_DEFAULT.zoomLevelStep
       ),
@@ -89,5 +89,8 @@ export {
   datafilePreviewerInitialState,
   datafilePreviewerReducer,
   toggleDatafilePreviewerDetailsPane,
+  incDatafilePreviewerZoomLevel,
+  decDatafilePreviewerZoomLevel,
+  resetDatafilePreviewerZoomLevel,
 };
 export type { DatafilePreviewerState };

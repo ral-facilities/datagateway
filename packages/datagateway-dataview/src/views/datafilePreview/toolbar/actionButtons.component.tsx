@@ -53,6 +53,7 @@ function ActionButtons(): JSX.Element {
   );
   const [t] = useTranslation();
 
+  // this should only occur when DatafilePreviewerContext is not provided
   if (!previewerContext) return <></>;
 
   const { datafile, datafileContent } = previewerContext;
@@ -80,23 +81,8 @@ function ActionButtons(): JSX.Element {
    * depending on whether the content is already downloaded or not.
    */
   function download(): void {
-    if (datafileContent) {
-      const link = document.createElement('a');
-      const url = window.URL.createObjectURL(datafileContent);
-      link.href = url;
-      link.style.display = 'none';
-      if (datafile.location) {
-        link.download = datafile.location;
-      }
-
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => {
-        window.URL.revokeObjectURL(url);
-        link.remove();
-      }, 0);
-    } else if (datafile.location) {
-      downloadDatafile(idsUrl, datafile.id, datafile.location);
+    if (datafile.location) {
+      downloadDatafile(idsUrl, datafile.id, datafile.location, datafileContent);
     }
   }
 
@@ -153,7 +139,7 @@ function ActionButtons(): JSX.Element {
           elevation={4}
           onClose={() => setIsCopyLinkSuccessfulMessageShown(false)}
         >
-          Link copied to clipboard
+          {t('datafiles.preview.link_copied')}
         </Alert>
       </Snackbar>
     </>
