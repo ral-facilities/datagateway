@@ -211,6 +211,8 @@
       "unsupported": "Unsupported datafile type: {{ext}}",
       "unexpected_error": "An unexpected error has occurred",
       "link_copied": "Link copied to clipboard",
+      "invalid_datafile": "Invalid datafile",
+      "loading_metadata": "Loading datafile metadata...",
       "txt": {
         "file_content_label": "Text content of {{fileName}}",
         "reading_content": "Reading content"

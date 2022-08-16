@@ -15,6 +15,7 @@ function DetailsPane(): JSX.Element {
   const [t] = useTranslation();
   const previewerContext = React.useContext(DatafilePreviewerContext);
 
+  // this should only occur when DatafilePreviewerContext is not provided
   if (!previewerContext) return <></>;
 
   const { datafile } = previewerContext;
@@ -31,26 +32,29 @@ function DetailsPane(): JSX.Element {
         {t('datafiles.details.label')}
       </Typography>
       <Stack spacing={2}>
-        <FieldRow name={t('datafiles.details.name')} value={datafile.name} />
-        <FieldRow
+        <DetailsField
+          name={t('datafiles.details.name')}
+          value={datafile.name}
+        />
+        <DetailsField
           name={t('datafiles.details.description')}
           value={datafile.description || t('datafiles.details.unknown')}
         />
-        <FieldRow
+        <DetailsField
           name={t('datafiles.details.size')}
           value={
             fileSize ? formatBytes(fileSize) : t('datafiles.details.unknown')
           }
         />
-        <FieldRow
+        <DetailsField
           name={t('datafiles.details.location')}
           value={datafile.location || t('datafiles.details.unknown')}
         />
-        <FieldRow
+        <DetailsField
           name={t('datafiles.details.mod_time')}
           value={datafile.modTime || t('datafiles.details.unknown')}
         />
-        <FieldRow
+        <DetailsField
           name={t('datafiles.details.create_time')}
           value={datafile.createTime || t('datafiles.details.unknown')}
         />
@@ -59,16 +63,26 @@ function DetailsPane(): JSX.Element {
   );
 }
 
+/**
+ * @see DetailsField
+ */
 interface FieldRowProps {
   name: string;
   value: string;
 }
 
-function FieldRow({ name, value }: FieldRowProps): JSX.Element {
+/**
+ * A field in {@link DetailsPane} that displays the name and value of a field
+ * in the datafile currently being previewed.
+ *
+ * @param name The name of the field to be displayed
+ * @param value The value of the field to be displayed
+ */
+function DetailsField({ name, value }: FieldRowProps): JSX.Element {
   return (
     <Stack>
       <b>{name}</b>
-      <Typography noWrap={false}>{value}</Typography>
+      <Typography sx={{ wordWrap: 'break-word' }}>{value}</Typography>
     </Stack>
   );
 }

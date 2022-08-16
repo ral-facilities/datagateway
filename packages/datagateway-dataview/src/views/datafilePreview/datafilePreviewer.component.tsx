@@ -9,8 +9,13 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { Datafile, useDatafile, useDatafileContent } from 'datagateway-common';
+import {
+  Datafile,
+  useDatafileContent,
+  useDatafileDetails,
+} from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
 import { extensionOf, isExtensionSupported } from './datafileExtension';
@@ -54,8 +59,7 @@ function DatafilePreviewer({
     data: datafile,
     isLoading: isLoadingMetadata,
     error: loadDatafileMetaError,
-  } = useDatafile({
-    id: datafileId,
+  } = useDatafileDetails(datafileId, undefined, {
     enabled: !Number.isNaN(datafileId),
   });
 
@@ -79,6 +83,7 @@ function DatafilePreviewer({
     },
   });
 
+  const [t] = useTranslation();
   const theme = useTheme();
   const isDetailsPaneShown = useSelector<StateType, boolean>(
     (state) => state.dgdataview.isisDatafilePreviewer.isDetailsPaneShown
@@ -129,17 +134,17 @@ function DatafilePreviewer({
   ]);
 
   React.useEffect(() => {
-    if (!isLoadingMetadata && !datafileExtension) {
+    if (loadDatafileMetaError) {
       // if datafile metadata is loaded but datafile extension is null
       // then we know the datafile doesn't have an extension
-      setStatus({
-        unknownExtension: true,
-      });
-    } else if (loadDatafileMetaError) {
       setStatus({
         metadataUnavailable: {
           errorMessage: loadDatafileMetaError.message,
         },
+      });
+    } else if (!isLoadingMetadata && !datafileExtension) {
+      setStatus({
+        unknownExtension: true,
       });
     } else if (loadDatafileContentError) {
       setStatus({
@@ -166,7 +171,7 @@ function DatafilePreviewer({
     return (
       <Stack alignItems="center" justifyContent="center" spacing={2}>
         <CircularProgress />
-        <Typography>Loading datafile metadata...</Typography>
+        <Typography>{t('datafiles.preview.loading_metadata')}</Typography>
       </Stack>
     );
   }
@@ -176,7 +181,7 @@ function DatafilePreviewer({
   }
 
   if (Number.isNaN(datafileId) || !datafile) {
-    return <Typography>Invalid datafile</Typography>;
+    return <Typography>{t('datafiles.preview.invalid_datafile')}</Typography>;
   }
 
   const context: DatafilePreviewerContextShape = {

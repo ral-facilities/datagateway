@@ -12,7 +12,6 @@ export interface PreviewDatafileButtonProps {
 
 /**
  * A button that shows the preview of the given {@link Datafile} when clicked.
- * @constructor
  */
 function PreviewDatafileButton({
   datafile,
@@ -33,7 +32,11 @@ function PreviewDatafileButton({
           )}
         >
           <Box>
-            <IconButton {...props} disabled={!isSupported}>
+            <IconButton
+              {...props}
+              disabled={!isSupported}
+              aria-label={t('datafiles.preview.preview_datafile')}
+            >
               <VisibilityIcon />
             </IconButton>
           </Box>

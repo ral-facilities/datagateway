@@ -1,13 +1,15 @@
+// This file contains mock data for testing datafile preview functionality.
+
 import { Datafile } from 'datagateway-common';
 
 const mockDatafile: Datafile = {
-  createTime: '',
+  createTime: '2020-01-01',
   dataset: undefined,
   description: 'test description',
   fileSize: 100,
-  id: 0,
+  id: 123,
   location: 'test location',
-  modTime: '',
+  modTime: '2020-01-02',
   name: 'Datafile.txt',
   parameters: [],
 };

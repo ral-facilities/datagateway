@@ -55,46 +55,6 @@ const fetchDatafiles = (
     });
 };
 
-/**
- * Queries the {@link Datafile} with the given ID.
- *
- * @param id The ID of the {@link Datafile} to be queried.
- * @param queryOptions Additional {@link useQuery} options. Overrides default options.
- */
-export const useDatafile = ({
-  id,
-  ...queryOptions
-}: {
-  id: Datafile['id'];
-} & UseQueryOptions<
-  Datafile | null,
-  AxiosError,
-  Datafile | null,
-  [string, number]
->): UseQueryResult<Datafile | null, AxiosError> => {
-  const apiUrl = useSelector<StateType, string>(
-    (state) => state.dgcommon.urls.apiUrl
-  );
-  return useQuery(
-    ['datafile', id],
-    () =>
-      fetchDatafiles(apiUrl, { sort: {}, filters: {} }, [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { eq: id },
-          }),
-        },
-      ]).then((results) => (results.length === 0 ? null : results[0])),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      ...queryOptions,
-    }
-  );
-};
-
 export const useDatafilesPaginated = (
   additionalFilters?: AdditionalFilters
 ): UseQueryResult<Datafile[], AxiosError> => {
@@ -256,7 +216,13 @@ const fetchDatafileDetails = (
 
 export const useDatafileDetails = (
   datafileId: number,
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  options?: UseQueryOptions<
+    Datafile,
+    AxiosError,
+    Datafile,
+    [string, number, AdditionalFilters?]
+  >
 ): UseQueryResult<Datafile, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
@@ -274,6 +240,7 @@ export const useDatafileDetails = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      ...options,
     }
   );
 };

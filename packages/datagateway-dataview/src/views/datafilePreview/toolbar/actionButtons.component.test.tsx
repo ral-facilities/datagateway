@@ -105,7 +105,9 @@ describe('ActionButtons', () => {
 
   it('should have a copy link button that copies the link to the current datafile to the clipboard', async () => {
     const ogLocation = window.location;
-    const mockLocation = new URL('https://www.example.com');
+    const mockLocation = new URL(
+      `https://www.example.com/datafile/${mockDatafile.id}`
+    );
     delete window.location;
     window.location = mockLocation;
     const writeTextSpy = jest
@@ -120,7 +122,9 @@ describe('ActionButtons', () => {
       })
     );
 
-    expect(writeTextSpy).toHaveBeenCalledTimes(1);
+    expect(writeTextSpy).toHaveBeenCalledWith(
+      `https://www.example.com/datafile/${mockDatafile.id}`
+    );
 
     delete window.location;
     window.location = ogLocation;
