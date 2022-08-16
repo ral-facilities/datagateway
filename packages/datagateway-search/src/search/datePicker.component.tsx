@@ -14,10 +14,13 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
 
-const CustomClearButton = (props: PickersActionBarProps): JSX.Element => {
+export const CustomClearButton = (
+  props: PickersActionBarProps
+): JSX.Element => {
   const { onClear } = props;
   return (
     <Button
+      role="button"
       onClick={() => onClear()}
       variant="contained"
       color="primary"

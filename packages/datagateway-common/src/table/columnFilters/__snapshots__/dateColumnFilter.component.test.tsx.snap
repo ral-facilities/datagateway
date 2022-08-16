@@ -1,5 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Date filter component CustomClearButton renders correctly 1`] = `
+<ForwardRef(Button)
+  color="primary"
+  onClick={[Function]}
+  role="button"
+  sx={
+    Object {
+      "marginBottom": "10px",
+      "marginLeft": "30px",
+    }
+  }
+  variant="contained"
+>
+  Clear
+</ForwardRef(Button)>
+`;
+
 exports[`Date filter component DatePicker functionality useTextFilter hook returns a function which can generate a working text filter 1`] = `
 <form>
   <LocalizationProvider

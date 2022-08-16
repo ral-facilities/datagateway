@@ -61,10 +61,13 @@ export function updateFilter({
   }
 }
 
-const CustomClearButton = (props: PickersActionBarProps): JSX.Element => {
+export const CustomClearButton = (
+  props: PickersActionBarProps
+): JSX.Element => {
   const { onClear } = props;
   return (
     <Button
+      role="button"
       onClick={() => onClear()}
       variant="contained"
       color="primary"
