@@ -38,8 +38,8 @@
   "peerDependencies": {
     "@mui/icons-material": ">= 5.5.0 < 6",
     "@mui/material": ">= 5.5.0 < 6",
-    "react": ">= 17.0.2 < 18",
-    "react-dom": ">= 17.0.2 < 18",
+    "react": ">= 17.0.2 < 19",
+    "react-dom": ">= 17.0.2 < 19",
     "react-router-dom": ">= 5.2.0 < 6"
   },
   "devDependencies": {
@@ -65,10 +65,10 @@
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-prettier": "4.2.1",
     "lint-staged": "13.0.3",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-router-dom": "5.3.0",
-    "react-test-renderer": "17.0.2"
+    "react-test-renderer": "18.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
