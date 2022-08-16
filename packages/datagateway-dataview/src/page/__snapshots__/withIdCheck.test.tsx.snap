@@ -41,7 +41,7 @@ exports[`withIdCheck renders error when checkingPromise does not resolve to be t
       >
         We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or 
         <a
-          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/browse/investigation"
         >
           go back to the top level
@@ -86,7 +86,7 @@ exports[`withIdCheck renders error when checkingPromise is rejected 1`] = `
       >
         We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or 
         <a
-          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/browse/investigation"
         >
           go back to the top level

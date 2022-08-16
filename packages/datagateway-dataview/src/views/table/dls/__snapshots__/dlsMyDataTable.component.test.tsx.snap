@@ -120,7 +120,7 @@ Object {
 exports[`DLS MyData table component renders title and visit ID as a links 1`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="dls-mydata-table-name"
     href="/browse/proposal/Test 1/investigation/1/dataset"
   >
@@ -132,7 +132,7 @@ Array [
 exports[`DLS MyData table component renders title and visit ID as a links 2`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="dls-mydata-table-visitId"
     href="/browse/proposal/Test 1/investigation/1/dataset"
   >

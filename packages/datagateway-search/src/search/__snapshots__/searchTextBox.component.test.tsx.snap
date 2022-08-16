@@ -6,7 +6,7 @@ exports[`Search text box component tests renders correctly 1`] = `
     class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root tour-search-textfield css-17vbkzs-MuiFormControl-root-MuiTextField-root"
   >
     <label
-      class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorSecondary css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
+      class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorSecondary css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
       data-shrink="false"
       for="filled-search"
       id="filled-search-label"
@@ -14,12 +14,12 @@ exports[`Search text box component tests renders correctly 1`] = `
       searchBox.search_text
     </label>
     <div
-      class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl css-1j0w0ul-MuiInputBase-root-MuiOutlinedInput-root"
+      class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl css-1j0w0ul-MuiInputBase-root-MuiOutlinedInput-root"
     >
       <input
         aria-invalid="false"
         aria-label="searchBox.search_text_arialabel"
-        class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
+        class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
         id="filled-search"
         type="search"
         value=""
@@ -29,7 +29,7 @@ exports[`Search text box component tests renders correctly 1`] = `
         class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
       >
         <legend
-          class="css-1g8cwq9"
+          class="css-1ftyaf0"
         >
           <span>
             searchBox.search_text
