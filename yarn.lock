@@ -1616,35 +1616,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@date-io/core@npm:^2.14.0":
-  version: 2.14.0
-  resolution: "@date-io/core@npm:2.14.0"
-  checksum: 495d6086366778590a10b554aeeaf0f22e8d7ad7eb2eeffcd16bd2864f68e9f41d956e4d5469a5f012b8bd4ff300409e5649d33bdd5d599a20296738d4f6ed12
-  languageName: node
-  linkType: hard
-
-"@date-io/core@npm:^2.15.0":
+"@date-io/core@npm:^2.14.0, @date-io/core@npm:^2.15.0":
   version: 2.15.0
   resolution: "@date-io/core@npm:2.15.0"
   checksum: 5ecb264230a5bbf753177f84c7fa4e778b03d85bafb63709ca9211c373d52dae5decb6884bbe8f0a17bb2f17fc9184e418ca54da147106dfdb83fce6fb96631f
   languageName: node
   linkType: hard
 
-"@date-io/date-fns@npm:2.14.0":
-  version: 2.14.0
-  resolution: "@date-io/date-fns@npm:2.14.0"
-  dependencies:
-    "@date-io/core": ^2.14.0
-  peerDependencies:
-    date-fns: ^2.0.0
-  peerDependenciesMeta:
-    date-fns:
-      optional: true
-  checksum: 6904676e2db8410555f4b289b0d10ba080a47867d82c87e108d4577188cdf75774b602be7440d47850d3487c8cbed926bdf2d0cbc0d714f3450f0e651ddd6c5d
-  languageName: node
-  linkType: hard
-
-"@date-io/date-fns@npm:^2.14.0":
+"@date-io/date-fns@npm:2.15.0, @date-io/date-fns@npm:^2.14.0":
   version: 2.15.0
   resolution: "@date-io/date-fns@npm:2.15.0"
   dependencies:
@@ -7608,7 +7587,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-common@workspace:packages/datagateway-common"
   dependencies:
-    "@date-io/date-fns": 2.14.0
+    "@date-io/date-fns": 2.15.0
     "@emotion/react": 11.10.0
     "@emotion/styled": 11.10.0
     "@mui/icons-material": 5.8.4
@@ -7815,7 +7794,7 @@ __metadata:
   resolution: "datagateway-search@workspace:packages/datagateway-search"
   dependencies:
     "@craco/craco": 6.4.3
-    "@date-io/date-fns": 2.14.0
+    "@date-io/date-fns": 2.15.0
     "@emotion/react": 11.10.0
     "@emotion/styled": 11.10.0
     "@mui/icons-material": 5.8.4
