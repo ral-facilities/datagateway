@@ -60,20 +60,28 @@ describe('DatafilePreviewer', () => {
 
   beforeEach(() => {
     user = userEvent.setup();
-    axios.get = jest.fn().mockImplementation((url: string) => {
-      if (/.*\/datafiles$/.test(url)) {
-        // this is fetch datafile query, resolve with the mock datafile
-        return Promise.resolve({
-          data: [mockDatafile],
-        });
-      }
-      if (/.*\/getData$/.test(url)) {
-        // this is download datafile content query, resolve with mock datafile content
-        return Promise.resolve({
-          data: mockTxtFileContent,
-        });
-      }
-    });
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string, config: AxiosRequestConfig) => {
+        if (/.*\/datafiles$/.test(url)) {
+          // this is fetch datafile query, resolve with the mock datafile
+          return Promise.resolve({
+            data: [mockDatafile],
+          });
+        }
+        if (/.*\/getData$/.test(url)) {
+          config.onDownloadProgress(
+            new ProgressEvent('progress', {
+              loaded: 10,
+              total: 10,
+            })
+          );
+          // this is download datafile content query, resolve with mock datafile content
+          return Promise.resolve({
+            data: mockTxtFileContent,
+          });
+        }
+      });
   });
 
   describe('should show a message saying the datafile is invalid', () => {

@@ -52,7 +52,7 @@ function DatafilePreviewer({
   datafileId,
 }: DatafilePreviewerProps): JSX.Element {
   const [status, setStatus] = React.useState<PreviewerStatus>({
-    loadingContent: { progress: 0 },
+    code: 'LOADING_METADATA',
   });
 
   const {
@@ -73,12 +73,14 @@ function DatafilePreviewer({
   } = useDatafileContent({
     datafileId: datafile?.id ?? -1,
     enabled:
+      // only fetch datafile if datafile meta is available & if the extension is supported
       Boolean(datafile) &&
       Boolean(datafileExtension) &&
       Boolean(supportsExtension),
     onDownloadProgress: (event) => {
       setStatus({
-        loadingContent: { progress: (event.loaded / event.total) * 100 },
+        code: 'LOADING_CONTENT',
+        progress: (event.loaded / event.total) * 100,
       });
     },
   });
@@ -135,28 +137,23 @@ function DatafilePreviewer({
 
   React.useEffect(() => {
     if (loadDatafileMetaError) {
-      // if datafile metadata is loaded but datafile extension is null
-      // then we know the datafile doesn't have an extension
       setStatus({
-        metadataUnavailable: {
-          errorMessage: loadDatafileMetaError.message,
-        },
+        code: 'METADATA_UNAVAILABLE',
+        errorMessage: loadDatafileMetaError.message,
       });
     } else if (!isLoadingMetadata && !datafileExtension) {
-      setStatus({
-        unknownExtension: true,
-      });
+      // if datafile metadata is loaded but datafile extension is null
+      // then we know the datafile doesn't have an extension
+      setStatus({ code: 'UNKNOWN_EXTENSION' });
     } else if (loadDatafileContentError) {
       setStatus({
-        contentUnavailable: {
-          errorMessage: loadDatafileContentError.message,
-        },
+        code: 'CONTENT_UNAVAILABLE',
+        errorMessage: loadDatafileContentError.message,
       });
     } else if (datafileExtension && !supportsExtension) {
       setStatus({
-        unsupportedExtension: {
-          extension: datafileExtension,
-        },
+        code: 'UNSUPPORTED_EXTENSION',
+        extension: datafileExtension,
       });
     }
   }, [
@@ -176,7 +173,7 @@ function DatafilePreviewer({
     );
   }
 
-  if (status.metadataUnavailable) {
+  if (status.code === 'METADATA_UNAVAILABLE') {
     return <PreviewStatusView status={status} />;
   }
 
@@ -193,7 +190,11 @@ function DatafilePreviewer({
     <DatafilePreviewerContext.Provider value={context}>
       <AnimatedGrid container spacing={2} sx={{ px: 2 }}>
         <Grid item xs={12}>
-          <Grow in={Boolean(status.loadingContent)} mountOnEnter unmountOnExit>
+          <Grow
+            in={status.code === 'LOADING_CONTENT'}
+            mountOnEnter
+            unmountOnExit
+          >
             <Box>
               <DatafilePreviewerToolbar />
             </Box>

@@ -36,68 +36,54 @@ interface PreviewStatusViewProps {
 function PreviewStatusView({ status }: PreviewStatusViewProps): JSX.Element {
   const [t] = useTranslation();
   const content = React.useMemo(() => {
-    if (status.loadingContent) {
-      return (
-        <ContentDownloadProgressIndicator
-          progress={status.loadingContent.progress}
-        />
-      );
-    }
+    switch (status.code) {
+      case 'LOADING_CONTENT':
+        return <ContentDownloadProgressIndicator progress={status.progress} />;
 
-    if (status.metadataUnavailable) {
-      return (
-        <StatusContainer>
-          <PreviewErrorMessage
-            title={t('datafiles.preview.cannot_load_metadata')}
-            description={status.metadataUnavailable.errorMessage}
-          />
-        </StatusContainer>
-      );
-    }
+      case 'METADATA_UNAVAILABLE':
+        return (
+          <StatusContainer>
+            <PreviewErrorMessage
+              title={t('datafiles.preview.cannot_load_metadata')}
+              description={status.errorMessage}
+            />
+          </StatusContainer>
+        );
 
-    if (status.unknownExtension) {
-      // Datafile doesn't have an extension, cannot render datafile.
-      return (
-        <StatusContainer>
-          <PreviewErrorMessage
-            title={t('datafiles.preview.cannot_preview')}
-            description={t('datafiles.preview.unknown_type')}
-          />
-        </StatusContainer>
-      );
-    }
+      case 'UNKNOWN_EXTENSION':
+        // Datafile doesn't have an extension, cannot render datafile.
+        return (
+          <StatusContainer>
+            <PreviewErrorMessage
+              title={t('datafiles.preview.cannot_preview')}
+              description={t('datafiles.preview.unknown_type')}
+            />
+          </StatusContainer>
+        );
 
-    if (status.contentUnavailable) {
-      return (
-        <StatusContainer>
-          <PreviewErrorMessage
-            title={t('datafiles.preview.cannot_load_content')}
-            description={status.contentUnavailable.errorMessage}
-          />
-        </StatusContainer>
-      );
-    }
+      case 'CONTENT_UNAVAILABLE':
+        return (
+          <StatusContainer>
+            <PreviewErrorMessage
+              title={t('datafiles.preview.cannot_load_content')}
+              description={status.errorMessage}
+            />
+          </StatusContainer>
+        );
 
-    if (status.unsupportedExtension) {
-      return (
-        <StatusContainer>
-          <PreviewErrorMessage
-            title={t('datafiles.preview.cannot_preview')}
-            description={t('datafiles.preview.unsupported', {
-              ext: status.unsupportedExtension.extension,
-            })}
-          />
-        </StatusContainer>
-      );
+      case 'UNSUPPORTED_EXTENSION':
+        return (
+          <StatusContainer>
+            <PreviewErrorMessage
+              title={t('datafiles.preview.cannot_preview')}
+              description={t('datafiles.preview.unsupported', {
+                ext: status.extension,
+              })}
+            />
+          </StatusContainer>
+        );
     }
-  }, [
-    status.contentUnavailable,
-    status.loadingContent,
-    status.metadataUnavailable,
-    status.unknownExtension,
-    status.unsupportedExtension,
-    t,
-  ]);
+  }, [status, t]);
 
   return (
     <Paper

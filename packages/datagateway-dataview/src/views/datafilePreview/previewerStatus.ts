@@ -1,43 +1,61 @@
 /**
- * An interface representing possible statuses of the datafile previewer.
- *
- * This is meant to mimic data-values/enum associated value in other languages
- * like Swift. Only one field will be present for every {@link PreviewerStatus}.
+ * The datafile previewer is loading the metadata of the datafile.
  */
-interface PreviewerStatus {
-  /**
-   * This field is set when the datafile previewer is loading the datafile content.
-   */
-  loadingContent?: {
-    /**
-     * The current progress of downloading the datafile content, between 0-100
-     */
-    progress: number;
-  };
-
-  /**
-   * This field is set when the datafile previewer is unable to load
-   * the metadata of the datafile.
-   */
-  metadataUnavailable?: { errorMessage?: string };
-
-  /**
-   * This field is set when the datafile previewer is unable to determine the
-   * extension of the datafile.
-   */
-  unknownExtension?: true;
-
-  /**
-   * This field is set when the datafile previewer doesn't yet support previewing
-   * the datafile.
-   */
-  unsupportedExtension?: { extension: string };
-
-  /**
-   * This field is set when the datafile previewer is unable to download
-   * the content of the datafile for preview.
-   */
-  contentUnavailable?: { errorMessage?: string };
+interface LoadingMetadata {
+  code: 'LOADING_METADATA';
 }
+
+/**
+ * The datafile previewer is loading the datafile content.
+ */
+interface LoadingContent {
+  code: 'LOADING_CONTENT';
+  /**
+   * The current progress of downloading the datafile content, between 0-100
+   */
+  progress: number;
+}
+
+/**
+ * The datafile previewer is unable to load the metadata of the datafile.
+ */
+interface MetadataUnavailable {
+  code: 'METADATA_UNAVAILABLE';
+  errorMessage?: string;
+}
+
+/**
+ * The datafile previewer is unable to determine the extension of the datafile.
+ */
+interface UnknownExtension {
+  code: 'UNKNOWN_EXTENSION';
+}
+
+/**
+ * The datafile previewer doesn't yet support previewing the datafile.
+ */
+interface UnsupportedExtension {
+  code: 'UNSUPPORTED_EXTENSION';
+  extension: string;
+}
+
+/**
+ * The datafile previewer is unable to download the content of the datafile for preview.
+ */
+interface ContentUnavailable {
+  code: 'CONTENT_UNAVAILABLE';
+  errorMessage?: string;
+}
+
+/**
+ * Different statuses the datafile previewer can be in.
+ */
+type PreviewerStatus =
+  | LoadingMetadata
+  | LoadingContent
+  | MetadataUnavailable
+  | UnknownExtension
+  | UnsupportedExtension
+  | ContentUnavailable;
 
 export type { PreviewerStatus };

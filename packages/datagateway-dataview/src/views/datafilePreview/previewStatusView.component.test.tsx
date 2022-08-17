@@ -7,7 +7,8 @@ describe('PreviewStatusView', () => {
     render(
       <PreviewStatusView
         status={{
-          loadingContent: { progress: 30 },
+          code: 'LOADING_CONTENT',
+          progress: 30,
         }}
       />
     );
@@ -20,9 +21,8 @@ describe('PreviewStatusView', () => {
     render(
       <PreviewStatusView
         status={{
-          metadataUnavailable: {
-            errorMessage: 'Metadata unavailable',
-          },
+          code: 'METADATA_UNAVAILABLE',
+          errorMessage: 'Metadata unavailable',
         }}
       />
     );
@@ -37,7 +37,7 @@ describe('PreviewStatusView', () => {
     render(
       <PreviewStatusView
         status={{
-          unknownExtension: true,
+          code: 'UNKNOWN_EXTENSION',
         }}
       />
     );
@@ -54,9 +54,8 @@ describe('PreviewStatusView', () => {
     render(
       <PreviewStatusView
         status={{
-          contentUnavailable: {
-            errorMessage: 'Cannot download',
-          },
+          code: 'CONTENT_UNAVAILABLE',
+          errorMessage: 'Cannot download',
         }}
       />
     );
@@ -71,9 +70,8 @@ describe('PreviewStatusView', () => {
     render(
       <PreviewStatusView
         status={{
-          unsupportedExtension: {
-            extension: 'dmg',
-          },
+          code: 'UNSUPPORTED_EXTENSION',
+          extension: 'dmg',
         }}
       />
     );
