@@ -454,6 +454,8 @@ describe('DatafilePreviewer', () => {
       await waitFor(() => {
         expect(screen.queryByText('datafiles.preview.link_copied')).toBeNull();
       });
+
+      jest.useRealTimers();
     });
 
     it('that can be dismissed manually', async () => {
@@ -510,6 +512,10 @@ describe('DatafilePreviewer', () => {
   it('should allow users to increase the size of the datafile preview by scrolling up on the zoom level chip', async () => {
     renderComponent();
 
+    expect(
+      await screen.findByLabelText('datafiles.preview.txt.file_content_label')
+    ).toBeInTheDocument();
+
     // pretend user is scrolling up on the zoom level chip
     fireEvent.wheel(await screen.findByText('100%'), {
       deltaY: -100,
@@ -533,7 +539,7 @@ describe('DatafilePreviewer', () => {
     ).toHaveStyle({
       'font-size': '14px',
     });
-  });
+  }, 10000);
 
   it('should have a zoom out button that decreases the size of the datafile preview when clicked', async () => {
     renderComponent();
@@ -546,7 +552,7 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('90%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      await screen.findByLabelText('datafiles.preview.txt.file_content_label')
     ).toHaveStyle({
       'font-size': '11px',
     });
@@ -575,7 +581,7 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('90%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      await screen.findByLabelText('datafiles.preview.txt.file_content_label')
     ).toHaveStyle({
       'font-size': '11px',
     });

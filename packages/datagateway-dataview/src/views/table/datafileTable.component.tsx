@@ -1,30 +1,29 @@
-import React from 'react';
-import { Subject, Explore, Save, CalendarToday } from '@mui/icons-material';
+import { CalendarToday, Explore, Save, Subject } from '@mui/icons-material';
 import {
-  Table,
-  TableActionProps,
-  formatBytes,
-  Datafile,
-  useDatafileCount,
-  useDatafilesInfinite,
-  parseSearchToQuery,
-  useTextFilter,
-  useDateFilter,
   ColumnType,
-  useSort,
-  useIds,
-  useCart,
-  useAddToCart,
-  useRemoveFromCart,
+  Datafile,
   DatafileDetailsPanel,
   DownloadButton,
+  formatBytes,
+  parseSearchToQuery,
+  Table,
+  TableActionProps,
+  useAddToCart,
+  useCart,
+  useDatafileCount,
+  useDatafilesInfinite,
+  useDateFilter,
+  useIds,
+  useRemoveFromCart,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
 import type { StateType } from '../../state/app.types';
-import PreviewDatafileButton from '../datafilePreview/previewDatafileButton.component';
 
 interface DatafileTableProps {
   datasetId: string;
@@ -185,9 +184,6 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
             variant="icon"
             entitySize={(rowData as Datafile).fileSize ?? -1}
           />
-        ),
-        ({ rowData }: TableActionProps) => (
-          <PreviewDatafileButton datafile={rowData as Datafile} />
         ),
       ]}
       columns={columns}

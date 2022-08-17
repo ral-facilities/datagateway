@@ -58,6 +58,10 @@ describe('ActionButtons', () => {
     );
   });
 
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should not show anything when datafile previewer context is not provided', () => {
     const { container } = render(
       <Provider store={store}>
@@ -163,6 +167,8 @@ describe('ActionButtons', () => {
 
     delete window.location;
     window.location = ogLocation;
+
+    jest.useRealTimers();
   });
 
   it('should have a zoom in button that increases the zoom level of the datafile previewer when clicked', async () => {

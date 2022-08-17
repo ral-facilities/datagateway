@@ -37,6 +37,10 @@ describe('TxtPreview', () => {
     );
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should render given text file', () => {
     const { asFragment } = renderComponent(store);
     expect(asFragment()).toMatchSnapshot();

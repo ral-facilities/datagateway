@@ -71,10 +71,10 @@ describe('PreviewDatafileButton', () => {
         </MemoryRouter>
       );
 
+      // link cannot be hovered directly because it is disabled
+      // we find its container div by its label (which is the same as the tooltip text)
       await user.hover(
-        screen.getByRole('button', {
-          name: 'datafiles.preview.preview_datafile',
-        })
+        screen.getByLabelText('datafiles.preview.preview_unsupported')
       );
 
       expect(
