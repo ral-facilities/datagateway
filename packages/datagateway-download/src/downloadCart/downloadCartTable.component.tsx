@@ -58,10 +58,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
   const { data: isTwoLevel } = useIsTwoLevel();
   const { mutate: removeDownloadCartItem } = useRemoveEntityFromCart();
-  const {
-    mutate: removeAllDownloadCartItems,
-    isLoading: removingAll,
-  } = useRemoveAllFromCart();
+  const { mutate: removeAllDownloadCartItems, isLoading: removingAll } =
+    useRemoveAllFromCart();
   const { data, isFetching: dataLoading } = useCart();
 
   const fileCountQueries = useDatafileCounts(data);

@@ -7629,7 +7629,7 @@ __metadata:
     lint-staged: 13.0.3
     lodash.debounce: 4.0.8
     loglevel: 1.8.0
-    prettier: 2.2.1
+    prettier: 2.7.1
     react: 17.0.2
     react-dom: 17.0.2
     react-draggable: 4.4.3
@@ -7710,7 +7710,7 @@ __metadata:
     lodash.debounce: 4.0.8
     lodash.memoize: 4.1.2
     loglevel: 1.8.0
-    prettier: 2.2.1
+    prettier: 2.7.1
     react: 17.0.2
     react-app-polyfill: 3.0.0
     react-dom: 17.0.2
@@ -7780,7 +7780,7 @@ __metadata:
     lodash.chunk: 4.2.0
     loglevel: 1.8.0
     p-limit: 3.1.0
-    prettier: 2.2.1
+    prettier: 2.7.1
     react: 17.0.2
     react-dom: 17.0.2
     react-i18next: 11.18.3
@@ -7847,7 +7847,7 @@ __metadata:
     jsrsasign: 10.5.25
     lint-staged: 13.0.3
     loglevel: 1.8.0
-    prettier: 2.2.1
+    prettier: 2.7.1
     react: 17.0.2
     react-app-polyfill: 3.0.0
     react-dom: 17.0.2
@@ -15373,12 +15373,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:2.2.1":
-  version: 2.2.1
-  resolution: "prettier@npm:2.2.1"
+"prettier@npm:2.7.1":
+  version: 2.7.1
+  resolution: "prettier@npm:2.7.1"
   bin:
     prettier: bin-prettier.js
-  checksum: 800de2df3d37067ab24478c7f32c60ca0c57b01742133287829feeb4a70d239a7bf6bccb56196784777af591ad80fb9ba70c1a49b0fcecf9f5622a764d513edb
+  checksum: 55a4409182260866ab31284d929b3cb961e5fdb91fe0d2e099dac92eaecec890f36e524b4c19e6ceae839c99c6d7195817579cdffc8e2c80da0cb794463a748b
   languageName: node
   linkType: hard
 

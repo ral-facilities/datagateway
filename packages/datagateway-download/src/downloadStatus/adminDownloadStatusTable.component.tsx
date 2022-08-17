@@ -114,16 +114,10 @@ const AdminDownloadStatusTable: React.FC = () => {
     return queryOffset;
   }, [filters, settings.facilityName, sort]);
 
-  const {
-    data,
-    isLoading,
-    isFetched,
-    isRefetching,
-    fetchNextPage,
-    refetch,
-  } = useAdminDownloads({
-    initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
-  });
+  const { data, isLoading, isFetched, isRefetching, fetchNextPage, refetch } =
+    useAdminDownloads({
+      initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
+    });
 
   const fetchMoreData = useCallback(
     (offsetParams: IndexRange) =>
@@ -176,9 +170,9 @@ const AdminDownloadStatusTable: React.FC = () => {
       onChange={(value: { value?: string | number; type: string } | null) => {
         if (value) {
           if (dataKey === 'status') {
-            const downloadStatus = (Object.keys(
-              downloadStatuses
-            ) as DownloadStatus[]).find(
+            const downloadStatus = (
+              Object.keys(downloadStatuses) as DownloadStatus[]
+            ).find(
               (key) =>
                 downloadStatuses[key].toLowerCase() ===
                 (value.value as string).toLowerCase()

@@ -106,9 +106,10 @@ describe('ISIS Studies - Card View', () => {
       {
         filterType: 'where',
         filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-            eq: instrumentId,
-          },
+          'studyInvestigations.investigation.investigationInstruments.instrument.id':
+            {
+              eq: instrumentId,
+            },
         }),
       },
       {
@@ -124,9 +125,10 @@ describe('ISIS Studies - Card View', () => {
       {
         filterType: 'where',
         filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-            eq: instrumentId,
-          },
+          'studyInvestigations.investigation.investigationInstruments.instrument.id':
+            {
+              eq: instrumentId,
+            },
         }),
       },
       {

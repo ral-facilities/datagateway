@@ -68,24 +68,26 @@ describe('DownloadTab', () => {
       Promise.resolve(mockDownloadItems)
     );
     (getDataUrl as jest.Mock).mockImplementation(() => '/getData');
-    (fetchDownloadCart as jest.MockedFunction<
-      typeof fetchDownloadCart
-    >).mockResolvedValue(mockCartItems);
-    (removeAllDownloadCartItems as jest.MockedFunction<
-      typeof removeAllDownloadCartItems
-    >).mockResolvedValue(null);
-    (removeFromCart as jest.MockedFunction<
-      typeof removeFromCart
-    >).mockImplementation((entityType, entityIds) => {
+    (
+      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
+    ).mockResolvedValue(mockCartItems);
+    (
+      removeAllDownloadCartItems as jest.MockedFunction<
+        typeof removeAllDownloadCartItems
+      >
+    ).mockResolvedValue(null);
+    (
+      removeFromCart as jest.MockedFunction<typeof removeFromCart>
+    ).mockImplementation((entityType, entityIds) => {
       return Promise.resolve(
         mockCartItems.filter((item) => !entityIds.includes(item.entityId))
       );
     });
 
     (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
-    (getDatafileCount as jest.MockedFunction<
-      typeof getDatafileCount
-    >).mockResolvedValue(7);
+    (
+      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
+    ).mockResolvedValue(7);
   });
 
   const renderComponent = (): RenderResult => {

@@ -31,15 +31,13 @@ const DLSProposalsCardView = (): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useInvestigationCount([
-    {
-      filterType: 'distinct',
-      filterValue: JSON.stringify(['name', 'title']),
-    },
-  ]);
+  const { data: totalDataCount, isLoading: countLoading } =
+    useInvestigationCount([
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['name', 'title']),
+      },
+    ]);
   const { isLoading: dataLoading, data } = useInvestigationsPaginated(
     [
       {

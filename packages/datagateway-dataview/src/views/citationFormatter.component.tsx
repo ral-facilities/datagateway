@@ -91,7 +91,11 @@ const CitationFormatter = (
   const [t] = useTranslation();
   const [copiedCitation, setCopiedCitation] = React.useState(false);
   const [format, setFormat] = React.useState('default');
-  const { data: citation, isFetching: fetching, isError: error } = useCitation(
+  const {
+    data: citation,
+    isFetching: fetching,
+    isError: error,
+  } = useCitation(
     props,
     t('doi_constants.publisher.name'),
     format,

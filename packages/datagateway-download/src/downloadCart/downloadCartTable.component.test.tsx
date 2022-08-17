@@ -82,24 +82,26 @@ describe('Download cart table component', () => {
     holder.setAttribute('id', 'datagateway-download');
     document.body.appendChild(holder);
 
-    (fetchDownloadCart as jest.MockedFunction<
-      typeof fetchDownloadCart
-    >).mockResolvedValue(mockCartItems);
-    (removeAllDownloadCartItems as jest.MockedFunction<
-      typeof removeAllDownloadCartItems
-    >).mockResolvedValue(null);
-    (removeFromCart as jest.MockedFunction<
-      typeof removeFromCart
-    >).mockImplementation((entityType, entityIds) => {
+    (
+      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
+    ).mockResolvedValue(mockCartItems);
+    (
+      removeAllDownloadCartItems as jest.MockedFunction<
+        typeof removeAllDownloadCartItems
+      >
+    ).mockResolvedValue(null);
+    (
+      removeFromCart as jest.MockedFunction<typeof removeFromCart>
+    ).mockImplementation((entityType, entityIds) => {
       return Promise.resolve(
         mockCartItems.filter((item) => !entityIds.includes(item.entityId))
       );
     });
 
     (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
-    (getDatafileCount as jest.MockedFunction<
-      typeof getDatafileCount
-    >).mockResolvedValue(7);
+    (
+      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
+    ).mockResolvedValue(7);
   });
 
   afterEach(() => {
@@ -176,9 +178,11 @@ describe('Download cart table component', () => {
     // use this to manually resolve promise
     let promiseResolve;
 
-    (removeAllDownloadCartItems as jest.MockedFunction<
-      typeof removeAllDownloadCartItems
-    >).mockImplementation(
+    (
+      removeAllDownloadCartItems as jest.MockedFunction<
+        typeof removeAllDownloadCartItems
+      >
+    ).mockImplementation(
       () =>
         new Promise((resolve) => {
           promiseResolve = resolve;
@@ -204,9 +208,9 @@ describe('Download cart table component', () => {
 
   it('should disable download button when there are empty items in the cart ', async () => {
     (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValueOnce(0);
-    (getDatafileCount as jest.MockedFunction<
-      typeof getDatafileCount
-    >).mockResolvedValueOnce(0);
+    (
+      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
+    ).mockResolvedValueOnce(0);
 
     renderComponent();
 
