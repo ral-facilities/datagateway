@@ -154,7 +154,7 @@ Object {
 exports[`Investigation table component renders investigation title as a link 1`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="investigation-table-title"
     href="/browse/investigation/1/dataset"
   >

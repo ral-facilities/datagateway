@@ -102,10 +102,18 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const aggregatedData: Datafile[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Datafile[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if (data instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [

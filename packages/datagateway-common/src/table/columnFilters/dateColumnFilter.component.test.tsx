@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import DateColumnFilter, {
+  CustomClearButton,
   datesEqual,
   updateFilter,
   useDateFilter,
@@ -12,6 +13,7 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../setupTests';
+import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
 
 jest.mock('../../api');
 
@@ -203,6 +205,29 @@ describe('Date filter component', () => {
         startDate: '2019-09-18',
         endDate: '2019-09-19',
       });
+    });
+  });
+
+  describe('CustomClearButton', () => {
+    const onClear = jest.fn();
+    let props: PickersActionBarProps;
+
+    beforeEach(() => {
+      props = {
+        onClear: onClear,
+      };
+    });
+
+    it('renders correctly', () => {
+      const wrapper = shallow(<CustomClearButton {...props} />);
+      expect(wrapper).toMatchSnapshot();
+    });
+
+    it('calls onClear when button clicked', () => {
+      const wrapper = shallow(<CustomClearButton {...props} />);
+      const button = wrapper.find('[role="button"]');
+      button.simulate('click');
+      expect(onClear).toHaveBeenCalled();
     });
   });
 

@@ -65,7 +65,7 @@ Object {
 
 exports[`ISIS FacilityCycles table component renders facilitycycle name as a link 1`] = `
 <a
-  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
   href="/browse/instrument/1/facilityCycle/1/investigation"
 >
   Test 1
