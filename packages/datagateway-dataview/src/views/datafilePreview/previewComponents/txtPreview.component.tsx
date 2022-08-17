@@ -23,7 +23,7 @@ const LineNumber = styled('span')(({ theme }) => ({
   paddingBottom: theme.spacing(0.5),
   opacity: 0.8,
   borderRight: `1px solid ${theme.palette.text.disabled}`,
-  // disable text select on line numbers, it makes text selection a lot easier
+  // disable text select for line numbers, it makes text selection a lot easier
   // user can drag their mouse to select multiple lines without also selecting the line numbers
   userSelect: 'none',
 }));
@@ -33,6 +33,7 @@ const TextLine = styled('code')(({ theme }) => ({
   paddingTop: theme.spacing(0.5),
   paddingBottom: theme.spacing(0.5),
   counterIncrement: 'line',
+  // highlight the current line when hovered over.
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
   },

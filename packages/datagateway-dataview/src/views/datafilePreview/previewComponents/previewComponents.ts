@@ -23,6 +23,17 @@ interface PreviewComponentProps {
  * Defines a React component that receives the {@link Datafile} to be previewed
  * and renders the {@link Datafile}.
  *
+ * The component should respond to zoom level changes
+ * and adjust the size of the preview accordingly.
+ * The current zoom level is stored at
+ * `dgdatagateway.isisDatafilePreviewer.zoomLevel`.
+ *
+ * The zoom level is percentage based. For example, 100% maps to 100,
+ * 110% maps to 110, 80% maps to 80.
+ *
+ * The component can also access other states of the previewer.
+ * See `../state/reducer.ts`, particularly {@link DatafilePreviewerState}.
+ *
  * @see PreviewComponentProps
  */
 type PreviewComponent = (props: PreviewComponentProps) => JSX.Element;

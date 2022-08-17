@@ -12,7 +12,15 @@ import { DGDataViewState } from '../../../state/app.types';
  * Defines the shape of the redux state for {@link DatafilePreviewer}
  */
 interface DatafilePreviewerState {
+  /**
+   * Whether the details pane should be shown or not.
+   */
   isDetailsPaneShown: boolean;
+
+  /**
+   * The current zoom level of the previewer, in percentage. For example,
+   * 100% maps to 100, 110% maps to 110, 80% maps to 80, etc.
+   */
   zoomLevel: number;
 }
 
