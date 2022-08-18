@@ -79,6 +79,13 @@ describe('Dataset details panel component', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('should show default tab on first render', async () => {
+    renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', { name: 'datasets.details.label' })
+    ).toHaveAttribute('aria-selected', 'true');
+  });
+
   it('should render type tab when present in the data', () => {
     rowData.type = {
       id: 7,

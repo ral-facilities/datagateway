@@ -64,6 +64,13 @@ describe('Instrument details panel component', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('should show default tab on first render', async () => {
+    renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', { name: 'instruments.details.label' })
+    ).toHaveAttribute('aria-selected', 'true');
+  });
+
   it('should render users tab when present in the data', () => {
     rowData.instrumentScientists = [
       {

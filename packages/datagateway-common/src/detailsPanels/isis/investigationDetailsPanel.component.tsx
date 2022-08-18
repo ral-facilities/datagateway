@@ -311,7 +311,7 @@ const InvestigationDetailsPanel = (
                 );
               })
             ) : (
-              <Typography data-testid="n">
+              <Typography>
                 <b>{t('investigations.details.samples.no_samples')}</b>
               </Typography>
             )}

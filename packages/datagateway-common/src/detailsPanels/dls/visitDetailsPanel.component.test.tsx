@@ -81,6 +81,13 @@ describe('Visit details panel component', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('should show default tab on first render', async () => {
+    renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', { name: 'investigations.details.label' })
+    ).toHaveAttribute('aria-selected', 'true');
+  });
+
   it('should render user, sample and publication tabs when present in the data', () => {
     rowData.investigationUsers = [
       {
