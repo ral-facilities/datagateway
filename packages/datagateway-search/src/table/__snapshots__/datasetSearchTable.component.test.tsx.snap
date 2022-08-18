@@ -2,7 +2,7 @@
 
 exports[`Dataset table component renders Dataset title as a link 1`] = `
 <a
-  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
   href="/browse/investigation/2/dataset/1/datafile"
 >
   Dataset test name

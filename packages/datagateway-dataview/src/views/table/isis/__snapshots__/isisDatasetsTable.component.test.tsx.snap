@@ -91,7 +91,7 @@ Object {
 
 exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
 <a
-  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
   href="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1"
 >
   Test 1
@@ -100,7 +100,7 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
 
 exports[`ISIS Dataset table component renders dataset name as a link in StudyHierarchy 1`] = `
 <a
-  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
   href="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
 >
   Test 1
