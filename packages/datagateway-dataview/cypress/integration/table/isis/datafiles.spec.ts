@@ -1,8 +1,8 @@
 describe('ISIS - Datafiles Table', () => {
   beforeEach(() => {
     cy.intercept('**/instruments/**').as('instruments');
-    cy.intercept('**/facilitycycles/16').as('facilityCycles');
-    cy.intercept('**/datasets/337').as('datasets');
+    cy.intercept('**/facilitycycles/89981656').as('facilityCycles');
+    cy.intercept('**/datasets/91429833').as('datasets');
     cy.intercept('**/datafiles/count?*').as('datafilesCount');
     cy.intercept('**/datafiles?order=*').as('datafilesOrder');
     cy.login();
@@ -11,7 +11,7 @@ describe('ISIS - Datafiles Table', () => {
   describe('Wait for initial requests', () => {
     beforeEach(() => {
       cy.visit(
-        '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile'
+        '/browse/instrument/33/facilityCycle/89981656/investigation/91429827/dataset/91429833/datafile'
       ).wait(
         [
           '@instruments',
@@ -217,7 +217,7 @@ describe('ISIS - Datafiles Table', () => {
   describe('Do not wait for initial requests', () => {
     beforeEach(() => {
       cy.visit(
-        '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile'
+        '/browse/instrument/33/facilityCycle/89981656/investigation/91429827/dataset/91429833/datafile'
       );
     });
 
@@ -228,7 +228,7 @@ describe('ISIS - Datafiles Table', () => {
         .then((window) => {
           const windowWidth = window.innerWidth;
           // Account for select, details and actions column widths
-          columnWidth = (windowWidth - 40 - 40 - 70) / 4;
+          columnWidth = (windowWidth - 40 - 40 - 96) / 4;
         })
         .then(() => expect(columnWidth).to.not.equal(0));
 
