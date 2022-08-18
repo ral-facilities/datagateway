@@ -43,12 +43,8 @@ interface ISISDatasetCardViewProps {
 const ISISDatasetsCardView = (
   props: ISISDatasetCardViewProps
 ): React.ReactElement => {
-  const {
-    instrumentId,
-    instrumentChildId,
-    investigationId,
-    studyHierarchy,
-  } = props;
+  const { instrumentId, instrumentChildId, investigationId, studyHierarchy } =
+    props;
 
   const [t] = useTranslation();
   const location = useLocation();

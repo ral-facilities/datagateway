@@ -68,14 +68,12 @@ const ISISInvestigationsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useISISInvestigationCount(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy
-  );
+  const { data: totalDataCount, isLoading: countLoading } =
+    useISISInvestigationCount(
+      parseInt(instrumentId),
+      parseInt(instrumentChildId),
+      studyHierarchy
+    );
   const { data, isLoading: dataLoading } = useISISInvestigationsPaginated(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
@@ -155,9 +153,10 @@ const ISISInvestigationsCardView = (
         dataKey: 'investigationUsers.user.fullName',
         disableSort: true,
         content: function Content(investigation: Investigation) {
-          const principal_investigators = investigation?.investigationUsers?.filter(
-            (iu) => iu.role === 'principal_experimenter'
-          );
+          const principal_investigators =
+            investigation?.investigationUsers?.filter(
+              (iu) => iu.role === 'principal_experimenter'
+            );
           let principal_investigator = '';
           if (principal_investigators && principal_investigators.length !== 0) {
             principal_investigator =

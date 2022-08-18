@@ -41,10 +41,8 @@ const ISISFacilityCyclesCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useFacilityCycleCount(parseInt(instrumentId));
+  const { data: totalDataCount, isLoading: countLoading } =
+    useFacilityCycleCount(parseInt(instrumentId));
   const { isLoading: dataLoading, data } = useFacilityCyclesPaginated(
     parseInt(instrumentId)
   );
