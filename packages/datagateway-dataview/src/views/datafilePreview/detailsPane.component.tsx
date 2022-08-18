@@ -26,6 +26,7 @@ function DetailsPane(): JSX.Element {
       sx={{
         height: 'calc(100vh - 64px - 36px - 48px - 48px)',
         padding: 2,
+        overflowY: 'auto',
       }}
     >
       <Typography variant="h6" sx={{ marginBottom: 2 }}>
