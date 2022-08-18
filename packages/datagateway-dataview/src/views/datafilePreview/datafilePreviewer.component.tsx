@@ -251,7 +251,12 @@ function DatafilePreviewer({
             </Box>
           </Grow>
         </Grid>
-        <AnimatedGrid item xs={12} md={isDetailsPaneGridVisible ? 10 : 12}>
+        <AnimatedGrid
+          item
+          xs={12}
+          sm={8}
+          lg={isDetailsPaneGridVisible ? 10 : 12}
+        >
           {/* Only show preview if content is loaded and extension is supported, otherwise show current status of previewer */}
           {datafileExtension && datafileContent && supportsExtension ? (
             <PreviewPane datafileExtension={datafileExtension} />
@@ -259,7 +264,7 @@ function DatafilePreviewer({
             <PreviewStatusView status={status} />
           )}
         </AnimatedGrid>
-        <AnimatedGrid item xs={12} md={isDetailsPaneGridVisible ? 2 : 0}>
+        <AnimatedGrid item xs={12} sm={4} lg={isDetailsPaneGridVisible ? 2 : 0}>
           <Slide
             direction="left"
             in={isDetailsPaneIn}

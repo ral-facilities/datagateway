@@ -5,14 +5,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from '@mui/icons-material';
-import {
-  Alert,
-  Button,
-  ButtonGroup,
-  Fade,
-  Snackbar,
-  Stack,
-} from '@mui/material';
+import { Alert, ButtonGroup, Fade, Snackbar, Stack } from '@mui/material';
 import { downloadDatafile } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +18,7 @@ import {
   IncrementDatafilePreviewerZoomLevelType,
   ResetDatafilePreviewerZoomLevelType,
 } from '../state/actions';
+import ToolbarButton from './toolbarButton.component';
 
 /**
  * Buttons in {@link DatafilePreviewerToolbar} that performs various actions.
@@ -97,35 +91,42 @@ function ActionButtons(): JSX.Element {
   return (
     <>
       <Stack direction="row" spacing={1}>
-        <Button
+        <ToolbarButton
           variant="text"
-          startIcon={<Download />}
+          icon={<Download />}
+          label={t('buttons.download')}
           onClick={() => download()}
-        >
-          {t('buttons.download')}
-        </Button>
-        <Button
+        />
+        <ToolbarButton
           variant="text"
-          startIcon={<CopyAll />}
+          icon={<CopyAll />}
+          label={t('datafiles.preview.toolbar.copy_link')}
           onClick={() => copyLink()}
-        >
-          {t('datafiles.preview.toolbar.copy_link')}
-        </Button>
+        />
         <ButtonGroup
           variant="text"
           aria-label={t('datafiles.preview.toolbar.zoom_control')}
         >
-          <Button startIcon={<ZoomIn />} onClick={zoomIn}>
-            {t('datafiles.preview.toolbar.zoom_in')}
-          </Button>
-          <Button startIcon={<ZoomOut />} onClick={zoomOut}>
-            {t('datafiles.preview.toolbar.zoom_out')}
-          </Button>
+          <ToolbarButton
+            label={t('datafiles.preview.toolbar.zoom_in')}
+            icon={<ZoomIn />}
+            onClick={zoomIn}
+          />
+          <ToolbarButton
+            label={t('datafiles.preview.toolbar.zoom_out')}
+            icon={<ZoomOut />}
+            onClick={zoomOut}
+          />
         </ButtonGroup>
         <Fade in={isZoomLevelChanged} mountOnEnter unmountOnExit>
-          <Button variant="text" startIcon={<RestartAlt />} onClick={resetZoom}>
-            {t('datafiles.preview.toolbar.reset_zoom')}
-          </Button>
+          <div>
+            <ToolbarButton
+              label={t('datafiles.preview.toolbar.reset_zoom')}
+              variant="text"
+              icon={<RestartAlt />}
+              onClick={resetZoom}
+            />
+          </div>
         </Fade>
       </Stack>
       <Snackbar
