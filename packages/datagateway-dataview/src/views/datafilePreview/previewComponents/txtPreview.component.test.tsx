@@ -41,8 +41,14 @@ describe('TxtPreview', () => {
     jest.restoreAllMocks();
   });
 
-  it('should render given text file', () => {
+  it('should render given text file', async () => {
     const { asFragment } = renderComponent(store);
+    // wait for the preview to finish loading
+    await waitFor(() => {
+      expect(
+        screen.queryByText('datafiles.preview.txt.reading_content')
+      ).toBeNull();
+    });
     expect(asFragment()).toMatchSnapshot();
   });
 

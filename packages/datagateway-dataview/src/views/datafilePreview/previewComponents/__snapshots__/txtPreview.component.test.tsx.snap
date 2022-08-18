@@ -2,10 +2,55 @@
 
 exports[`TxtPreview should render given text file 1`] = `
 <DocumentFragment>
-  <p
-    class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  <pre
+    aria-label="datafiles.preview.txt.file_content_label"
+    class="css-h4y87t"
+    font-size="12"
   >
-    datafiles.preview.txt.reading_content
-  </p>
+    <span
+      class="css-ppgvqg"
+    >
+      1
+    </span>
+    <code
+      class="css-a948ge"
+    >
+      First line
+
+    </code>
+    <span
+      class="css-ppgvqg"
+    >
+      2
+    </span>
+    <code
+      class="css-a948ge"
+    >
+      Second line
+
+    </code>
+    <span
+      class="css-ppgvqg"
+    >
+      3
+    </span>
+    <code
+      class="css-a948ge"
+    >
+      Third line
+
+    </code>
+    <span
+      class="css-ppgvqg"
+    >
+      4
+    </span>
+    <code
+      class="css-a948ge"
+    >
+      
+
+    </code>
+  </pre>
 </DocumentFragment>
 `;
