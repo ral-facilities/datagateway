@@ -28,7 +28,7 @@ interface DatasetDetailsPanelProps {
 /**
  * Available tabs in the ISIS dataset details panel.
  */
-export type IsisDatasetDetailsPanelTab = 'details' | 'type';
+export type IsisDatasetDetailsPanelTab = 'details' | 'type' | 'view';
 
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
@@ -50,7 +50,9 @@ const DatasetDetailsPanel = (
   const changeTab = React.useCallback(
     (newTab: IsisDatasetDetailsPanelTab) => {
       const id = data?.id;
-      if (id) {
+      // we don't want the view datafiles tab to be selected
+      // because it only acts as a button to the datafile table and should not be selectable
+      if (id && newTab !== 'view') {
         dispatch<Action>({
           type: IsisDatasetDetailsPanelChangeTabType,
           payload: {
@@ -75,6 +77,8 @@ const DatasetDetailsPanel = (
       changeTab(DEFAULT_TAB);
     }
   }, [data, selectedTab, changeTab]);
+
+  console.log('selectedTab', selectedTab);
 
   return (
     <div id="details-panel" style={{ minWidth: 0 }}>
@@ -106,6 +110,7 @@ const DatasetDetailsPanel = (
             id="dataset-datafiles-tab"
             label={t('datasets.details.datafiles')}
             onClick={() => viewDatafiles(datasetData.id)}
+            value="view"
           />
         )}
       </Tabs>

@@ -40,7 +40,8 @@ export type IsisInvestigationDetailsPanelTab =
   | 'details'
   | 'users'
   | 'samples'
-  | 'publications';
+  | 'publications'
+  | 'view';
 
 const InvestigationDetailsPanel = (
   props: InvestigationDetailsPanelProps
@@ -65,7 +66,9 @@ const InvestigationDetailsPanel = (
   const changeTab = React.useCallback(
     (newTab: IsisInvestigationDetailsPanelTab) => {
       const id = data?.id;
-      if (id) {
+      // we don't want the view datasets tab to be selected
+      // because it only acts as a button to the datafile table and should not be selectable
+      if (id && newTab !== 'view') {
         dispatch<Action>({
           type: IsisInvestigationDetailsPanelChangeTabType,
           payload: {
@@ -137,6 +140,7 @@ const InvestigationDetailsPanel = (
             id="investigation-datasets-tab"
             label={t('investigations.details.datasets')}
             onClick={() => viewDatasets(investigationData.id)}
+            value="view"
           />
         )}
       </Tabs>
