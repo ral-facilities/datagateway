@@ -340,9 +340,6 @@ export const downloadDatafile = (
   const link = document.createElement('a');
   const objectUrl = content && window.URL.createObjectURL(content);
 
-  console.log('content', content);
-  console.log('objectUrl ', objectUrl);
-
   link.href =
     content && objectUrl
       ? objectUrl

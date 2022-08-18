@@ -87,7 +87,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // Email validation.
   const emailHelpText = t('downloadConfirmDialog.email_help');
   const emailErrorText = t('downloadConfirmDialog.email_error');
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   const [emailValid, setEmailValid] = React.useState(true);
   const [emailHelperText, setEmailHelperText] = React.useState(emailHelpText);
 
@@ -109,9 +110,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     },
   });
 
-  const hasFinishedLoadingDownloadTypeStatuses = downloadTypeStatusQueries.every(
-    ({ isLoading }) => !isLoading
-  );
+  const hasFinishedLoadingDownloadTypeStatuses =
+    downloadTypeStatusQueries.every(({ isLoading }) => !isLoading);
 
   const {
     data: downloadId,

@@ -220,9 +220,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   } = props;
 
   const location = useLocation();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { view, startDate, endDate } = queryParams;
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
