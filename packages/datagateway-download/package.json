@@ -6,9 +6,8 @@
     "@craco/craco": "6.4.3",
     "@emotion/react": "11.10.0",
     "@emotion/styled": "11.10.0",
-    "@mui/icons-material": "5.5.0",
-    "@mui/lab": "5.0.0-alpha.72",
-    "@mui/material": "5.5.0",
+    "@mui/icons-material": "5.8.4",
+    "@mui/material": "5.10.0",
     "@types/jest": "27.5.2",
     "@types/jsrsasign": "10.5.2",
     "@types/lodash.chunk": "4.2.6",
@@ -32,7 +31,7 @@
     "lodash.chunk": "4.2.0",
     "loglevel": "1.8.0",
     "p-limit": "3.1.0",
-    "prettier": "2.2.1",
+    "prettier": "2.7.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-i18next": "11.18.3",
@@ -42,7 +41,7 @@
     "react-virtualized": "9.22.3",
     "single-spa-react": "4.6.1",
     "tslib": "2.4.0",
-    "typescript": "4.5.3"
+    "typescript": "4.7.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.16.4",
@@ -59,7 +58,7 @@
     "cypress-failed-log": "2.10.0",
     "enzyme": "3.11.0",
     "enzyme-to-json": "3.6.1",
-    "eslint": "8.20.0",
+    "eslint": "8.22.0",
     "eslint-config-react-app": "7.0.0",
     "lint-staged": "13.0.3",
     "serve": "14.0.1",

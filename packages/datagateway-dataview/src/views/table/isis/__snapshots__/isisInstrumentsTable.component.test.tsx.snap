@@ -60,14 +60,14 @@ Object {
 exports[`ISIS Instruments table component renders names as links in StudyHierarchy 1`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-instrument-table-name"
     href="/browseStudyHierarchy/instrument/1/study"
   >
     Test instrument 1
   </a>,
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-instrument-table-name"
     href="/browseStudyHierarchy/instrument/2/study"
   >
@@ -79,14 +79,14 @@ Array [
 exports[`ISIS Instruments table component renders names as links when NOT in studyHierarchy 1`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-instrument-table-name"
     href="/browse/instrument/1/facilityCycle"
   >
     Test instrument 1
   </a>,
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-instrument-table-name"
     href="/browse/instrument/2/facilityCycle"
   >

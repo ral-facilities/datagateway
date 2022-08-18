@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatePicker component tests CustomClearButton renders correctly 1`] = `
+<ForwardRef(Button)
+  color="primary"
+  onClick={[Function]}
+  role="button"
+  sx={
+    Object {
+      "marginBottom": "10px",
+      "marginLeft": "30px",
+    }
+  }
+  variant="contained"
+>
+  Clear
+</ForwardRef(Button)>
+`;
