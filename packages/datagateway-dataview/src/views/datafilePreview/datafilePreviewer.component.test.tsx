@@ -1,14 +1,20 @@
-import { act, fireEvent, RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { type AxiosRequestConfig } from 'axios';
 import { downloadDatafile } from 'datagateway-common';
 import type { Datafile } from 'datagateway-common/lib/app.types';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
-import { combineReducers, createStore, Store } from 'redux';
+import { combineReducers, createStore, type Store } from 'redux';
 import DGDataViewReducer from '../../state/reducers/dgdataview.reducer';
 import DatafilePreviewer from './datafilePreviewer.component';
 import { mockDatafile, mockTxtFileContent } from './testData';

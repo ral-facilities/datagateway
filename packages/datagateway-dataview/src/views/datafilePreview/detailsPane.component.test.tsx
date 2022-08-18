@@ -1,7 +1,6 @@
-import { Datafile } from 'datagateway-common';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import type { Datafile } from 'datagateway-common';
 import * as React from 'react';
-import type { RenderResult } from '@testing-library/react';
-import { render, screen } from '@testing-library/react';
 import DatafilePreviewerContext from './datafilePreviewerContext';
 import DetailsPane from './detailsPane.component';
 import { mockDatafile } from './testData';

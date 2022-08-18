@@ -1,6 +1,6 @@
 import { Paper, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
-import { DatafileExtension } from './datafileExtension';
+import type { DatafileExtension } from './datafileExtension';
 import DatafilePreviewerContext from './datafilePreviewerContext';
 import { previewComponents } from './previewComponents/previewComponents';
 

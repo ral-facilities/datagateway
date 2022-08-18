@@ -1,5 +1,9 @@
-import type { ButtonProps } from '@mui/material';
-import { Button, useMediaQuery, useTheme } from '@mui/material';
+import {
+  type ButtonProps,
+  Button,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { ArrowTooltip } from 'datagateway-common';
 import React from 'react';
 

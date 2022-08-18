@@ -89,6 +89,7 @@ if (process.env.NODE_ENV === `development`) {
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 /* eslint-enable */
 
 function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
@@ -117,6 +118,7 @@ document.addEventListener(MicroFrontendId, (e) => {
 
 class App extends React.Component<unknown, { hasError: boolean }> {
   store: Store;
+
   public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };

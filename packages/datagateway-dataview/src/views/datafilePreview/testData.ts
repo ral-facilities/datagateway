@@ -1,6 +1,6 @@
 // This file contains mock data for testing datafile preview functionality.
 
-import { Datafile } from 'datagateway-common';
+import type { Datafile } from 'datagateway-common';
 
 const mockDatafile: Datafile = {
   createTime: '2020-01-01',

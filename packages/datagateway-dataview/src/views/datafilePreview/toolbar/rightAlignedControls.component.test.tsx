@@ -1,5 +1,9 @@
-import type { RenderResult } from '@testing-library/react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  type RenderResult,
+  screen,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import * as React from 'react';

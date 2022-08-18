@@ -10,7 +10,7 @@ import { downloadDatafile } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import DatafilePreviewerContext from '../datafilePreviewerContext';
 import DATAFILE_PREVIEWER_DEFAULT from '../defaults';
 import {

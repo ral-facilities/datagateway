@@ -1,5 +1,10 @@
-import type { RenderResult } from '@testing-library/react';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import { downloadDatafile } from 'datagateway-common';

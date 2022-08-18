@@ -1,5 +1,5 @@
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
-import { Datafile } from 'datagateway-common';
+import type { Datafile } from 'datagateway-common';
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

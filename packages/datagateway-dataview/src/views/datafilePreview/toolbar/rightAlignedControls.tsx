@@ -1,9 +1,9 @@
 import { Search } from '@mui/icons-material';
 import { Chip, FormControlLabel, Stack, Switch, Tooltip } from '@mui/material';
-import React, { useRef } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import useScrollToZoom from '../hooks/useScrollToZoom';
 import {
   ToggleDatafilePreviewerDetailsPanePayload,
@@ -28,7 +28,7 @@ function RightAlignedControls(): JSX.Element {
   const zoomLevel = useSelector<StateType, number>(
     (state) => state.dgdataview.isisDatafilePreviewer.zoomLevel
   );
-  const zoomLevelChipRef = useRef<HTMLDivElement | null>(null);
+  const zoomLevelChipRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
   const [t] = useTranslation();
 

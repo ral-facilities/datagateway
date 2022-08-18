@@ -1,4 +1,4 @@
-import { Datafile } from 'datagateway-common';
+import type { Datafile } from 'datagateway-common';
 
 const supportedDatafileExtensions = new Set(['txt']);
 

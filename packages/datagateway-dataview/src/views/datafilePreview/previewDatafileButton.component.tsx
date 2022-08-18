@@ -1,6 +1,6 @@
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { Datafile } from 'datagateway-common';
+import type { Datafile } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';

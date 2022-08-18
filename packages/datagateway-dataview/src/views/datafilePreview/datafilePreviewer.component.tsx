@@ -17,12 +17,12 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { StateType } from '../../state/app.types';
+import type { StateType } from '../../state/app.types';
 import { extensionOf, isExtensionSupported } from './datafileExtension';
 import type { DatafilePreviewerContextShape } from './datafilePreviewerContext';
 import DatafilePreviewerContext from './datafilePreviewerContext';
 import DetailsPane from './detailsPane.component';
-import { PreviewerStatus } from './previewerStatus';
+import type { PreviewerStatus } from './previewerStatus';
 import PreviewPane from './previewPane.component';
 import PreviewStatusView from './previewStatusView.component';
 import DatafilePreviewerToolbar from './toolbar/datafilePreviewerToolbar.component';
@@ -118,36 +118,31 @@ function DatafilePreviewer({
   const supportsExtension =
     datafileExtension && isExtensionSupported(datafileExtension);
 
-  const {
-    data: datafileContent,
-    error: loadDatafileContentError,
-  } = useDatafileContent({
-    datafileId: datafile?.id ?? -1,
-    enabled:
-      // only fetch datafile if datafile meta is available & if the extension is supported
-      Boolean(datafile) &&
-      Boolean(datafileExtension) &&
-      Boolean(supportsExtension),
-    onDownloadProgress: (event) => {
-      setStatus({
-        code: 'LOADING_CONTENT',
-        progress: (event.loaded / event.total) * 100,
-      });
-    },
-  });
+  const { data: datafileContent, error: loadDatafileContentError } =
+    useDatafileContent({
+      datafileId: datafile?.id ?? -1,
+      enabled:
+        // only fetch datafile if datafile meta is available & if the extension is supported
+        Boolean(datafile) &&
+        Boolean(datafileExtension) &&
+        Boolean(supportsExtension),
+      onDownloadProgress: (event) => {
+        setStatus({
+          code: 'LOADING_CONTENT',
+          progress: (event.loaded / event.total) * 100,
+        });
+      },
+    });
 
   const [t] = useTranslation();
   const theme = useTheme();
   const isDetailsPaneShown = useSelector<StateType, boolean>(
     (state) => state.dgdataview.isisDatafilePreviewer.isDetailsPaneShown
   );
-  const [
-    isDetailsPaneGridVisible,
-    setIsDetailsPaneGridVisible,
-  ] = React.useState(isDetailsPaneShown);
-  const [isDetailsPaneIn, setIsDetailsPaneIn] = React.useState(
-    isDetailsPaneShown
-  );
+  const [isDetailsPaneGridVisible, setIsDetailsPaneGridVisible] =
+    React.useState(isDetailsPaneShown);
+  const [isDetailsPaneIn, setIsDetailsPaneIn] =
+    React.useState(isDetailsPaneShown);
 
   React.useEffect(() => {
     // This effect controls the appearance of details panel
