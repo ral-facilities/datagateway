@@ -1,9 +1,9 @@
 import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import { mount, ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper, shallow } from 'enzyme';
 import configureStore from 'redux-mock-store';
-import SelectDates from './datePicker.component';
+import SelectDates, { CustomClearButton } from './datePicker.component';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { initialState } from '../state/reducers/dgsearch.reducer';
@@ -12,6 +12,7 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../setupTests';
+import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
 
 jest.mock('loglevel');
 
@@ -84,6 +85,29 @@ describe('DatePicker component tests', () => {
       .last();
     expect(endDateInput.exists());
     expect(endDateInput.instance().value).toEqual('2021-10-28');
+  });
+
+  describe('CustomClearButton', () => {
+    const onClear = jest.fn();
+    let props: PickersActionBarProps;
+
+    beforeEach(() => {
+      props = {
+        onClear: onClear,
+      };
+    });
+
+    it('renders correctly', () => {
+      const wrapper = shallow(<CustomClearButton {...props} />);
+      expect(wrapper).toMatchSnapshot();
+    });
+
+    it('calls onClear when button clicked', () => {
+      const wrapper = shallow(<CustomClearButton {...props} />);
+      const button = wrapper.find('[role="button"]');
+      button.simulate('click');
+      expect(onClear).toHaveBeenCalled();
+    });
   });
 
   describe('Start date box', () => {

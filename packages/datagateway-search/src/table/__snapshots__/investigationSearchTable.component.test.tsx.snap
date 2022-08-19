@@ -90,7 +90,7 @@ Object {
 exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 1`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     href="/browse/investigation/1/dataset"
   >
     Test 1
@@ -126,7 +126,7 @@ Array [
 
 exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 3`] = `
 <a
-  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
   data-testid="investigation-search-table-doi-link"
   href="https://doi.org/doi 1"
 >

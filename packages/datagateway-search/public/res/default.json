@@ -231,48 +231,22 @@
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters",
     "icons": {
-      "title": [
-        "Title",
-        "Name",
-        "Type"
-      ],
-      "fingerprint": [
-        "Visit ID",
-        "Name"
-      ],
-      "public": [
-        "DOI"
-      ],
-      "confirmation_number": [
-        "Dataset Count",
-        " Datafile Count"
-      ],
-      "assessment": [
-        "Instrument",
-        "Beamline"
-      ],
+      "title": ["Title", "Name", "Type"],
+      "fingerprint": ["Visit ID", "Name"],
+      "public": ["DOI"],
+      "confirmation_number": ["Dataset Count", " Datafile Count"],
+      "assessment": ["Instrument", "Beamline"],
       "calendar_today": [
         "Start Date",
         "End Date",
         "Create Time",
         "Modified Time"
       ],
-      "explore": [
-        "Location"
-      ],
-      "save": [
-        "Size"
-      ],
-      "description": [
-        "Description",
-        "Summary"
-      ],
-      "link": [
-        "URL"
-      ],
-      "person": [
-        "Principal Investigator"
-      ]
+      "explore": ["Location"],
+      "save": ["Size"],
+      "description": ["Description", "Summary"],
+      "link": ["URL"],
+      "person": ["Principal Investigator"]
     }
   },
   "entity_card": {

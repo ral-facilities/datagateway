@@ -31,7 +31,7 @@ exports[`SearchTabs renders correctly when request received 1`] = `
                 type="button"
               >
                 <span
-                  class="MuiBadge-root css-b49g95-MuiBadge-root"
+                  class="MuiBadge-root BaseBadge-root css-b49g95-MuiBadge-root"
                   id="investigation-badge"
                 >
                   <span
@@ -40,7 +40,7 @@ exports[`SearchTabs renders correctly when request received 1`] = `
                     tabs.investigation
                   </span>
                   <span
-                    class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-fvc8ir-MuiBadge-badge"
+                    class="MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular BaseBadge-badge css-fvc8ir-MuiBadge-badge"
                   >
                     <span
                       style="font-size: 14px; font-weight: bold; margin-top: 1px;"
@@ -63,7 +63,7 @@ exports[`SearchTabs renders correctly when request received 1`] = `
                 type="button"
               >
                 <span
-                  class="MuiBadge-root css-b49g95-MuiBadge-root"
+                  class="MuiBadge-root BaseBadge-root css-b49g95-MuiBadge-root"
                   id="dataset-badge"
                 >
                   <span
@@ -72,7 +72,7 @@ exports[`SearchTabs renders correctly when request received 1`] = `
                     tabs.dataset
                   </span>
                   <span
-                    class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-fvc8ir-MuiBadge-badge"
+                    class="MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular BaseBadge-badge css-fvc8ir-MuiBadge-badge"
                   >
                     ?
                   </span>
@@ -91,7 +91,7 @@ exports[`SearchTabs renders correctly when request received 1`] = `
                 type="button"
               >
                 <span
-                  class="MuiBadge-root css-b49g95-MuiBadge-root"
+                  class="MuiBadge-root BaseBadge-root css-b49g95-MuiBadge-root"
                   id="datafile-badge"
                 >
                   <span
@@ -100,7 +100,7 @@ exports[`SearchTabs renders correctly when request received 1`] = `
                     tabs.datafile
                   </span>
                   <span
-                    class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight css-fvc8ir-MuiBadge-badge"
+                    class="MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular BaseBadge-badge css-fvc8ir-MuiBadge-badge"
                   >
                     ?
                   </span>
@@ -126,7 +126,7 @@ exports[`SearchTabs renders correctly when request received 1`] = `
             type="button"
           >
             <span
-              class="MuiBadge-root css-1c32n2y-MuiBadge-root"
+              class="MuiBadge-root BaseBadge-root css-1c32n2y-MuiBadge-root"
             >
               <svg
                 aria-hidden="true"
@@ -140,7 +140,7 @@ exports[`SearchTabs renders correctly when request received 1`] = `
                 />
               </svg>
               <span
-                class="MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary MuiBadge-badge MuiBadge-standard MuiBadge-anchorOriginTopRight MuiBadge-invisible css-1pi4uwz-MuiBadge-badge"
+                class="MuiBadge-badge MuiBadge-standard MuiBadge-invisible MuiBadge-anchorOriginTopRight MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary BaseBadge-badge css-106c1u2-MuiBadge-badge"
               />
             </span>
             <span

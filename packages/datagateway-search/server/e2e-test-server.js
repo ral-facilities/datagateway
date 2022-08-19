@@ -1,10 +1,10 @@
-var express = require('express');
-var path = require('path');
-var serveStatic = require('serve-static');
-var axios = require('axios');
-var fs = require('fs');
+const express = require('express');
+const path = require('path');
+const serveStatic = require('serve-static');
+const axios = require('axios');
+const fs = require('fs');
 
-var app = express();
+const app = express();
 
 app.use(
   express.json(),
@@ -12,7 +12,17 @@ app.use(
 );
 
 app.get('/datagateway-search-settings.json', function (req, res) {
-  res.sendFile(path.resolve('./server/e2e-settings.json'));
+  // detect if the E2E test is runnFing inside CI
+  // If so, use the settings file specific to E2E
+  // Otherwise, use the same settings file that is also for running the app normally (yarn start etc).
+  const isCiEnv = process.env.CI;
+  res.sendFile(
+    path.resolve(
+      isCiEnv
+        ? './server/e2e-settings.json'
+        : './public/datagateway-search-settings.json'
+    )
+  );
 });
 
 app.get(/\/sessions|investigations|datasets|datafiles/, function (req, res) {

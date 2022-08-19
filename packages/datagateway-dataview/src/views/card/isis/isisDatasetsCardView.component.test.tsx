@@ -157,7 +157,7 @@ describe('ISIS Datasets - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').simulate('click');
+    advancedFilter.find('button').last().simulate('click');
     advancedFilter
       .find('input')
       .first()
