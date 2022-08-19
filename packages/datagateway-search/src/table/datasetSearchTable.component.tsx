@@ -1,27 +1,27 @@
 import React from 'react';
 import {
+  ColumnType,
+  DatasetDetailsPanel,
+  DLSDatasetDetailsPanel,
+  FacilityCycle,
+  formatBytes,
+  formatCountOrSize,
+  ISISDatasetDetailsPanel,
+  parseSearchToQuery,
+  SearchResponse,
+  SearchResultSource,
   Table,
   tableLink,
-  FacilityCycle,
-  ColumnType,
-  formatCountOrSize,
-  parseSearchToQuery,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
   useDatasetsDatafileCount,
   useDatasetSizes,
-  useSort,
-  useRemoveFromCart,
-  DatasetDetailsPanel,
-  ISISDatasetDetailsPanel,
-  DLSDatasetDetailsPanel,
   useLuceneSearchInfinite,
-  SearchResponse,
-  SearchResultSource,
-  formatBytes,
+  useRemoveFromCart,
+  useSort,
 } from 'datagateway-common';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -39,9 +39,10 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
 
   const location = useLocation();
   const { push } = useHistory();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { startDate, endDate, sort, filters, restrict } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -74,13 +75,10 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   const [t] = useTranslation();
 
   const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'dataset'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('dataset');
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('dataset');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('dataset');
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];

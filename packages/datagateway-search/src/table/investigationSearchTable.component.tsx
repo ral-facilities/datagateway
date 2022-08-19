@@ -43,9 +43,10 @@ const InvestigationSearchTable = (
 
   const location = useLocation();
   const { push } = useHistory();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { startDate, endDate, sort, filters, restrict } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -88,13 +89,10 @@ const InvestigationSearchTable = (
     filters
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'investigation'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('investigation');
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('investigation');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('investigation');
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];
@@ -237,6 +235,7 @@ const InvestigationSearchTable = (
 
   // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
   // the correct calculation queries for each facility
+  // TODO: we can pass the { enabled: Boolean } option to the underlying UseQueryConfig to enable queries based on the facility.
   const datasetCountQueries = useInvestigationsDatasetCount(
     hierarchy !== 'isis' ? aggregatedSource : undefined
   );
@@ -253,7 +252,7 @@ const InvestigationSearchTable = (
           const investigationData = cellProps.rowData as SearchResultSource;
           return hierarchyLink(investigationData);
         },
-        disableSort: true,
+        // disableSort: true,
       },
       {
         label: t('investigations.visit_id'),
@@ -334,6 +333,8 @@ const InvestigationSearchTable = (
     ],
     [t, hierarchy, hierarchyLink, sizeQueries, datasetCountQueries]
   );
+
+  console.log('columns', columns);
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => {

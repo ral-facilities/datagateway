@@ -135,84 +135,80 @@ const SearchPageCardView = (
   const [t] = useTranslation();
 
   const location = useLocation();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { startDate, endDate, sort, filters, restrict } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
-  const {
-    data: investigations,
-    hasNextPage: investigationsHasNextPage,
-  } = useLuceneSearchInfinite(
-    'Investigation',
-    {
-      searchText: searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [
-        { target: 'Investigation' },
-        {
-          target: 'InvestigationParameter',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-        {
-          target: 'Sample',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-      ],
-    },
-    filters
-  );
-  const {
-    data: datasets,
-    hasNextPage: datasetsHasNextPage,
-  } = useLuceneSearchInfinite(
-    'Dataset',
-    {
-      searchText: searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [{ target: 'Dataset' }],
-    },
-    filters
-  );
-  const {
-    data: datafiles,
-    hasNextPage: datafilesHasNextPage,
-  } = useLuceneSearchInfinite(
-    'Datafile',
-    {
-      searchText: searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [
-        { target: 'Datafile' },
-        {
-          target: 'DatafileParameter',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-      ],
-    },
-    filters
-  );
+  const { data: investigations, hasNextPage: investigationsHasNextPage } =
+    useLuceneSearchInfinite(
+      'Investigation',
+      {
+        searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [
+          { target: 'Investigation' },
+          {
+            target: 'InvestigationParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+          {
+            target: 'Sample',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+        ],
+      },
+      filters
+    );
+  const { data: datasets, hasNextPage: datasetsHasNextPage } =
+    useLuceneSearchInfinite(
+      'Dataset',
+      {
+        searchText: searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [{ target: 'Dataset' }],
+      },
+      filters
+    );
+  const { data: datafiles, hasNextPage: datafilesHasNextPage } =
+    useLuceneSearchInfinite(
+      'Datafile',
+      {
+        searchText: searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [
+          { target: 'Datafile' },
+          {
+            target: 'DatafileParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+        ],
+      },
+      filters
+    );
 
   const countSearchResults = (
     searchResponses: InfiniteData<SearchResponse> | undefined,
     hasNextPage: boolean | undefined
   ): string => {
+    console.log('searchPageCardView countsearchresults', searchResponses);
     if (searchResponses) {
       let numResults = 0;
       searchResponses.pages.forEach((searchResponse) => {

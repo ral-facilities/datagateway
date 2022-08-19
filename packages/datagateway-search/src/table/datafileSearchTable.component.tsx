@@ -60,9 +60,10 @@ const DatafileSearchTable = (
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { startDate, endDate, sort, filters, restrict } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -108,13 +109,10 @@ const DatafileSearchTable = (
   const [t] = useTranslation();
 
   const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'datafile'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('datafile');
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('datafile');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('datafile');
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     // TODO REVERT this, temporary workaround to test cart functions
@@ -180,30 +178,26 @@ const DatafileSearchTable = (
     [t]
   );
 
-  const {
-    aggregatedSource,
-    aggregatedIds,
-    customFilters,
-    aborted,
-  } = React.useMemo(() => {
-    if (data) {
-      return {
-        aggregatedSource: data.pages
-          .map((response) => mapSource(response))
-          .flat(),
-        aggregatedIds: data.pages.map((response) => mapIds(response)).flat(),
-        customFilters: mapFacets(data.pages),
-        aborted: data.pages[data.pages.length - 1].aborted,
-      };
-    } else {
-      return {
-        aggregatedSource: [],
-        aggregatedIds: [],
-        customFilters: [],
-        aborted: false,
-      };
-    }
-  }, [data, mapFacets]);
+  const { aggregatedSource, aggregatedIds, customFilters, aborted } =
+    React.useMemo(() => {
+      if (data) {
+        return {
+          aggregatedSource: data.pages
+            .map((response) => mapSource(response))
+            .flat(),
+          aggregatedIds: data.pages.map((response) => mapIds(response)).flat(),
+          customFilters: mapFacets(data.pages),
+          aborted: data.pages[data.pages.length - 1].aborted,
+        };
+      } else {
+        return {
+          aggregatedSource: [],
+          aggregatedIds: [],
+          customFilters: [],
+          aborted: false,
+        };
+      }
+    }, [data, mapFacets]);
 
   const parsedFilters = React.useMemo(() => {
     const parsedFilters = {} as FiltersType;

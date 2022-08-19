@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  AppBar,
   Badge,
   badgeClasses,
   Box,
@@ -14,9 +13,9 @@ import {
 import {
   CartProps,
   parseSearchToQuery,
+  SearchResponse,
   useLuceneSearchInfinite,
   useUpdateQueryParam,
-  SearchResponse,
   ViewCartButton,
   ViewsType,
 } from 'datagateway-common';
@@ -142,78 +141,74 @@ const SearchTabs = (
   const [t] = useTranslation();
 
   const location = useLocation();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { startDate, endDate, sort, filters, restrict } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
-  const {
-    data: investigations,
-    hasNextPage: investigationsHasNextPage,
-  } = useLuceneSearchInfinite(
-    'Investigation',
-    {
-      searchText: searchText,
-      startDate,
-      endDate,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [
-        { target: 'Investigation' },
-        {
-          target: 'InvestigationParameter',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-        {
-          target: 'Sample',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-      ],
-    },
-    filters
-  );
-  const {
-    data: datasets,
-    hasNextPage: datasetsHasNextPage,
-  } = useLuceneSearchInfinite(
-    'Dataset',
-    {
-      searchText: searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [{ target: 'Dataset' }],
-    },
-    filters
-  );
-  const {
-    data: datafiles,
-    hasNextPage: datafilesHasNextPage,
-  } = useLuceneSearchInfinite(
-    'Datafile',
-    {
-      searchText: searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict: restrict,
-      facets: [
-        { target: 'Datafile' },
-        {
-          target: 'DatafileParameter',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-      ],
-    },
-    filters
-  );
+  const { data: investigations, hasNextPage: investigationsHasNextPage } =
+    useLuceneSearchInfinite(
+      'Investigation',
+      {
+        searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [
+          { target: 'Investigation' },
+          {
+            target: 'InvestigationParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+          {
+            target: 'Sample',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+        ],
+      },
+      filters
+    );
+  const { data: datasets, hasNextPage: datasetsHasNextPage } =
+    useLuceneSearchInfinite(
+      'Dataset',
+      {
+        searchText: searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [{ target: 'Dataset' }],
+      },
+      filters
+    );
+  const { data: datafiles, hasNextPage: datafilesHasNextPage } =
+    useLuceneSearchInfinite(
+      'Datafile',
+      {
+        searchText: searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict: restrict,
+        facets: [
+          { target: 'Datafile' },
+          {
+            target: 'DatafileParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+        ],
+      },
+      filters
+    );
 
   const countSearchResults = (
     searchResponses: InfiniteData<SearchResponse> | undefined,
@@ -277,125 +272,123 @@ const SearchTabs = (
       {/* Show loading progress if data is still being loaded */}
 
       {loading && <LinearProgress color="secondary" />}
-      <AppBar position="static" elevation={0}>
-        <StyledBox
-          display="flex"
-          flexDirection="row"
-          justifyContent="flex-end"
-          height="100%"
-          boxSizing="border-box"
+      <StyledBox
+        display="flex"
+        flexDirection="row"
+        justifyContent="flex-end"
+        height="100%"
+        boxSizing="border-box"
+      >
+        <StyledTabs
+          className="tour-search-tab-select"
+          indicatorColor="secondary"
+          textColor="secondary"
+          value={currentTab}
+          onChange={handleChange}
+          aria-label={t('searchPageTable.tabs_arialabel')}
         >
-          <StyledTabs
-            className="tour-search-tab-select"
-            indicatorColor="secondary"
-            textColor="secondary"
-            value={currentTab}
-            onChange={handleChange}
-            aria-label={t('searchPageTable.tabs_arialabel')}
-          >
-            {investigationTab ? (
-              <Tab
-                label={
-                  <StyledBadge
-                    id="investigation-badge"
-                    badgeContent={
-                      <span
-                        style={{
-                          fontSize: '14px',
-                          fontWeight: 'bold',
-                          marginTop: '1px',
-                        }}
-                      >
-                        {investigationCount}
-                      </span>
-                    }
-                    showZero
-                    max={999}
-                  >
+          {investigationTab ? (
+            <Tab
+              label={
+                <StyledBadge
+                  id="investigation-badge"
+                  badgeContent={
                     <span
                       style={{
-                        paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${investigationCount.length}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${investigationCount.length}ch - 6px)`,
-                        fontSize: '16px',
+                        fontSize: '14px',
                         fontWeight: 'bold',
+                        marginTop: '1px',
                       }}
                     >
-                      {t('tabs.investigation')}
+                      {investigationCount}
                     </span>
-                  </StyledBadge>
-                }
-                value="investigation"
-                {...a11yProps('investigation')}
-              />
-            ) : (
-              <Tab value="investigation" sx={{ display: 'none' }} />
-            )}
-            {datasetTab ? (
-              <Tab
-                label={
-                  <StyledBadge
-                    id="dataset-badge"
-                    badgeContent={datasetCount}
-                    showZero
-                    max={999}
+                  }
+                  showZero
+                  max={999}
+                >
+                  <span
+                    style={{
+                      paddingRight: '1ch',
+                      marginRight: `calc(0.5 * ${investigationCount.length}ch + 6px)`,
+                      marginLeft: `calc(-0.5 * ${investigationCount.length}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                    }}
                   >
-                    <span
-                      style={{
-                        paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${datasetCount.length}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${datasetCount.length}ch - 6px)`,
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {t('tabs.dataset')}
-                    </span>
-                  </StyledBadge>
-                }
-                value="dataset"
-                {...a11yProps('dataset')}
-              />
-            ) : (
-              <Tab value="dataset" sx={{ display: 'none' }} />
-            )}
-            {datafileTab ? (
-              <Tab
-                label={
-                  <StyledBadge
-                    id="datafile-badge"
-                    badgeContent={datafileCount}
-                    showZero
-                    max={999}
-                  >
-                    <span
-                      style={{
-                        paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${datafileCount.length}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${datafileCount.length}ch - 6px)`,
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {t('tabs.datafile')}
-                    </span>
-                  </StyledBadge>
-                }
-                value="datafile"
-                {...a11yProps('datafile')}
-              />
-            ) : (
-              <Tab value="datafile" sx={{ display: 'none' }} />
-            )}
-          </StyledTabs>
-          <StyledBox marginLeft="auto">
-            <ViewCartButton
-              cartItems={cartItems}
-              navigateToDownload={navigateToDownload}
+                    {t('tabs.investigation')}
+                  </span>
+                </StyledBadge>
+              }
+              value="investigation"
+              {...a11yProps('investigation')}
             />
-          </StyledBox>
+          ) : (
+            <Tab value="investigation" sx={{ display: 'none' }} />
+          )}
+          {datasetTab ? (
+            <Tab
+              label={
+                <StyledBadge
+                  id="dataset-badge"
+                  badgeContent={datasetCount}
+                  showZero
+                  max={999}
+                >
+                  <span
+                    style={{
+                      paddingRight: '1ch',
+                      marginRight: `calc(0.5 * ${datasetCount.length}ch + 6px)`,
+                      marginLeft: `calc(-0.5 * ${datasetCount.length}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {t('tabs.dataset')}
+                  </span>
+                </StyledBadge>
+              }
+              value="dataset"
+              {...a11yProps('dataset')}
+            />
+          ) : (
+            <Tab value="dataset" sx={{ display: 'none' }} />
+          )}
+          {datafileTab ? (
+            <Tab
+              label={
+                <StyledBadge
+                  id="datafile-badge"
+                  badgeContent={datafileCount}
+                  showZero
+                  max={999}
+                >
+                  <span
+                    style={{
+                      paddingRight: '1ch',
+                      marginRight: `calc(0.5 * ${datafileCount.length}ch + 6px)`,
+                      marginLeft: `calc(-0.5 * ${datafileCount.length}ch - 6px)`,
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {t('tabs.datafile')}
+                  </span>
+                </StyledBadge>
+              }
+              value="datafile"
+              {...a11yProps('datafile')}
+            />
+          ) : (
+            <Tab value="datafile" sx={{ display: 'none' }} />
+          )}
+        </StyledTabs>
+        <StyledBox marginLeft="auto">
+          <ViewCartButton
+            cartItems={cartItems}
+            navigateToDownload={navigateToDownload}
+          />
         </StyledBox>
-      </AppBar>
+      </StyledBox>
       {currentTab === 'investigation' && (
         <TabPanel value={currentTab} index={'investigation'}>
           {view === 'card' ? (

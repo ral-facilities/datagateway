@@ -61,18 +61,12 @@ const InvestigationCardView = (
   const location = useLocation();
   const { push } = useHistory();
 
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
-  const {
-    filters,
-    sort,
-    page,
-    results,
-    startDate,
-    endDate,
-    restrict,
-  } = queryParams;
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+  const { filters, sort, page, results, startDate, endDate, restrict } =
+    queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
@@ -176,35 +170,31 @@ const InvestigationCardView = (
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const {
-    data,
-    isLoading,
-    hasNextPage,
-    fetchNextPage,
-  } = useLuceneSearchInfinite(
-    'Investigation',
-    {
-      searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [
-        { target: 'Investigation' },
-        {
-          target: 'InvestigationParameter',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-        {
-          target: 'Sample',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-      ],
-    },
-    filters
-  );
+  const { data, isLoading, hasNextPage, fetchNextPage } =
+    useLuceneSearchInfinite(
+      'Investigation',
+      {
+        searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [
+          { target: 'Investigation' },
+          {
+            target: 'InvestigationParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+          {
+            target: 'Sample',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+        ],
+      },
+      filters
+    );
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];
@@ -263,39 +253,35 @@ const InvestigationCardView = (
     [t]
   );
 
-  const {
-    paginatedSource,
-    aggregatedIds,
-    customFilters,
-    aborted,
-  } = React.useMemo(() => {
-    if (data) {
-      const aggregatedIds = data.pages
-        .map((response) => mapIds(response))
-        .flat();
-      const minResult = (page ? page - 1 : 0) * (results ?? 10);
-      const maxResult = (page ?? 1) * (results ?? 10);
-      if (hasNextPage && aggregatedIds.length < maxResult) {
-        fetchNextPage();
+  const { paginatedSource, aggregatedIds, customFilters, aborted } =
+    React.useMemo(() => {
+      if (data) {
+        const aggregatedIds = data.pages
+          .map((response) => mapIds(response))
+          .flat();
+        const minResult = (page ? page - 1 : 0) * (results ?? 10);
+        const maxResult = (page ?? 1) * (results ?? 10);
+        if (hasNextPage && aggregatedIds.length < maxResult) {
+          fetchNextPage();
+        }
+        const aggregatedSource = data.pages
+          .map((response) => mapSource(response))
+          .flat();
+        return {
+          paginatedSource: aggregatedSource.slice(minResult, maxResult),
+          aggregatedIds: aggregatedIds,
+          customFilters: mapFacets(data.pages),
+          aborted: data.pages[data.pages.length - 1].aborted,
+        };
+      } else {
+        return {
+          paginatedSource: [],
+          aggregatedIds: [],
+          customFilters: [],
+          aborted: false,
+        };
       }
-      const aggregatedSource = data.pages
-        .map((response) => mapSource(response))
-        .flat();
-      return {
-        paginatedSource: aggregatedSource.slice(minResult, maxResult),
-        aggregatedIds: aggregatedIds,
-        customFilters: mapFacets(data.pages),
-        aborted: data.pages[data.pages.length - 1].aborted,
-      };
-    } else {
-      return {
-        paginatedSource: [],
-        aggregatedIds: [],
-        customFilters: [],
-        aborted: false,
-      };
-    }
-  }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
+    }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
 
   const parsedFilters = React.useMemo(() => {
     const parsedFilters = {} as FiltersType;

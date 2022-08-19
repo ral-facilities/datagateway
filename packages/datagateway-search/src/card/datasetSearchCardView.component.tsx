@@ -56,18 +56,12 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
 
   const location = useLocation();
   const { push } = useHistory();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
-  const {
-    startDate,
-    endDate,
-    page,
-    results,
-    sort,
-    filters,
-    restrict,
-  } = queryParams;
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+  const { startDate, endDate, page, results, sort, filters, restrict } =
+    queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const minNumResults = useSelector(
@@ -78,25 +72,21 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const {
-    data,
-    isLoading,
-    hasNextPage,
-    fetchNextPage,
-  } = useLuceneSearchInfinite(
-    'Dataset',
-    {
-      searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [{ target: 'Dataset' }],
-    },
-    filters
-  );
+  const { data, isLoading, hasNextPage, fetchNextPage } =
+    useLuceneSearchInfinite(
+      'Dataset',
+      {
+        searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [{ target: 'Dataset' }],
+      },
+      filters
+    );
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];
@@ -158,39 +148,35 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     return parsedFilters;
   }, [filters]);
 
-  const {
-    paginatedSource,
-    aggregatedIds,
-    customFilters,
-    aborted,
-  } = React.useMemo(() => {
-    if (data) {
-      const aggregatedIds = data.pages
-        .map((response) => mapIds(response))
-        .flat();
-      const minResult = (page ? page - 1 : 0) * (results ?? 10);
-      const maxResult = (page ?? 1) * (results ?? 10);
-      if (hasNextPage && aggregatedIds.length < maxResult) {
-        fetchNextPage();
+  const { paginatedSource, aggregatedIds, customFilters, aborted } =
+    React.useMemo(() => {
+      if (data) {
+        const aggregatedIds = data.pages
+          .map((response) => mapIds(response))
+          .flat();
+        const minResult = (page ? page - 1 : 0) * (results ?? 10);
+        const maxResult = (page ?? 1) * (results ?? 10);
+        if (hasNextPage && aggregatedIds.length < maxResult) {
+          fetchNextPage();
+        }
+        const aggregatedSource = data.pages
+          .map((response) => mapSource(response))
+          .flat();
+        return {
+          paginatedSource: aggregatedSource.slice(minResult, maxResult),
+          aggregatedIds: aggregatedIds,
+          customFilters: mapFacets(data.pages),
+          aborted: data.pages[data.pages.length - 1].aborted,
+        };
+      } else {
+        return {
+          paginatedSource: [],
+          aggregatedIds: [],
+          customFilters: [],
+          aborted: false,
+        };
       }
-      const aggregatedSource = data.pages
-        .map((response) => mapSource(response))
-        .flat();
-      return {
-        paginatedSource: aggregatedSource.slice(minResult, maxResult),
-        aggregatedIds: aggregatedIds,
-        customFilters: mapFacets(data.pages),
-        aborted: data.pages[data.pages.length - 1].aborted,
-      };
-    } else {
-      return {
-        paginatedSource: [],
-        aggregatedIds: [],
-        customFilters: [],
-        aborted: false,
-      };
-    }
-  }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
+    }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
 
   const handleSort = useSort();
   const pushFilter = usePushDatasetFilter();
