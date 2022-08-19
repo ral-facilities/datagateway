@@ -217,7 +217,7 @@ describe('ISIS - Datafiles Table', () => {
   describe('Do not wait for initial requests', () => {
     beforeEach(() => {
       cy.visit(
-        '/browse/instrument/33/facilityCycle/89981656/investigation/91429827/dataset/91429833/datafile'
+        '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile'
       );
     });
 
