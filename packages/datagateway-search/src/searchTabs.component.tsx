@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  Badge,
-  badgeClasses,
   Box,
   LinearProgress,
   Paper,
@@ -30,6 +28,7 @@ import InvestigationCardView from './card/investigationSearchCardView.component'
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import DatasetCardView from './card/datasetSearchCardView.component';
 import DatasetSearchTable from './table/datasetSearchTable.component';
+import SearchTabLabel from './searchTabLabel.component';
 
 export interface SearchTableProps {
   containerHeight: string;
@@ -68,21 +67,6 @@ function a11yProps(index: string): React.ReactFragment {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
-
-const StyledBadge = styled(Badge)(({ theme }) => ({
-  [`& .${badgeClasses.badge}`]: {
-    backgroundColor: '#CCCCCC',
-    //Increase contrast on high contrast modes by using black text
-    color:
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (theme as any).colours?.type === 'contrast' ? '#000000' : '#333333',
-    fontSize: '14px',
-    fontWeight: 'bold',
-    lineHeight: 'inherit',
-    transform: 'none',
-    position: 'static',
-  },
-}));
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   [`& .${tabsClasses.root}`]: {
@@ -290,32 +274,11 @@ const SearchTabs = (
           {investigationTab ? (
             <Tab
               label={
-                <StyledBadge
+                <SearchTabLabel
                   id="investigation-badge"
-                  badgeContent={
-                    <span
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        marginTop: '1px',
-                      }}
-                    >
-                      {investigationCount}
-                    </span>
-                  }
-                  showZero
-                  max={999}
-                >
-                  <span
-                    style={{
-                      paddingRight: '1ch',
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {t('tabs.investigation')}
-                  </span>
-                </StyledBadge>
+                  label={t('tabs.investigation')}
+                  count={investigationCount}
+                />
               }
               value="investigation"
               {...a11yProps('investigation')}
@@ -326,22 +289,11 @@ const SearchTabs = (
           {datasetTab ? (
             <Tab
               label={
-                <StyledBadge
+                <SearchTabLabel
                   id="dataset-badge"
-                  badgeContent={datasetCount}
-                  showZero
-                  max={999}
-                >
-                  <span
-                    style={{
-                      paddingRight: '1ch',
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {t('tabs.dataset')}
-                  </span>
-                </StyledBadge>
+                  label={t('tabs.dataset')}
+                  count={datasetCount}
+                />
               }
               value="dataset"
               {...a11yProps('dataset')}
@@ -352,22 +304,11 @@ const SearchTabs = (
           {datafileTab ? (
             <Tab
               label={
-                <StyledBadge
+                <SearchTabLabel
                   id="datafile-badge"
-                  badgeContent={datafileCount}
-                  showZero
-                  max={999}
-                >
-                  <span
-                    style={{
-                      paddingRight: '1ch',
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {t('tabs.datafile')}
-                  </span>
-                </StyledBadge>
+                  label={t('tabs.datafile')}
+                  count={datafileCount}
+                />
               }
               value="datafile"
               {...a11yProps('datafile')}
