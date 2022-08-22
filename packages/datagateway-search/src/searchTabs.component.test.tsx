@@ -14,7 +14,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 
 import SearchPageTabs, { SearchTabsProps } from './searchTabs.component';
 import { initialState } from './state/reducers/dgsearch.reducer';
-import InvestigationSearchTable from './table/investigationSearchTable/investigationSearchTable.component';
+import InvestigationSearchTable from './table/investigationSearchTable.component';
 import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import InvestigationCardView from './card/investigationSearchCardView.component';

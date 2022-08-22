@@ -115,14 +115,7 @@ const DatafileSearchTable = (
     useRemoveFromCart('datafile');
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    // TODO REVERT this, temporary workaround to test cart functions
-    return (
-      response.results?.map((result) => {
-        const source = result.source;
-        source.id = Number(source.id);
-        return source;
-      }) ?? []
-    );
+    return response.results?.map((result) => result.source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {

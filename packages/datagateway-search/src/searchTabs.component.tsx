@@ -25,7 +25,7 @@ import { InfiniteData, useIsFetching } from 'react-query';
 import { connect } from 'react-redux';
 import { getFilters, getSorts } from './searchPageContainer.component';
 import type { StateType } from './state/app.types';
-import InvestigationSearchTable from './table/investigationSearchTable/investigationSearchTable.component';
+import InvestigationSearchTable from './table/investigationSearchTable.component';
 import InvestigationCardView from './card/investigationSearchCardView.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import DatasetCardView from './card/datasetSearchCardView.component';

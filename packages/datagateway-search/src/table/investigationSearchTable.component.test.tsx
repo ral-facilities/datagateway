@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { initialState } from '../../state/reducers/dgsearch.reducer';
+import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../../state/app.types';
+import { StateType } from '../state/app.types';
 import {
   dGCommonInitialState,
   useAddToCart,

@@ -25,9 +25,11 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Paper, Typography } from '@mui/material';
-import { StateType } from '../../state/app.types';
-import InvestigationSizeCell from './investigationSizeCell.component';
-import InvestigationDatasetCountCell from './investigationDatasetCountCell.component';
+import { StateType } from '../state/app.types';
+import {
+  InvestigationDatasetCountCell,
+  InvestigationSizeCell,
+} from './cellRenderers';
 
 interface InvestigationTableProps {
   hierarchy: string;
@@ -36,8 +38,6 @@ interface InvestigationTableProps {
 const InvestigationSearchTable = (
   props: InvestigationTableProps
 ): React.ReactElement => {
-  console.log('investigationsearchtable render');
-
   const { hierarchy } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');

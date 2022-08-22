@@ -1,32 +1,30 @@
 import React from 'react';
 import {
-  ColumnType,
+  type ColumnType,
+  type Dataset,
   DatasetDetailsPanel,
   DLSDatasetDetailsPanel,
-  FacilityCycle,
-  formatBytes,
-  formatCountOrSize,
+  type FacilityCycle,
   ISISDatasetDetailsPanel,
   parseSearchToQuery,
-  SearchResponse,
-  SearchResultSource,
+  type SearchResponse,
+  type SearchResultSource,
   Table,
   tableLink,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
-  useDatasetsDatafileCount,
-  useDatasetSizes,
   useLuceneSearchInfinite,
   useRemoveFromCart,
   useSort,
 } from 'datagateway-common';
-import { IndexRange, TableCellProps } from 'react-virtualized';
+import type { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { StateType } from '../state/app.types';
+import type { StateType } from '../state/app.types';
 import { Paper, Typography } from '@mui/material';
+import { DatasetDatafileCountCell, DatasetSizeCell } from './cellRenderers';
 
 interface DatasetTableProps {
   hierarchy: string;
@@ -255,15 +253,6 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     [cartItems, selectAllSetting, aggregatedIds]
   );
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
-  const datasetCountQueries = useDatasetsDatafileCount(
-    hierarchy !== 'isis' ? aggregatedSource : undefined
-  );
-  const sizeQueries = useDatasetSizes(
-    hierarchy === 'isis' ? aggregatedSource : undefined
-  );
-
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
@@ -281,15 +270,16 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
             ? t('datasets.size')
             : t('datasets.datafile_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
+        cellContentRenderer: (cellProps: TableCellProps): JSX.Element => {
           if (hierarchy === 'isis' && cellProps.rowData.fileSize) {
-            return formatBytes(cellProps.rowData.fileSize);
+            return <>formatBytes(cellProps.rowData.fileSize)</>;
           }
-          const query =
-            hierarchy === 'isis'
-              ? sizeQueries[cellProps.rowIndex]
-              : datasetCountQueries[cellProps.rowIndex];
-          return formatCountOrSize(query, hierarchy === 'isis');
+          if (hierarchy === 'isis') {
+            return <DatasetSizeCell dataset={cellProps.rowData as Dataset} />;
+          }
+          return (
+            <DatasetDatafileCountCell dataset={cellProps.rowData as Dataset} />
+          );
         },
         disableSort: true,
       },
@@ -323,7 +313,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         },
       },
     ],
-    [t, hierarchy, hierarchyLink, sizeQueries, datasetCountQueries]
+    [t, hierarchy, hierarchyLink]
   );
 
   const detailsPanel = React.useCallback(
