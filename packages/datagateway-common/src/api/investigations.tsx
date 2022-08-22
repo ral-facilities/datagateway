@@ -22,6 +22,7 @@ import {
   InfiniteData,
   useQueries,
   UseQueryOptions,
+  QueryOptions,
 } from 'react-query';
 import { fetchDatasetCountQuery } from './datasets';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -219,7 +220,8 @@ const fetchInvestigationSize = (
  * Hence why the query is disabled by default
  */
 export const useInvestigationSize = (
-  investigationId: number
+  investigationId: number,
+  queryOptions?: QueryOptions<number, AxiosError, number, [string, number]>
 ): UseQueryResult<number, AxiosError> => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
@@ -241,6 +243,7 @@ export const useInvestigationSize = (
       },
       retry: retryICATErrors,
       enabled: false,
+      ...queryOptions,
     }
   );
 };
@@ -334,6 +337,34 @@ export const useInvestigationSizes = (
 
   return sizes;
 };
+
+export const useInvestigationDatasetCount = ({
+  investigationId,
+}: {
+  investigationId: number;
+}): UseQueryResult<number, AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  return useQuery(
+    ['investigationDatasetCount', investigationId],
+    () =>
+      fetchDatasetCountQuery(apiUrl, {}, [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigation.id': { eq: investigationId },
+          }),
+        },
+      ]),
+    {
+      onError: (error) => {
+        handleICATError(error, false);
+      },
+      retry: retryICATErrors,
+      staleTime: Infinity,
+    }
+  );
+};
+
 export const useInvestigationsDatasetCount = (
   data:
     | Investigation[]
@@ -422,6 +453,7 @@ export const useInvestigationsDatasetCount = (
 
   return datasetCounts;
 };
+
 const fetchInvestigationCount = (
   apiUrl: string,
   filters: FiltersType,

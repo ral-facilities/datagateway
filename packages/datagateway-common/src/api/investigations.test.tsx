@@ -8,6 +8,7 @@ import {
   downloadInvestigation,
   useInvestigation,
   useInvestigationCount,
+  useInvestigationDatasetCount,
   useInvestigationDetails,
   useInvestigationsDatasetCount,
   useInvestigationsInfinite,
@@ -735,13 +736,7 @@ describe('investigation api functions', () => {
         await Promise.resolve();
       });
       expect(result.current.map((query) => query.data)).toEqual([
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
+        1, 2, 3, 4, 5, 6, 7,
       ]);
 
       mockData = [
@@ -759,6 +754,55 @@ describe('investigation api functions', () => {
       });
 
       expect(result.current.map((query) => query.data)).toEqual([4]);
+    });
+  });
+
+  describe('useInvestigationDatasetCount', () => {
+    it('should send a request to fetch the dataset count', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: 100,
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useInvestigationDatasetCount({ investigationId: 123 }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigation.id': { eq: 123 },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datasets/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+    });
+
+    it('should call handleICATError when an error is encountered', async () => {
+      (axios.get as jest.Mock).mockRejectedValue({
+        message: 'Test error',
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useInvestigationDatasetCount({ investigationId: 123 }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        false
+      );
     });
   });
 
@@ -1040,13 +1084,7 @@ describe('investigation api functions', () => {
         await Promise.resolve();
       });
       expect(result.current.map((query) => query.data)).toEqual([
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
+        1, 2, 3, 4, 5, 6, 7,
       ]);
 
       mockData = [

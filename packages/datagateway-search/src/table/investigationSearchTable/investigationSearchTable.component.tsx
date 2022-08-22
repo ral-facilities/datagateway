@@ -1,34 +1,33 @@
 import React from 'react';
 import {
-  Table,
-  Investigation,
-  tableLink,
+  ColumnType,
+  DLSVisitDetailsPanel,
   externalSiteLink,
   FacilityCycle,
-  ColumnType,
+  formatBytes,
+  Investigation,
+  InvestigationDetailsPanel,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  SearchResponse,
+  SearchResultSource,
+  Table,
+  tableLink,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
-  useSort,
-  useRemoveFromCart,
-  useInvestigationsDatasetCount,
-  useInvestigationSizes,
-  formatCountOrSize,
-  InvestigationDetailsPanel,
-  ISISInvestigationDetailsPanel,
-  DLSVisitDetailsPanel,
-  SearchResultSource,
   useLuceneSearchInfinite,
-  SearchResponse,
-  formatBytes,
+  useRemoveFromCart,
+  useSort,
 } from 'datagateway-common';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Paper, Typography } from '@mui/material';
-import { StateType } from '../state/app.types';
+import { StateType } from '../../state/app.types';
+import InvestigationSizeCell from './investigationSizeCell.component';
+import InvestigationDatasetCountCell from './investigationDatasetCountCell.component';
 
 interface InvestigationTableProps {
   hierarchy: string;
@@ -37,6 +36,8 @@ interface InvestigationTableProps {
 const InvestigationSearchTable = (
   props: InvestigationTableProps
 ): React.ReactElement => {
+  console.log('investigationsearchtable render');
+
   const { hierarchy } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
@@ -233,16 +234,6 @@ const InvestigationSearchTable = (
     [cartItems, selectAllSetting, aggregatedIds]
   );
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
-  // TODO: we can pass the { enabled: Boolean } option to the underlying UseQueryConfig to enable queries based on the facility.
-  const datasetCountQueries = useInvestigationsDatasetCount(
-    hierarchy !== 'isis' ? aggregatedSource : undefined
-  );
-  const sizeQueries = useInvestigationSizes(
-    hierarchy === 'isis' ? aggregatedSource : undefined
-  );
-
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
@@ -283,15 +274,22 @@ const InvestigationSearchTable = (
             ? t('investigations.size')
             : t('investigations.dataset_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datasetCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
+        cellContentRenderer: (cellProps: TableCellProps): React.ReactNode => {
           if (hierarchy === 'isis' && cellProps.rowData.fileSize) {
             return formatBytes(cellProps.rowData.fileSize);
           }
-          const query =
-            hierarchy === 'isis'
-              ? sizeQueries[cellProps.rowIndex]
-              : datasetCountQueries[cellProps.rowIndex];
-          return formatCountOrSize(query, hierarchy === 'isis');
+          if (hierarchy === 'isis') {
+            return (
+              <InvestigationSizeCell
+                investigation={cellProps.rowData as Investigation}
+              />
+            );
+          }
+          return (
+            <InvestigationDatasetCountCell
+              investigation={cellProps.rowData as Investigation}
+            />
+          );
         },
         disableSort: true,
       },
@@ -331,10 +329,8 @@ const InvestigationSearchTable = (
         disableSort: true,
       },
     ],
-    [t, hierarchy, hierarchyLink, sizeQueries, datasetCountQueries]
+    [t, hierarchy, hierarchyLink]
   );
-
-  console.log('columns', columns);
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => {
