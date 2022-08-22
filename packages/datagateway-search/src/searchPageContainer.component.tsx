@@ -32,6 +32,7 @@ import {
   ViewButton,
   ClearFiltersButton,
   useLuceneSearchInfinite,
+  usePushSearchRestrict,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -149,15 +150,11 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
   return getPathMatch(pathname)
     ? view
       ? view === 'card'
-        ? true
-        : false
       : getView() === 'card'
-      ? true
-      : false
     : false;
 };
 
-const TopSearchBoxPaper = styled(Paper)(({ theme }) => ({
+const TopSearchBoxPaper = styled(Paper)(() => ({
   height: '100%',
   // make width of box bigger on smaller screens to prevent overflow
   // decreasing the space for the search results
@@ -168,7 +165,7 @@ const TopSearchBoxPaper = styled(Paper)(({ theme }) => ({
   margin: '0 auto',
 }));
 
-const SideSearchBoxPaper = styled(Paper)(({ theme }) => ({
+const SideSearchBoxPaper = styled(Paper)(() => ({
   height: '100%',
   width: '100%',
 }));
@@ -176,7 +173,7 @@ const SideSearchBoxPaper = styled(Paper)(({ theme }) => ({
 const DataViewPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'view' && prop !== 'containerHeight',
 })<{ view: ViewsType; containerHeight: string }>(
-  ({ theme, view, containerHeight }) => ({
+  ({ view, containerHeight }) => ({
     // Only use height for the paper component if the view is table.
     // also ensure we account for the potential horizontal scrollbar
     height: view !== 'card' ? containerHeight : 'auto',
@@ -257,6 +254,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
   const pushCurrentTab = usePushCurrentTab();
+  const pushSearchRestrict = usePushSearchRestrict();
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
   const replacePage = useUpdateQueryParam('page', 'replace');
   const replaceResults = useUpdateQueryParam('results', 'replace');
@@ -266,6 +264,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, [checkedBoxes, currentTab, pushCurrentTab, queryParams.currentTab]);
 
   const [searchText, setSearchText] = React.useState(searchTextURL);
+  const [shouldRestrictSearch, setShouldRestrictSearch] = React.useState(
+    parseSearchToQuery(location.search).restrict
+  );
+
   const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
 
   const handleSearchTextChange = (searchText: string): void => {
@@ -384,6 +386,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
+    pushSearchRestrict(shouldRestrictSearch);
     setSearchOnNextRender(true);
 
     localStorage.removeItem('investigationFilters');
@@ -399,6 +402,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, [
     pushSearchText,
     searchText,
+    pushSearchRestrict,
+    shouldRestrictSearch,
     queryParams.filters,
     queryParams.page,
     queryParams.results,
@@ -531,7 +536,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
 
-  const disabled = Object.keys(queryParams.filters).length !== 0 ? false : true;
+  const disabled = Object.keys(queryParams.filters).length === 0;
 
   const pushFilters = useUpdateQueryParam('filters', 'push');
 
@@ -575,8 +580,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 <TopSearchBoxPaper>
                   <SearchBoxContainer
                     searchText={searchText}
+                    restrict={shouldRestrictSearch}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
+                    onMyDataCheckboxChange={(restrict) =>
+                      setShouldRestrictSearch(restrict)
+                    }
                   />
                 </TopSearchBoxPaper>
               )}

@@ -1,34 +1,40 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { parseSearchToQuery, usePushSearchRestrict } from 'datagateway-common';
-import { useLocation } from 'react-router-dom';
 import { Checkbox, FormControlLabel } from '@mui/material';
+import { ArrowTooltip } from 'datagateway-common';
 
-const MyDataCheckBox = (): React.ReactElement => {
+interface MyDataCheckBoxProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}
+
+const MyDataCheckBox = ({
+  checked,
+  onChange,
+}: MyDataCheckBoxProps): React.ReactElement => {
   const [t] = useTranslation();
-
-  const location = useLocation();
-  const restrict = React.useMemo(() => {
-    return parseSearchToQuery(location.search).restrict;
-  }, [location.search]);
-  const pushSearchRestrict = usePushSearchRestrict();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const restrict = event.target.checked;
-    pushSearchRestrict(restrict);
+    onChange(restrict);
   };
 
   return (
-    <div style={{ display: 'flex', marginTop: '15px' }}>
-      <FormControlLabel
-        sx={{
-          margin: 'auto',
-          marginRight: 2,
-        }}
-        control={<Checkbox defaultChecked={restrict} onChange={handleChange} />}
-        label={t('check_boxes.my_data')}
-      />
-    </div>
+    <ArrowTooltip
+      title={t('searchBox.my_data_tooltip')}
+      disableHoverListener={false}
+    >
+      <div style={{ display: 'flex', marginTop: '15px' }}>
+        <FormControlLabel
+          sx={{
+            margin: 'auto',
+            marginRight: 2,
+          }}
+          control={<Checkbox checked={checked} onChange={handleChange} />}
+          label={t('check_boxes.my_data')}
+        />
+      </div>
+    </ArrowTooltip>
   );
 };
 

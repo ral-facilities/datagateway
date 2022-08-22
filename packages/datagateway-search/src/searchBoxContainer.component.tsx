@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography, Link, Theme, Box, styled } from '@mui/material';
+import { Box, Grid, Link, styled, Theme, Typography } from '@mui/material';
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
@@ -22,14 +22,22 @@ const ContainerBox = styled(Box)(({ theme }) => ({
 
 interface SearchBoxContainerProps {
   searchText: string;
+  restrict: boolean;
   initiateSearch: () => void;
   onSearchTextChange: (searchText: string) => void;
+  onMyDataCheckboxChange: (checked: boolean) => void;
 }
 
 const SearchBoxContainer = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
-  const { searchText, initiateSearch, onSearchTextChange } = props;
+  const {
+    searchText,
+    restrict,
+    initiateSearch,
+    onSearchTextChange,
+    onMyDataCheckboxChange,
+  } = props;
   const [t] = useTranslation();
 
   const username = readSciGatewayToken().username;
@@ -68,7 +76,10 @@ const SearchBoxContainer = (
             which doesn't make sense if the user is not logged in. */}
         {!loggedInAnonymously && (
           <Grid item style={{ marginTop: '8px' }}>
-            <MyDataCheckBox />
+            <MyDataCheckBox
+              checked={restrict}
+              onChange={onMyDataCheckboxChange}
+            />
           </Grid>
         )}
 
