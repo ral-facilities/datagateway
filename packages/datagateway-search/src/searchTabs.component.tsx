@@ -309,8 +309,6 @@ const SearchTabs = (
                   <span
                     style={{
                       paddingRight: '1ch',
-                      marginRight: `calc(0.5 * ${investigationCount.length}ch + 6px)`,
-                      marginLeft: `calc(-0.5 * ${investigationCount.length}ch - 6px)`,
                       fontSize: '16px',
                       fontWeight: 'bold',
                     }}
@@ -337,8 +335,6 @@ const SearchTabs = (
                   <span
                     style={{
                       paddingRight: '1ch',
-                      marginRight: `calc(0.5 * ${datasetCount.length}ch + 6px)`,
-                      marginLeft: `calc(-0.5 * ${datasetCount.length}ch - 6px)`,
                       fontSize: '16px',
                       fontWeight: 'bold',
                     }}
@@ -365,8 +361,6 @@ const SearchTabs = (
                   <span
                     style={{
                       paddingRight: '1ch',
-                      marginRight: `calc(0.5 * ${datafileCount.length}ch + 6px)`,
-                      marginLeft: `calc(-0.5 * ${datafileCount.length}ch - 6px)`,
                       fontSize: '16px',
                       fontWeight: 'bold',
                     }}

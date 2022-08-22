@@ -554,7 +554,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             direction={sideLayout ? 'row' : 'column'}
             justifyContent="center"
             alignItems="center"
-            spacing={1}
+            rowSpacing={1}
             sx={{ margin: 0, width: '100%' }}
           >
             <Grid
