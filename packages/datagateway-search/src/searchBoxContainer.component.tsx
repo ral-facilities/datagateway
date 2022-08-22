@@ -9,6 +9,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import SortSelectComponent from './search/sortSelect.component';
 import MyDataCheckBox from './search/myDataCheckBox.component';
+import { readSciGatewayToken } from 'datagateway-common';
 
 const ContainerBox = styled(Box)(({ theme }) => ({
   maxWidth: '1920px',
@@ -30,6 +31,9 @@ const SearchBoxContainer = (
 ): React.ReactElement => {
   const { searchText, initiateSearch, onSearchTextChange } = props;
   const [t] = useTranslation();
+
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously = username === null || username === 'anon/anon';
 
   return (
     <ContainerBox>
@@ -59,9 +63,14 @@ const SearchBoxContainer = (
           <SortSelectComponent />
         </Grid>
 
-        <Grid item style={{ marginTop: '8px' }}>
-          <MyDataCheckBox />
-        </Grid>
+        {/* Only show the "my data" search box if the user is logged in
+            because "my data" means data specific to a user,
+            which doesn't make sense if the user is not logged in. */}
+        {!loggedInAnonymously && (
+          <Grid item style={{ marginTop: '8px' }}>
+            <MyDataCheckBox />
+          </Grid>
+        )}
 
         <Grid
           item
