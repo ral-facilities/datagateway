@@ -63,5 +63,7 @@
     }
   ],
   "pluginHost": "http://localhost:3000",
-  "uiFeatures": ["DOWNLOAD_PROGRESS"]
+  "uiFeatures": {
+    "downloadProgress": false
+  }
 }
