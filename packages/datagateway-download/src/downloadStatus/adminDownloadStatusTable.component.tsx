@@ -35,6 +35,7 @@ import BlackTooltip from '../tooltip.component';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
 import {
+  QueryKey,
   useAdminDownloadDeleted,
   useAdminDownloads,
   useAdminUpdateDownloadStatus,
@@ -42,6 +43,7 @@ import {
 import { DownloadSettingsContext } from '../ConfigProvider';
 import useDownloadFormatter from './hooks/useDownloadFormatter';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
+import { useQueryClient } from 'react-query';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   flexGrow: 1,
@@ -70,6 +72,7 @@ const AdminDownloadStatusTable: React.FC = () => {
   const { downloadStatusLabels: downloadStatuses } = useDownloadFormatter();
   const { mutate: adminDownloadDeleted } = useAdminDownloadDeleted();
   const { mutate: adminUpdateDownloadStatus } = useAdminUpdateDownloadStatus();
+  const queryClient = useQueryClient();
   // whether this is component's first render.
   const isFirstRender = useRef(true);
 
@@ -122,7 +125,7 @@ const AdminDownloadStatusTable: React.FC = () => {
     isFetched,
     isRefetching,
     fetchNextPage,
-    refetch,
+    refetch: refetchDownloads,
   } = useAdminDownloads({
     initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
   });
@@ -138,9 +141,13 @@ const AdminDownloadStatusTable: React.FC = () => {
   );
 
   const refreshTable = useCallback(async () => {
-    await refetch();
+    await Promise.all([
+      // mark download progress queries as invalid so that react-query will refetch them as well.
+      queryClient.invalidateQueries(QueryKey.DOWNLOAD_PROGRESS),
+      refetchDownloads(),
+    ]);
     setRefreshDownloads(false);
-  }, [refetch]);
+  }, [queryClient, refetchDownloads]);
 
   React.useEffect(() => {
     if (refreshDownloads && isFetched) {
@@ -166,11 +173,11 @@ const AdminDownloadStatusTable: React.FC = () => {
     // so that subsequent calls of this effect due to sort and filters changes
     // will allow refetch.
     if (!isFirstRender.current) {
-      refetch({ cancelRefetch: true });
+      refetchDownloads({ cancelRefetch: true });
     } else {
       isFirstRender.current = false;
     }
-  }, [refetch, sort, filters]);
+  }, [refetchDownloads, sort, filters]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter

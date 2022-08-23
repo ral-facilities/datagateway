@@ -584,4 +584,40 @@ describe('Admin Download Status Table', () => {
       expect(screen.getByText('30%')).toBeInTheDocument();
     });
   });
+
+  it('should refresh download progress when refresh button is clicked', async () => {
+    (getPercentageComplete as jest.MockedFunction<
+      typeof getPercentageComplete
+    >).mockResolvedValue(30);
+
+    renderComponent({
+      settings: {
+        ...mockedSettings,
+        uiFeatures: {
+          downloadProgress: true,
+        },
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
+      expect(screen.getByText('30%')).toBeInTheDocument();
+    });
+
+    // pretend the server returns an updated value
+    (getPercentageComplete as jest.MockedFunction<
+      typeof getPercentageComplete
+    >).mockResolvedValue(50);
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'downloadTab.refresh_download_status_arialabel',
+      })
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
+      expect(screen.getByText('50%')).toBeInTheDocument();
+    });
+  });
 });
