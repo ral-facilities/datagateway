@@ -37,7 +37,8 @@
     "restoring": "Restoring from tape",
     "progress": "Progress",
     "calculating_progress": "Calculating...",
-    "progress_unavailable": "Unavailable"
+    "progress_unavailable": "Unavailable",
+    "progress_complete": ""
   },
   "downloadConfirmDialog": {
     "close_arialabel": "Close download confirmation dialog",
