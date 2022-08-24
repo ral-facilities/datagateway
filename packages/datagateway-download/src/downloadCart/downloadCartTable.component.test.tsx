@@ -4,7 +4,7 @@ import DownloadCartTable from './downloadCartTable.component';
 import { DownloadCartItem, fetchDownloadCart } from 'datagateway-common';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
-import { DownloadSettingsContext } from '../ConfigProvider';
+import { DownloadSettings, DownloadSettingsContext } from '../ConfigProvider';
 import { Router } from 'react-router-dom';
 import { ReactWrapper } from 'enzyme';
 import { createMemoryHistory } from 'history';
@@ -47,7 +47,7 @@ describe('Download cart table component', () => {
   let cartItems: DownloadCartItem[] = [];
 
   // Create our mocked datagateway-download settings file.
-  let mockedSettings = {
+  let mockedSettings: DownloadSettings = {
     facilityName: 'LILS',
     apiUrl: 'https://example.com/api',
     downloadApiUrl: 'https://example.com/downloadApi',
@@ -66,6 +66,8 @@ describe('Download cart table component', () => {
         description: 'Example description for Globus access method.',
       },
     },
+    routes: [],
+    helpSteps: [],
   };
 
   const createWrapper = (): ReactWrapper => {
@@ -122,7 +124,7 @@ describe('Download cart table component', () => {
     >).mockResolvedValue(cartItems);
     (removeAllDownloadCartItems as jest.MockedFunction<
       typeof removeAllDownloadCartItems
-    >).mockResolvedValue(null);
+    >).mockResolvedValue(undefined);
     (removeFromCart as jest.MockedFunction<
       typeof removeFromCart
     >).mockImplementation((entityType, entityIds) => {
@@ -187,7 +189,7 @@ describe('Download cart table component', () => {
       '1 B'
     );
     expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
-      expect.stringContaining('downloadCart.total_size: 4 B')
+      'downloadCart.total_size: 4 B / 1 TB'
     );
   });
 
@@ -209,7 +211,7 @@ describe('Download cart table component', () => {
     );
 
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      expect.stringContaining('downloadCart.number_of_files: 22 / 5000')
+      'downloadCart.number_of_files: 22 / 5000'
     );
   });
 
@@ -552,6 +554,35 @@ describe('Download cart table component', () => {
 
     // Make sure file limit alert is displayed if over the limit
     expect(wrapper.exists('div#fileLimitAlert')).toBeTruthy();
+
+    mockedSettings = oldSettings;
+  });
+
+  it('does not display error alerts if file/size limits are not set', async () => {
+    const oldSettings = mockedSettings;
+    mockedSettings = {
+      ...oldSettings,
+      totalSizeMax: undefined,
+      fileCountMax: undefined,
+    };
+
+    const wrapper = createWrapper();
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Make sure alerts are not displayed if limits are undefined
+    expect(wrapper.exists('div#fileLimitAlert')).toBeFalsy();
+    expect(wrapper.exists('div#sizeLimitAlert')).toBeFalsy();
+
+    expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
+      'downloadCart.number_of_files: 22'
+    );
+    expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
+      'downloadCart.total_size: 4 B'
+    );
 
     mockedSettings = oldSettings;
   });

@@ -185,8 +185,6 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
-          fileCountMax: 5000,
-          totalSizeMax: 1000000000000,
           accessMethods: {
             https: {
               idsUrl: 'https-ids',
@@ -214,8 +212,6 @@ describe('index - fetchSettings', () => {
       Promise.resolve({
         data: {
           facilityName: 'Generic',
-          fileCountMax: 5000,
-          totalSizeMax: 1000000000000,
           accessMethods: {
             https: {
               idsUrl: 'https-ids',
@@ -246,8 +242,6 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
-          fileCountMax: 5000,
-          totalSizeMax: 1000000000000,
         },
       })
     );
@@ -271,8 +265,6 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
-          fileCountMax: 5000,
-          totalSizeMax: 1000000000000,
           accessMethods: {
             https: {
               idsUrl: 'https-ids',
@@ -307,8 +299,6 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
-          fileCountMax: 5000,
-          totalSizeMax: 1000000000000,
           accessMethods: {},
         },
       })
@@ -373,40 +363,6 @@ describe('index - fetchSettings', () => {
     );
   });
 
-  it('logs an error if fileCountMax or totalSizeMax are undefined in the settings', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          facilityName: 'Generic',
-          idsUrl: 'ids',
-          apiUrl: 'api',
-          downloadApiUrl: 'download-api',
-          accessMethods: {
-            https: {
-              idsUrl: 'https-ids',
-              displayName: 'HTTPS',
-              description: 'HTTP description',
-            },
-            globus: {
-              displayName: 'Globus',
-              description: 'Globus description',
-            },
-          },
-        },
-      })
-    );
-
-    const settings = await fetchSettings();
-
-    expect(settings).toBeUndefined();
-    expect(log.error).toHaveBeenCalled();
-
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-download-settings.json: fileCountMax or totalSizeMax is undefined in settings'
-    );
-  });
-
   it('logs an error if no routes are defined in the settings', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
@@ -427,8 +383,6 @@ describe('index - fetchSettings', () => {
               description: 'Globus description',
             },
           },
-          fileCountMax: 5000,
-          totalSizeMax: 1000000000000,
         },
       })
     );
@@ -464,8 +418,6 @@ describe('index - fetchSettings', () => {
               description: 'Globus description',
             },
           },
-          fileCountMax: 5000,
-          totalSizeMax: 1000000000000,
           routes: [
             {
               section: 'section',
