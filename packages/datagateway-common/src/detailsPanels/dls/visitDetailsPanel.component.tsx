@@ -10,10 +10,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
-import {
-  useInvestigationDetails,
-  useInvestigationSize,
-} from '../../api/investigations';
+import { useInvestigationDetails, useInvestigationSize } from '../../api';
 import { Entity, Investigation } from '../../app.types';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -51,7 +48,11 @@ const VisitDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="dls-visit-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <Tabs
         variant="scrollable"
         textColor="secondary"

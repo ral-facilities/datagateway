@@ -1,12 +1,12 @@
 import React from 'react';
-import axios, { AxiosError } from 'axios';
+import axios, { type AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { IndexRange } from 'react-virtualized';
+import type { IndexRange } from 'react-virtualized';
 import { fetchIds, getApiParams, parseSearchToQuery } from '.';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
-import {
+import type {
   AdditionalFilters,
   FiltersType,
   Investigation,
@@ -15,14 +15,13 @@ import {
 } from '../app.types';
 import { StateType } from '../state/app.types';
 import {
-  useQuery,
-  UseQueryResult,
+  type InfiniteData,
   useInfiniteQuery,
-  UseInfiniteQueryResult,
-  InfiniteData,
+  type UseInfiniteQueryResult,
   useQueries,
-  UseQueryOptions,
-  QueryOptions,
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
 } from 'react-query';
 import { fetchDatasetCountQuery } from './datasets';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -77,7 +76,7 @@ export const useInvestigation = (
     [string, number, AdditionalFilters?, boolean?]
   >(
     ['investigation', investigationId, additionalFilters],
-    (params) => {
+    (_) => {
       return fetchInvestigations(apiUrl, { sort: {}, filters: {} }, [
         {
           filterType: 'where',
@@ -221,7 +220,7 @@ const fetchInvestigationSize = (
  */
 export const useInvestigationSize = (
   investigationId: number,
-  queryOptions?: QueryOptions<number, AxiosError, number, [string, number]>
+  queryOptions?: UseQueryOptions<number, AxiosError, number, [string, number]>
 ): UseQueryResult<number, AxiosError> => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl

@@ -9,7 +9,7 @@ import {
   styled,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useInvestigationDetails } from '../../api/investigations';
+import { useInvestigationDetails } from '../../api';
 import { Entity, Investigation } from '../../app.types';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -47,7 +47,11 @@ const InvestigationDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="isis-investigation-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <Tabs
         variant="scrollable"
         textColor="secondary"

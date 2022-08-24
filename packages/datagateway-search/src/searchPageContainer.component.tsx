@@ -385,6 +385,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     isFetchingNum > 0;
 
   const initiateSearch = React.useCallback(() => {
+    // TODO: should probably combine all search params into one object then push it to the URL.
     pushSearchText(searchText);
     pushSearchRestrict(shouldRestrictSearch);
     setSearchOnNextRender(true);

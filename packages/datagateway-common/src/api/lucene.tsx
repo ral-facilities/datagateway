@@ -207,7 +207,7 @@ export const useLuceneFacet = (
         handleICATError(error);
       },
       enabled: false,
-      getNextPageParam: (lastPage, pages) => lastPage.search_after,
+      getNextPageParam: (lastPage, _) => lastPage.search_after,
     }
   );
 };
@@ -241,9 +241,7 @@ export const useLuceneSearchInfinite = (
     [string, DatasearchType, LuceneSearchParams]
   >(
     ['search', datasearchType, luceneParams],
-    () => {
-      return fetchLuceneData(datasearchType, luceneParams, { icatUrl });
-    },
+    () => fetchLuceneData(datasearchType, luceneParams, { icatUrl }),
     {
       onError: (error) => {
         handleICATError(error);
@@ -252,7 +250,7 @@ export const useLuceneSearchInfinite = (
       // we want to trigger search manually via refetch
       // so disable the query to disable automatic fetching
       enabled: false,
-      getNextPageParam: (lastPage, pages) => lastPage.search_after,
+      getNextPageParam: (lastPage, _) => lastPage.search_after,
     }
   );
 };

@@ -75,7 +75,7 @@ export const useDataset = (
     [string, number, AdditionalFilters?]
   >(
     ['dataset', datasetId, additionalFilters],
-    (params) => {
+    (_) => {
       return fetchDatasets(apiUrl, { sort: {}, filters: {} }, [
         {
           filterType: 'where',
@@ -311,6 +311,7 @@ export const useDatasetSizes = (
 
   return sizes;
 };
+
 export const useDatasetsDatafileCount = (
   data:
     | Dataset[]

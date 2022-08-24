@@ -17,6 +17,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 interface SearchTabLabelProps {
+  id: string;
   label: string;
   count: string;
 }
@@ -25,10 +26,14 @@ interface SearchTabLabelProps {
  * Label for tabs in {@link SearchTabs}.
  * @constructor
  */
-function SearchTabLabel({ label, count }: SearchTabLabelProps): JSX.Element {
+function SearchTabLabel({
+  id,
+  label,
+  count,
+}: SearchTabLabelProps): JSX.Element {
   return (
     <StyledBadge
-      id="investigation-badge"
+      id={id}
       badgeContent={
         <span
           style={{

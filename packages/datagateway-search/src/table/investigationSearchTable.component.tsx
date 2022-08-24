@@ -20,7 +20,7 @@ import {
   useRemoveFromCart,
   useSort,
 } from 'datagateway-common';
-import { IndexRange, TableCellProps } from 'react-virtualized';
+import { TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -65,6 +65,9 @@ const InvestigationSearchTable = (
 
   const [t] = useTranslation();
 
+  // this is only used for pagination in the table
+  // the initial data fetching is triggered by the search button
+  // in searchPageContainer.
   const { fetchNextPage, data, hasNextPage } = useLuceneSearchInfinite(
     'Investigation',
     {
@@ -129,7 +132,7 @@ const InvestigationSearchTable = (
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage(),
+    (_) => fetchNextPage(),
     [fetchNextPage]
   );
 
@@ -165,7 +168,8 @@ const InvestigationSearchTable = (
 
       if (facilityCycleId)
         return `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`;
-      else return null;
+
+      return null;
     },
     [facilityCycles]
   );
@@ -174,9 +178,11 @@ const InvestigationSearchTable = (
     (investigationData: SearchResultSource) => {
       const linkURL = isisLinkURL(investigationData);
 
-      if (linkURL && investigationData.title)
+      if (linkURL && investigationData.title) {
         return tableLink(linkURL, investigationData.title);
-      else return investigationData.title;
+      }
+
+      return investigationData.title;
     },
     [isisLinkURL]
   );
@@ -205,19 +211,21 @@ const InvestigationSearchTable = (
         );
 
       return dlsLink;
-    } else if (hierarchy === 'isis') {
-      return isisLink;
-    } else {
-      const genericLink = (
-        investigationData: SearchResultSource
-      ): React.ReactElement =>
-        tableLink(
-          genericLinkURL(investigationData),
-          investigationData.title as string
-        );
-
-      return genericLink;
     }
+
+    if (hierarchy === 'isis') {
+      return isisLink;
+    }
+
+    const genericLink = (
+      investigationData: SearchResultSource
+    ): React.ReactElement =>
+      tableLink(
+        genericLinkURL(investigationData),
+        investigationData.title as string
+      );
+
+    return genericLink;
   }, [hierarchy, isisLink]);
 
   const selectedRows = React.useMemo(
@@ -243,7 +251,7 @@ const InvestigationSearchTable = (
           const investigationData = cellProps.rowData as SearchResultSource;
           return hierarchyLink(investigationData);
         },
-        // disableSort: true,
+        disableSort: true,
       },
       {
         label: t('investigations.visit_id'),
@@ -342,7 +350,7 @@ const InvestigationSearchTable = (
             detailsPanelResize={detailsPanelResize}
             viewDatasets={
               datasetsURL
-                ? (id: number) => {
+                ? (_) => {
                     push(datasetsURL);
                   }
                 : undefined

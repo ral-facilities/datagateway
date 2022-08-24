@@ -33,8 +33,8 @@ function InvestigationSizeCell({
 }: {
   investigation: Investigation;
 }): JSX.Element {
-  const result = useInvestigationSize(investigation.id);
-  return <>{formatCountOrSize(result)}</>;
+  const result = useInvestigationSize(investigation.id, { enabled: true });
+  return <>{formatCountOrSize(result, true)}</>;
 }
 
 /**
