@@ -1,6 +1,6 @@
 {
   "name": "datagateway-dataview",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "dependencies": {
     "@craco/craco": "6.4.3",
@@ -22,7 +22,7 @@
     "axios": "0.27.2",
     "connected-react-router": "6.9.1",
     "custom-event-polyfill": "1.0.7",
-    "datagateway-common": "^1.1.0",
+    "datagateway-common": "^1.1.1",
     "date-fns": "2.29.1",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-cypress": "2.12.1",
