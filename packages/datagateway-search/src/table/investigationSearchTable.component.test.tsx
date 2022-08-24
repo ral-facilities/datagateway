@@ -22,7 +22,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import { mockInvestigation } from '../testData';
 
@@ -393,16 +393,14 @@ describe('Investigation Search Table component', () => {
   });
 
   it('renders generic link correctly & pending count correctly', async () => {
-    (axios.get as jest.Mock).mockImplementation(
-      (url: string, config: AxiosRequestConfig) => {
-        if (/.*\/datasets\/count$/.test(url)) {
-          return new Promise((_) => {
-            // never resolve the promise to pretend it is loading
-          });
-        }
-        return mockAxiosGet(url, config);
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (/.*\/datasets\/count$/.test(url)) {
+        return new Promise((_) => {
+          // never resolve the promise to pretend it is loading
+        });
       }
-    );
+      return mockAxiosGet(url);
+    });
     renderComponent('data');
 
     expect(await screen.findByText('Test title 1')).toHaveAttribute(
@@ -423,23 +421,21 @@ describe('Investigation Search Table component', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    (axios.get as jest.Mock).mockImplementation(
-      (url: string, config: AxiosRequestConfig) => {
-        if (/.*\/facilitycycles$/.test(url)) {
-          return Promise.resolve({
-            data: [
-              {
-                id: 2,
-                name: 'facility cycle name',
-                startDate: '2000-06-10',
-                endDate: '2020-06-11',
-              },
-            ],
-          });
-        }
-        return mockAxiosGet(url, config);
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (/.*\/facilitycycles$/.test(url)) {
+        return Promise.resolve({
+          data: [
+            {
+              id: 2,
+              name: 'facility cycle name',
+              startDate: '2000-06-10',
+              endDate: '2020-06-11',
+            },
+          ],
+        });
       }
-    );
+      return mockAxiosGet(url);
+    });
 
     renderComponent('isis');
 
@@ -453,23 +449,21 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    (axios.get as jest.Mock).mockImplementation(
-      (url: string, config: AxiosRequestConfig) => {
-        if (/.*\/facilitycycles$/.test(url)) {
-          return Promise.resolve({
-            data: [
-              {
-                id: 4,
-                name: 'facility cycle name',
-                startDate: '2000-06-10',
-                endDate: '2020-06-11',
-              },
-            ],
-          });
-        }
-        return mockAxiosGet(url, config);
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (/.*\/facilitycycles$/.test(url)) {
+        return Promise.resolve({
+          data: [
+            {
+              id: 4,
+              name: 'facility cycle name',
+              startDate: '2000-06-10',
+              endDate: '2020-06-11',
+            },
+          ],
+        });
       }
-    );
+      return mockAxiosGet(url);
+    });
 
     renderComponent('isis');
 
@@ -483,16 +477,14 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    (axios.get as jest.Mock).mockImplementation(
-      (url: string, config: AxiosRequestConfig) => {
-        if (/.*\/facilitycycles$/.test(url)) {
-          return Promise.resolve({
-            data: [],
-          });
-        }
-        return mockAxiosGet(url, config);
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (/.*\/facilitycycles$/.test(url)) {
+        return Promise.resolve({
+          data: [],
+        });
       }
-    );
+      return mockAxiosGet(url);
+    });
 
     renderComponent('isis');
 
@@ -506,23 +498,21 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
-    (axios.get as jest.Mock).mockImplementation(
-      (url: string, config: AxiosRequestConfig) => {
-        if (/.*\/facilitycycles$/.test(url)) {
-          return Promise.resolve({
-            data: [
-              {
-                id: 2,
-                name: 'facility cycle name',
-                startDate: '2020-06-11',
-                endDate: '2000-06-10',
-              },
-            ],
-          });
-        }
-        return mockAxiosGet(url, config);
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (/.*\/facilitycycles$/.test(url)) {
+        return Promise.resolve({
+          data: [
+            {
+              id: 2,
+              name: 'facility cycle name',
+              startDate: '2020-06-11',
+              endDate: '2000-06-10',
+            },
+          ],
+        });
       }
-    );
+      return mockAxiosGet(url);
+    });
 
     renderComponent('isis');
 
