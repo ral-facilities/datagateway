@@ -318,8 +318,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 sx={{
                   height: `calc(100vh - 64px - 48px - 48px - 48px - 3rem${
                     emptyItems ||
-                    fileCount > fileCountMax ||
-                    totalSize > totalSizeMax
+                    (fileCountMax && fileCount > fileCountMax) ||
+                    (totalSizeMax && totalSize > totalSizeMax)
                       ? ' - 2rem'
                       : ''
                   }${dataLoading ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
@@ -375,11 +375,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     {fileCount !== -1
                       ? fileCount
                       : `${t('downloadCart.calculating')}...`}
-                    {fileCountMax !== -1 && ` / ${fileCountMax}`}
+                    {fileCountMax && ` / ${fileCountMax}`}
                   </Typography>
                 </Grid>
                 <Grid item>
-                  {fileCount > fileCountMax && (
+                  {fileCountMax && fileCount > fileCountMax && (
                     <Alert
                       id="fileLimitAlert"
                       variant="filled"
@@ -426,11 +426,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     {totalSize !== -1
                       ? formatBytes(totalSize)
                       : `${t('downloadCart.calculating')}...`}
-                    {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
+                    {totalSizeMax && ` / ${formatBytes(totalSizeMax)}`}
                   </Typography>
                 </Grid>
                 <Grid item>
-                  {totalSize > totalSizeMax && (
+                  {totalSizeMax && totalSize > totalSizeMax && (
                     <Alert
                       id="sizeLimitAlert"
                       variant="filled"
@@ -499,8 +499,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                       fileCountsLoading ||
                       sizesLoading ||
                       emptyItems ||
-                      (fileCountMax !== -1 && fileCount > fileCountMax) ||
-                      (totalSizeMax !== -1 && totalSize > totalSizeMax)
+                      (fileCountMax ? fileCount > fileCountMax : false) ||
+                      (totalSizeMax ? totalSize > totalSizeMax : false)
                     }
                   >
                     {t('downloadCart.download')}
