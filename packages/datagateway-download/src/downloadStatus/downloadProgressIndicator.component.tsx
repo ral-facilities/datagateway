@@ -43,7 +43,8 @@ function DownloadProgressIndicator({
 
   // display a label indicating progress unavailable when
   // progress is not returned or the download status doesn't match.
-  if (!progress) return <>{t('downloadStatus.progress_unavailable')}</>;
+  if (typeof progress === 'undefined')
+    return <>{t('downloadStatus.progress_unavailable')}</>;
 
   if (typeof progress === 'number') {
     if (progress === 100) {
