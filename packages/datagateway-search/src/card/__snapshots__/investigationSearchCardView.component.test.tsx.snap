@@ -121,7 +121,7 @@ exports[`Investigation - Card View renders correctly 1`] = `
                       style="display: flex; justify-content: center;"
                     >
                       <button
-                        class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-1rwt2y5-MuiButtonBase-root-MuiButton-root"
+                        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1rwt2y5-MuiButtonBase-root-MuiButton-root"
                         tabindex="0"
                         type="button"
                       >
@@ -183,7 +183,7 @@ exports[`Investigation - Card View renders correctly 1`] = `
                           data-mui-internal-clone-element="true"
                         >
                           <a
-                            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+                            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
                             href="/browse/investigation/1/dataset"
                           >
                             Test 1
@@ -358,7 +358,7 @@ exports[`Investigation - Card View renders correctly 1`] = `
                               data-mui-internal-clone-element="true"
                             >
                               <a
-                                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+                                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
                                 data-testid="investigation-search-card-doi-link"
                                 href="https://doi.org/doi 1"
                               >
@@ -451,7 +451,7 @@ exports[`Investigation - Card View renders correctly 1`] = `
                               style="display: inherit;"
                             >
                               <button
-                                class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButtonBase-root Mui-disabled tour-dataview-add-to-cart css-zddlty-MuiButtonBase-root-MuiButton-root"
+                                class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation tour-dataview-add-to-cart css-zddlty-MuiButtonBase-root-MuiButton-root"
                                 disabled=""
                                 id="add-to-cart-btn-investigation-1"
                                 tabindex="-1"
@@ -483,7 +483,7 @@ exports[`Investigation - Card View renders correctly 1`] = `
                             >
                               <button
                                 aria-label="buttons.download"
-                                class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButtonBase-root Mui-disabled tour-dataview-download css-zddlty-MuiButtonBase-root-MuiButton-root"
+                                class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation tour-dataview-download css-zddlty-MuiButtonBase-root-MuiButton-root"
                                 disabled=""
                                 id="download-btn-1"
                                 tabindex="-1"

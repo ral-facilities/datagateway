@@ -91,7 +91,6 @@ describe('SearchTabs', () => {
       if (url.includes('count')) {
         return Promise.resolve({ data: 1 });
       } else {
-        console.log('sdakjkjsakldjaksdklad');
         return Promise.resolve({ data: Array(1) });
       }
     });

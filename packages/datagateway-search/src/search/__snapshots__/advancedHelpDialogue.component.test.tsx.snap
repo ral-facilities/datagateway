@@ -5,7 +5,7 @@ exports[`Advanced help dialogue component tests renders correctly 1`] = `
   See all 
   <button
     aria-label="advanced_search_help.search_options_arialabel"
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiLink-button css-1a149pm-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiLink-button css-lozoo2-MuiTypography-root-MuiLink-root"
   >
     search options
   </button>

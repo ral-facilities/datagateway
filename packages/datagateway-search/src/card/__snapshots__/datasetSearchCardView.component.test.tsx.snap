@@ -145,7 +145,7 @@ exports[`Dataset - Card View renders correctly 1`] = `
                           data-mui-internal-clone-element="true"
                         >
                           <a
-                            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+                            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
                             href="/browse/investigation/2/dataset/1/datafile"
                           >
                             Dataset test name
@@ -246,7 +246,7 @@ exports[`Dataset - Card View renders correctly 1`] = `
                               data-mui-internal-clone-element="true"
                             >
                               <a
-                                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+                                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
                                 href="/browse/investigation/2/dataset"
                               >
                                 Investigation test title
@@ -272,7 +272,7 @@ exports[`Dataset - Card View renders correctly 1`] = `
                               style="display: inherit;"
                             >
                               <button
-                                class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButtonBase-root Mui-disabled tour-dataview-add-to-cart css-zddlty-MuiButtonBase-root-MuiButton-root"
+                                class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation tour-dataview-add-to-cart css-zddlty-MuiButtonBase-root-MuiButton-root"
                                 disabled=""
                                 id="add-to-cart-btn-dataset-1"
                                 tabindex="-1"
@@ -304,7 +304,7 @@ exports[`Dataset - Card View renders correctly 1`] = `
                             >
                               <button
                                 aria-label="buttons.download"
-                                class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButtonBase-root Mui-disabled tour-dataview-download css-zddlty-MuiButtonBase-root-MuiButton-root"
+                                class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation tour-dataview-download css-zddlty-MuiButtonBase-root-MuiButton-root"
                                 disabled=""
                                 id="download-btn-1"
                                 tabindex="-1"

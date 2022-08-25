@@ -17,7 +17,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
           class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root tour-search-textfield css-17vbkzs-MuiFormControl-root-MuiTextField-root"
         >
           <label
-            class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorSecondary css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorSecondary css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
             for="filled-search"
             id="filled-search-label"
@@ -25,12 +25,12 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
             searchBox.search_text
           </label>
           <div
-            class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl css-1j0w0ul-MuiInputBase-root-MuiOutlinedInput-root"
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl css-1j0w0ul-MuiInputBase-root-MuiOutlinedInput-root"
           >
             <input
               aria-invalid="false"
               aria-label="searchBox.search_text_arialabel"
-              class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
+              class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
               id="filled-search"
               type="search"
               value=""
@@ -40,7 +40,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
               class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
             >
               <legend
-                class="css-1g8cwq9"
+                class="css-1ftyaf0"
               >
                 <span>
                   searchBox.search_text
@@ -60,26 +60,26 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
             class="MuiFormControl-root tour-search-checkbox css-1joyrxq-MuiFormControl-root"
           >
             <label
-              class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary Mui-error Mui-required css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-error Mui-required css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
               data-shrink="false"
               id="search-entities-checkbox-label"
             >
               searchBox.checkboxes.types
               <span
                 aria-hidden="true"
-                class="MuiInputLabel-asterisk MuiFormLabel-asterisk Mui-error css-wgai2y-MuiFormLabel-asterisk"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk Mui-error css-wgai2y-MuiFormLabel-asterisk"
               >
                  *
               </span>
             </label>
             <div
-              class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary Mui-error MuiInputBase-formControl  css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary Mui-error MuiInputBase-formControl  css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
             >
               <div
                 aria-expanded="false"
                 aria-haspopup="listbox"
                 aria-labelledby="search-entities-checkbox-label search-entities-menu"
-                class="MuiSelect-select MuiSelect-outlined MuiSelect-multiple MuiOutlinedInput-input MuiInputBase-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+                class="MuiSelect-select MuiSelect-outlined MuiSelect-multiple MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
                 id="search-entities-menu"
                 role="button"
                 tabindex="0"
@@ -141,19 +141,42 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
             class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root"
             >
               <input
                 aria-invalid="false"
                 aria-label="searchBox.start_date_arialabel"
-                aria-readonly="true"
-                class="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-                id="mui-1"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
+                id="mui-test-id"
                 placeholder="searchBox.start_date"
-                readonly=""
-                type="text"
+                type="tel"
                 value=""
               />
+              <div
+                class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+              >
+                <button
+                  aria-label="Choose date"
+                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
+                  tabindex="0"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                    data-testid="CalendarIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+                    />
+                  </svg>
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
+                </button>
+              </div>
               <fieldset
                 aria-hidden="true"
                 class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
@@ -175,19 +198,42 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
             class="MuiFormControl-root MuiTextField-root css-zkzemv-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root"
             >
               <input
                 aria-invalid="false"
                 aria-label="searchBox.end_date_arialabel"
-                aria-readonly="true"
-                class="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-                id="mui-3"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
+                id="mui-test-id"
                 placeholder="searchBox.end_date"
-                readonly=""
-                type="text"
+                type="tel"
                 value=""
               />
+              <div
+                class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+              >
+                <button
+                  aria-label="Choose date"
+                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
+                  tabindex="0"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                    data-testid="CalendarIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+                    />
+                  </svg>
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
+                </button>
+              </div>
               <fieldset
                 aria-hidden="true"
                 class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
@@ -217,18 +263,18 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
             class="MuiFormControl-root css-1joyrxq-MuiFormControl-root"
           >
             <label
-              class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
               data-shrink="true"
             >
               sort.label
             </label>
             <div
-              class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl  css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl  css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
             >
               <div
                 aria-expanded="false"
                 aria-haspopup="listbox"
-                class="MuiSelect-select MuiSelect-outlined MuiOutlinedInput-input MuiInputBase-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+                class="MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
                 role="button"
                 tabindex="0"
               >
@@ -256,7 +302,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
                 class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="css-7nxzgd"
+                  class="css-1in441m"
                 >
                   <span>
                     sort.label
@@ -268,54 +314,12 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
         </div>
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
-        style="margin-top: 8px;"
-      >
-        <div
-          style="display: flex; margin-top: 15px;"
-        >
-          <label
-            class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-htrw5s-MuiFormControlLabel-root"
-          >
-            <span
-              class="MuiCheckbox-root MuiCheckbox-colorPrimary MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root Mui-checked css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
-            >
-              <input
-                checked=""
-                class="PrivateSwitchBase-input css-1m9pwf3"
-                data-indeterminate="false"
-                type="checkbox"
-              />
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
-                data-testid="CheckBoxIcon"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                />
-              </svg>
-              <span
-                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-              />
-            </span>
-            <span
-              class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
-            >
-              check_boxes.my_data
-            </span>
-          </label>
-        </div>
-      </div>
-      <div
         class="MuiGrid-root MuiGrid-item css-as8vr-MuiGrid-root"
       >
         <div>
           <button
             aria-label="searchBox.search_button_arialabel"
-            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-fullWidth MuiButtonBase-root  css-189e9pj-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-fullWidth css-189e9pj-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
@@ -335,14 +339,14 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       >
         For example
         <a
-          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-2gylcu-MuiTypography-root-MuiLink-root"
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-gz7hlw-MuiTypography-root-MuiLink-root"
           href="/searchBox.examples_label_link1"
         >
           "instrument calibration"
         </a>
         or 
         <a
-          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-2gylcu-MuiTypography-root-MuiLink-root"
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-gz7hlw-MuiTypography-root-MuiLink-root"
           href="/searchBox.examples_label_link2"
         >
           neutron AND scattering
@@ -350,7 +354,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
         . See all 
         <button
           aria-label="advanced_search_help.search_options_arialabel"
-          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiLink-button css-1a149pm-MuiTypography-root-MuiLink-root"
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiLink-button css-lozoo2-MuiTypography-root-MuiLink-root"
         >
           search options
         </button>
@@ -377,7 +381,7 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
           class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root tour-search-textfield css-17vbkzs-MuiFormControl-root-MuiTextField-root"
         >
           <label
-            class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorSecondary css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorSecondary css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
             for="filled-search"
             id="filled-search-label"
@@ -385,12 +389,12 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
             searchBox.search_text
           </label>
           <div
-            class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl css-1j0w0ul-MuiInputBase-root-MuiOutlinedInput-root"
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl css-1j0w0ul-MuiInputBase-root-MuiOutlinedInput-root"
           >
             <input
               aria-invalid="false"
               aria-label="searchBox.search_text_arialabel"
-              class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
+              class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
               id="filled-search"
               type="search"
               value=""
@@ -400,7 +404,7 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
               class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
             >
               <legend
-                class="css-1g8cwq9"
+                class="css-1ftyaf0"
               >
                 <span>
                   searchBox.search_text
@@ -424,19 +428,42 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
             class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root"
             >
               <input
                 aria-invalid="false"
                 aria-label="searchBox.start_date_arialabel"
-                aria-readonly="true"
-                class="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-                id="mui-1"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
+                id="mui-test-id"
                 placeholder="searchBox.start_date"
-                readonly=""
-                type="text"
+                type="tel"
                 value=""
               />
+              <div
+                class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+              >
+                <button
+                  aria-label="Choose date"
+                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
+                  tabindex="0"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                    data-testid="CalendarIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+                    />
+                  </svg>
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
+                </button>
+              </div>
               <fieldset
                 aria-hidden="true"
                 class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
@@ -458,19 +485,42 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
             class="MuiFormControl-root MuiTextField-root css-zkzemv-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root"
             >
               <input
                 aria-invalid="false"
                 aria-label="searchBox.end_date_arialabel"
-                aria-readonly="true"
-                class="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-                id="mui-3"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
+                id="mui-test-id"
                 placeholder="searchBox.end_date"
-                readonly=""
-                type="text"
+                type="tel"
                 value=""
               />
+              <div
+                class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+              >
+                <button
+                  aria-label="Choose date"
+                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
+                  tabindex="0"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                    data-testid="CalendarIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+                    />
+                  </svg>
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
+                </button>
+              </div>
               <fieldset
                 aria-hidden="true"
                 class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
@@ -500,26 +550,26 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
           class="MuiFormControl-root tour-search-checkbox css-1joyrxq-MuiFormControl-root"
         >
           <label
-            class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary Mui-error Mui-required css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-error Mui-required css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
             id="search-entities-checkbox-label"
           >
             searchBox.checkboxes.types
             <span
               aria-hidden="true"
-              class="MuiInputLabel-asterisk MuiFormLabel-asterisk Mui-error css-wgai2y-MuiFormLabel-asterisk"
+              class="MuiFormLabel-asterisk MuiInputLabel-asterisk Mui-error css-wgai2y-MuiFormLabel-asterisk"
             >
                *
             </span>
           </label>
           <div
-            class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary Mui-error MuiInputBase-formControl  css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary Mui-error MuiInputBase-formControl  css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
           >
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
               aria-labelledby="search-entities-checkbox-label search-entities-menu"
-              class="MuiSelect-select MuiSelect-outlined MuiSelect-multiple MuiOutlinedInput-input MuiInputBase-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+              class="MuiSelect-select MuiSelect-outlined MuiSelect-multiple MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
               id="search-entities-menu"
               role="button"
               tabindex="0"
@@ -580,7 +630,7 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
         <div>
           <button
             aria-label="searchBox.search_button_arialabel"
-            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-fullWidth MuiButtonBase-root  css-189e9pj-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-fullWidth css-189e9pj-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
