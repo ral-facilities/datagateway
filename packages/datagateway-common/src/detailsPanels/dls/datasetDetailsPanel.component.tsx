@@ -9,7 +9,7 @@ import {
   styled,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useDatasetDetails, useDatasetSize } from '../../api/datasets';
+import { useDatasetDetails, useDatasetSize } from '../../api';
 import { Dataset, Entity } from '../../app.types';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 
@@ -46,7 +46,11 @@ const DatasetDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="dls-dataset-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <Tabs
         variant="scrollable"
         textColor="secondary"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Grid, Divider, Tabs, Tab, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useDatasetDetails } from '../../api/datasets';
+import { useDatasetDetails } from '../../api';
 import { Dataset, Entity } from '../../app.types';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -33,7 +33,11 @@ const DatasetDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="isis-dataset-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <Tabs
         variant="scrollable"
         textColor="secondary"

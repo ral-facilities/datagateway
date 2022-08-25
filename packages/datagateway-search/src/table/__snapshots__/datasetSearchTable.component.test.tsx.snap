@@ -10,70 +10,509 @@ exports[`Dataset table component renders Dataset title as a link 1`] = `
 `;
 
 exports[`Dataset table component renders correctly 1`] = `
-Object {
-  "allIds": Array [
-    1,
-  ],
-  "columns": Array [
-    Object {
-      "cellContentRenderer": [Function],
-      "dataKey": "name",
-      "disableSort": true,
-      "label": "datasets.name",
-    },
-    Object {
-      "cellContentRenderer": [Function],
-      "dataKey": "datafileCount",
-      "disableSort": true,
-      "label": "datasets.datafile_count",
-    },
-    Object {
-      "cellContentRenderer": [Function],
-      "dataKey": "investigation.title",
-      "disableSort": true,
-      "label": "datasets.investigation",
-    },
-    Object {
-      "cellContentRenderer": [Function],
-      "dataKey": "startDate",
-      "disableSort": true,
-      "label": "datasets.create_time",
-    },
-    Object {
-      "cellContentRenderer": [Function],
-      "dataKey": "endDate",
-      "disableSort": true,
-      "label": "datasets.modified_time",
-    },
-  ],
-  "data": Array [
-    Object {
-      "endDate": 1564009200000,
-      "id": 1,
-      "investigation.id": 2,
-      "investigation.name": "Investigation test name",
-      "investigation.startDate": 1560121200000,
-      "investigation.title": "Investigation test title",
-      "investigationinstrument": Array [
-        Object {
-          "instrument.id": 4,
-          "instrument.name": "LARMOR",
-        },
-      ],
-      "name": "Dataset test name",
-      "startDate": 1563922800000,
-    },
-  ],
-  "detailsPanel": [Function],
-  "disableSelectAll": false,
-  "loadMoreRows": [Function],
-  "loading": false,
-  "onCheck": [MockFunction],
-  "onSort": [Function],
-  "onUncheck": [MockFunction],
-  "selectedRows": Array [],
-  "shortHeader": true,
-  "sort": Object {},
-  "totalRowCount": 1,
-}
+<DocumentFragment>
+  <div>
+    <div
+      style="overflow: visible; height: 0px; width: 0px;"
+    >
+      <div
+        aria-colcount="7"
+        aria-rowcount="1"
+        class="ReactVirtualized__Table css-dbfe3s"
+        role="grid"
+      >
+        <div
+          class="ReactVirtualized__Table__headerRow"
+          role="row"
+          style="height: 30px; overflow: hidden; padding-right: 0px; width: 500px; display: flex; align-items: center; box-sizing: border-box;"
+        >
+          <div
+            class="ReactVirtualized__Table__headerColumn"
+            role="columnheader"
+            style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 0 0 40px;"
+          >
+            <div
+              class="MuiTableCell-root MuiTableCell-head MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-9idb3z-MuiTableCell-root"
+            >
+              <span
+                aria-label=""
+                class=""
+                data-mui-internal-clone-element="true"
+                style="margin: auto;"
+              >
+                <span
+                  class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary css-1397pu4-MuiButtonBase-root-MuiCheckbox-root"
+                >
+                  <input
+                    aria-label="select all rows"
+                    class="PrivateSwitchBase-input css-1m9pwf3"
+                    data-indeterminate="false"
+                    type="checkbox"
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+                    data-testid="CheckBoxOutlineBlankIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                    />
+                  </svg>
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
+                </span>
+              </span>
+            </div>
+          </div>
+          <div
+            class="ReactVirtualized__Table__headerColumn"
+            role="columnheader"
+            style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 0 0 40px;"
+          >
+            <div
+              class="MuiTableCell-root MuiTableCell-head MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-1p63s8k-MuiTableCell-root"
+            />
+          </div>
+          <div
+            class="ReactVirtualized__Table__headerColumn tour-dataview-filter"
+            role="columnheader"
+            style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+          >
+            <div
+              class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1q1w3ix-MuiTableCell-root"
+            >
+              <div
+                style="overflow: hidden; flex: 1;"
+              >
+                <div
+                  class="MuiBox-root css-k008qs"
+                >
+                  <div
+                    class="MuiBox-root css-12z0wuy"
+                  />
+                  <div
+                    class="MuiBox-root css-0"
+                  >
+                    <p
+                      class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
+                    >
+                      datasets.name
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="react-draggable"
+                style="margin-left: 18px; padding-left: 4px; padding-right: 4px; cursor: col-resize; transform: translate(0px,0px);"
+              >
+                <hr
+                  class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ReactVirtualized__Table__headerColumn tour-dataview-filter"
+            role="columnheader"
+            style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+          >
+            <div
+              class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1q1w3ix-MuiTableCell-root"
+            >
+              <div
+                style="overflow: hidden; flex: 1;"
+              >
+                <div
+                  class="MuiBox-root css-k008qs"
+                >
+                  <div
+                    class="MuiBox-root css-12z0wuy"
+                  />
+                  <div
+                    class="MuiBox-root css-0"
+                  >
+                    <p
+                      class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
+                    >
+                      datasets.datafile_count
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="react-draggable"
+                style="margin-left: 18px; padding-left: 4px; padding-right: 4px; cursor: col-resize; transform: translate(0px,0px);"
+              >
+                <hr
+                  class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ReactVirtualized__Table__headerColumn tour-dataview-filter"
+            role="columnheader"
+            style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+          >
+            <div
+              class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1q1w3ix-MuiTableCell-root"
+            >
+              <div
+                style="overflow: hidden; flex: 1;"
+              >
+                <div
+                  class="MuiBox-root css-k008qs"
+                >
+                  <div
+                    class="MuiBox-root css-12z0wuy"
+                  />
+                  <div
+                    class="MuiBox-root css-0"
+                  >
+                    <p
+                      class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
+                    >
+                      datasets.investigation
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="react-draggable"
+                style="margin-left: 18px; padding-left: 4px; padding-right: 4px; cursor: col-resize; transform: translate(0px,0px);"
+              >
+                <hr
+                  class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ReactVirtualized__Table__headerColumn tour-dataview-filter"
+            role="columnheader"
+            style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+          >
+            <div
+              class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1q1w3ix-MuiTableCell-root"
+            >
+              <div
+                style="overflow: hidden; flex: 1;"
+              >
+                <div
+                  class="MuiBox-root css-k008qs"
+                >
+                  <div
+                    class="MuiBox-root css-12z0wuy"
+                  />
+                  <div
+                    class="MuiBox-root css-0"
+                  >
+                    <p
+                      class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
+                    >
+                      datasets.create_time
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="react-draggable"
+                style="margin-left: 18px; padding-left: 4px; padding-right: 4px; cursor: col-resize; transform: translate(0px,0px);"
+              >
+                <hr
+                  class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ReactVirtualized__Table__headerColumn tour-dataview-filter"
+            role="columnheader"
+            style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+          >
+            <div
+              class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1q1w3ix-MuiTableCell-root"
+            >
+              <div
+                style="overflow: hidden; flex: 1;"
+              >
+                <div
+                  class="MuiBox-root css-k008qs"
+                >
+                  <div
+                    class="MuiBox-root css-12z0wuy"
+                  />
+                  <div
+                    class="MuiBox-root css-0"
+                  >
+                    <p
+                      class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
+                    >
+                      datasets.modified_time
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="react-draggable"
+                style="margin-left: 18px; padding-left: 4px; padding-right: 4px; cursor: col-resize; transform: translate(0px,0px);"
+              >
+                <hr
+                  class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          aria-label="grid"
+          class="ReactVirtualized__Grid ReactVirtualized__Table__Grid"
+          role="rowgroup"
+          style="box-sizing: border-box; direction: ltr; height: 453px; position: relative; width: 500px; will-change: transform; overflow-x: hidden; overflow-y: hidden;"
+          tabindex="-1"
+        >
+          <div
+            class="ReactVirtualized__Grid__innerScrollContainer"
+            role="rowgroup"
+            style="width: auto; height: 30px; max-width: 500px; max-height: 30px; overflow: hidden; position: relative;"
+          >
+            <div
+              aria-rowindex="1"
+              class="ReactVirtualized__Table__row"
+              role="row"
+              style="height: 30px; left: 0px; position: absolute; top: 0px; width: 500px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
+            >
+              <div
+                aria-colindex="1"
+                class="ReactVirtualized__Table__rowColumn"
+                role="gridcell"
+                style="overflow: hidden; display: flex; align-items: center; box-sizing: border-box; flex: 0 0 40px;"
+              >
+                <div
+                  class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-1d793su-MuiTableCell-root"
+                >
+                  <span
+                    aria-label=""
+                    class=""
+                    data-mui-internal-clone-element="true"
+                  >
+                    <span
+                      class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+                      style="padding: inherit;"
+                    >
+                      <input
+                        aria-label="select row 0"
+                        class="PrivateSwitchBase-input css-1m9pwf3"
+                        data-indeterminate="false"
+                        type="checkbox"
+                      />
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+                        data-testid="CheckBoxOutlineBlankIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                        />
+                      </svg>
+                      <span
+                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                      />
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div
+                aria-colindex="2"
+                class="ReactVirtualized__Table__rowColumn"
+                role="gridcell"
+                style="overflow: hidden; display: flex; align-items: center; box-sizing: border-box; flex: 0 0 40px;"
+              >
+                <div
+                  class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-1d793su-MuiTableCell-root"
+                >
+                  <button
+                    aria-label="Show details"
+                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge tour-dataview-expand css-mf1cb5-MuiButtonBase-root-MuiIconButton-root"
+                    tabindex="0"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                      data-testid="ExpandMoreIcon"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                      />
+                    </svg>
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </button>
+                </div>
+              </div>
+              <div
+                aria-colindex="3"
+                class="ReactVirtualized__Table__rowColumn"
+                role="gridcell"
+                style="overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+              >
+                <div
+                  class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-2nbi6w-MuiTableCell-root"
+                >
+                  <p
+                    aria-label="Dataset test name"
+                    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                    data-mui-internal-clone-element="true"
+                  >
+                    <a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+                      href="/browse/investigation/2/dataset/1/datafile"
+                    >
+                      Dataset test name
+                    </a>
+                  </p>
+                  <div
+                    style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                  >
+                    <hr
+                      class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                aria-colindex="4"
+                class="ReactVirtualized__Table__rowColumn"
+                role="gridcell"
+                style="overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+              >
+                <div
+                  class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                >
+                  <p
+                    aria-label=""
+                    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                    data-mui-internal-clone-element="true"
+                  >
+                    1
+                  </p>
+                  <div
+                    style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                  >
+                    <hr
+                      class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                aria-colindex="5"
+                class="ReactVirtualized__Table__rowColumn"
+                role="gridcell"
+                style="overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+              >
+                <div
+                  class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                >
+                  <p
+                    aria-label="Investigation test title"
+                    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                    data-mui-internal-clone-element="true"
+                  >
+                    <a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+                      href="/browse/investigation/2/dataset"
+                    >
+                      Investigation test title
+                    </a>
+                  </p>
+                  <div
+                    style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                  >
+                    <hr
+                      class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                aria-colindex="6"
+                class="ReactVirtualized__Table__rowColumn"
+                role="gridcell"
+                style="overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+              >
+                <div
+                  class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                >
+                  <p
+                    aria-label="24/07/2019"
+                    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                    data-mui-internal-clone-element="true"
+                  >
+                    24/07/2019
+                  </p>
+                  <div
+                    style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                  >
+                    <hr
+                      class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                aria-colindex="7"
+                class="ReactVirtualized__Table__rowColumn"
+                role="gridcell"
+                style="overflow: hidden; flex: 1 1 204.8px; min-width: 84px;"
+              >
+                <div
+                  class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                >
+                  <p
+                    aria-label="25/07/2019"
+                    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                    data-mui-internal-clone-element="true"
+                  >
+                    25/07/2019
+                  </p>
+                  <div
+                    style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                  >
+                    <hr
+                      class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="resize-triggers"
+    >
+      <div
+        class="expand-trigger"
+      >
+        <div
+          style="width: 1px; height: 1px;"
+        />
+      </div>
+      <div
+        class="contract-trigger"
+      />
+    </div>
+  </div>
+</DocumentFragment>
 `;

@@ -56,7 +56,7 @@ function DatasetDatafileCountCell({
  */
 function DatasetSizeCell({ dataset }: { dataset: Dataset }): JSX.Element {
   const result = useDatasetSizes(dataset);
-  return <>{formatCountOrSize(result[0])}</>;
+  return <>{formatCountOrSize(result[0], true)}</>;
 }
 
 export {

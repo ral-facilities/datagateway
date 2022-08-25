@@ -2,87 +2,37 @@ import * as React from 'react';
 import DatasetSearchTable from './datasetSearchTable.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../state/app.types';
+import type { StateType } from '../state/app.types';
 import {
   dGCommonInitialState,
-  DatasetDetailsPanel,
-  ISISDatasetDetailsPanel,
-  DLSDatasetDetailsPanel,
-  useAddToCart,
-  useAllFacilityCycles,
-  useCart,
-  useDatasetsDatafileCount,
-  useDatasetSizes,
-  useLuceneSearchInfinite,
-  useRemoveFromCart,
-  SearchResult,
-  SearchResponse,
-  SearchResultSource,
+  type DownloadCartItem,
+  type LuceneSearchParams,
+  type SearchResponse,
+  type SearchResult,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { mount, ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
-import { createMemoryHistory, History } from 'history';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { createMemoryHistory, type History } from 'history';
 import { Router } from 'react-router-dom';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import axios, { type AxiosResponse } from 'axios';
+import { mockDataset } from '../testData';
+import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import userEvent from '@testing-library/user-event';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+// ====================== FIXTURES ======================
 
-  return {
-    __esModule: true,
-    ...originalModule,
-    useCart: jest.fn(),
-    useLuceneSearchInfinite: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-    useAllFacilityCycles: jest.fn(),
-    useDatasetsDatafileCount: jest.fn(),
-    useDatasetSizes: jest.fn(),
-  };
-});
-
-describe('Dataset table component', () => {
-  const mockStore = configureStore([thunk]);
-  let state: StateType;
-  let history: History;
-
-  let rowData: SearchResultSource;
-  let searchResult: SearchResult;
-  let searchResponse: SearchResponse;
-
-  const createWrapper = (hierarchy?: string): ReactWrapper => {
-    return mount(
-      <Provider store={mockStore(state)}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <DatasetSearchTable hierarchy={hierarchy ?? ''} />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const createRTLWrapper = (hierarchy?: string): RenderResult => {
-    return render(
-      <Provider store={mockStore(state)}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <DatasetSearchTable hierarchy={hierarchy ?? ''} />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  beforeEach(() => {
-    history = createMemoryHistory();
-
-    state = JSON.parse(
-      JSON.stringify({ dgcommon: dGCommonInitialState, dgsearch: initialState })
-    );
-    rowData = {
+const mockSearchResults: SearchResult[] = [
+  {
+    score: 1,
+    id: 1,
+    source: {
       id: 1,
       name: 'Dataset test name',
       startDate: 1563922800000,
@@ -97,410 +47,531 @@ describe('Dataset table component', () => {
       'investigation.title': 'Investigation test title',
       'investigation.name': 'Investigation test name',
       'investigation.startDate': 1560121200000,
-    };
-    searchResult = {
-      score: 1,
-      id: 1,
-      source: rowData,
-    };
+    },
+  },
+];
+
+const mockLuceneSearchParams: LuceneSearchParams = {
+  searchText: '',
+  startDate: null,
+  endDate: null,
+  sort: {},
+  minCount: 10,
+  maxCount: 100,
+  restrict: true,
+  facets: [{ target: 'Dataset' }],
+  filters: {},
+};
+
+// ====================== END FIXTURE ======================
+
+describe('Dataset table component', () => {
+  const mockStore = configureStore([thunk]);
+  let container: HTMLDivElement;
+  let state: StateType;
+  let history: History;
+  let queryClient: QueryClient;
+  let user: UserEvent;
+  let cartItems: DownloadCartItem[];
+
+  let searchResponse: SearchResponse;
+
+  const renderComponent = (hierarchy?: string): RenderResult => {
+    return render(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={queryClient}>
+            <DatasetSearchTable hierarchy={hierarchy ?? ''} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>,
+      { container: document.body.appendChild(container) }
+    );
+  };
+
+  /**
+   * Mock implementation of axios.get
+   */
+  const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
+    console.log('url', url);
+    if (/.*\/user\/cart\/.*$/.test(url)) {
+      // fetchDownloadCart
+      return Promise.resolve({ data: { cartItems } });
+    }
+    if (/.*\/search\/documents$/.test(url)) {
+      // fetchLuceneData
+      return Promise.resolve<Partial<AxiosResponse<SearchResponse>>>({
+        data: searchResponse,
+      });
+    }
+    if (/.*\/facilitycycles$/.test(url)) {
+      // fetchAllFacilityCycles
+      return Promise.resolve({
+        data: [
+          {
+            id: 4,
+            name: 'facility cycle name',
+            startDate: '2000-06-10',
+            endDate: '2020-06-11',
+          },
+        ],
+      });
+    }
+    if (/.*\/datafiles\/count$/.test(url)) {
+      // fetchDatafileCountQuery
+      return Promise.resolve({
+        data: 1,
+      });
+    }
+    if (/.*\/datasets$/.test(url)) {
+      return Promise.resolve({
+        data: [mockDataset],
+      });
+    }
+    if (/.*\/user\/getSize$/.test(url)) {
+      // fetchDatasetSizes
+      return Promise.resolve({
+        data: 1,
+      });
+    }
+    return Promise.reject();
+  };
+
+  beforeEach(() => {
+    user = userEvent.setup();
+    history = createMemoryHistory();
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+    container = document.createElement('div');
+    container.id = 'datagateway-search';
+
+    state = JSON.parse(
+      JSON.stringify({ dgcommon: dGCommonInitialState, dgsearch: initialState })
+    );
+    cartItems = [];
     searchResponse = {
-      results: [searchResult],
+      results: mockSearchResults,
     };
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-    });
-    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [searchResponse] },
-      fetchNextPage: jest.fn(),
-    });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
+
+    queryClient.setQueryData(
+      ['search', 'Dataset', mockLuceneSearchParams],
+      () => ({
+        pages: [searchResponse],
+      })
     );
-    (useDatasetSizes as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
+
+    axios.get = jest.fn().mockImplementation(mockAxiosGet);
+    axios.post = jest.fn().mockImplementation((url: string) => {
+      if (/.*\/user\/cart\/.*\/cartItems$/.test(url)) {
+        return Promise.resolve({ data: { cartItems } });
+      }
+      return Promise.reject();
+    });
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
+  it('renders correctly', async () => {
+    const { asFragment } = renderComponent();
+    // wait for data to finish loading
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    createWrapper();
+  it('should add the selected row to cart', async () => {
+    const addedCartItem: DownloadCartItem = {
+      entityId: 1,
+      entityType: 'dataset',
+      id: 1,
+      name: 'Test 1',
+      parentEntities: [],
+    };
 
-    expect(useCart).toHaveBeenCalled();
-    expect(useLuceneSearchInfinite).toHaveBeenCalledWith(
-      'Dataset',
+    renderComponent();
+
+    // wait for data to finish loading
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
+
+    // pretend the server has added the row to the cart
+    // create a new array to trigger useMemo update
+    cartItems = [...cartItems, addedCartItem];
+
+    // clicks on the row checkbox
+    await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
+
+    // the checkbox should be checked
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).toBeChecked();
+  });
+
+  it('should remove the selected row from cart if it is in the cart', async () => {
+    const addedCartItem: DownloadCartItem = {
+      entityId: 1,
+      entityType: 'dataset',
+      id: 1,
+      name: 'Test 1',
+      parentEntities: [],
+    };
+
+    cartItems.push(addedCartItem);
+
+    renderComponent();
+
+    // wait for data to finish loading
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
+
+    // pretend the server has removed the item from the cart
+    // create a new array to trigger useMemo update
+    cartItems = [];
+
+    // clicks on the row checkbox
+    await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
+
+    // the checkbox should be checked
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).not.toBeChecked();
+  });
+
+  it('selected rows only considers relevant cart items', async () => {
+    cartItems = [
       {
-        searchText: '',
-        startDate: null,
-        endDate: null,
-        maxCount: 100,
-        minCount: 10,
-        restrict: true,
-        sort: {},
-        facets: [
-          {
-            target: 'Dataset',
-          },
-        ],
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
       },
-      {}
-    );
+      {
+        entityId: 2,
+        entityType: 'dataset',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
 
-    expect(useAddToCart).toHaveBeenCalledWith('dataset');
-    expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith([rowData]);
-    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
+    renderComponent();
+
+    const selectAllCheckbox = await screen.findByRole('checkbox', {
+      name: 'select all rows',
+    });
+
+    expect(selectAllCheckbox).not.toBeChecked();
+    expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('calls fetchNextPage function of useLuceneSearchInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [searchResponse] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
-    });
-
-    // useLuceneSearchInfinite handles the parameters itself, so startIndex/stopIndex are not used
-    expect(fetchNextPage).toHaveBeenCalledWith();
-  });
-
-  it('calls addToCart mutate function on unchecked checkbox click', () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: addToCart,
-      loading: false,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
-
-    expect(addToCart).toHaveBeenCalledWith([1]);
-  });
-
-  it('calls removeFromCart mutate function on checked checkbox click', () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
-
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: removeFromCart,
-      loading: false,
-    });
-
-    const wrapper = createWrapper();
-
-    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
-
-    expect(removeFromCart).toHaveBeenCalledWith([1]);
-  });
-
-  it('selected rows only considers relevant cart items', () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-        {
-          entityId: 2,
-          entityType: 'dataset',
-          id: 2,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
-
-    const wrapper = createWrapper();
-
-    const selectAllCheckbox = wrapper
-      .find('[aria-label="select all rows"]')
-      .first();
-
-    expect(selectAllCheckbox.prop('checked')).toEqual(false);
-    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
-  });
-
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
     state.dgsearch.selectAllSetting = false;
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
-  });
-
-  it('displays generic details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
-
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('displays correct details panel for ISIS when expanded', () => {
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('checkbox', { name: 'select all rows' })
+      ).toBeNull();
     });
+  });
 
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+  it('displays generic details panel when expanded', async () => {
+    renderComponent();
 
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
 
-    wrapper.find('#dataset-datafiles-tab').last().simulate('click');
+    expect(
+      await screen.findByTestId('dataset-details-panel')
+    ).toBeInTheDocument();
+  });
+
+  it('displays correct details panel for ISIS when expanded', async () => {
+    renderComponent('isis');
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    expect(
+      await screen.findByTestId('isis-dataset-details-panel')
+    ).toBeInTheDocument();
+  });
+
+  it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
+    renderComponent('isis');
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'datasets.details.datafiles',
+      })
+    );
+
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
     );
   });
 
-  it('displays correct details panel for DLS when expanded', () => {
-    const wrapper = createWrapper('dls');
-    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+  it('displays correct details panel for DLS when expanded', async () => {
+    renderComponent('dls');
 
-    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    expect(
+      await screen.findByTestId('dls-dataset-details-panel')
+    ).toBeInTheDocument();
   });
 
-  it('renders Dataset title as a link', () => {
-    const wrapper = createRTLWrapper();
+  it('renders Dataset title as a link', async () => {
+    renderComponent();
 
-    expect(wrapper.getByText('Dataset test name')).toMatchSnapshot();
+    expect(
+      await screen.findByRole('link', { name: 'Dataset test name' })
+    ).toBeInTheDocument();
   });
 
   it('renders fine with incomplete data', () => {
     // this can happen when navigating between tables and the previous table's state still exists
-    rowData = {
-      id: 1,
-      name: 'test',
+    searchResponse = {
+      results: [
+        {
+          ...mockSearchResults[0],
+          source: {
+            id: 1,
+            name: 'test',
+          },
+        },
+      ],
     };
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 
-  it('renders generic link & pending count correctly', () => {
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
-    const wrapper = createWrapper('data');
+  it('renders generic link & pending count correctly', async () => {
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (/.*\/datafiles\/count$/.test(url)) {
+        return new Promise((_) => {
+          // never resolve the promise to pretend it is loading
+        });
+      }
+      return mockAxiosGet(url);
+    });
 
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/investigation/2/dataset/1/datafile`
-    );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
-    expect(wrapper.find('[aria-colindex=4]').text()).toEqual('Calculating...');
+    renderComponent('data');
+
+    expect(
+      await screen.findByRole('link', { name: 'Dataset test name' })
+    ).toHaveAttribute('href', '/browse/investigation/2/dataset/1/datafile');
+    expect(await screen.findByText('Calculating...')).toBeInTheDocument();
   });
 
-  it('renders DLS link correctly', () => {
-    const wrapper = createWrapper('dls');
+  it('renders DLS link correctly', async () => {
+    renderComponent('dls');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+    expect(
+      await screen.findByRole('link', { name: 'Dataset test name' })
+    ).toHaveAttribute(
+      'href',
       '/browse/proposal/Investigation test name/investigation/2/dataset/1/datafile'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
   });
 
-  it('renders ISIS link & file sizes correctly', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 6,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
+  it('renders ISIS link & file sizes correctly', async () => {
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (/.*\/facilitycycles$/.test(url)) {
+        return Promise.resolve({
+          data: [
+            {
+              id: 6,
+              name: 'facility cycle name',
+              startDate: '2000-06-10',
+              endDate: '2020-06-11',
+            },
+          ],
+        });
+      }
+      return mockAxiosGet(url);
     });
 
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
-    expect(useDatasetSizes).toHaveBeenCalledWith([rowData]);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
-
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`
-    );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
-    expect(wrapper.find('[aria-colindex=4]').text()).toEqual('1 B');
+    expect(
+      await screen.findByRole('link', { name: 'Dataset test name' })
+    ).toBeInTheDocument();
+    expect(await screen.findByText('1 B')).toBeInTheDocument();
   });
 
-  it('does not render ISIS link when instrumentId cannot be found', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
+  it('does not render ISIS link when instrumentId cannot be found', async () => {
+    const { investigationinstrument, ...data } = mockSearchResults[0].source;
+    searchResponse = {
+      results: [
         {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
+          ...mockSearchResults[0],
+          source: data,
         },
       ],
+    };
+
+    renderComponent('isis');
+
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
     });
-    delete rowData.investigationinstrument;
-
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
+    expect(await screen.findByText('1 B')).toBeInTheDocument();
   });
 
-  it('does not render ISIS link when facilityCycleId cannot be found', () => {
-    const wrapper = createWrapper('isis');
+  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    renderComponent('isis');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
+    });
   });
 
-  it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
+  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
+    (axios.get as jest.Mock).mockImplementation((url: string) => {
+      if (/.*\/facilitycycles$/.test(url)) {
+        return Promise.resolve({
+          data: [
+            {
+              id: 2,
+              name: 'facility cycle name',
+              startDate: '2020-06-11',
+              endDate: '2000-06-10',
+            },
+          ],
+        });
+      }
+      return mockAxiosGet(url);
+    });
+
+    renderComponent('isis');
+
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
+    });
+  });
+
+  it('displays only the dataset name when there is no generic investigation to link to', async () => {
+    const data = { ...mockSearchResults[0].source };
+    delete data['investigation.id'];
+    delete data['investigation.name'];
+    delete data['investigation.title'];
+    delete data['investigation.startDate'];
+    searchResponse = {
+      results: [
         {
-          id: 2,
-          name: 'facility cycle name',
-          startDate: '2020-06-11',
-          endDate: '2000-06-10',
+          ...mockSearchResults[0],
+          source: data,
         },
       ],
+    };
+    queryClient.setQueryData(
+      ['search', 'Dataset', mockLuceneSearchParams],
+      () => ({
+        pages: [searchResponse],
+      })
+    );
+
+    renderComponent('data');
+
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
     });
-
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
   });
 
-  it('displays only the dataset name when there is no generic investigation to link to', () => {
-    delete rowData['investigation.id'];
-    delete rowData['investigation.name'];
-    delete rowData['investigation.title'];
-    delete rowData['investigation.startDate'];
-
-    const wrapper = createWrapper('data');
-
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
-  });
-
-  it('displays only the dataset name when there is no DLS investigation to link to', () => {
-    delete rowData['investigation.id'];
-    delete rowData['investigation.name'];
-    delete rowData['investigation.title'];
-    delete rowData['investigation.startDate'];
-
-    const wrapper = createWrapper('dls');
-
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
-  });
-
-  it('displays only the dataset name when there is no ISIS investigation to link to', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
+  it('displays only the dataset name when there is no DLS investigation to link to', async () => {
+    const data = { ...mockSearchResults[0].source };
+    delete data['investigation.id'];
+    delete data['investigation.name'];
+    delete data['investigation.title'];
+    delete data['investigation.startDate'];
+    searchResponse = {
+      results: [
         {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
+          ...mockSearchResults[0],
+          source: data,
         },
       ],
-    });
-    delete rowData['investigation.id'];
-    delete rowData['investigation.name'];
-    delete rowData['investigation.title'];
-    delete rowData['investigation.startDate'];
-
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
+    };
+    queryClient.setQueryData(
+      ['search', 'Dataset', mockLuceneSearchParams],
+      () => ({
+        pages: [searchResponse],
+      })
     );
+    renderComponent('dls');
+
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
+    });
+  });
+
+  it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
+    const data = { ...mockSearchResults[0].source };
+    delete data['investigation.id'];
+    delete data['investigation.name'];
+    delete data['investigation.title'];
+    delete data['investigation.startDate'];
+    searchResponse = {
+      results: [
+        {
+          ...mockSearchResults[0],
+          source: data,
+        },
+      ],
+    };
+    queryClient.setQueryData(
+      ['search', 'Dataset', mockLuceneSearchParams],
+      () => ({
+        pages: [searchResponse],
+      })
+    );
+    renderComponent('isis');
+
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
+    });
   });
 });

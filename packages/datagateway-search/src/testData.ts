@@ -1,6 +1,6 @@
 // Defines test data used for testing
 
-import type { Investigation } from 'datagateway-common';
+import type { Dataset, Investigation } from 'datagateway-common';
 
 const mockInvestigation: Investigation = {
   id: 1,
@@ -9,4 +9,11 @@ const mockInvestigation: Investigation = {
   visitId: '1',
 };
 
-export { mockInvestigation };
+const mockDataset: Dataset = {
+  createTime: '',
+  id: 1,
+  modTime: '',
+  name: 'Test dataset name',
+};
+
+export { mockDataset, mockInvestigation };
