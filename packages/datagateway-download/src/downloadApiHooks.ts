@@ -741,26 +741,28 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
 
 /**
  * Queries the progress of a {@link Download}.
- * @param prepareId The prepare ID of the {@link Download}.
+ * @param download The {@link Download} that this query should query the restore progress of.
  * @param queryOptions Optional `useQuery` option override.
  */
 export const useDownloadPercentageComplete = <T = DownloadProgress>({
-  preparedId,
+  download,
   ...queryOptions
-}: { preparedId: string } & UseQueryOptions<
+}: { download: Download } & UseQueryOptions<
   DownloadProgress,
   AxiosError,
   T,
   string[]
 >): UseQueryResult<T, AxiosError> => {
-  const { idsUrl } = React.useContext(DownloadSettingsContext);
+  const { accessMethods } = React.useContext(DownloadSettingsContext);
+  const preparedId = download.preparedId;
+  const idsUrl = accessMethods[download.transport]?.idsUrl;
 
   return useQuery(
     [QueryKey.DOWNLOAD_PROGRESS, preparedId],
     () =>
       getPercentageComplete({
         preparedId: preparedId,
-        settings: { idsUrl },
+        settings: { idsUrl: idsUrl ?? '' },
       }),
     {
       onError: (error) => {

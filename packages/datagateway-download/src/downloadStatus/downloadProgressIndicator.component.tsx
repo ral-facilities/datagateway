@@ -22,10 +22,8 @@ function DownloadProgressIndicator({
     data: progress,
     isLoading: isLoadingProgress,
   } = useDownloadPercentageComplete({
-    preparedId: download?.preparedId ?? '',
-    enabled:
-      Boolean(download?.preparedId) &&
-      (download?.status === 'RESTORING' || download?.status === 'PAUSED'),
+    download,
+    enabled: download.status === 'RESTORING' || download.status === 'PAUSED',
   });
 
   if (isLoadingProgress) {
