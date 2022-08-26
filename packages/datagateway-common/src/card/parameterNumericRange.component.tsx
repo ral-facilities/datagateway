@@ -16,12 +16,8 @@ export const ParameterNumericRange = (
 ): React.ReactElement => {
   const [t] = useTranslation();
 
-  const {
-    entityName,
-    parameterTypeName,
-    changeFilter,
-    setFilterUpdate,
-  } = props;
+  const { entityName, parameterTypeName, changeFilter, setFilterUpdate } =
+    props;
 
   const [units, setUnits] = React.useState('');
   const [min, setMin] = React.useState('');

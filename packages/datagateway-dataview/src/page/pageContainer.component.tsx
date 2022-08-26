@@ -510,9 +510,10 @@ const DataviewPageContainer: React.FC = () => {
   const location = useLocation();
   const { push } = useHistory();
   const prevLocationRef = React.useRef(location);
-  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const { view } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const [totalDataCount, setTotalDataCount] = React.useState(0);
 
   // exclude size and count queries from showing the linear progress bar for performance
@@ -607,9 +608,10 @@ const DataviewPageContainer: React.FC = () => {
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
 
-  const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const { filters } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
 
   const dlsDefaultFilters = {
     startDate: {

@@ -60,13 +60,10 @@ const InvestigationTable = (): React.ReactElement => {
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'investigation'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('investigation');
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('investigation');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('investigation');
 
   /* istanbul ignore next */
   const aggregatedData: Investigation[] = React.useMemo(() => {

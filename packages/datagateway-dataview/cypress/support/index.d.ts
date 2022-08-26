@@ -5,6 +5,7 @@ declare namespace Cypress {
       password: string;
       mechanism: string;
     }): Cypress.Chainable<Cypress.Response>;
+
     clearDownloadCart(): Cypress.Chainable<Cypress.Response>;
   }
 }

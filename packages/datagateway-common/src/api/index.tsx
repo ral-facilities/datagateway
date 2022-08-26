@@ -350,10 +350,8 @@ export const usePushInvestigationFilter = (): ((
         };
       } else {
         // if filter is null, user no longer wants to filter by that column so remove column from filter state
-        const {
-          ['investigation.' + filterKey]: filter,
-          ...rest
-        } = query.filters;
+        const { ['investigation.' + filterKey]: filter, ...rest } =
+          query.filters;
         query = {
           ...query,
           filters: {

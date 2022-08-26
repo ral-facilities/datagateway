@@ -16,13 +16,8 @@ interface ParameterFiltersProps {
 }
 
 const ParameterFilters = (props: ParameterFiltersProps): React.ReactElement => {
-  const {
-    entityName,
-    parameterNames,
-    allIds,
-    changeFilter,
-    setFilterUpdate,
-  } = props;
+  const { entityName, parameterNames, allIds, changeFilter, setFilterUpdate } =
+    props;
 
   const [parameterFilters, setParameterFilters] = React.useState<
     ParameterValueFilter[]

@@ -20,88 +20,86 @@ type SelectCellProps = TableCellProps & {
   loading: boolean;
 };
 
-const SelectCell = React.memo(
-  (props: SelectCellProps): React.ReactElement => {
-    const {
-      sx,
-      selectedRows,
-      data,
-      onCheck,
-      onUncheck,
-      lastChecked,
-      setLastChecked,
-      rowData,
-      rowIndex,
-      loading,
-    } = props;
-    const { t } = useTranslation();
+const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
+  const {
+    sx,
+    selectedRows,
+    data,
+    onCheck,
+    onUncheck,
+    lastChecked,
+    setLastChecked,
+    rowData,
+    rowIndex,
+    loading,
+  } = props;
+  const { t } = useTranslation();
 
-    return (
-      <TableCell
-        size="small"
-        padding="checkbox"
-        component="div"
-        sx={sx}
-        variant="body"
+  return (
+    <TableCell
+      size="small"
+      padding="checkbox"
+      component="div"
+      sx={sx}
+      variant="body"
+    >
+      <StyledTooltip
+        title={
+          !loading && typeof selectedRows === 'undefined'
+            ? t<string, string>('buttons.cart_loading_failed_tooltip')
+            : loading
+            ? t<string, string>('buttons.cart_loading_tooltip')
+            : ''
+        }
+        placement="right"
       >
-        <StyledTooltip
-          title={
-            !loading && typeof selectedRows === 'undefined'
-              ? t<string, string>('buttons.cart_loading_failed_tooltip')
-              : loading
-              ? t<string, string>('buttons.cart_loading_tooltip')
-              : ''
-          }
-          placement="right"
-        >
-          <span>
-            <Checkbox
-              className="tour-dataview-add-to-cart"
-              // have to inherit as the padding="checkbox" is on the span
-              style={{ padding: 'inherit' }}
-              checked={selectedRows?.includes(rowData.id)}
-              inputProps={{
-                'aria-label': `select row ${rowIndex}`,
-              }}
-              disabled={loading || typeof selectedRows === 'undefined'}
-              icon={<CheckBoxOutlineBlank fontSize="small" />}
-              checkedIcon={<CheckBoxIcon fontSize="small" />}
-              size="small"
-              onClick={(event) => {
-                if (event.shiftKey) {
-                  const shiftClickedRows = Array(
-                    Math.abs(rowIndex - lastChecked) + 1
-                  )
-                    .fill(Math.min(rowIndex, lastChecked))
-                    .map((value, index) => {
-                      const icatEntity = data[value + index] as ICATEntity;
-                      return icatEntity.id;
-                    });
+        <span>
+          <Checkbox
+            className="tour-dataview-add-to-cart"
+            // have to inherit as the padding="checkbox" is on the span
+            style={{ padding: 'inherit' }}
+            checked={selectedRows?.includes(rowData.id)}
+            inputProps={{
+              'aria-label': `select row ${rowIndex}`,
+            }}
+            disabled={loading || typeof selectedRows === 'undefined'}
+            icon={<CheckBoxOutlineBlank fontSize="small" />}
+            checkedIcon={<CheckBoxIcon fontSize="small" />}
+            size="small"
+            onClick={(event) => {
+              if (event.shiftKey) {
+                const shiftClickedRows = Array(
+                  Math.abs(rowIndex - lastChecked) + 1
+                )
+                  .fill(Math.min(rowIndex, lastChecked))
+                  .map((value, index) => {
+                    const icatEntity = data[value + index] as ICATEntity;
+                    return icatEntity.id;
+                  });
 
-                  if (selectedRows?.includes(rowData.id)) {
-                    onUncheck(shiftClickedRows);
-                  } else {
-                    onCheck(shiftClickedRows);
-                  }
+                if (selectedRows?.includes(rowData.id)) {
+                  onUncheck(shiftClickedRows);
                 } else {
-                  // The id that comes from Lucene is a string
-                  let id = rowData.id;
-                  if (typeof id !== 'number') id = Number(id);
-                  if (selectedRows?.includes(id)) {
-                    onUncheck([id]);
-                  } else {
-                    onCheck([id]);
-                  }
+                  onCheck(shiftClickedRows);
                 }
-                setLastChecked(rowIndex);
-              }}
-            />
-          </span>
-        </StyledTooltip>
-      </TableCell>
-    );
-  }
-);
+              } else {
+                // The id that comes from Lucene is a string
+                let id = rowData.id;
+                if (typeof id !== 'number') id = Number(id);
+                if (selectedRows?.includes(id)) {
+                  onUncheck([id]);
+                } else {
+                  onCheck([id]);
+                }
+              }
+              setLastChecked(rowIndex);
+            }}
+          />
+        </span>
+      </StyledTooltip>
+    </TableCell>
+  );
+});
 SelectCell.displayName = 'SelectCell';
 
 export default SelectCell;
