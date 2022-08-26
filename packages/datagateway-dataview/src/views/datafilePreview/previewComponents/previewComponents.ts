@@ -26,7 +26,7 @@ interface PreviewComponentProps {
  * The component should respond to zoom level changes
  * and adjust the size of the preview accordingly.
  * The current zoom level is stored at
- * `dgdatagateway.isisDatafilePreviewer.zoomLevel`.
+ * `dgdatagateway.datafilePreviewer.zoomLevel`.
  *
  * The zoom level is percentage based. For example, 100% maps to 100,
  * 110% maps to 110, 80% maps to 80.

@@ -185,7 +185,7 @@ describe('ActionButtons', () => {
       })
     );
 
-    expect(store.getState().dgdataview.isisDatafilePreviewer.zoomLevel).toEqual(
+    expect(store.getState().dgdataview.datafilePreviewer.zoomLevel).toEqual(
       110
     );
   });
@@ -199,9 +199,7 @@ describe('ActionButtons', () => {
       })
     );
 
-    expect(store.getState().dgdataview.isisDatafilePreviewer.zoomLevel).toEqual(
-      90
-    );
+    expect(store.getState().dgdataview.datafilePreviewer.zoomLevel).toEqual(90);
   });
 
   describe('should have a reset zoom button', () => {
@@ -231,9 +229,9 @@ describe('ActionButtons', () => {
         })
       );
 
-      expect(
-        store.getState().dgdataview.isisDatafilePreviewer.zoomLevel
-      ).toEqual(100);
+      expect(store.getState().dgdataview.datafilePreviewer.zoomLevel).toEqual(
+        100
+      );
       await waitFor(() => {
         expect(
           screen.queryByRole('button', {

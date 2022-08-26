@@ -30,8 +30,8 @@ function toggleDatafilePreviewerDetailsPane(
 ): DGDataViewState {
   return {
     ...state,
-    isisDatafilePreviewer: {
-      ...state.isisDatafilePreviewer,
+    datafilePreviewer: {
+      ...state.datafilePreviewer,
       isDetailsPaneShown: payload.shouldShow,
     },
   };
@@ -42,10 +42,10 @@ function incDatafilePreviewerZoomLevel(
 ): DGDataViewState {
   return {
     ...state,
-    isisDatafilePreviewer: {
-      ...state.isisDatafilePreviewer,
+    datafilePreviewer: {
+      ...state.datafilePreviewer,
       zoomLevel:
-        state.isisDatafilePreviewer.zoomLevel +
+        state.datafilePreviewer.zoomLevel +
         DATAFILE_PREVIEWER_DEFAULT.zoomLevelStep,
     },
   };
@@ -56,13 +56,13 @@ function decDatafilePreviewerZoomLevel(
 ): DGDataViewState {
   return {
     ...state,
-    isisDatafilePreviewer: {
-      ...state.isisDatafilePreviewer,
+    datafilePreviewer: {
+      ...state.datafilePreviewer,
       // zoom level should not go lower than zoomLevelStep
       // otherwise will result in zoom level <= 0.
       zoomLevel: Math.max(
         DATAFILE_PREVIEWER_DEFAULT.minZoomLevel,
-        state.isisDatafilePreviewer.zoomLevel -
+        state.datafilePreviewer.zoomLevel -
           DATAFILE_PREVIEWER_DEFAULT.zoomLevelStep
       ),
     },
@@ -74,8 +74,8 @@ function resetDatafilePreviewerZoomLevel(
 ): DGDataViewState {
   return {
     ...state,
-    isisDatafilePreviewer: {
-      ...state.isisDatafilePreviewer,
+    datafilePreviewer: {
+      ...state.datafilePreviewer,
       zoomLevel: DATAFILE_PREVIEWER_DEFAULT.zoomLevel,
     },
   };

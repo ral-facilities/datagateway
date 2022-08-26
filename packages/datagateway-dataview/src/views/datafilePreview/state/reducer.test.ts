@@ -17,7 +17,7 @@ describe('Datafile previewer reducers', () => {
       pluginHost: '',
       selectAllSetting: false,
       settingsLoaded: false,
-      isisDatafilePreviewer: {
+      datafilePreviewer: {
         zoomLevel: 100,
         isDetailsPaneShown: false,
       },
@@ -92,7 +92,7 @@ describe('Datafile previewer reducers', () => {
         pluginHost: '',
         selectAllSetting: false,
         settingsLoaded: false,
-        isisDatafilePreviewer: {
+        datafilePreviewer: {
           zoomLevel: 80,
           isDetailsPaneShown: false,
         },

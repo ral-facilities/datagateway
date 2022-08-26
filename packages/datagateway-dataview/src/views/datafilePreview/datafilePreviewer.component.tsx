@@ -137,7 +137,7 @@ function DatafilePreviewer({
   const [t] = useTranslation();
   const theme = useTheme();
   const isDetailsPaneShown = useSelector<StateType, boolean>(
-    (state) => state.dgdataview.isisDatafilePreviewer.isDetailsPaneShown
+    (state) => state.dgdataview.datafilePreviewer.isDetailsPaneShown
   );
   const [isDetailsPaneGridVisible, setIsDetailsPaneGridVisible] =
     React.useState(isDetailsPaneShown);

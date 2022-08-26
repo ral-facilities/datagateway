@@ -42,7 +42,7 @@ function ActionButtons(): JSX.Element {
   // zoom level is considered changed if it is different from the default zoom level.
   const isZoomLevelChanged = useSelector<StateType, boolean>(
     (state) =>
-      state.dgdataview.isisDatafilePreviewer.zoomLevel !==
+      state.dgdataview.datafilePreviewer.zoomLevel !==
       DATAFILE_PREVIEWER_DEFAULT.zoomLevel
   );
   const [t] = useTranslation();

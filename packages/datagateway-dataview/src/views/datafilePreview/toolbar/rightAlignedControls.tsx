@@ -22,11 +22,11 @@ import {
  */
 function RightAlignedControls(): JSX.Element {
   const isDetailsPanelShown = useSelector<StateType, boolean>(
-    (state) => state.dgdataview.isisDatafilePreviewer.isDetailsPaneShown
+    (state) => state.dgdataview.datafilePreviewer.isDetailsPaneShown
   );
   // the current zoom level in %
   const zoomLevel = useSelector<StateType, number>(
-    (state) => state.dgdataview.isisDatafilePreviewer.zoomLevel
+    (state) => state.dgdataview.datafilePreviewer.zoomLevel
   );
   const zoomLevelChipRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();

@@ -27,7 +27,7 @@ describe('useScrollToZoom', () => {
 
   beforeEach(() => {
     state = {
-      isisDatafilePreviewer: {
+      datafilePreviewer: {
         zoomLevel: 1,
       },
     };

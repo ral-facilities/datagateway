@@ -25,7 +25,7 @@ export const initialState: DGDataViewState = {
   selectAllSetting: true,
   pluginHost: '',
   facilityImageURL: '',
-  isisDatafilePreviewer: datafilePreviewerInitialState,
+  datafilePreviewer: datafilePreviewerInitialState,
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {

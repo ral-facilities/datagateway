@@ -59,7 +59,7 @@ function TxtPreview({
   // 110% zoom = base font size * 110%
   const fontSize = useSelector<StateType, number>((state) =>
     Math.round(
-      (BASE_FONT_SIZE * state.dgdataview.isisDatafilePreviewer.zoomLevel) / 100
+      (BASE_FONT_SIZE * state.dgdataview.datafilePreviewer.zoomLevel) / 100
     )
   );
   const [t] = useTranslation();

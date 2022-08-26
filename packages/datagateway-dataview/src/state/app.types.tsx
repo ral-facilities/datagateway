@@ -14,7 +14,7 @@ export interface DGDataViewState {
   settingsLoaded: boolean;
   selectAllSetting: boolean;
   pluginHost: string;
-  isisDatafilePreviewer: DatafilePreviewerState;
+  datafilePreviewer: DatafilePreviewerState;
 }
 
 export interface EntityCache {
