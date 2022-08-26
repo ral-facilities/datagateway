@@ -166,9 +166,7 @@ describe('Download Cart API react-query hooks test', () => {
 
       expect(result.current.data).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
-      expect(
-        axios.delete
-      ).toHaveBeenCalledWith(
+      expect(axios.delete).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: '*' } }
       );
@@ -197,9 +195,7 @@ describe('Download Cart API react-query hooks test', () => {
 
       await waitFor(() => result.current.isError, { timeout: 2000 });
 
-      expect(
-        axios.delete
-      ).toHaveBeenCalledWith(
+      expect(axios.delete).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: '*' } }
       );
@@ -236,9 +232,7 @@ describe('Download Cart API react-query hooks test', () => {
 
       expect(result.current.data).toEqual([]);
       expect(axios.delete).toHaveBeenCalled();
-      expect(
-        axios.delete
-      ).toHaveBeenCalledWith(
+      expect(axios.delete).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: 'datafile 1' } }
       );
@@ -267,9 +261,7 @@ describe('Download Cart API react-query hooks test', () => {
 
       await waitFor(() => result.current.isError, { timeout: 2000 });
 
-      expect(
-        axios.delete
-      ).toHaveBeenCalledWith(
+      expect(axios.delete).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: 'investigation 1' } }
       );
@@ -1236,7 +1228,7 @@ describe('Download Cart API react-query hooks test', () => {
       const { result, waitFor } = renderHook(
         () =>
           useDownloadPercentageComplete({
-            preparedId: '123',
+            download: mockDownloadItems[0],
           }),
         {
           wrapper: createReactQueryWrapper(),
@@ -1255,7 +1247,7 @@ describe('Download Cart API react-query hooks test', () => {
       const { result, waitFor } = renderHook(
         () =>
           useDownloadPercentageComplete({
-            preparedId: '3213',
+            download: mockDownloadItems[0],
           }),
         {
           wrapper: createReactQueryWrapper(),
@@ -1274,7 +1266,7 @@ describe('Download Cart API react-query hooks test', () => {
       const { result, waitFor } = renderHook(
         () =>
           useDownloadPercentageComplete({
-            preparedId: '34',
+            download: mockDownloadItems[0],
           }),
         {
           wrapper: createReactQueryWrapper(),
@@ -1282,9 +1274,12 @@ describe('Download Cart API react-query hooks test', () => {
       );
       await waitFor(() => result.current.isError);
 
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
+      expect(handleICATError).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        false
+      );
     });
   });
 });

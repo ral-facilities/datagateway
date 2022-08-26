@@ -45,10 +45,8 @@ const InvestigationCardView = (): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useInvestigationCount();
+  const { data: totalDataCount, isLoading: countLoading } =
+    useInvestigationCount();
 
   const { isLoading: dataLoading, data } = useInvestigationsPaginated([
     {

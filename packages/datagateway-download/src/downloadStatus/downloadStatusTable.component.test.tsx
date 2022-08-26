@@ -311,9 +311,9 @@ describe('Download Status Table', () => {
   }, 10000);
 
   it('should show download progress ui if enabled', async () => {
-    (getPercentageComplete as jest.MockedFunction<
-      typeof getPercentageComplete
-    >).mockResolvedValue(20);
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(20);
 
     renderComponent({
       settings: {
@@ -329,8 +329,12 @@ describe('Download Status Table', () => {
     ).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByRole('progressbar')).toBeInTheDocument();
-      expect(screen.getByText('20%')).toBeInTheDocument();
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('20%')) {
+        expect(progressText).toBeInTheDocument();
+      }
     });
   });
 });

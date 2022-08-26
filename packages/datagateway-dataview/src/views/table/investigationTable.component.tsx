@@ -60,18 +60,23 @@ const InvestigationTable = (): React.ReactElement => {
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'investigation'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('investigation');
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('investigation');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('investigation');
 
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Investigation[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if (data instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const selectedRows = React.useMemo(
     () =>

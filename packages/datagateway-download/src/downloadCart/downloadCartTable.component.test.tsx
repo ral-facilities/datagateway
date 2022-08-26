@@ -57,9 +57,11 @@ const createTestQueryClient = (): QueryClient =>
 const renderComponent = (): RenderResult =>
   render(
     <QueryClientProvider client={createTestQueryClient()}>
-      <Router history={createMemoryHistory()}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </Router>
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <Router history={createMemoryHistory()}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </Router>
+      </DownloadSettingsContext.Provider>
     </QueryClientProvider>
   );
 
@@ -82,24 +84,26 @@ describe('Download cart table component', () => {
     holder.setAttribute('id', 'datagateway-download');
     document.body.appendChild(holder);
 
-    (fetchDownloadCart as jest.MockedFunction<
-      typeof fetchDownloadCart
-    >).mockResolvedValue(mockCartItems);
-    (removeAllDownloadCartItems as jest.MockedFunction<
-      typeof removeAllDownloadCartItems
-    >).mockResolvedValue(null);
-    (removeFromCart as jest.MockedFunction<
-      typeof removeFromCart
-    >).mockImplementation((entityType, entityIds) => {
+    (
+      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
+    ).mockResolvedValue(mockCartItems);
+    (
+      removeAllDownloadCartItems as jest.MockedFunction<
+        typeof removeAllDownloadCartItems
+      >
+    ).mockResolvedValue(undefined);
+    (
+      removeFromCart as jest.MockedFunction<typeof removeFromCart>
+    ).mockImplementation((entityType, entityIds) => {
       return Promise.resolve(
         mockCartItems.filter((item) => !entityIds.includes(item.entityId))
       );
     });
 
     (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
-    (getDatafileCount as jest.MockedFunction<
-      typeof getDatafileCount
-    >).mockResolvedValue(7);
+    (
+      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
+    ).mockResolvedValue(7);
   });
 
   afterEach(() => {
@@ -123,7 +127,7 @@ describe('Download cart table component', () => {
     renderComponent();
 
     expect(
-      await screen.findByText('downloadCart.total_size: 4 B')
+      await screen.findByText('downloadCart.total_size: 4 B / 1 TB')
     ).toBeTruthy();
   });
 
@@ -148,7 +152,7 @@ describe('Download cart table component', () => {
     renderComponent();
 
     expect(
-      await screen.findByText('downloadCart.number_of_files: 22')
+      await screen.findByText('downloadCart.number_of_files: 22 / 5000')
     ).toBeTruthy();
   });
 
@@ -176,9 +180,11 @@ describe('Download cart table component', () => {
     // use this to manually resolve promise
     let promiseResolve;
 
-    (removeAllDownloadCartItems as jest.MockedFunction<
-      typeof removeAllDownloadCartItems
-    >).mockImplementation(
+    (
+      removeAllDownloadCartItems as jest.MockedFunction<
+        typeof removeAllDownloadCartItems
+      >
+    ).mockImplementation(
       () =>
         new Promise((resolve) => {
           promiseResolve = resolve;
@@ -204,9 +210,9 @@ describe('Download cart table component', () => {
 
   it('should disable download button when there are empty items in the cart ', async () => {
     (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValueOnce(0);
-    (getDatafileCount as jest.MockedFunction<
-      typeof getDatafileCount
-    >).mockResolvedValueOnce(0);
+    (
+      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
+    ).mockResolvedValueOnce(0);
 
     renderComponent();
 
@@ -331,15 +337,7 @@ describe('Download cart table component', () => {
   });
 
   it('should display error alert if file/size limit exceeded', async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <Router history={createMemoryHistory()}>
-            <DownloadCartTable statusTabRedirect={jest.fn()} />
-          </Router>
-        </DownloadSettingsContext.Provider>
-      </QueryClientProvider>
-    );
+    renderComponent();
 
     await waitFor(() => {
       expect(
@@ -394,6 +392,42 @@ describe('Download cart table component', () => {
         'downloadCart.file_limit_error {fileCountMax:1}',
         { exact: false }
       )
+    ).toBeTruthy();
+  });
+
+  it('does not display error alerts if file/size limits are not set', async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <DownloadSettingsContext.Provider
+          value={{
+            ...mockedSettings,
+            fileCountMax: undefined,
+            totalSizeMax: undefined,
+          }}
+        >
+          <Router history={createMemoryHistory()}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </Router>
+        </DownloadSettingsContext.Provider>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText('downloadCart.file_limit_error', { exact: false })
+      ).toBeNull();
+      expect(
+        screen.queryByText('downloadCart.size_limit_error', { exact: false })
+      ).toBeNull();
+    });
+
+    expect(
+      await screen.findByText('downloadCart.total_size: 4 B', { exact: true })
+    ).toBeTruthy();
+    expect(
+      await screen.findByText('downloadCart.number_of_files: 22', {
+        exact: true,
+      })
     ).toBeTruthy();
   });
 });

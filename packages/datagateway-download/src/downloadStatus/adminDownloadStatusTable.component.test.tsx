@@ -51,10 +51,11 @@ describe('Admin Download Status Table', () => {
   beforeEach(() => {
     user = userEvent.setup({ delay: null });
 
-    (getDownload as jest.MockedFunction<
-      typeof getDownload
-    >).mockImplementation((id, _) =>
-      Promise.resolve(mockDownloadItems.find((download) => download.id === id))
+    (getDownload as jest.MockedFunction<typeof getDownload>).mockImplementation(
+      (id, _) =>
+        Promise.resolve(
+          mockDownloadItems.find((download) => download.id === id)
+        )
     );
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -566,9 +567,9 @@ describe('Admin Download Status Table', () => {
   });
 
   it('should display progress ui if enabled', async () => {
-    (getPercentageComplete as jest.MockedFunction<
-      typeof getPercentageComplete
-    >).mockResolvedValue(30);
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(30);
 
     renderComponent({
       settings: {
@@ -580,15 +581,19 @@ describe('Admin Download Status Table', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole('progressbar')).toBeInTheDocument();
-      expect(screen.getByText('30%')).toBeInTheDocument();
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('30%')) {
+        expect(progressText).toBeInTheDocument();
+      }
     });
   });
 
   it('should refresh download progress when refresh button is clicked', async () => {
-    (getPercentageComplete as jest.MockedFunction<
-      typeof getPercentageComplete
-    >).mockResolvedValue(30);
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(30);
 
     renderComponent({
       settings: {
@@ -600,14 +605,18 @@ describe('Admin Download Status Table', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole('progressbar')).toBeInTheDocument();
-      expect(screen.getByText('30%')).toBeInTheDocument();
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('30%')) {
+        expect(progressText).toBeInTheDocument();
+      }
     });
 
     // pretend the server returns an updated value
-    (getPercentageComplete as jest.MockedFunction<
-      typeof getPercentageComplete
-    >).mockResolvedValue(50);
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(50);
 
     await user.click(
       screen.getByRole('button', {
@@ -616,8 +625,12 @@ describe('Admin Download Status Table', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('progressbar')).toBeInTheDocument();
-      expect(screen.getByText('50%')).toBeInTheDocument();
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('50%')) {
+        expect(progressText).toBeInTheDocument();
+      }
     });
   });
 });

@@ -76,13 +76,10 @@ const ISISInvestigationsTable = (
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'investigation'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('investigation');
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('investigation');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('investigation');
 
   const selectedRows = React.useMemo(
     () =>
@@ -98,10 +95,18 @@ const ISISInvestigationsTable = (
     [cartItems, selectAllSetting, allIds]
   );
 
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Investigation[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if (data instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
@@ -186,9 +191,10 @@ const ISISInvestigationsTable = (
         disableSort: true,
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          const principal_investigators = investigationData?.investigationUsers?.filter(
-            (iu) => iu.role === 'principal_experimenter'
-          );
+          const principal_investigators =
+            investigationData?.investigationUsers?.filter(
+              (iu) => iu.role === 'principal_experimenter'
+            );
           if (principal_investigators && principal_investigators.length !== 0) {
             return principal_investigators?.[0].user?.fullName;
           } else {

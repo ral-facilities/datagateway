@@ -185,9 +185,9 @@ const AdminDownloadStatusTable: React.FC = () => {
       onChange={(value: { value?: string | number; type: string } | null) => {
         if (value) {
           if (dataKey === 'formattedStatus') {
-            const downloadStatus = (Object.keys(
-              downloadStatuses
-            ) as DownloadStatus[]).find(
+            const downloadStatus = (
+              Object.keys(downloadStatuses) as DownloadStatus[]
+            ).find(
               (key) =>
                 downloadStatuses[key].toLowerCase() ===
                 (value.value as string).toLowerCase()

@@ -108,7 +108,7 @@ Object {
 exports[`DLS Visits table component renders visit ID as links 1`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="dls-visits-table-visitId"
     href="/browse/proposal/Test 1/investigation/1/dataset"
   >

@@ -50,9 +50,10 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
+        'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          {
+            eq: instrumentId,
+          },
       }),
     },
     {
@@ -69,9 +70,10 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
+        'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          {
+            eq: instrumentId,
+          },
       }),
     },
     {
@@ -91,10 +93,18 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     },
   ]);
 
-  const aggregatedData: Study[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Study[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if (data instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);

@@ -18,13 +18,11 @@ function DownloadProgressIndicator({
   download,
 }: DownloadProgressIndicatorProps): JSX.Element {
   const [t] = useTranslation();
-  const {
-    data: progress,
-    isLoading: isLoadingProgress,
-  } = useDownloadPercentageComplete({
-    download,
-    enabled: download.status === 'RESTORING' || download.status === 'PAUSED',
-  });
+  const { data: progress, isLoading: isLoadingProgress } =
+    useDownloadPercentageComplete({
+      download,
+      enabled: download.status === 'RESTORING' || download.status === 'PAUSED',
+    });
 
   if (isLoadingProgress) {
     return <>{t('downloadStatus.calculating_progress')}</>;

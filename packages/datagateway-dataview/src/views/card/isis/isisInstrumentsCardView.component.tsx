@@ -41,10 +41,8 @@ const ISISInstrumentsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useInstrumentCount();
+  const { data: totalDataCount, isLoading: countLoading } =
+    useInstrumentCount();
   const { isLoading: dataLoading, data } = useInstrumentsPaginated();
 
   const title: CardViewDetails = React.useMemo(() => {

@@ -3,7 +3,7 @@
 exports[`DownloadConfirmDialog renders correctly 1`] = `
 <div
   aria-label="downloadConfirmDialog.dialog_arialabel"
-  class="MuiModal-root MuiDialog-root css-zw3mfo-MuiModal-root-MuiDialog-root"
+  class="MuiDialog-root MuiModal-root css-zw3mfo-MuiModal-root-MuiDialog-root"
   role="presentation"
 >
   <div
@@ -71,7 +71,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                 class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
               >
                 <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="false"
                   for="confirm-download-name"
                   id="confirm-download-name-label"
@@ -79,12 +79,12 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                   downloadConfirmDialog.download_name_label
                 </label>
                 <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-ghsjzk-MuiInputBase-root-MuiInput-root"
+                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1a1fmpi-MuiInputBase-root-MuiInput-root"
                 >
                   <input
                     aria-describedby="confirm-download-name-helper-text"
                     aria-invalid="false"
-                    class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                    class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
                     id="confirm-download-name"
                     maxlength="255"
                     placeholder="LILS_2020-1-1_1-1-1"
@@ -107,18 +107,18 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                 class="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
               >
                 <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="true"
                   for="confirm-access-method"
                 >
                   downloadConfirmDialog.access_method_label
                 </label>
                 <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl  css-88nv5c-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl  css-a3l6o-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                 >
                   <select
                     aria-invalid="false"
-                    class="MuiNativeSelect-select MuiNativeSelect-standard MuiInput-input MuiInputBase-input css-1dmqq7i-MuiNativeSelect-select-MuiInputBase-input-MuiInput-input"
+                    class="MuiNativeSelect-select MuiNativeSelect-standard MuiInputBase-input MuiInput-input css-1dmqq7i-MuiNativeSelect-select-MuiInputBase-input-MuiInput-input"
                     id="confirm-access-method"
                     name="Access Method"
                   >
@@ -254,7 +254,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                 class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
               >
                 <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="false"
                   for="confirm-download-email"
                   id="confirm-download-email-label"
@@ -262,12 +262,12 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                   downloadConfirmDialog.email_label
                 </label>
                 <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-ghsjzk-MuiInputBase-root-MuiInput-root"
+                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1a1fmpi-MuiInputBase-root-MuiInput-root"
                 >
                   <input
                     aria-describedby="confirm-download-email-helper-text"
                     aria-invalid="false"
-                    class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                    class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
                     id="confirm-download-email"
                     maxlength="254"
                     type="text"
@@ -288,7 +288,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
           class="MuiDialogActions-root MuiDialogActions-spacing css-17tk4tg-MuiDialogActions-root"
         >
           <button
-            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root  css-sghohy-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
             id="download-confirmation-download"
             tabindex="0"
             type="button"
@@ -312,7 +312,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
 exports[`DownloadConfirmDialog should not load the download speed/time table when isTwoLevel is true 1`] = `
 <div
   aria-label="downloadConfirmDialog.dialog_arialabel"
-  class="MuiModal-root MuiDialog-root css-zw3mfo-MuiModal-root-MuiDialog-root"
+  class="MuiDialog-root MuiModal-root css-zw3mfo-MuiModal-root-MuiDialog-root"
   role="presentation"
 >
   <div
@@ -380,7 +380,7 @@ exports[`DownloadConfirmDialog should not load the download speed/time table whe
                 class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
               >
                 <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="false"
                   for="confirm-download-name"
                   id="confirm-download-name-label"
@@ -388,12 +388,12 @@ exports[`DownloadConfirmDialog should not load the download speed/time table whe
                   downloadConfirmDialog.download_name_label
                 </label>
                 <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-ghsjzk-MuiInputBase-root-MuiInput-root"
+                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1a1fmpi-MuiInputBase-root-MuiInput-root"
                 >
                   <input
                     aria-describedby="confirm-download-name-helper-text"
                     aria-invalid="false"
-                    class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                    class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
                     id="confirm-download-name"
                     maxlength="255"
                     placeholder="LILS_2020-1-1_1-1-1"
@@ -416,18 +416,18 @@ exports[`DownloadConfirmDialog should not load the download speed/time table whe
                 class="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
               >
                 <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="true"
                   for="confirm-access-method"
                 >
                   downloadConfirmDialog.access_method_label
                 </label>
                 <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl  css-88nv5c-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl  css-a3l6o-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                 >
                   <select
                     aria-invalid="false"
-                    class="MuiNativeSelect-select MuiNativeSelect-standard MuiInput-input MuiInputBase-input css-1dmqq7i-MuiNativeSelect-select-MuiInputBase-input-MuiInput-input"
+                    class="MuiNativeSelect-select MuiNativeSelect-standard MuiInputBase-input MuiInput-input css-1dmqq7i-MuiNativeSelect-select-MuiInputBase-input-MuiInput-input"
                     id="confirm-access-method"
                     name="Access Method"
                   >
@@ -513,7 +513,7 @@ exports[`DownloadConfirmDialog should not load the download speed/time table whe
                 class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
               >
                 <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="false"
                   for="confirm-download-email"
                   id="confirm-download-email-label"
@@ -521,12 +521,12 @@ exports[`DownloadConfirmDialog should not load the download speed/time table whe
                   downloadConfirmDialog.email_label
                 </label>
                 <div
-                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-ghsjzk-MuiInputBase-root-MuiInput-root"
+                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1a1fmpi-MuiInputBase-root-MuiInput-root"
                 >
                   <input
                     aria-describedby="confirm-download-email-helper-text"
                     aria-invalid="false"
-                    class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                    class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
                     id="confirm-download-email"
                     maxlength="254"
                     type="text"
@@ -547,7 +547,7 @@ exports[`DownloadConfirmDialog should not load the download speed/time table whe
           class="MuiDialogActions-root MuiDialogActions-spacing css-17tk4tg-MuiDialogActions-root"
         >
           <button
-            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root  css-sghohy-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
             id="download-confirmation-download"
             tabindex="0"
             type="button"

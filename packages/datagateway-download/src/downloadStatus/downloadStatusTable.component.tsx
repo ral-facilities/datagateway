@@ -49,7 +49,12 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       | { value?: string | number; type: string }
       | { startDate?: string; endDate?: string };
   }>({});
-  const { data: downloads, isLoading, isFetched, refetch } = useDownloads({
+  const {
+    data: downloads,
+    isLoading,
+    isFetched,
+    refetch,
+  } = useDownloads({
     select: (data) => data.map(formatDownload),
   });
 
@@ -335,10 +340,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               function RemoveButton({
                 rowData,
               }: TableActionProps): JSX.Element {
-                const {
-                  isLoading: isDeleting,
-                  mutate: downloadDeleted,
-                } = useDownloadOrRestoreDownload();
+                const { isLoading: isDeleting, mutate: downloadDeleted } =
+                  useDownloadOrRestoreDownload();
                 const downloadItem = rowData as FormattedDownload;
                 // const [isDeleting, setIsDeleting] = React.useState(false);
 
