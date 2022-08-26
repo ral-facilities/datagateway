@@ -1,6 +1,6 @@
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import type { Datafile } from 'datagateway-common';
+import { type Datafile } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -21,29 +21,26 @@ function PreviewDatafileButton({
   const isSupported = isDatafilePreviewable(datafile);
 
   return (
-    <Link
-      to={`datafile/${datafile.id}`}
-      component={(props) => (
-        <Tooltip
-          title={t(
-            isSupported
-              ? 'datafiles.preview.preview_datafile'
-              : 'datafiles.preview.preview_unsupported'
-          )}
-        >
-          <Box>
-            <IconButton
-              {...props}
-              disabled={!isSupported}
-              aria-label={t('datafiles.preview.preview_datafile')}
-            >
-              <VisibilityIcon />
-            </IconButton>
-          </Box>
-        </Tooltip>
+    <Tooltip
+      title={t(
+        isSupported
+          ? 'datafiles.preview.preview_datafile'
+          : 'datafiles.preview.preview_unsupported'
       )}
-      aria-label={t('buttons.preview')}
-    />
+    >
+      {/* Wrap the IconButton with a Box so that the tooltip can be triggered
+          even when the button is disabled */}
+      <Box>
+        <IconButton
+          component={Link}
+          to={`datafile/${datafile.id}`}
+          disabled={!isSupported}
+          aria-label={t('datafiles.preview.preview_datafile')}
+        >
+          <VisibilityIcon />
+        </IconButton>
+      </Box>
+    </Tooltip>
   );
 }
 
