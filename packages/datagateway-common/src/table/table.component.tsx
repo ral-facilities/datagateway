@@ -86,7 +86,7 @@ const shortHeaderTableCellStyle = {
   height: rowHeight,
   justifyContent: 'space-between',
   padding: 0,
-  paddingLeft: 16,
+  paddingLeft: '16px',
   '&:last-child': {
     paddingRight: 0,
   },
@@ -300,6 +300,20 @@ const VirtualizedTable = React.memo(
       [props.loadMoreRows]
     );
 
+    const headerTableCellStyle: SxProps = {
+      ...headerFlexContainerStyle,
+      ...(shortHeader
+        ? shortHeaderTableCellStyle
+        : headerTableCellStyleCombined),
+    };
+
+    const detailsHeaderTableCellStyle: SxProps = {
+      ...flexContainerStyle,
+      ...(shortHeader
+        ? shortHeaderTableCellStyle
+        : headerTableCellStyleCombined),
+    };
+
     return (
       <AutoSizer>
         {({ height, width }) => {
@@ -357,14 +371,7 @@ const VirtualizedTable = React.memo(
                         !disableSelectAll && (
                           <SelectHeader
                             {...props}
-                            sx={
-                              {
-                                ...headerTableCellStyleCombined,
-                                ...(shortHeader
-                                  ? shortHeaderTableCellStyle
-                                  : {}),
-                              } as SxProps
-                            }
+                            sx={headerTableCellStyle}
                             selectedRows={selectedRows}
                             totalRowCount={rowCount}
                             allIds={
@@ -410,13 +417,7 @@ const VirtualizedTable = React.memo(
                           size="small"
                           padding="checkbox"
                           component="div"
-                          sx={
-                            {
-                              ...headerTableCellStyleCombined,
-                              ...flexContainerStyle,
-                              ...(shortHeader ? shortHeaderTableCellStyle : {}),
-                            } as SxProps
-                          }
+                          sx={detailsHeaderTableCellStyle}
                           variant="head"
                         />
                       )}
@@ -461,7 +462,7 @@ const VirtualizedTable = React.memo(
                           headerRenderer={(headerProps) => (
                             <DataHeader
                               {...headerProps}
-                              sx={headerTableCellStyleCombined as SxProps}
+                              sx={headerTableCellStyle}
                               sort={sort}
                               onSort={onSort}
                               icon={icon}
