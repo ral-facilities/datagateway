@@ -766,7 +766,7 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
       }),
     {
       onError: (error) => {
-        handleICATError(error);
+        handleICATError(error, false);
       },
       ...queryOptions,
     }
