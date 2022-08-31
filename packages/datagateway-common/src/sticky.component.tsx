@@ -3,9 +3,7 @@ import React from 'react';
 import { keyframes, Paper, styled } from '@mui/material';
 import debounce from 'lodash.debounce';
 
-export function useSticky(
-  targetElement: React.RefObject<HTMLDivElement>
-): {
+export function useSticky(targetElement: React.RefObject<HTMLDivElement>): {
   isSticky: boolean;
 } {
   const [isSticky, setIsSticky] = React.useState(false);

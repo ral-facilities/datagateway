@@ -156,8 +156,10 @@ const dGCommonReducer = createReducer(initialState, {
   [ConfigureURLsType]: handleConfigureUrls,
   [IsisDatafileDetailsPanelChangeTabType]: changeIsisDatafileDetailsPanelTab,
   [IsisDatasetDetailsPanelChangeTabType]: changeIsisDatasetDetailsPanelTab,
-  [IsisInstrumentDetailsPanelChangeTabType]: changeIsisInstrumentDetailsPanelTab,
-  [IsisInvestigationDetailsPanelChangeTabType]: changeIsisInvestigationDetailsPanelTab,
+  [IsisInstrumentDetailsPanelChangeTabType]:
+    changeIsisInstrumentDetailsPanelTab,
+  [IsisInvestigationDetailsPanelChangeTabType]:
+    changeIsisInvestigationDetailsPanelTab,
   [DlsDatasetDetailsPanelChangeTabType]: changeDlsDatasetDetailsPanelTab,
   [DlsVisitDetailsPanelChangeTabType]: changeDlsVisitDetailsPanelTab,
 });

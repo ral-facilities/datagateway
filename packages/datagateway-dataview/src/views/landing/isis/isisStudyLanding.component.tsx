@@ -161,9 +161,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
   const { push } = useHistory();
   const location = useLocation();
-  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const { view } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
 
   const [value, setValue] = React.useState<'details'>('details');
   const { instrumentId, studyId } = props;

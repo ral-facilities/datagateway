@@ -30,13 +30,8 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
           });
       }, []);
 
-      const {
-        history,
-        location,
-        match,
-        staticContext,
-        ...componentProps
-      } = props;
+      const { history, location, match, staticContext, ...componentProps } =
+        props;
 
       if (loading) {
         return (

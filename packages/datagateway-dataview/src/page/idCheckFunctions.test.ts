@@ -219,9 +219,10 @@ describe('ID check functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-            eq: 1,
-          },
+          'studyInvestigations.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
         })
       );
       expect(axios.get).toHaveBeenCalledWith(

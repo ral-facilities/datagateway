@@ -3,6 +3,7 @@ import {
   DownloadCartItem,
   FormattedDownload,
 } from 'datagateway-common';
+import type { DownloadSettings } from './ConfigProvider';
 
 export const mockDownloadItems: Download[] = [
   {
@@ -222,7 +223,7 @@ export const mockCartItems: DownloadCartItem[] = [
 ];
 
 // Create our mocked datagateway-download settings file.
-export const mockedSettings = {
+export const mockedSettings: DownloadSettings = {
   facilityName: 'LILS',
   apiUrl: 'https://example.com/api',
   downloadApiUrl: 'https://example.com/downloadApi',
@@ -241,4 +242,6 @@ export const mockedSettings = {
       description: 'Example description for Globus access method.',
     },
   },
+  routes: [],
+  helpSteps: [],
 };

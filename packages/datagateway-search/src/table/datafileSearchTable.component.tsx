@@ -41,9 +41,10 @@ const DatafileSearchTable = (
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -103,13 +104,10 @@ const DatafileSearchTable = (
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'datafile'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('datafile');
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('datafile');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('datafile');
 
   /* istanbul ignore next */
   const aggregatedData: Dataset[] = React.useMemo(() => {
