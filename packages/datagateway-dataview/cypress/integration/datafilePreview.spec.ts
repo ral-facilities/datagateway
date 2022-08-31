@@ -11,6 +11,11 @@ describe('Datafile preview', () => {
       statusCode: 200,
       fixture: 'datafile.txt',
     });
+    // intercept request to investigation and return a mock investigation object
+    cy.intercept('GET', '**/instruments/1/facilitycycles/16/investigations/*', {
+      statusCode: 200,
+      fixture: 'investigation.json',
+    });
     cy.login();
     cy.visit(
       '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile/6084',

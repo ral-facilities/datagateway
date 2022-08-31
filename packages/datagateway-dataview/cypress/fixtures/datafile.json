@@ -12,6 +12,39 @@
     "location": "/wish/although/eat.txt",
     "modId": "user",
     "doi": "0-685-22377-9",
-    "id": 6084
+    "id": 6084,
+    "dataset": {
+      "name": "DS-",
+      "fileSize": 67585826264,
+      "createId": "simple/isis-icat-ingestion",
+      "startDate": null,
+      "endDate": null,
+      "modTime": "2022-07-25 11:58:27.960000+01:00",
+      "complete": true,
+      "id": 337,
+      "description": "- - -",
+      "fileCount": 2100,
+      "modId": "simple/isis-icat-ingestion",
+      "location": null,
+      "doi": null,
+      "investigation": {
+        "title": "CAL_MERLIN_Quiet Counts (Internal Clock)",
+        "name": "CAL_MERLIN_07/09/2020 12:42:47",
+        "fileSize": 67585826264,
+        "summary": null,
+        "releaseDate": "2025-07-25 11:58:27.500000+01:00",
+        "visitId": "1",
+        "startDate": "2020-09-04 13:26:02+01:00",
+        "endDate": "2022-07-25 11:58:27.500000+01:00",
+        "createId": "simple/isis-icat-ingestion",
+        "modTime": "2022-07-25 13:07:59.326000+01:00",
+        "id": 97,
+        "modId": "simple/isis-icat-ingestion",
+        "fileCount": 2100,
+        "doi": null,
+        "createTime": "2022-07-25 11:58:27.697000+01:00"
+      },
+      "createTime": "2022-07-25 11:58:27.960000+01:00"
+    }
   }
 ]
