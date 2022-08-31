@@ -19,6 +19,7 @@ describe('Datafile search tab', () => {
     cy.intercept('**/datafiles/count?where=%7B%22id*').as('datafilesCount');
     cy.intercept('**/datafiles?*').as('datafiles');
     cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
+    cy.intercept('**/search/documents*').as('searchDocuments');
   });
 
   it('should load correctly', () => {
@@ -32,7 +33,7 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search"]')
       .click()
-      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
+      .wait(['@searchDocuments', '@datafilesCount'], {
         timeout: 10000,
       });
 
@@ -47,7 +48,7 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search"]')
       .click()
-      .wait(['@investigations', '@investigationsCount'], {
+      .wait(['@searchDocuments', '@investigationsCount'], {
         timeout: 10000,
       });
 
@@ -55,7 +56,7 @@ describe('Datafile search tab', () => {
       .contains('Datafile')
       .contains('1')
       .click()
-      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
+      .wait(['@searchDocuments', '@datafilesCount'], {
         timeout: 10000,
       });
 
@@ -101,7 +102,7 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search"]')
       .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+      .wait(['@searchDocuments', '@investigationsCount'], {
         timeout: 10000,
       });
 
@@ -117,14 +118,14 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search"]')
       .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+      .wait(['@searchDocuments', '@investigationsCount'], {
         timeout: 10000,
       });
     cy.get('[aria-label="Search table"]')
       .contains('Datafile')
       .contains('1')
       .click()
-      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
+      .wait(['@searchDocuments', '@datafilesCount'], {
         timeout: 10000,
       });
     cy.get('[href="/browse/investigation/41/dataset/41/datafile"]');
