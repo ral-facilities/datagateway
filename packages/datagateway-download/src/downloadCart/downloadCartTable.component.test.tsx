@@ -57,9 +57,11 @@ const createTestQueryClient = (): QueryClient =>
 const renderComponent = (): RenderResult =>
   render(
     <QueryClientProvider client={createTestQueryClient()}>
-      <Router history={createMemoryHistory()}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </Router>
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <Router history={createMemoryHistory()}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </Router>
+      </DownloadSettingsContext.Provider>
     </QueryClientProvider>
   );
 
@@ -89,7 +91,7 @@ describe('Download cart table component', () => {
       removeAllDownloadCartItems as jest.MockedFunction<
         typeof removeAllDownloadCartItems
       >
-    ).mockResolvedValue(null);
+    ).mockResolvedValue(undefined);
     (
       removeFromCart as jest.MockedFunction<typeof removeFromCart>
     ).mockImplementation((entityType, entityIds) => {
@@ -125,7 +127,7 @@ describe('Download cart table component', () => {
     renderComponent();
 
     expect(
-      await screen.findByText('downloadCart.total_size: 4 B')
+      await screen.findByText('downloadCart.total_size: 4 B / 1 TB')
     ).toBeTruthy();
   });
 
@@ -150,7 +152,7 @@ describe('Download cart table component', () => {
     renderComponent();
 
     expect(
-      await screen.findByText('downloadCart.number_of_files: 22')
+      await screen.findByText('downloadCart.number_of_files: 22 / 5000')
     ).toBeTruthy();
   });
 
@@ -335,15 +337,7 @@ describe('Download cart table component', () => {
   });
 
   it('should display error alert if file/size limit exceeded', async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <Router history={createMemoryHistory()}>
-            <DownloadCartTable statusTabRedirect={jest.fn()} />
-          </Router>
-        </DownloadSettingsContext.Provider>
-      </QueryClientProvider>
-    );
+    renderComponent();
 
     await waitFor(() => {
       expect(
@@ -398,6 +392,42 @@ describe('Download cart table component', () => {
         'downloadCart.file_limit_error {fileCountMax:1}',
         { exact: false }
       )
+    ).toBeTruthy();
+  });
+
+  it('does not display error alerts if file/size limits are not set', async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <DownloadSettingsContext.Provider
+          value={{
+            ...mockedSettings,
+            fileCountMax: undefined,
+            totalSizeMax: undefined,
+          }}
+        >
+          <Router history={createMemoryHistory()}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </Router>
+        </DownloadSettingsContext.Provider>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText('downloadCart.file_limit_error', { exact: false })
+      ).toBeNull();
+      expect(
+        screen.queryByText('downloadCart.size_limit_error', { exact: false })
+      ).toBeNull();
+    });
+
+    expect(
+      await screen.findByText('downloadCart.total_size: 4 B', { exact: true })
+    ).toBeTruthy();
+    expect(
+      await screen.findByText('downloadCart.number_of_files: 22', {
+        exact: true,
+      })
     ).toBeTruthy();
   });
 });

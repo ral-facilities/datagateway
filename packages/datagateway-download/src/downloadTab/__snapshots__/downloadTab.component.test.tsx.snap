@@ -484,7 +484,7 @@ exports[`DownloadTab should render correctly 1`] = `
                     id="fileCountDisplay"
                     style="margin-left: 4px;"
                   >
-                    downloadCart.number_of_files: 0 / undefined
+                    downloadCart.number_of_files: 0
                   </span>
                 </div>
                 <div
@@ -502,7 +502,7 @@ exports[`DownloadTab should render correctly 1`] = `
                     id="totalSizeDisplay"
                     style="margin-left: 4px;"
                   >
-                    downloadCart.total_size: 0 B / Unknown
+                    downloadCart.total_size: 0 B
                   </span>
                 </div>
                 <div
