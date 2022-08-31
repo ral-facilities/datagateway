@@ -1,11 +1,11 @@
 import type { Datafile } from 'datagateway-common';
 
-const supportedDatafileExtensions = new Set(['txt']);
+const supportedDatafileExtensions = new Set(['txt', 'log']);
 
 /**
  * File extension of a datafile.
  */
-type DatafileExtension = 'txt';
+type DatafileExtension = 'txt' | 'log';
 
 /**
  * Retrieves the file extension of the given {@link Datafile}

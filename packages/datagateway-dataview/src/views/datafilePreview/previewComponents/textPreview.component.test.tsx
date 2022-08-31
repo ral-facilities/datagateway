@@ -11,13 +11,13 @@ import {
   IncrementDatafilePreviewerZoomLevelType,
 } from '../state/actions';
 import { mockDatafile, mockTxtFileContent } from '../testData';
-import TxtPreview from './txtPreview.component';
+import TextPreview from './textPreview.component';
 
 function renderComponent(store: Store): RenderResult {
   return render(
     <DGThemeProvider>
       <Provider store={store}>
-        <TxtPreview
+        <TextPreview
           datafile={mockDatafile}
           datafileContent={new Blob([mockTxtFileContent])}
         />

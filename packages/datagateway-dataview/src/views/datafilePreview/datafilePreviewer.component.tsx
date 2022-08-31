@@ -84,8 +84,8 @@ interface DatafilePreviewerProps {
  * To add support for a new file extension, simply add an entry to the table,
  * mapping the new file extension to the corresponding React component that
  * can render a preview of the datafile.
- * To see an example of a preview component, check out {@link TxtPreview}
- * in `./previewComponents/txtPreview.component.tsx`.
+ * To see an example of a preview component, check out {@link TextPreview}
+ * in `./previewComponents/textPreview.component.tsx`.
  *
  * Preview components will receive the current {@link Datafile} and the content of it
  * stored as a {@link Blob}. Since the previewer supports zoom control,

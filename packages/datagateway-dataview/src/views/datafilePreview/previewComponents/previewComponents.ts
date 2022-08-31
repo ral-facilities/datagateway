@@ -1,6 +1,6 @@
 import type { Datafile } from 'datagateway-common';
 import type { DatafileExtension } from '../datafileExtension';
-import TxtPreview from './txtPreview.component';
+import TextPreview from './textPreview.component';
 
 /**
  * The shape of the props that {@link PreviewComponent} will receive.
@@ -46,7 +46,8 @@ type PreviewComponent = (props: PreviewComponentProps) => JSX.Element;
  * @see DatafileExtension
  */
 const previewComponents: Record<DatafileExtension, PreviewComponent> = {
-  txt: TxtPreview,
+  txt: TextPreview,
+  log: TextPreview,
 };
 
 export { previewComponents };

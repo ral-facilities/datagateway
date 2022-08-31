@@ -45,10 +45,10 @@ const TextLine = styled('code')(({ theme }) => ({
 const BASE_FONT_SIZE = 12;
 
 /**
- * A {@link PreviewComponent} that previews Datafile with .txt extension.
+ * A {@link PreviewComponent} that previews text-based datafiles.
  * @see PreviewComponent
  */
-function TxtPreview({
+function TextPreview({
   datafile,
   datafileContent,
 }: PreviewComponentProps): JSX.Element {
@@ -99,4 +99,4 @@ function TxtPreview({
   );
 }
 
-export default TxtPreview;
+export default TextPreview;
