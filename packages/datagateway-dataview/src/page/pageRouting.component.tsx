@@ -1,9 +1,9 @@
 import React from 'react';
-import { Location as LocationType } from 'history';
+import type { Location as LocationType } from 'history';
 import {
   Switch,
   Route,
-  RouteComponentProps,
+  type RouteComponentProps,
   Redirect,
   Link,
 } from 'react-router-dom';
@@ -51,10 +51,11 @@ import {
   checkInstrumentAndFacilityCycleId,
   checkInstrumentId,
   checkStudyId,
+  checkDatafileId,
 } from './idCheckFunctions';
 
 import { paths } from './pageContainer.component';
-import { ViewsType } from 'datagateway-common';
+import type { ViewsType } from 'datagateway-common';
 
 const SafeDatafileTable = React.memo(
   (props: {
@@ -335,6 +336,34 @@ const SafeDLSDatasetsCardView = React.memo(
   }
 );
 SafeDLSDatasetsCardView.displayName = 'SafeDLSDatasetsCardView';
+
+const SafeDatafilePreviewer = React.memo(
+  (props: {
+    instrumentId: string;
+    instrumentChildId: string;
+    investigationId: string;
+    datasetId: string;
+    datafileId: string;
+  }): React.ReactElement => {
+    const SafeDatafilePreviewer = withIdCheck(
+      Promise.all([
+        checkInstrumentAndFacilityCycleId(
+          parseInt(props.instrumentId),
+          parseInt(props.instrumentChildId),
+          parseInt(props.investigationId)
+        ),
+        checkDatafileId(
+          parseInt(props.investigationId),
+          parseInt(props.datasetId),
+          parseInt(props.datafileId)
+        ),
+      ]).then((checks) => checks.every((passes) => passes))
+    )(DatafilePreviewer);
+
+    return <SafeDatafilePreviewer datafileId={parseInt(props.datafileId)} />;
+  }
+);
+SafeDatafilePreviewer.displayName = 'SafeDatafilePreviewer';
 
 interface PageRoutingProps {
   view: ViewsType;
@@ -661,7 +690,13 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           exact
           path={paths.preview.isisDatafilePreview}
           render={({ match }) => (
-            <DatafilePreviewer datafileId={Number(match.params.datafileId)} />
+            <SafeDatafilePreviewer
+              instrumentId={match.params.instrumentId as string}
+              instrumentChildId={match.params.facilityCycleId as string}
+              investigationId={match.params.investigationId as string}
+              datasetId={match.params.datasetId as string}
+              datafileId={Number(match.params.datafileId)}
+            />
           )}
         />
 
