@@ -695,7 +695,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
               instrumentChildId={match.params.facilityCycleId as string}
               investigationId={match.params.investigationId as string}
               datasetId={match.params.datasetId as string}
-              datafileId={Number(match.params.datafileId)}
+              datafileId={match.params.datafileId as string}
             />
           )}
         />
