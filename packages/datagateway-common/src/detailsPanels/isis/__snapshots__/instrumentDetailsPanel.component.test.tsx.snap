@@ -125,7 +125,7 @@ exports[`Instrument details panel component should gracefully handle InstrumentS
           >
             <b>
               <a
-                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
                 href="www.example.com"
               >
                 www.example.com
@@ -266,7 +266,7 @@ exports[`Instrument details panel component should render correctly 1`] = `
           >
             <b>
               <a
-                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
                 href="www.example.com"
               >
                 www.example.com
@@ -405,7 +405,7 @@ exports[`Instrument details panel component should render users tab when present
           >
             <b>
               <a
-                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
                 href="www.example.com"
               >
                 www.example.com

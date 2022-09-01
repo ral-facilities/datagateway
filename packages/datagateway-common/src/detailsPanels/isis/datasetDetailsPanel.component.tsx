@@ -78,8 +78,6 @@ const DatasetDetailsPanel = (
     }
   }, [data, selectedTab, changeTab]);
 
-  console.log('selectedTab', selectedTab);
-
   return (
     <div id="details-panel" style={{ minWidth: 0 }}>
       <Tabs
