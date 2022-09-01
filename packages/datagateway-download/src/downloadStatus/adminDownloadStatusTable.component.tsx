@@ -61,9 +61,6 @@ const AdminDownloadStatusTable: React.FC = () => {
       | { startDate?: string; endDate?: string };
   }>({});
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
-  const [lastChecked, setLastChecked] = React.useState(
-    new Date().toLocaleString()
-  );
   const [t] = useTranslation();
   const { downloadStatusLabels: downloadStatuses } = useDownloadFormatter();
   const { mutate: adminDownloadDeleted } = useAdminDownloadDeleted();
@@ -114,10 +111,17 @@ const AdminDownloadStatusTable: React.FC = () => {
     return queryOffset;
   }, [filters, settings.facilityName, sort]);
 
-  const { data, isLoading, isFetched, isRefetching, fetchNextPage, refetch } =
-    useAdminDownloads({
-      initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
-    });
+  const {
+    data,
+    isLoading,
+    isFetched,
+    isRefetching,
+    fetchNextPage,
+    refetch,
+    dataUpdatedAt,
+  } = useAdminDownloads({
+    initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
+  });
 
   const fetchMoreData = useCallback(
     (offsetParams: IndexRange) =>
@@ -140,12 +144,6 @@ const AdminDownloadStatusTable: React.FC = () => {
       refreshTable();
     }
   }, [isFetched, refreshDownloads, refreshTable]);
-
-  React.useEffect(() => {
-    if (isFetched) {
-      setLastChecked(new Date().toLocaleString());
-    }
-  }, [isFetched]);
 
   React.useEffect(() => {
     // useEffect is always called on first render
@@ -250,7 +248,10 @@ const AdminDownloadStatusTable: React.FC = () => {
 
             {!refreshDownloads ? (
               <p style={{ paddingLeft: '10px ' }}>
-                <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
+                <b>{t('downloadTab.last_checked')}: </b>{' '}
+                {dataUpdatedAt > 0
+                  ? new Date(dataUpdatedAt).toLocaleString()
+                  : ''}
               </p>
             ) : (
               <p style={{ paddingLeft: '20px ' }}>

@@ -121,7 +121,7 @@ const renderComponent = (): RenderResult =>
       <DownloadStatusTable
         refreshTable={false}
         setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
+        setLastCheckedTimestamp={jest.fn()}
       />
     </QueryClientProvider>
   );
@@ -175,7 +175,7 @@ describe('Download Status Table', () => {
         <DownloadStatusTable
           refreshTable={false}
           setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
+          setLastCheckedTimestamp={jest.fn()}
         />
       </QueryClientProvider>
     );
@@ -193,7 +193,7 @@ describe('Download Status Table', () => {
         <DownloadStatusTable
           refreshTable
           setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
+          setLastCheckedTimestamp={jest.fn()}
         />
       </QueryClientProvider>
     );

@@ -60,7 +60,7 @@ const DownloadTabs: React.FC = () => {
   // Set the initial tab.
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
-  const [lastChecked, setLastChecked] = React.useState('');
+  const [lastCheckedTimestamp, setLastCheckedTimestamp] = React.useState(0);
   const [t] = useTranslation();
 
   const handleChange = (
@@ -142,7 +142,8 @@ const DownloadTabs: React.FC = () => {
               <Typography variant="subtitle1" component="h3">
                 {!refreshDownloads ? (
                   <p style={{ paddingLeft: '10px ' }}>
-                    <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
+                    <b>{t('downloadTab.last_checked')}: </b>{' '}
+                    {new Date(lastCheckedTimestamp).toLocaleString()}
                   </p>
                 ) : (
                   <p style={{ paddingLeft: '20px ' }}>
@@ -157,7 +158,7 @@ const DownloadTabs: React.FC = () => {
             <DownloadStatusTable
               refreshTable={refreshDownloads}
               setRefreshTable={setRefreshDownloads}
-              setLastChecked={() => setLastChecked(new Date().toLocaleString())}
+              setLastCheckedTimestamp={setLastCheckedTimestamp}
             />
           </Grid>
         </Grid>
