@@ -735,13 +735,7 @@ describe('investigation api functions', () => {
         await Promise.resolve();
       });
       expect(result.current.map((query) => query.data)).toEqual([
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
+        1, 2, 3, 4, 5, 6, 7,
       ]);
 
       mockData = [
@@ -1040,13 +1034,7 @@ describe('investigation api functions', () => {
         await Promise.resolve();
       });
       expect(result.current.map((query) => query.data)).toEqual([
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
+        1, 2, 3, 4, 5, 6, 7,
       ]);
 
       mockData = [

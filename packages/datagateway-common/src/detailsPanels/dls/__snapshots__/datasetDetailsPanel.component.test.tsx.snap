@@ -1,60 +1,405 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dataset details panel component renders correctly 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "createTime": "2019-06-11",
-    "description": "Test description",
-    "endDate": "2019-06-12",
-    "id": 1,
-    "modTime": "2019-06-10",
-    "name": "Test 1",
-    "startDate": "2019-06-11",
-    "type": Object {
-      "id": 2,
-      "name": "Test 2",
-    },
-  },
-}
+exports[`Dataset details panel component should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="datasets.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="dataset-details-panel"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="dataset-details-tab"
+            role="tab"
+            tabindex="0"
+            type="button"
+          >
+            datasets.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="dataset-type-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="dataset-type-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            datasets.details.type.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="dataset-details-tab"
+      hidden=""
+      id="dataset-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.description
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test description
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.start_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-11
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.end_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-12
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.size
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <button
+                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                id="calculate-size-btn"
+                role="button"
+                tabindex="0"
+                type="button"
+              >
+                datasets.details.calculate
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="dataset-type-tab"
+      hidden=""
+      id="dataset-type-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 2
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.type.description
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              datasets.details.type.description not provided
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
-exports[`Dataset details panel component renders type tab when present in the data 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "createTime": "2019-06-11",
-    "description": "Test description",
-    "endDate": "2019-06-12",
-    "id": 1,
-    "modTime": "2019-06-10",
-    "name": "Test 1",
-    "startDate": "2019-06-11",
-    "type": Object {
-      "description": "Test type description",
-      "id": 7,
-      "name": "Test type",
-    },
-  },
-}
+exports[`Dataset details panel component should render type tab when present in the data 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="datasets.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="dataset-details-panel"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="dataset-details-tab"
+            role="tab"
+            tabindex="0"
+            type="button"
+          >
+            datasets.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="dataset-type-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="dataset-type-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            datasets.details.type.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="dataset-details-tab"
+      hidden=""
+      id="dataset-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.description
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test description
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.start_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-11
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.end_date
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-06-12
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.size
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <button
+                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                id="calculate-size-btn"
+                role="button"
+                tabindex="0"
+                type="button"
+              >
+                datasets.details.calculate
+                <span
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                />
+              </button>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="dataset-type-tab"
+      hidden=""
+      id="dataset-type-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test type
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datasets.details.type.description
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test type description
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;

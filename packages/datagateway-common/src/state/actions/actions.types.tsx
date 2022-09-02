@@ -8,7 +8,17 @@ import {
   SortType,
   ViewsType,
   MicroFrontendId,
+  Datafile,
+  Dataset,
+  Instrument,
+  Investigation,
 } from '../../app.types';
+import { DlsDatasetDetailsPanelTab } from '../../detailsPanels/dls/datasetDetailsPanel.component';
+import { DlsVisitDetailsPanelTab } from '../../detailsPanels/dls/visitDetailsPanel.component';
+import type { IsisDatafileDetailsPanelTab } from '../../detailsPanels/isis/datafileDetailsPanel.component';
+import type { IsisDatasetDetailsPanelTab } from '../../detailsPanels/isis/datasetDetailsPanel.component';
+import type { IsisInstrumentDetailsPanelTab } from '../../detailsPanels/isis/instrumentDetailsPanel.component';
+import type { IsisInvestigationDetailsPanelTab } from '../../detailsPanels/isis/investigationDetailsPanel.component';
 
 // parent app actions
 export const CustomFrontendMessageType = `${MicroFrontendId}:api`;
@@ -228,6 +238,19 @@ export const FetchFilterRequestType = 'datagateway_common:fetch_filter_request';
 export const FetchFilterFailureType = 'datagateway_common:fetch_filter_failure';
 export const FetchFilterSuccessType = 'datagateway_common:fetch_filter_success';
 
+export const IsisDatafileDetailsPanelChangeTabType =
+  'datagateway_common:isis_datafile_details_panel_change_tab';
+export const IsisDatasetDetailsPanelChangeTabType =
+  'datagateway_common:isis_dataset_details_panel_change_tab';
+export const IsisInstrumentDetailsPanelChangeTabType =
+  'datagateway_common:isis_instrument_details_panel_change_tab';
+export const IsisInvestigationDetailsPanelChangeTabType =
+  'datagateway_common:isis_investigation_details_panel_change_tab';
+export const DlsDatasetDetailsPanelChangeTabType =
+  'datagateway_common:dls_dataset_details_panel_change_tab';
+export const DlsVisitDetailsPanelChangeTabType =
+  'datagateway_common:dls_visit_details_panel_change_tab';
+
 export interface SortTablePayload {
   column: string;
   order: Order | null;
@@ -342,4 +365,49 @@ export interface FetchSizeSuccessPayload {
 
 export interface DownloadCartPayload {
   downloadCart: DownloadCart;
+}
+
+/**
+ * Payload for the ISIS datafile details panel change tab action.
+ */
+export interface IsisDatafileDetailsPanelChangeTabPayload {
+  datafileId: Datafile['id'];
+  newTab: IsisDatafileDetailsPanelTab;
+}
+
+/**
+ * Payload for the ISIS dataset details panel change tab action.
+ */
+export interface IsisDatasetDetailsPanelChangeTabPayload {
+  datasetId: Dataset['id'];
+  newTab: IsisDatasetDetailsPanelTab;
+}
+
+/**
+ * Payload for the ISIS instrument details panel change tab action.
+ */
+export interface IsisInstrumentDetailsPanelChangeTabPayload {
+  instrumentId: Instrument['id'];
+  newTab: IsisInstrumentDetailsPanelTab;
+}
+
+/**
+ * Payload for the ISIS investigation details panel change tab action.
+ */
+export interface IsisInvestigationDetailsPanelChangeTabPayload {
+  investigationId: Investigation['id'];
+  newTab: IsisInvestigationDetailsPanelTab;
+}
+
+/**
+ * Payload for the DLS dataset details panel change tab action.
+ */
+export interface DlsDatasetDetailsPanelChangeTabPayload {
+  datasetId: Dataset['id'];
+  newTab: DlsDatasetDetailsPanelTab;
+}
+
+export interface DlsVisitDetailsPanelChangeTabPayload {
+  investigationId: Investigation['id'];
+  newTab: DlsVisitDetailsPanelTab;
 }
