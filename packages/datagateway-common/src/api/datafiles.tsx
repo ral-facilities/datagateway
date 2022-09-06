@@ -20,7 +20,7 @@ import {
 } from 'react-query';
 import retryICATErrors from './retryICATErrors';
 
-const fetchDatafiles = (
+export const fetchDatafiles = (
   apiUrl: string,
   sortAndFilters: {
     sort: SortType;

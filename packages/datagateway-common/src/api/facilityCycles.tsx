@@ -46,7 +46,9 @@ const fetchFacilityCycles = (
     });
 };
 
-const fetchAllFacilityCycles = (apiUrl: string): Promise<FacilityCycle[]> => {
+export const fetchAllFacilityCycles = (
+  apiUrl: string
+): Promise<FacilityCycle[]> => {
   return axios
     .get(`${apiUrl}/facilitycycles`, {
       headers: {

@@ -8,6 +8,7 @@ import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import {
   AdditionalFilters,
+  FacilityCycle,
   FiltersType,
   Investigation,
   SortType,
@@ -26,7 +27,7 @@ import { fetchDatasetCountQuery } from './datasets';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import retryICATErrors from './retryICATErrors';
 
-const fetchInvestigations = (
+export const fetchInvestigations = (
   apiUrl: string,
   sortAndFilters: {
     sort: SortType;
@@ -919,3 +920,20 @@ export const downloadInvestigation = (
   link.click();
   link.remove();
 };
+
+/**
+ * Given an {@link Investigation} and a list of {@link FacilityCycle}s, find the {@link FacilityCycle} that the {@link Investigation} belongs to.
+ * @returns The {@link FacilityCycle} that the given {@link Investigation} belongs to, or `undefined` if none is found.
+ */
+export const findInvestigationFacilityCycle = (
+  investigation: Investigation,
+  facilityCycles: FacilityCycle[]
+): FacilityCycle | undefined =>
+  facilityCycles.find(
+    (facilityCycle: FacilityCycle) =>
+      investigation.startDate &&
+      facilityCycle.startDate &&
+      facilityCycle.endDate &&
+      investigation.startDate >= facilityCycle.startDate &&
+      investigation.startDate <= facilityCycle.endDate
+  );
