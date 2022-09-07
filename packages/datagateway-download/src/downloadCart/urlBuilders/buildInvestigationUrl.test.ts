@@ -5,7 +5,7 @@ import {
   mockInvestigations,
 } from '../../testData';
 import axios from 'axios';
-import { Investigation } from 'datagateway-common';
+import type { Investigation } from 'datagateway-common';
 
 describe('buildInvestigationUrl', () => {
   describe('given an investigation object', () => {

@@ -1,4 +1,8 @@
-import { Dataset, FacilityCycle, fetchDatasets } from 'datagateway-common';
+import {
+  type Dataset,
+  type FacilityCycle,
+  fetchDatasets,
+} from 'datagateway-common';
 import { buildInvestigationUrl } from '../urlBuilders';
 
 async function fetchDataset({

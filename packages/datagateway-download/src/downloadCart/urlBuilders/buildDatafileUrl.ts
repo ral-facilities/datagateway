@@ -1,4 +1,8 @@
-import { Datafile, FacilityCycle, fetchDatafiles } from 'datagateway-common';
+import {
+  type Datafile,
+  type FacilityCycle,
+  fetchDatafiles,
+} from 'datagateway-common';
 import { buildDatasetUrl } from '../urlBuilders';
 
 async function fetchDatafile({

@@ -4,7 +4,7 @@ import {
   mockFacilityCycles,
 } from '../../testData';
 import axios from 'axios';
-import { Dataset } from 'datagateway-common';
+import type { Dataset } from 'datagateway-common';
 import buildDatasetUrl from './buildDatasetUrl';
 
 describe('buildDatasetUrl', () => {
