@@ -70,11 +70,16 @@ describe('Admin Download Status Table', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0)).toUTCString();
     global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
 
     const { asFragment } = renderComponent();
+
+    // wait for data to finish loading
+    expect(
+      await screen.findByText(mockedDate.toLocaleString())
+    ).toBeInTheDocument();
 
     expect(asFragment()).toMatchSnapshot();
   });

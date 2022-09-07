@@ -1,17 +1,24 @@
-import React from 'react';
 import {
-  Typography,
-  Grid,
-  Divider,
-  Tabs,
-  Tab,
   Button,
+  Divider,
+  Grid,
   styled,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 import { useInvestigationDetails, useInvestigationSize } from '../../api';
 import { Entity, Investigation } from '../../app.types';
+import {
+  DlsVisitDetailsPanelChangeTabPayload,
+  DlsVisitDetailsPanelChangeTabType,
+} from '../../state/actions/actions.types';
+import type { StateType } from '../../state/app.types';
+import type { Action } from '../../state/reducers/createReducer';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -26,15 +33,20 @@ interface VisitDetailsPanelProps {
   detailsPanelResize?: () => void;
 }
 
+const DEFAULT_TAB: DlsVisitDetailsPanelTab = 'details';
+
+export type DlsVisitDetailsPanelTab =
+  | 'details'
+  | 'users'
+  | 'samples'
+  | 'publications'
+  | 'parameters';
+
 const VisitDetailsPanel = (
   props: VisitDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize } = props;
-  const [value, setValue] = React.useState<
-    'details' | 'users' | 'samples' | 'publications' | 'parameters'
-  >('details');
   const [t] = useTranslation();
-
   const { data } = useInvestigationDetails(rowData.id);
   const { data: size, refetch: fetchSize } = useInvestigationSize(rowData.id);
   const investigationData: Investigation = {
@@ -42,10 +54,42 @@ const VisitDetailsPanel = (
     ...(rowData as Investigation),
     size,
   };
+  const selectedTab = useSelector<
+    StateType,
+    DlsVisitDetailsPanelTab | undefined
+  >(
+    (state) => data && state.dgcommon.dlsVisitDetailsPanel[data.id]?.selectedTab
+  );
+  const dispatch = useDispatch();
+
+  const changeTab = React.useCallback(
+    (newTab: DlsVisitDetailsPanelTab) => {
+      const id = data?.id;
+      if (id) {
+        dispatch<Action>({
+          type: DlsVisitDetailsPanelChangeTabType,
+          payload: {
+            newTab,
+            investigationId: id,
+          } as DlsVisitDetailsPanelChangeTabPayload,
+        });
+      }
+    },
+    [data?.id, dispatch]
+  );
 
   React.useLayoutEffect(() => {
-    if (detailsPanelResize) detailsPanelResize();
-  }, [value, detailsPanelResize]);
+    if (detailsPanelResize && selectedTab) detailsPanelResize();
+  }, [selectedTab, detailsPanelResize]);
+
+  React.useEffect(() => {
+    if (data && !selectedTab) {
+      // register the selected tab for this visit's details panel
+      // for the first time.
+      // go to the default tab on first render
+      changeTab(DEFAULT_TAB);
+    }
+  }, [data, selectedTab, changeTab]);
 
   return (
     <div
@@ -58,8 +102,8 @@ const VisitDetailsPanel = (
         textColor="secondary"
         indicatorColor="secondary"
         scrollButtons="auto"
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={selectedTab}
+        onChange={(event, newValue) => changeTab(newValue)}
         aria-label={t('investigations.details.tabs_label')}
       >
         <Tab
@@ -105,7 +149,7 @@ const VisitDetailsPanel = (
         id="visit-details-panel"
         aria-labelledby="visit-details-tab"
         role="tabpanel"
-        hidden={value !== 'details'}
+        hidden={selectedTab !== 'details'}
       >
         <StyledGrid container direction="column">
           <Grid item xs>
@@ -200,7 +244,7 @@ const VisitDetailsPanel = (
           id="visit-users-panel"
           aria-labelledby="visit-users-tab"
           role="tabpanel"
-          hidden={value !== 'users'}
+          hidden={selectedTab !== 'users'}
         >
           <StyledGrid container direction="column">
             <Typography variant="overline">
@@ -238,7 +282,7 @@ const VisitDetailsPanel = (
           id="visit-samples-panel"
           aria-labelledby="visit-samples-tab"
           role="tabpanel"
-          hidden={value !== 'samples'}
+          hidden={selectedTab !== 'samples'}
         >
           <StyledGrid container direction="column">
             <Typography variant="overline">
@@ -270,7 +314,7 @@ const VisitDetailsPanel = (
           id="investigation-parameters-panel"
           aria-labelledby="investigation-parameters-tab"
           role="tabpanel"
-          hidden={value !== 'parameters'}
+          hidden={selectedTab !== 'parameters'}
         >
           <StyledGrid id="parameter-grid" container direction="column">
             {investigationData.parameters.length > 0 ? (
@@ -334,7 +378,7 @@ const VisitDetailsPanel = (
           id="visit-publications-panel"
           aria-labelledby="visit-publications-tab"
           role="tabpanel"
-          hidden={value !== 'publications'}
+          hidden={selectedTab !== 'publications'}
         >
           <StyledGrid container direction="column">
             <Typography variant="overline">
