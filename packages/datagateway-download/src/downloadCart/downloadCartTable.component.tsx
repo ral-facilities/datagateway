@@ -42,10 +42,12 @@ import {
 } from '../downloadApiHooks';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
-import DatasetLink from './datasetLink.component';
 import DownloadCartItemLink from './downloadCartItemLink.component';
-import InvestigationLink from './investigationLink.component';
-import { buildInvestigationLink } from './linkBuilders';
+import {
+  buildDatafileUrl,
+  buildDatasetUrl,
+  buildInvestigationUrl,
+} from './linkBuilders';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -200,7 +202,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 <DownloadCartItemLink
                   cartItem={item}
                   linkBuilder={() =>
-                    buildInvestigationLink({
+                    buildInvestigationUrl({
                       apiUrl,
                       facilityName,
                       facilityCycles,
@@ -212,7 +214,32 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
             case 'dataset':
               return (
-                <DatasetLink cartItem={item} facilityCycles={facilityCycles} />
+                <DownloadCartItemLink
+                  cartItem={item}
+                  linkBuilder={() =>
+                    buildDatasetUrl({
+                      apiUrl,
+                      facilityName,
+                      facilityCycles,
+                      datasetId: item.entityId,
+                    })
+                  }
+                />
+              );
+
+            case 'datafile':
+              return (
+                <DownloadCartItemLink
+                  cartItem={item}
+                  linkBuilder={() =>
+                    buildDatafileUrl({
+                      apiUrl,
+                      facilityName,
+                      facilityCycles,
+                      datafileId: item.entityId,
+                    })
+                  }
+                />
               );
 
             default:
@@ -241,7 +268,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         },
       },
     ],
-    [facilityCycles, t, textFilter]
+    [apiUrl, facilityCycles, facilityName, t, textFilter]
   );
   const onSort = React.useCallback(
     (column: string, order: 'desc' | 'asc' | null) => {

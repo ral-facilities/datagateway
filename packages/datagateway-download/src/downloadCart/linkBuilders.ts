@@ -1,7 +1,9 @@
 import {
   AdditionalFilters,
+  Datafile,
   Dataset,
   FacilityCycle,
+  fetchDatafiles,
   fetchDatasets,
   fetchInvestigations,
   findInvestigationFacilityCycle,
@@ -42,9 +44,12 @@ async function fetchInvestigation({
 
 /**
  * Given either an investigation ID or an {@link Investigation} object, constructs a link to the {@link Investigation}.
- * @returns
+ *
+ * If providing an {@link Investigation} object, the {@link Investigation.investigationInstruments} field has to be present.
+ *
+ * @returns A URL to the investigation table, or `null` if the URL cannot be constructed due to missing info.
  */
-async function buildInvestigationLink({
+async function buildInvestigationUrl({
   apiUrl,
   facilityName,
   investigation: providedInvestigation,
@@ -64,7 +69,13 @@ async function buildInvestigationLink({
   }
 
   if (facilityName !== 'ISIS' && facilityName !== 'DLS') {
-    return `/browse/investigation/${investigationId}/dataset`;
+    if (investigationId) {
+      return `/browse/investigation/${investigationId}/dataset`;
+    }
+    if (providedInvestigation) {
+      return `/browse/investigation/${providedInvestigation.id}/dataset`;
+    }
+    return null;
   }
 
   let investigation: Investigation | null;
@@ -134,23 +145,44 @@ async function fetchDataset({
   return datasets[0] ?? null;
 }
 
+/**
+ * Given either a dataset ID or a {@link Dataset} object, constructs a URL to the {@link Dataset}.
+ *
+ * If providing a {@link Dataset} object, the {@link Dataset.investigation} has to be present,
+ * and the {@link Investigation} object has to have the {@link Investigation.investigationInstruments} field.
+ *
+ * @returns The URL to the dataset table, or `null` if the URL cannot be constructed due to missing info.
+ */
 async function buildDatasetUrl({
   apiUrl,
   facilityName,
   datasetId,
+  dataset: providedDataset,
   facilityCycles,
 }: {
-  investigation: Investigation;
-  datasetId: Dataset['id'];
+  datasetId?: Dataset['id'];
+  dataset?: Dataset;
   apiUrl: string;
   facilityName: string;
   facilityCycles: FacilityCycle[];
 }): Promise<string | null> {
-  const dataset = await fetchDataset({ apiUrl, facilityName, datasetId });
-  const investigation = dataset?.investigation;
-  if (!investigation) return null;
+  if (!datasetId && !providedDataset) {
+    return null;
+  }
 
-  const prefixUrl = await buildInvestigationLink({
+  let dataset: Dataset | null;
+  if (providedDataset) {
+    dataset = providedDataset;
+  } else if (datasetId) {
+    dataset = await fetchDataset({ apiUrl, facilityName, datasetId });
+  } else {
+    return null;
+  }
+
+  const investigation = dataset?.investigation;
+  if (!dataset || !investigation) return null;
+
+  const prefixUrl = await buildInvestigationUrl({
     apiUrl,
     facilityName,
     investigation,
@@ -158,7 +190,71 @@ async function buildDatasetUrl({
   });
   if (!prefixUrl) return null;
 
-  return `${prefixUrl}/${datasetId}/datafile`;
+  return `${prefixUrl}/${dataset.id}/datafile`;
 }
 
-export { buildInvestigationLink };
+async function fetchDatafile({
+  apiUrl,
+  facilityName,
+  datafileId,
+}: {
+  apiUrl: string;
+  facilityName: string;
+  datafileId: Datafile['id'];
+}): Promise<Datafile | null> {
+  let includeField: string;
+  switch (facilityName) {
+    case 'isis':
+      includeField =
+        'dataset.investigation.investigationInstruments.instrument';
+      break;
+    default:
+      includeField = 'dataset.investigation';
+      break;
+  }
+
+  const datafiles = await fetchDatafiles(apiUrl, { sort: {}, filters: {} }, [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({ id: { eq: datafileId } }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify(includeField),
+    },
+  ]);
+
+  return datafiles[0] ?? null;
+}
+
+/**
+ * Given either a dataset ID or a {@link Datafile} object, constructs a URL to the {@link Datafile}.
+ * The URL points to the dataset table the {@link Datafile} belongs to.
+ *
+ * @returns The URL to the dataset table that the datafile belongs to,
+ *          or `null` if the URL cannot be constructed due to missing info.
+ */
+async function buildDatafileUrl({
+  apiUrl,
+  facilityName,
+  datafileId,
+  facilityCycles,
+}: {
+  datafileId: Datafile['id'];
+  apiUrl: string;
+  facilityName: string;
+  facilityCycles: FacilityCycle[];
+}): Promise<string | null> {
+  const datafile = await fetchDatafile({ apiUrl, facilityName, datafileId });
+  const dataset = datafile?.dataset;
+  if (!dataset) return null;
+
+  return buildDatasetUrl({
+    apiUrl,
+    facilityName,
+    facilityCycles,
+    dataset,
+  });
+}
+
+export { buildInvestigationUrl, buildDatasetUrl, buildDatafileUrl };
