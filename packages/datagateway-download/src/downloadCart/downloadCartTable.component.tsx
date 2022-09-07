@@ -47,7 +47,7 @@ import {
   buildDatafileUrl,
   buildDatasetUrl,
   buildInvestigationUrl,
-} from './linkBuilders';
+} from './urlBuilders';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
