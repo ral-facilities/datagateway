@@ -16,7 +16,7 @@ async function fetchDatafile({
 }): Promise<Datafile | null> {
   let includeField: string;
   switch (facilityName) {
-    case 'isis':
+    case 'ISIS':
       includeField =
         'dataset.investigation.investigationInstruments.instrument';
       break;

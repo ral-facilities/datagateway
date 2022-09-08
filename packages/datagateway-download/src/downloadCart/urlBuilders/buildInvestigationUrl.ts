@@ -22,7 +22,7 @@ async function fetchInvestigation({
     },
   ];
 
-  if (facilityName === 'isis') {
+  if (facilityName === 'ISIS') {
     filters.push({
       filterType: 'include',
       filterValue: JSON.stringify(['investigationInstruments.instrument']),
