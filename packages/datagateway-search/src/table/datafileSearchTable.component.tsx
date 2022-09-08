@@ -517,6 +517,9 @@ const DatafileSearchTable = (
   if (hierarchy === 'isis') detailsPanel = ISISDatafileDetailsPanel;
   else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
 
+  const shouldShowFilterPanel =
+    customFilters && (filterUpdate || aggregatedSource?.length > 0);
+
   return (
     <div style={{ height: '100%' }}>
       {aborted ? (
@@ -533,7 +536,7 @@ const DatafileSearchTable = (
           sx={{ height: '100%' }}
         >
           {/* Filtering options */}
-          {customFilters && (filterUpdate || aggregatedSource?.length > 0) && (
+          {shouldShowFilterPanel && (
             <Grid
               item
               xs={12}
@@ -624,7 +627,7 @@ const DatafileSearchTable = (
               </Paper>
             </Grid>
           )}
-          <Grid item xs={12} md={9}>
+          <Grid item xs={12} md={shouldShowFilterPanel ? 9 : 12}>
             {selectedChips.length > 0 &&
               (filterUpdate || aggregatedSource?.length > 0) && (
                 <ul
