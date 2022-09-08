@@ -43,7 +43,7 @@
     "react-router-dom": ">= 5.2.0 < 6"
   },
   "devDependencies": {
-    "@mui/icons-material": "5.8.4",
+    "@mui/icons-material": "5.10.3",
     "@mui/material": "5.10.0",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "12.1.3",
