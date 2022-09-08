@@ -1,10 +1,9 @@
 import {
-  type ButtonProps,
   Button,
+  type ButtonProps,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { ArrowTooltip } from 'datagateway-common';
 import React from 'react';
 
 interface ToolbarButtonProps
@@ -30,11 +29,9 @@ function ToolbarButton({
   const isBreakpointMatched = useMediaQuery(theme.breakpoints.down('md'));
 
   return isBreakpointMatched ? (
-    <ArrowTooltip title="test">
-      <Button {...buttonProps} sx={{ minWidth: 'auto', ...sx }}>
-        {icon}
-      </Button>
-    </ArrowTooltip>
+    <Button {...buttonProps} sx={{ minWidth: 'auto', ...sx }}>
+      {icon}
+    </Button>
   ) : (
     <Button {...buttonProps} startIcon={icon}>
       {label}

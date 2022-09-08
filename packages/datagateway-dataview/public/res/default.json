@@ -218,6 +218,7 @@
         "reading_content": "Reading content"
       },
       "toolbar": {
+        "back_button_label": "Other datafiles",
         "copy_link": "Copy link",
         "zoom_control": "Zoom level control for datafile content",
         "zoom_in": "Zoom in",

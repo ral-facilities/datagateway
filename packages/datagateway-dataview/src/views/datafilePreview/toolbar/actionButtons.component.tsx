@@ -1,4 +1,5 @@
 import {
+  ArrowBack,
   CopyAll,
   Download,
   RestartAlt,
@@ -10,6 +11,7 @@ import { downloadDatafile } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import type { StateType } from '../../../state/app.types';
 import DatafilePreviewerContext from '../datafilePreviewerContext';
 import DATAFILE_PREVIEWER_DEFAULT from '../defaults';
@@ -24,6 +26,7 @@ import ToolbarButton from './toolbarButton.component';
  * Buttons in {@link DatafilePreviewerToolbar} that performs various actions.
  *
  * Contains the following controls:
+ *   - Back button (goes back to the datafile table)
  *   - Download datafile button
  *   - Copy datafile link button
  *   - Zoom controls
@@ -46,11 +49,17 @@ function ActionButtons(): JSX.Element {
       DATAFILE_PREVIEWER_DEFAULT.zoomLevel
   );
   const [t] = useTranslation();
+  const { pathname } = useLocation();
+  const history = useHistory();
 
   // this should only occur when DatafilePreviewerContext is not provided
   if (!previewerContext) return <></>;
 
   const { datafile, datafileContent } = previewerContext;
+
+  function goBackToDatafileTable(): void {
+    history.push(pathname.split('/').slice(0, -1).join('/'));
+  }
 
   function zoomIn(): void {
     dispatch({
@@ -93,15 +102,21 @@ function ActionButtons(): JSX.Element {
       <Stack direction="row" spacing={1}>
         <ToolbarButton
           variant="text"
+          icon={<ArrowBack />}
+          label={t('datafiles.preview.toolbar.back_button_label')}
+          onClick={goBackToDatafileTable}
+        />
+        <ToolbarButton
+          variant="text"
           icon={<Download />}
           label={t('buttons.download')}
-          onClick={() => download()}
+          onClick={download}
         />
         <ToolbarButton
           variant="text"
           icon={<CopyAll />}
           label={t('datafiles.preview.toolbar.copy_link')}
-          onClick={() => copyLink()}
+          onClick={copyLink}
         />
         <ButtonGroup
           variant="text"
