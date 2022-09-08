@@ -1,5 +1,4 @@
 import {
-  Button,
   CircularProgress,
   Dialog,
   DialogActions as MuiDialogActions,
@@ -27,6 +26,7 @@ import {
 import DialogContent from './dialogContent.component';
 import DialogTitle from './dialogTitle.component';
 import DownloadRequestResult from './downloadRequestResult.component';
+import { LoadingButton } from '@mui/lab';
 
 const TableContentDiv = styled('div')(() => ({
   paddingTop: '10px',
@@ -571,7 +571,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           </DialogContent>
 
           <DialogActions>
-            <Button
+            <LoadingButton
               id="download-confirmation-download"
               disabled={
                 isLoading ||
@@ -580,15 +580,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 downloadTypeInfoMap?.get(selectedMethod)?.disabled ||
                 methodsUnavailable
               }
+              loading={isLoading}
               onClick={processDownload}
               color="primary"
               variant="contained"
             >
-              {isLoading && <CircularProgress size={16} />}
-              <span style={{ paddingLeft: `${isLoading ? 8 : 0}px` }}>
-                {t('downloadConfirmDialog.download')}
-              </span>
-            </Button>
+              {t('downloadConfirmDialog.download')}
+            </LoadingButton>
           </DialogActions>
         </div>
       ) : (
