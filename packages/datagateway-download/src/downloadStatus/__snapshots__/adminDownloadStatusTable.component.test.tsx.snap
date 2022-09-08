@@ -60,21 +60,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
           class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-1vpwcmr-MuiGrid-root"
         >
           <div
-            class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
-          >
-            <span
-              class="MuiLinearProgress-root MuiLinearProgress-colorSecondary MuiLinearProgress-indeterminate css-10jyip1-MuiLinearProgress-root"
-              role="progressbar"
-            >
-              <span
-                class="MuiLinearProgress-bar MuiLinearProgress-barColorSecondary MuiLinearProgress-bar1Indeterminate css-p53mz9-MuiLinearProgress-bar1"
-              />
-              <span
-                class="MuiLinearProgress-bar MuiLinearProgress-barColorSecondary MuiLinearProgress-bar2Indeterminate css-xybj4j-MuiLinearProgress-bar2"
-              />
-            </span>
-          </div>
-          <div
             class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
           >
             <div
@@ -86,7 +71,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
               >
                 <div
                   aria-colcount="10"
-                  aria-rowcount="0"
+                  aria-rowcount="5"
                   class="ReactVirtualized__Table css-dbfe3s"
                   role="grid"
                 >
@@ -142,11 +127,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               aria-hidden="true"
-                              class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-lgol22-MuiInputBase-root-MuiInput-root"
+                              class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
                             >
                               <input
                                 aria-label="Filter by downloadStatus.id"
-                                class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                 id="downloadStatus.id-filter"
                                 placeholder="Include"
                                 type="text"
@@ -156,14 +141,14 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                               >
                                 <div
-                                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary  css-194ccxm-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                 >
                                   <div
                                     aria-expanded="false"
                                     aria-haspopup="listbox"
                                     aria-label="include or exclude"
                                     aria-labelledby="downloadStatus.id-select-filter-type"
-                                    class="MuiSelect-select MuiSelect-standard MuiInput-input MuiInputBase-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                    class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                     id="downloadStatus.id-select-filter-type"
                                     role="button"
                                     tabindex="0"
@@ -253,11 +238,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               aria-hidden="true"
-                              class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-lgol22-MuiInputBase-root-MuiInput-root"
+                              class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
                             >
                               <input
                                 aria-label="Filter by downloadStatus.fullname"
-                                class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                 id="downloadStatus.fullname-filter"
                                 placeholder="Include"
                                 type="text"
@@ -267,14 +252,14 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                               >
                                 <div
-                                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary  css-194ccxm-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                 >
                                   <div
                                     aria-expanded="false"
                                     aria-haspopup="listbox"
                                     aria-label="include or exclude"
                                     aria-labelledby="downloadStatus.fullname-select-filter-type"
-                                    class="MuiSelect-select MuiSelect-standard MuiInput-input MuiInputBase-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                    class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                     id="downloadStatus.fullname-select-filter-type"
                                     role="button"
                                     tabindex="0"
@@ -364,11 +349,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               aria-hidden="true"
-                              class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-lgol22-MuiInputBase-root-MuiInput-root"
+                              class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
                             >
                               <input
                                 aria-label="Filter by downloadStatus.username"
-                                class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                 id="downloadStatus.username-filter"
                                 placeholder="Include"
                                 type="text"
@@ -378,14 +363,14 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                               >
                                 <div
-                                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary  css-194ccxm-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                 >
                                   <div
                                     aria-expanded="false"
                                     aria-haspopup="listbox"
                                     aria-label="include or exclude"
                                     aria-labelledby="downloadStatus.username-select-filter-type"
-                                    class="MuiSelect-select MuiSelect-standard MuiInput-input MuiInputBase-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                    class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                     id="downloadStatus.username-select-filter-type"
                                     role="button"
                                     tabindex="0"
@@ -475,11 +460,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               aria-hidden="true"
-                              class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-lgol22-MuiInputBase-root-MuiInput-root"
+                              class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
                             >
                               <input
                                 aria-label="Filter by downloadStatus.preparedId"
-                                class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                 id="downloadStatus.preparedId-filter"
                                 placeholder="Include"
                                 type="text"
@@ -489,14 +474,14 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                               >
                                 <div
-                                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary  css-194ccxm-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                 >
                                   <div
                                     aria-expanded="false"
                                     aria-haspopup="listbox"
                                     aria-label="include or exclude"
                                     aria-labelledby="downloadStatus.preparedId-select-filter-type"
-                                    class="MuiSelect-select MuiSelect-standard MuiInput-input MuiInputBase-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                    class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                     id="downloadStatus.preparedId-select-filter-type"
                                     role="button"
                                     tabindex="0"
@@ -586,11 +571,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               aria-hidden="true"
-                              class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-lgol22-MuiInputBase-root-MuiInput-root"
+                              class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
                             >
                               <input
                                 aria-label="Filter by downloadStatus.transport"
-                                class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                 id="downloadStatus.transport-filter"
                                 placeholder="Include"
                                 type="text"
@@ -600,14 +585,14 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                               >
                                 <div
-                                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary  css-194ccxm-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                 >
                                   <div
                                     aria-expanded="false"
                                     aria-haspopup="listbox"
                                     aria-label="include or exclude"
                                     aria-labelledby="downloadStatus.transport-select-filter-type"
-                                    class="MuiSelect-select MuiSelect-standard MuiInput-input MuiInputBase-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                    class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                     id="downloadStatus.transport-select-filter-type"
                                     role="button"
                                     tabindex="0"
@@ -697,11 +682,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               aria-hidden="true"
-                              class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-lgol22-MuiInputBase-root-MuiInput-root"
+                              class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
                             >
                               <input
                                 aria-label="Filter by downloadStatus.status"
-                                class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                 id="downloadStatus.status-filter"
                                 placeholder="Include"
                                 type="text"
@@ -711,14 +696,14 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                               >
                                 <div
-                                  class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary  css-194ccxm-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                 >
                                   <div
                                     aria-expanded="false"
                                     aria-haspopup="listbox"
                                     aria-label="include or exclude"
                                     aria-labelledby="downloadStatus.status-select-filter-type"
-                                    class="MuiSelect-select MuiSelect-standard MuiInput-input MuiInputBase-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                    class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                     id="downloadStatus.status-select-filter-type"
                                     role="button"
                                     tabindex="0"
@@ -849,38 +834,84 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
                             >
                               <div
-                                class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-1480iag-MuiInputBase-root-MuiInput-root"
+                                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1ptx2yq-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
                                   aria-invalid="false"
                                   aria-label="downloadStatus.createdAt filter from"
-                                  aria-readonly="true"
-                                  class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                  class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                   id="downloadStatus.createdAt filter from"
                                   placeholder="From..."
-                                  readonly=""
-                                  type="text"
+                                  type="tel"
                                   value=""
                                 />
+                                <div
+                                  class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+                                >
+                                  <button
+                                    aria-label="downloadStatus.createdAt filter from, date-time picker"
+                                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeSmall css-1bkxqye-MuiButtonBase-root-MuiIconButton-root"
+                                    tabindex="0"
+                                    type="button"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                      data-testid="CalendarIcon"
+                                      focusable="false"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+                                      />
+                                    </svg>
+                                    <span
+                                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                                    />
+                                  </button>
+                                </div>
                               </div>
                             </div>
                             <div
                               class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
                             >
                               <div
-                                class="MuiInput-root MuiInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-1480iag-MuiInputBase-root-MuiInput-root"
+                                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1ptx2yq-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
                                   aria-invalid="false"
                                   aria-label="downloadStatus.createdAt filter to"
-                                  aria-readonly="true"
-                                  class="MuiInput-input MuiInputBase-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                  class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                   id="downloadStatus.createdAt filter to"
                                   placeholder="To..."
-                                  readonly=""
-                                  type="text"
+                                  type="tel"
                                   value=""
                                 />
+                                <div
+                                  class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+                                >
+                                  <button
+                                    aria-label="downloadStatus.createdAt filter to, date-time picker"
+                                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeSmall css-1bkxqye-MuiButtonBase-root-MuiIconButton-root"
+                                    tabindex="0"
+                                    type="button"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                      data-testid="CalendarIcon"
+                                      focusable="false"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+                                      />
+                                    </svg>
+                                    <span
+                                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                                    />
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </form>
@@ -968,7 +999,1397 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                     role="rowgroup"
                     style="box-sizing: border-box; direction: ltr; height: 335px; position: relative; width: 856px; will-change: transform; overflow-x: hidden; overflow-y: hidden;"
                     tabindex="-1"
-                  />
+                  >
+                    <div
+                      class="ReactVirtualized__Grid__innerScrollContainer"
+                      role="rowgroup"
+                      style="width: auto; height: 150px; max-width: 856px; max-height: 150px; overflow: hidden; position: relative;"
+                    >
+                      <div
+                        aria-rowindex="1"
+                        class="ReactVirtualized__Table__row"
+                        role="row"
+                        style="height: 30px; left: 0px; position: absolute; top: 0px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
+                      >
+                        <div
+                          aria-colindex="1"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="1"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              1
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="2"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="Person 1"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              Person 1
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="3"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test user"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test user
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="4"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test-prepared-id"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test-prepared-id
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="5"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="https"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              https
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="6"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="downloadStatus.complete"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              downloadStatus.complete
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="7"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="1 KB"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              1 KB
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="8"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="2020-02-25 15:05:29"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              2020-02-25 15:05:29
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="9"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="No"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              No
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="10"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; display: flex; align-items: center; box-sizing: border-box; flex: 0 0 100px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-1529svy-MuiTableCell-root"
+                          >
+                            <button
+                              aria-label="downloadStatus.delete {filename:test-file-1}"
+                              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                              tabindex="0"
+                              type="button"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                data-testid="RemoveCircleIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
+                                />
+                              </svg>
+                              <span
+                                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-rowindex="2"
+                        class="ReactVirtualized__Table__row"
+                        role="row"
+                        style="height: 30px; left: 0px; position: absolute; top: 30px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
+                      >
+                        <div
+                          aria-colindex="1"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="2"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              2
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="2"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="Person 2"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              Person 2
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="3"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test user"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test user
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="4"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test-prepared-id"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test-prepared-id
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="5"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="globus"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              globus
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="6"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="downloadStatus.preparing"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              downloadStatus.preparing
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="7"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="2 KB"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              2 KB
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="8"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="2020-02-26 15:05:35"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              2020-02-26 15:05:35
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="9"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="No"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              No
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="10"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; display: flex; align-items: center; box-sizing: border-box; flex: 0 0 100px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-1529svy-MuiTableCell-root"
+                          >
+                            <button
+                              aria-label="downloadStatus.delete {filename:test-file-2}"
+                              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                              tabindex="0"
+                              type="button"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                data-testid="RemoveCircleIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
+                                />
+                              </svg>
+                              <span
+                                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-label="downloadStatus.pause {filename:test-file-2}"
+                              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                              tabindex="0"
+                              type="button"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                data-testid="PauseCircleFilledIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"
+                                />
+                              </svg>
+                              <span
+                                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-rowindex="3"
+                        class="ReactVirtualized__Table__row"
+                        role="row"
+                        style="height: 30px; left: 0px; position: absolute; top: 60px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
+                      >
+                        <div
+                          aria-colindex="1"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="3"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              3
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="2"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="Person 3"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              Person 3
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="3"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test user"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test user
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="4"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test-prepared-id"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test-prepared-id
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="5"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="https"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              https
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="6"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="downloadStatus.restoring"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              downloadStatus.restoring
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="7"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="3 KB"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              3 KB
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="8"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="2020-02-27 15:57:20"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              2020-02-27 15:57:20
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="9"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="No"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              No
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="10"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; display: flex; align-items: center; box-sizing: border-box; flex: 0 0 100px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-1529svy-MuiTableCell-root"
+                          >
+                            <button
+                              aria-label="downloadStatus.delete {filename:test-file-3}"
+                              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                              tabindex="0"
+                              type="button"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                data-testid="RemoveCircleIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
+                                />
+                              </svg>
+                              <span
+                                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-label="downloadStatus.pause {filename:test-file-3}"
+                              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                              tabindex="0"
+                              type="button"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                data-testid="PauseCircleFilledIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"
+                                />
+                              </svg>
+                              <span
+                                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-rowindex="4"
+                        class="ReactVirtualized__Table__row"
+                        role="row"
+                        style="height: 30px; left: 0px; position: absolute; top: 90px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
+                      >
+                        <div
+                          aria-colindex="1"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="4"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              4
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="2"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="Person 4"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              Person 4
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="3"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test user"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test user
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="4"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test-prepared-id"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test-prepared-id
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="5"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="globus"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              globus
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="6"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="downloadStatus.expired"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              downloadStatus.expired
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="7"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="4 KB"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              4 KB
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="8"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="2020-02-28 15:57:28"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              2020-02-28 15:57:28
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="9"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="Yes"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              Yes
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="10"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; display: flex; align-items: center; box-sizing: border-box; flex: 0 0 100px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-1529svy-MuiTableCell-root"
+                          >
+                            <button
+                              aria-label="downloadStatus.restore {filename:test-file-4}"
+                              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                              tabindex="0"
+                              type="button"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                data-testid="RestoreIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"
+                                />
+                              </svg>
+                              <span
+                                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-rowindex="5"
+                        class="ReactVirtualized__Table__row"
+                        role="row"
+                        style="height: 30px; left: 0px; position: absolute; top: 120px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
+                      >
+                        <div
+                          aria-colindex="1"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="5"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              5
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="2"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="Person 5"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              Person 5
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="3"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test user"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test user
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="4"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="test-prepared-id"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              test-prepared-id
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="5"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="globus"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              globus
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="6"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="downloadStatus.paused"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              downloadStatus.paused
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="7"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="5 KB"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              5 KB
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="8"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="2020-03-01 00:00:00"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              2020-03-01 00:00:00
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="9"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
+                          >
+                            <p
+                              aria-label="No"
+                              class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+                              data-mui-internal-clone-element="true"
+                            >
+                              No
+                            </p>
+                            <div
+                              style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+                            >
+                              <hr
+                                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-colindex="10"
+                          class="ReactVirtualized__Table__rowColumn"
+                          role="gridcell"
+                          style="overflow: hidden; display: flex; align-items: center; box-sizing: border-box; flex: 0 0 100px;"
+                        >
+                          <div
+                            class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-1529svy-MuiTableCell-root"
+                          >
+                            <button
+                              aria-label="downloadStatus.delete {filename:test-file-5}"
+                              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                              tabindex="0"
+                              type="button"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                data-testid="RemoveCircleIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
+                                />
+                              </svg>
+                              <span
+                                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-label="downloadStatus.resume {filename:test-file-5}"
+                              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                              tabindex="0"
+                              type="button"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                data-testid="PlayCircleFilledIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"
+                                />
+                              </svg>
+                              <span
+                                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div

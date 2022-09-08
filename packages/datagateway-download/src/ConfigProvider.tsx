@@ -16,8 +16,8 @@ export interface DownloadSettings {
   downloadApiUrl: string;
   idsUrl: string;
 
-  fileCountMax: number;
-  totalSizeMax: number;
+  fileCountMax?: number;
+  totalSizeMax?: number;
 
   accessMethods: DownloadSettingsAccessMethod;
   routes: PluginRoute[];
@@ -30,16 +30,15 @@ const initialConfiguration = {
   apiUrl: '',
   downloadApiUrl: '',
   idsUrl: '',
-  fileCountMax: -1,
-  totalSizeMax: -1,
+  fileCountMax: undefined,
+  totalSizeMax: undefined,
   accessMethods: {},
   routes: [],
   helpSteps: [],
 };
 
-export const DownloadSettingsContext = React.createContext<DownloadSettings>(
-  initialConfiguration
-);
+export const DownloadSettingsContext =
+  React.createContext<DownloadSettings>(initialConfiguration);
 
 class ConfigProvider extends React.Component<
   { children: React.ReactNode },

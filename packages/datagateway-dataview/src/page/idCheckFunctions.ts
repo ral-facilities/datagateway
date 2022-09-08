@@ -12,15 +12,15 @@ import memoize from 'lodash.memoize';
 let apiUrl = '';
 
 // this is so that idCheckFunctions have access to the apiUrl
-export const saveApiUrlMiddleware: Middleware = (() => (
-  next: Dispatch<AnyAction>
-) => (action: AnyAction): AnyAction => {
-  if (action.type === ConfigureURLsType) {
-    apiUrl = action.payload.urls.apiUrl;
-  }
+export const saveApiUrlMiddleware: Middleware = (() =>
+  (next: Dispatch<AnyAction>) =>
+  (action: AnyAction): AnyAction => {
+    if (action.type === ConfigureURLsType) {
+      apiUrl = action.payload.urls.apiUrl;
+    }
 
-  return next(action);
-}) as Middleware;
+    return next(action);
+  }) as Middleware;
 
 const unmemoizedCheckInvestigationId = (
   investigationId: number,
@@ -147,9 +147,10 @@ const unmemoizedCheckInstrumentId = (
   params.append(
     'where',
     JSON.stringify({
-      'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-        eq: instrumentId,
-      },
+      'studyInvestigations.investigation.investigationInstruments.instrument.id':
+        {
+          eq: instrumentId,
+        },
     })
   );
   return axios

@@ -174,7 +174,7 @@ Object {
 exports[`ISIS MyData table component renders title and name as links 1`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-mydata-table-title"
     href="/browse/instrument/3/facilityCycle/8/investigation/1"
   >
@@ -186,7 +186,7 @@ Array [
 exports[`ISIS MyData table component renders title and name as links 2`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-mydata-table-doi-link"
     href="https://doi.org/study pid"
   >

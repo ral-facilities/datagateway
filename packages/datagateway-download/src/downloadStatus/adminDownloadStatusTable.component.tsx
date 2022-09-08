@@ -61,9 +61,6 @@ const AdminDownloadStatusTable: React.FC = () => {
       | { startDate?: string; endDate?: string };
   }>({});
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
-  const [lastChecked, setLastChecked] = React.useState(
-    new Date().toLocaleString()
-  );
   const [t] = useTranslation();
   const { downloadStatusLabels: downloadStatuses } = useDownloadFormatter();
   const { mutate: adminDownloadDeleted } = useAdminDownloadDeleted();
@@ -121,6 +118,7 @@ const AdminDownloadStatusTable: React.FC = () => {
     isRefetching,
     fetchNextPage,
     refetch,
+    dataUpdatedAt,
   } = useAdminDownloads({
     initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
   });
@@ -148,12 +146,6 @@ const AdminDownloadStatusTable: React.FC = () => {
   }, [isFetched, refreshDownloads, refreshTable]);
 
   React.useEffect(() => {
-    if (isFetched) {
-      setLastChecked(new Date().toLocaleString());
-    }
-  }, [isFetched]);
-
-  React.useEffect(() => {
     // useEffect is always called on first render
     // we don't want to refetch when the initial fetch is already going
     // we only want to refetch when sort and filters changes
@@ -176,9 +168,9 @@ const AdminDownloadStatusTable: React.FC = () => {
       onChange={(value: { value?: string | number; type: string } | null) => {
         if (value) {
           if (dataKey === 'status') {
-            const downloadStatus = (Object.keys(
-              downloadStatuses
-            ) as DownloadStatus[]).find(
+            const downloadStatus = (
+              Object.keys(downloadStatuses) as DownloadStatus[]
+            ).find(
               (key) =>
                 downloadStatuses[key].toLowerCase() ===
                 (value.value as string).toLowerCase()
@@ -256,7 +248,10 @@ const AdminDownloadStatusTable: React.FC = () => {
 
             {!refreshDownloads ? (
               <p style={{ paddingLeft: '10px ' }}>
-                <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
+                <b>{t('downloadTab.last_checked')}: </b>{' '}
+                {dataUpdatedAt > 0
+                  ? new Date(dataUpdatedAt).toLocaleString()
+                  : ''}
               </p>
             ) : (
               <p style={{ paddingLeft: '20px ' }}>
@@ -275,11 +270,12 @@ const AdminDownloadStatusTable: React.FC = () => {
             )}
             <Grid item>
               {/* Table should take up page but leave room for: SG appbar, SG footer,
-            tabs, admin header, table padding, and text above table (respectively). */}
+            tabs, admin header, table padding, text above table, and the LinearProgress above (respectively). */}
               <Paper
                 style={{
-                  height:
-                    'calc(100vh - 64px - 36px - 48px - (3rem * 1.167) - 32px - (1.75rem + 40px))',
+                  height: `calc(100vh - 64px - 36px - 48px - (3rem * 1.167) - 32px - (1.75rem + 40px)${
+                    isLoading || isRefetching ? '' : ' - 4px'
+                  })`,
                   minHeight: 230,
                   overflowX: 'auto',
                 }}

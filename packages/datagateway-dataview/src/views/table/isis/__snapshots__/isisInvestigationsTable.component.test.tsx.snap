@@ -167,7 +167,7 @@ Object {
 exports[`ISIS Investigations table component renders title and DOI as links 1`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-investigations-table-title"
     href="/browse/instrument/4/facilityCycle/5/investigation/1"
   >
@@ -179,7 +179,7 @@ Array [
 exports[`ISIS Investigations table component renders title and DOI as links 2`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-investigations-table-doi-link"
     href="https://doi.org/study pid"
   >
@@ -191,7 +191,7 @@ Array [
 exports[`ISIS Investigations table component renders title and DOI as links in StudyHierarchy 1`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-investigations-table-title"
     href="/browseStudyHierarchy/instrument/4/study/5/investigation/1"
   >
@@ -203,7 +203,7 @@ Array [
 exports[`ISIS Investigations table component renders title and DOI as links in StudyHierarchy 2`] = `
 Array [
   <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1iwtne7-MuiTypography-root-MuiLink-root"
+    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     data-testid="isis-investigations-table-doi-link"
     href="https://doi.org/study pid"
   >

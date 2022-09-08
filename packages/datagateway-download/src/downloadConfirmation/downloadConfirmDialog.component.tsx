@@ -87,7 +87,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // Email validation.
   const emailHelpText = t('downloadConfirmDialog.email_help');
   const emailErrorText = t('downloadConfirmDialog.email_error');
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   const [emailValid, setEmailValid] = React.useState(true);
   const [emailHelperText, setEmailHelperText] = React.useState(emailHelpText);
 
@@ -109,9 +110,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     },
   });
 
-  const hasFinishedLoadingDownloadTypeStatuses = downloadTypeStatusQueries.every(
-    ({ isLoading }) => !isLoading
-  );
+  const hasFinishedLoadingDownloadTypeStatuses =
+    downloadTypeStatusQueries.every(({ isLoading }) => !isLoading);
 
   const {
     data: downloadId,
@@ -404,32 +404,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     {sortedDownloadTypes &&
                       sortedDownloadTypes.map(
                         ({ type, ...methodInfo }, index) => {
-                          if (methodInfo.disabled !== undefined) {
-                            // The display name will be shown as the menu item,
-                            // if defined in the settings, otherwise we show the type.
-                            const methodName =
-                              methodInfo.displayName || type.toUpperCase();
-                            return (
-                              <option
-                                key={index}
-                                id={`confirm-access-method-${type}`}
-                                aria-label={methodName}
-                                value={type}
-                                disabled={false}
-                              >
-                                {methodName}
-                              </option>
-                            );
-                          }
+                          const methodName =
+                            methodInfo?.displayName || type.toUpperCase();
                           return (
                             <option
-                              disabled
                               key={index}
                               id={`confirm-access-method-${type}`}
-                              aria-label={type.toUpperCase()}
+                              aria-label={methodName}
                               value={type}
+                              disabled={methodInfo.disabled === undefined}
                             >
-                              {type.toUpperCase()}
+                              {methodName}
                             </option>
                           );
                         }

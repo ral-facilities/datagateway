@@ -45,69 +45,91 @@ export const UnmemoisedAdvancedFilter = (
 
   const chooseIcon = (label: string): JSX.Element | null => {
     if (
-      (t('advanced_filters.icons.title', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.title', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <SubjectIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.fingerprint', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.fingerprint', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <FingerprintIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.public', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.public', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <PublicIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.confirmation_number', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.confirmation_number', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <ConfirmationNumberIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.assessment', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.assessment', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <AssessmentIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.calendar_today', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.calendar_today', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <CalendarTodayIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.explore', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.explore', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <ExploreIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.save', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.save', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <SaveIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.description', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.description', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <DescriptionIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.link', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.link', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <LinkIcon sx={iconStyle} />;
     } else if (
-      (t('advanced_filters.icons.person', {
-        returnObjects: true,
-      }) as string[]).includes(label)
+      (
+        t('advanced_filters.icons.person', {
+          returnObjects: true,
+        }) as string[]
+      ).includes(label)
     ) {
       return <PersonIcon sx={iconStyle} />;
     } else {

@@ -6,7 +6,7 @@ exports[`Generic clear filters button renders correctly 1`] = `
     class="css-1bl68gh"
   >
     <button
-      class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root tour-dataview-clear-filter-button css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+      class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall tour-dataview-clear-filter-button css-11qr2p8-MuiButtonBase-root-MuiButton-root"
       data-testid="clear-filters-button"
       style="margin: 5px;"
       tabindex="0"

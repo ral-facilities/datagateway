@@ -27,7 +27,7 @@ import {
 interface DownloadStatusTableProps {
   refreshTable: boolean;
   setRefreshTable: (refresh: boolean) => void;
-  setLastChecked: () => void;
+  setLastCheckedTimestamp: (timestamp: number) => void;
 }
 
 const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
@@ -45,12 +45,18 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       | { value?: string | number; type: string }
       | { startDate?: string; endDate?: string };
   }>({});
-  const { data: downloads, isLoading, isFetched, refetch } = useDownloads();
+  const {
+    data: downloads,
+    isLoading,
+    isFetched,
+    refetch,
+    dataUpdatedAt,
+  } = useDownloads();
 
   const {
     refreshTable: shouldRefreshTable,
     setRefreshTable,
-    setLastChecked,
+    setLastCheckedTimestamp,
   } = props;
   const [t] = useTranslation();
 
@@ -68,10 +74,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   // set table last checked time after fetching downloads
   React.useEffect(() => {
-    if (isFetched) {
-      setLastChecked();
+    if (dataUpdatedAt > 0) {
+      setLastCheckedTimestamp(dataUpdatedAt);
     }
-  }, [isFetched, setLastChecked]);
+  }, [dataUpdatedAt, setLastCheckedTimestamp]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -146,12 +152,13 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           } else if (
             typeof value === 'object' &&
             'startDate' in value &&
-            'endDate' in value &&
-            value.startDate
+            'endDate' in value
           ) {
             // Check that the given date is in the range specified by the filter.
             const tableTimestamp = toDate(tableValue).getTime();
-            const startTimestamp = toDate(value.startDate).getTime();
+            const startTimestamp = value.startDate
+              ? new Date(value.startDate).getTime()
+              : 0;
             const endTimestamp = value.endDate
               ? new Date(value.endDate).getTime()
               : Date.now();
@@ -317,10 +324,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               function RemoveButton({
                 rowData,
               }: TableActionProps): JSX.Element {
-                const {
-                  isLoading: isDeleting,
-                  mutate: downloadDeleted,
-                } = useDownloadOrRestoreDownload();
+                const { isLoading: isDeleting, mutate: downloadDeleted } =
+                  useDownloadOrRestoreDownload();
                 const downloadItem = rowData as FormattedDownload;
                 // const [isDeleting, setIsDeleting] = React.useState(false);
 

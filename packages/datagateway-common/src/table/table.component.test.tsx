@@ -153,10 +153,7 @@ describe('Table component', () => {
     expect(wrapperAllIds.exists('[aria-colcount=3]')).toBe(true);
     expect(wrapperAllIds.exists('[aria-label="select all rows"]')).toBe(true);
     expect(wrapperAllIds.find(SelectHeader).prop('allIds')).toEqual([
-      1,
-      2,
-      3,
-      4,
+      1, 2, 3, 4,
     ]);
   });
 

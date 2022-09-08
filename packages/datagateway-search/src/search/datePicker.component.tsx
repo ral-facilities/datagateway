@@ -9,9 +9,27 @@ import {
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { isBefore, isValid } from 'date-fns';
-import { DatePicker, LocalizationProvider } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { Box, TextField, Theme } from '@mui/material';
+import { TextField, Button } from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
+
+export const CustomClearButton = (
+  props: PickersActionBarProps
+): JSX.Element => {
+  const { onClear } = props;
+  return (
+    <Button
+      role="button"
+      onClick={() => onClear()}
+      variant="contained"
+      color="primary"
+      sx={{ marginLeft: '30px', marginBottom: '10px' }}
+    >
+      Clear
+    </Button>
+  );
+};
 
 interface DatePickerProps {
   initiateSearch: () => void;
@@ -94,7 +112,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <>
           <DatePicker
-            clearable
             maxDate={endDate || new Date()}
             inputFormat="yyyy-MM-dd"
             mask="____-__-__"
@@ -102,14 +119,14 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             onChange={(date) => {
               handleChange(date as Date, 'startDate');
             }}
-            clearText={
-              <Box
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}
-              >
-                Clear
-              </Box>
-            }
+            componentsProps={{
+              actionBar: {
+                actions: ['clear'],
+              },
+            }}
+            components={{
+              ActionBar: CustomClearButton,
+            }}
             renderInput={(props) => {
               const error =
                 // eslint-disable-next-line react/prop-types
@@ -139,7 +156,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           />
           {sideLayout ? <br></br> : null}
           <DatePicker
-            clearable
             minDate={startDate || new Date('1984-01-01T00:00:00Z')}
             inputFormat="yyyy-MM-dd"
             mask="____-__-__"
@@ -147,14 +163,14 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             onChange={(date) => {
               handleChange(date as Date, 'endDate');
             }}
-            clearText={
-              <Box
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                sx={{ color: (theme: Theme) => (theme as any).colours?.blue }}
-              >
-                Clear
-              </Box>
-            }
+            componentsProps={{
+              actionBar: {
+                actions: ['clear'],
+              },
+            }}
+            components={{
+              ActionBar: CustomClearButton,
+            }}
             renderInput={(props) => {
               const error =
                 // eslint-disable-next-line react/prop-types
