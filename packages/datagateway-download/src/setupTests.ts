@@ -15,6 +15,10 @@ export const flushPromises = (): Promise<void> =>
 // Mock lodash.debounce to return the function we want to call.
 jest.mock('lodash.debounce', () => (fn: (args: unknown) => unknown) => fn);
 
+jest.mock('@mui/utils/useId', () =>
+  jest.fn().mockImplementation((id?: string) => id ?? 'mui-test-id')
+);
+
 // MUI date pickers default to mobile versions during testing and so functions
 // like .simulate('change') will not work, this workaround ensures desktop
 // datepickers are used in tests instead
