@@ -14,6 +14,7 @@ import type { Datafile } from 'datagateway-common/lib/app.types';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 import { combineReducers, createStore, type Store } from 'redux';
 import DGDataViewReducer from '../../state/reducers/dgdataview.reducer';
 import DatafilePreviewer from './datafilePreviewer.component';
@@ -54,9 +55,11 @@ function renderComponent(): RenderResult {
 
   return render(
     <QueryClientProvider client={createQueryClient()}>
-      <Provider store={store}>
-        <DatafilePreviewer datafileId={mockDatafile.id} />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <DatafilePreviewer datafileId={mockDatafile.id} />
+        </Provider>
+      </MemoryRouter>
     </QueryClientProvider>
   );
 }
