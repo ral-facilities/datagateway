@@ -11,7 +11,7 @@ import { downloadDatafile } from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { MemoryRouter, Router } from 'react-router-dom';
 import type { Store } from 'redux';
 import { combineReducers, createStore } from 'redux';
 import type { StateType } from '../../../state/app.types';
@@ -78,7 +78,9 @@ describe('ActionButtons', () => {
   it('should not show anything when datafile previewer context is not provided', () => {
     const { container } = render(
       <Provider store={store}>
-        <ActionButtons />
+        <MemoryRouter>
+          <ActionButtons />
+        </MemoryRouter>
       </Provider>
     );
     expect(container.children).toHaveLength(0);
