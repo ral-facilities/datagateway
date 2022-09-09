@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { Title, CalendarToday, LooksOne } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { ParameterFacetList } from './parameterFacetList';
+import { ParameterFacetList } from './parameterFacetList.component';
 import { ParameterNumericRange } from './parameterNumericRange.component';
 import { DatasearchType, FacetRequest, useLuceneFacet } from '../api';
 import { FiltersType, SearchFilter } from '../app.types';
