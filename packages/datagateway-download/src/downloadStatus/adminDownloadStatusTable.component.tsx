@@ -325,12 +325,12 @@ const AdminDownloadStatusTable: React.FC = () => {
                       dataKey: 'createdAt',
                       cellContentRenderer: (props: TableCellProps) => {
                         if (props.cellData) {
-                          const incomming = String(props.cellData).substring(
-                            0,
-                            props.cellData.length - 5
+                          const date = toDate(
+                            props.cellData.substring(
+                              0,
+                              props.cellData.length - 5
+                            )
                           );
-                          const date = toDate(incomming);
-                          //const date = toDate(props.cellData);
                           return format(date, 'yyyy-MM-dd HH:mm:ss');
                         }
                       },
