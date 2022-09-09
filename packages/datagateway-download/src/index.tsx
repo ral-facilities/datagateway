@@ -93,13 +93,6 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
         );
       }
 
-      // Ensure all fileCountMax and totalSizeMax are present.
-      if (!('fileCountMax' in settings && 'totalSizeMax' in settings)) {
-        throw new Error(
-          'fileCountMax or totalSizeMax is undefined in settings'
-        );
-      }
-
       // Ensure access methods are present in the configuration.
       if (!('accessMethods' in settings)) {
         throw new Error('accessMethods is undefined in settings');
