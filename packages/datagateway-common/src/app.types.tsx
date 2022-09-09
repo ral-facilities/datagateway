@@ -15,6 +15,7 @@ export interface Investigation {
   releaseDate?: string;
   summary?: string;
   investigationInstruments?: InvestigationInstrument[];
+  investigationFacilityCycles?: InvestigationFacilityCycle[];
   size?: number;
   datasetCount?: number;
   investigationUsers?: InvestigationUser[];
@@ -93,6 +94,12 @@ export interface Sample {
 export interface Publication {
   id: number;
   fullReference: string;
+}
+
+export interface InvestigationFacilityCycle {
+  id: number;
+  investigation?: Investigation;
+  facilityCycle?: FacilityCycle;
 }
 
 export interface FacilityCycle {
