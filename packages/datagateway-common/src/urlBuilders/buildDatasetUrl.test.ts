@@ -8,8 +8,8 @@ describe('buildDatasetUrl', () => {
     it('should return the generic URL to it', async () => {
       const url = buildDatasetUrl({
         dataset,
-
         facilityName: mockFacilityName,
+        showLanding: false,
       });
 
       expect(url).toBe('/browse/investigation/58/dataset/856/datafile');
@@ -19,6 +19,7 @@ describe('buildDatasetUrl', () => {
       const url = buildDatasetUrl({
         dataset,
         facilityName: 'ISIS',
+        showLanding: false,
       });
 
       expect(url).toBe(
@@ -30,10 +31,23 @@ describe('buildDatasetUrl', () => {
       const url = buildDatasetUrl({
         dataset,
         facilityName: 'DLS',
+        showLanding: false,
       });
 
       expect(url).toBe(
         '/browse/proposal/investigation news/investigation/58/dataset/856/datafile'
+      );
+    });
+
+    it('should return the URL to the landing page of it if required', () => {
+      const url = buildDatasetUrl({
+        dataset,
+        facilityName: 'ISIS',
+        showLanding: true,
+      });
+
+      expect(url).toBe(
+        '/browse/instrument/937/facilityCycle/402/investigation/58/dataset/856'
       );
     });
   });
@@ -44,6 +58,7 @@ describe('buildDatasetUrl', () => {
     const url = buildDatasetUrl({
       dataset,
       facilityName: mockFacilityName,
+      showLanding: false,
     });
 
     expect(url).toBeNull();
@@ -56,6 +71,7 @@ describe('buildDatasetUrl', () => {
     const url = buildDatasetUrl({
       dataset,
       facilityName: 'ISIS',
+      showLanding: false,
     });
 
     expect(url).toBeNull();
