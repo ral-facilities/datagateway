@@ -183,7 +183,11 @@ const DatafileSearchTable = (
           const dataset = datafileData.dataset;
           if (!dataset) return '';
 
-          const link = buildDatasetUrl({ dataset, facilityName: hierarchy });
+          const link = buildDatasetUrl({
+            dataset,
+            facilityName: hierarchy,
+            showLanding: hierarchy === 'isis',
+          });
           return link ? tableLink(link, dataset.name) : dataset.name;
         },
         filterComponent: textFilter,
