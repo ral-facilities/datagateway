@@ -57,6 +57,18 @@ Object {
           "name": "facility name",
         },
         "id": 2,
+        "investigationFacilityCycles": Array [
+          Object {
+            "facilityCycle": Object {
+              "description": "He waited for the stop sign to turn to a go sign.",
+              "endDate": "2020-11-29T05:41:54Z",
+              "id": 402,
+              "name": "within cell interlinked",
+              "startDate": "2017-03-17T14:03:11Z",
+            },
+            "id": 23,
+          },
+        ],
         "investigationInstruments": Array [
           Object {
             "id": 3,

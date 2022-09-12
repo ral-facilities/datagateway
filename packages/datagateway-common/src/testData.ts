@@ -7,6 +7,7 @@ import type {
 
 export const mockApiUrl = 'https://example.com/api';
 export const mockFacilityName = 'LILS';
+
 export const mockFacilityCycles: FacilityCycle[] = [
   {
     id: 12938,
@@ -41,6 +42,18 @@ export const mockInvestigations: Investigation[] = [
         },
       },
     ],
+    investigationFacilityCycles: [
+      {
+        id: 23,
+        facilityCycle: {
+          id: 402,
+          name: 'within cell interlinked',
+          description: 'He waited for the stop sign to turn to a go sign.',
+          startDate: '2017-03-17T14:03:11Z',
+          endDate: '2020-11-29T05:41:54Z',
+        },
+      },
+    ],
   },
   {
     id: 993,
@@ -58,6 +71,7 @@ export const mockInvestigations: Investigation[] = [
         },
       },
     ],
+    investigationFacilityCycles: [],
   },
 ];
 

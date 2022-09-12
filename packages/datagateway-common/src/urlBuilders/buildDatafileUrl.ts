@@ -21,6 +21,7 @@ function buildDatafileUrl({
   return buildDatasetUrl({
     facilityName,
     dataset,
+    showLanding: false,
   });
 }
 

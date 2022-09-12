@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import DatafileSearchTable from './datafileSearchTable.component';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
@@ -28,6 +28,12 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../setupTests';
+import {
+  render,
+  screen,
+  waitFor,
+  type RenderResult,
+} from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -56,6 +62,18 @@ describe('Datafile search table component', () => {
 
   const createWrapper = (hierarchy?: string): ReactWrapper => {
     return mount(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DatafileSearchTable hierarchy={hierarchy ?? ''} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
+  const renderComponent = (hierarchy?: string): RenderResult => {
+    return render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -106,6 +124,19 @@ describe('Datafile search table component', () => {
                 instrument: {
                   id: 5,
                   name: 'LARMOR',
+                },
+              },
+            ],
+            investigationFacilityCycles: [
+              {
+                id: 23,
+                facilityCycle: {
+                  id: 402,
+                  name: 'within cell interlinked',
+                  description:
+                    'He waited for the stop sign to turn to a go sign.',
+                  startDate: '2017-03-17T14:03:11Z',
+                  endDate: '2020-11-29T05:41:54Z',
                 },
               },
             ],
@@ -212,7 +243,10 @@ describe('Datafile search table component', () => {
         filterType: 'include',
         filterValue: JSON.stringify({
           dataset: {
-            investigation: { investigationInstruments: 'instrument' },
+            investigation: {
+              investigationInstruments: 'instrument',
+              investigationFacilityCycles: 'facilityCycle',
+            },
           },
         }),
       },
@@ -453,36 +487,25 @@ describe('Datafile search table component', () => {
     );
   });
 
-  it('renders DLS link correctly', () => {
-    const wrapper = createWrapper('dls');
+  it('renders DLS link correctly', async () => {
+    renderComponent('dls');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      '/browse/proposal/Dataset test name/investigation/3/dataset/2/datafile'
-    );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
+    expect(
+      await screen.findByRole('link', { name: 'Datafile test name' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/proposal/Investigation test name/investigation/3/dataset/2/datafile'
     );
   });
 
-  it('renders ISIS link correctly', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
+  it('renders ISIS link correctly', async () => {
+    renderComponent('isis');
 
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/instrument/5/facilityCycle/4/investigation/3/dataset/2/datafile`
-    );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
+    expect(
+      await screen.findByRole('link', { name: 'Datafile test name' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/instrument/5/facilityCycle/402/investigation/3/dataset/2/datafile'
     );
   });
 
@@ -510,33 +533,16 @@ describe('Datafile search table component', () => {
     );
   });
 
-  it('does not render ISIS link when facilityCycleId cannot be found', () => {
-    const wrapper = createWrapper('isis');
+  it('does not render ISIS link when the investigation does not have any associated facility cycle', async () => {
+    rowData[0].dataset.investigation.investigationFacilityCycles = [];
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
-  });
+    renderComponent('isis');
 
-  it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 2,
-          name: 'facility cycle name',
-          startDate: '2020-06-11',
-          endDate: '2000-06-10',
-        },
-      ],
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('link', { name: 'Datafile test name' })
+      ).toBeNull();
     });
-
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
   });
 
   it('displays only the datafile name when there is no generic dataset to link to', () => {

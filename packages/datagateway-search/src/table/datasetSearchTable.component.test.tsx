@@ -5,10 +5,10 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
   Dataset,
-  dGCommonInitialState,
   DatasetDetailsPanel,
-  ISISDatasetDetailsPanel,
+  dGCommonInitialState,
   DLSDatasetDetailsPanel,
+  ISISDatasetDetailsPanel,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
@@ -23,10 +23,15 @@ import {
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { mount, ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
@@ -70,7 +75,7 @@ describe('Dataset table component', () => {
     );
   };
 
-  const createRTLWrapper = (hierarchy?: string): RenderResult => {
+  const renderComponent = (hierarchy?: string): RenderResult => {
     return render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
@@ -111,6 +116,19 @@ describe('Dataset table component', () => {
               instrument: {
                 id: 4,
                 name: 'LARMOR',
+              },
+            },
+          ],
+          investigationFacilityCycles: [
+            {
+              id: 23,
+              facilityCycle: {
+                id: 402,
+                name: 'within cell interlinked',
+                description:
+                  'He waited for the stop sign to turn to a go sign.',
+                startDate: '2017-03-17T14:03:11Z',
+                endDate: '2020-11-29T05:41:54Z',
               },
             },
           ],
@@ -238,7 +256,10 @@ describe('Dataset table component', () => {
       {
         filterType: 'include',
         filterValue: JSON.stringify({
-          investigation: { investigationInstruments: 'instrument' },
+          investigation: {
+            investigationInstruments: 'instrument',
+            investigationFacilityCycles: 'facilityCycle',
+          },
         }),
       },
     ]);
@@ -457,7 +478,7 @@ describe('Dataset table component', () => {
 
     wrapper.find('#dataset-datafiles-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
+      '/browse/instrument/4/facilityCycle/402/investigation/2/dataset/1'
     );
   });
 
@@ -470,7 +491,7 @@ describe('Dataset table component', () => {
   });
 
   it('renders Dataset title as a link', () => {
-    const wrapper = createRTLWrapper();
+    const wrapper = renderComponent();
 
     expect(wrapper.getByText('Dataset test name')).toMatchSnapshot();
   });
@@ -526,24 +547,13 @@ describe('Dataset table component', () => {
   });
 
   it('renders ISIS link & file sizes correctly', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 6,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-
     const wrapper = createWrapper('isis');
 
     expect(useDatasetSizes).toHaveBeenCalledWith({ pages: [rowData] });
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`
+      `/browse/instrument/4/facilityCycle/402/investigation/2/dataset/1`
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Dataset test name'
@@ -576,33 +586,17 @@ describe('Dataset table component', () => {
     );
   });
 
-  it('does not render ISIS link when facilityCycleId cannot be found', () => {
-    const wrapper = createWrapper('isis');
+  it('does not render ISIS link when the investigation is not associated with any facility cycle', async () => {
+    rowData[0].investigation.investigationFacilityCycles = [];
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
-  });
+    renderComponent('isis');
 
-  it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 2,
-          name: 'facility cycle name',
-          startDate: '2020-06-11',
-          endDate: '2000-06-10',
-        },
-      ],
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
     });
-
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Dataset test name'
-    );
+    expect(screen.getByText('Dataset test name')).toBeInTheDocument();
   });
 
   it('displays only the dataset name when there is no generic investigation to link to', () => {

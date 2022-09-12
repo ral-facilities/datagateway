@@ -871,7 +871,7 @@ describe('SearchPageContainer - Tests', () => {
     expect(
       wrapper.find('[aria-label="page view app.view_table"]').first().text()
     ).toEqual('app.view_table');
-  });
+  }, 10000);
 
   it('defaults to dataset when investigation is false ', async () => {
     state.dgsearch = {

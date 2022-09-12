@@ -163,6 +163,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
           const link = buildDatasetUrl({
             facilityName: hierarchy,
             dataset: datasetData,
+            showLanding: hierarchy === 'isis',
           });
           return link ? tableLink(link, datasetData.name) : datasetData.name;
         },
@@ -222,6 +223,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         const datafilesURL = buildDatasetUrl({
           facilityName: hierarchy,
           dataset: rowData as Dataset,
+          showLanding: true,
         });
         return (
           <ISISDatasetDetailsPanel

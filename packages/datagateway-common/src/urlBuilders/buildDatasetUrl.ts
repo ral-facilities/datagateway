@@ -10,9 +10,11 @@ import buildInvestigationUrl from './buildInvestigationUrl';
 function buildDatasetUrl({
   facilityName,
   dataset,
+  showLanding,
 }: {
   dataset: Dataset;
   facilityName: string;
+  showLanding: boolean;
 }): string | null {
   const investigation = dataset?.investigation;
   if (!dataset || !investigation) return null;
@@ -24,7 +26,7 @@ function buildDatasetUrl({
   });
   if (!prefixUrl) return null;
 
-  return `${prefixUrl}/${dataset.id}/datafile`;
+  return `${prefixUrl}/${dataset.id}${showLanding ? '' : '/datafile'}`;
 }
 
 export default buildDatasetUrl;

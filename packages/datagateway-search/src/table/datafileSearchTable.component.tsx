@@ -85,7 +85,12 @@ const DatafileSearchTable = (
     {
       filterType: 'include',
       filterValue: JSON.stringify({
-        dataset: { investigation: { investigationInstruments: 'instrument' } },
+        dataset: {
+          investigation: {
+            investigationInstruments: 'instrument',
+            investigationFacilityCycles: 'facilityCycle',
+          },
+        },
       }),
     },
   ]);

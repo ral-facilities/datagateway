@@ -62,6 +62,18 @@ Object {
         "name": "facility name",
       },
       "id": 1,
+      "investigationFacilityCycles": Array [
+        Object {
+          "facilityCycle": Object {
+            "description": "He waited for the stop sign to turn to a go sign.",
+            "endDate": "2020-11-29T05:41:54Z",
+            "id": 402,
+            "name": "within cell interlinked",
+            "startDate": "2017-03-17T14:03:11Z",
+          },
+          "id": 23,
+        },
+      ],
       "investigationInstruments": Array [
         Object {
           "id": 1,
@@ -93,7 +105,7 @@ Object {
         },
       ],
       "summary": "foo bar",
-      "title": "Test 1",
+      "title": "Test title 1",
       "visitId": "1",
     },
   ],
@@ -116,15 +128,8 @@ Array [
     class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
     href="/browse/investigation/1/dataset"
   >
-    Test 1
+    Test title 1
   </a>,
-  <p
-    aria-label="Test 1"
-    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
-    data-mui-internal-clone-element="true"
-  >
-    Test 1
-  </p>,
 ]
 `;
 
