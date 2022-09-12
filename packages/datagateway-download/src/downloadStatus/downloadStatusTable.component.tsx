@@ -249,9 +249,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 dataKey: 'createdAt',
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
-                    const date = toDate(
-                      props.cellData.substring(0, props.cellData.length - 5)
-                    );
+                    const date = toDate(props.cellData.replace(/\[.*]/, ''));
                     return format(date, 'yyyy-MM-dd HH:mm:ss');
                   }
                 },

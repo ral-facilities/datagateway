@@ -326,10 +326,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                       cellContentRenderer: (props: TableCellProps) => {
                         if (props.cellData) {
                           const date = toDate(
-                            props.cellData.substring(
-                              0,
-                              props.cellData.length - 5
-                            )
+                            props.cellData.replace(/\[.*]/, '')
                           );
                           return format(date, 'yyyy-MM-dd HH:mm:ss');
                         }
