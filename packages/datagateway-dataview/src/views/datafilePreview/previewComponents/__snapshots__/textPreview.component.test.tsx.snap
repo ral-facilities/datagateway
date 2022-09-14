@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TxtPreview should render given text file 1`] = `
+exports[`TextPreview should render given text file 1`] = `
 <DocumentFragment>
   <pre
     aria-label="datafiles.preview.txt.file_content_label"
