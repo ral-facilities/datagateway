@@ -201,8 +201,11 @@ function DatafilePreviewer({
         code: 'UNSUPPORTED_EXTENSION',
         extension: datafileExtension,
       });
+    } else if (datafileContent) {
+      setStatus({ code: 'CONTENT_LOADED' });
     }
   }, [
+    datafileContent,
     datafileExtension,
     isLoadingMetadata,
     loadDatafileContentError,
@@ -237,7 +240,10 @@ function DatafilePreviewer({
       <AnimatedGrid container spacing={2} sx={{ px: 2 }}>
         <Grid item xs={12}>
           <Grow
-            in={status.code === 'LOADING_CONTENT'}
+            in={
+              status.code === 'LOADING_CONTENT' ||
+              status.code === 'CONTENT_LOADED'
+            }
             mountOnEnter
             unmountOnExit
           >

@@ -48,6 +48,13 @@ interface ContentUnavailable {
 }
 
 /**
+ * The datafile previewer has successfully loaded the content of the datafile.
+ */
+interface ContentLoaded {
+  code: 'CONTENT_LOADED';
+}
+
+/**
  * Different statuses the datafile previewer can be in.
  */
 type PreviewerStatus =
@@ -56,6 +63,7 @@ type PreviewerStatus =
   | MetadataUnavailable
   | UnknownExtension
   | UnsupportedExtension
-  | ContentUnavailable;
+  | ContentUnavailable
+  | ContentLoaded;
 
 export type { PreviewerStatus };
