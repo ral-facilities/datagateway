@@ -148,7 +148,7 @@ describe('Download Status', () => {
       );
     });
 
-    it('date between', () => {
+    it.only('date between', () => {
       cy.get('input[id="Requested Date filter from"]').type('2020-01-31 00:00');
 
       const date = new Date();
@@ -165,7 +165,7 @@ describe('Download Status', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
 
       const currDate = new Date();
-      const assertDate = currDate;
+      const assertDate = new Date(currDate.toString());
 
       cy.get('input[id="Requested Date filter from"]').clear();
       cy.get('input[id="Requested Date filter to"]').clear();
