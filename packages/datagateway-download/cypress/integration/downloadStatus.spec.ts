@@ -165,7 +165,6 @@ describe('Download Status', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
 
       const currDate = new Date();
-      currDate.setHours(0, 0, 0, 0);
 
       cy.get('input[id="Requested Date filter from"]').clear();
       cy.get('input[id="Requested Date filter to"]').clear();
@@ -184,7 +183,7 @@ describe('Download Status', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Access Method').first().type('globus');
+      cy.get('[aria-label="Filter by Access Method"]').first().type('globus');
 
       cy.get('[aria-label="Filter by Availability"]').first().type('restoring');
 
