@@ -165,21 +165,24 @@ describe('Download Status', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
 
       const currDate = new Date();
+      const assertDate = currDate;
 
       cy.get('input[id="Requested Date filter from"]').clear();
       cy.get('input[id="Requested Date filter to"]').clear();
       cy.get('[aria-rowcount="4"]').should('exist');
 
-      // Set time to 00:00 before typing into Requested Date From textbox
+      // Set currDate time to 00:00 before typing into Requested Date From textbox
+      currDate.setHours(0, 0, 0, 0)
+
       cy.get('input[id="Requested Date filter from"]').type(
-        format(new Date(currDate.setHours(0, 0, 0, 0)), 'yyyy-MM-dd HH:mm')
+        format(currDate, 'yyyy-MM-dd HH:mm')
       );
 
       cy.get('[aria-rowcount="4"]').should('exist');
 
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
         'have.text',
-        format(currDate, 'yyyy-MM-dd HH:mm:ss')
+        format(assertDate, 'yyyy-MM-dd HH:mm:ss')
       );
     });
 
