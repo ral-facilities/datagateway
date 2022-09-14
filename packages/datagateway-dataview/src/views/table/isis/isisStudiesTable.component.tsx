@@ -1,26 +1,27 @@
 import {
+  ColumnType,
+  externalSiteLink,
+  filterStudyInfoInvestigations,
+  getStudyInfoInvestigation,
+  parseSearchToQuery,
+  Study,
   Table,
   tableLink,
-  parseSearchToQuery,
-  useStudiesInfinite,
-  useStudyCount,
-  ColumnType,
-  getStudyInfoInvestigation,
-  Study,
   useDateFilter,
   useSort,
+  useStudiesInfinite,
+  useStudyCount,
   useTextFilter,
-  externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
 import {
-  Public,
-  Fingerprint,
-  Subject,
   CalendarToday,
+  Fingerprint,
+  Public,
+  Subject,
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { format, set } from 'date-fns';
@@ -95,16 +96,19 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
 
   /* istanbul ignore next */
   const aggregatedData: Study[] = React.useMemo(() => {
-    if (data) {
-      if ('pages' in data) {
-        return data.pages.flat();
-      } else if (data instanceof Array) {
-        return data;
-      }
-    }
-
-    return [];
-  }, [data]);
+    if (!data) return [];
+    return data.pages.flat().reduce<Study[]>((studies, study) => {
+      studies.push(
+        ...(filterStudyInfoInvestigations(study, filters)?.map<Study>(
+          (studyInvestigation) => ({
+            ...study,
+            studyInvestigations: [studyInvestigation],
+          })
+        ) ?? [])
+      );
+      return studies;
+    }, []);
+  }, [data, filters]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);

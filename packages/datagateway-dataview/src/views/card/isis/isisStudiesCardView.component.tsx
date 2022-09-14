@@ -2,6 +2,7 @@ import React from 'react';
 import {
   CardView,
   CardViewDetails,
+  filterStudyInfoInvestigations,
   getStudyInfoInvestigation,
   parseSearchToQuery,
   Study,
@@ -166,9 +167,25 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     [dateFilter, t, textFilter]
   );
 
+  const aggregatedData = React.useMemo(
+    () =>
+      data?.reduce<Study[]>((studies, study) => {
+        studies.push(
+          ...(filterStudyInfoInvestigations(study, filters)?.map<Study>(
+            (studyInvestigation) => ({
+              ...study,
+              studyInvestigations: [studyInvestigation],
+            })
+          ) ?? [])
+        );
+        return studies;
+      }, []),
+    [data, filters]
+  );
+
   return (
     <CardView
-      data={data ?? []}
+      data={aggregatedData ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilter}
