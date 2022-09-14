@@ -83,12 +83,30 @@ export const filterStudyInfoInvestigations = (
 
   if (titleFilter && titleFilter.value) {
     // check if the underlying Investigation has a matching title
-    filterFns.push(
-      (studyInvestigation) =>
-        studyInvestigation?.investigation?.title?.includes(
-          String(titleFilter.value)
-        ) === true
-    );
+    switch (titleFilter.type) {
+      case 'include':
+        // the filter requires the text to contain the value
+        filterFns.push(
+          (studyInvestigation) =>
+            studyInvestigation?.investigation?.title?.includes(
+              String(titleFilter.value)
+            ) === true
+        );
+        break;
+
+      case 'exclude':
+        // the filter requires the text to NOT contain the value
+        filterFns.push(
+          (studyInvestigation) =>
+            studyInvestigation?.investigation?.title?.includes(
+              String(titleFilter.value)
+            ) === false
+        );
+        break;
+
+      default:
+        break;
+    }
   }
   if (startDateFilter) {
     // check if the start date of the underlying Investigation falls
