@@ -170,8 +170,9 @@ describe('Download Status', () => {
       cy.get('input[id="Requested Date filter to"]').clear();
       cy.get('[aria-rowcount="4"]').should('exist');
 
+      // Set time to 00:00 before typing into Requested Date From textbox
       cy.get('input[id="Requested Date filter from"]').type(
-        format(currDate, 'yyyy-MM-dd HH:mm')
+        format(new Date(currDate.setHours(0, 0, 0, 0)), 'yyyy-MM-dd HH:mm')
       );
 
       cy.get('[aria-rowcount="4"]').should('exist');
