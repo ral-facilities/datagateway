@@ -1,6 +1,7 @@
 import { styled, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import type { PreviewComponentProps } from './previewComponents';
@@ -39,6 +40,10 @@ const TextLine = styled('code')(({ theme }) => ({
   },
 }));
 
+const StatusMessage = styled(Typography)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
 /**
  * The default font size of the txt preview at 100% zoom.
  */
@@ -52,8 +57,8 @@ function TextPreview({
   datafile,
   datafileContent,
 }: PreviewComponentProps): JSX.Element {
-  const [isReadingContent, setIsReadingContent] = React.useState(true);
-  const [textContent, setTextContent] = React.useState('');
+  // const [isReadingContent, setIsReadingContent] = React.useState(true);
+  // const [textContent, setTextContent] = React.useState('');
   // derive preview font size based on current zoom level
   // 100% zoom = base font size * 100%
   // 110% zoom = base font size * 110%
@@ -63,22 +68,27 @@ function TextPreview({
     )
   );
   const [t] = useTranslation();
-
-  React.useEffect(() => {
-    // read the datafile content as text.
-
-    async function read(): Promise<void> {
-      const text = await datafileContent.text();
-      setIsReadingContent(false);
-      setTextContent(text);
-    }
-
-    read();
-  }, [datafileContent]);
+  const {
+    isLoading: isReadingContent,
+    isError: isReadContentError,
+    data: textContent,
+  } = useQuery(['datafile', datafile.id, 'textContent'], () =>
+    datafileContent.text()
+  );
 
   if (isReadingContent) {
     return (
-      <Typography>{t('datafiles.preview.txt.reading_content')}</Typography>
+      <StatusMessage>
+        {t('datafiles.preview.txt.reading_content')}
+      </StatusMessage>
+    );
+  }
+
+  if (isReadContentError || !textContent) {
+    return (
+      <StatusMessage>
+        {t('datafiles.preview.txt.cannot_read_content')}
+      </StatusMessage>
     );
   }
 

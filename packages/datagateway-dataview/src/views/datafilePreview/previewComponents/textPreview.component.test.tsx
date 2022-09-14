@@ -2,6 +2,7 @@ import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { DGThemeProvider } from 'datagateway-common';
 import * as React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore, Store } from 'redux';
 import { StateType } from '../../../state/app.types';
@@ -17,16 +18,22 @@ function renderComponent(store: Store): RenderResult {
   return render(
     <DGThemeProvider>
       <Provider store={store}>
-        <TextPreview
-          datafile={mockDatafile}
-          datafileContent={new Blob([mockTxtFileContent])}
-        />
+        <QueryClientProvider
+          client={
+            new QueryClient({ defaultOptions: { queries: { retry: false } } })
+          }
+        >
+          <TextPreview
+            datafile={mockDatafile}
+            datafileContent={new Blob([mockTxtFileContent])}
+          />
+        </QueryClientProvider>
       </Provider>
     </DGThemeProvider>
   );
 }
 
-describe('TxtPreview', () => {
+describe('TextPreview', () => {
   let store: Store;
 
   beforeEach(() => {
@@ -69,6 +76,23 @@ describe('TxtPreview', () => {
 
     expect(
       screen.getByText('datafiles.preview.txt.reading_content')
+    ).toBeInTheDocument();
+  });
+
+  it('should show an error message when the blob cannot be read as text properly', async () => {
+    jest.spyOn(global, 'Blob').mockImplementationOnce(() => ({
+      size: 123,
+      type: 'text/plain',
+      arrayBuffer: jest.fn(),
+      slice: jest.fn(),
+      stream: jest.fn(),
+      text: () => Promise.reject(),
+    }));
+
+    renderComponent(store);
+
+    expect(
+      await screen.findByText('datafiles.preview.txt.cannot_read_content')
     ).toBeInTheDocument();
   });
 
