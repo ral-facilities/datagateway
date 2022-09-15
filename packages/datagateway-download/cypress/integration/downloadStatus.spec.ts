@@ -148,7 +148,7 @@ describe('Download Status', () => {
       );
     });
 
-    it.only('date between', () => {
+    it('date between', () => {
       cy.get('input[id="Requested Date filter from"]').type('2020-01-31 00:00');
 
       const date = new Date();
