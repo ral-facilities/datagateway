@@ -179,7 +179,7 @@ describe('Download Status', () => {
 
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
         'contain',
-        format(currDate, 'yyyy-MM-dd HH:mm').slice(0,-6)
+        format(currDate, 'yyyy-MM-dd')
       );
     });
 
