@@ -1,6 +1,6 @@
 {
   "facilityName": "LILS",
-  "apiUrl": "http://localhost:5000/datagateway-api",
+  "apiUrl": "http://127.0.0.1:5000/datagateway-api",
   "downloadApiUrl": "https://localhost:8181/topcat",
   "idsUrl": "https://localhost:8181/ids",
   "fileCountMax": 5000,
