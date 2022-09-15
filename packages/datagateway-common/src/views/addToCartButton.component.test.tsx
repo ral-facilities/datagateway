@@ -1,37 +1,33 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import * as React from 'react';
 import AddToCartButton, {
   AddToCartButtonProps,
 } from './addToCartButton.component';
 import configureStore from 'redux-mock-store';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import { StateType } from '../state/app.types';
-import { useCart, useAddToCart, useRemoveFromCart } from '../api/cart';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
-
-jest.mock('../api/cart', () => {
-  const originalModule = jest.requireActual('../api/cart');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useCart: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-  };
-});
+import { QueryClient, QueryClientProvider } from 'react-query';
+import axios, { AxiosResponse } from 'axios';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
 
 describe('Generic add to cart button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
+  let user: UserEvent;
+  let holder: HTMLElement;
 
-  const createWrapper = (props: AddToCartButtonProps): ReactWrapper => {
+  function renderComponent(props: AddToCartButtonProps): RenderResult {
     const store = mockStore(state);
-    return mount(
+    return render(
       <Provider store={store}>
         <MemoryRouter>
           <QueryClientProvider client={new QueryClient()}>
@@ -40,9 +36,10 @@ describe('Generic add to cart button', () => {
         </MemoryRouter>
       </Provider>
     );
-  };
+  }
 
   beforeEach(() => {
+    user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
         dgdataview: {}, //Dont need to fill, since not part of the test
@@ -52,104 +49,173 @@ describe('Generic add to cart button', () => {
       })
     );
 
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-    });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-dataview');
+    document.body.appendChild(holder);
+
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/.*\/user\/cart\/.*$/.test(url)) {
+          return Promise.resolve({
+            data: {
+              cartItems: [],
+            },
+          });
+        }
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
+
+    axios.post = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/.*\/user\/cart\/.*\/cartItems/.test(url)) {
+          return Promise.resolve({
+            data: [],
+          });
+        }
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
+    document.body.removeChild(holder);
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper({
+  it('renders correctly', async () => {
+    renderComponent({
       allIds: [1],
       entityId: 1,
       entityType: 'investigation',
     });
-    expect(wrapper.find('button').text()).toBe('buttons.add_to_cart');
-    expect(wrapper.find('StyledTooltip').prop('title')).toEqual('');
+
+    expect(
+      await screen.findByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
   });
 
-  it('renders as disabled when cart is loading', () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: undefined,
-      isLoading: true,
-    });
-    const wrapper = createWrapper({
-      allIds: [1],
-      entityId: 1,
-      entityType: 'investigation',
-    });
-    expect(wrapper.find('button').prop('disabled')).toBe(true);
-    expect(wrapper.find('StyledTooltip').prop('title')).toEqual(
-      'buttons.cart_loading_tooltip'
+  it('renders as disabled when cart is loading', async () => {
+    axios.get = jest.fn().mockReturnValue(
+      new Promise((_) => {
+        // never resolve the promise to pretend the query is loading
+      })
     );
-  });
 
-  it('renders as disabled with tooltip when cart does not load', () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-    });
-    const wrapper = createWrapper({
+    renderComponent({
       allIds: [1],
       entityId: 1,
       entityType: 'investigation',
     });
-    expect(wrapper.find('button').prop('disabled')).toBe(true);
-    expect(wrapper.find('StyledTooltip').prop('title')).toEqual(
-      'buttons.cart_loading_failed_tooltip'
+
+    const addToCartButton = await screen.findByRole('button', {
+      name: 'buttons.add_to_cart',
+    });
+
+    expect(addToCartButton).toBeDisabled();
+
+    await user.hover(addToCartButton.parentElement);
+
+    expect(
+      await screen.findByText('buttons.cart_loading_tooltip')
+    ).toBeInTheDocument();
+  });
+
+  it('renders as disabled with tooltip when cart does not load', async () => {
+    axios.get = jest.fn().mockRejectedValue({
+      message: 'Test error message',
+    });
+
+    renderComponent({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
+
+    const addToCartButton = await screen.findByRole('button', {
+      name: 'buttons.add_to_cart',
+    });
+
+    expect(addToCartButton).toBeDisabled();
+
+    await user.hover(addToCartButton.parentElement);
+
+    expect(
+      await screen.findByText('buttons.cart_loading_failed_tooltip')
+    ).toBeInTheDocument();
+  });
+
+  it('calls addToCart action on button press with item not in cart', async () => {
+    renderComponent({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
+
+    // wait for data to finish loading
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'buttons.add_to_cart' })
+      ).not.toBeDisabled();
+    });
+
+    axios.post = jest.fn().mockResolvedValue({
+      data: {
+        cartItems: [
+          {
+            entityType: 'investigation',
+            entityId: 1,
+          },
+        ],
+      },
+    });
+
+    user.click(
+      await screen.findByRole('button', { name: 'buttons.add_to_cart' })
     );
+
+    expect(
+      await screen.findByRole('button', { name: 'buttons.remove_from_cart' })
+    ).toBeInTheDocument();
   });
 
-  it('calls addToCart action on button press with item not in cart', () => {
-    const entityType = 'investigation';
-    const wrapper = createWrapper({
+  it('calls removeFromCart on button press with item already in cart', async () => {
+    axios.get = jest.fn().mockResolvedValue({
+      data: {
+        cartItems: [
+          {
+            entityId: 1,
+            entityType: 'investigation',
+            id: 1,
+            name: 'test',
+            parentEntities: [],
+          },
+        ],
+      },
+    });
+
+    renderComponent({
       allIds: [1],
       entityId: 1,
-      entityType,
+      entityType: 'investigation',
     });
 
-    wrapper.find('#add-to-cart-btn-investigation-1').last().simulate('click');
+    expect(
+      await screen.findByRole('button', { name: 'buttons.remove_from_cart' })
+    ).toBeInTheDocument();
 
-    expect(useAddToCart).toHaveBeenCalledWith(entityType);
-  });
-
-  it('calls removeFromCart on button press with item already in cart', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
+    axios.post = jest.fn().mockResolvedValue({
+      data: {
+        cartItems: [],
+      },
     });
 
-    const entityType = 'investigation';
-    const wrapper = createWrapper({
-      allIds: [1],
-      entityId: 1,
-      entityType,
-    });
+    user.click(
+      screen.getByRole('button', { name: 'buttons.remove_from_cart' })
+    );
 
-    wrapper
-      .find('#remove-from-cart-btn-investigation-1')
-      .last()
-      .simulate('click');
-    expect(useRemoveFromCart).toHaveBeenCalledWith(entityType);
+    expect(
+      await screen.findByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
   });
 });
