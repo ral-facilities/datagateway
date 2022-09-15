@@ -154,6 +154,8 @@ jobs:
           ref: feature/use-yaml-config#372
 
       # DataGateway API file setup
+      - name: Create search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
         run: touch logs.log
       - name: Configure log file location
@@ -316,6 +318,8 @@ jobs:
 >>>>>>> github action Pull from yaml branch. Use yq to update yaml
 
       # DataGateway API file setup
+      - name: Create search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
         run: touch logs.log
       - name: Configure log file location
@@ -460,6 +464,8 @@ jobs:
 >>>>>>> github action Pull from yaml branch. Use yq to update yaml
 
       # DataGateway API file setup
+      - name: Create search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
         run: touch logs.log
       - name: Configure log file location
