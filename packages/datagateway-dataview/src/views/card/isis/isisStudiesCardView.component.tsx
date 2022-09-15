@@ -169,6 +169,10 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
 
   const aggregatedData = React.useMemo(
     () =>
+      // for each Investigation in studyInvestigations that matches the current filter
+      // create a new Study object with the studyInvestigations array
+      // having only one StudyInvestigation (& Investigation) object in it
+      // so that each matched Investigation appears as a separate card
       data?.reduce<Study[]>((studies, study) => {
         studies.push(
           ...(filterStudyInfoInvestigations(study, filters)?.map<Study>(

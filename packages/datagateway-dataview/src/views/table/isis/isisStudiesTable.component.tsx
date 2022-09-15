@@ -95,20 +95,25 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
   ]);
 
   /* istanbul ignore next */
-  const aggregatedData: Study[] = React.useMemo(() => {
-    if (!data) return [];
-    return data.pages.flat().reduce<Study[]>((studies, study) => {
-      studies.push(
-        ...(filterStudyInfoInvestigations(study, filters)?.map<Study>(
-          (studyInvestigation) => ({
-            ...study,
-            studyInvestigations: [studyInvestigation],
-          })
-        ) ?? [])
-      );
-      return studies;
-    }, []);
-  }, [data, filters]);
+  const aggregatedData: Study[] = React.useMemo(
+    () =>
+      // for each Investigation in studyInvestigations that matches the current filter
+      // create a new Study object with the studyInvestigations array
+      // having only one StudyInvestigation (& Investigation) object in it
+      // so that each matched Investigation appears as a separate row in the table
+      data?.pages.flat().reduce<Study[]>((studies, study) => {
+        studies.push(
+          ...(filterStudyInfoInvestigations(study, filters)?.map<Study>(
+            (studyInvestigation) => ({
+              ...study,
+              studyInvestigations: [studyInvestigation],
+            })
+          ) ?? [])
+        );
+        return studies;
+      }, []) ?? [],
+    [data, filters]
+  );
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
