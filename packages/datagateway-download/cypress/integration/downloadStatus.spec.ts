@@ -165,7 +165,7 @@ describe('Download Status', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
 
       const currDate = new Date();
-      const assertDate = new Date(currDate.toString());
+      const assertDate = currDate;
 
       cy.get('input[id="Requested Date filter from"]').clear();
       cy.get('input[id="Requested Date filter to"]').clear();
@@ -180,10 +180,11 @@ describe('Download Status', () => {
 
       cy.get('[aria-rowcount="4"]').should('exist');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
-        'have.text',
-        format(assertDate, 'yyyy-MM-dd HH:mm:ss')
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]')
+        .should(($el) => {
+          const actual = new Date(String($el.text()))
+          expect(actual.getTime()).to.be.closeTo(assertDate.getTime(), 10000);
+        })
     });
 
     it('multiple columns', () => {
