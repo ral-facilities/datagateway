@@ -57,8 +57,6 @@ function TextPreview({
   datafile,
   datafileContent,
 }: PreviewComponentProps): JSX.Element {
-  // const [isReadingContent, setIsReadingContent] = React.useState(true);
-  // const [textContent, setTextContent] = React.useState('');
   // derive preview font size based on current zoom level
   // 100% zoom = base font size * 100%
   // 110% zoom = base font size * 110%
