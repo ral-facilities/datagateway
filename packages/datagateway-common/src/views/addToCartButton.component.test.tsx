@@ -210,7 +210,7 @@ describe('Generic add to cart button', () => {
       },
     });
 
-    user.click(
+    await user.click(
       screen.getByRole('button', { name: 'buttons.remove_from_cart' })
     );
 
