@@ -151,25 +151,25 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v5.1.1
+          ref: feature/use-yaml-config#372
 
       # DataGateway API file setup
       - name: Create log file
         run: touch logs.log
       - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+        run: echo "`yq  \
+          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway-api/datagateway_api/config.yaml.example | envsubst`" > datagateway-api/datagateway_api/config.yaml.example
       - name: Configure API backend
-        run: echo "`jq -r --arg BACKEND "python_icat" \
-          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+        run: echo "`yq \
+          '.backend="python_icat"' datagateway-api/datagateway_api/config.yaml.example | envsubst`" > datagateway-api/datagateway_api/config.yaml.example
       - name: Set debug mode to true
         run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
+          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.yaml.example
       - name: Set log level to DEBUG
         run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
+          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.yaml.example
       - name: Create config.json
-        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
@@ -309,25 +309,29 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
+<<<<<<< HEAD
           ref: v5.1.1
+=======
+          ref: feature/use-yaml-config#372
+>>>>>>> github action Pull from yaml branch. Use yq to update yaml
 
       # DataGateway API file setup
       - name: Create log file
         run: touch logs.log
       - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+        run: echo "`yq  \
+          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway-api/datagateway_api/config.yaml.example | envsubst`" > datagateway-api/datagateway_api/config.yaml.example
       - name: Configure API backend
-        run: echo "`jq -r --arg BACKEND "python_icat" \
-          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+        run: echo "`yq \
+          '.backend="python_icat"' datagateway-api/datagateway_api/config.yaml.example | envsubst`" > datagateway-api/datagateway_api/config.yaml.example
       - name: Set debug mode to true
         run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
+          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.yaml.example
       - name: Set log level to DEBUG
         run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
+          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.yaml.example
       - name: Create config.json
-        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
@@ -449,25 +453,29 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
+<<<<<<< HEAD
           ref: v5.1.1
+=======
+          ref: feature/use-yaml-config#372
+>>>>>>> github action Pull from yaml branch. Use yq to update yaml
 
       # DataGateway API file setup
       - name: Create log file
         run: touch logs.log
       - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+        run: echo "`yq  \
+          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway-api/datagateway_api/config.yaml.example | envsubst`" > datagateway-api/datagateway_api/config.yaml.example
       - name: Configure API backend
-        run: echo "`jq -r --arg BACKEND "python_icat" \
-          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+        run: echo "`yq \
+          '.backend="python_icat"' datagateway-api/datagateway_api/config.yaml.example | envsubst`" > datagateway-api/datagateway_api/config.yaml.example
       - name: Set debug mode to true
         run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
+          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.yaml.example
       - name: Set log level to DEBUG
         run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
+          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.yaml.example
       - name: Create config.json
-        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
