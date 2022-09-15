@@ -68,7 +68,11 @@ Cypress.Commands.add('login', () => {
     if (credentials) {
       body = credentials;
     }
-    cy.request('POST', `${settings.apiUrl}/sessions`, body, headers).then((response) => {
+    cy.request({
+      method:'POST', 
+      url:`${settings.apiUrl}/sessions`, 
+      body:body, 
+      headers:headers}).then((response) => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,
