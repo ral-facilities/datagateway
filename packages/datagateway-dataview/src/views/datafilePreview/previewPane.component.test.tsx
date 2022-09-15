@@ -1,5 +1,6 @@
 import { type RenderResult, render, screen } from '@testing-library/react';
 import * as React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
 import DGDataViewReducer from '../../state/reducers/dgdataview.reducer';
@@ -22,7 +23,13 @@ function renderComponent(): RenderResult {
           datafileContent: new Blob([mockTxtFileContent]),
         }}
       >
-        <PreviewPane datafileExtension="txt" />
+        <QueryClientProvider
+          client={
+            new QueryClient({ defaultOptions: { queries: { retry: false } } })
+          }
+        >
+          <PreviewPane datafileExtension="txt" />
+        </QueryClientProvider>
       </DatafilePreviewerContext.Provider>
     </Provider>
   );
