@@ -1,29 +1,29 @@
-import React from 'react';
-import { Subject, Explore, Save, CalendarToday } from '@mui/icons-material';
+import { CalendarToday, Explore, Save, Subject } from '@mui/icons-material';
 import {
-  Table,
-  TableActionProps,
-  formatBytes,
-  Datafile,
-  useDatafileCount,
-  useDatafilesInfinite,
-  parseSearchToQuery,
-  useTextFilter,
-  useDateFilter,
   ColumnType,
-  useSort,
-  useIds,
-  useCart,
-  useAddToCart,
-  useRemoveFromCart,
+  Datafile,
   DatafileDetailsPanel,
   DownloadButton,
+  formatBytes,
+  parseSearchToQuery,
+  Table,
+  TableActionProps,
+  useAddToCart,
+  useCart,
+  useDatafileCount,
+  useDatafilesInfinite,
+  useDateFilter,
+  useIds,
+  useRemoveFromCart,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { StateType } from '../../state/app.types';
+import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
+import type { StateType } from '../../state/app.types';
 
 interface DatafileTableProps {
   datasetId: string;
