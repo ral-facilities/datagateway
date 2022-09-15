@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextPreview should render given text file 1`] = `
+<DocumentFragment>
+  <pre
+    aria-label="datafiles.preview.txt.file_content_label"
+    class="css-h4y87t"
+    font-size="12"
+  >
+    <span
+      class="css-ppgvqg"
+    >
+      1
+    </span>
+    <code
+      class="css-a948ge"
+    >
+      First line
+
+    </code>
+    <span
+      class="css-ppgvqg"
+    >
+      2
+    </span>
+    <code
+      class="css-a948ge"
+    >
+      Second line
+
+    </code>
+    <span
+      class="css-ppgvqg"
+    >
+      3
+    </span>
+    <code
+      class="css-a948ge"
+    >
+      Third line
+
+    </code>
+    <span
+      class="css-ppgvqg"
+    >
+      4
+    </span>
+    <code
+      class="css-a948ge"
+    >
+      
+
+    </code>
+  </pre>
+</DocumentFragment>
+`;
