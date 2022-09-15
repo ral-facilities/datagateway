@@ -280,7 +280,7 @@ describe('Cell content renderers', () => {
 
     it('should return a list of study investigations that match the given end date filter with no start date', () => {
       const endDateFilter: DateFilter = {
-        endDate: '2010-03-01',
+        endDate: '2022-03-01',
       };
 
       const filters: FiltersType = {
