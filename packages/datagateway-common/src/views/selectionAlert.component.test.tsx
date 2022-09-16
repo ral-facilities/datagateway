@@ -1,10 +1,11 @@
-import { mount, ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import { DownloadCartItem } from '../app.types';
 import { NotificationType } from '../state/actions/actions.types';
 import SelectionAlert from './selectionAlert.component';
-import { render, RenderResult } from '@testing-library/react';
+import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import { AnyAction } from 'redux';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 describe('SelectionAlert', () => {
   let events: CustomEvent<AnyAction>[] = [];
@@ -34,23 +35,9 @@ describe('SelectionAlert', () => {
   let storageGetItemMock: jest.Mock;
   let storageSetItemMock: jest.Mock;
   let storageRemoveItemMock: jest.Mock;
+  let user: UserEvent;
 
-  const createWrapper = (
-    selectedItems: DownloadCartItem[],
-    loggedInAnonymously: boolean
-  ): ReactWrapper => {
-    return mount(
-      <SelectionAlert
-        selectedItems={selectedItems}
-        navigateToSelection={() => undefined}
-        width={'100px'}
-        marginSide={'4px'}
-        loggedInAnonymously={loggedInAnonymously}
-      />
-    );
-  };
-
-  const createRTLWrapper = (
+  const renderComponent = (
     selectedItems: DownloadCartItem[],
     loggedInAnonymously: boolean
   ): RenderResult => {
@@ -66,6 +53,7 @@ describe('SelectionAlert', () => {
   };
 
   beforeEach(() => {
+    user = userEvent.setup();
     events = [];
     document.dispatchEvent = (e: Event) => {
       events.push(e as CustomEvent<AnyAction>);
@@ -86,43 +74,72 @@ describe('SelectionAlert', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = createRTLWrapper([cartItems[0]], true);
-    expect(wrapper.asFragment()).toMatchSnapshot();
+    const { asFragment } = renderComponent([cartItems[0]], true);
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('sends a notification to SciGateway if user is not logged in but only once', () => {
-    const wrapper = createWrapper([cartItems[0]], true);
+  it('sends a notification to SciGateway if user is not logged in but only once', async () => {
+    const { rerender } = renderComponent([cartItems[0]], true);
 
-    wrapper.update();
+    await waitFor(() => {
+      expect(events.length).toBe(1);
+      expect(events[0].detail).toEqual({
+        type: NotificationType,
+        payload: {
+          severity: 'warning',
+          message: 'selec_alert.warning_message_session_token',
+        },
+      });
 
-    expect(events.length).toBe(1);
-    expect(events[0].detail).toEqual({
-      type: NotificationType,
-      payload: {
-        severity: 'warning',
-        message: 'selec_alert.warning_message_session_token',
-      },
+      expect(storageSetItemMock).toHaveBeenCalledTimes(1);
+      expect(storageSetItemMock).toHaveBeenCalledWith(
+        'sentExpiredMessage',
+        '1'
+      );
     });
 
-    expect(storageSetItemMock).toHaveBeenCalledTimes(1);
-    expect(storageSetItemMock).toHaveBeenCalledWith('sentExpiredMessage', '1');
-
     storageGetItemMock.mockReturnValueOnce('1');
 
-    //Adding another element
-    wrapper.setProps({ selectedItems: [cartItems[0], cartItems[1]] });
+    rerender(
+      <SelectionAlert
+        loggedInAnonymously
+        selectedItems={[cartItems[0], cartItems[1]]}
+        navigateToSelection={() => undefined}
+        width={'100px'}
+        marginSide={'4px'}
+      />
+    );
+
     expect(events.length).toBe(1);
 
     storageGetItemMock.mockReturnValueOnce('1');
 
+    rerender(
+      <SelectionAlert
+        loggedInAnonymously
+        selectedItems={[]}
+        navigateToSelection={() => undefined}
+        width={'100px'}
+        marginSide={'4px'}
+      />
+    );
+
     //Removing all should reset the message
-    wrapper.setProps({ selectedItems: [] });
     expect(events.length).toBe(1);
 
     expect(storageRemoveItemMock).toHaveBeenCalledTimes(1);
     expect(storageRemoveItemMock).toHaveBeenCalledWith('sentExpiredMessage');
 
-    wrapper.setProps({ selectedItems: [cartItems[0]] });
+    rerender(
+      <SelectionAlert
+        loggedInAnonymously
+        selectedItems={[cartItems[0]]}
+        navigateToSelection={() => undefined}
+        width={'100px'}
+        marginSide={'4px'}
+      />
+    );
+
     expect(events.length).toBe(2);
     expect(events[1].detail).toEqual({
       type: NotificationType,
@@ -136,72 +153,90 @@ describe('SelectionAlert', () => {
   it('does not send a notification to SciGateway if user is not logged and it has been sent before', () => {
     storageGetItemMock.mockReturnValue('1');
 
-    const wrapper = createWrapper([], true);
+    const { rerender } = renderComponent([], true);
 
-    wrapper.update();
+    rerender(
+      <SelectionAlert
+        loggedInAnonymously
+        selectedItems={[cartItems[0]]}
+        navigateToSelection={() => undefined}
+        width={'100px'}
+        marginSide={'4px'}
+      />
+    );
 
-    //Adding the first element should not broadcast a message
-    wrapper.setProps({ selectedItems: [cartItems[0]] });
     expect(events.length).toBe(0);
   });
 
-  it('renders correctly with more than one item selected', () => {
-    const wrapper = createWrapper(cartItems, false);
-    expect(
-      wrapper.find('[aria-label="selection-alert-text"]').first().text().trim()
-    ).toEqual('selec_alert.added');
+  it('renders correctly with more than one item selected', async () => {
+    renderComponent(cartItems, false);
+    expect(await screen.findByText('selec_alert.added')).toBeInTheDocument();
   });
 
-  it('renders correctly with one item removed', () => {
-    const wrapper = createWrapper(cartItems, false);
-    wrapper.setProps({ selectedItems: [cartItems[0], cartItems[1]] });
+  it('renders correctly with one item removed', async () => {
+    const { rerender } = renderComponent(cartItems, false);
 
-    expect(
-      wrapper.find('[aria-label="selection-alert-text"]').first().text().trim()
-    ).toEqual('selec_alert.removed');
+    rerender(
+      <SelectionAlert
+        loggedInAnonymously
+        selectedItems={[cartItems[0], cartItems[1]]}
+        navigateToSelection={() => undefined}
+        width={'100px'}
+        marginSide={'4px'}
+      />
+    );
+
+    expect(await screen.findByText('selec_alert.removed')).toBeInTheDocument();
   });
 
-  it('renders correctly with all items removed', () => {
-    const wrapper = createWrapper(cartItems, false);
-    wrapper.setProps({ selectedItems: [] });
+  it('renders correctly with all items removed', async () => {
+    const { rerender } = renderComponent(cartItems, false);
 
-    expect(
-      wrapper.find('[aria-label="selection-alert-text"]').first().text().trim()
-    ).toEqual('selec_alert.removed');
+    rerender(
+      <SelectionAlert
+        loggedInAnonymously
+        selectedItems={[]}
+        navigateToSelection={() => undefined}
+        width={'100px'}
+        marginSide={'4px'}
+      />
+    );
+
+    expect(await screen.findByText('selec_alert.removed')).toBeInTheDocument();
   });
 
-  it('does not render when nothing has changed', () => {
-    const wrapper = createWrapper([], false);
-    expect(wrapper.find('[aria-label="selection-alert"]').exists()).toBeFalsy();
+  it('does not render when nothing has changed', async () => {
+    renderComponent([], false);
+    await waitFor(() => {
+      expect(screen.queryByLabelText('selection-alert')).toBeNull();
+    });
   });
 
-  it('does not render when closed', () => {
-    const wrapper = createWrapper(cartItems, false);
-    wrapper
-      .find('[aria-label="selection-alert-close"]')
-      .last()
-      .simulate('click');
-    wrapper.update();
+  it('does not render when closed', async () => {
+    renderComponent(cartItems, false);
 
-    expect(wrapper.find('[aria-label="selection-alert"]').exists()).toBeFalsy();
+    await user.click(await screen.findByLabelText('selection-alert-close'));
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('selection-alert')).toBeNull();
+    });
   });
 
-  it('clicking link calls navigateToSelection', () => {
+  it('clicking link calls navigateToSelection', async () => {
     let navigated = false;
     const navigate = (): void => {
       navigated = true;
     };
-    const wrapper = mount(
+
+    render(
       <SelectionAlert
         selectedItems={cartItems}
         navigateToSelection={navigate}
         loggedInAnonymously={false}
       />
     );
-    wrapper
-      .find('[aria-label="selection-alert-link"]')
-      .first()
-      .simulate('click');
+
+    await user.click(await screen.findByLabelText('selection-alert-link'));
 
     expect(navigated).toBeTruthy();
   });
