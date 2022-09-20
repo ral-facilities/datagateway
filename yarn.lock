@@ -7786,7 +7786,7 @@ __metadata:
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
     serve: 14.0.1
-    single-spa-react: 4.6.1
+    single-spa-react: 5.0.0
     start-server-and-test: 1.14.0
     tslib: 2.4.0
     typescript: 4.7.4
@@ -7850,7 +7850,7 @@ __metadata:
     react-scripts: 5.0.0
     react-virtualized: 9.22.3
     serve: 14.0.1
-    single-spa-react: 4.6.1
+    single-spa-react: 5.0.0
     start-server-and-test: 1.14.0
     tslib: 2.4.0
     typescript: 4.7.4
@@ -7924,7 +7924,7 @@ __metadata:
     redux-thunk: 2.4.1
     resize-observer-polyfill: 1.5.1
     serve: 14.0.1
-    single-spa-react: 4.6.1
+    single-spa-react: 5.0.0
     start-server-and-test: 1.14.0
     tslib: 2.4.0
     typescript: 4.7.4
@@ -17088,16 +17088,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"single-spa-react@npm:4.6.1":
-  version: 4.6.1
-  resolution: "single-spa-react@npm:4.6.1"
+"single-spa-react@npm:5.0.0":
+  version: 5.0.0
+  resolution: "single-spa-react@npm:5.0.0"
   dependencies:
     browserslist-config-single-spa: ^1.0.1
   peerDependencies:
     "@types/react": "*"
     "@types/react-dom": "*"
     react: "*"
-  checksum: 12383d3b1dfc328efb7386f1094cbd255cf7e4785685416cd854ff3e1ba5da7828a2edaada94859593c8bc0405c5982c9655d1f51b5b67a2a94a6c1908983428
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 6b3d0c69720eaef494964f36a5c41fc601d80fcb1fead87bd73c9a7c2db53155ac70111626eec7d75260452f2a867c9139c88269900a2e5cb718264db4863ec7
   languageName: node
   linkType: hard
 
