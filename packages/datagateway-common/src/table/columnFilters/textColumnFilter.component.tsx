@@ -64,13 +64,15 @@ const TextColumnFilter = (props: {
     <div>
       <Input
         id={`${label}-filter`}
-        placeholder={`${type.charAt(0).toUpperCase() + type.slice(1)}`}
         value={inputValue}
         onChange={handleInputChange}
         inputProps={{ 'aria-label': `Filter by ${label}` }}
         aria-hidden={true}
         fullWidth={true}
         color="secondary"
+        startAdornment={
+          <InputAdornment position="start">{type.slice(0, 3)}</InputAdornment>
+        }
         endAdornment={
           <InputAdornment position="end">
             <Select
