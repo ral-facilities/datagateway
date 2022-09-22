@@ -55,6 +55,13 @@ exports[`Text filter component renders correctly 1`] = `
     }
     onChange={[Function]}
     placeholder="Include"
+    startAdornment={
+      <ForwardRef(InputAdornment)
+        position="start"
+      >
+        <Memo />
+      </ForwardRef(InputAdornment)>
+    }
     value="test value"
   />
 </div>
@@ -115,6 +122,13 @@ exports[`Text filter component usePrincipalExperimenterFilter hook returns a fun
     }
     onChange={[Function]}
     placeholder="Include"
+    startAdornment={
+      <ForwardRef(InputAdornment)
+        position="start"
+      >
+        <Memo />
+      </ForwardRef(InputAdornment)>
+    }
     value=""
   />
 </div>
@@ -175,6 +189,13 @@ exports[`Text filter component useTextFilter hook returns a function which can g
     }
     onChange={[Function]}
     placeholder="Include"
+    startAdornment={
+      <ForwardRef(InputAdornment)
+        position="start"
+      >
+        <Memo />
+      </ForwardRef(InputAdornment)>
+    }
     value=""
   />
 </div>
