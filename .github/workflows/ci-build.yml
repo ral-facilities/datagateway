@@ -160,7 +160,7 @@ jobs:
         run: touch logs.log
       - name: Configure log file location
         run: echo "`yq  \
-          '.datagateway_api.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway-api/datagateway_api/config.yaml.example | envsubst`" > datagateway-api/datagateway_api/config.yaml.example
+          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway-api/datagateway_api/config.yaml.example | envsubst`" > datagateway-api/datagateway_api/config.yaml.example
       - name: Configure API backend
         run: echo "`yq \
           '.datagateway_api.backend="python_icat"' datagateway-api/datagateway_api/config.yaml.example | envsubst`" > datagateway-api/datagateway_api/config.yaml.example
