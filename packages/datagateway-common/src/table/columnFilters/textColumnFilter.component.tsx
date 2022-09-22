@@ -1,6 +1,8 @@
 import React from 'react';
 import { Input, InputAdornment, MenuItem, Select } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import debounce from 'lodash.debounce';
 import { FiltersType, TextFilter } from '../../app.types';
 import { usePushFilter, usePushFilters } from '../../api';
@@ -46,6 +48,14 @@ const TextColumnFilter = (props: {
     setType(type);
   };
 
+  const updateAdornment = (type: string): JSX.Element => {
+    // Update start adornment icon based on type
+    if (type === 'include') {
+      return <AddRoundedIcon />;
+    }
+    return <RemoveRoundedIcon />;
+  };
+
   // keep track of previous prop value so we know to update if it changes
   // this means that programmatic calls to pushFilter update the input
   const prevPropValueRef = React.useRef(propValue);
@@ -64,6 +74,7 @@ const TextColumnFilter = (props: {
     <div>
       <Input
         id={`${label}-filter`}
+        placeholder={`${type.charAt(0).toUpperCase() + type.slice(1)}`}
         value={inputValue}
         onChange={handleInputChange}
         inputProps={{ 'aria-label': `Filter by ${label}` }}
@@ -71,7 +82,9 @@ const TextColumnFilter = (props: {
         fullWidth={true}
         color="secondary"
         startAdornment={
-          <InputAdornment position="start">{type.slice(0, 3)}</InputAdornment>
+          <InputAdornment position="start">
+            {updateAdornment(type)}
+          </InputAdornment>
         }
         endAdornment={
           <InputAdornment position="end">
