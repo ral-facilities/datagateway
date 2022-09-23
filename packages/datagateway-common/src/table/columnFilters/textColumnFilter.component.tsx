@@ -69,7 +69,7 @@ const TextColumnFilter = (props: {
 
   return (
     <div>
-      <FormControl variant="standard">
+      <FormControl id={`${label}-filter`} variant="standard">
         <InputLabel id={`${label}-filter`}>
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </InputLabel>
