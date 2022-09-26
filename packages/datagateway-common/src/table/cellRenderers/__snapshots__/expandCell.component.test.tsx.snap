@@ -1,36 +1,61 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Expand cell component renders correctly when expanded 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  padding="checkbox"
-  size="small"
-  variant="body"
->
-  <ForwardRef(IconButton)
-    aria-label="Hide details"
-    onClick={[Function]}
-    size="large"
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
   >
-    <Memo(ForwardRef(ExpandLessIcon)) />
-  </ForwardRef(IconButton)>
-</ForwardRef(TableCell)>
+    <button
+      aria-label="Hide details"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-mf1cb5-MuiButtonBase-root-MuiIconButton-root"
+      tabindex="0"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+        data-testid="ExpandLessIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m12 8-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
+        />
+      </svg>
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`Expand cell component renders correctly when not expanded 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  padding="checkbox"
-  size="small"
-  variant="body"
->
-  <ForwardRef(IconButton)
-    aria-label="Show details"
-    className="tour-dataview-expand"
-    onClick={[Function]}
-    size="large"
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
   >
-    <Memo(ForwardRef(ExpandMoreIcon)) />
-  </ForwardRef(IconButton)>
-</ForwardRef(TableCell)>
+    <button
+      aria-label="Show details"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge tour-dataview-expand css-mf1cb5-MuiButtonBase-root-MuiIconButton-root"
+      tabindex="0"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+        data-testid="ExpandMoreIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+        />
+      </svg>
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
+  </div>
+</DocumentFragment>
 `;
