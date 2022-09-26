@@ -77,7 +77,7 @@ describe('Generic clear filters button', () => {
 
   it('is disabled when prop disabled is equal to true', async () => {
     renderComponent({
-      handleButtonClearFilters: handleButtonClearFilters,
+      handleButtonClearFilters,
       disabled: true,
     });
 

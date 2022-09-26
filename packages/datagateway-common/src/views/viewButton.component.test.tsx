@@ -1,58 +1,54 @@
-import React from 'react';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import * as React from 'react';
 import configureStore from 'redux-mock-store';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { mount, ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import ViewButton, { ViewProps } from './viewButton.component';
-import { render, RenderResult } from '@testing-library/react';
 
 describe('Generic view button', () => {
   const mockStore = configureStore([thunk]);
+  const handleButtonChange = jest.fn();
+  let user: UserEvent;
   let state: StateType;
   let props: ViewProps;
 
-  const handleButtonChange = jest.fn();
-
-  const createWrapper = (props: ViewProps): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ViewButton {...props} />
-          </QueryClientProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-  };
-
-  const createRTLWrapper = (props: ViewProps): RenderResult => {
+  function renderComponent(props: ViewProps): RenderResult {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
+        <MemoryRouter
+          initialEntries={[
+            {
+              key: 'testKey',
+              pathname: '/',
+            },
+          ]}
+        >
           <QueryClientProvider client={new QueryClient()}>
             <ViewButton {...props} />
           </QueryClientProvider>
         </MemoryRouter>
       </Provider>
     );
-  };
+  }
 
   beforeEach(() => {
+    user = userEvent.setup();
     props = {
       viewCards: true,
       handleButtonChange: handleButtonChange,
       disabled: false,
     };
-
     state = JSON.parse(
       JSON.stringify({
-        dgdataview: {}, //Dont need to fill, since not part of the test
+        dgdataview: {},
+        //Dont need to fill, since not part of the test
         dgcommon: {
           ...dGCommonInitialState,
           urls: {
@@ -69,47 +65,32 @@ describe('Generic view button', () => {
     handleButtonChange.mockClear();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createRTLWrapper(props);
-    expect(wrapper.asFragment()).toMatchSnapshot();
+  it('renders correctly', async () => {
+    const { asFragment } = renderComponent(props);
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('calls the handle button change when the view button is clicked', () => {
-    const wrapper = createWrapper(props);
-
-    wrapper
-      .find('[aria-label="page view app.view_table"]')
-      .last()
-      .simulate('click');
-
+  it('calls the handle button change when the view button is clicked', async () => {
+    renderComponent(props);
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'page view app.view_table',
+      })
+    );
     expect(handleButtonChange).toHaveBeenCalledTimes(1);
-
-    wrapper.update();
-
-    expect(
-      wrapper.find('[aria-label="page view app.view_cards"]')
-    ).toBeTruthy();
-
-    wrapper
-      .find('[aria-label="page view app.view_table"]')
-      .last()
-      .simulate('click');
-
-    expect(handleButtonChange).toHaveBeenCalledTimes(2);
-
-    expect(
-      wrapper.find('[aria-label="page view app.view_cards"]')
-    ).toBeTruthy();
   });
 
-  it('is disabled when prop disabled is equal to true', () => {
+  it('is disabled when prop disabled is equal to true', async () => {
     props = {
       viewCards: true,
       handleButtonChange: handleButtonChange,
       disabled: true,
     };
-    const wrapper = createWrapper(props);
-
-    expect(wrapper.find(ViewButton).props().disabled).toEqual(true);
+    renderComponent(props);
+    expect(
+      await screen.findByRole('button', {
+        name: 'page view app.view_table',
+      })
+    ).toBeDisabled();
   });
 });
