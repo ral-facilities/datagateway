@@ -97,19 +97,17 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
   /* istanbul ignore next */
   const aggregatedData: Study[] = React.useMemo(
     () =>
-      // for each Investigation in studyInvestigations that matches the current filter
-      // create a new Study object with the studyInvestigations array
-      // having only one StudyInvestigation (& Investigation) object in it
-      // so that each matched Investigation appears as a separate row in the table
       data?.pages.flat().reduce<Study[]>((studies, study) => {
-        studies.push(
-          ...(filterStudyInfoInvestigations(study, filters)?.map<Study>(
-            (studyInvestigation) => ({
-              ...study,
-              studyInvestigations: [studyInvestigation],
-            })
-          ) ?? [])
-        );
+        const firstInvestigationMatched = filterStudyInfoInvestigations(
+          study,
+          filters
+        )?.[0];
+        studies.push({
+          ...study,
+          studyInvestigations: firstInvestigationMatched
+            ? [firstInvestigationMatched]
+            : study.studyInvestigations,
+        });
         return studies;
       }, []) ?? [],
     [data, filters]
@@ -190,7 +188,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     <Table
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
-      totalRowCount={totalDataCount ?? 0}
+      totalRowCount={totalDataCount}
       sort={sort}
       onSort={handleSort}
       columns={columns}

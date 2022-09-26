@@ -174,14 +174,16 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       // having only one StudyInvestigation (& Investigation) object in it
       // so that each matched Investigation appears as a separate card
       data?.reduce<Study[]>((studies, study) => {
-        studies.push(
-          ...(filterStudyInfoInvestigations(study, filters)?.map<Study>(
-            (studyInvestigation) => ({
-              ...study,
-              studyInvestigations: [studyInvestigation],
-            })
-          ) ?? [])
-        );
+        const firstInvestigationMatched = filterStudyInfoInvestigations(
+          study,
+          filters
+        )?.[0];
+        studies.push({
+          ...study,
+          studyInvestigations: firstInvestigationMatched
+            ? [firstInvestigationMatched]
+            : study.studyInvestigations,
+        });
         return studies;
       }, []),
     [data, filters]
@@ -190,7 +192,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   return (
     <CardView
       data={aggregatedData ?? []}
-      totalDataCount={totalDataCount ?? 0}
+      totalDataCount={totalDataCount}
       onPageChange={pushPage}
       onFilter={pushFilter}
       onSort={handleSort}
