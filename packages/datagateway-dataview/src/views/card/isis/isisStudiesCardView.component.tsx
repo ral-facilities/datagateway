@@ -192,7 +192,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   return (
     <CardView
       data={aggregatedData ?? []}
-      totalDataCount={totalDataCount}
+      totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilter}
       onSort={handleSort}
