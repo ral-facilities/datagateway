@@ -1,138 +1,72 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Data cell component renders correctly 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  size="small"
-  variant="body"
->
-  <ArrowTooltip
-    enterDelay={500}
-    sx={
-      Object {
-        "flex": 1,
-      }
-    }
-    title="non nested property"
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-dsuxgy-MuiTableCell-root"
   >
-    <ForwardRef(Typography)
-      noWrap={true}
-      variant="body2"
+    <p
+      aria-label="non nested property"
+      class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+      data-mui-internal-clone-element="true"
     >
       non nested property
-    </ForwardRef(Typography)>
-  </ArrowTooltip>
-  <div
-    style={
-      Object {
-        "height": "100%",
-        "marginLeft": 18,
-        "paddingLeft": "4px",
-        "paddingRight": "4px",
-      }
-    }
-  >
-    <ForwardRef(Divider)
-      flexItem={true}
-      orientation="vertical"
-      sx={
-        Object {
-          "height": "100%",
-        }
-      }
-    />
+    </p>
+    <div
+      style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+    >
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+      />
+    </div>
   </div>
-</ForwardRef(TableCell)>
+</DocumentFragment>
 `;
 
 exports[`Data cell component renders nested cell data correctly 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  size="small"
-  variant="body"
->
-  <ArrowTooltip
-    enterDelay={500}
-    sx={
-      Object {
-        "flex": 1,
-      }
-    }
-    title="nested property"
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-dsuxgy-MuiTableCell-root"
   >
-    <ForwardRef(Typography)
-      noWrap={true}
-      variant="body2"
+    <p
+      aria-label="nested property"
+      class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+      data-mui-internal-clone-element="true"
     >
       nested property
-    </ForwardRef(Typography)>
-  </ArrowTooltip>
-  <div
-    style={
-      Object {
-        "height": "100%",
-        "marginLeft": 18,
-        "paddingLeft": "4px",
-        "paddingRight": "4px",
-      }
-    }
-  >
-    <ForwardRef(Divider)
-      flexItem={true}
-      orientation="vertical"
-      sx={
-        Object {
-          "height": "100%",
-        }
-      }
-    />
+    </p>
+    <div
+      style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+    >
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+      />
+    </div>
   </div>
-</ForwardRef(TableCell)>
+</DocumentFragment>
 `;
 
 exports[`Data cell component renders provided cell data correctly 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  size="small"
-  variant="body"
->
-  <ArrowTooltip
-    enterDelay={500}
-    sx={
-      Object {
-        "flex": 1,
-      }
-    }
-    title="provided test"
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-dsuxgy-MuiTableCell-root"
   >
-    <ForwardRef(Typography)
-      noWrap={true}
-      variant="body2"
+    <p
+      aria-label="provided test"
+      class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+      data-mui-internal-clone-element="true"
     >
       <b>
         provided test
       </b>
-    </ForwardRef(Typography)>
-  </ArrowTooltip>
-  <div
-    style={
-      Object {
-        "height": "100%",
-        "marginLeft": 18,
-        "paddingLeft": "4px",
-        "paddingRight": "4px",
-      }
-    }
-  >
-    <ForwardRef(Divider)
-      flexItem={true}
-      orientation="vertical"
-      sx={
-        Object {
-          "height": "100%",
-        }
-      }
-    />
+    </p>
+    <div
+      style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
+    >
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
+      />
+    </div>
   </div>
-</ForwardRef(TableCell)>
+</DocumentFragment>
 `;
