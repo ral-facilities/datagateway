@@ -2,201 +2,210 @@
 
 exports[`Text filter component renders correctly 1`] = `
 <div>
-  <ForwardRef(Input)
-    aria-hidden={true}
+  <ForwardRef(FormControl)
     color="secondary"
-    endAdornment={
-      <ForwardRef(InputAdornment)
-        position="end"
-      >
-        <ForwardRef(Select)
-          IconComponent={
-            Object {
-              "$$typeof": Symbol(react.memo),
-              "compare": null,
-              "type": Object {
-                "$$typeof": Symbol(react.forward_ref),
-                "render": [Function],
-              },
-            }
-          }
-          SelectDisplayProps={
-            Object {
-              "aria-label": "include or exclude",
-            }
-          }
-          id="test-select-filter-type"
-          onChange={[Function]}
-          renderValue={[Function]}
-          value="include"
-          variant="standard"
-        >
-          <ForwardRef(MenuItem)
-            id="select-filter-type-include"
-            value="include"
-          >
-            Include
-          </ForwardRef(MenuItem)>
-          <ForwardRef(MenuItem)
-            id="select-filter-type-exclude"
-            value="exclude"
-          >
-            Exclude
-          </ForwardRef(MenuItem)>
-        </ForwardRef(Select)>
-      </ForwardRef(InputAdornment)>
-    }
     fullWidth={true}
     id="test-filter"
-    inputProps={
-      Object {
-        "aria-label": "Filter by test",
+    margin="dense"
+    variant="standard"
+  >
+    <ForwardRef(InputLabel)
+      id="test-filter"
+    >
+      Include
+    </ForwardRef(InputLabel)>
+    <ForwardRef(Input)
+      aria-hidden={true}
+      endAdornment={
+        <ForwardRef(InputAdornment)
+          position="end"
+        >
+          <ForwardRef(Select)
+            IconComponent={
+              Object {
+                "$$typeof": Symbol(react.memo),
+                "compare": null,
+                "type": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+              }
+            }
+            SelectDisplayProps={
+              Object {
+                "aria-label": "include or exclude",
+              }
+            }
+            id="test-select-filter-type"
+            onChange={[Function]}
+            renderValue={[Function]}
+            value="include"
+            variant="standard"
+          >
+            <ForwardRef(MenuItem)
+              id="select-filter-type-include"
+              value="include"
+            >
+              Include
+            </ForwardRef(MenuItem)>
+            <ForwardRef(MenuItem)
+              id="select-filter-type-exclude"
+              value="exclude"
+            >
+              Exclude
+            </ForwardRef(MenuItem)>
+          </ForwardRef(Select)>
+        </ForwardRef(InputAdornment)>
       }
-    }
-    onChange={[Function]}
-    placeholder="Include"
-    startAdornment={
-      <ForwardRef(InputAdornment)
-        position="start"
-      >
-        <Memo />
-      </ForwardRef(InputAdornment)>
-    }
-    value="test value"
-  />
+      id="test-filter"
+      inputProps={
+        Object {
+          "aria-label": "Filter by test",
+        }
+      }
+      onChange={[Function]}
+      value="test value"
+    />
+  </ForwardRef(FormControl)>
 </div>
 `;
 
 exports[`Text filter component usePrincipalExperimenterFilter hook returns a function which can generate a working PI filter 1`] = `
 <div>
-  <ForwardRef(Input)
-    aria-hidden={true}
+  <ForwardRef(FormControl)
     color="secondary"
-    endAdornment={
-      <ForwardRef(InputAdornment)
-        position="end"
-      >
-        <ForwardRef(Select)
-          IconComponent={
-            Object {
-              "$$typeof": Symbol(react.memo),
-              "compare": null,
-              "type": Object {
-                "$$typeof": Symbol(react.forward_ref),
-                "render": [Function],
-              },
-            }
-          }
-          SelectDisplayProps={
-            Object {
-              "aria-label": "include or exclude",
-            }
-          }
-          id="Principal Investigator-select-filter-type"
-          onChange={[Function]}
-          renderValue={[Function]}
-          value="include"
-          variant="standard"
-        >
-          <ForwardRef(MenuItem)
-            id="select-filter-type-include"
-            value="include"
-          >
-            Include
-          </ForwardRef(MenuItem)>
-          <ForwardRef(MenuItem)
-            id="select-filter-type-exclude"
-            value="exclude"
-          >
-            Exclude
-          </ForwardRef(MenuItem)>
-        </ForwardRef(Select)>
-      </ForwardRef(InputAdornment)>
-    }
     fullWidth={true}
     id="Principal Investigator-filter"
-    inputProps={
-      Object {
-        "aria-label": "Filter by Principal Investigator",
+    margin="dense"
+    variant="standard"
+  >
+    <ForwardRef(InputLabel)
+      id="Principal Investigator-filter"
+    >
+      Include
+    </ForwardRef(InputLabel)>
+    <ForwardRef(Input)
+      aria-hidden={true}
+      endAdornment={
+        <ForwardRef(InputAdornment)
+          position="end"
+        >
+          <ForwardRef(Select)
+            IconComponent={
+              Object {
+                "$$typeof": Symbol(react.memo),
+                "compare": null,
+                "type": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+              }
+            }
+            SelectDisplayProps={
+              Object {
+                "aria-label": "include or exclude",
+              }
+            }
+            id="Principal Investigator-select-filter-type"
+            onChange={[Function]}
+            renderValue={[Function]}
+            value="include"
+            variant="standard"
+          >
+            <ForwardRef(MenuItem)
+              id="select-filter-type-include"
+              value="include"
+            >
+              Include
+            </ForwardRef(MenuItem)>
+            <ForwardRef(MenuItem)
+              id="select-filter-type-exclude"
+              value="exclude"
+            >
+              Exclude
+            </ForwardRef(MenuItem)>
+          </ForwardRef(Select)>
+        </ForwardRef(InputAdornment)>
       }
-    }
-    onChange={[Function]}
-    placeholder="Include"
-    startAdornment={
-      <ForwardRef(InputAdornment)
-        position="start"
-      >
-        <Memo />
-      </ForwardRef(InputAdornment)>
-    }
-    value=""
-  />
+      id="Principal Investigator-filter"
+      inputProps={
+        Object {
+          "aria-label": "Filter by Principal Investigator",
+        }
+      }
+      onChange={[Function]}
+      value=""
+    />
+  </ForwardRef(FormControl)>
 </div>
 `;
 
 exports[`Text filter component useTextFilter hook returns a function which can generate a working text filter 1`] = `
 <div>
-  <ForwardRef(Input)
-    aria-hidden={true}
+  <ForwardRef(FormControl)
     color="secondary"
-    endAdornment={
-      <ForwardRef(InputAdornment)
-        position="end"
-      >
-        <ForwardRef(Select)
-          IconComponent={
-            Object {
-              "$$typeof": Symbol(react.memo),
-              "compare": null,
-              "type": Object {
-                "$$typeof": Symbol(react.forward_ref),
-                "render": [Function],
-              },
-            }
-          }
-          SelectDisplayProps={
-            Object {
-              "aria-label": "include or exclude",
-            }
-          }
-          id="Name-select-filter-type"
-          onChange={[Function]}
-          renderValue={[Function]}
-          value="include"
-          variant="standard"
-        >
-          <ForwardRef(MenuItem)
-            id="select-filter-type-include"
-            value="include"
-          >
-            Include
-          </ForwardRef(MenuItem)>
-          <ForwardRef(MenuItem)
-            id="select-filter-type-exclude"
-            value="exclude"
-          >
-            Exclude
-          </ForwardRef(MenuItem)>
-        </ForwardRef(Select)>
-      </ForwardRef(InputAdornment)>
-    }
     fullWidth={true}
     id="Name-filter"
-    inputProps={
-      Object {
-        "aria-label": "Filter by Name",
+    margin="dense"
+    variant="standard"
+  >
+    <ForwardRef(InputLabel)
+      id="Name-filter"
+    >
+      Include
+    </ForwardRef(InputLabel)>
+    <ForwardRef(Input)
+      aria-hidden={true}
+      endAdornment={
+        <ForwardRef(InputAdornment)
+          position="end"
+        >
+          <ForwardRef(Select)
+            IconComponent={
+              Object {
+                "$$typeof": Symbol(react.memo),
+                "compare": null,
+                "type": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+              }
+            }
+            SelectDisplayProps={
+              Object {
+                "aria-label": "include or exclude",
+              }
+            }
+            id="Name-select-filter-type"
+            onChange={[Function]}
+            renderValue={[Function]}
+            value="include"
+            variant="standard"
+          >
+            <ForwardRef(MenuItem)
+              id="select-filter-type-include"
+              value="include"
+            >
+              Include
+            </ForwardRef(MenuItem)>
+            <ForwardRef(MenuItem)
+              id="select-filter-type-exclude"
+              value="exclude"
+            >
+              Exclude
+            </ForwardRef(MenuItem)>
+          </ForwardRef(Select)>
+        </ForwardRef(InputAdornment)>
       }
-    }
-    onChange={[Function]}
-    placeholder="Include"
-    startAdornment={
-      <ForwardRef(InputAdornment)
-        position="start"
-      >
-        <Memo />
-      </ForwardRef(InputAdornment)>
-    }
-    value=""
-  />
+      id="Name-filter"
+      inputProps={
+        Object {
+          "aria-label": "Filter by Name",
+        }
+      }
+      onChange={[Function]}
+      value=""
+    />
+  </ForwardRef(FormControl)>
 </div>
 `;

@@ -67,7 +67,7 @@ describe('Table component', () => {
         .first()
         .text()
       // Empty Selects (like the one in textColumnFilter) render a zero width space character
-    ).toEqual('Test 1\u200B\u200B');
+    ).toEqual('Test 1Include\u200B');
 
     expect(
       wrapper
