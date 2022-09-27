@@ -2366,11 +2366,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
                             <p
-                              aria-label="2020-03-01 00:00:00"
+                              aria-label="2020-03-01 15:57:28"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
-                              2020-03-01 00:00:00
+                              2020-03-01 15:57:28
                             </p>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
