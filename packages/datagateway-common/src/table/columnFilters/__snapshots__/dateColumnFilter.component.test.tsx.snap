@@ -1,303 +1,199 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Date filter component CustomClearButton renders correctly 1`] = `
-<ForwardRef(Button)
-  color="primary"
-  onClick={[Function]}
-  role="button"
-  sx={
-    Object {
-      "marginBottom": "10px",
-      "marginLeft": "30px",
-    }
-  }
-  variant="contained"
->
-  Clear
-</ForwardRef(Button)>
+<DocumentFragment>
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-lu2usf-MuiButtonBase-root-MuiButton-root"
+    role="button"
+    tabindex="0"
+    type="button"
+  >
+    Clear
+    <span
+      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+    />
+  </button>
+</DocumentFragment>
 `;
 
 exports[`Date filter component DatePicker functionality useTextFilter hook returns a function which can generate a working text filter 1`] = `
-<form>
-  <LocalizationProvider
-    dateAdapter={[Function]}
-  >
-    <ForwardRef(DatePicker)
-      OpenPickerButtonProps={
-        Object {
-          "aria-label": "Start Date filter from, date picker",
-          "size": "small",
-        }
-      }
-      components={
-        Object {
-          "ActionBar": [Function],
-        }
-      }
-      componentsProps={
-        Object {
-          "actionBar": Object {
-            "actions": Array [
-              "clear",
-            ],
-          },
-        }
-      }
-      inputFormat="yyyy-MM-dd"
-      mask="____-__-__"
-      maxDate={2100-01-01T00:00:00.000Z}
-      onChange={[Function]}
-      renderInput={[Function]}
-      value={null}
-    />
-    <ForwardRef(DatePicker)
-      OpenPickerButtonProps={
-        Object {
-          "aria-label": "Start Date filter to, date picker",
-          "size": "small",
-        }
-      }
-      components={
-        Object {
-          "ActionBar": [Function],
-        }
-      }
-      componentsProps={
-        Object {
-          "actionBar": Object {
-            "actions": Array [
-              "clear",
-            ],
-          },
-        }
-      }
-      inputFormat="yyyy-MM-dd"
-      mask="____-__-__"
-      minDate={1984-01-01T00:00:00.000Z}
-      onChange={[Function]}
-      renderInput={[Function]}
-      value={null}
-    />
-  </LocalizationProvider>
-</form>
-`;
-
-exports[`Date filter component DateTimePicker functionality useTextFilter hook returns a function which can generate a working text filter 1`] = `
-<form>
-  <MuiPickersUtilsProvider
-    utils={[Function]}
-  >
-    <PickerWithState
-      KeyboardButtonProps={
-        Object {
-          "aria-label": "Start Date filter from, date picker",
-          "size": "small",
-        }
-      }
-      allowKeyboardControl={true}
-      aria-hidden="true"
-      cancelLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
+<DocumentFragment>
+  <form>
+    <div
+      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+    >
+      <div
+        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1ptx2yq-MuiInputBase-root-MuiInput-root"
+      >
+        <input
+          aria-invalid="false"
+          aria-label="Start Date filter from"
+          class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+          id="Start Date filter from"
+          placeholder="From..."
+          type="tel"
+          value=""
+        />
+        <div
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
         >
-          Cancel
-        </span>
-      }
-      clearLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
+          <button
+            aria-label="Start Date filter from, date picker"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeSmall css-1bkxqye-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+              data-testid="CalendarIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+              />
+            </svg>
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+    >
+      <div
+        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1ptx2yq-MuiInputBase-root-MuiInput-root"
+      >
+        <input
+          aria-invalid="false"
+          aria-label="Start Date filter to"
+          class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+          id="Start Date filter to"
+          placeholder="To..."
+          type="tel"
+          value=""
+        />
+        <div
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
         >
-          Clear
-        </span>
-      }
-      clearable={true}
-      color="secondary"
-      format="yyyy-MM-dd"
-      id="Start Date filter from"
-      inputProps={
-        Object {
-          "aria-label": "Start Date filter",
-        }
-      }
-      invalidDateMessage="Date format: yyyy-MM-dd."
-      maxDate={2100-01-01T00:00:00.000Z}
-      maxDateMessage="Invalid date range"
-      minDate={1900-01-01T00:00:00.000Z}
-      minDateMessage="Date should not be before minimal date"
-      okLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          OK
-        </span>
-      }
-      onChange={[Function]}
-      openTo="date"
-      placeholder="From..."
-      style={
-        Object {
-          "whiteSpace": "nowrap",
-        }
-      }
-      value={null}
-      views={
-        Array [
-          "year",
-          "month",
-          "date",
-        ]
-      }
-    />
-    <PickerWithState
-      KeyboardButtonProps={
-        Object {
-          "aria-label": "Start Date filter to, date picker",
-          "size": "small",
-        }
-      }
-      allowKeyboardControl={true}
-      aria-hidden="true"
-      cancelLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          Cancel
-        </span>
-      }
-      clearLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          Clear
-        </span>
-      }
-      clearable={true}
-      color="secondary"
-      format="yyyy-MM-dd"
-      id="Start Date filter to"
-      inputProps={
-        Object {
-          "aria-label": "Start Date filter",
-        }
-      }
-      invalidDateMessage="Date format: yyyy-MM-dd."
-      maxDate={2100-01-01T00:00:00.000Z}
-      maxDateMessage="Date should not be after maximal date"
-      minDate={1984-01-01T00:00:00.000Z}
-      minDateMessage="Invalid date range"
-      okLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          OK
-        </span>
-      }
-      onChange={[Function]}
-      openTo="date"
-      placeholder="To..."
-      style={
-        Object {
-          "whiteSpace": "nowrap",
-        }
-      }
-      value={null}
-      views={
-        Array [
-          "year",
-          "month",
-          "date",
-        ]
-      }
-    />
-  </MuiPickersUtilsProvider>
-</form>
+          <button
+            aria-label="Start Date filter to, date picker"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeSmall css-1bkxqye-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+              data-testid="CalendarIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+              />
+            </svg>
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
 `;
 
 exports[`Date filter component renders correctly 1`] = `
-<form>
-  <LocalizationProvider
-    dateAdapter={[Function]}
-  >
-    <ForwardRef(DatePicker)
-      OpenPickerButtonProps={
-        Object {
-          "aria-label": "test filter from, date picker",
-          "size": "small",
-        }
-      }
-      components={
-        Object {
-          "ActionBar": [Function],
-        }
-      }
-      componentsProps={
-        Object {
-          "actionBar": Object {
-            "actions": Array [
-              "clear",
-            ],
-          },
-        }
-      }
-      inputFormat="yyyy-MM-dd"
-      mask="____-__-__"
-      maxDate={2000-01-01T00:00:00.000Z}
-      onChange={[Function]}
-      renderInput={[Function]}
-      value={1999-01-01T00:00:00.000Z}
-    />
-    <ForwardRef(DatePicker)
-      OpenPickerButtonProps={
-        Object {
-          "aria-label": "test filter to, date picker",
-          "size": "small",
-        }
-      }
-      components={
-        Object {
-          "ActionBar": [Function],
-        }
-      }
-      componentsProps={
-        Object {
-          "actionBar": Object {
-            "actions": Array [
-              "clear",
-            ],
-          },
-        }
-      }
-      inputFormat="yyyy-MM-dd"
-      mask="____-__-__"
-      minDate={1999-01-01T00:00:00.000Z}
-      onChange={[Function]}
-      renderInput={[Function]}
-      value={2000-01-01T00:00:00.000Z}
-    />
-  </LocalizationProvider>
-</form>
+<DocumentFragment>
+  <form>
+    <div
+      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+    >
+      <div
+        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1ptx2yq-MuiInputBase-root-MuiInput-root"
+      >
+        <input
+          aria-invalid="false"
+          aria-label="test filter from"
+          class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+          id="test filter from"
+          placeholder="From..."
+          type="tel"
+          value="1999-01-01"
+        />
+        <div
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+        >
+          <button
+            aria-label="test filter from, date picker"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeSmall css-1bkxqye-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+              data-testid="CalendarIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+              />
+            </svg>
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+    >
+      <div
+        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1ptx2yq-MuiInputBase-root-MuiInput-root"
+      >
+        <input
+          aria-invalid="false"
+          aria-label="test filter to"
+          class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+          id="test filter to"
+          placeholder="To..."
+          type="tel"
+          value="2000-01-01"
+        />
+        <div
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+        >
+          <button
+            aria-label="test filter to, date picker"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeSmall css-1bkxqye-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+              data-testid="CalendarIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+              />
+            </svg>
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
 `;
