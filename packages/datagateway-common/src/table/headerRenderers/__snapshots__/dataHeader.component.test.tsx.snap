@@ -1,373 +1,311 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Data column header component renders correctly with filter but no sort 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  size="small"
-  variant="head"
->
+<DocumentFragment>
   <div
-    style={
-      Object {
-        "flex": 1,
-        "overflow": "hidden",
-      }
-    }
-  >
-    <ForwardRef(Box)
-      display="flex"
-    >
-      <ForwardRef(Box)
-        marginRight={1}
-      >
-        <Icon />
-      </ForwardRef(Box)>
-      <ForwardRef(Box)>
-        <ForwardRef(Typography)
-          noWrap={true}
-          sx={
-            Object {
-              "fontSize": "inherit",
-              "lineHeight": "inherit",
-            }
-          }
-        >
-          Test
-        </ForwardRef(Typography)>
-      </ForwardRef(Box)>
-    </ForwardRef(Box)>
-    <TextColumnFilter
-      label="Test"
-      onChange={[MockFunction]}
-    />
-  </div>
-  <Draggable
-    allowAnyClick={false}
-    axis="none"
-    bounds={false}
-    cancel={null}
-    defaultClassName="react-draggable"
-    defaultClassNameDragged="react-draggable-dragged"
-    defaultClassNameDragging="react-draggable-dragging"
-    defaultPosition={
-      Object {
-        "x": 0,
-        "y": 0,
-      }
-    }
-    disabled={false}
-    enableUserSelectHack={true}
-    grid={null}
-    handle={null}
-    offsetParent={null}
-    onDrag={[Function]}
-    onMouseDown={[Function]}
-    onStart={[Function]}
-    onStop={[Function]}
-    position={null}
-    scale={1}
-    transform={null}
+    class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
-      style={
-        Object {
-          "cursor": "col-resize",
-          "marginLeft": 18,
-          "paddingLeft": "4px",
-          "paddingRight": "4px",
-        }
-      }
+      style="overflow: hidden; flex: 1;"
     >
-      <ForwardRef(Divider)
-        flexItem={true}
-        orientation="vertical"
-        sx={
-          Object {
-            "height": "100%",
-          }
-        }
+      <div
+        class="MuiBox-root css-k008qs"
+      >
+        <div
+          class="MuiBox-root css-12z0wuy"
+        >
+          <div>
+            Test
+          </div>
+        </div>
+        <div
+          class="MuiBox-root css-0"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
+          >
+            Test
+          </p>
+        </div>
+      </div>
+      <div>
+        <div
+          aria-hidden="true"
+          class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
+        >
+          <input
+            aria-label="Filter by Test"
+            class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+            id="Test-filter"
+            placeholder="Include"
+            type="text"
+            value=""
+          />
+          <div
+            class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+            >
+              <div
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-label="include or exclude"
+                aria-labelledby="Test-select-filter-type"
+                class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                id="Test-select-filter-type"
+                role="button"
+                tabindex="0"
+              >
+                <span
+                  class="notranslate"
+                >
+                  ​
+                </span>
+              </div>
+              <input
+                aria-hidden="true"
+                class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+                tabindex="-1"
+                value="include"
+              />
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                data-testid="SettingsIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="react-draggable"
+      style="margin-left: 18px; padding-left: 4px; padding-right: 4px; cursor: col-resize; transform: translate(0px,0px);"
+    >
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
       />
     </div>
-  </Draggable>
-</ForwardRef(TableCell)>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`Data column header component renders correctly with sort and filter 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  size="small"
-  variant="head"
->
+<DocumentFragment>
   <div
-    style={
-      Object {
-        "flex": 1,
-        "overflow": "hidden",
-      }
-    }
-  >
-    <ForwardRef(Box)
-      display="flex"
-    >
-      <ForwardRef(Box)
-        marginRight={1}
-      >
-        <Icon />
-      </ForwardRef(Box)>
-      <ForwardRef(Box)>
-        <ForwardRef(TableSortLabel)
-          active={false}
-          className="tour-dataview-sort"
-          onClick={[Function]}
-        >
-          <ForwardRef(Typography)
-            noWrap={true}
-            sx={
-              Object {
-                "fontSize": "inherit",
-                "lineHeight": "inherit",
-              }
-            }
-          >
-            Test
-          </ForwardRef(Typography)>
-        </ForwardRef(TableSortLabel)>
-      </ForwardRef(Box)>
-    </ForwardRef(Box)>
-    <TextColumnFilter
-      label="Test"
-      onChange={[MockFunction]}
-    />
-  </div>
-  <Draggable
-    allowAnyClick={false}
-    axis="none"
-    bounds={false}
-    cancel={null}
-    defaultClassName="react-draggable"
-    defaultClassNameDragged="react-draggable-dragged"
-    defaultClassNameDragging="react-draggable-dragging"
-    defaultPosition={
-      Object {
-        "x": 0,
-        "y": 0,
-      }
-    }
-    disabled={false}
-    enableUserSelectHack={true}
-    grid={null}
-    handle={null}
-    offsetParent={null}
-    onDrag={[Function]}
-    onMouseDown={[Function]}
-    onStart={[Function]}
-    onStop={[Function]}
-    position={null}
-    scale={1}
-    transform={null}
+    class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
-      style={
-        Object {
-          "cursor": "col-resize",
-          "marginLeft": 18,
-          "paddingLeft": "4px",
-          "paddingRight": "4px",
-        }
-      }
+      style="overflow: hidden; flex: 1;"
     >
-      <ForwardRef(Divider)
-        flexItem={true}
-        orientation="vertical"
-        sx={
-          Object {
-            "height": "100%",
-          }
-        }
+      <div
+        class="MuiBox-root css-k008qs"
+      >
+        <div
+          class="MuiBox-root css-12z0wuy"
+        >
+          <div>
+            Test
+          </div>
+        </div>
+        <div
+          class="MuiBox-root css-0"
+        >
+          <span
+            class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+            role="button"
+            tabindex="0"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
+            >
+              Test
+            </p>
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
+              data-testid="ArrowDownwardIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+              />
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div>
+        <div
+          aria-hidden="true"
+          class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
+        >
+          <input
+            aria-label="Filter by Test"
+            class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+            id="Test-filter"
+            placeholder="Include"
+            type="text"
+            value=""
+          />
+          <div
+            class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+            >
+              <div
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-label="include or exclude"
+                aria-labelledby="Test-select-filter-type"
+                class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                id="Test-select-filter-type"
+                role="button"
+                tabindex="0"
+              >
+                <span
+                  class="notranslate"
+                >
+                  ​
+                </span>
+              </div>
+              <input
+                aria-hidden="true"
+                class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+                tabindex="-1"
+                value="include"
+              />
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                data-testid="SettingsIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="react-draggable"
+      style="margin-left: 18px; padding-left: 4px; padding-right: 4px; cursor: col-resize; transform: translate(0px,0px);"
+    >
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
       />
     </div>
-  </Draggable>
-</ForwardRef(TableCell)>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`Data column header component renders correctly with sort but no filter 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  size="small"
-  variant="head"
->
+<DocumentFragment>
   <div
-    style={
-      Object {
-        "flex": 1,
-        "overflow": "hidden",
-      }
-    }
-  >
-    <ForwardRef(Box)
-      display="flex"
-    >
-      <ForwardRef(Box)
-        marginRight={1}
-      >
-        <Icon />
-      </ForwardRef(Box)>
-      <ForwardRef(Box)>
-        <ForwardRef(TableSortLabel)
-          active={false}
-          className="tour-dataview-sort"
-          onClick={[Function]}
-        >
-          <ForwardRef(Typography)
-            noWrap={true}
-            sx={
-              Object {
-                "fontSize": "inherit",
-                "lineHeight": "inherit",
-              }
-            }
-          >
-            Test
-          </ForwardRef(Typography)>
-        </ForwardRef(TableSortLabel)>
-      </ForwardRef(Box)>
-    </ForwardRef(Box)>
-  </div>
-  <Draggable
-    allowAnyClick={false}
-    axis="none"
-    bounds={false}
-    cancel={null}
-    defaultClassName="react-draggable"
-    defaultClassNameDragged="react-draggable-dragged"
-    defaultClassNameDragging="react-draggable-dragging"
-    defaultPosition={
-      Object {
-        "x": 0,
-        "y": 0,
-      }
-    }
-    disabled={false}
-    enableUserSelectHack={true}
-    grid={null}
-    handle={null}
-    offsetParent={null}
-    onDrag={[Function]}
-    onMouseDown={[Function]}
-    onStart={[Function]}
-    onStop={[Function]}
-    position={null}
-    scale={1}
-    transform={null}
+    class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
-      style={
-        Object {
-          "cursor": "col-resize",
-          "marginLeft": 18,
-          "paddingLeft": "4px",
-          "paddingRight": "4px",
-        }
-      }
+      style="overflow: hidden; flex: 1;"
     >
-      <ForwardRef(Divider)
-        flexItem={true}
-        orientation="vertical"
-        sx={
-          Object {
-            "height": "100%",
-          }
-        }
+      <div
+        class="MuiBox-root css-k008qs"
+      >
+        <div
+          class="MuiBox-root css-12z0wuy"
+        >
+          <div>
+            Test
+          </div>
+        </div>
+        <div
+          class="MuiBox-root css-0"
+        >
+          <span
+            class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+            role="button"
+            tabindex="0"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
+            >
+              Test
+            </p>
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
+              data-testid="ArrowDownwardIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+              />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="react-draggable"
+      style="margin-left: 18px; padding-left: 4px; padding-right: 4px; cursor: col-resize; transform: translate(0px,0px);"
+    >
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
       />
     </div>
-  </Draggable>
-</ForwardRef(TableCell)>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`Data column header component renders correctly without sort or filter 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  size="small"
-  variant="head"
->
+<DocumentFragment>
   <div
-    style={
-      Object {
-        "flex": 1,
-        "overflow": "hidden",
-      }
-    }
-  >
-    <ForwardRef(Box)
-      display="flex"
-    >
-      <ForwardRef(Box)
-        marginRight={1}
-      >
-        <Icon />
-      </ForwardRef(Box)>
-      <ForwardRef(Box)>
-        <ForwardRef(Typography)
-          noWrap={true}
-          sx={
-            Object {
-              "fontSize": "inherit",
-              "lineHeight": "inherit",
-            }
-          }
-        >
-          Test
-        </ForwardRef(Typography)>
-      </ForwardRef(Box)>
-    </ForwardRef(Box)>
-  </div>
-  <Draggable
-    allowAnyClick={false}
-    axis="none"
-    bounds={false}
-    cancel={null}
-    defaultClassName="react-draggable"
-    defaultClassNameDragged="react-draggable-dragged"
-    defaultClassNameDragging="react-draggable-dragging"
-    defaultPosition={
-      Object {
-        "x": 0,
-        "y": 0,
-      }
-    }
-    disabled={false}
-    enableUserSelectHack={true}
-    grid={null}
-    handle={null}
-    offsetParent={null}
-    onDrag={[Function]}
-    onMouseDown={[Function]}
-    onStart={[Function]}
-    onStop={[Function]}
-    position={null}
-    scale={1}
-    transform={null}
+    class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
-      style={
-        Object {
-          "cursor": "col-resize",
-          "marginLeft": 18,
-          "paddingLeft": "4px",
-          "paddingRight": "4px",
-        }
-      }
+      style="overflow: hidden; flex: 1;"
     >
-      <ForwardRef(Divider)
-        flexItem={true}
-        orientation="vertical"
-        sx={
-          Object {
-            "height": "100%",
-          }
-        }
+      <div
+        class="MuiBox-root css-k008qs"
+      >
+        <div
+          class="MuiBox-root css-12z0wuy"
+        >
+          <div>
+            Test
+          </div>
+        </div>
+        <div
+          class="MuiBox-root css-0"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
+          >
+            Test
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="react-draggable"
+      style="margin-left: 18px; padding-left: 4px; padding-right: 4px; cursor: col-resize; transform: translate(0px,0px);"
+    >
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical MuiDivider-flexItem css-1i1qbzr-MuiDivider-root"
       />
     </div>
-  </Draggable>
-</ForwardRef(TableCell)>
+  </div>
+</DocumentFragment>
 `;
