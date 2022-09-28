@@ -1,6 +1,7 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import HomePage, { HomePageProps } from './homePage.component';
+import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('Home page component', () => {
   let props: HomePageProps;
@@ -20,7 +21,11 @@ describe('Home page component', () => {
   });
 
   it('homepage renders correctly', () => {
-    const wrapper = shallow(<HomePage {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = render(
+      <MemoryRouter>
+        <HomePage {...props} />
+      </MemoryRouter>
+    );
+    expect(asFragment()).toMatchSnapshot();
   });
 });

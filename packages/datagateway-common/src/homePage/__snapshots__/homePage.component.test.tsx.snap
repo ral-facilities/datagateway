@@ -1,54 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home page component homepage renders correctly 1`] = `
-<div
-  id="dg-homepage"
->
+<DocumentFragment>
   <div
-    style={
-      Object {
-        "backgroundImage": "url(test-bakcgroundImage)",
-        "backgroundPosition": "center 40%",
-        "height": 250,
-        "width": "100%",
-      }
-    }
+    id="dg-homepage"
   >
     <div
-      style={
-        Object {
-          "backgroundImage": "url(test-greenSwirl1Image), url(test-decal1Image)",
-          "backgroundPosition": "top left, top right",
-          "backgroundRepeat": "no-repeat",
-          "height": 250,
-          "width": "100%",
-        }
-      }
+      style="background-image: url(test-bakcgroundImage); width: 100%; height: 250px;"
     >
-      <ForwardRef(Box)
-        sx={
-          Object {
-            "left": "50%",
-            "position": "relative",
-            "top": "45px",
-            "transform": "translate(-50%)",
-          }
-        }
+      <div
+        style="background-repeat: no-repeat; width: 100%; height: 250px;"
       >
-        <ForwardRef(Typography)
-          sx={
-            Object {
-              "color": "#FFFFFF",
-              "fontSize": "48px",
-              "fontWeight": "lighter",
-              "margin": "auto",
-              "textAlign": "center",
-            }
-          }
-          variant="h2"
+        <div
+          class="MuiBox-root css-h95k7f"
         >
-          <Trans
-            i18nKey="home_page.title_line1"
+          <h2
+            class="MuiTypography-root MuiTypography-h2 css-1c7qyh0-MuiTypography-root"
           >
             <strong>
               Data discovery
@@ -57,390 +24,233 @@ exports[`Home page component homepage renders correctly 1`] = `
             <strong>
               access
             </strong>
-          </Trans>
-        </ForwardRef(Typography)>
-        <ForwardRef(Typography)
-          sx={
-            Object {
-              "color": "#FFFFFF",
-              "fontSize": "48px",
-              "fontWeight": "lighter",
-              "margin": "auto",
-              "textAlign": "center",
-            }
-          }
-          variant="h2"
-        >
-          <Trans
-            i18nKey="home_page.title_line2"
+          </h2>
+          <h2
+            class="MuiTypography-root MuiTypography-h2 css-1c7qyh0-MuiTypography-root"
           >
             for 
             <strong>
               large-scale
             </strong>
             science facilities
-          </Trans>
-        </ForwardRef(Typography)>
-      </ForwardRef(Box)>
+          </h2>
+        </div>
+      </div>
     </div>
-  </div>
-  <ForwardRef(Box)
-    sx={
-      Object {
-        "marginLeft": "8%",
-        "marginRight": "8%",
-        "transform": "translate(0px, -20px)",
-      }
-    }
-  >
-    <ForwardRef(Paper)
-      elevation={1}
-      sx={
-        Object {
-          "borderRadius": "4px",
-          "height": "100%",
-          "marginBottom": 2,
-        }
-      }
+    <div
+      class="MuiBox-root css-12vlygr"
     >
-      <ForwardRef(Grid)
-        container={true}
-        style={
-          Object {
-            "height": "100%",
-          }
-        }
+      <div
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-177u6i-MuiPaper-root"
       >
-        <ForwardRef(Grid)
-          item={true}
-          xs={6}
+        <div
+          class="MuiGrid-root MuiGrid-container css-11lq3yg-MuiGrid-root"
+          style="height: 100%;"
         >
-          <ForwardRef(Box)
-            sx={
-              Object {
-                "boxSizing": "border-box",
-                "display": "flex",
-                "flexDirection": "column",
-                "height": "100%",
-                "justifyContent": "flex-start",
-                "padding": 2,
-              }
-            }
+          <div
+            class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-6 css-1osj8n2-MuiGrid-root"
           >
-            <ForwardRef(Typography)
-              sx={[Function]}
-              variant="h3"
+            <div
+              class="MuiBox-root css-1onku40"
             >
-              home_page.browse.title
-            </ForwardRef(Typography)>
-            <Styled(ForwardRef(Typography))
-              variant="body1"
-            >
-              home_page.browse.description1
-            </Styled(ForwardRef(Typography))>
-            <Styled(ForwardRef(Typography))
-              variant="body1"
-            >
-              <Trans
-                i18nKey="home_page.browse.description2"
+              <h3
+                class="MuiTypography-root MuiTypography-h3 css-jadg01-MuiTypography-root"
+              >
+                home_page.browse.title
+              </h3>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
+              >
+                home_page.browse.description1
+              </p>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
               >
                 <strong>
                   DataGateway
                 </strong>
                  focuses on providing data discovery and data access functionality to the data.
-              </Trans>
-            </Styled(ForwardRef(Typography))>
-            <ForwardRef(Box)
-              marginTop="16px"
-            >
-              <ForwardRef(Button)
-                color="primary"
-                component={
-                  Object {
-                    "$$typeof": Symbol(react.forward_ref),
-                    "propTypes": Object {
-                      "innerRef": [Function],
-                      "onClick": [Function],
-                      "replace": [Function],
-                      "target": [Function],
-                      "to": [Function],
-                    },
-                    "render": [Function],
-                  }
-                }
-                data-testid="browse-button"
-                to="home_page.browse.link"
-                variant="contained"
+              </p>
+              <div
+                class="MuiBox-root css-1yuhvjn"
               >
-                home_page.browse.button
-              </ForwardRef(Button)>
-            </ForwardRef(Box)>
-          </ForwardRef(Box)>
-        </ForwardRef(Grid)>
-        <ForwardRef(Grid)
-          item={true}
-          xs={6}
-        >
-          <div
-            style={
-              Object {
-                "backgroundImage": "url(test-facilityImage)",
-                "backgroundPosition": "bottom right",
-                "backgroundRepeat": "no-repeat",
-                "backgroundSize": "cover",
-                "borderRadius": "4px",
-                "height": "100%",
-                "width": "100%",
-              }
-            }
-          >
-            <Styled(div)
-              decal2DarkHCImage="test-Decal2DarkHCImage"
-              decal2DarkImage="test-decal2DarkImage"
-              decal2Image="test-decal2Image"
-            />
-          </div>
-        </ForwardRef(Grid)>
-      </ForwardRef(Grid)>
-    </ForwardRef(Paper)>
-    <ForwardRef(Grid)
-      container={true}
-      spacing={2}
-    >
-      <ForwardRef(Grid)
-        item={true}
-        md={4}
-        sm={12}
-      >
-        <ForwardRef(Paper)
-          elevation={1}
-          sx={
-            Object {
-              "borderRadius": "4px",
-              "height": "100%",
-              "marginBottom": 2,
-            }
-          }
-        >
-          <ForwardRef(Box)
-            sx={
-              Object {
-                "boxSizing": "border-box",
-                "display": "flex",
-                "flexDirection": "column",
-                "height": "100%",
-                "justifyContent": "flex-start",
-                "padding": 2,
-              }
-            }
-          >
-            <ForwardRef(Avatar)
-              sx={
-                Object {
-                  "backgroundColor": "#1E5DF8",
-                  "color": "#FFFFFF",
-                  "height": "60px",
-                  "marginBottom": 2,
-                  "width": "60px",
-                }
-              }
-            >
-              <Memo(ForwardRef(SearchIcon))
-                sx={
-                  Object {
-                    "transform": "scale(1.75)",
-                  }
-                }
-              />
-            </ForwardRef(Avatar)>
-            <Styled(ForwardRef(Typography))
-              variant="h4"
-            >
-              home_page.search.title
-            </Styled(ForwardRef(Typography))>
-            <Styled(ForwardRef(Typography))
-              variant="body1"
-            >
-              home_page.search.description
-            </Styled(ForwardRef(Typography))>
-            <ForwardRef(Box)
-              marginTop="auto"
-            >
-              <ForwardRef(Button)
-                color="primary"
-                component={
-                  Object {
-                    "$$typeof": Symbol(react.forward_ref),
-                    "propTypes": Object {
-                      "innerRef": [Function],
-                      "onClick": [Function],
-                      "replace": [Function],
-                      "target": [Function],
-                      "to": [Function],
-                    },
-                    "render": [Function],
-                  }
-                }
-                data-testid="search-button"
-                to="home_page.search.link"
-                variant="contained"
-              >
-                home_page.search.button
-              </ForwardRef(Button)>
-            </ForwardRef(Box)>
-          </ForwardRef(Box)>
-        </ForwardRef(Paper)>
-      </ForwardRef(Grid)>
-      <ForwardRef(Grid)
-        item={true}
-        md={4}
-        sm={12}
-      >
-        <ForwardRef(Paper)
-          elevation={1}
-          sx={
-            Object {
-              "borderRadius": "4px",
-              "height": "100%",
-              "marginBottom": 2,
-            }
-          }
-        >
-          <ForwardRef(Box)
-            sx={
-              Object {
-                "boxSizing": "border-box",
-                "display": "flex",
-                "flexDirection": "column",
-                "height": "100%",
-                "justifyContent": "flex-start",
-                "padding": 2,
-              }
-            }
-          >
-            <ForwardRef(Avatar)
-              sx={
-                Object {
-                  "backgroundColor": "#1E5DF8",
-                  "color": "#FFFFFF",
-                  "height": "60px",
-                  "marginBottom": 2,
-                  "width": "60px",
-                }
-              }
-            >
-              <Memo(ForwardRef(GetAppIcon))
-                sx={
-                  Object {
-                    "transform": "scale(1.75)",
-                  }
-                }
-              />
-            </ForwardRef(Avatar)>
-            <Styled(ForwardRef(Typography))
-              variant="h4"
-            >
-              home_page.download.title
-            </Styled(ForwardRef(Typography))>
-            <Styled(ForwardRef(Typography))
-              variant="body1"
-            >
-              home_page.download.description
-            </Styled(ForwardRef(Typography))>
-            <ForwardRef(Box)
-              marginTop="auto"
-            >
-              <ForwardRef(Button)
-                color="primary"
-                component={
-                  Object {
-                    "$$typeof": Symbol(react.forward_ref),
-                    "propTypes": Object {
-                      "innerRef": [Function],
-                      "onClick": [Function],
-                      "replace": [Function],
-                      "target": [Function],
-                      "to": [Function],
-                    },
-                    "render": [Function],
-                  }
-                }
-                data-testid="download-button"
-                to="home_page.download.link"
-                variant="contained"
-              >
-                home_page.download.button
-              </ForwardRef(Button)>
-            </ForwardRef(Box)>
-          </ForwardRef(Box)>
-        </ForwardRef(Paper)>
-      </ForwardRef(Grid)>
-      <ForwardRef(Grid)
-        item={true}
-        md={4}
-        sm={12}
-      >
-        <ForwardRef(Paper)
-          elevation={1}
-          sx={
-            Object {
-              "backgroundColor": "#003088",
-              "borderRadius": "4px",
-              "height": "100%",
-              "marginBottom": 2,
-            }
-          }
-        >
-          <div
-            style={
-              Object {
-                "backgroundImage": "url(test-greenSwirl2Image)",
-                "backgroundPosition": "top right",
-                "backgroundRepeat": "no-repeat",
-                "backgroundSize": "auto 100%",
-                "height": "100%",
-              }
-            }
-          >
-            <ForwardRef(Box)
-              sx={
-                Object {
-                  "boxSizing": "border-box",
-                  "display": "flex",
-                  "flexDirection": "column",
-                  "height": "100%",
-                  "justifyContent": "flex-start",
-                  "padding": 2,
-                }
-              }
-            >
-              <Styled(ForwardRef(Typography))
-                variant="h4"
-              >
-                home_page.facility.title
-              </Styled(ForwardRef(Typography))>
-              <Styled(ForwardRef(Typography))
-                variant="body1"
-              >
-                home_page.facility.description
-              </Styled(ForwardRef(Typography))>
-              <ForwardRef(Box)
-                marginTop="auto"
-              >
-                <Styled(ForwardRef(Button))
-                  color="primary"
-                  data-testid="facility-button"
-                  href="home_page.facility.link"
-                  variant="contained"
+                <a
+                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+                  data-testid="browse-button"
+                  href="/home_page.browse.link"
+                  tabindex="0"
                 >
-                  home_page.facility.button
-                </Styled(ForwardRef(Button))>
-              </ForwardRef(Box)>
-            </ForwardRef(Box)>
+                  home_page.browse.button
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
+                </a>
+              </div>
+            </div>
           </div>
-        </ForwardRef(Paper)>
-      </ForwardRef(Grid)>
-    </ForwardRef(Grid)>
-  </ForwardRef(Box)>
-</div>
+          <div
+            class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-6 css-1osj8n2-MuiGrid-root"
+          >
+            <div
+              style="background-image: url(test-facilityImage); background-repeat: no-repeat; background-position: bottom right; background-size: cover; width: 100%; height: 100%; border-radius: 4px;"
+            >
+              <div
+                class="css-10ik3yc"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-mhc70k-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-sm-12 MuiGrid-grid-md-4 css-yaog9p-MuiGrid-root"
+        >
+          <div
+            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-177u6i-MuiPaper-root"
+          >
+            <div
+              class="MuiBox-root css-1onku40"
+            >
+              <div
+                class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-9x0z5k-MuiAvatar-root"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vyilrt-MuiSvgIcon-root"
+                  data-testid="SearchIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                  />
+                </svg>
+              </div>
+              <h4
+                class="MuiTypography-root MuiTypography-h4 css-rspydk-MuiTypography-root"
+              >
+                home_page.search.title
+              </h4>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
+              >
+                home_page.search.description
+              </p>
+              <div
+                class="MuiBox-root css-8xl60i"
+              >
+                <a
+                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+                  data-testid="search-button"
+                  href="/home_page.search.link"
+                  tabindex="0"
+                >
+                  home_page.search.button
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-sm-12 MuiGrid-grid-md-4 css-yaog9p-MuiGrid-root"
+        >
+          <div
+            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-177u6i-MuiPaper-root"
+          >
+            <div
+              class="MuiBox-root css-1onku40"
+            >
+              <div
+                class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-9x0z5k-MuiAvatar-root"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vyilrt-MuiSvgIcon-root"
+                  data-testid="GetAppIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                  />
+                </svg>
+              </div>
+              <h4
+                class="MuiTypography-root MuiTypography-h4 css-rspydk-MuiTypography-root"
+              >
+                home_page.download.title
+              </h4>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
+              >
+                home_page.download.description
+              </p>
+              <div
+                class="MuiBox-root css-8xl60i"
+              >
+                <a
+                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+                  data-testid="download-button"
+                  href="/home_page.download.link"
+                  tabindex="0"
+                >
+                  home_page.download.button
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-sm-12 MuiGrid-grid-md-4 css-yaog9p-MuiGrid-root"
+        >
+          <div
+            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-19bggzh-MuiPaper-root"
+          >
+            <div
+              style="background-image: url(test-greenSwirl2Image); background-repeat: no-repeat; background-position: top right; background-size: auto 100%; height: 100%;"
+            >
+              <div
+                class="MuiBox-root css-1onku40"
+              >
+                <h4
+                  class="MuiTypography-root MuiTypography-h4 css-94tke6-MuiTypography-root"
+                >
+                  home_page.facility.title
+                </h4>
+                <p
+                  class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
+                >
+                  home_page.facility.description
+                </p>
+                <div
+                  class="MuiBox-root css-8xl60i"
+                >
+                  <a
+                    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1m6sz6p-MuiButtonBase-root-MuiButton-root"
+                    data-testid="facility-button"
+                    href="home_page.facility.link"
+                    tabindex="0"
+                  >
+                    home_page.facility.button
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;
