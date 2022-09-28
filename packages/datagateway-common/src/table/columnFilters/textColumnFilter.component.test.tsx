@@ -1,34 +1,41 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
 import TextColumnFilter, {
   usePrincipalExperimenterFilter,
   useTextFilter,
 } from './textColumnFilter.component';
-import { Select } from '@mui/material';
 import { act } from 'react-dom/test-utils';
 import { usePushFilter, usePushFilters } from '../../api';
+import { render, screen } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('../../api');
 jest.useFakeTimers('modern');
 const DEBOUNCE_DELAY = 250;
 
 describe('Text filter component', () => {
+  let user: UserEvent;
+
+  beforeEach(() => {
+    user = userEvent.setup({ delay: null });
+  });
+
   it('renders correctly', () => {
-    const wrapper = shallow(
+    const { asFragment } = render(
       <TextColumnFilter
         value={{ value: 'test value', type: 'include' }}
         label="test"
         onChange={jest.fn()}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('calls the onChange method once when input is typed while include filter type is selected and calls again by debounced function after timeout', () => {
+  it('calls the onChange method once when input is typed while include filter type is selected and calls again by debounced function after timeout', async () => {
     const onChange = jest.fn();
 
-    const wrapper = mount(
+    render(
       <TextColumnFilter
         value={{ value: 'test', type: 'include' }}
         label="test"
@@ -37,10 +44,13 @@ describe('Text filter component', () => {
     );
 
     // We simulate a change in the input from 'test' to 'test-again'.
-    const textFilterInput = wrapper.find('input').first();
+    const textFilterInput = await screen.findByRole('textbox', {
+      name: 'Filter by test',
+      hidden: true,
+    });
 
-    textFilterInput.instance().value = 'test-again';
-    textFilterInput.simulate('change');
+    await user.clear(textFilterInput);
+    await user.type(textFilterInput, 'test-again');
 
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
 
@@ -51,10 +61,10 @@ describe('Text filter component', () => {
     });
   });
 
-  it('calls the onChange method once when input is typed while exclude filter type is selected and calls again by debounced function after timeout', () => {
+  it('calls the onChange method once when input is typed while exclude filter type is selected and calls again by debounced function after timeout', async () => {
     const onChange = jest.fn();
 
-    const wrapper = mount(
+    render(
       <TextColumnFilter
         value={{ value: 'test', type: 'exclude' }}
         label="test"
@@ -63,10 +73,13 @@ describe('Text filter component', () => {
     );
 
     // We simulate a change in the input from 'test' to 'test-again'.
-    const textFilterInput = wrapper.find('input').first();
+    const textFilterInput = await screen.findByRole('textbox', {
+      name: 'Filter by test',
+      hidden: true,
+    });
 
-    textFilterInput.instance().value = 'test-again';
-    textFilterInput.simulate('change');
+    await user.clear(textFilterInput);
+    await user.type(textFilterInput, 'test-again');
 
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
 
@@ -77,10 +90,10 @@ describe('Text filter component', () => {
     });
   });
 
-  it('calls the onChange method once when include filter type is selected while there is input', () => {
+  it('calls the onChange method once when include filter type is selected while there is input', async () => {
     const onChange = jest.fn();
 
-    const wrapper = mount(
+    render(
       <TextColumnFilter
         value={{ value: 'test', type: 'exclude' }}
         label="test"
@@ -89,11 +102,13 @@ describe('Text filter component', () => {
     );
 
     // We simulate a change in the select from 'exclude' to 'include'.
-    const textFilterSelect = wrapper.find(Select).at(0);
-
-    act(() => {
-      textFilterSelect.props().onChange({ target: { value: 'include' } });
-    });
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'include or exclude',
+        hidden: true,
+      })
+    );
+    await user.click(await screen.findByText('Include'));
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith({
@@ -102,10 +117,10 @@ describe('Text filter component', () => {
     });
   });
 
-  it('calls the onChange method once when exclude filter type is selected while there is input', () => {
+  it('calls the onChange method once when exclude filter type is selected while there is input', async () => {
     const onChange = jest.fn();
 
-    const wrapper = mount(
+    render(
       <TextColumnFilter
         value={{ value: 'test', type: 'include' }}
         label="test"
@@ -114,11 +129,13 @@ describe('Text filter component', () => {
     );
 
     // We simulate a change in the select from 'include' to 'exclude'.
-    const textFilterSelect = wrapper.find(Select).at(0);
-
-    act(() => {
-      textFilterSelect.props().onChange({ target: { value: 'exclude' } });
-    });
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'include or exclude',
+        hidden: true,
+      })
+    );
+    await user.click(await screen.findByText('Exclude'));
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith({
@@ -127,10 +144,10 @@ describe('Text filter component', () => {
     });
   });
 
-  it('calls the onChange method once when input is cleared and calls again by debounced function after timeout', () => {
+  it('calls the onChange method once when input is cleared and calls again by debounced function after timeout', async () => {
     const onChange = jest.fn();
 
-    const wrapper = mount(
+    render(
       <TextColumnFilter
         value={{ value: 'test', type: 'include' }}
         label="test"
@@ -139,20 +156,22 @@ describe('Text filter component', () => {
     );
 
     // We simulate a change in the input from 'test' to ''.
-    const textFilterInput = wrapper.find('input').first();
-
-    textFilterInput.instance().value = '';
-    textFilterInput.simulate('change');
+    await user.clear(
+      await screen.findByRole('textbox', {
+        name: 'Filter by test',
+        hidden: true,
+      })
+    );
 
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith(null);
   });
 
-  it('does not call the onChange method when filter type is selected while input is empty', () => {
+  it('does not call the onChange method when filter type is selected while input is empty', async () => {
     const onChange = jest.fn();
 
-    const wrapper = mount(
+    render(
       <TextColumnFilter
         value={{ value: '', type: 'exclude' }}
         label="test"
@@ -161,40 +180,39 @@ describe('Text filter component', () => {
     );
 
     // We simulate a change in the select from 'exclude' to 'include'.
-    const textFilterSelect = wrapper.find(Select).at(0);
-
-    act(() => {
-      textFilterSelect.props().onChange({ target: { value: 'include' } });
-    });
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'include or exclude',
+        hidden: true,
+      })
+    );
+    await user.click(await screen.findByText('Include'));
 
     expect(onChange).toHaveBeenCalledTimes(0);
   });
 
-  it('updates the input value when the value prop changes', () => {
+  it('updates the input value when the value prop changes', async () => {
     const baseProps = { label: 'test', onChange: jest.fn(), value: undefined };
 
-    const wrapper = mount(<TextColumnFilter {...baseProps} />);
+    const { rerender } = render(<TextColumnFilter {...baseProps} />);
 
-    wrapper.setProps({
-      ...baseProps,
-      value: { value: 'changed via props', type: 'include' },
-    });
-    wrapper.update();
-
-    expect(wrapper.find('input#test-filter').prop('value')).toEqual(
-      'changed via props'
+    rerender(
+      <TextColumnFilter
+        {...baseProps}
+        value={{ value: 'changed via props', type: 'include' }}
+      />
     );
 
-    wrapper.setProps({
-      ...baseProps,
-      value: undefined,
-    });
-    wrapper.update();
+    expect(
+      await screen.findByDisplayValue('changed via props')
+    ).toBeInTheDocument();
 
-    expect(wrapper.find('input#test-filter').prop('value')).toEqual('');
+    rerender(<TextColumnFilter {...baseProps} value={undefined} />);
+
+    expect(await screen.findByDisplayValue('')).toBeInTheDocument();
   });
 
-  it('useTextFilter hook returns a function which can generate a working text filter', () => {
+  it('useTextFilter hook returns a function which can generate a working text filter', async () => {
     const pushFilter = jest.fn();
     (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
 
@@ -205,15 +223,17 @@ describe('Text filter component', () => {
       textFilter = result.current('Name', 'name');
     });
 
-    const shallowWrapper = shallow(textFilter);
-    expect(shallowWrapper).toMatchSnapshot();
+    const { asFragment } = render(textFilter);
+    expect(asFragment()).toMatchSnapshot();
 
-    const mountWrapper = mount(textFilter);
     // We simulate a change in the input to 'test'.
-    const textFilterInput = mountWrapper.find('input').first();
+    const textFilterInput = await screen.findByRole('textbox', {
+      name: 'Filter by Name',
+      hidden: true,
+    });
 
-    textFilterInput.instance().value = 'test';
-    textFilterInput.simulate('change');
+    await user.clear(textFilterInput);
+    await user.type(textFilterInput, 'test');
 
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
 
@@ -223,8 +243,7 @@ describe('Text filter component', () => {
       type: 'include',
     });
 
-    textFilterInput.instance().value = '';
-    textFilterInput.simulate('change');
+    await user.clear(textFilterInput);
 
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
 
@@ -232,7 +251,7 @@ describe('Text filter component', () => {
     expect(pushFilter).toHaveBeenLastCalledWith('name', null);
   });
 
-  it('usePrincipalExperimenterFilter hook returns a function which can generate a working PI filter', () => {
+  it('usePrincipalExperimenterFilter hook returns a function which can generate a working PI filter', async () => {
     const pushFilters = jest.fn();
     (usePushFilters as jest.Mock).mockImplementation(() => pushFilters);
 
@@ -246,15 +265,17 @@ describe('Text filter component', () => {
       );
     });
 
-    const shallowWrapper = shallow(piFilter);
-    expect(shallowWrapper).toMatchSnapshot();
+    const { asFragment } = render(piFilter);
+    expect(asFragment()).toMatchSnapshot();
 
-    const mountWrapper = mount(piFilter);
     // We simulate a change in the input to 'test'.
-    const textFilterInput = mountWrapper.find('input').first();
+    const textFilterInput = await screen.findByRole('textbox', {
+      name: 'Filter by Principal Investigator',
+      hidden: true,
+    });
 
-    textFilterInput.instance().value = 'test';
-    textFilterInput.simulate('change');
+    await user.clear(textFilterInput);
+    await user.type(textFilterInput, 'test');
 
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
 
@@ -276,8 +297,7 @@ describe('Text filter component', () => {
       },
     ]);
 
-    textFilterInput.instance().value = '';
-    textFilterInput.simulate('change');
+    await user.clear(textFilterInput);
 
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
 
