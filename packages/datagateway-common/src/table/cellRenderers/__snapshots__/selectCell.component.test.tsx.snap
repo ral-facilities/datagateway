@@ -1,175 +1,162 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Select cell component renders correctly when checked 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  padding="checkbox"
-  size="small"
-  variant="body"
->
-  <StyledTooltip
-    placement="right"
-    title=""
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
   >
-    <span>
-      <ForwardRef(Checkbox)
-        checked={true}
-        checkedIcon={
-          <Memo
-            fontSize="small"
+    <span
+      aria-label=""
+      class=""
+      data-mui-internal-clone-element="true"
+    >
+      <span
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        style="padding: inherit;"
+      >
+        <input
+          aria-label="select row 2"
+          checked=""
+          class="PrivateSwitchBase-input css-1m9pwf3"
+          data-indeterminate="false"
+          type="checkbox"
+        />
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+          data-testid="CheckBoxIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
           />
-        }
-        className="tour-dataview-add-to-cart"
-        disabled={false}
-        icon={
-          <Memo
-            fontSize="small"
-          />
-        }
-        inputProps={
-          Object {
-            "aria-label": "select row 2",
-          }
-        }
-        onClick={[Function]}
-        size="small"
-        style={
-          Object {
-            "padding": "inherit",
-          }
-        }
-      />
+        </svg>
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </span>
     </span>
-  </StyledTooltip>
-</ForwardRef(TableCell)>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`Select cell component renders correctly when selectedRows is undefined 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  padding="checkbox"
-  size="small"
-  variant="body"
->
-  <StyledTooltip
-    placement="right"
-    title="buttons.cart_loading_failed_tooltip"
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
   >
-    <span>
-      <ForwardRef(Checkbox)
-        checkedIcon={
-          <Memo
-            fontSize="small"
+    <span
+      aria-label="buttons.cart_loading_failed_tooltip"
+      class=""
+      data-mui-internal-clone-element="true"
+    >
+      <span
+        aria-disabled="true"
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        style="padding: inherit;"
+        tabindex="-1"
+      >
+        <input
+          aria-label="select row 2"
+          class="PrivateSwitchBase-input css-1m9pwf3"
+          data-indeterminate="false"
+          disabled=""
+          type="checkbox"
+        />
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+          data-testid="CheckBoxOutlineBlankIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
           />
-        }
-        className="tour-dataview-add-to-cart"
-        disabled={true}
-        icon={
-          <Memo
-            fontSize="small"
-          />
-        }
-        inputProps={
-          Object {
-            "aria-label": "select row 2",
-          }
-        }
-        onClick={[Function]}
-        size="small"
-        style={
-          Object {
-            "padding": "inherit",
-          }
-        }
-      />
+        </svg>
+      </span>
     </span>
-  </StyledTooltip>
-</ForwardRef(TableCell)>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`Select cell component renders correctly when selectedRows loading is true 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  padding="checkbox"
-  size="small"
-  variant="body"
->
-  <StyledTooltip
-    placement="right"
-    title="buttons.cart_loading_tooltip"
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
   >
-    <span>
-      <ForwardRef(Checkbox)
-        checkedIcon={
-          <Memo
-            fontSize="small"
+    <span
+      aria-label="buttons.cart_loading_tooltip"
+      class=""
+      data-mui-internal-clone-element="true"
+    >
+      <span
+        aria-disabled="true"
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        style="padding: inherit;"
+        tabindex="-1"
+      >
+        <input
+          aria-label="select row 2"
+          class="PrivateSwitchBase-input css-1m9pwf3"
+          data-indeterminate="false"
+          disabled=""
+          type="checkbox"
+        />
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+          data-testid="CheckBoxOutlineBlankIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
           />
-        }
-        className="tour-dataview-add-to-cart"
-        disabled={true}
-        icon={
-          <Memo
-            fontSize="small"
-          />
-        }
-        inputProps={
-          Object {
-            "aria-label": "select row 2",
-          }
-        }
-        onClick={[Function]}
-        size="small"
-        style={
-          Object {
-            "padding": "inherit",
-          }
-        }
-      />
+        </svg>
+      </span>
     </span>
-  </StyledTooltip>
-</ForwardRef(TableCell)>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`Select cell component renders correctly when unchecked 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  padding="checkbox"
-  size="small"
-  variant="body"
->
-  <StyledTooltip
-    placement="right"
-    title=""
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
   >
-    <span>
-      <ForwardRef(Checkbox)
-        checked={false}
-        checkedIcon={
-          <Memo
-            fontSize="small"
+    <span
+      aria-label=""
+      class=""
+      data-mui-internal-clone-element="true"
+    >
+      <span
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        style="padding: inherit;"
+      >
+        <input
+          aria-label="select row 2"
+          class="PrivateSwitchBase-input css-1m9pwf3"
+          data-indeterminate="false"
+          type="checkbox"
+        />
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+          data-testid="CheckBoxOutlineBlankIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
           />
-        }
-        className="tour-dataview-add-to-cart"
-        disabled={false}
-        icon={
-          <Memo
-            fontSize="small"
-          />
-        }
-        inputProps={
-          Object {
-            "aria-label": "select row 2",
-          }
-        }
-        onClick={[Function]}
-        size="small"
-        style={
-          Object {
-            "padding": "inherit",
-          }
-        }
-      />
+        </svg>
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </span>
     </span>
-  </StyledTooltip>
-</ForwardRef(TableCell)>
+  </div>
+</DocumentFragment>
 `;
