@@ -1,7 +1,7 @@
-import React from 'react';
-import { shallow } from 'enzyme';
+import * as React from 'react';
 import DetailsPanelRow from './detailsPanelRow.component';
 import { DetailsPanelProps } from '../table.component';
+import { render } from '@testing-library/react';
 
 describe('Details panel row component', () => {
   const detailsPanelRowProps = {
@@ -22,7 +22,9 @@ describe('Details panel row component', () => {
   };
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DetailsPanelRow {...detailsPanelRowProps} />);
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = render(
+      <DetailsPanelRow {...detailsPanelRowProps} />
+    );
+    expect(asFragment()).toMatchSnapshot();
   });
 });
