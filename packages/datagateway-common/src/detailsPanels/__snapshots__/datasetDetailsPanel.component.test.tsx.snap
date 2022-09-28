@@ -1,36 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Dataset details panel component renders correctly 1`] = `
-<Styled(ForwardRef(Grid))
-  container={true}
-  direction="column"
-  id="details-panel"
->
-  <ForwardRef(Grid)
-    item={true}
-    xs={true}
+<DocumentFragment>
+  <div
+    class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+    id="details-panel"
   >
-    <ForwardRef(Typography)
-      variant="h6"
+    <div
+      class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
     >
-      <b>
-        Test 1
-      </b>
-    </ForwardRef(Typography)>
-    <Styled(ForwardRef(Divider)) />
-  </ForwardRef(Grid)>
-  <ForwardRef(Grid)
-    item={true}
-    xs={true}
-  >
-    <ForwardRef(Typography)
-      variant="overline"
+      <h6
+        class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+      >
+        <b>
+          Test 1
+        </b>
+      </h6>
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+      />
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
     >
-      datasets.description
-    </ForwardRef(Typography)>
-    <ForwardRef(Typography)>
-      <b />
-    </ForwardRef(Typography)>
-  </ForwardRef(Grid)>
-</Styled(ForwardRef(Grid))>
+      <span
+        class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+      >
+        datasets.description
+      </span>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      >
+        <b />
+      </p>
+    </div>
+  </div>
+</DocumentFragment>
 `;
