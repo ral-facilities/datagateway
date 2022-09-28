@@ -3,178 +3,42 @@
 exports[`Preloader component does not render when the site is not loading 1`] = `<div />`;
 
 exports[`Preloader component renders when the site is loading 1`] = `
-<div
-  role="progressbar"
->
-  <ForwardRef(Box)
-    sx={
-      Object {
-        "alignItems": "center",
-        "backgroundColor": "background.default",
-        "display": "flex",
-        "flexDirection": "column",
-        "height": "100%",
-        "justifyContent": "center",
-        "width": "100%",
-        "zIndex": 1000,
-      }
-    }
+<DocumentFragment>
+  <div
+    role="progressbar"
   >
     <div
-      style={
-        Object {
-          "boxSizing": "border-box",
-          "padding": "10px 0",
-        }
-      }
+      class="MuiBox-root css-1axvgr5"
     >
       <div
-        style={
-          Object {
-            "animation": "rotate 10s infinite linear",
-            "display": "block",
-            "height": 230,
-            "margin": "auto",
-            "width": 230,
-          }
-        }
+        style="box-sizing: border-box; padding: 10px 0px;"
       >
-        <i
-          style={
-            Object {
-              "animationDuration": "3s",
-              "animationIterationCount": "infinite",
-              "animationName": "rotate",
-              "animationTimingFunction": "cubic-bezier(.09, 0, 0, .03)",
-              "border": "solid 8px transparent",
-              "borderBottom": "none",
-              "borderColor": "#8C4799",
-              "borderTopLeftRadius": 140,
-              "borderTopRightRadius": 140,
-              "boxSizing": "border-box",
-              "display": "inline-block",
-              "height": 70,
-              "left": "50%",
-              "marginLeft": -70,
-              "marginTop": -70,
-              "position": "absolute",
-              "top": "50%",
-              "transformOrigin": "50% 100% 0",
-              "width": 140,
-            }
-          }
-        />
-        <i
-          style={
-            Object {
-              "animationDuration": "3s",
-              "animationIterationCount": "infinite",
-              "animationName": "rotate",
-              "animationTimingFunction": "cubic-bezier(.09, 0.3, 0.12, .03)",
-              "border": "solid 8px transparent",
-              "borderBottom": "none",
-              "borderColor": "#1D4F91",
-              "borderTopLeftRadius": 148,
-              "borderTopRightRadius": 148,
-              "boxSizing": "border-box",
-              "display": "inline-block",
-              "height": 79,
-              "left": "50%",
-              "marginLeft": -79,
-              "marginTop": -79,
-              "position": "absolute",
-              "top": "50%",
-              "transformOrigin": "50% 100% 0",
-              "width": 158,
-            }
-          }
-        />
-        <i
-          style={
-            Object {
-              "animationDuration": "3s",
-              "animationIterationCount": "infinite",
-              "animationName": "rotate",
-              "animationTimingFunction": "cubic-bezier(.09, 0.6, 0.24, .03)",
-              "border": "solid 8px transparent",
-              "borderBottom": "none",
-              "borderColor": "#C34613",
-              "borderTopLeftRadius": 156,
-              "borderTopRightRadius": 156,
-              "boxSizing": "border-box",
-              "display": "inline-block",
-              "height": 88,
-              "left": "50%",
-              "marginLeft": -88,
-              "marginTop": -88,
-              "position": "absolute",
-              "top": "50%",
-              "transformOrigin": "50% 100% 0",
-              "width": 176,
-            }
-          }
-        />
-        <i
-          style={
-            Object {
-              "animationDuration": "3s",
-              "animationIterationCount": "infinite",
-              "animationName": "rotate",
-              "animationTimingFunction": "cubic-bezier(.09, 0.8999999999999999, 0.36, .03)",
-              "border": "solid 8px transparent",
-              "borderBottom": "none",
-              "borderColor": "#008275",
-              "borderTopLeftRadius": 164,
-              "borderTopRightRadius": 164,
-              "boxSizing": "border-box",
-              "display": "inline-block",
-              "height": 97,
-              "left": "50%",
-              "marginLeft": -97,
-              "marginTop": -97,
-              "position": "absolute",
-              "top": "50%",
-              "transformOrigin": "50% 100% 0",
-              "width": 194,
-            }
-          }
-        />
-        <i
-          style={
-            Object {
-              "animationDuration": "3s",
-              "animationIterationCount": "infinite",
-              "animationName": "rotate",
-              "animationTimingFunction": "cubic-bezier(.09, 1.2, 0.48, .03)",
-              "border": "solid 8px transparent",
-              "borderBottom": "none",
-              "borderColor": "#63666A",
-              "borderTopLeftRadius": 172,
-              "borderTopRightRadius": 172,
-              "boxSizing": "border-box",
-              "display": "inline-block",
-              "height": 106,
-              "left": "50%",
-              "marginLeft": -106,
-              "marginTop": -106,
-              "position": "absolute",
-              "top": "50%",
-              "transformOrigin": "50% 100% 0",
-              "width": 212,
-            }
-          }
-        />
+        <div
+          style="display: block; margin: auto; width: 230px; height: 230px; animation: rotate 10s infinite linear;"
+        >
+          <i
+            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 140px; border-top-right-radius: 140px; border-color: #8c4799; height: 70px; width: 140px; margin-top: -70px; margin-left: -70px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 0, 0, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+          />
+          <i
+            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 148px; border-top-right-radius: 148px; border-color: #1d4f91; height: 79px; width: 158px; margin-top: -79px; margin-left: -79px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 0.3, 0.12, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+          />
+          <i
+            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 156px; border-top-right-radius: 156px; border-color: #c34613; height: 88px; width: 176px; margin-top: -88px; margin-left: -88px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 0.6, 0.24, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+          />
+          <i
+            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 164px; border-top-right-radius: 164px; border-color: #008275; height: 97px; width: 194px; margin-top: -97px; margin-left: -97px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 0.8999999999999999, 0.36, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+          />
+          <i
+            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 172px; border-top-right-radius: 172px; border-color: #63666a; height: 106px; width: 212px; margin-top: -106px; margin-left: -106px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 1.2, 0.48, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+          />
+        </div>
+      </div>
+      <div
+        class="MuiBox-root css-1jolfkj"
+      >
+        Loading...
       </div>
     </div>
-    <ForwardRef(Box)
-      sx={
-        Object {
-          "color": "text.primary",
-        }
-      }
-    >
-      Loading...
-    </ForwardRef(Box)>
-  </ForwardRef(Box)>
-</div>
+  </div>
+</DocumentFragment>
 `;
