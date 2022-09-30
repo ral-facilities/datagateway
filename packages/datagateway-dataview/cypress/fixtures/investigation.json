@@ -1,0 +1,19 @@
+[
+  {
+    "title": "CAL_MERLIN_Quiet Counts (Internal Clock)",
+    "name": "CAL_MERLIN_07/09/2020 12:42:47",
+    "fileSize": 67585826264,
+    "summary": null,
+    "releaseDate": "2025-07-25 11:58:27.500000+01:00",
+    "visitId": "1",
+    "startDate": "2020-09-04 13:26:02+01:00",
+    "endDate": "2022-07-25 11:58:27.500000+01:00",
+    "createId": "simple/isis-icat-ingestion",
+    "modTime": "2022-07-25 13:07:59.326000+01:00",
+    "id": 97,
+    "modId": "simple/isis-icat-ingestion",
+    "fileCount": 2100,
+    "doi": null,
+    "createTime": "2022-07-25 11:58:27.697000+01:00"
+  }
+]

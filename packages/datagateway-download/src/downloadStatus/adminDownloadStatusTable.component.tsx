@@ -64,9 +64,6 @@ const AdminDownloadStatusTable: React.FC = () => {
       | { startDate?: string; endDate?: string };
   }>({});
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
-  const [lastChecked, setLastChecked] = React.useState(
-    new Date().toLocaleString()
-  );
   const [t] = useTranslation();
   const { formatDownload } = useDownloadFormatter();
   const { downloadStatusLabels: downloadStatuses } = useDownloadFormatter();
@@ -126,6 +123,7 @@ const AdminDownloadStatusTable: React.FC = () => {
     isRefetching,
     fetchNextPage,
     refetch: refetchDownloads,
+    dataUpdatedAt,
   } = useAdminDownloads({
     initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
   });
@@ -155,12 +153,6 @@ const AdminDownloadStatusTable: React.FC = () => {
       refreshTable();
     }
   }, [isFetched, refreshDownloads, refreshTable]);
-
-  React.useEffect(() => {
-    if (isFetched) {
-      setLastChecked(new Date().toLocaleString());
-    }
-  }, [isFetched]);
 
   React.useEffect(() => {
     // useEffect is always called on first render
@@ -268,7 +260,10 @@ const AdminDownloadStatusTable: React.FC = () => {
 
             {!refreshDownloads ? (
               <p style={{ paddingLeft: '10px ' }}>
-                <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
+                <b>{t('downloadTab.last_checked')}: </b>{' '}
+                {dataUpdatedAt > 0
+                  ? new Date(dataUpdatedAt).toLocaleString()
+                  : ''}
               </p>
             ) : (
               <p style={{ paddingLeft: '20px ' }}>
@@ -358,7 +353,9 @@ const AdminDownloadStatusTable: React.FC = () => {
                       dataKey: 'createdAt',
                       cellContentRenderer: (props: TableCellProps) => {
                         if (props.cellData) {
-                          const date = toDate(props.cellData);
+                          const date = toDate(
+                            props.cellData.replace(/\[.*]/, '')
+                          );
                           return format(date, 'yyyy-MM-dd HH:mm:ss');
                         }
                       },

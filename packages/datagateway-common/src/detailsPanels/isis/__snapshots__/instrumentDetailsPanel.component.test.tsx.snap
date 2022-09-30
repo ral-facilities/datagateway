@@ -1,95 +1,458 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Instrument details panel component gracefully handles InstrumentScientists without Users 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "description": "An instrument purely for testing",
-    "fullName": "Test Instrument",
-    "id": 1,
-    "instrumentScientists": Array [
-      Object {
-        "id": 4,
-      },
-    ],
-    "name": "Test",
-    "type": "testing",
-    "url": "www.example.com",
-  },
-}
+exports[`Instrument details panel component should gracefully handle InstrumentScientists without Users 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="instruments.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="instrument-details-panel"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="instrument-details-tab"
+            role="tab"
+            tabindex="0"
+            type="button"
+          >
+            instruments.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="instrument-users-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="instrument-users-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            instruments.details.instrument_scientists.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="instrument-details-tab"
+      hidden=""
+      id="instrument-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test Instrument
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            instruments.details.description
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              An instrument purely for testing
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            instruments.details.type
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              testing
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            instruments.details.url
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+                href="www.example.com"
+              >
+                www.example.com
+              </a>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="instrument-users-tab"
+      hidden=""
+      id="instrument-users-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+        >
+          instruments.details.instrument_scientists.name
+        </span>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
-exports[`Instrument details panel component renders correctly 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "description": "An instrument purely for testing",
-    "fullName": "Test Instrument",
-    "id": 1,
-    "name": "Test",
-    "type": "testing",
-    "url": "www.example.com",
-  },
-}
+exports[`Instrument details panel component should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="instruments.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="instrument-details-panel"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="instrument-details-tab"
+            role="tab"
+            tabindex="0"
+            type="button"
+          >
+            instruments.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="instrument-details-tab"
+      hidden=""
+      id="instrument-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test Instrument
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            instruments.details.description
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              An instrument purely for testing
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            instruments.details.type
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              testing
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            instruments.details.url
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+                href="www.example.com"
+              >
+                www.example.com
+              </a>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
-exports[`Instrument details panel component renders users tab when present in the data 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "description": "An instrument purely for testing",
-    "fullName": "Test Instrument",
-    "id": 1,
-    "instrumentScientists": Array [
-      Object {
-        "id": 4,
-        "user": Object {
-          "fullName": "Louise Davies",
-          "id": 5,
-          "name": "Louise",
-        },
-      },
-      Object {
-        "id": 9,
-        "user": Object {
-          "id": 10,
-          "name": "Louise",
-        },
-      },
-    ],
-    "name": "Test",
-    "type": "testing",
-    "url": "www.example.com",
-  },
-}
+exports[`Instrument details panel component should render users tab when present in the data 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="instruments.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="instrument-details-panel"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="instrument-details-tab"
+            role="tab"
+            tabindex="0"
+            type="button"
+          >
+            instruments.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="instrument-users-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="instrument-users-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            instruments.details.instrument_scientists.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="instrument-details-tab"
+      hidden=""
+      id="instrument-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test Instrument
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            instruments.details.description
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              An instrument purely for testing
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            instruments.details.type
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              testing
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            instruments.details.url
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+                href="www.example.com"
+              >
+                www.example.com
+              </a>
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="instrument-users-tab"
+      hidden=""
+      id="instrument-users-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+        >
+          instruments.details.instrument_scientists.name
+        </span>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Louise Davies
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Louise
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;

@@ -108,6 +108,7 @@ document.addEventListener(MicroFrontendId, (e) => {
 
 class App extends React.Component<unknown, { hasError: boolean }> {
   store: Store;
+
   public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };

@@ -9,8 +9,15 @@ import {
   styled,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { Entity, Instrument } from '../../app.types';
-import { useInstrumentDetails } from '../../api/instruments';
+import { useInstrumentDetails } from '../../api';
+import type { IsisInstrumentDetailsPanelChangeTabPayload } from '../../state/actions/actions.types';
+import { IsisInstrumentDetailsPanelChangeTabType } from '../../state/actions/actions.types';
+import type { StateType } from '../../state/app.types';
+import type { Action } from '../../state/reducers/createReducer';
+
+const DEFAULT_TAB: IsisInstrumentDetailsPanelTab = 'details';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -25,19 +32,56 @@ interface InstrumentDetailsPanelProps {
   detailsPanelResize?: () => void;
 }
 
+/**
+ * Available tabs for the ISIS instrument details panel.
+ */
+export type IsisInstrumentDetailsPanelTab = 'details' | 'users';
+
 const InstrumentDetailsPanel = (
   props: InstrumentDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize } = props;
-  const [value, setValue] = React.useState<'details' | 'users'>('details');
-  const [t] = useTranslation();
 
+  const [t] = useTranslation();
   const { data } = useInstrumentDetails(rowData.id);
   const instrumentData: Instrument = { ...data, ...(rowData as Instrument) };
+  const selectedTab = useSelector<
+    StateType,
+    IsisInstrumentDetailsPanelTab | undefined
+  >(
+    (state) =>
+      data && state.dgcommon.isisInstrumentDetailsPanel[data.id]?.selectedTab
+  );
+  const dispatch = useDispatch();
+
+  const changeTab = React.useCallback(
+    (newTab: IsisInstrumentDetailsPanelTab) => {
+      const id = data?.id;
+      if (id) {
+        dispatch<Action>({
+          type: IsisInstrumentDetailsPanelChangeTabType,
+          payload: {
+            newTab,
+            instrumentId: id,
+          } as IsisInstrumentDetailsPanelChangeTabPayload,
+        });
+      }
+    },
+    [data?.id, dispatch]
+  );
 
   React.useLayoutEffect(() => {
-    if (detailsPanelResize) detailsPanelResize();
-  }, [value, detailsPanelResize]);
+    if (detailsPanelResize && selectedTab) detailsPanelResize();
+  }, [selectedTab, detailsPanelResize]);
+
+  React.useEffect(() => {
+    if (data && !selectedTab) {
+      // register the selected tab for this instrument's details panel
+      // for the first time.
+      // go to the default tab on first render
+      changeTab(DEFAULT_TAB);
+    }
+  }, [data, selectedTab, changeTab]);
 
   return (
     <div id="details-panel" style={{ minWidth: 0 }}>
@@ -46,8 +90,8 @@ const InstrumentDetailsPanel = (
         textColor="secondary"
         indicatorColor="secondary"
         scrollButtons="auto"
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={selectedTab ?? DEFAULT_TAB}
+        onChange={(_, newValue) => changeTab(newValue)}
         aria-label={t('instruments.details.tabs_label')}
       >
         <Tab
@@ -69,7 +113,7 @@ const InstrumentDetailsPanel = (
         id="instrument-details-panel"
         aria-labelledby="instrument-details-tab"
         role="tabpanel"
-        hidden={value !== 'details'}
+        hidden={selectedTab !== 'details'}
       >
         <StyledGrid container direction="column">
           <Grid item xs>
@@ -124,7 +168,7 @@ const InstrumentDetailsPanel = (
           id="instrument-users-panel"
           aria-labelledby="instrument-users-tab"
           role="tabpanel"
-          hidden={value !== 'users'}
+          hidden={selectedTab !== 'users'}
         >
           <StyledGrid container direction="column">
             <Typography variant="overline">

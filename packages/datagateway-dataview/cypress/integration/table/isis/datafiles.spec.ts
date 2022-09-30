@@ -228,7 +228,7 @@ describe('ISIS - Datafiles Table', () => {
         .then((window) => {
           const windowWidth = window.innerWidth;
           // Account for select, details and actions column widths
-          columnWidth = (windowWidth - 40 - 40 - 70) / 4;
+          columnWidth = (windowWidth - 40 - 40 - 96) / 4;
         })
         .then(() => expect(columnWidth).to.not.equal(0));
 

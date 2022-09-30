@@ -3,7 +3,7 @@ import {
   DownloadCartItem,
   FormattedDownload,
 } from 'datagateway-common';
-import { DownloadSettings } from './ConfigProvider';
+import type { DownloadSettings } from './ConfigProvider';
 
 export const mockDownloadItems: Download[] = [
   {

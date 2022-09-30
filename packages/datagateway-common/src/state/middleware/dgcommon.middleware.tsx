@@ -55,18 +55,18 @@ export const listenToMessages = (dispatch: Dispatch): void => {
   });
 };
 
-const DGCommonMiddleware: Middleware = (() => (next: Dispatch<AnyAction>) => (
-  action: AnyAction
-): AnyAction => {
-  if (action.payload && action.payload.broadcast) {
-    broadcastMessage(action);
-  }
-  if (action.type === '@@router/LOCATION_CHANGE') {
-    source.cancel('Operation cancelled by user navigation');
-    source = CancelToken.source();
-  }
+const DGCommonMiddleware: Middleware = (() =>
+  (next: Dispatch<AnyAction>) =>
+  (action: AnyAction): AnyAction => {
+    if (action.payload && action.payload.broadcast) {
+      broadcastMessage(action);
+    }
+    if (action.type === '@@router/LOCATION_CHANGE') {
+      source.cancel('Operation cancelled by user navigation');
+      source = CancelToken.source();
+    }
 
-  return next(action);
-}) as Middleware;
+    return next(action);
+  }) as Middleware;
 
 export default DGCommonMiddleware;
