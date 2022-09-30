@@ -10,6 +10,7 @@ describe('Download Status', () => {
   });
 
   beforeEach(() => {
+    cy.intercept('GET', '**/getPercentageComplete**');
     cy.intercept('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login();
 

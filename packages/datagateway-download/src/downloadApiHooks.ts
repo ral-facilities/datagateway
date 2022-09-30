@@ -1,9 +1,5 @@
 import { AxiosError } from 'axios';
-import type {
-  Download,
-  DownloadStatus,
-  FormattedDownload,
-} from 'datagateway-common';
+import type { Download, DownloadStatus } from 'datagateway-common';
 import {
   DownloadCartItem,
   fetchDownloadCart,
@@ -29,7 +25,11 @@ import {
   UseQueryResult,
 } from 'react-query';
 import { DownloadSettingsContext } from './ConfigProvider';
-import type { DownloadTypeStatus, SubmitCartZipType } from './downloadApi';
+import type {
+  DownloadProgress,
+  DownloadTypeStatus,
+  SubmitCartZipType,
+} from './downloadApi';
 import {
   adminDownloadDeleted,
   adminDownloadStatus,
@@ -40,12 +40,12 @@ import {
   getDownload,
   getDownloadTypeStatus,
   getIsTwoLevel,
+  getPercentageComplete,
   getSize,
   removeAllDownloadCartItems,
   removeFromCart,
   submitCart,
 } from './downloadApi';
-import useDownloadFormatter from './downloadStatus/hooks/useDownloadFormatter';
 
 /**
  * An enumeration of react query keys.
@@ -65,6 +65,11 @@ export enum QueryKey {
    * Key for querying the status of a particular download type
    */
   DOWNLOAD_TYPE_STATUS = 'download-type-status',
+
+  /**
+   * Key for querying the progress of a download.
+   */
+  DOWNLOAD_PROGRESS = 'download-progress',
 
   /**
    * Key for querying list of admin downloads
@@ -335,7 +340,7 @@ export const useDownload = <T = Download>({
     Download,
     AxiosError,
     T,
-    (number | QueryKey)[]
+    [QueryKey.DOWNLOAD, number]
   >): UseQueryResult<T, AxiosError> => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
@@ -360,13 +365,16 @@ export const useDownload = <T = Download>({
 /**
  * A React hook that fetches all downloads created by the user.
  */
-export const useDownloads = (): UseQueryResult<
-  FormattedDownload[],
-  AxiosError
-> => {
+export const useDownloads = <TData = Download[]>(
+  queryOptions?: UseQueryOptions<
+    Download[],
+    AxiosError,
+    TData,
+    QueryKey.DOWNLOADS
+  >
+): UseQueryResult<TData, AxiosError> => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
-  const { formatDownload } = useDownloadFormatter();
 
   return useQuery(
     QueryKey.DOWNLOADS,
@@ -376,11 +384,11 @@ export const useDownloads = (): UseQueryResult<
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
     {
-      select: (downloads) => downloads.map(formatDownload),
       onError: (error) => {
         handleICATError(error);
       },
       retry: retryICATErrors,
+      ...queryOptions,
     }
   );
 };
@@ -555,10 +563,9 @@ export const useAdminDownloads = ({
   initialQueryOffset,
 }: {
   initialQueryOffset: string;
-}): UseInfiniteQueryResult<FormattedDownload[], AxiosError> => {
+}): UseInfiniteQueryResult<Download[], AxiosError> => {
   // Load the download settings for use
   const downloadSettings = React.useContext(DownloadSettingsContext);
-  const { formatDownload } = useDownloadFormatter();
 
   return useInfiniteQuery(
     QueryKey.ADMIN_DOWNLOADS,
@@ -571,11 +578,6 @@ export const useAdminDownloads = ({
         pageParam
       ),
     {
-      select: ({ pages, pageParams }) => ({
-        pageParams,
-        pages: pages.map((page) => page.map(formatDownload)),
-      }),
-
       onError: (error) => {
         handleICATError(error);
       },
@@ -733,6 +735,40 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
       onSettled: () => {
         queryClient.invalidateQueries(QueryKey.ADMIN_DOWNLOADS);
       },
+    }
+  );
+};
+
+/**
+ * Queries the progress of a {@link Download}.
+ * @param download The {@link Download} that this query should query the restore progress of.
+ * @param queryOptions Optional `useQuery` option override.
+ */
+export const useDownloadPercentageComplete = <T = DownloadProgress>({
+  download,
+  ...queryOptions
+}: { download: Download } & UseQueryOptions<
+  DownloadProgress,
+  AxiosError,
+  T,
+  string[]
+>): UseQueryResult<T, AxiosError> => {
+  const { accessMethods } = React.useContext(DownloadSettingsContext);
+  const preparedId = download.preparedId;
+  const idsUrl = accessMethods[download.transport]?.idsUrl;
+
+  return useQuery(
+    [QueryKey.DOWNLOAD_PROGRESS, preparedId],
+    () =>
+      getPercentageComplete({
+        preparedId: preparedId,
+        settings: { idsUrl: idsUrl ?? '' },
+      }),
+    {
+      onError: (error) => {
+        handleICATError(error, false);
+      },
+      ...queryOptions,
     }
   );
 };

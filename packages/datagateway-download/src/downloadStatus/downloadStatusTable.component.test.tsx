@@ -1,110 +1,23 @@
 import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserEvent } from '@testing-library/user-event/dist/types/setup';
-import type { Download } from 'datagateway-common';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { downloadDeleted, fetchDownloads, getDataUrl } from '../downloadApi';
+import {
+  downloadDeleted,
+  fetchDownloads,
+  getDataUrl,
+  getPercentageComplete,
+} from '../downloadApi';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../setupTests';
 import DownloadStatusTable from './downloadStatusTable.component';
+import { mockDownloadItems, mockedSettings } from '../testData';
+import { DownloadSettingsContext } from '../ConfigProvider';
 
 jest.mock('../downloadApi');
-
-const downloadItems: Download[] = [
-  {
-    createdAt: '2020-02-25T15:05:29Z',
-    downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
-    email: 'test1@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-1',
-    fullName: 'Person 1',
-    id: 1,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 1000,
-    status: 'COMPLETE',
-    transport: 'https',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-26T15:05:35Z',
-    downloadItems: [{ entityId: 2, entityType: 'investigation', id: 2 }],
-    email: 'test2@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-2',
-    fullName: 'Person 2',
-    id: 2,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 2000,
-    status: 'PREPARING',
-    transport: 'globus',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-27T15:57:20Z',
-    downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
-    email: 'test3@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-3',
-    fullName: 'Person 3',
-    id: 3,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 3000,
-    status: 'RESTORING',
-    transport: 'https',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-02-28T15:57:28Z',
-    downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
-    email: 'test4@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-4',
-    fullName: 'Person 4',
-    id: 4,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 4000,
-    status: 'EXPIRED',
-    transport: 'globus',
-    userName: 'test user',
-  },
-  {
-    createdAt: '2020-03-01T15:57:28Z[UTC]',
-    downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
-    email: 'test5@email.com',
-    facilityName: 'LILS',
-    fileName: 'test-file-5',
-    fullName: 'Person 5',
-    id: 5,
-    isDeleted: false,
-    isEmailSent: true,
-    isTwoLevel: false,
-    preparedId: 'test-prepared-id',
-    sessionId: 'test-session-id',
-    size: 5000,
-    status: 'PAUSED',
-    transport: 'globus',
-    userName: 'test user',
-  },
-];
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -115,15 +28,17 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-const renderComponent = (): RenderResult =>
+const renderComponent = ({ settings = mockedSettings } = {}): RenderResult =>
   render(
-    <QueryClientProvider client={createTestQueryClient()}>
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastCheckedTimestamp={jest.fn()}
-      />
-    </QueryClientProvider>
+    <DownloadSettingsContext.Provider value={settings}>
+      <QueryClientProvider client={createTestQueryClient()}>
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastCheckedTimestamp={jest.fn()}
+        />
+      </QueryClientProvider>
+    </DownloadSettingsContext.Provider>
   );
 
 describe('Download Status Table', () => {
@@ -134,7 +49,7 @@ describe('Download Status Table', () => {
 
     (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
     (fetchDownloads as jest.Mock).mockImplementation(() =>
-      Promise.resolve(downloadItems)
+      Promise.resolve(mockDownloadItems)
     );
     (getDataUrl as jest.Mock).mockImplementation(() => '/getData');
   });
@@ -426,4 +341,32 @@ describe('Download Status Table', () => {
 
     cleanupDatePickerWorkaround();
   }, 10000);
+
+  it('should show download progress ui if enabled', async () => {
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(20);
+
+    renderComponent({
+      settings: {
+        ...mockedSettings,
+        uiFeatures: {
+          downloadProgress: true,
+        },
+      },
+    });
+
+    expect(
+      await screen.findByText('downloadStatus.progress')
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('20%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
+  });
 });
