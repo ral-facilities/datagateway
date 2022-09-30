@@ -1,10 +1,14 @@
-import { Link } from '@mui/material';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import React from 'react';
 import { Investigation } from '../app.types';
 import EntityCard from './entityCard.component';
+import { render, screen, waitFor } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 describe('Card', () => {
+  let user: UserEvent;
+
   const entity: Investigation = {
     id: 1,
     title: 'Title',
@@ -13,29 +17,34 @@ describe('Card', () => {
     visitId: '2',
   };
 
-  it('renders correctly', () => {
-    const wrapper = shallow(
-      <EntityCard entity={entity} title={{ dataKey: 'title' }} />
-    );
-    expect(wrapper.find('[aria-label="card-title"]').text()).toEqual('Title');
-    expect(wrapper).toMatchSnapshot();
+  beforeEach(() => {
+    user = userEvent.setup();
   });
 
-  it('renders with an image', () => {
-    const wrapper = shallow(
+  it('renders correctly', async () => {
+    const { asFragment } = render(
+      <EntityCard entity={entity} title={{ dataKey: 'title' }} />
+    );
+    expect(await screen.findByText('Title')).toBeInTheDocument();
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('renders with an image', async () => {
+    render(
       <EntityCard
         entity={entity}
         title={{ dataKey: 'title' }}
         image={{ url: 'test-url', title: 'Card Image' }}
       />
     );
-    const cardImage = wrapper.find('[aria-label="card-image"]');
-    expect(cardImage.prop('image')).toEqual('test-url');
-    expect(cardImage.prop('title')).toEqual('Card Image');
+
+    const cardImage = await screen.findByRole('img', { name: 'card-image' });
+    expect(cardImage).toHaveAttribute('src', 'test-url');
+    expect(cardImage).toHaveAttribute('title', 'Card Image');
   });
 
-  it('renders custom title content', () => {
-    const wrapper = shallow(
+  it('renders custom title content', async () => {
+    render(
       <EntityCard
         entity={entity}
         title={{
@@ -47,26 +56,21 @@ describe('Card', () => {
         }}
       />
     );
-    expect(wrapper.find('[aria-label="card-title"]').text()).toEqual(
-      'Test Title'
-    );
-    expect(wrapper.find('ArrowTooltip').prop('title')).toEqual('Test Title');
+    expect(await screen.findByText('Test Title')).toBeInTheDocument();
   });
 
-  it('renders with a description', () => {
-    const wrapper = shallow(
+  it('renders with a description', async () => {
+    render(
       <EntityCard
         entity={entity}
         title={{ dataKey: 'title' }}
         description={{ dataKey: 'summary' }}
       />
     );
-    expect(wrapper.find('[aria-label="card-description"]').text()).toEqual(
-      'Test Description'
-    );
+    expect(await screen.findByText('Test Description')).toBeInTheDocument();
   });
 
-  it('shows a collapsed description if it is too long', () => {
+  it('shows a collapsed description if it is too long', async () => {
     // Mock the value of clientHeight to be greater than defaultCollapsedHeight
     Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
       configurable: true,
@@ -78,24 +82,23 @@ describe('Card', () => {
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate semper commodo. Vivamus sed sapien a dolor aliquam commodo vulputate at est. Maecenas sed lobortis justo, congue lobortis urna. Quisque in pharetra justo. Maecenas nunc quam, rutrum non nisl sit amet, mattis condimentum massa. Donec ut commodo urna, vel rutrum sapien. Integer fermentum quam quis commodo lobortis. Duis cursus, turpis a feugiat malesuada, dui tellus condimentum lorem, sed sagittis magna quam in arcu. Integer ex velit, cursus ut sagittis sit amet, pulvinar nec dolor. Curabitur sagittis tincidunt arcu id vestibulum. Aliquam auctor, ante eget consectetur accumsan, massa odio ornare sapien, ut porttitor lorem nulla et urna. Nam sapien erat, rutrum pretium dolor vel, maximus mattis velit. In non ex lobortis, sollicitudin nulla eget, aliquam neque.';
     modifiedEntity.summary = descText;
 
-    const wrapper = mount(
+    render(
       <EntityCard
         entity={modifiedEntity}
         title={{ dataKey: 'title' }}
         description={{ dataKey: 'summary' }}
       />
     );
+    expect(await screen.findByText(descText)).toBeInTheDocument();
     expect(
-      wrapper.find('[aria-label="card-description"]').first().text()
-    ).toEqual(descText);
-    expect(wrapper.find('[aria-label="card-description-link"]').text()).toEqual(
-      'entity_card.show_more'
-    );
+      await screen.findByText('entity_card.show_more')
+    ).toBeInTheDocument();
 
-    wrapper.find(Link).find('a').simulate('click');
-    expect(wrapper.find('[aria-label="card-description-link"]').text()).toEqual(
-      'entity_card.show_less'
-    );
+    await user.click(await screen.findByText('entity_card.show_more'));
+
+    expect(
+      await screen.findByText('entity_card.show_less')
+    ).toBeInTheDocument();
   });
 
   it('no card-description-link if clientHeight < defaultCollapsedHeight', () => {
@@ -125,8 +128,8 @@ describe('Card', () => {
     ).toBeFalsy();
   });
 
-  it('render with information', () => {
-    const wrapper = shallow(
+  it('render with information', async () => {
+    render(
       <EntityCard
         entity={entity}
         title={{ dataKey: 'title' }}
@@ -143,24 +146,13 @@ describe('Card', () => {
         ]}
       />
     );
-    expect(wrapper.exists("[data-testid='card-info-visitId']")).toBe(true);
-    expect(wrapper.find("[data-testid='card-info-visitId']").text()).toEqual(
-      '<Icon />visitId:'
-    );
-    expect(wrapper.exists("[data-testid='card-info-data-visitId']")).toBe(true);
-    expect(
-      wrapper.find("[data-testid='card-info-data-visitId']").find('b').text()
-    ).toEqual('1');
-    expect(
-      wrapper
-        .find("[data-testid='card-info-data-visitId']")
-        .find('ArrowTooltip')
-        .prop('title')
-    ).toEqual('1');
+    expect(await screen.findByText('ICON -')).toBeInTheDocument();
+    expect(await screen.findByText('visitId:')).toBeInTheDocument();
+    expect(await screen.findByText('1')).toBeInTheDocument();
   });
 
-  it('renders with buttons', () => {
-    const wrapper = shallow(
+  it('renders with buttons', async () => {
+    render(
       <EntityCard
         entity={entity}
         title={{ dataKey: 'title', label: 'Title' }}
@@ -174,17 +166,16 @@ describe('Card', () => {
         ]}
       />
     );
-    expect(wrapper.exists('[aria-label="card-buttons"]')).toBe(true);
-    expect(wrapper.find('[aria-label="card-button-1"]').text()).toEqual(
-      'Test Button One'
-    );
-    expect(wrapper.find('[aria-label="card-button-2"]').text()).toEqual(
-      'Test Button Two'
-    );
+    expect(
+      await screen.findByRole('button', { name: 'Test Button One' })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'Test Button Two' })
+    ).toBeInTheDocument();
   });
 
-  it('renders with more information', () => {
-    const wrapper = mount(
+  it('renders with more information', async () => {
+    render(
       <EntityCard
         entity={entity}
         title={{ dataKey: 'title' }}
@@ -192,24 +183,17 @@ describe('Card', () => {
       />
     );
 
-    expect(wrapper.exists('[aria-label="card-more-information"]')).toBe(true);
-    expect(wrapper.exists('[aria-label="card-more-info-expand"]')).toBe(true);
+    await waitFor(() => {
+      expect(screen.queryByText('Test Information')).toBeNull();
+    });
 
-    // Click on the expansion panel to view more information area.
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .first()
-      .find('div')
-      .first()
-      .simulate('click');
+    await user.click(await screen.findByLabelText('card-more-info-expand'));
 
-    expect(
-      wrapper.find('[aria-label="card-more-info-details"]').first().text()
-    ).toEqual('Test Information');
+    expect(await screen.findByText('Test Information')).toBeInTheDocument();
   });
 
-  it('renders with tags', () => {
-    const wrapper = shallow(
+  it('renders with tags', async () => {
+    render(
       <EntityCard
         entity={entity}
         title={{ dataKey: 'title', label: 'Title' }}
@@ -220,12 +204,7 @@ describe('Card', () => {
       />
     );
 
-    expect(wrapper.exists('[aria-label="card-tags"]')).toBe(true);
-    expect(wrapper.find('[aria-label="card-tag-Name"]').prop('label')).toEqual(
-      'Name'
-    );
-    expect(wrapper.find('[aria-label="card-tag-2"]').prop('label')).toEqual(
-      '2'
-    );
+    expect(await screen.findByText('Name')).toBeInTheDocument();
+    expect(await screen.findByText('2')).toBeInTheDocument();
   });
 });
