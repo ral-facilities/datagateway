@@ -10,6 +10,7 @@ describe('Download Status', () => {
   });
 
   beforeEach(() => {
+    cy.intercept('GET', '**/getPercentageComplete**');
     cy.intercept('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login();
 
@@ -178,13 +179,13 @@ describe('Download Status', () => {
       cy.get('[aria-rowcount="4"]').should('exist');
 
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
-        'have.text',
-        format(currDate, 'yyyy-MM-dd HH:mm:ss')
+        'contain',
+        format(currDate, 'yyyy-MM-dd')
       );
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Access Method').first().type('globus');
+      cy.get('[aria-label="Filter by Access Method"]').first().type('globus');
 
       cy.get('[aria-label="Filter by Availability"]').first().type('restoring');
 

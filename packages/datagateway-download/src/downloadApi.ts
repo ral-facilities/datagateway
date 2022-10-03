@@ -362,3 +362,30 @@ export const getDataUrl = (
     readSciGatewayToken().sessionId
   }&preparedId=${preparedId}&outname=${fileName}`;
 };
+
+/**
+ * Describes the progress of a download. Can be a percentage between 0-100
+ * or a string describing the status of the download.
+ */
+export type DownloadProgress = number | string;
+
+/**
+ * Return a percentage of files that have been restored for the given prepared ID.
+ * This will normally be an integer value between 0 and 100 but can also be a status value such as "UNKNOWN"
+ */
+export const getPercentageComplete = async ({
+  preparedId,
+  settings: { idsUrl },
+}: {
+  preparedId: string;
+  settings: { idsUrl: string };
+}): Promise<DownloadProgress> => {
+  const { data } = await axios.get(`${idsUrl}/getPercentageComplete`, {
+    params: { preparedId },
+  });
+  // try to parse the incoming data as a float
+  const maybeNumber = parseFloat(data);
+  // if data is not a number (NaN), it is a status value
+  const isStatus = Number.isNaN(maybeNumber);
+  return isStatus ? data : maybeNumber;
+};

@@ -19,10 +19,12 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
+import DownloadProgressIndicator from './downloadProgressIndicator.component';
 import {
   useDownloadOrRestoreDownload,
   useDownloads,
 } from '../downloadApiHooks';
+import useDownloadFormatter from './hooks/useDownloadFormatter';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
@@ -35,6 +37,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 ) => {
   // Load the settings for use.
   const settings = React.useContext(DownloadSettingsContext);
+  const [t] = useTranslation();
+  const { formatDownload } = useDownloadFormatter();
 
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({
@@ -51,14 +55,15 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     isFetched,
     refetch,
     dataUpdatedAt,
-  } = useDownloads();
+  } = useDownloads({
+    select: (data) => data.map(formatDownload),
+  });
 
   const {
     refreshTable: shouldRefreshTable,
     setRefreshTable,
     setLastCheckedTimestamp,
   } = props;
-  const [t] = useTranslation();
 
   const refreshTable = React.useCallback(async () => {
     await refetch();
@@ -241,15 +246,29 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               },
               {
                 label: t('downloadStatus.status'),
-                dataKey: 'status',
+                dataKey: 'formattedStatus',
                 filterComponent: availabilityFilter,
               },
+              ...(settings.uiFeatures.downloadProgress
+                ? [
+                    {
+                      label: t('downloadStatus.progress'),
+                      dataKey: 'progress',
+                      disableSort: true,
+                      cellContentRenderer: ({ rowData }: TableCellProps) => (
+                        <DownloadProgressIndicator
+                          download={rowData as FormattedDownload}
+                        />
+                      ),
+                    },
+                  ]
+                : []),
               {
                 label: t('downloadStatus.createdAt'),
                 dataKey: 'createdAt',
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
-                    const date = toDate(props.cellData);
+                    const date = toDate(props.cellData.replace(/\[.*]/, ''));
                     return format(date, 'yyyy-MM-dd HH:mm:ss');
                   }
                 },
@@ -274,8 +293,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 const downloadItem = rowData as FormattedDownload;
                 const isHTTP = !!downloadItem.transport.match(/https|http/);
 
-                const isComplete =
-                  downloadItem.status === t('downloadStatus.complete');
+                const isComplete = downloadItem.status === 'COMPLETE';
 
                 const isDownloadable = isHTTP && isComplete;
 

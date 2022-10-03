@@ -8,6 +8,7 @@ describe('Admin Download Status', () => {
   });
 
   beforeEach(() => {
+    cy.intercept('GET', '**/getPercentageComplete**');
     cy.intercept('GET', '**/topcat/admin/downloads**').as(
       'fetchAdminDownloads'
     );
