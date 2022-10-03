@@ -1,13 +1,20 @@
 import React from 'react';
 import CitationFormatter from './citationFormatter.component';
 import axios from 'axios';
-import { flushPromises } from '../setupTests';
-import { act } from 'react-dom/test-utils';
-import { mount, ReactWrapper } from 'enzyme';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 describe('Citation formatter component tests', () => {
   let queryClient;
+  let user: UserEvent;
 
   const props = {
     doi: 'test',
@@ -18,15 +25,15 @@ describe('Citation formatter component tests', () => {
     startDate: '2019-04-03',
   };
 
-  const createWrapper = (props): ReactWrapper => {
-    return mount(
+  const renderComponent = (componentProps): RenderResult =>
+    render(
       <QueryClientProvider client={queryClient}>
-        <CitationFormatter {...props} />
+        <CitationFormatter {...componentProps} />
       </QueryClientProvider>
     );
-  };
 
   beforeEach(() => {
+    user = userEvent.setup();
     queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -41,130 +48,77 @@ describe('Citation formatter component tests', () => {
   });
 
   it('renders correctly', async () => {
-    const wrapper = createWrapper(props);
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent(props);
 
     expect(
-      wrapper.find('[data-testid="citation-formatter-title"]').first().text()
-    ).toEqual('studies.details.citation_formatter.label');
+      await screen.findByText('studies.details.citation_formatter.label')
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="citation-formatter-details"]').first().text()
-    ).toEqual(
-      'studies.details.citation_formatter.details studies.details.citation_formatter.details_select_format'
-    );
+      await screen.findByText(
+        'studies.details.citation_formatter.details studies.details.citation_formatter.details_select_format'
+      )
+    ).toBeInTheDocument();
     expect(
-      wrapper
-        .find(
-          '[aria-label="studies.details.citation_formatter.select_arialabel"]'
-        )
-        .first()
-        .prop('defaultValue')
-    ).toEqual('default');
+      await screen.findByText(
+        'studies.details.citation_formatter.default_format'
+      )
+    ).toBeInTheDocument();
     expect(
-      wrapper
-        .find(
-          '[aria-label="studies.details.citation_formatter.select_arialabel"]'
-        )
-        .first()
-        .text()
-    ).toEqual('studies.details.citation_formatter.default_format');
+      await screen.findByText(
+        'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
+      )
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
-    );
-    expect(
-      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
-    ).toEqual(false);
+      await screen.findByRole('button', {
+        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+      })
+    ).toBeEnabled();
   });
 
   it('renders correctly without a doi', async () => {
     const newProps = { ...props, doi: undefined };
-    const wrapper = createWrapper(newProps);
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent(newProps);
 
     expect(
-      wrapper.find('[data-testid="citation-formatter-title"]').first().text()
-    ).toEqual('studies.details.citation_formatter.label');
+      await screen.findByText('studies.details.citation_formatter.label')
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="citation-formatter-details"]').first().text()
-    ).toEqual('studies.details.citation_formatter.details');
+      await screen.findByText('studies.details.citation_formatter.details')
+    ).toBeInTheDocument();
     expect(
-      wrapper
-        .find(
-          '[aria-label="studies.details.citation_formatter.select_arialabel"]'
-        )
-        .exists()
-    ).toEqual(false);
+      screen.queryByLabelText(
+        'studies.details.citation_formatter.select_arialabel'
+      )
+    ).toBeNull();
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual('John Smith; 2019: title, doi_constants.publisher.name');
+      await screen.findByText(
+        'John Smith; 2019: title, doi_constants.publisher.name'
+      )
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
-    ).toEqual(false);
-  });
-
-  it('formats citation on load', async () => {
-    const wrapper = createWrapper(props);
-    await act(async () => flushPromises());
-    wrapper.update();
-
-    expect(
-      wrapper
-        .find(
-          '[aria-label="studies.details.citation_formatter.select_arialabel"]'
-        )
-        .first()
-        .prop('defaultValue')
-    ).toEqual('default');
-
-    expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
-    );
-    expect(
-      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
-    ).toEqual(false);
-  });
-
-  it('formats citation on load without a doi', async () => {
-    const newProps = { ...props, doi: undefined };
-    const wrapper = createWrapper(newProps);
-    await act(async () => flushPromises());
-    wrapper.update();
-
-    expect(
-      wrapper
-        .find(
-          '[aria-label="studies.details.citation_formatter.select_arialabel"]'
-        )
-        .exists()
-    ).toBeFalsy();
-
-    expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual('John Smith; 2019: title, doi_constants.publisher.name');
-    expect(
-      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
-    ).toEqual(false);
+      await screen.findByRole('button', {
+        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+      })
+    ).toBeEnabled();
   });
 
   it('sends axios request to fetch a formatted citation when a format is selected', async () => {
-    const wrapper = createWrapper(props);
-
     (axios.get as jest.Mock).mockResolvedValue({
       data: 'This is a test',
     });
 
-    wrapper
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'format2' } });
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent(props);
+
+    // click on the format dropdown
+    await user.click(
+      within(
+        await screen.findByLabelText(
+          'studies.details.citation_formatter.select_arialabel'
+        )
+      ).getByRole('button')
+    );
+    // then select the format2 option
+    await user.click(await screen.findByRole('option', { name: 'format2' }));
 
     const params = new URLSearchParams({
       style: 'format2',
@@ -181,42 +135,40 @@ describe('Citation formatter component tests', () => {
       params.toString()
     );
 
+    expect(await screen.findByText('This is a test')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual('This is a test');
-    expect(
-      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
-    ).toEqual(false);
+      await screen.findByRole('button', {
+        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+      })
+    ).toBeEnabled();
   });
 
   it('copies data citation to clipboard', async () => {
-    const wrapper = createWrapper(props);
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent(props);
 
     // Mock the clipboard object
-    const testWriteText = jest.fn();
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: testWriteText,
-      },
-    });
+    const testWriteText = jest.spyOn(navigator.clipboard, 'writeText');
 
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
-    );
+      await screen.findByText(
+        'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
+      )
+    ).toBeInTheDocument();
 
-    wrapper.find('#citation-formatter-copy-citation').last().simulate('click');
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+      })
+    );
 
     expect(testWriteText).toHaveBeenCalledWith(
       'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
     );
-
     expect(
-      wrapper.find('#citation-formatter-copied-citation').first().text()
-    ).toEqual('studies.details.citation_formatter.copied_citation');
+      await screen.findByRole('button', {
+        name: 'studies.details.citation_formatter.copied_citation',
+      })
+    ).toBeInTheDocument();
   });
 
   it('displays error message when axios request to fetch a formatted citation fails', async () => {
@@ -226,13 +178,18 @@ describe('Citation formatter component tests', () => {
       message: 'error',
     });
 
-    const wrapper = createWrapper(props);
-    wrapper
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'format2' } });
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent(props);
+
+    // click on the format dropdown
+    await user.click(
+      within(
+        await screen.findByLabelText(
+          'studies.details.citation_formatter.select_arialabel'
+        )
+      ).getByRole('button')
+    );
+    // then select the format2 option
+    await user.click(await screen.findByRole('option', { name: 'format2' }));
 
     const params = new URLSearchParams({
       style: 'format2',
@@ -250,35 +207,41 @@ describe('Citation formatter component tests', () => {
     );
 
     expect(
-      wrapper.find('#citation-formatter-error-message').first().text()
-    ).toEqual('studies.details.citation_formatter.error');
-
+      await screen.findByText('studies.details.citation_formatter.error')
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('#citation-formatter-copy-citation').first().prop('disabled')
-    ).toEqual(true);
+      await screen.findByRole('button', {
+        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+      })
+    ).toBeDisabled();
   });
 
   it('displays loading spinner while waiting for a response from DataCite', async () => {
-    (axios.get as jest.Mock).mockRejectedValueOnce({
-      message: 'error',
+    let reject: () => void;
+    (axios.get as jest.Mock).mockReturnValueOnce(
+      new Promise((_, _reject) => {
+        reject = _reject;
+      })
+    );
+
+    renderComponent(props);
+
+    // click on the format dropdown
+    await user.click(
+      within(
+        await screen.findByLabelText(
+          'studies.details.citation_formatter.select_arialabel'
+        )
+      ).getByRole('button')
+    );
+    // then select the format2 option
+    await user.click(await screen.findByRole('option', { name: 'format2' }));
+
+    expect(await screen.findByRole('progressbar')).toBeInTheDocument();
+
+    reject();
+    await waitFor(() => {
+      expect(screen.queryByRole('progressbar')).toBeNull();
     });
-
-    const wrapper = createWrapper(props);
-    wrapper
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'format2' } });
-    wrapper.update();
-
-    expect(
-      wrapper.find('[data-testid="loading-spinner"]').exists()
-    ).toBeTruthy();
-
-    await act(async () => flushPromises());
-    wrapper.update();
-
-    expect(
-      wrapper.find('[data-testid="loading-spinner"]').exists()
-    ).toBeFalsy();
   });
 });
