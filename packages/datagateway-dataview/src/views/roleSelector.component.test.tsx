@@ -3,20 +3,21 @@ import axios from 'axios';
 import configureStore from 'redux-mock-store';
 import {
   dGCommonInitialState,
-  StateType,
   InvestigationUser,
-  readSciGatewayToken,
-  usePushFilter,
   parseSearchToQuery,
+  readSciGatewayToken,
+  StateType,
+  usePushFilter,
 } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { mount, ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import RoleSelector from './roleSelector.component';
-import { flushPromises } from '../setupTests';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -31,15 +32,15 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Role Selector', () => {
-  const mockStore = configureStore([thunk]);
   let state: StateType;
+  let user: UserEvent;
   let mockData: InvestigationUser[] = [];
   const mockPushFilters = jest.fn();
+  const mockStore = configureStore([thunk]);
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <MemoryRouter>
           <QueryClientProvider client={new QueryClient()}>
             <RoleSelector />
@@ -47,9 +48,9 @@ describe('Role Selector', () => {
         </MemoryRouter>
       </Provider>
     );
-  };
 
   beforeEach(() => {
+    user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -88,7 +89,7 @@ describe('Role Selector', () => {
   });
 
   it('fetches roles when rendered and displays them in dropdown', async () => {
-    const wrapper = createWrapper();
+    renderComponent();
 
     const params = new URLSearchParams();
     params.append('distinct', JSON.stringify('role'));
@@ -108,44 +109,36 @@ describe('Role Selector', () => {
     expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
       params.toString()
     );
-    wrapper
-      .find('#role-selector')
-      .find('[role="button"]')
-      .last()
-      .simulate('mousedown', { button: 0 });
 
-    // Flush promises and update the wrapper.
-    await flushPromises();
-    wrapper.update();
+    await user.click(
+      await screen.findByRole('button', { name: 'my_data_table.role_selector' })
+    );
 
-    expect(wrapper.find('[role="listbox"] li[role="option"]').length).toBe(3);
     expect(
-      wrapper.find('[role="listbox"] li[role="option"]').at(0).text()
-    ).toBe('my_data_table.all_roles');
+      await screen.findByRole('option', { name: 'my_data_table.all_roles' })
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('[role="listbox"] li[role="option"]').at(1).text()
-    ).toBe(mockData[0].role.toLowerCase());
+      await screen.findByRole('option', {
+        name: mockData[0].role.toLowerCase(),
+      })
+    ).toBeInTheDocument();
     expect(
-      wrapper.find('[role="listbox"] li[role="option"]').at(2).text()
-    ).toBe(mockData[1].role);
+      await screen.findByRole('option', { name: mockData[1].role })
+    ).toBeInTheDocument();
   });
 
   it('updates filters when role is selected', async () => {
-    const wrapper = createWrapper();
+    renderComponent();
 
-    // Flush promises and update the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    const selectInput = wrapper.find('input').first();
-    selectInput.simulate('change', { target: { value: 'PI' } });
-
-    selectInput.simulate('change', { target: { value: '' } });
-
-    expect(mockPushFilters).toHaveBeenCalledWith(
-      'investigationUsers.role',
-      null
+    await user.click(
+      await screen.findByRole('button', { name: 'my_data_table.role_selector' })
     );
+    await user.click(await screen.findByRole('option', { name: 'pi' }));
+
+    expect(mockPushFilters).toHaveBeenCalledWith('investigationUsers.role', {
+      value: 'PI',
+      type: 'include',
+    });
   });
 
   it('parses current role from query params correctly', async () => {
@@ -158,15 +151,8 @@ describe('Role Selector', () => {
       },
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    // before roles have been loaded, it should be set to "" as a default
-    expect(wrapper.find('input').prop('value')).toBe('');
-
-    // Flush promises and update the wrapper.
-    await flushPromises();
-    wrapper.update();
-
-    expect(wrapper.find('input').prop('value')).toBe('experimenter');
+    expect(await screen.findByText('experimenter')).toBeInTheDocument();
   });
 });
