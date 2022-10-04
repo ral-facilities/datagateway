@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import ISISDatasetLanding from './isisDatasetLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -11,11 +11,12 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Typography } from '@mui/material';
-import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -32,11 +33,11 @@ describe('ISIS Dataset Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (studyHierarchy = false): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (studyHierarchy = false): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISDatasetLanding
@@ -50,7 +51,6 @@ describe('ISIS Dataset Landing page', () => {
         </Router>
       </Provider>
     );
-  };
 
   const initialData: Dataset = {
     id: 87,
@@ -68,6 +68,7 @@ describe('ISIS Dataset Landing page', () => {
       description: 'The first type',
     },
   };
+
   beforeEach(() => {
     state = JSON.parse(
       JSON.stringify({
@@ -76,6 +77,7 @@ describe('ISIS Dataset Landing page', () => {
       })
     );
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: initialData,
@@ -89,71 +91,83 @@ describe('ISIS Dataset Landing page', () => {
     jest.clearAllMocks();
   });
 
-  it('calls the correct data fetching hooks', () => {
-    createWrapper();
+  describe('links to the correct url in the datafiles tab', () => {
+    it('for facility cycle hierarchy and normal view', async () => {
+      renderComponent();
 
-    expect(useDatasetDetails).toHaveBeenCalledWith(87);
-    expect(useDatasetSizes).toHaveBeenCalledWith(initialData);
+      await user.click(
+        await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/87/datafile'
+      );
+    });
+
+    it('for facility cycle hierarchy and cards view', async () => {
+      history.replace('/?view=card');
+      renderComponent();
+
+      await user.click(
+        await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/87/datafile'
+      );
+      expect(history.location.search).toBe('?view=card');
+    });
+
+    it('for study hierarchy and normal view', async () => {
+      renderComponent(true);
+
+      await user.click(
+        await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/87/datafile'
+      );
+    });
+
+    it('for study hierarchy and cards view', async () => {
+      history.replace('/?view=card');
+      renderComponent(true);
+
+      await user.click(
+        await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/87/datafile'
+      );
+      expect(history.location.search).toBe('?view=card');
+    });
   });
 
-  it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
-    const facilityCycleWrapper = createWrapper();
-
-    facilityCycleWrapper
-      .find('#dataset-datafiles-tab')
-      .last()
-      .simulate('click');
-
-    expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/87/datafile'
+  it('displays DOI and renders the expected Link ', async () => {
+    renderComponent();
+    expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
     );
-
-    history.replace('/?view=card');
-    const studyWrapper = createWrapper(true);
-
-    studyWrapper.find('#dataset-datafiles-tab').last().simulate('click');
-
-    expect(history.location.pathname).toBe(
-      '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/87/datafile'
-    );
-    expect(history.location.search).toBe('?view=card');
-  });
-
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-
-    expect(
-      wrapper
-        .find('[data-testid="isis-dataset-landing-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('doi 1');
-
-    expect(
-      wrapper
-        .find('[data-testid="isis-dataset-landing-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
   });
 
   it('useDatasetSizes queries not sent if no data returned from useDatasetDetails', () => {
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: undefined,
     });
-    createWrapper();
+    renderComponent();
     expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
-  it('incomplete datasets render correctly', () => {
+  it('incomplete datasets render correctly', async () => {
     initialData.complete = false;
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: initialData,
     });
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find(Typography).last().text()).toEqual(
-      'datasets.incomplete'
-    );
+    expect(await screen.findByText('datasets.incomplete')).toBeInTheDocument();
   });
 });
