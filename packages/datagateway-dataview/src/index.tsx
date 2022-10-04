@@ -178,43 +178,25 @@ if (
         .slice(0, splitUrl.length - 1)
         .join('/')}/datagateway-api`;
       axios
-        .post(
-          `${dataGatewayUrl}/sessions`,
-          `json=${JSON.stringify({
-            mechanism: 'simple',
-            username: 'root',
-            password: 'pw',
-          })}`
-        )
+        .post(`${dataGatewayUrl}/sessions`, {
+          username: 'root',
+          password: 'pw',
+          mechanism: 'simple',
+        })
         .then((response) => {
-          axios
-            .get(`${settingsResult['apiUrl']}/sessions`, {
-              headers: {
-                Authorization: `Bearer ${response.data.sessionId}`,
-              },
-            })
-            .then(() => {
-              const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-              const payload = {
-                sessionId: response.data.sessionId,
-                username: 'Thomas409',
-              };
-              const jwt = jsrsasign.KJUR.jws.JWS.sign(
-                'HS256',
-                jwtHeader,
-                payload,
-                'shh'
-              );
+          const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+          const payload = {
+            sessionID: response.data.sessionID,
+            username: 'Thomas409',
+          };
+          const jwt = jsrsasign.KJUR.jws.JWS.sign(
+            'HS256',
+            jwtHeader,
+            payload,
+            'shh'
+          );
 
-              window.localStorage.setItem(MicroFrontendToken, jwt);
-            })
-            .catch((error) => {
-              log.error(
-                `datagateway-api cannot verify ICAT session id: ${error.message}.
-                   This is likely caused if datagateway-api is pointing to a
-                   different ICAT than the one used by the IDS/TopCAT`
-              );
-            });
+          window.localStorage.setItem(MicroFrontendToken, jwt);
         })
         .catch((error) => log.error(`Can't log in to ICAT: ${error.message}`));
     }
