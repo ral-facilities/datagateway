@@ -540,16 +540,30 @@ const fetchISISInvestigations = (
     params.append(filter.filterType, filter.filterValue);
   });
 
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationFacilityCycles.facilityCycle.id': {
+        eq: facilityCycleId,
+      },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationInstruments.instrument.id': {
+        eq: instrumentId,
+      },
+    })
+  );
+
   return axios
-    .get(
-      `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
-      {
-        params,
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-        },
-      }
-    )
+    .get(`${apiUrl}/investigations`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
     .then((response) => {
       return response.data;
     });
@@ -743,16 +757,30 @@ const fetchISISInvestigationCount = (
   const params = getApiParams({ filters, sort: {} });
   params.delete('order');
 
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationFacilityCycles.facilityCycle.id': {
+        eq: facilityCycleId,
+      },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationInstruments.instrument.id': {
+        eq: instrumentId,
+      },
+    })
+  );
+
   return axios
-    .get(
-      `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations/count`,
-      {
-        params,
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-        },
-      }
-    )
+    .get(`${apiUrl}/investigations/count`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
     .then((response) => {
       return response.data;
     });
@@ -824,16 +852,30 @@ const fetchAllISISInvestigationIds = (
   // so for now just retrieve everything
   // params.set('distinct', JSON.stringify('id'));
 
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationFacilityCycles.facilityCycle.id': {
+        eq: facilityCycleId,
+      },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationInstruments.instrument.id': {
+        eq: instrumentId,
+      },
+    })
+  );
+
   return axios
-    .get<Investigation[]>(
-      `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
-      {
-        params,
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-        },
-      }
-    )
+    .get<Investigation[]>(`${apiUrl}/investigations`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
     .then((response) => {
       return response.data.map((x) => x.id);
     });

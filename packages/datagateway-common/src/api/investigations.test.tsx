@@ -1252,9 +1252,25 @@ describe('investigation api functions', () => {
             { investigationUsers: 'user' },
           ])
         );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationFacilityCycles.facilityCycle.id': {
+              eq: 2,
+            },
+          })
+        );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationInstruments.instrument.id': {
+              eq: 1,
+            },
+          })
+        );
 
         expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
+          'https://example.com/api/investigations',
           expect.objectContaining({
             params,
           })
@@ -1346,9 +1362,25 @@ describe('investigation api functions', () => {
             { investigationUsers: 'user' },
           ])
         );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationFacilityCycles.facilityCycle.id': {
+              eq: 2,
+            },
+          })
+        );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationInstruments.instrument.id': {
+              eq: 1,
+            },
+          })
+        );
 
         expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
+          'https://example.com/api/investigations',
           expect.objectContaining({
             params,
           })
@@ -1395,9 +1427,25 @@ describe('investigation api functions', () => {
             { investigationUsers: 'user' },
           ])
         );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationFacilityCycles.facilityCycle.id': {
+              eq: 2,
+            },
+          })
+        );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationInstruments.instrument.id': {
+              eq: 1,
+            },
+          })
+        );
 
         expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
+          'https://example.com/api/investigations',
           expect.objectContaining({
             params,
           })
@@ -1417,7 +1465,7 @@ describe('investigation api functions', () => {
 
         expect(axios.get).toHaveBeenNthCalledWith(
           2,
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
+          'https://example.com/api/investigations',
           expect.objectContaining({
             params,
           })
@@ -1543,9 +1591,25 @@ describe('investigation api functions', () => {
             { investigationUsers: 'user' },
           ])
         );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationFacilityCycles.facilityCycle.id': {
+              eq: 2,
+            },
+          })
+        );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationInstruments.instrument.id': {
+              eq: 1,
+            },
+          })
+        );
 
         expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
+          'https://example.com/api/investigations',
           expect.objectContaining({
             params,
           })
@@ -1578,9 +1642,25 @@ describe('investigation api functions', () => {
             name: { ilike: 'test' },
           })
         );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationFacilityCycles.facilityCycle.id': {
+              eq: 2,
+            },
+          })
+        );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationInstruments.instrument.id': {
+              eq: 1,
+            },
+          })
+        );
 
         expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations/count',
+          'https://example.com/api/investigations/count',
           expect.objectContaining({
             params,
           })
@@ -1649,8 +1729,25 @@ describe('investigation api functions', () => {
 
         await waitFor(() => result.current.isError);
 
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationFacilityCycles.facilityCycle.id': {
+              eq: 2,
+            },
+          })
+        );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationInstruments.instrument.id': {
+              eq: 1,
+            },
+          })
+        );
+
         expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations/count',
+          'https://example.com/api/investigations/count',
           expect.objectContaining({
             params,
           })
@@ -1684,9 +1781,25 @@ describe('investigation api functions', () => {
             name: { ilike: 'test' },
           })
         );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationFacilityCycles.facilityCycle.id': {
+              eq: 2,
+            },
+          })
+        );
+        params.append(
+          'where',
+          JSON.stringify({
+            'investigationInstruments.instrument.id': {
+              eq: 1,
+            },
+          })
+        );
 
         expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
+          'https://example.com/api/investigations',
           expect.objectContaining({
             params,
           })
