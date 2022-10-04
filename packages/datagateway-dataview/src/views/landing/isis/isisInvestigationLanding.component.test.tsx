@@ -10,12 +10,12 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
-import { flushPromises } from '../../../setupTests';
-import { act } from 'react-dom/test-utils';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -32,11 +32,11 @@ describe('ISIS Investigation Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (studyHierarchy = false): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (studyHierarchy = false): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISInvestigationLanding
@@ -49,7 +49,6 @@ describe('ISIS Investigation Landing page', () => {
         </Router>
       </Provider>
     );
-  };
 
   const initialData = [
     {
@@ -173,6 +172,7 @@ describe('ISIS Investigation Landing page', () => {
       })
     );
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     (useInvestigation as jest.Mock).mockReturnValue({
       data: initialData,
@@ -188,239 +188,181 @@ describe('ISIS Investigation Landing page', () => {
     jest.clearAllMocks();
   });
 
-  it('calls the correct data fetching hooks', () => {
-    createWrapper();
+  describe('links to the correct url in the datafiles tab', () => {
+    it('for facility cycle hierarchy and normal view', async () => {
+      renderComponent();
 
-    expect(useInvestigation).toHaveBeenCalledWith(1, [
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify([
-          {
-            investigationUsers: 'user',
-          },
-          'samples',
-          'publications',
-          'datasets',
-          {
-            studyInvestigations: 'study',
-          },
-          {
-            investigationInstruments: 'instrument',
-          },
-        ]),
-      },
-    ]);
-    expect(useInvestigationSizes).toHaveBeenCalledWith(initialData);
+      await user.click(
+        await screen.findByRole('tab', {
+          name: 'investigations.details.datasets',
+        })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
+      );
+    });
+
+    it('for facility cycle hierarchy and cards view', async () => {
+      history.replace('/?view=card');
+      renderComponent();
+
+      await user.click(
+        await screen.findByRole('tab', {
+          name: 'investigations.details.datasets',
+        })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
+      );
+      expect(history.location.search).toBe('?view=card');
+    });
+
+    it('for study hierarchy and normal view', async () => {
+      history.replace('/?view=card');
+      renderComponent(true);
+
+      await user.click(
+        await screen.findByRole('tab', {
+          name: 'investigations.details.datasets',
+        })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
+      );
+    });
+
+    it('for study hierarchy and cards view', async () => {
+      history.replace('/?view=card');
+      renderComponent(true);
+
+      await user.click(
+        await screen.findByRole('tab', {
+          name: 'investigations.details.datasets',
+        })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
+      );
+      expect(history.location.search).toBe('?view=card');
+    });
   });
 
-  it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
-    const facilityCycleWrapper = createWrapper();
-
-    facilityCycleWrapper
-      .find('#investigation-datasets-tab')
-      .last()
-      .simulate('click');
-
-    expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
-    );
-
-    history.replace('/?view=card');
-    const studyWrapper = createWrapper(true);
-
-    studyWrapper.find('#investigation-datasets-tab').last().simulate('click');
-
-    expect(history.location.pathname).toBe(
-      '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
-    );
-    expect(history.location.search).toBe('?view=card');
-  });
-
-  it('users displayed correctly', () => {
-    let wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[aria-label="landing-investigation-users-label"]')
-    ).toHaveLength(0);
-    expect(
-      wrapper.find('[aria-label="landing-investigation-user-0"]')
-    ).toHaveLength(0);
-
+  it('users displayed correctly', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: investigationUser }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper.find('[aria-label="landing-investigation-users-label"]')
-    ).toHaveLength(4);
+      await screen.findByLabelText('landing-investigation-user-0')
+    ).toHaveTextContent('Principal Investigator: John Smith');
     expect(
-      wrapper.find('[aria-label="landing-investigation-user-0"]').first().text()
-    ).toEqual('Principal Investigator: John Smith');
+      await screen.findByLabelText('landing-investigation-user-1')
+    ).toHaveTextContent('Local Contact: Jane Smith');
     expect(
-      wrapper.find('[aria-label="landing-investigation-user-1"]').first().text()
-    ).toEqual('Local Contact: Jane Smith');
-    expect(
-      wrapper.find('[aria-label="landing-investigation-user-2"]').first().text()
-    ).toEqual('Experimenter: Jesse Smith');
-    expect(
-      wrapper.find('[aria-label="landing-investigation-user-3"]')
-    ).toHaveLength(0);
+      await screen.findByLabelText('landing-investigation-user-2')
+    ).toHaveTextContent('Experimenter: Jesse Smith');
   });
 
-  it('renders text "No samples" when no data is present', () => {
-    let wrapper = createWrapper();
+  it('renders text "No samples" when no data is present', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], samples: noSamples }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-no-samples"]')
-        .exists()
-    ).toBeTruthy();
+      await screen.findByText('investigations.details.samples.no_samples')
+    ).toBeInTheDocument();
   });
 
-  it('renders text "No publications" when no data is present', () => {
-    let wrapper = createWrapper();
+  it('renders text "No publications" when no data is present', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], publications: noPublication }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-no-publications"]')
-        .exists()
-    ).toBeTruthy();
+      await screen.findByText(
+        'investigations.details.publications.no_publications'
+      )
+    ).toBeInTheDocument();
   });
 
-  it('publications displayed correctly', () => {
-    let wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[aria-label="landing-investigation-publications-label"]')
-    ).toHaveLength(0);
-    expect(
-      wrapper.find('[aria-label="landing-investigation-publication-0"]')
-    ).toHaveLength(0);
-
+  it('publications displayed correctly', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], publications: publication }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper.find('[aria-label="landing-investigation-publications-label"]')
-    ).toHaveLength(4);
-    expect(
-      wrapper
-        .find('[aria-label="landing-investigation-reference-0"]')
-        .first()
-        .text()
-    ).toEqual('Journal, Author, Date, DOI');
+      await screen.findByText('Journal, Author, Date, DOI')
+    ).toBeInTheDocument();
   });
 
-  it('samples displayed correctly', () => {
-    let wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[aria-label="landing-investigation-samples-label"]')
-    ).toHaveLength(0);
-    expect(
-      wrapper.find('[aria-label="landing-investigation-sample-0"]')
-    ).toHaveLength(0);
-
+  it('samples displayed correctly', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], samples: sample }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
-    expect(
-      wrapper.find('[aria-label="landing-investigation-samples-label"]')
-    ).toHaveLength(4);
-    expect(
-      wrapper
-        .find('[aria-label="landing-investigation-sample-0"]')
-        .first()
-        .text()
-    ).toEqual('Sample');
+    expect(await screen.findByText('Sample')).toBeInTheDocument();
   });
 
   it('displays citation correctly when study missing', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], studyInvestigations: undefined }],
     });
-    const wrapper = createWrapper();
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent();
+
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      '2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
-    );
+      await screen.findByText(
+        '2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+      )
+    ).toBeInTheDocument();
   });
 
   it('displays citation correctly with one user', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
     });
-    const wrapper = createWrapper();
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent();
+
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
-    );
+      await screen.findByText(
+        'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+      )
+    ).toBeInTheDocument();
   });
 
   it('displays citation correctly with multiple users', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: investigationUser }],
     });
-    const wrapper = createWrapper();
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent();
+
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      'John Smith et al; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+      await screen.findByText(
+        'John Smith et al; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('displays DOI and renders the expected Link ', async () => {
+    renderComponent();
+    expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
     );
   });
 
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
+  it('displays Experiment DOI (PID) and renders the expected Link ', async () => {
+    renderComponent();
     expect(
-      wrapper
-        .find('[data-testid="isis-investigation-landing-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('doi 1');
-
-    expect(
-      wrapper
-        .find('[data-testid="isis-investigation-landing-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
-  });
-
-  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper
-        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('study pid');
-
-    expect(
-      wrapper
-        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/study pid');
+      await screen.findByRole('link', { name: 'study pid' })
+    ).toHaveAttribute('href', 'https://doi.org/study pid');
   });
 });
