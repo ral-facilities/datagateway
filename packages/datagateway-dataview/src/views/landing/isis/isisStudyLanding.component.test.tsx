@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import ISISStudyLanding from './isisStudyLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -8,10 +8,9 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
-import { flushPromises } from '../../../setupTests';
-import { act } from 'react-dom/test-utils';
+import { render, type RenderResult, screen } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -40,6 +39,17 @@ describe('ISIS Study Landing page', () => {
       </Provider>
     );
   };
+
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISStudyLanding instrumentId="4" studyId="5" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
 
   const investigationUser = [
     {
@@ -146,12 +156,6 @@ describe('ISIS Study Landing page', () => {
     jest.clearAllMocks();
   });
 
-  it('calls the correct data fetching hooks', () => {
-    createWrapper();
-
-    expect(useStudy).toHaveBeenCalledWith(5);
-  });
-
   it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
     let wrapper = createWrapper();
 
@@ -223,34 +227,49 @@ describe('ISIS Study Landing page', () => {
         },
       ],
     });
-    const wrapper = createWrapper();
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent();
 
+    expect(await screen.findByTestId('landing-study-user-0')).toHaveTextContent(
+      'Principal Investigator: John Smith'
+    );
+    expect(await screen.findByTestId('landing-study-user-1')).toHaveTextContent(
+      'Local Contact: Jane Smith'
+    );
+    expect(await screen.findByTestId('landing-study-user-2')).toHaveTextContent(
+      'Experimenter: Jesse Smith'
+    );
     expect(
-      wrapper.find('[data-testid="landing-study-users-label"]')
-    ).toHaveLength(4);
-    expect(
-      wrapper.find('[data-testid="landing-study-user-0"]').first().text()
-    ).toEqual('Principal Investigator: John Smith');
-    expect(
-      wrapper.find('[data-testid="landing-study-user-1"]').first().text()
-    ).toEqual('Local Contact: Jane Smith');
-    expect(
-      wrapper.find('[data-testid="landing-study-user-2"]').first().text()
-    ).toEqual('Experimenter: Jesse Smith');
-    expect(
-      wrapper.find('[data-testid="landing-investigation-user-3"]')
-    ).toHaveLength(0);
+      await screen.findByText(
+        'John Smith et al; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
+      )
+    ).toBeInTheDocument();
+  });
 
-    expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      'John Smith et al; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
+  it('displays DOI and renders the expected link', async () => {
+    (useStudy as jest.Mock).mockReturnValue({
+      data: [
+        {
+          ...initialData[0],
+          studyInvestigations: [
+            {
+              investigation: {
+                ...investigation,
+                investigationUsers: investigationUser,
+              },
+            },
+          ],
+        },
+      ],
+    });
+    renderComponent();
+
+    expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
     );
   });
 
-  it('displays DOI and renders the expected link', () => {
+  it('displays Experiment DOI (PID) and renders the expected link', async () => {
     (useStudy as jest.Mock).mockReturnValue({
       data: [
         {
@@ -266,75 +285,40 @@ describe('ISIS Study Landing page', () => {
         },
       ],
     });
-    const wrapper = createWrapper();
-    expect(
-      wrapper
-        .find('[data-testid="landing-study-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
+    renderComponent();
 
     expect(
-      wrapper.find('[data-testid="landing-study-doi-link"]').first().text()
-    ).toEqual('doi 1');
-  });
-
-  it('displays Experiment DOI (PID) and renders the expected link', () => {
-    (useStudy as jest.Mock).mockReturnValue({
-      data: [
-        {
-          ...initialData[0],
-          studyInvestigations: [
-            {
-              investigation: {
-                ...investigation,
-                investigationUsers: investigationUser,
-              },
-            },
-          ],
-        },
-      ],
-    });
-    const wrapper = createWrapper();
-    expect(
-      wrapper
-        .find('[data-testid="landing-study-pid-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/study pid');
-
-    expect(
-      wrapper.find('[data-testid="landing-study-pid-link"]').first().text()
-    ).toEqual('study pid');
+      await screen.findByRole('link', { name: 'study pid' })
+    ).toHaveAttribute('href', 'https://doi.org/study pid');
   });
 
   it.skip('renders structured data correctly', () => {
-    // mock getElementByTagNameSpy so we can snapshot mockElement
-    const docFragment = document.createDocumentFragment();
-    const mockElement = document.createElement('head');
-    docFragment.appendChild(mockElement);
-    const mockHTMLCollection = docFragment.children;
-    jest
-      .spyOn(document, 'getElementsByTagName')
-      .mockReturnValue(mockHTMLCollection);
-
-    (useStudy as jest.Mock).mockReturnValue({
-      data: [
-        {
-          ...initialData[0],
-          studyInvestigations: [
-            {
-              investigation: {
-                ...investigation,
-                investigationUsers: investigationUser,
-              },
-            },
-          ],
-        },
-      ],
-    });
-    createWrapper();
-
-    expect(mockElement).toMatchSnapshot();
+    // // mock getElementByTagNameSpy so we can snapshot mockElement
+    // const docFragment = document.createDocumentFragment();
+    // const mockElement = document.createElement('head');
+    // docFragment.appendChild(mockElement);
+    // const mockHTMLCollection = docFragment.children;
+    // jest
+    //   .spyOn(document, 'getElementsByTagName')
+    //   .mockReturnValue(mockHTMLCollection);
+    //
+    // (useStudy as jest.Mock).mockReturnValue({
+    //   data: [
+    //     {
+    //       ...initialData[0],
+    //       studyInvestigations: [
+    //         {
+    //           investigation: {
+    //             ...investigation,
+    //             investigationUsers: investigationUser,
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // });
+    // createWrapper();
+    //
+    // expect(mockElement).toMatchSnapshot();
   });
 });
