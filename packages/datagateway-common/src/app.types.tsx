@@ -217,10 +217,16 @@ export interface Download {
   email?: string;
 }
 
-export interface FormattedDownload
-  extends Omit<Download, 'status' | 'isDeleted'> {
-  isDeleted: string;
-  status: string;
+export interface FormattedDownload extends Download {
+  /**
+   * User-facing label of {@link Download.isDeleted}
+   */
+  formattedIsDeleted: string;
+
+  /**
+   * User-facing label of {@link Download.status}
+   */
+  formattedStatus: string;
 
   [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }

@@ -82,6 +82,17 @@ Object {
       "modTime": "2000-01-01",
       "name": "Test 1",
       "pid": "doi",
+      "studyInvestigations": Array [
+        Object {
+          "id": 636,
+          "investigation": Object {
+            "id": 357,
+            "name": "peculiar crowd",
+            "title": "all might urgent",
+            "visitId": "Y2D8y7v",
+          },
+        },
+      ],
     },
   ],
   "loadMoreRows": [Function],

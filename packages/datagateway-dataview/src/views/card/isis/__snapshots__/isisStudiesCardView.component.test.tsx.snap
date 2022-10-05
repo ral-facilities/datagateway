@@ -9,6 +9,17 @@ Object {
       "modTime": "2000-01-01",
       "name": "Test 1",
       "pid": "doi",
+      "studyInvestigations": Array [
+        Object {
+          "id": 151,
+          "investigation": Object {
+            "id": 711,
+            "name": "investigation name",
+            "title": "investigation title",
+            "visitId": "IPim0",
+          },
+        },
+      ],
     },
   ],
   "description": Object {

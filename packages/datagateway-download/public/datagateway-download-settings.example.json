@@ -62,5 +62,8 @@
       "order": 1
     }
   ],
-  "pluginHost": "http://localhost:3000"
+  "pluginHost": "http://localhost:3000",
+  "uiFeatures": {
+    "downloadProgress": false
+  }
 }

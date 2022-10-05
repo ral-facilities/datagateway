@@ -1,5 +1,12 @@
 import React from 'react';
-import { Input, InputAdornment, MenuItem, Select } from '@mui/material';
+import {
+  FormControl,
+  Input,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import debounce from 'lodash.debounce';
 import { FiltersType, TextFilter } from '../../app.types';
@@ -62,47 +69,55 @@ const TextColumnFilter = (props: {
 
   return (
     <div>
-      <Input
+      <FormControl
         id={`${label}-filter`}
-        placeholder={`${type.charAt(0).toUpperCase() + type.slice(1)}`}
-        value={inputValue}
-        onChange={handleInputChange}
-        inputProps={{ 'aria-label': `Filter by ${label}` }}
-        aria-hidden={true}
-        fullWidth={true}
+        variant="standard"
         color="secondary"
-        endAdornment={
-          <InputAdornment position="end">
-            <Select
-              id={`${label}-select-filter-type`}
-              value={type}
-              IconComponent={SettingsIcon}
-              // Do not render a value
-              renderValue={() => ''}
-              onChange={(e) => handleSelectChange(e.target.value as string)}
-              SelectDisplayProps={{
-                'aria-label': `include or exclude`,
-              }}
-              variant="standard"
-            >
-              <MenuItem
-                key="include"
-                id="select-filter-type-include"
-                value="include"
+        fullWidth={true}
+        margin="dense"
+      >
+        <InputLabel id={`${label}-filter`}>
+          {type.charAt(0).toUpperCase() + type.slice(1)}
+        </InputLabel>
+        <Input
+          id={`${label}-filter`}
+          value={inputValue}
+          onChange={handleInputChange}
+          inputProps={{ 'aria-label': `Filter by ${label}` }}
+          aria-hidden={true}
+          endAdornment={
+            <InputAdornment position="end">
+              <Select
+                id={`${label}-select-filter-type`}
+                value={type}
+                IconComponent={SettingsIcon}
+                // Do not render a value
+                renderValue={() => ''}
+                onChange={(e) => handleSelectChange(e.target.value as string)}
+                SelectDisplayProps={{
+                  'aria-label': `include or exclude`,
+                }}
+                variant="standard"
               >
-                Include
-              </MenuItem>
-              <MenuItem
-                key="exclude"
-                id="select-filter-type-exclude"
-                value="exclude"
-              >
-                Exclude
-              </MenuItem>
-            </Select>
-          </InputAdornment>
-        }
-      />
+                <MenuItem
+                  key="include"
+                  id="select-filter-type-include"
+                  value="include"
+                >
+                  Include
+                </MenuItem>
+                <MenuItem
+                  key="exclude"
+                  id="select-filter-type-exclude"
+                  value="exclude"
+                >
+                  Exclude
+                </MenuItem>
+              </Select>
+            </InputAdornment>
+          }
+        />
+      </FormControl>
     </div>
   );
 };
