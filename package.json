@@ -13,7 +13,7 @@
     "lerna-update-wizard": "1.1.0"
   },
   "scripts": {
-    "build": "lerna run build --ignore datagateway-common",
+    "build": "yarn workspaces foreach --parallel --exclude datagateway-common run build",
     "lint": "lerna run lint:js -- --max-warnings=0",
     "tsc": "lerna run tsc",
     "test": "yarn test:unit && yarn test:e2e",
