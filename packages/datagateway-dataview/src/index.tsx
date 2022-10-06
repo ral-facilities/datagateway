@@ -171,36 +171,40 @@ if (
   render();
   log.setDefaultLevel(log.levels.DEBUG);
 
-  settings.then((settingsResult) => {
-    if (settingsResult) {
-      const splitUrl = settingsResult.apiUrl.split('/');
-      const dataGatewayUrl = `${splitUrl
-        .slice(0, splitUrl.length - 1)
-        .join('/')}/datagateway-api`;
-      axios
-        .post(`${dataGatewayUrl}/sessions`, {
-          username: 'root',
-          password: 'pw',
-          mechanism: 'simple',
-        })
-        .then((response) => {
-          const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-          const payload = {
-            sessionID: response.data.sessionID,
-            username: 'Thomas409',
-          };
-          const jwt = jsrsasign.KJUR.jws.JWS.sign(
-            'HS256',
-            jwtHeader,
-            payload,
-            'shh'
-          );
+  if (process.env.NODE_ENV === `development`) {
+    settings.then((settingsResult) => {
+      if (settingsResult) {
+        const splitUrl = settingsResult.apiUrl.split('/');
+        const dataGatewayUrl = `${splitUrl
+          .slice(0, splitUrl.length - 1)
+          .join('/')}/datagateway-api`;
+        axios
+          .post(`${dataGatewayUrl}/sessions`, {
+            username: 'root',
+            password: 'pw',
+            mechanism: 'simple',
+          })
+          .then((response) => {
+            const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+            const payload = {
+              sessionID: response.data.sessionID,
+              username: 'Thomas409',
+            };
+            const jwt = jsrsasign.KJUR.jws.JWS.sign(
+              'HS256',
+              jwtHeader,
+              payload,
+              'shh'
+            );
 
-          window.localStorage.setItem(MicroFrontendToken, jwt);
-        })
-        .catch((error) => log.error(`Can't log in to ICAT: ${error.message}`));
-    }
-  });
+            window.localStorage.setItem(MicroFrontendToken, jwt);
+          })
+          .catch((error) =>
+            log.error(`Can't log in to ICAT: ${error.message}`)
+          );
+      }
+    });
+  }
 } else {
   log.setDefaultLevel(log.levels.ERROR);
 }
