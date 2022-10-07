@@ -1,29 +1,26 @@
-import { ListItemText } from '@mui/material';
 import {
-  AdvancedFilter,
+  type Dataset,
   dGCommonInitialState,
-  useDatasetsPaginated,
   useDatasetCount,
-  Dataset,
-  AddToCartButton,
-  DownloadButton,
-  ISISDatasetDetailsPanel,
+  useDatasetsPaginated,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISDatasetsCardView from './isisDatasetsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -41,11 +38,11 @@ describe('ISIS Datasets - Card View', () => {
   let state: StateType;
   let cardData: Dataset[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISDatasetsCardView
@@ -58,7 +55,6 @@ describe('ISIS Datasets - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
     cardData = [
@@ -71,6 +67,7 @@ describe('ISIS Datasets - Card View', () => {
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -97,43 +94,17 @@ describe('ISIS Datasets - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
+  it('correct link used when NOT in studyHierarchy', async () => {
+    renderComponent();
+    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1'
+    );
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    const investigationId = '1';
-    createWrapper();
-    expect(useDatasetCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
-    expect(useDatasetsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
-  });
-
-  it('correct link used when NOT in studyHierarchy', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
-    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1');
-  });
-
-  it('correct link used for studyHierarchy', () => {
-    const store = mockStore(state);
-    const wrapper = mount(
-      <Provider store={store}>
+  it('correct link used for studyHierarchy', async () => {
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISDatasetsCardView
@@ -146,22 +117,26 @@ describe('ISIS Datasets - Card View', () => {
         </Router>
       </Provider>
     );
-    expect(
-      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
-    ).toEqual(
+    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
       '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1'
     );
   });
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').last().simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by datasets.name',
+      hidden: true,
+    });
+
+    await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
@@ -169,34 +144,32 @@ describe('ISIS Datasets - Card View', () => {
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').first().simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'datasets.modified_time filter to',
+    });
+
+    await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
 
@@ -204,47 +177,48 @@ describe('ISIS Datasets - Card View', () => {
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
     );
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('datasets.name');
-    button.find('div').simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by DATASETS.NAME' })
+    );
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 
-  it('renders buttons correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
-
-    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
-    expect(wrapper.find(DownloadButton).text()).toEqual('buttons.download');
+  it('renders buttons correctly', async () => {
+    renderComponent();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.download' })
+    ).toBeInTheDocument();
   });
 
-  it('displays details panel when more information is expanded and navigates to datafiles view when tab clicked', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
+  it('displays details panel when more information is expanded and navigates to datafiles view when tab clicked', async () => {
+    renderComponent();
 
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+    await user.click(await screen.findByLabelText('card-more-info-expand'));
 
-    wrapper.find('#dataset-datafiles-tab').last().simulate('click');
+    expect(
+      await screen.findByTestId('dataset-details-panel')
+    ).toBeInTheDocument();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'datasets.details.label' })
+    );
+
     expect(history.location.pathname).toBe(
       '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile'
     );
