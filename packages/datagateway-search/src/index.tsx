@@ -156,10 +156,7 @@ if (
   if (process.env.NODE_ENV === `development`) {
     settings.then((settingsResult) => {
       if (settingsResult) {
-        const splitUrl = settingsResult.apiUrl.split('/');
-        const dataGatewayUrl = `${splitUrl
-          .slice(0, splitUrl.length - 1)
-          .join('/')}/datagateway-api`;
+        const dataGatewayUrl = settingsResult.apiUrl;
         axios
           .post(`${dataGatewayUrl}/sessions`, {
             username: 'root',
