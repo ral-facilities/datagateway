@@ -1,30 +1,27 @@
-import { ListItemText } from '@mui/material';
 import {
-  AdvancedFilter,
   dGCommonInitialState,
-  useISISInvestigationsPaginated,
-  useISISInvestigationCount,
-  Investigation,
+  type Investigation,
   useInvestigationSizes,
-  AddToCartButton,
-  DownloadButton,
-  ISISInvestigationDetailsPanel,
+  useISISInvestigationCount,
+  useISISInvestigationsPaginated,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -44,11 +41,11 @@ describe('ISIS Investigations - Card View', () => {
   let cardData: Investigation[];
   let history: History;
   let replaceSpy: jest.SpyInstance;
+  let user: UserEvent;
 
-  const createWrapper = (studyHierarchy = false): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (studyHierarchy = false): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISInvestigationsCardView
@@ -60,7 +57,6 @@ describe('ISIS Investigations - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
     cardData = [
@@ -88,6 +84,7 @@ describe('ISIS Investigations - Card View', () => {
     ];
     history = createMemoryHistory();
     replaceSpy = jest.spyOn(history, 'replace');
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -115,53 +112,36 @@ describe('ISIS Investigations - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
-  });
-
-  it('calls required query, filter and sort functions on page load', () => {
-    const instrumentId = '1';
-    const instrumentChildId = '1';
-    const studyHierarchy = false;
-    createWrapper();
-    expect(useISISInvestigationCount).toHaveBeenCalledWith(
-      parseInt(instrumentId),
-      parseInt(instrumentChildId),
-      studyHierarchy
+  it('correct link used when NOT in studyHierarchy', async () => {
+    renderComponent();
+    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle/1/investigation/1'
     );
-    expect(useISISInvestigationsPaginated).toHaveBeenCalledWith(
-      parseInt(instrumentId),
-      parseInt(instrumentChildId),
-      studyHierarchy
+  });
+
+  it('correct link used for studyHierarchy', async () => {
+    renderComponent(true);
+    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
+      '/browseStudyHierarchy/instrument/1/study/1/investigation/1'
     );
-    expect(useInvestigationSizes).toHaveBeenCalledWith(cardData);
   });
 
-  it('correct link used when NOT in studyHierarchy', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
-    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1');
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('correct link used for studyHierarchy', () => {
-    const wrapper = createWrapper(true);
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
-    expect(
-      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
-    ).toEqual('/browseStudyHierarchy/instrument/1/study/1/investigation/1');
-  });
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by investigations.title',
+      hidden: true,
+    });
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').last().simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
@@ -169,111 +149,91 @@ describe('ISIS Investigations - Card View', () => {
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').first().simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'investigations.details.end_date filter to',
+    });
+
+    await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });
 
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
+  it('displays DOI and renders the expected Link ', async () => {
+    renderComponent();
     expect(
-      wrapper
-        .find('[data-testid="isis-investigations-card-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('study pid');
-
-    expect(
-      wrapper
-        .find('[data-testid="isis-investigations-card-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/study pid');
+      await screen.findByRole('link', { name: 'study pid' })
+    ).toHaveAttribute('href', 'https://doi.org/study pid');
   });
 
-  it('displays the correct user as the PI ', () => {
-    const wrapper = createWrapper();
-
-    expect(
-      wrapper
-        .find(
-          '[data-testid="card-info-data-investigations.principal_investigators"]'
-        )
-        .text()
-    ).toEqual('Test PI');
+  it('displays the correct user as the PI ', async () => {
+    renderComponent();
+    expect(await screen.findByText('Test PI')).toBeInTheDocument();
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('investigations.title');
-    button.find('div').simulate('click');
-
+  it('updates sort query params on sort', async () => {
+    renderComponent();
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Sort by INVESTIGATIONS.TITLE',
+      })
+    );
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 
-  it('renders buttons correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
-
-    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
-    expect(wrapper.find(DownloadButton).text()).toEqual('buttons.download');
+  it('renders buttons correctly', async () => {
+    renderComponent();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.download' })
+    ).toBeInTheDocument();
   });
 
-  it('displays details panel when more information is expanded and navigates to datasets view when tab clicked', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
-
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
-
-    wrapper.find('#investigation-datasets-tab').last().simulate('click');
+  it('displays details panel when more information is expanded and navigates to datasets view when tab clicked', async () => {
+    renderComponent();
+    await user.click(await screen.findByLabelText('card-more-info-expand'));
+    expect(
+      await screen.findByTestId('investigation-details-panel')
+    ).toBeTruthy();
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.datasets',
+      })
+    );
     expect(history.location.pathname).toBe(
       '/browse/instrument/1/facilityCycle/1/investigation/1/dataset'
     );
@@ -284,6 +244,6 @@ describe('ISIS Investigations - Card View', () => {
     (useISISInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
     (useInvestigationSizes as jest.Mock).mockReturnValueOnce([{ data: 0 }]);
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 });

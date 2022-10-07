@@ -84,7 +84,11 @@ const InstrumentDetailsPanel = (
   }, [data, selectedTab, changeTab]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="instrument-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <Tabs
         variant="scrollable"
         textColor="secondary"
