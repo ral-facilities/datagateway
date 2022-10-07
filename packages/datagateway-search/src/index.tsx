@@ -156,9 +156,9 @@ if (
   if (process.env.NODE_ENV === `development`) {
     settings.then((settingsResult) => {
       if (settingsResult) {
-        const dataGatewayUrl = settingsResult.apiUrl;
+        const apiUrl = settingsResult.apiUrl;
         axios
-          .post(`${dataGatewayUrl}/sessions`, {
+          .post(`${apiUrl}/sessions`, {
             username: 'root',
             password: 'pw',
             mechanism: 'simple',
