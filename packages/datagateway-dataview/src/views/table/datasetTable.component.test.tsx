@@ -18,7 +18,6 @@ import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
 import DatasetTable from './datasetTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import {
   applyDatePickerWorkaround,
@@ -55,19 +54,6 @@ describe('Dataset table component', () => {
   let rowData: Dataset[];
   let history: History;
   let user: UserEvent;
-
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <DatasetTable investigationId="1" />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
@@ -133,9 +119,10 @@ describe('Dataset table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
+  // TODO: This creates a *really* big snapshot, so not sure if it's worth
+  it.skip('renders correctly', () => {
+    const { asFragment } = renderComponent();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('updates filter query params on text filter', async () => {
