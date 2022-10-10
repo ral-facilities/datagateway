@@ -15,7 +15,7 @@
   "scripts": {
     "build": "yarn workspaces foreach --parallel --exclude datagateway-common run build",
     "lint": "yarn workspaces foreach --parallel run lint:js --max-warnings=0",
-    "tsc": "lerna run tsc",
+    "tsc": "yarn workspace datagateway-common tsc",
     "test": "yarn test:unit && yarn test:e2e",
     "test:unit": "lerna run test --stream",
     "test:e2e": "cd packages/datagateway-dataview && yarn run e2e && cd ../datagateway-download && yarn run e2e && cd ../datagateway-search && yarn run e2e",
