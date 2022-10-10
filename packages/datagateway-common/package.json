@@ -24,7 +24,7 @@
     "react-draggable": "4.4.3",
     "react-i18next": "11.18.3",
     "react-query": "3.39.2",
-    "react-redux": "7.2.6",
+    "react-redux": "8.0.4",
     "react-scripts": "5.0.0",
     "react-virtualized": "9.22.3",
     "redux": "4.2.0",
