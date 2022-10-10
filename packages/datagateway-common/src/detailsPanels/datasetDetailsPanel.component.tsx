@@ -29,11 +29,17 @@ const DatasetDetailsPanel = (
   }, [detailsPanelResize]);
 
   return (
-    <StyledGrid id="details-panel" container direction="column">
+    <StyledGrid
+      data-testid="dataset-details-panel"
+      id="details-panel"
+      container
+      direction="column"
+    >
       <Grid item xs>
         <Typography variant="h6">
           <b>{datasetData.name}</b>
-        </Typography>
+        </Typography>{' '}
+        T
         <StyledDivider />
       </Grid>
       <Grid item xs>
