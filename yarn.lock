@@ -7705,7 +7705,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     hex-to-rgba: 2.0.1
     history: 4.10.1
-    i18next: 21.9.1
+    i18next: 21.10.0
     lint-staged: 13.0.3
     lodash.debounce: 4.0.8
     loglevel: 1.8.0
@@ -7785,7 +7785,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     express: 4.18.1
     history: 4.10.1
-    i18next: 21.9.1
+    i18next: 21.10.0
     i18next-browser-languagedetector: 6.1.2
     i18next-http-backend: 1.4.1
     jsrsasign: 10.5.25
@@ -7855,7 +7855,7 @@ __metadata:
     eslint-plugin-cypress: 2.12.1
     eslint-plugin-prettier: 4.2.1
     history: 4.10.1
-    i18next: 21.9.1
+    i18next: 21.10.0
     i18next-browser-languagedetector: 6.1.2
     i18next-http-backend: 1.4.1
     jsrsasign: 10.5.25
@@ -7924,7 +7924,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     express: 4.18.1
     history: 4.10.1
-    i18next: 21.9.1
+    i18next: 21.10.0
     i18next-browser-languagedetector: 6.1.2
     i18next-http-backend: 1.4.1
     jsrsasign: 10.5.25
@@ -10775,12 +10775,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:21.9.1":
-  version: 21.9.1
-  resolution: "i18next@npm:21.9.1"
+"i18next@npm:21.10.0":
+  version: 21.10.0
+  resolution: "i18next@npm:21.10.0"
   dependencies:
     "@babel/runtime": ^7.17.2
-  checksum: 1bc59c61fbb27385841f76436c7dd60e9f42a3fb326797db44a65dd165c489420e549b5370e3de75b85f8d61239f4869fc9fbcf63deae5f40ee606bc04916e6d
+  checksum: f997985e2d4d15a62a0936a82ff6420b97f3f971e776fe685bdd50b4de0cb4dc2198bc75efe6b152844794ebd5040d8060d6d152506a687affad534834836d81
   languageName: node
   linkType: hard
 
