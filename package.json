@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "yarn workspaces foreach --parallel --exclude datagateway-common run build",
-    "lint": "lerna run lint:js -- --max-warnings=0",
+    "lint": "yarn workspaces foreach --parallel run lint:js --max-warnings=0",
     "tsc": "lerna run tsc",
     "test": "yarn test:unit && yarn test:e2e",
     "test:unit": "lerna run test --stream",
