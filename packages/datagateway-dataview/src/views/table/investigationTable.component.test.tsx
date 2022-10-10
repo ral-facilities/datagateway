@@ -1,16 +1,15 @@
 import {
-  Investigation,
   dGCommonInitialState,
-  useInvestigationCount,
-  useIds,
-  useCart,
+  Investigation,
   useAddToCart,
-  useRemoveFromCart,
+  useCart,
+  useIds,
+  useInvestigationCount,
   useInvestigationsInfinite,
   useInvestigationSizes,
-  InvestigationDetailsPanel,
+  useRemoveFromCart,
 } from 'datagateway-common';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -19,13 +18,19 @@ import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
 import InvestigationTable from './investigationTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../setupTests';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -48,21 +53,9 @@ describe('Investigation table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <InvestigationTable />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const createRTLWrapper = (): RenderResult => {
+  const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
@@ -76,6 +69,7 @@ describe('Investigation table component', () => {
   };
 
   beforeEach(() => {
+    user = userEvent.setup();
     rowData = [
       {
         id: 1,
@@ -136,99 +130,47 @@ describe('Investigation table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
+  it('displays DOI and renders the expected Link ', async () => {
+    renderComponent();
+    expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
+    );
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    createWrapper();
-    expect(useInvestigationCount).toHaveBeenCalled();
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigationInstruments: 'instrument',
-        }),
-      },
-    ]);
-    expect(useInvestigationSizes).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
-    expect(useIds).toHaveBeenCalledWith('investigation', undefined, true);
-    expect(useCart).toHaveBeenCalled();
-    expect(useAddToCart).toHaveBeenCalledWith('investigation');
-    expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by investigations.name',
+      hidden: true,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
+    await user.type(filterInput, 'test');
 
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper
-        .find('[data-testid="investigation-table-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('doi 1');
-
-    expect(
-      wrapper
-        .find('[data-testid="investigation-table-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.name"]')
-      .last();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
+    expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const filterInput = wrapper.find(
-      'input[id="investigations.start_date filter from"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'investigations.start_date filter from',
+    });
+
+    await user.type(filterInput, '2019-08-06');
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -237,8 +179,7 @@ describe('Investigation table component', () => {
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -246,13 +187,10 @@ describe('Investigation table component', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
+    await user.click(screen.getByText('investigations.title'));
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -260,20 +198,22 @@ describe('Investigation table component', () => {
     );
   });
 
-  it('calls addToCart mutate function on unchecked checkbox click', () => {
+  it('calls addToCart mutate function on unchecked checkbox click', async () => {
     const addToCart = jest.fn();
     (useAddToCart as jest.Mock).mockReturnValueOnce({
       mutate: addToCart,
       loading: false,
     });
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    );
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
 
-  it('calls removeFromCart mutate function on checked checkbox click', () => {
+  it('calls removeFromCart mutate function on checked checkbox click', async () => {
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
         {
@@ -293,14 +233,16 @@ describe('Investigation table component', () => {
       loading: false,
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    );
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
 
-  it('selected rows only considers relevant cart items', () => {
+  it('selected rows only considers relevant cart items', async () => {
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
         {
@@ -321,44 +263,42 @@ describe('Investigation table component', () => {
       isLoading: false,
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const selectAllCheckbox = wrapper
-      .find('[aria-label="select all rows"]')
-      .last();
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select all rows' })
+    );
 
-    expect(selectAllCheckbox.prop('checked')).toEqual(false);
-    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+    const selectAllCheckbox = await screen.findByRole('checkbox', {
+      name: 'select all rows',
+    });
+
+    expect(selectAllCheckbox).not.toBeChecked();
+    expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
     state.dgdataview.selectAllSetting = false;
+    renderComponent();
 
-    const wrapper = createWrapper();
-
-    expect(useIds).toHaveBeenCalledWith('investigation', undefined, false);
-    expect(useIds).not.toHaveBeenCalledWith('investigation', undefined, true);
-    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('checkbox', { name: 'select all rows' })
+      ).toBeNull();
+    });
   });
 
   it('renders investigation title as a link', () => {
-    const wrapper = createRTLWrapper();
-
+    renderComponent();
     expect(
-      wrapper.getAllByTestId('investigation-table-title')
+      screen.getAllByTestId('investigation-table-title')
     ).toMatchSnapshot();
   });
 
-  it('renders date objects as just the date', () => {
-    const wrapper = createWrapper();
-
-    expect(wrapper.find('[aria-colindex=9]').find('p').text()).toEqual(
-      '2019-07-23'
-    );
-
-    expect(wrapper.find('[aria-colindex=10]').find('p').text()).toEqual(
-      '2019-07-24'
-    );
+  it('renders date objects as just the date', async () => {
+    renderComponent();
+    expect(await screen.findByText('2019-07-23')).toBeInTheDocument();
+    expect(await screen.findByText('2019-07-24')).toBeInTheDocument();
   });
 
   it('renders fine with incomplete data', () => {
@@ -376,14 +316,16 @@ describe('Investigation table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 
-  it('displays details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
-
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
+  it('displays details panel when expanded', async () => {
+    renderComponent();
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+    expect(
+      await screen.findByTestId('investigation-details-panel')
+    ).toBeInTheDocument();
   });
 });
