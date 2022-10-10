@@ -6,11 +6,12 @@ import { StateType } from '../../../state/app.types';
 import { dGCommonInitialState, useStudy } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
 import { render, type RenderResult, screen } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -26,19 +27,7 @@ describe('ISIS Study Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
-
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ISISStudyLanding instrumentId="4" studyId="5" />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
+  let user: UserEvent;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -146,6 +135,7 @@ describe('ISIS Study Landing page', () => {
     );
 
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     (useStudy as jest.Mock).mockReturnValue({
       data: initialData,
@@ -156,36 +146,35 @@ describe('ISIS Study Landing page', () => {
     jest.clearAllMocks();
   });
 
-  it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
-    let wrapper = createWrapper();
+  describe('links to the correct url in the datafiles tab', () => {
+    it('in normal view', async () => {
+      renderComponent();
 
-    wrapper.find('#study-investigations-tab').last().simulate('click');
+      await user.click(
+        screen.getByRole('tab', { name: 'studies.details.investigations' })
+      );
 
-    expect(history.location.pathname).toBe(
-      '/browseStudyHierarchy/instrument/4/study/5/investigation'
-    );
+      expect(history.location.pathname).toBe(
+        '/browseStudyHierarchy/instrument/4/study/5/investigation'
+      );
+    });
 
-    history.replace('/?view=card');
-    wrapper = createWrapper();
+    it('in cards view', async () => {
+      history.replace('/?view=card');
+      renderComponent();
 
-    wrapper.find('#study-investigations-tab').last().simulate('click');
+      await user.click(
+        screen.getByRole('tab', { name: 'studies.details.investigations' })
+      );
 
-    expect(history.location.pathname).toBe(
-      '/browseStudyHierarchy/instrument/4/study/5/investigation'
-    );
-    expect(history.location.search).toBe('?view=card');
+      expect(history.location.pathname).toBe(
+        '/browseStudyHierarchy/instrument/4/study/5/investigation'
+      );
+      expect(history.location.search).toBe('?view=card');
+    });
   });
 
-  it('single user displayed correctly', () => {
-    let wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[data-testid="landing-study-users-label"]')
-    ).toHaveLength(0);
-    expect(wrapper.find('[data-testid="landing-study-user-0"]')).toHaveLength(
-      0
-    );
-
+  it('single user displayed correctly', async () => {
     (useStudy as jest.Mock).mockReturnValue({
       data: [
         {
@@ -201,14 +190,11 @@ describe('ISIS Study Landing page', () => {
         },
       ],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
-    expect(
-      wrapper.find('[data-testid="landing-study-users-label"]')
-    ).toHaveLength(4);
-    expect(
-      wrapper.find('[data-testid="landing-study-user-0"]').first().text()
-    ).toEqual('Principal Investigator: John Smith');
+    expect(await screen.findByTestId('landing-study-user-0')).toHaveTextContent(
+      'Principal Investigator: John Smith'
+    );
   });
 
   it('multiple users displayed correctly', async () => {
@@ -290,35 +276,5 @@ describe('ISIS Study Landing page', () => {
     expect(
       await screen.findByRole('link', { name: 'study pid' })
     ).toHaveAttribute('href', 'https://doi.org/study pid');
-  });
-
-  it.skip('renders structured data correctly', () => {
-    // // mock getElementByTagNameSpy so we can snapshot mockElement
-    // const docFragment = document.createDocumentFragment();
-    // const mockElement = document.createElement('head');
-    // docFragment.appendChild(mockElement);
-    // const mockHTMLCollection = docFragment.children;
-    // jest
-    //   .spyOn(document, 'getElementsByTagName')
-    //   .mockReturnValue(mockHTMLCollection);
-    //
-    // (useStudy as jest.Mock).mockReturnValue({
-    //   data: [
-    //     {
-    //       ...initialData[0],
-    //       studyInvestigations: [
-    //         {
-    //           investigation: {
-    //             ...investigation,
-    //             investigationUsers: investigationUser,
-    //           },
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // });
-    // createWrapper();
-    //
-    // expect(mockElement).toMatchSnapshot();
   });
 });
