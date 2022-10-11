@@ -57,22 +57,11 @@ export const readSciGatewayToken = () => {
 Cypress.Commands.add('login', () => {
   return cy.request('datagateway-search-settings.json').then((response) => {
     const settings = response.body;
-    let body = {
+    cy.request('POST', `${settings.apiUrl}/sessions`, {
       username: '',
       password: '',
       mechanism: 'anon',
-    };
-    let headers = {
-      "Content-Type": "application/json",
-    };
-    if (credentials) {
-      body = credentials;
-    }
-    cy.request({
-      method:'POST', 
-      url:`${settings.apiUrl}/sessions`, 
-      body:body, 
-      headers:headers}).then((response) => {
+    }).then((response) => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,

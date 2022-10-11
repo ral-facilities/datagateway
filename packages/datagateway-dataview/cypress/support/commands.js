@@ -62,17 +62,10 @@ Cypress.Commands.add('login', (credentials) => {
       password: '',
       mechanism: 'anon',
     };
-    let headers = {
-      "Content-Type": "application/json",
-    };
     if (credentials) {
       body = credentials;
     }
-    cy.request({
-      method:'POST', 
-      url:`${settings.apiUrl}/sessions`, 
-      body:body, 
-      headers:headers}).then((response) => {
+    cy.request('POST', `${settings.apiUrl}/sessions`, body).then((response) => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,
