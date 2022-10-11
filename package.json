@@ -13,13 +13,12 @@
     "lerna-update-wizard": "1.1.0"
   },
   "scripts": {
-    "build": "yarn workspaces foreach --parallel --exclude datagateway-common run build",
-    "lint": "yarn workspaces foreach --parallel run lint:js --max-warnings=0",
+    "build": "yarn workspaces foreach --verbose --parallel --exclude datagateway-common run build",
+    "lint": "yarn workspaces foreach --verbose --parallel run lint:js --max-warnings=0",
     "tsc": "yarn workspace datagateway-common tsc",
     "test": "yarn test:unit && yarn test:e2e",
-    "test:unit": "yarn workspaces foreach --verbose --exclude datagateway run test",
-    "test:e2e": "cd packages/datagateway-dataview && yarn run e2e && cd ../datagateway-download && yarn run e2e && cd ../datagateway-search && yarn run e2e",
-    "test:e2e:lerna": "lerna run e2e --stream --concurrency 1",
+    "test:unit": "yarn workspaces foreach --interlaced --verbose --exclude datagateway run test",
+    "test:e2e": "yarn workspaces foreach --interlaced --verbose --jobs 1 run e2e",
     "datagateway-dataview": "cd packages/datagateway-dataview && yarn start",
     "datagateway-download": "cd packages/datagateway-download && yarn start",
     "datagateway-search": "cd packages/datagateway-search && yarn start",
