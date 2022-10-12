@@ -1,34 +1,42 @@
-import React from 'react';
+import * as React from 'react';
 import ISISInvestigationsTable from './isisInvestigationsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import {
-  Investigation,
   dGCommonInitialState,
+  type Investigation,
+  useAddToCart,
+  useCart,
+  useInvestigationDetails,
+  useInvestigationSizes,
   useISISInvestigationCount,
   useISISInvestigationIds,
-  useCart,
-  useAddToCart,
-  useRemoveFromCart,
   useISISInvestigationsInfinite,
-  useInvestigationSizes,
-  useInvestigationDetails,
-  Table,
-  DownloadButton,
-  ISISInvestigationDetailsPanel,
+  useRemoveFromCart,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { mount, ReactWrapper } from 'enzyme';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findAllRows,
+  findCellInRow,
+  findColumnIndexByName,
+  findRowAt,
 } from '../../../setupTests';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -53,43 +61,19 @@ describe('ISIS Investigations table component', () => {
   let rowData: Investigation[];
   let history: History;
   let replaceSpy: jest.SpyInstance;
+  let user: UserEvent;
 
-  const createWrapper = (
-    element: React.ReactElement = (
-      <ISISInvestigationsTable
-        studyHierarchy={false}
-        instrumentId="4"
-        instrumentChildId="5"
-      />
-    )
-  ): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            {element}
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const createRTLWrapper = (
-    element: React.ReactElement = (
-      <ISISInvestigationsTable
-        studyHierarchy={false}
-        instrumentId="4"
-        instrumentChildId="5"
-      />
-    )
-  ): RenderResult => {
+  const renderComponent = (studyHierarchy = false): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            {element}
+            <ISISInvestigationsTable
+              studyHierarchy={studyHierarchy}
+              instrumentId="4"
+              instrumentChildId="5"
+            />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -133,6 +117,7 @@ describe('ISIS Investigations table component', () => {
     ];
     history = createMemoryHistory();
     replaceSpy = jest.spyOn(history, 'replace');
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -179,108 +164,49 @@ describe('ISIS Investigations table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
-  });
-
-  it('calls the correct data fetching hooks on load', () => {
-    const studyHierarchy = false;
-    const instrumentId = '4';
-    const instrumentChildId = '5';
-    createWrapper();
-    expect(useISISInvestigationCount).toHaveBeenCalledWith(
-      parseInt(instrumentId),
-      parseInt(instrumentChildId),
-      studyHierarchy
-    );
-    expect(useISISInvestigationsInfinite).toHaveBeenCalledWith(
-      parseInt(instrumentId),
-      parseInt(instrumentChildId),
-      studyHierarchy
-    );
-    expect(useInvestigationSizes).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
-    expect(useISISInvestigationIds).toHaveBeenCalledWith(
-      parseInt(instrumentId),
-      parseInt(instrumentChildId),
-      studyHierarchy,
-      true
-    );
-    expect(useCart).toHaveBeenCalled();
-    expect(useAddToCart).toHaveBeenCalledWith('investigation');
-    expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
-  });
-
-  it('calls useISISInvestigationsInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
-    });
-
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
-
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
+  it('displays DOI and renders the expected Link ', async () => {
+    renderComponent();
     expect(
-      wrapper
-        .find('[data-testid="isis-investigations-table-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('study pid');
-
-    expect(
-      wrapper
-        .find('[data-testid="isis-investigations-table-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/study pid');
+      await screen.findByRole('link', { name: 'study pid' })
+    ).toHaveAttribute('href', 'https://doi.org/study pid');
   });
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-    const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.name"]')
-      .last();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by investigations.name',
+      hidden: true,
+    });
 
-    expect(history.length).toBe(2);
+    await user.type(filterInput, 'test');
+
+    // user.type inputs the given string character by character to simulate user typing
+    // each keystroke of user.type creates a new entry in the history stack
+    // so the initial entry + 4 characters in "test" = 5 entries
+    expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const filterInput = wrapper.find(
-      'input[id="investigations.start_date filter from"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'investigations.start_date filter from',
+    });
+
+    await user.type(filterInput, '2019-08-06');
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -289,8 +215,7 @@ describe('ISIS Investigations table component', () => {
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -299,22 +224,19 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'investigations.title' })
+    );
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -322,20 +244,22 @@ describe('ISIS Investigations table component', () => {
     );
   });
 
-  it('calls addToCart mutate function on unchecked checkbox click', () => {
+  it('calls addToCart mutate function on unchecked checkbox click', async () => {
     const addToCart = jest.fn();
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: addToCart,
       loading: false,
     });
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    );
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
 
-  it('calls removeFromCart mutate function on checked checkbox click', () => {
+  it('calls removeFromCart mutate function on checked checkbox click', async () => {
     (useCart as jest.Mock).mockReturnValue({
       data: [
         {
@@ -355,14 +279,16 @@ describe('ISIS Investigations table component', () => {
       loading: false,
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    );
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
 
-  it('selected rows only considers relevant cart items', () => {
+  it('selected rows only considers relevant cart items', async () => {
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
         {
@@ -383,92 +309,91 @@ describe('ISIS Investigations table component', () => {
       isLoading: false,
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const selectAllCheckbox = wrapper
-      .find('[aria-label="select all rows"]')
-      .first();
+    const selectAllCheckbox = await screen.findByRole('checkbox', {
+      name: 'select all rows',
+    });
 
-    expect(selectAllCheckbox.prop('checked')).toEqual(false);
-    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+    expect(selectAllCheckbox).not.toBeChecked();
+    expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
     state.dgdataview.selectAllSetting = false;
-
-    const wrapper = createWrapper();
-
-    expect(useISISInvestigationIds).toHaveBeenCalledWith(4, 5, false, false);
-    expect(useISISInvestigationIds).not.toHaveBeenCalledWith(4, 5, false, true);
-    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+    renderComponent();
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('button', { name: 'select all rows' })
+      ).toBeNull();
+    });
   });
 
-  it('displays details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
-
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+  it('displays details panel when expanded', async () => {
+    renderComponent();
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+    expect(
+      await screen.findByTestId('investigation-details-panel')
+    ).toBeTruthy();
   });
 
-  it('renders details panel with datasets link and can navigate', () => {
-    const wrapper = createWrapper();
+  it('renders details panel with datasets link and can navigate', async () => {
+    renderComponent();
 
-    const detailsPanelWrapper = createWrapper(
-      wrapper.find(Table).prop('detailsPanel')({
-        rowData: rowData[0],
-        detailsPanelResize: jest.fn(),
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.datasets',
       })
     );
 
-    detailsPanelWrapper
-      .find('#investigation-datasets-tab')
-      .last()
-      .simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
     );
   });
 
-  it('renders title and DOI as links', () => {
-    const wrapper = createRTLWrapper();
-
-    expect(
-      wrapper.getAllByTestId('isis-investigations-table-title')
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.getAllByTestId('isis-investigations-table-doi-link')
-    ).toMatchSnapshot();
-  });
-
-  it('renders title and DOI as links in StudyHierarchy', () => {
-    const element: React.ReactElement = (
-      <ISISInvestigationsTable
-        studyHierarchy={true}
-        instrumentId="4"
-        instrumentChildId="5"
-      />
+  it('renders title and DOI as links', async () => {
+    renderComponent();
+    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
+      '/browse/instrument/4/facilityCycle/5/investigation/1'
     );
-    const wrapper = createRTLWrapper(element);
-
     expect(
-      wrapper.getAllByTestId('isis-investigations-table-title')
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.getAllByTestId('isis-investigations-table-doi-link')
-    ).toMatchSnapshot();
+      await screen.findByRole('link', { name: 'study pid' })
+    ).toHaveAttribute('href', 'https://doi.org/study pid');
   });
 
-  it('displays the correct user as the PI ', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual(
-      'Test PI'
+  it('renders title and DOI as links in StudyHierarchy', async () => {
+    renderComponent(true);
+    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
+      '/browseStudyHierarchy/instrument/4/study/5/investigation/1'
     );
+    expect(
+      await screen.findByRole('link', { name: 'study pid' })
+    ).toHaveAttribute('href', 'https://doi.org/study pid');
   });
 
-  it('gracefully handles empty Study Investigation and investigationUsers, missing Study from Study Investigation object and missing User from investigationUsers object', () => {
+  it('displays the correct user as the PI ', async () => {
+    renderComponent();
+
+    const piColumnIndex = await findColumnIndexByName(
+      'investigations.principal_investigators'
+    );
+
+    const row = await findRowAt(0);
+
+    expect(
+      await findCellInRow(row, { columnIndex: piColumnIndex })
+    ).toHaveTextContent('Test PI');
+  });
+
+  it('gracefully handles empty Study Investigation and investigationUsers', async () => {
     (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: {
         pages: [
@@ -482,9 +407,14 @@ describe('ISIS Investigations table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    let wrapper = createWrapper();
-    expect(() => wrapper).not.toThrowError();
+    renderComponent();
 
+    const rows = await screen.findAllByRole('row');
+    // 2 rows expected, 1 for the header row, and 1 for the items in rowData.
+    expect(rows).toHaveLength(2);
+  });
+
+  it('gracefully handles missing Study from Study Investigation object and missing User from investigationUsers object', async () => {
     (useISISInvestigationsInfinite as jest.Mock).mockClear();
     (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: {
@@ -507,13 +437,41 @@ describe('ISIS Investigations table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    wrapper = createWrapper();
-    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
-    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
+    renderComponent();
+
+    const doiColumnIndex = await findColumnIndexByName('investigations.doi');
+    const piColumnIndex = await findColumnIndexByName(
+      'investigations.principal_investigators'
+    );
+
+    // verify that the doi cell and the principal investigator cell in the row are empty
+    const row = await findRowAt(0);
+
+    expect(
+      await findCellInRow(row, { columnIndex: doiColumnIndex })
+    ).toHaveTextContent('');
+    expect(
+      await findCellInRow(row, { columnIndex: piColumnIndex })
+    ).toHaveTextContent('');
   });
 
-  it('renders actions correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
+  it('renders actions correctly', async () => {
+    renderComponent();
+
+    // find the action column
+    const actionsColumnIndex = await findColumnIndexByName('Actions');
+
+    // make sure all rows have the download button
+    const rows = await findAllRows();
+    for (const row of rows) {
+      const actionCell = await findCellInRow(row, {
+        columnIndex: actionsColumnIndex,
+      });
+      expect(
+        await within(actionCell).findByRole('button', {
+          name: 'buttons.download',
+        })
+      ).toBeInTheDocument();
+    }
   });
 });

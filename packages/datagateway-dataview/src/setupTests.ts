@@ -87,6 +87,12 @@ export const findColumnIndexByName = async (
 };
 
 /**
+ * Finds all table rows except the header row.
+ */
+export const findAllRows = async (): Promise<HTMLElement[]> =>
+  (await screen.findAllByRole('row')).slice(1);
+
+/**
  * Find the table row at the given index. This assumes the first table row is always the header row.
  *
  * @param index The index of the table row, igoring the header row. For example, if the table has 2 rows and the first row is the header row,
