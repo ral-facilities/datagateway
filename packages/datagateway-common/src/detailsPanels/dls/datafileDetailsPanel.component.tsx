@@ -32,7 +32,11 @@ const DatafileDetailsPanel = (
   }, [detailsPanelResize]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="datafile-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <StyledGrid id="details-panel" container direction="column">
         <Grid item xs>
           <Typography variant="h6">
