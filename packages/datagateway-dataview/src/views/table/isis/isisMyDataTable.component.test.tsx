@@ -29,6 +29,9 @@ import thunk from 'redux-thunk';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findCellInRow,
+  findColumnIndexByName,
+  findRowAt,
 } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -357,7 +360,7 @@ describe('ISIS MyData table component', () => {
     renderComponent();
 
     // find the first row
-    const row = (await screen.findAllByRole('row'))[1];
+    const row = await findRowAt(0);
 
     await user.click(
       await within(row).findByRole('button', { name: 'Show details' })
@@ -448,22 +451,22 @@ describe('ISIS MyData table component', () => {
     });
     renderComponent();
 
-    const columnHeaders = await screen.findAllByRole('columnheader');
-    const doiColumnIndex = columnHeaders.findIndex(
-      (header) => within(header).queryByText('investigations.doi') !== null
-    );
-    const instrumentColumnIndex = columnHeaders.findIndex(
-      (header) =>
-        within(header).queryByText('investigations.instrument') !== null
+    const doiColumnIndex = await findColumnIndexByName('investigations.doi');
+    const instrumentColumnIndex = await findColumnIndexByName(
+      'investigations.instrument'
     );
 
     const rows = await screen.findAllByRole('row');
     // 2 rows expected, 1 for the header row, and 1 for the items in rowData.
     expect(rows).toHaveLength(2);
 
-    const cells = within(rows[1]).getAllByRole('gridcell');
+    const row = await findRowAt(0);
 
-    expect(cells[doiColumnIndex]).toHaveTextContent('');
-    expect(cells[instrumentColumnIndex]).toHaveTextContent('');
+    expect(
+      findCellInRow(row, { columnIndex: doiColumnIndex })
+    ).toHaveTextContent('');
+    expect(
+      findCellInRow(row, { columnIndex: instrumentColumnIndex })
+    ).toHaveTextContent('');
   });
 });
