@@ -1,29 +1,37 @@
-import { render, RenderResult } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 import {
   dGCommonInitialState,
-  DLSVisitDetailsPanel,
-  Investigation,
+  type Investigation,
   readSciGatewayToken,
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsInfinite,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
-import { createMemoryHistory, MemoryHistory } from 'history';
-import React from 'react';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { createMemoryHistory, type MemoryHistory } from 'history';
+import * as React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import { AnyAction } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findAllRows,
+  findCellInRow,
+  findColumnIndexByName,
+  findRowAt,
 } from '../../../setupTests';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSMyDataTable from './dlsMyDataTable.component';
+import userEvent from '@testing-library/user-event';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -43,22 +51,9 @@ describe('DLS MyData table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: MemoryHistory;
-  let events: CustomEvent<AnyAction>[] = [];
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <DLSMyDataTable />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const createRTLWrapper = (): RenderResult => {
+  const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
@@ -72,13 +67,8 @@ describe('DLS MyData table component', () => {
   };
 
   beforeEach(() => {
-    events = [];
     history = createMemoryHistory();
-
-    document.dispatchEvent = (e: Event) => {
-      events.push(e as CustomEvent<AnyAction>);
-      return true;
-    };
+    user = userEvent.setup();
 
     state = JSON.parse(
       JSON.stringify({
@@ -127,44 +117,8 @@ describe('DLS MyData table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
-  });
-
-  it('calls the correct data fetching hooks on load', () => {
-    createWrapper();
-    expect(useInvestigationCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigationUsers.user.name': { eq: 'testUser' },
-        }),
-      },
-    ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigationUsers.user.name': { eq: 'testUser' },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify([
-          {
-            investigationInstruments: 'instrument',
-          },
-        ]),
-      },
-    ]);
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
-  });
-
   it('sorts by startDate desc and filters startDate to be before the current date on load', () => {
-    createWrapper();
+    renderComponent();
 
     expect(history.length).toBe(2);
     expect(history.entries[0].search).toBe(
@@ -177,32 +131,15 @@ describe('DLS MyData table component', () => {
     );
   });
 
-  it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by investigations.visit_id',
+      hidden: true,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.visit_id"]')
-      .last();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
+    await user.type(filterInput, 'test');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
@@ -210,59 +147,63 @@ describe('DLS MyData table component', () => {
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const filterInput = wrapper.find(
-      'input[id="investigations.end_date filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'investigations.end_date filter to',
+    });
+
+    await user.type(filterInput, '2019-08-06');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
     expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'investigations.title' })
+    );
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 
-  it('renders title and visit ID as a links', () => {
-    const wrapper = createRTLWrapper();
+  it('renders title and visit ID as a links', async () => {
+    renderComponent();
 
-    expect(wrapper.getAllByTestId('dls-mydata-table-name')).toMatchSnapshot();
+    const row = await findRowAt(0);
 
     expect(
-      wrapper.getAllByTestId('dls-mydata-table-visitId')
-    ).toMatchSnapshot();
+      await within(row).findByRole('link', { name: 'Test 1' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/proposal/Test 1/investigation/1/dataset'
+    );
+    expect(await within(row).findByRole('link', { name: '1' })).toHaveAttribute(
+      'href',
+      '/browse/proposal/Test 1/investigation/1/dataset'
+    );
   });
 
-  it('gracefully handles empty InvestigationInstrument and missing Instrument from InvestigationInstrument object', () => {
+  it('gracefully handles empty InvestigationInstrument', async () => {
     rowData[0] = {
       ...rowData[0],
       investigationInstruments: [],
@@ -272,10 +213,12 @@ describe('DLS MyData table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    let wrapper = createWrapper();
+    renderComponent();
 
-    expect(() => wrapper).not.toThrowError();
+    expect(await findAllRows()).toHaveLength(1);
+  });
 
+  it('gracefully handles missing Instrument from InvestigationInstrument object', async () => {
     rowData[0] = {
       ...rowData[0],
       investigationInstruments: [
@@ -289,16 +232,30 @@ describe('DLS MyData table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
+    const investigationInstrumentColIndex = await findColumnIndexByName(
+      'investigations.instrument'
+    );
+
+    const row = await findRowAt(0);
+
+    expect(
+      await findCellInRow(row, { columnIndex: investigationInstrumentColIndex })
+    ).toHaveTextContent('');
   });
 
-  it('displays details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+  it('displays details panel when expanded', async () => {
+    renderComponent();
 
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
+    const row = await findRowAt(0);
+
+    await user.click(
+      await within(row).findByRole('button', { name: 'Show details' })
+    );
+
+    expect(
+      await screen.findByTestId('visit-details-panel')
+    ).toBeInTheDocument();
   });
 });
