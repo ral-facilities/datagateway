@@ -1,16 +1,14 @@
-import React from 'react';
+import * as React from 'react';
 import DLSVisitsTable from './dlsVisitsTable.component';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import {
+  dGCommonInitialState,
   Investigation,
   useInvestigationCount,
-  useInvestigationsInfinite,
   useInvestigationsDatasetCount,
-  dGCommonInitialState,
-  DLSVisitDetailsPanel,
+  useInvestigationsInfinite,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -20,8 +18,19 @@ import { createMemoryHistory, History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findAllRows,
+  findCellInRow,
+  findColumnIndexByName,
+  findRowAt,
 } from '../../../setupTests';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -40,21 +49,9 @@ describe('DLS Visits table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <DLSVisitsTable proposalName="Test 1" />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const createRTLWrapper = (): RenderResult => {
+  const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
@@ -91,6 +88,7 @@ describe('DLS Visits table component', () => {
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -115,94 +113,49 @@ describe('DLS Visits table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('calls the correct data fetching hooks on load', () => {
-    const proposalName = 'Test 1';
-    createWrapper();
-    expect(useInvestigationCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({ name: { eq: proposalName } }),
-      },
-    ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({ name: { eq: proposalName } }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigationInstruments: 'instrument',
-        }),
-      },
-    ]);
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(rowData);
-  });
-
-  it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by investigations.visit_id',
+      hidden: true,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
+    await user.type(filterInput, 'test');
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.visit_id"]')
-      .last();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
+    // user.type inputs the given string character by character to simulate user typing
+    // each keystroke of user.type creates a new entry in the history stack
+    // so the initial entry + 4 characters in "test" = 5 entries
+    expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"visitId":{"value":"test","type":"include"}}'
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const filterInput = wrapper.find(
-      'input[id="investigations.end_date filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'investigations.end_date filter to',
+    });
+
+    await user.type(filterInput, '2019-08-06');
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -211,22 +164,19 @@ describe('DLS Visits table component', () => {
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'investigations.visit_id' })
+    );
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -234,45 +184,40 @@ describe('DLS Visits table component', () => {
     );
   });
 
-  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', async () => {
+    renderComponent();
 
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
+    const row = await findRowAt(0);
+
+    await user.click(within(row).getByRole('button', { name: 'Show details' }));
+
+    expect(await screen.findByTestId('visit-details-panel')).toBeTruthy();
   });
 
-  it('renders visit ID as links', () => {
-    const wrapper = createRTLWrapper();
+  it('renders visit ID as links', async () => {
+    renderComponent();
+
+    const visitIdColIndex = await findColumnIndexByName(
+      'investigations.visit_id'
+    );
+
+    const row = await findRowAt(0);
+    const visitIdCell = await findCellInRow(row, {
+      columnIndex: visitIdColIndex,
+    });
 
     expect(
-      wrapper.getAllByTestId('dls-visits-table-visitId')
-    ).toMatchSnapshot();
+      within(visitIdCell).getByRole('link', { name: '1' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/proposal/Test 1/investigation/1/dataset'
+    );
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([]);
-
-    expect(() => createWrapper()).not.toThrowError();
-
-    (useInvestigationCount as jest.Mock).mockReturnValueOnce({
-      data: 1,
-      isLoading: false,
-    });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          ...rowData[0],
-          investigationInstruments: [],
-        },
-      ],
-      isLoading: false,
-    });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([1]);
-
-    expect(() => createWrapper()).not.toThrowError();
 
     (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
       data: [
@@ -288,8 +233,40 @@ describe('DLS Visits table component', () => {
       isLoading: false,
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find('[aria-colindex=4]').find('p').text()).toEqual('');
+    expect(await findAllRows()).toHaveLength(1);
+  });
+
+  it('renders fine if no investigation instrument is returned', async () => {
+    (useInvestigationCount as jest.Mock).mockReturnValue({
+      data: 1,
+      isLoading: false,
+    });
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+      data: [
+        {
+          ...rowData[0],
+          investigationInstruments: [],
+        },
+      ],
+      isLoading: false,
+    });
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([1]);
+
+    renderComponent();
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    const instrumentNameColIndex = await findColumnIndexByName(
+      'investigations.instrument'
+    );
+
+    const row = await findRowAt(0);
+    const instrumentNameCell = await findCellInRow(row, {
+      columnIndex: instrumentNameColIndex,
+    });
+
+    expect(instrumentNameCell).toHaveTextContent('');
   });
 });
