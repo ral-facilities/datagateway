@@ -185,6 +185,9 @@ jobs:
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       # E2E tests
       - name: Checkout repo
         uses: actions/checkout@v3
