@@ -7,7 +7,7 @@
     "datasetGetCount": true
   },
   "idsUrl": "https://localhost:8181/ids",
-  "apiUrl": "http://localhost:5000/datagateway-api",
+  "apiUrl": "http://localhost:5000",
   "downloadApiUrl": "https://localhost:8181/topcat",
   "breadcrumbs": {
     "proposal": {
