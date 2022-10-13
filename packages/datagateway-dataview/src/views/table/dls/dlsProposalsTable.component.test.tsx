@@ -1,21 +1,32 @@
-import React from 'react';
+import * as React from 'react';
 import DLSProposalsTable from './dlsProposalsTable.component';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import {
-  Investigation,
+  dGCommonInitialState,
+  type Investigation,
   useInvestigationCount,
   useInvestigationsInfinite,
-  dGCommonInitialState,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
+import {
+  findCellInRow,
+  findColumnIndexByName,
+  findRowAt,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -33,21 +44,9 @@ describe('DLS Proposals table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <DLSProposalsTable />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const createRTLWrapper = (): RenderResult => {
+  const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
@@ -84,6 +83,7 @@ describe('DLS Proposals table component', () => {
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -107,88 +107,61 @@ describe('DLS Proposals table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('calls the correct data fetching hooks on load', () => {
-    createWrapper();
-    expect(useInvestigationCount).toHaveBeenCalledWith([
-      {
-        filterType: 'distinct',
-        filterValue: JSON.stringify(['name', 'title']),
-      },
-    ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
-      [
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify(['name', 'title']),
-        },
-      ],
-      true
-    );
-  });
-
-  it('calls useInvestigationsInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by investigations.title',
+      hidden: true,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
+    await user.type(filterInput, 'test');
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper.find('input').first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
+    // user.type inputs the given string character by character to simulate user typing
+    // each keystroke of user.type creates a new entry in the history stack
+    // so the initial entry + 4 characters in "test" = 5 entries
+    expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 
-  it('renders title and name as links', () => {
-    const wrapper = createRTLWrapper();
+  it('renders title and name as links', async () => {
+    renderComponent();
+
+    const row = await findRowAt(0);
+
+    const titleColIndex = await findColumnIndexByName('investigations.title');
+    const investigationNameColIndex = await findColumnIndexByName(
+      'investigations.name'
+    );
+
+    const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
+    const nameCell = await findCellInRow(row, {
+      columnIndex: investigationNameColIndex,
+    });
 
     expect(
-      wrapper.getAllByTestId('dls-proposals-table-title')
-    ).toMatchSnapshot();
+      within(titleCell).getByRole('link', { name: 'Test 1' })
+    ).toHaveAttribute('href', '/browse/proposal/Test 1/investigation');
 
     expect(
-      wrapper.getAllByTestId('dls-proposals-table-name')
-    ).toMatchSnapshot();
+      within(nameCell).getByRole('link', { name: 'Test 1' })
+    ).toHaveAttribute('href', '/browse/proposal/Test 1/investigation');
   });
 });
