@@ -8,9 +8,6 @@
   "dependencies": {
     "husky": "8.0.1"
   },
-  "devDependencies": {
-    "lerna-update-wizard": "1.1.0"
-  },
   "scripts": {
     "build": "yarn workspaces foreach --verbose --parallel --exclude datagateway-common run build",
     "lint": "yarn workspaces foreach --verbose --parallel run lint:js --max-warnings=0",
