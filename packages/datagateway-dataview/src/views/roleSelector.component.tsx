@@ -97,9 +97,12 @@ const RoleSelector: React.FC = () => {
       variant="standard"
       sx={{ margin: 1, minWidth: '100px' }}
     >
-      <InputLabel>{t('my_data_table.role_selector')}</InputLabel>
+      <InputLabel id="my-data-table-role-selector-label">
+        {t('my_data_table.role_selector')}
+      </InputLabel>
       <Select
         id="role-selector"
+        labelId="my-data-table-role-selector-label"
         value={roles?.includes(role) ? role : ''}
         onChange={handleChange}
         variant="standard"
