@@ -9,8 +9,8 @@
     "husky": "8.0.1"
   },
   "scripts": {
-    "build": "yarn workspaces foreach --verbose --parallel --exclude datagateway-common run build",
-    "lint": "yarn workspaces foreach --verbose --parallel run lint:js --max-warnings=0",
+    "build": "yarn workspaces foreach --interlaced --verbose --parallel --exclude datagateway-common run build",
+    "lint": "yarn workspaces foreach --interlaced --verbose --parallel run lint:js --max-warnings=0",
     "tsc": "yarn workspace datagateway-common tsc",
     "test": "yarn test:unit && yarn test:e2e",
     "test:unit": "yarn workspaces foreach --interlaced --verbose --exclude datagateway run test",
