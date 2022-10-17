@@ -5,29 +5,40 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
   Datafile,
+  dGCommonInitialState,
   useAddToCart,
+  useAllFacilityCycles,
   useCart,
   useDatafileCount,
   useDatafilesInfinite,
   useIds,
   useLuceneSearch,
   useRemoveFromCart,
-  useAllFacilityCycles,
-  ISISDatafileDetailsPanel,
-  DatafileDetailsPanel,
-  DLSDatafileDetailsPanel,
-  dGCommonInitialState,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
-import { mount, ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../setupTests';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
+import {
+  findAllRows,
+  findCellInRow,
+  findColumnIndexByName,
+  findRowAt,
+} from 'datagateway-dataview/src/setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -51,11 +62,12 @@ describe('Datafile search table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
+  let user: UserEvent;
 
   let rowData: Datafile[] = [];
 
-  const createWrapper = (hierarchy?: string): ReactWrapper => {
-    return mount(
+  const renderComponent = (hierarchy?: string): RenderResult =>
+    render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -64,10 +76,10 @@ describe('Datafile search table component', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     state = JSON.parse(
       JSON.stringify({
@@ -173,126 +185,49 @@ describe('Datafile search table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('calls the correct data fetching hooks on load', () => {
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [1],
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by datafiles.name',
+      hidden: true,
     });
 
-    createWrapper();
+    await user.type(filterInput, 'test');
 
-    expect(useCart).toHaveBeenCalled();
-    expect(useLuceneSearch).toHaveBeenCalledWith('Datafile', {
-      searchText: '',
-      startDate: null,
-      endDate: null,
-      maxCount: 300,
-    });
-
-    expect(useDatafileCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useDatafilesInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          dataset: {
-            investigation: { investigationInstruments: 'instrument' },
-          },
-        }),
-      },
-    ]);
-    expect(useIds).toHaveBeenCalledWith(
-      'datafile',
-      [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { in: [1] },
-          }),
-        },
-      ],
-      true
-    );
-
-    expect(useAddToCart).toHaveBeenCalledWith('datafile');
-    expect(useRemoveFromCart).toHaveBeenCalledWith('datafile');
-  });
-
-  it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
-    });
-
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by datafiles.name"]')
-      .last();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
+    // user.type inputs the given string character by character to simulate user typing
+    // each keystroke of user.type creates a new entry in the history stack
+    // so the initial entry + 4 characters in "test" = 5 entries
+    expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const filterInput = wrapper.find(
-      'input[id="datafiles.modified_time filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'datafiles.modified_time filter to',
+    });
+
+    await user.type(filterInput, '2019-08-06');
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -300,13 +235,12 @@ describe('Datafile search table component', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'datafiles.name' })
+    );
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -314,20 +248,22 @@ describe('Datafile search table component', () => {
     );
   });
 
-  it('calls addToCart mutate function on unchecked checkbox click', () => {
+  it('calls addToCart mutate function on unchecked checkbox click', async () => {
     const addToCart = jest.fn();
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: addToCart,
       loading: false,
     });
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    );
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
 
-  it('calls removeFromCart mutate function on checked checkbox click', () => {
+  it('calls removeFromCart mutate function on checked checkbox click', async () => {
     (useCart as jest.Mock).mockReturnValue({
       data: [
         {
@@ -347,14 +283,16 @@ describe('Datafile search table component', () => {
       loading: false,
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    );
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
 
-  it('selected rows only considers relevant cart items', () => {
+  it('selected rows only considers relevant cart items', async () => {
     (useCart as jest.Mock).mockReturnValue({
       data: [
         {
@@ -375,54 +313,60 @@ describe('Datafile search table component', () => {
       isLoading: false,
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const selectAllCheckbox = wrapper
-      .find('[aria-label="select all rows"]')
-      .first();
+    const selectAllCheckbox = await screen.findByRole('checkbox', {
+      name: 'select all rows',
+    });
 
-    expect(selectAllCheckbox.prop('checked')).toEqual(false);
-    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+    expect(selectAllCheckbox).not.toBeChecked();
+    expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
     state.dgsearch.selectAllSetting = false;
-
-    const wrapper = createWrapper();
-
-    expect(useIds).toHaveBeenCalledWith('datafile', expect.anything(), false);
-    expect(useIds).not.toHaveBeenCalledWith(
-      'datafile',
-      expect.anything(),
-      true
-    );
-    expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
+    renderComponent();
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('checkbox', { name: 'select all rows' })
+      ).toBeNull();
+    });
   });
 
-  it('displays generic details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(DatafileDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+  it('displays generic details panel when expanded', async () => {
+    renderComponent();
 
-    expect(wrapper.find(DatafileDetailsPanel).exists()).toBeTruthy();
+    const row = await findRowAt(0);
+    await user.click(within(row).getByRole('button', { name: 'Show details' }));
+
+    expect(
+      await screen.findByTestId('datafile-details-panel')
+    ).toBeInTheDocument();
   });
 
-  it('displays correct details panel for ISIS when expanded', () => {
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISDatafileDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
-    expect(wrapper.find(ISISDatafileDetailsPanel).exists()).toBeTruthy();
+  it('displays correct details panel for ISIS when expanded', async () => {
+    renderComponent('isis');
+
+    const row = await findRowAt(0);
+    await user.click(within(row).getByRole('button', { name: 'Show details' }));
+
+    expect(
+      await screen.findByTestId('datafile-details-panel')
+    ).toBeInTheDocument();
   });
 
-  it('displays correct details panel for DLS when expanded', () => {
-    const wrapper = createWrapper('dls');
-    expect(wrapper.find(DLSDatafileDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+  it('displays correct details panel for DLS when expanded', async () => {
+    renderComponent('dls');
 
-    expect(wrapper.find(DLSDatafileDetailsPanel).exists()).toBeTruthy();
+    const row = await findRowAt(0);
+    await user.click(within(row).getByRole('button', { name: 'Show details' }));
+
+    expect(
+      await screen.findByTestId('datafile-details-panel')
+    ).toBeInTheDocument();
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     // this can happen when navigating between tables and the previous table's state still exists
     rowData = [
       {
@@ -439,32 +383,45 @@ describe('Datafile search table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    expect(() => createWrapper()).not.toThrowError();
+    renderComponent();
+
+    expect(await findAllRows()).toHaveLength(1);
   });
 
-  it('renders generic link correctly', () => {
-    const wrapper = createWrapper('data');
+  it('renders generic link correctly', async () => {
+    renderComponent('data');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/investigation/3/dataset/2/datafile`
-    );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
+    const datasetColIndex = await findColumnIndexByName('datafiles.dataset');
+
+    const row = await findRowAt(0);
+    const datasetLinkCell = await findCellInRow(row, {
+      columnIndex: datasetColIndex,
+    });
+
+    expect(
+      within(datasetLinkCell).getByRole('link', { name: 'Dataset test name' })
+    ).toHaveAttribute('href', '/browse/investigation/3/dataset/2/datafile');
   });
 
-  it('renders DLS link correctly', () => {
-    const wrapper = createWrapper('dls');
+  it('renders DLS link correctly', async () => {
+    renderComponent('dls');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+
+    const row = await findRowAt(0);
+    const datasetLinkCell = await findCellInRow(row, {
+      columnIndex: datasetColIndex,
+    });
+
+    expect(
+      within(datasetLinkCell).getByRole('link', { name: 'Datafile test name' })
+    ).toHaveAttribute(
+      'href',
       '/browse/proposal/Dataset test name/investigation/3/dataset/2/datafile'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
   });
 
-  it('renders ISIS link correctly', () => {
+  it('renders ISIS link correctly', async () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
         {
@@ -476,17 +433,24 @@ describe('Datafile search table component', () => {
       ],
     });
 
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/instrument/5/facilityCycle/4/investigation/3/dataset/2/datafile`
-    );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
+    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+
+    const row = await findRowAt(0);
+    const datasetLinkCell = await findCellInRow(row, {
+      columnIndex: datasetColIndex,
+    });
+
+    expect(
+      within(datasetLinkCell).getByRole('link', { name: 'Datafile test name' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/instrument/5/facilityCycle/4/investigation/3/dataset/2/datafile'
     );
   });
 
-  it('does not render ISIS link when instrumentId cannot be found', () => {
+  it('does not render ISIS link when instrumentId cannot be found', async () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
         {
@@ -502,24 +466,52 @@ describe('Datafile search table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
+    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+
+    const row = await findRowAt(0);
+    const datasetLinkCell = await findCellInRow(row, {
+      columnIndex: datasetColIndex,
+    });
+
+    await waitFor(() => {
+      expect(
+        within(datasetLinkCell).queryByRole('link', {
+          name: 'Datafile test name',
+        })
+      ).toBeNull();
+    });
+
+    expect(
+      within(datasetLinkCell).getByText('Datafile test name')
+    ).toBeInTheDocument();
   });
 
-  it('does not render ISIS link when facilityCycleId cannot be found', () => {
-    const wrapper = createWrapper('isis');
+  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    renderComponent('isis');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
+    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+
+    const row = await findRowAt(0);
+    const datasetLinkCell = await findCellInRow(row, {
+      columnIndex: datasetColIndex,
+    });
+
+    await waitFor(() => {
+      expect(
+        within(datasetLinkCell).queryByRole('link', {
+          name: 'Datafile test name',
+        })
+      ).toBeNull();
+    });
+
+    expect(
+      within(datasetLinkCell).getByText('Datafile test name')
+    ).toBeInTheDocument();
   });
 
-  it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
+  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
         {
@@ -531,15 +523,29 @@ describe('Datafile search table component', () => {
       ],
     });
 
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
+    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+
+    const row = await findRowAt(0);
+    const datasetLinkCell = await findCellInRow(row, {
+      columnIndex: datasetColIndex,
+    });
+
+    await waitFor(() => {
+      expect(
+        within(datasetLinkCell).queryByRole('link', {
+          name: 'Datafile test name',
+        })
+      ).toBeNull();
+    });
+
+    expect(
+      within(datasetLinkCell).getByText('Datafile test name')
+    ).toBeInTheDocument();
   });
 
-  it('displays only the datafile name when there is no generic dataset to link to', () => {
+  it('displays only the datafile name when there is no generic dataset to link to', async () => {
     rowData = [
       {
         id: 1,
@@ -555,15 +561,29 @@ describe('Datafile search table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    const wrapper = createWrapper('data');
+    renderComponent('data');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
+    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+
+    const row = await findRowAt(0);
+    const datasetLinkCell = await findCellInRow(row, {
+      columnIndex: datasetColIndex,
+    });
+
+    await waitFor(() => {
+      expect(
+        within(datasetLinkCell).queryByRole('link', {
+          name: 'Datafile test name',
+        })
+      ).toBeNull();
+    });
+
+    expect(
+      within(datasetLinkCell).getByText('Datafile test name')
+    ).toBeInTheDocument();
   });
 
-  it('displays only the datafile name when there is no DLS dataset to link to', () => {
+  it('displays only the datafile name when there is no DLS dataset to link to', async () => {
     rowData = [
       {
         id: 1,
@@ -579,15 +599,29 @@ describe('Datafile search table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    const wrapper = createWrapper('dls');
+    renderComponent('dls');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
+    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+
+    const row = await findRowAt(0);
+    const datasetLinkCell = await findCellInRow(row, {
+      columnIndex: datasetColIndex,
+    });
+
+    await waitFor(() => {
+      expect(
+        within(datasetLinkCell).queryByRole('link', {
+          name: 'Datafile test name',
+        })
+      ).toBeNull();
+    });
+
+    expect(
+      within(datasetLinkCell).getByText('Datafile test name')
+    ).toBeInTheDocument();
   });
 
-  it('displays only the datafile name when there is no ISIS investigation to link to', () => {
+  it('displays only the datafile name when there is no ISIS investigation to link to', async () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
         {
@@ -613,11 +647,25 @@ describe('Datafile search table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
-      'Datafile test name'
-    );
+    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+
+    const row = await findRowAt(0);
+    const datasetLinkCell = await findCellInRow(row, {
+      columnIndex: datasetColIndex,
+    });
+
+    await waitFor(() => {
+      expect(
+        within(datasetLinkCell).queryByRole('link', {
+          name: 'Datafile test name',
+        })
+      ).toBeNull();
+    });
+
+    expect(
+      within(datasetLinkCell).getByText('Datafile test name')
+    ).toBeInTheDocument();
   });
 });
