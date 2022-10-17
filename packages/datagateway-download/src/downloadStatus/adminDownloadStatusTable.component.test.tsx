@@ -15,6 +15,7 @@ import {
 } from '../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
+  act,
   render,
   RenderResult,
   screen,
@@ -371,7 +372,7 @@ describe('Admin Download Status Table', () => {
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    await act(async () => flushPromises());
 
     // without waitFor,
     // toBeInTheDocument will complain it can't find the element
@@ -424,7 +425,7 @@ describe('Admin Download Status Table', () => {
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    await act(async () => flushPromises());
 
     // without waitFor,
     // toBeInTheDocument will complain it can't find the element
@@ -477,7 +478,7 @@ describe('Admin Download Status Table', () => {
   it('should send resume restore request when resume button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    await act(async () => flushPromises());
 
     await waitFor(() => {
       expect(
@@ -526,7 +527,7 @@ describe('Admin Download Status Table', () => {
   it('should send delete item request when delete button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    await act(async () => flushPromises());
 
     await waitFor(async () => {
       expect(
