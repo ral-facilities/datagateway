@@ -40,10 +40,10 @@ function useDownloadFormatter(): {
   );
 
   const downloadFormatter = React.useCallback(
-    (download: Download) => ({
+    (download: Download): FormattedDownload => ({
       ...download,
-      isDeleted: download.isDeleted ? 'Yes' : 'No',
-      status: statusLabels[download.status] ?? '',
+      formattedIsDeleted: download.isDeleted ? 'Yes' : 'No',
+      formattedStatus: statusLabels[download.status] ?? '',
     }),
     [statusLabels]
   );

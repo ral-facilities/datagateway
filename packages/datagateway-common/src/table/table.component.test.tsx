@@ -63,11 +63,23 @@ describe('Table component', () => {
         .find('[role="columnheader"]')
         .at(0)
         .children()
+        .find('label')
+        .first()
+        .text()
+      // Check InputLabel is rendering as expected
+    ).toEqual('Include');
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(0)
+        .children()
         .find('div')
         .first()
         .text()
       // Empty Selects (like the one in textColumnFilter) render a zero width space character
-    ).toEqual('Test 1\u200B');
+      // InputLabel for textColumnFilter will render, default to 'Include'
+    ).toEqual('Test 1Include\u200B');
 
     expect(
       wrapper
@@ -153,10 +165,7 @@ describe('Table component', () => {
     expect(wrapperAllIds.exists('[aria-colcount=3]')).toBe(true);
     expect(wrapperAllIds.exists('[aria-label="select all rows"]')).toBe(true);
     expect(wrapperAllIds.find(SelectHeader).prop('allIds')).toEqual([
-      1,
-      2,
-      3,
-      4,
+      1, 2, 3, 4,
     ]);
   });
 

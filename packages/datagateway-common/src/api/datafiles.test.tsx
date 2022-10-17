@@ -6,6 +6,7 @@ import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   downloadDatafile,
+  useDatafileContent,
   useDatafileCount,
   useDatafileDetails,
   useDatafilesInfinite,
@@ -48,6 +49,7 @@ describe('datafile api functions', () => {
   afterEach(() => {
     (handleICATError as jest.Mock).mockClear();
     (axios.get as jest.Mock).mockClear();
+    jest.restoreAllMocks();
   });
 
   describe('useDatafilesPaginated', () => {
@@ -391,8 +393,98 @@ describe('datafile api functions', () => {
     });
   });
 
+  describe('useDatafileContent', () => {
+    it('should send a request to download datafile to a blob', async () => {
+      (
+        axios.get as jest.MockedFunction<typeof axios.get>
+      ).mockResolvedValueOnce({
+        data: 'datafile content',
+      });
+      const downloadProgressCb = jest.fn();
+      jest.spyOn(global, 'Blob').mockImplementationOnce(
+        (data) =>
+          ({
+            text: () => Promise.resolve(data[0] as string),
+          } as unknown as Blob)
+      );
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDatafileContent({
+            datafileId: 1,
+            onDownloadProgress: downloadProgressCb,
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      expect(axios.get).toHaveBeenCalledWith(
+        `https://example.com/ids/getData`,
+        {
+          onDownloadProgress: downloadProgressCb,
+          params: {
+            datafileIds: '1',
+            sessionId: null,
+            compress: false,
+          },
+        }
+      );
+      expect(await result.current.data.text()).toEqual('datafile content');
+    });
+
+    it('should call the download progress callback when progress is made for the download', async () => {
+      const mockProgressEvent = new ProgressEvent('progress', {
+        loaded: 2,
+        total: 10,
+      });
+      (axios.get as jest.MockedFunction<typeof axios.get>).mockImplementation(
+        (_, config) => {
+          config.onDownloadProgress(mockProgressEvent);
+          return new Promise((_) => {
+            // never resolve the promise
+            // pretend the download is still going
+          });
+        }
+      );
+      const downloadProgressCb = jest.fn();
+
+      const { waitFor } = renderHook(
+        () =>
+          useDatafileContent({
+            datafileId: 1,
+            onDownloadProgress: downloadProgressCb,
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => {
+        expect(downloadProgressCb).toHaveBeenCalledWith(mockProgressEvent);
+      });
+    });
+
+    it('should call handleICATError when the query for datafile content fails', async () => {
+      (axios.get as jest.MockedFunction<typeof axios.get>).mockRejectedValue({
+        message: 'Test error',
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDatafileContent({
+            datafileId: 1,
+            onDownloadProgress: jest.fn(),
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+    });
+  });
+
   describe('downloadDatafile', () => {
-    it('clicks on IDS link upon downloadDatafile action', async () => {
+    it('should create a download for the datafile with a server URL', async () => {
       jest.spyOn(document, 'createElement');
       jest.spyOn(document.body, 'appendChild');
 
@@ -401,6 +493,26 @@ describe('datafile api functions', () => {
       expect(document.createElement).toHaveBeenCalledWith('a');
       const link = document.createElement('a');
       link.href = `https://www.example.com/ids/getData?sessionId=${null}&datafileIds=${1}&compress=${false}&outname=${'test'}`;
+      link.target = '_blank';
+      link.style.display = 'none';
+      expect(document.body.appendChild).toHaveBeenCalledWith(link);
+    });
+
+    it('should create a download for the datafile with the given Blob content', async () => {
+      jest.spyOn(document, 'createElement');
+      jest.spyOn(document.body, 'appendChild');
+
+      downloadDatafile(
+        'https://www.example.com/ids',
+        1,
+        'test',
+        new Blob(['text'])
+      );
+
+      expect(document.createElement).toHaveBeenCalledWith('a');
+      const link = document.createElement('a');
+      link.href = 'testObjectUrl';
+      link.download = 'test';
       link.target = '_blank';
       link.style.display = 'none';
       expect(document.body.appendChild).toHaveBeenCalledWith(link);

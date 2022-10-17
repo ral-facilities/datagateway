@@ -65,6 +65,17 @@ describe('ISIS Studies - Card View', () => {
         name: 'Test 1',
         modTime: '2000-01-01',
         createTime: '2000-01-01',
+        studyInvestigations: [
+          {
+            id: 151,
+            investigation: {
+              id: 711,
+              title: 'investigation title',
+              name: 'investigation name',
+              visitId: 'IPim0',
+            },
+          },
+        ],
       },
     ];
     history = createMemoryHistory();

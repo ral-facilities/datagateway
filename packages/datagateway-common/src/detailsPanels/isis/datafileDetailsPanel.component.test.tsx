@@ -1,28 +1,47 @@
-import React from 'react';
-import DatafileDetailsPanel from './datafileDetailsPanel.component';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import axios from 'axios';
+import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { mount, ReactWrapper } from 'enzyme';
-import { useDatafileDetails } from '../../api/datafiles';
-import { Datafile } from '../../app.types';
+import { Provider } from 'react-redux';
+import { combineReducers, createStore } from 'redux';
+import type { StateType } from '../../../lib';
 
-jest.mock('../../api/datafiles');
+import type { Datafile } from '../../app.types';
+import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
+import DatafileDetailsPanel from './datafileDetailsPanel.component';
 
-describe('Datafile details panel component', () => {
-  let rowData: Datafile;
-  const detailsPanelResize = jest.fn();
-
-  const createWrapper = (): ReactWrapper => {
-    return mount(
+function renderComponent({
+  rowData,
+  detailsPanelResize,
+}: {
+  rowData: Datafile;
+  detailsPanelResize?: () => void;
+}): RenderResult {
+  return render(
+    <Provider
+      store={createStore(
+        combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+      )}
+    >
       <QueryClientProvider client={new QueryClient()}>
         <DatafileDetailsPanel
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
         />
       </QueryClientProvider>
-    );
-  };
+    </Provider>
+  );
+}
+
+describe('Datafile details panel component', () => {
+  let rowData: Datafile;
+  let user: UserEvent;
 
   beforeEach(() => {
+    user = userEvent.setup();
     rowData = {
       id: 1,
       name: 'Test 1',
@@ -31,9 +50,8 @@ describe('Datafile details panel component', () => {
       createTime: '2019-06-11',
       description: 'Test description',
     };
-
-    (useDatafileDetails as jest.Mock).mockReturnValue({
-      data: rowData,
+    axios.get = jest.fn().mockResolvedValue({
+      data: [rowData],
     });
   });
 
@@ -41,12 +59,56 @@ describe('Datafile details panel component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('DatafileDetailsPanel').props()).toMatchSnapshot();
+  it('should render correctly', () => {
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders parameters tab when present in the data', () => {
+  it('should show default tab on first render', async () => {
+    renderComponent({
+      rowData,
+    });
+
+    expect(
+      await screen.findByRole('tab', { name: 'datafiles.details.label' })
+    ).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('should let user switch between tabs', async () => {
+    rowData.parameters = [
+      {
+        id: 2,
+        stringValue: 'String test',
+        type: {
+          id: 3,
+          name: 'String parameter',
+          units: 'foo/s',
+          valueType: 'STRING',
+        },
+      },
+    ];
+
+    renderComponent({ rowData });
+
+    expect(
+      await screen.findByRole('tabpanel', { name: 'datafiles.details.label' })
+    ).toBeVisible();
+
+    // switch tab
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'datafiles.details.parameters.label',
+      })
+    );
+
+    expect(
+      await screen.findByRole('tabpanel', {
+        name: 'datafiles.details.parameters.label',
+      })
+    ).toBeVisible();
+  });
+
+  it('should render parameters tab when present in the data', () => {
     rowData.parameters = [
       {
         id: 2,
@@ -94,23 +156,14 @@ describe('Datafile details panel component', () => {
       },
     ];
 
-    const wrapper = createWrapper();
-    expect(wrapper.find('DatafileDetailsPanel').props()).toMatchSnapshot();
+    const { asFragment } = renderComponent({
+      rowData,
+    });
+
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('calls useDatafileDetails hook on load', () => {
-    createWrapper();
-    expect(useDatafileDetails).toHaveBeenCalledWith(rowData.id, [
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          parameters: 'type',
-        }),
-      },
-    ]);
-  });
-
-  it('calls detailsPanelResize on load and when tabs are switched between', () => {
+  it('should call detailsPanelResize on load and when tabs are switched between', async () => {
     rowData.parameters = [
       {
         id: 2,
@@ -124,43 +177,54 @@ describe('Datafile details panel component', () => {
       },
     ];
 
-    const wrapper = createWrapper();
+    const mockDetailsPanelResize = jest.fn();
+    renderComponent({
+      rowData,
+      detailsPanelResize: mockDetailsPanelResize,
+    });
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockDetailsPanelResize).toHaveBeenCalledTimes(1);
+    });
 
-    wrapper.find('#datafile-parameters-tab').hostNodes().simulate('click');
-
-    expect(detailsPanelResize).toHaveBeenCalledTimes(2);
-  });
-
-  it('does not call detailsPanelResize if not provided', () => {
-    rowData.parameters = [
-      {
-        id: 2,
-        stringValue: 'String test',
-        type: {
-          id: 3,
-          name: 'String parameter',
-          units: 'foo/s',
-          valueType: 'STRING',
-        },
-      },
-    ];
-
-    const wrapper = mount(
-      <QueryClientProvider client={new QueryClient()}>
-        <DatafileDetailsPanel rowData={rowData} />
-      </QueryClientProvider>
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'datafiles.details.parameters.label',
+      })
     );
 
-    expect(detailsPanelResize).not.toHaveBeenCalled();
-
-    wrapper.find('#datafile-parameters-tab').hostNodes().simulate('click');
-
-    expect(detailsPanelResize).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockDetailsPanelResize).toHaveBeenCalledTimes(2);
+    });
   });
 
-  it('Shows "No <field> provided" incase of a null field', () => {
+  it('should not call detailsPanelResize if not provided', async () => {
+    rowData.parameters = [
+      {
+        id: 2,
+        stringValue: 'String test',
+        type: {
+          id: 3,
+          name: 'String parameter',
+          units: 'foo/s',
+          valueType: 'STRING',
+        },
+      },
+    ];
+    const mockDetailsPanelResize = jest.fn();
+
+    renderComponent({ rowData });
+
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'datafiles.details.parameters.label',
+      })
+    );
+
+    expect(mockDetailsPanelResize).not.toHaveBeenCalled();
+  });
+
+  it('should show "No <field> provided" incase of a null field', async () => {
     rowData = {
       id: 1,
       name: 'Test 1',
@@ -168,23 +232,27 @@ describe('Datafile details panel component', () => {
       createTime: '2019-06-11',
     };
 
-    (useDatafileDetails as jest.Mock).mockReturnValueOnce({
-      data: rowData,
+    axios.get = jest.fn().mockResolvedValue({
+      data: [rowData],
     });
 
-    const wrapper = createWrapper();
-    expect(wrapper.html()).toContain(
-      '<b>datafiles.details.description not provided</b>'
-    );
+    renderComponent({ rowData });
+
+    expect(
+      await screen.findByText('datafiles.details.description not provided')
+    ).toBeInTheDocument();
   });
 
-  it('renders datafile parameters tab and text "No parameters" when no data is present', () => {
+  it('should render datafile parameters tab and text "No parameters" when no data is present', async () => {
     rowData.parameters = [];
-    const wrapper = createWrapper();
+    axios.get = jest.fn().mockResolvedValue({
+      data: [rowData],
+    });
+
+    renderComponent({ rowData });
+
     expect(
-      wrapper
-        .find('[data-testid="datafile-details-panel-no-parameters"]')
-        .exists()
-    ).toBeTruthy();
+      await screen.findByText('datafiles.details.parameters.no_parameters')
+    ).toBeInTheDocument();
   });
 });

@@ -4,7 +4,9 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
 Object {
   "actions": Array [
     [Function],
+    [Function],
   ],
+  "actionsWidth": 96,
   "allIds": Array [
     1,
   ],

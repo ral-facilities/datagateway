@@ -4,6 +4,8 @@ import {
   adminDownloadDeleted,
   adminDownloadStatus,
   fetchAdminDownloads,
+  getDownload,
+  getPercentageComplete,
 } from '../downloadApi';
 import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
 import {
@@ -20,7 +22,8 @@ import {
   within,
 } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { mockDownloadItems } from '../testData';
+import { mockDownloadItems, mockedSettings } from '../testData';
+import { DownloadSettingsContext } from '../ConfigProvider';
 
 jest.mock('../downloadApi');
 
@@ -33,11 +36,13 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-const renderComponent = (): RenderResult =>
+const renderComponent = ({ settings = mockedSettings } = {}): RenderResult =>
   render(
-    <QueryClientProvider client={createTestQueryClient()}>
-      <AdminDownloadStatusTable />
-    </QueryClientProvider>
+    <DownloadSettingsContext.Provider value={settings}>
+      <QueryClientProvider client={createTestQueryClient()}>
+        <AdminDownloadStatusTable />
+      </QueryClientProvider>
+    </DownloadSettingsContext.Provider>
   );
 
 describe('Admin Download Status Table', () => {
@@ -46,6 +51,12 @@ describe('Admin Download Status Table', () => {
   beforeEach(() => {
     user = userEvent.setup({ delay: null });
 
+    (getDownload as jest.MockedFunction<typeof getDownload>).mockImplementation(
+      (id, _) =>
+        Promise.resolve(
+          mockDownloadItems.find((download) => download.id === id)
+        )
+    );
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
         settings: { facilityName: string; downloadApiUrl: string },
@@ -70,11 +81,16 @@ describe('Admin Download Status Table', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0)).toUTCString();
     global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
 
     const { asFragment } = renderComponent();
+
+    // wait for data to finish loading
+    expect(
+      await screen.findByText(mockedDate.toLocaleString())
+    ).toBeInTheDocument();
 
     expect(asFragment()).toMatchSnapshot();
   });
@@ -155,10 +171,10 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
-        downloadApiUrl: '',
-        facilityName: '',
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
       },
-      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50"
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50`
     );
 
     // Get the Access Method sort header.
@@ -169,28 +185,28 @@ describe('Admin Download Status Table', () => {
     await user.click(accessMethodSortLabel);
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
-        downloadApiUrl: '',
-        facilityName: '',
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
       },
-      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50"
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50`
     );
 
     await user.click(accessMethodSortLabel);
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
-        downloadApiUrl: '',
-        facilityName: '',
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
       },
-      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50"
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50`
     );
 
     await user.click(accessMethodSortLabel);
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
-        downloadApiUrl: '',
-        facilityName: '',
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
       },
-      "WHERE download.facilityName = '' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50"
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50`
     );
   }, 10000);
 
@@ -221,10 +237,10 @@ describe('Admin Download Status Table', () => {
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
-          downloadApiUrl: '',
-          facilityName: '',
+          downloadApiUrl: mockedSettings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
         },
-        "WHERE download.facilityName = '' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50"
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       await user.clear(usernameFilterInput);
@@ -232,16 +248,16 @@ describe('Admin Download Status Table', () => {
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
-          downloadApiUrl: '',
-          facilityName: '',
+          downloadApiUrl: mockedSettings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
         },
-        "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       jest.useRealTimers();
     }, 10000);
 
-    it('should filter download availablity properly', async () => {
+    it('should filter download availability properly', async () => {
       jest.useFakeTimers();
       renderComponent();
 
@@ -259,10 +275,10 @@ describe('Admin Download Status Table', () => {
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
-          downloadApiUrl: '',
-          facilityName: '',
+          downloadApiUrl: mockedSettings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
         },
-        "WHERE download.facilityName = '' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       // We simulate a change in the select from 'include' to 'exclude'.
@@ -276,10 +292,10 @@ describe('Admin Download Status Table', () => {
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
-          downloadApiUrl: '',
-          facilityName: '',
+          downloadApiUrl: mockedSettings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
         },
-        "WHERE download.facilityName = '' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50"
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       await user.clear(availabilityFilterInput);
@@ -287,10 +303,10 @@ describe('Admin Download Status Table', () => {
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
-          downloadApiUrl: '',
-          facilityName: '',
+          downloadApiUrl: mockedSettings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
         },
-        "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       jest.useRealTimers();
@@ -313,10 +329,10 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
-        downloadApiUrl: '',
-        facilityName: '',
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
       },
-      "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '9999-12-31 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50"
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '9999-12-31 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50`
     );
 
     // Get the Requested Data To filter input
@@ -331,10 +347,10 @@ describe('Admin Download Status Table', () => {
     await waitFor(() => {
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
-          downloadApiUrl: '',
-          facilityName: '',
+          downloadApiUrl: mockedSettings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
         },
-        "WHERE download.facilityName = '' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50"
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50`
       );
     });
 
@@ -343,10 +359,10 @@ describe('Admin Download Status Table', () => {
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
-        downloadApiUrl: '',
-        facilityName: '',
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
       },
-      "WHERE download.facilityName = '' ORDER BY download.id ASC LIMIT 0, 50"
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
     );
 
     cleanupDatePickerWorkaround();
@@ -553,5 +569,73 @@ describe('Admin Download Status Table', () => {
         name: 'downloadStatus.restore {filename:test-file-1}',
       })
     ).toBeInTheDocument();
+  });
+
+  it('should display progress ui if enabled', async () => {
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(30);
+
+    renderComponent({
+      settings: {
+        ...mockedSettings,
+        uiFeatures: {
+          downloadProgress: true,
+        },
+      },
+    });
+
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('30%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
+  });
+
+  it('should refresh download progress when refresh button is clicked', async () => {
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(30);
+
+    renderComponent({
+      settings: {
+        ...mockedSettings,
+        uiFeatures: {
+          downloadProgress: true,
+        },
+      },
+    });
+
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('30%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
+
+    // pretend the server returns an updated value
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(50);
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'downloadTab.refresh_download_status_arialabel',
+      })
+    );
+
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('50%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
   });
 });

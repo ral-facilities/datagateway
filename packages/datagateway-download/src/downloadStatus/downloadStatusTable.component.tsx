@@ -19,15 +19,17 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
+import DownloadProgressIndicator from './downloadProgressIndicator.component';
 import {
   useDownloadOrRestoreDownload,
   useDownloads,
 } from '../downloadApiHooks';
+import useDownloadFormatter from './hooks/useDownloadFormatter';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
   setRefreshTable: (refresh: boolean) => void;
-  setLastChecked: () => void;
+  setLastCheckedTimestamp: (timestamp: number) => void;
 }
 
 const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
@@ -35,6 +37,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 ) => {
   // Load the settings for use.
   const settings = React.useContext(DownloadSettingsContext);
+  const [t] = useTranslation();
+  const { formatDownload } = useDownloadFormatter();
 
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({
@@ -45,14 +49,21 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       | { value?: string | number; type: string }
       | { startDate?: string; endDate?: string };
   }>({});
-  const { data: downloads, isLoading, isFetched, refetch } = useDownloads();
+  const {
+    data: downloads,
+    isLoading,
+    isFetched,
+    refetch,
+    dataUpdatedAt,
+  } = useDownloads({
+    select: (data) => data.map(formatDownload),
+  });
 
   const {
     refreshTable: shouldRefreshTable,
     setRefreshTable,
-    setLastChecked,
+    setLastCheckedTimestamp,
   } = props;
-  const [t] = useTranslation();
 
   const refreshTable = React.useCallback(async () => {
     await refetch();
@@ -68,10 +79,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   // set table last checked time after fetching downloads
   React.useEffect(() => {
-    if (isFetched) {
-      setLastChecked();
+    if (dataUpdatedAt > 0) {
+      setLastCheckedTimestamp(dataUpdatedAt);
     }
-  }, [isFetched, setLastChecked]);
+  }, [dataUpdatedAt, setLastCheckedTimestamp]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -146,12 +157,13 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           } else if (
             typeof value === 'object' &&
             'startDate' in value &&
-            'endDate' in value &&
-            value.startDate
+            'endDate' in value
           ) {
             // Check that the given date is in the range specified by the filter.
             const tableTimestamp = toDate(tableValue).getTime();
-            const startTimestamp = toDate(value.startDate).getTime();
+            const startTimestamp = value.startDate
+              ? new Date(value.startDate).getTime()
+              : 0;
             const endTimestamp = value.endDate
               ? new Date(value.endDate).getTime()
               : Date.now();
@@ -234,15 +246,29 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               },
               {
                 label: t('downloadStatus.status'),
-                dataKey: 'status',
+                dataKey: 'formattedStatus',
                 filterComponent: availabilityFilter,
               },
+              ...(settings.uiFeatures.downloadProgress
+                ? [
+                    {
+                      label: t('downloadStatus.progress'),
+                      dataKey: 'progress',
+                      disableSort: true,
+                      cellContentRenderer: ({ rowData }: TableCellProps) => (
+                        <DownloadProgressIndicator
+                          download={rowData as FormattedDownload}
+                        />
+                      ),
+                    },
+                  ]
+                : []),
               {
                 label: t('downloadStatus.createdAt'),
                 dataKey: 'createdAt',
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
-                    const date = toDate(props.cellData);
+                    const date = toDate(props.cellData.replace(/\[.*]/, ''));
                     return format(date, 'yyyy-MM-dd HH:mm:ss');
                   }
                 },
@@ -267,8 +293,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 const downloadItem = rowData as FormattedDownload;
                 const isHTTP = !!downloadItem.transport.match(/https|http/);
 
-                const isComplete =
-                  downloadItem.status === t('downloadStatus.complete');
+                const isComplete = downloadItem.status === 'COMPLETE';
 
                 const isDownloadable = isHTTP && isComplete;
 

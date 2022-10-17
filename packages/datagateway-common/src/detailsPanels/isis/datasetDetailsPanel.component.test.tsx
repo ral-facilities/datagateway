@@ -1,29 +1,50 @@
-import React from 'react';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import axios from 'axios';
+import * as React from 'react';
+import { Provider } from 'react-redux';
+import { combineReducers, createStore } from 'redux';
+import { StateType } from '../../../lib';
+import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { mount, ReactWrapper } from 'enzyme';
-import { Dataset, DatasetType } from '../../app.types';
-import { useDatasetDetails } from '../../api/datasets';
+import type { Dataset, DatasetType } from '../../app.types';
 
-jest.mock('../../api/datasets');
-
-describe('Dataset details panel component', () => {
-  let rowData: Dataset;
-  let rowDatasetType: DatasetType;
-  const detailsPanelResize = jest.fn();
-
-  const createWrapper = (): ReactWrapper => {
-    return mount(
+function renderComponent({
+  rowData,
+  detailsPanelResize = jest.fn(),
+  viewDatafiles,
+}: {
+  rowData: Dataset;
+  detailsPanelResize?: () => void;
+  viewDatafiles?: (id: number) => void;
+}): RenderResult {
+  return render(
+    <Provider
+      store={createStore(
+        combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+      )}
+    >
       <QueryClientProvider client={new QueryClient()}>
         <DatasetDetailsPanel
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
+          viewDatafiles={viewDatafiles}
         />
       </QueryClientProvider>
-    );
-  };
+    </Provider>
+  );
+}
+
+describe('Dataset details panel component', () => {
+  let rowData: Dataset;
+  let rowDatasetType: DatasetType;
+  let user: UserEvent;
 
   beforeEach(() => {
+    user = userEvent.setup();
     rowDatasetType = {
       id: 2,
       name: 'Test 2',
@@ -37,8 +58,8 @@ describe('Dataset details panel component', () => {
       type: rowDatasetType,
     };
 
-    (useDatasetDetails as jest.Mock).mockReturnValue({
-      data: rowData,
+    axios.get = jest.fn().mockResolvedValue({
+      data: [rowData],
     });
   });
 
@@ -46,64 +67,104 @@ describe('Dataset details panel component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('DatasetDetailsPanel').props()).toMatchSnapshot();
+  it('should render correctly', () => {
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders type tab when present in the data', () => {
+  it('should show default tab on first render', async () => {
+    renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', { name: 'datasets.details.label' })
+    ).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('should render type tab when present in the data', () => {
     rowData.type = {
       id: 7,
       name: 'Test type',
       description: 'Test type description',
     };
 
-    const wrapper = createWrapper();
-    expect(wrapper.find('DatasetDetailsPanel').props()).toMatchSnapshot();
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('calls useDatasetDetails hook on load', () => {
-    createWrapper();
-    expect(useDatasetDetails).toHaveBeenCalledWith(rowData.id);
-  });
-
-  it('calls detailsPanelResize on load and when tabs are switched between', () => {
+  it('should let user switch between tabs', async () => {
     rowData.type = {
       id: 7,
       name: 'Test type',
       description: 'Test type description',
     };
 
-    const wrapper = createWrapper();
+    renderComponent({ rowData });
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(1);
+    expect(
+      await screen.findByRole('tabpanel', { name: 'datasets.details.label' })
+    ).toBeVisible();
 
-    wrapper.find('#dataset-type-tab').hostNodes().simulate('click');
-
-    expect(detailsPanelResize).toHaveBeenCalledTimes(2);
-  });
-
-  it('detailsPanelResize not called when not provided', () => {
-    rowData.type = {
-      id: 7,
-      name: 'Test type',
-      description: 'Test type description',
-    };
-
-    const wrapper = mount(
-      <QueryClientProvider client={new QueryClient()}>
-        <DatasetDetailsPanel rowData={rowData} />
-      </QueryClientProvider>
+    // switch tab
+    await user.click(
+      await screen.findByRole('tab', { name: 'datasets.details.type.label' })
     );
 
-    expect(detailsPanelResize).not.toHaveBeenCalled();
-
-    wrapper.find('#dataset-type-tab').hostNodes().simulate('click');
-
-    expect(detailsPanelResize).not.toHaveBeenCalled();
+    expect(
+      await screen.findByRole('tabpanel', {
+        name: 'datasets.details.type.label',
+      })
+    ).toBeVisible();
   });
 
-  it('Shows "No <field> provided" incase of a null field', () => {
+  it('should call detailsPanelResize on load and when tabs are switched between', async () => {
+    rowData.type = {
+      id: 7,
+      name: 'Test type',
+      description: 'Test type description',
+    };
+    const mockDetailsPanelResize = jest.fn();
+
+    renderComponent({
+      rowData,
+      detailsPanelResize: mockDetailsPanelResize,
+    });
+
+    await waitFor(() => {
+      expect(mockDetailsPanelResize).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      await screen.findByRole('tab', { name: 'datasets.details.type.label' })
+    );
+
+    await waitFor(() => {
+      expect(mockDetailsPanelResize).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('should not call detailsPanelResize when not provided', async () => {
+    rowData.type = {
+      id: 7,
+      name: 'Test type',
+      description: 'Test type description',
+    };
+    const mockDetailsPanelResize = jest.fn();
+
+    renderComponent({ rowData });
+
+    await waitFor(() => {
+      expect(mockDetailsPanelResize).not.toHaveBeenCalled();
+    });
+
+    await user.click(
+      await screen.findByRole('tab', { name: 'datasets.details.type.label' })
+    );
+
+    await waitFor(() => {
+      expect(mockDetailsPanelResize).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should show "No <field> provided" incase of a null field', async () => {
     rowData = {
       id: 1,
       name: 'Test 1',
@@ -111,30 +172,27 @@ describe('Dataset details panel component', () => {
       createTime: '2019-06-11',
     };
 
-    (useDatasetDetails as jest.Mock).mockReturnValueOnce({
-      data: rowData,
-    });
+    renderComponent({ rowData });
 
-    const wrapper = createWrapper();
-    expect(wrapper.html()).toContain(
-      '<b>datasets.details.description not provided</b>'
-    );
+    expect(
+      await screen.findByText('datasets.details.description not provided')
+    ).toBeInTheDocument();
   });
 
-  it('calls datafile view if view datafiles tab clicked', () => {
-    const viewDatafiles = jest.fn();
-    const wrapper = mount(
-      <QueryClientProvider client={new QueryClient()}>
-        <DatasetDetailsPanel
-          rowData={rowData}
-          detailsPanelResize={detailsPanelResize}
-          viewDatafiles={viewDatafiles}
-        />
-      </QueryClientProvider>
+  it('should call datafile view if view datafiles tab clicked', async () => {
+    const mockViewDatafiles = jest.fn();
+
+    renderComponent({
+      rowData,
+      viewDatafiles: mockViewDatafiles,
+    });
+
+    expect(mockViewDatafiles).not.toHaveBeenCalled();
+
+    await user.click(
+      await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
     );
 
-    expect(viewDatafiles).not.toHaveBeenCalled();
-    wrapper.find('#dataset-datafiles-tab').hostNodes().simulate('click');
-    expect(viewDatafiles).toHaveBeenCalled();
+    expect(mockViewDatafiles).toHaveBeenCalled();
   });
 });

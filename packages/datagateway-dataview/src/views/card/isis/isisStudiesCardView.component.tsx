@@ -2,6 +2,7 @@ import React from 'react';
 import {
   CardView,
   CardViewDetails,
+  filterStudyInfoInvestigations,
   getStudyInfoInvestigation,
   parseSearchToQuery,
   Study,
@@ -166,9 +167,31 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     [dateFilter, t, textFilter]
   );
 
+  const aggregatedData = React.useMemo(
+    () =>
+      // for each Investigation in studyInvestigations that matches the current filter
+      // create a new Study object with the studyInvestigations array
+      // having only one StudyInvestigation (& Investigation) object in it
+      // so that each matched Investigation appears as a separate card
+      data?.reduce<Study[]>((studies, study) => {
+        const firstInvestigationMatched = filterStudyInfoInvestigations(
+          study,
+          filters
+        )?.[0];
+        studies.push({
+          ...study,
+          studyInvestigations: firstInvestigationMatched
+            ? [firstInvestigationMatched]
+            : study.studyInvestigations,
+        });
+        return studies;
+      }, []),
+    [data, filters]
+  );
+
   return (
     <CardView
-      data={data ?? []}
+      data={aggregatedData ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilter}
