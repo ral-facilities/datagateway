@@ -427,17 +427,23 @@ describe('Admin Download Status Table', () => {
 
     await act(async () => flushPromises());
 
+    expect(
+      await screen.findByRole('button', {
+        name: 'downloadStatus.pause {filename:test-file-3}',
+      })
+    ).toBeInTheDocument();
+
     // without waitFor,
     // toBeInTheDocument will complain it can't find the element
     // even though findBy didn't throw...
     // (it throws when the elemenet actually doesn't exist)
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('button', {
-          name: 'downloadStatus.pause {filename:test-file-3}',
-        })
-      ).toBeInTheDocument();
-    });
+    // await waitFor(async () => {
+    //   expect(
+    //     await screen.findByRole('button', {
+    //       name: 'downloadStatus.pause {filename:test-file-3}',
+    //     })
+    //   ).toBeInTheDocument();
+    // });
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -480,13 +486,11 @@ describe('Admin Download Status Table', () => {
 
     await act(async () => flushPromises());
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', {
-          name: 'downloadStatus.resume {filename:test-file-5}',
-        })
-      ).toBeInTheDocument();
-    });
+    expect(
+      screen.getByRole('button', {
+        name: 'downloadStatus.resume {filename:test-file-5}',
+      })
+    ).toBeInTheDocument();
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
