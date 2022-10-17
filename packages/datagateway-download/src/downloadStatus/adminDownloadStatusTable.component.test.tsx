@@ -15,7 +15,6 @@ import {
 } from '../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
-  act,
   render,
   RenderResult,
   screen,
@@ -372,7 +371,7 @@ describe('Admin Download Status Table', () => {
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
 
-    await act(async () => flushPromises());
+    await flushPromises();
 
     // without waitFor,
     // toBeInTheDocument will complain it can't find the element
@@ -423,10 +422,9 @@ describe('Admin Download Status Table', () => {
   }, 10000);
 
   it('should send pause restore request when pause button is clicked', async () => {
-    jest.useFakeTimers();
     renderComponent();
 
-    await act(async () => flushPromises());
+    await flushPromises();
 
     expect(
       await screen.findByRole('button', {
@@ -475,23 +473,17 @@ describe('Admin Download Status Table', () => {
       })
     );
 
-    jest.runAllTimers();
-    await act(async () => flushPromises());
-
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.resume {filename:test-file-3}',
       })
     ).toBeInTheDocument();
-
-    jest.useRealTimers();
   }, 10000);
 
   it('should send resume restore request when resume button is clicked', async () => {
-    jest.useFakeTimers();
     renderComponent();
 
-    await act(async () => flushPromises());
+    await flushPromises();
 
     expect(
       screen.getByRole('button', {
@@ -528,23 +520,17 @@ describe('Admin Download Status Table', () => {
       })
     );
 
-    jest.runAllTimers();
-    await act(async () => flushPromises());
-
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.pause {filename:test-file-5}',
       })
     ).toBeInTheDocument();
-
-    jest.useRealTimers();
   }, 10000);
 
   it('should send delete item request when delete button is clicked', async () => {
-    jest.useFakeTimers();
     renderComponent();
 
-    await act(async () => flushPromises());
+    await flushPromises();
 
     await waitFor(async () => {
       expect(
@@ -582,16 +568,11 @@ describe('Admin Download Status Table', () => {
       })
     );
 
-    jest.runAllTimers();
-    await act(async () => flushPromises());
-
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.restore {filename:test-file-1}',
       })
     ).toBeInTheDocument();
-
-    jest.useRealTimers();
   }, 10000);
 
   it('should display progress ui if enabled', async () => {
