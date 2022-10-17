@@ -423,6 +423,7 @@ describe('Admin Download Status Table', () => {
   }, 10000);
 
   it('should send pause restore request when pause button is clicked', async () => {
+    jest.useFakeTimers();
     renderComponent();
 
     await act(async () => flushPromises());
@@ -474,14 +475,20 @@ describe('Admin Download Status Table', () => {
       })
     );
 
+    jest.runAllTimers();
+    await act(async () => flushPromises());
+
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.resume {filename:test-file-3}',
       })
     ).toBeInTheDocument();
-  });
+
+    jest.useRealTimers();
+  }, 10000);
 
   it('should send resume restore request when resume button is clicked', async () => {
+    jest.useFakeTimers();
     renderComponent();
 
     await act(async () => flushPromises());
@@ -521,14 +528,20 @@ describe('Admin Download Status Table', () => {
       })
     );
 
+    jest.runAllTimers();
+    await act(async () => flushPromises());
+
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.pause {filename:test-file-5}',
       })
     ).toBeInTheDocument();
-  });
+
+    jest.useRealTimers();
+  }, 10000);
 
   it('should send delete item request when delete button is clicked', async () => {
+    jest.useFakeTimers();
     renderComponent();
 
     await act(async () => flushPromises());
@@ -569,12 +582,17 @@ describe('Admin Download Status Table', () => {
       })
     );
 
+    jest.runAllTimers();
+    await act(async () => flushPromises());
+
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.restore {filename:test-file-1}',
       })
     ).toBeInTheDocument();
-  });
+
+    jest.useRealTimers();
+  }, 10000);
 
   it('should display progress ui if enabled', async () => {
     (
