@@ -6,20 +6,15 @@
     "packages/*"
   ],
   "dependencies": {
-    "husky": "8.0.1",
-    "lerna": "5.5.0"
-  },
-  "devDependencies": {
-    "lerna-update-wizard": "1.1.0"
+    "husky": "8.0.1"
   },
   "scripts": {
-    "build": "lerna run build --ignore datagateway-common",
-    "lint": "lerna run lint:js -- --max-warnings=0",
-    "tsc": "lerna run tsc",
+    "build": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 --exclude datagateway-common run build",
+    "lint": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 run lint:js --max-warnings=0",
+    "tsc": "yarn workspace datagateway-common tsc",
     "test": "yarn test:unit && yarn test:e2e",
-    "test:unit": "lerna run test --stream",
-    "test:e2e": "cd packages/datagateway-dataview && yarn run e2e && cd ../datagateway-download && yarn run e2e && cd ../datagateway-search && yarn run e2e",
-    "test:e2e:lerna": "lerna run e2e --stream --concurrency 1",
+    "test:unit": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 --exclude datagateway run test",
+    "test:e2e": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 run e2e",
     "datagateway-dataview": "cd packages/datagateway-dataview && yarn start",
     "datagateway-download": "cd packages/datagateway-download && yarn start",
     "datagateway-search": "cd packages/datagateway-search && yarn start",

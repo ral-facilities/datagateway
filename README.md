@@ -29,8 +29,7 @@ In the project directory, you can run:
 
 ### `yarn install`
 
-This will install all the project dependencies and then call `lerna bootstrap`,
-which links the packages together. This means that running `yarn install` at the top
+This will install all the project dependencies. Running `yarn install` at the top
 level initialises all the packages, and you will be ready to start development in any of them!
 
 ### `yarn workspace {workspace-name} add {package(s)} / yarn workspaces run add {package(s)}`
