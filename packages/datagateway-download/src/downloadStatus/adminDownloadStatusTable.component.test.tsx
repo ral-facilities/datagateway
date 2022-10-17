@@ -629,5 +629,5 @@ describe('Admin Download Status Table', () => {
         expect(progressText).toBeInTheDocument();
       }
     });
-  });
+  }, 10000);
 });
