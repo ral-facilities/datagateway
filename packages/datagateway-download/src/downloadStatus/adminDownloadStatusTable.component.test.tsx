@@ -432,18 +432,6 @@ describe('Admin Download Status Table', () => {
       })
     ).toBeInTheDocument();
 
-    // without waitFor,
-    // toBeInTheDocument will complain it can't find the element
-    // even though findBy didn't throw...
-    // (it throws when the elemenet actually doesn't exist)
-    // await waitFor(async () => {
-    //   expect(
-    //     await screen.findByRole('button', {
-    //       name: 'downloadStatus.pause {filename:test-file-3}',
-    //     })
-    //   ).toBeInTheDocument();
-    // });
-
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
         settings: { facilityName: string; downloadApiUrl: string },
