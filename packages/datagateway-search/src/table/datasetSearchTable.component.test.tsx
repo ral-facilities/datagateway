@@ -38,6 +38,7 @@ import userEvent from '@testing-library/user-event';
 import {
   findAllRows,
   findCellInRow,
+  findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
 } from 'datagateway-dataview/src/setupTests';
@@ -198,6 +199,126 @@ describe('Dataset table component', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const rows = await findAllRows();
+    // should have 1 row in the table
+    expect(rows).toHaveLength(1);
+
+    const row = rows[0];
+
+    // check that column headers are shown correctly
+    expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.datafile_count')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.investigation')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.create_time')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.modified_time')
+    ).toBeInTheDocument();
+
+    // each cell in the row should contain the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.name'),
+        })
+      ).getByText('Dataset test name')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.datafile_count'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.investigation'),
+        })
+      ).getByText('Investigation test title')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.create_time'),
+        })
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.modified_time'),
+        })
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
+  });
+
+  it('renders correctly for isis', async () => {
+    renderComponent('isis');
+
+    const rows = await findAllRows();
+    // should have 1 row in the table
+    expect(rows).toHaveLength(1);
+
+    const row = rows[0];
+
+    // check that column headers are shown correctly
+    expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.investigation')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.create_time')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.modified_time')
+    ).toBeInTheDocument();
+
+    // each cell in the row should contain the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.name'),
+        })
+      ).getByText('Dataset test name')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
+    expect(
+      findCellInRow(row, {
+        columnIndex: await findColumnIndexByName('datasets.investigation'),
+      })
+    ).toHaveTextContent(''); // expect empty text content because facility cycle is not provided
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.create_time'),
+        })
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.modified_time'),
+        })
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
   });
 
   it('updates filter query params on text filter', async () => {
