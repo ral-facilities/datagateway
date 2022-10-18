@@ -36,6 +36,7 @@ import userEvent from '@testing-library/user-event';
 import {
   findAllRows,
   findCellInRow,
+  findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
 } from 'datagateway-dataview/src/setupTests';
@@ -183,6 +184,66 @@ describe('Datafile search table component', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders correctly', async () => {
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(await findColumnHeaderByName('datafiles.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.location')
+    ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datafiles.size')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.dataset')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.modified_time')
+    ).toBeInTheDocument();
+
+    const rows = await findAllRows();
+    // should have 1 row in the table
+    expect(rows).toHaveLength(1);
+
+    const row = rows[0];
+
+    // each cell in the row should contain the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datafiles.name'),
+        })
+      ).getByText('Datafile test name')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datafiles.location'),
+        })
+      ).getByText('/datafiletest')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datafiles.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datafiles.dataset'),
+        })
+      ).getByText('Dataset test name')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datafiles.modified_time'),
+        })
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
   });
 
   it('updates filter query params on text filter', async () => {
