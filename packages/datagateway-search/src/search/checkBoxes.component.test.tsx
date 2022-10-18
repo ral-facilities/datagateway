@@ -1,13 +1,15 @@
-import React from 'react';
+import * as React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import CheckBoxesGroup from './checkBoxes.component';
 import thunk from 'redux-thunk';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
+import { render, type RenderResult, screen } from '@testing-library/react';
 
 jest.mock('loglevel');
 
@@ -17,19 +19,20 @@ describe('Checkbox component tests', () => {
   let testStore;
   let history: History;
   let pushSpy;
+  let user: UserEvent;
 
-  const createWrapper = (h: History = history): ReactWrapper => {
-    return mount(
+  const renderComponent = (h: History = history): RenderResult =>
+    render(
       <Provider store={testStore}>
         <Router history={h}>
           <CheckBoxesGroup />
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
     history = createMemoryHistory();
+    user = userEvent.setup();
     pushSpy = jest.spyOn(history, 'push');
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
@@ -58,148 +61,109 @@ describe('Checkbox component tests', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
+  it('renders correctly', async () => {
     history.replace('/?searchText=&investigation=false');
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find('#search-entities-menu').last().text()).toEqual(
-      'searchBox.checkboxes.types (2)'
-    );
+    // open the dropdown
+    await user.click(await screen.findByRole('button'));
 
-    wrapper
-      .find('#search-entities-menu')
-      .find('[role="button"]')
-      .last()
-      .simulate('mousedown', { button: 0 });
-
-    const investigationCheckbox = wrapper.find(
-      '[aria-label="searchBox.checkboxes.investigation_arialabel"]'
-    );
-    expect(investigationCheckbox.exists());
-    investigationCheckbox.find('input').forEach((node) => {
-      expect(node.props().checked).toEqual(false);
+    const investigationCheckbox = await screen.findByRole('checkbox', {
+      name: 'searchBox.checkboxes.investigation_arialabel',
     });
+    expect(investigationCheckbox).not.toBeChecked();
 
-    const datasetCheckbox = wrapper.find(
-      '[aria-label="searchBox.checkboxes.dataset_arialabel"]'
-    );
-    expect(datasetCheckbox.exists());
-    datasetCheckbox.find('input').forEach((node) => {
-      expect(node.props().checked).toEqual(true);
+    const datasetCheckbox = await screen.findByRole('checkbox', {
+      name: 'searchBox.checkboxes.dataset_arialabel',
     });
+    expect(datasetCheckbox).toBeChecked();
 
-    const datafileCheckbox = wrapper.find(
-      '[aria-label="searchBox.checkboxes.datafile_arialabel"]'
-    );
-    expect(datafileCheckbox.exists()).toEqual(true);
-    datafileCheckbox.find('input').forEach((node) => {
-      expect(node.props().checked).toEqual(true);
+    const datafileCheckbox = await screen.findByRole('checkbox', {
+      name: 'searchBox.checkboxes.datafile_arialabel',
     });
+    expect(datafileCheckbox).toBeChecked();
   });
 
-  it('renders correctly when datafiles are not searchable', () => {
+  it('renders correctly when datafiles are not searchable', async () => {
     state.dgsearch.searchableEntities = ['investigation', 'dataset'];
     history.replace('/?searchText=&investigation=false');
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find('#search-entities-menu').last().text()).toEqual(
-      'searchBox.checkboxes.types (1)'
-    );
+    // open the dropdown
+    await user.click(await screen.findByRole('button'));
 
-    wrapper
-      .find('#search-entities-menu')
-      .find('[role="button"]')
-      .last()
-      .simulate('mousedown', { button: 0 });
-
-    const investigationCheckbox = wrapper.find(
-      '[aria-label="searchBox.checkboxes.investigation_arialabel"]'
-    );
-    expect(investigationCheckbox.exists());
-    investigationCheckbox.find('input').forEach((node) => {
-      expect(node.props().checked).toEqual(false);
+    const investigationCheckbox = await screen.findByRole('checkbox', {
+      name: 'searchBox.checkboxes.investigation_arialabel',
     });
+    expect(investigationCheckbox).not.toBeChecked();
 
-    const datasetCheckbox = wrapper.find(
-      '[aria-label="searchBox.checkboxes.dataset_arialabel"]'
-    );
-    expect(datasetCheckbox.exists());
-    datasetCheckbox.find('input').forEach((node) => {
-      expect(node.props().checked).toEqual(true);
+    const datasetCheckbox = await screen.findByRole('checkbox', {
+      name: 'searchBox.checkboxes.dataset_arialabel',
     });
+    expect(datasetCheckbox).toBeChecked();
 
     expect(
-      wrapper
-        .find('[aria-label="searchBox.checkboxes.datafile_arialabel"]')
-        .exists()
-    ).toEqual(false);
+      screen.queryByRole('checkbox', {
+        name: 'searchBox.checkboxes.datafile_arialabel',
+      })
+    ).toBeNull();
   });
 
-  it('renders an error message when nothing is selected', () => {
+  it('renders an error message when nothing is selected', async () => {
     history.replace(
       '/?searchText=&investigation=false&dataset=false&datafile=false'
     );
-    const wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper.find('#search-entities-checkbox-label').first().text()
-    ).toContain('searchBox.checkboxes.types');
-
-    expect(wrapper.find('.MuiFormHelperText-root').last().text()).toEqual(
-      'searchBox.checkboxes.types_error'
-    );
+      await screen.findByText('searchBox.checkboxes.types_error')
+    ).toBeInTheDocument();
   });
 
-  it('pushes URL with new dataset value when user clicks checkbox', () => {
+  it('pushes URL with new dataset value when user clicks checkbox', async () => {
     history.replace('/?searchText=&investigation=false');
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper
-      .find('#search-entities-menu')
-      .find('[role="button"]')
-      .last()
-      .simulate('mousedown', { button: 0 });
+    // open the dropdown
+    await user.click(await screen.findByRole('button'));
 
-    wrapper
-      .find('[aria-label="searchBox.checkboxes.dataset_arialabel"]')
-      .last()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', {
+        name: 'searchBox.checkboxes.dataset_arialabel',
+      })
+    );
 
     expect(pushSpy).toHaveBeenCalledWith('?dataset=false&investigation=false');
   });
 
-  it('pushes URL with new datafile value when user clicks checkbox', () => {
+  it('pushes URL with new datafile value when user clicks checkbox', async () => {
     history.replace('/?searchText=&investigation=false');
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper
-      .find('#search-entities-menu')
-      .find('[role="button"]')
-      .last()
-      .simulate('mousedown', { button: 0 });
+    // open the dropdown
+    await user.click(await screen.findByRole('button'));
 
-    wrapper
-      .find('[aria-label="searchBox.checkboxes.datafile_arialabel"]')
-      .last()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', {
+        name: 'searchBox.checkboxes.datafile_arialabel',
+      })
+    );
 
     expect(pushSpy).toHaveBeenCalledWith('?datafile=false&investigation=false');
   });
 
-  it('pushes URL with new investigation value when user clicks checkbox', () => {
+  it('pushes URL with new investigation value when user clicks checkbox', async () => {
     history.replace('/?searchText=&investigation=false');
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper
-      .find('#search-entities-menu')
-      .find('[role="button"]')
-      .last()
-      .simulate('mousedown', { button: 0 });
+    // open the dropdown
+    await user.click(await screen.findByRole('button'));
 
-    wrapper
-      .find('[aria-label="searchBox.checkboxes.investigation_arialabel"]')
-      .last()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', {
+        name: 'searchBox.checkboxes.investigation_arialabel',
+      })
+    );
 
     expect(pushSpy).toHaveBeenCalledWith('?');
   });
