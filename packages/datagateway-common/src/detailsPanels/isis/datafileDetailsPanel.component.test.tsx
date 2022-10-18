@@ -132,7 +132,7 @@ describe('Datafile details panel component', () => {
       },
       {
         id: 6,
-        dateTimeValue: '2019-09-10 11:48:00:00',
+        dateTimeValue: '2019-09-10 11:48:00',
         type: {
           id: 7,
           name: 'Datetime parameter',
@@ -142,7 +142,7 @@ describe('Datafile details panel component', () => {
       },
       {
         id: 8,
-        dateTimeValue: '2019-09-10 11:48:00:00',
+        dateTimeValue: '2019-09-10 11:48:00',
         type: {
           id: 9,
           name: 'Invalid parameter',
