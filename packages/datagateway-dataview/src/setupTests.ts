@@ -87,6 +87,23 @@ export const findColumnIndexByName = async (
 };
 
 /**
+ * Find the header row of the table currently rendered.
+ * This assumes that the first row is always the header row.
+ */
+export const findColumnHeaderByName = async (
+  name: string
+): Promise<HTMLElement> => {
+  const columnHeaders = await screen.findAllByRole('columnheader');
+  const header = columnHeaders.find(
+    (header) => within(header).queryByText(name) !== null
+  );
+  if (!header) {
+    throw new Error(`Cannot find column header by name: ${name}`);
+  }
+  return header;
+};
+
+/**
  * Finds all table rows except the header row.
  */
 export const findAllRows = async (): Promise<HTMLElement[]> =>
