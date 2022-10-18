@@ -21,15 +21,22 @@ import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findAllRows,
+  findColumnHeaderByName,
 } from '../../../setupTests';
 import {
   render,
   type RenderResult,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import {
+  findCellInRow,
+  findColumnIndexByName,
+} from 'datagateway-search/src/setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -113,6 +120,56 @@ describe('ISIS datafiles table component', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const rows = await findAllRows();
+    // should have 1 row in the table
+    expect(rows).toHaveLength(1);
+
+    // check that column headers are shown correctly
+    expect(await findColumnHeaderByName('datafiles.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.location')
+    ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datafiles.size')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.modified_time')
+    ).toBeInTheDocument();
+
+    const row = rows[0];
+
+    // check that every cell contains the correct values
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datafiles.name'),
+        })
+      ).getByText('Test 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datafiles.location'),
+        })
+      ).getByText('/test1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datafiles.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datafiles.modified_time'),
+        })
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
   });
 
   it('updates filter query params on text filter', async () => {
