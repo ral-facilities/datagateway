@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import DatafileSearchTable from './datafileSearchTable.component';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
@@ -39,7 +39,7 @@ import {
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
-} from 'datagateway-dataview/src/setupTests';
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');

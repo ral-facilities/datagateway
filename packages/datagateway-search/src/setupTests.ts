@@ -6,6 +6,7 @@ import { Action } from 'redux';
 import { StateType } from './state/app.types';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
+import { screen, within } from '@testing-library/react';
 
 // Unofficial React 17 Enzyme adapter
 Enzyme.configure({ adapter: new Adapter() });
@@ -71,4 +72,66 @@ export const applyDatePickerWorkaround = (): void => {
 
 export const cleanupDatePickerWorkaround = (): void => {
   delete window.matchMedia;
+};
+
+/**
+ * Finds the index of the column with the given name.
+ */
+export const findColumnIndexByName = async (
+  columnName: string
+): Promise<number> => {
+  const columnHeaders = await screen.findAllByRole('columnheader');
+  return columnHeaders.findIndex(
+    (header) => within(header).queryByText(columnName) !== null
+  );
+};
+
+/**
+ * Find the header row of the table currently rendered.
+ * This assumes that the first row is always the header row.
+ */
+export const findColumnHeaderByName = async (
+  name: string
+): Promise<HTMLElement> => {
+  const columnHeaders = await screen.findAllByRole('columnheader');
+  const header = columnHeaders.find(
+    (header) => within(header).queryByText(name) !== null
+  );
+  if (!header) {
+    throw new Error(`Cannot find column header by name: ${name}`);
+  }
+  return header;
+};
+
+/**
+ * Finds all table rows except the header row.
+ */
+export const findAllRows = async (): Promise<HTMLElement[]> =>
+  (await screen.findAllByRole('row')).slice(1);
+
+/**
+ * Find the table row at the given index. This assumes the first table row is always the header row.
+ *
+ * @param index The index of the table row, igoring the header row. For example, if the table has 2 rows and the first row is the header row,
+ *              the actual row that contains the data is considered the first row, and has an index of 0.
+ */
+export const findRowAt = async (index: number): Promise<HTMLElement> => {
+  const rows = await screen.findAllByRole('row');
+  const row = rows[index + 1];
+  if (!row) {
+    throw new Error(`Cannot find row at index ${index}`);
+  }
+  return row;
+};
+
+export const findCellInRow = (
+  row: HTMLElement,
+  { columnIndex }: { columnIndex: number }
+): HTMLElement => {
+  const cells = within(row).getAllByRole('gridcell');
+  const cell = cells[columnIndex];
+  if (!cell) {
+    throw new Error(`Cannot find cell in row.`);
+  }
+  return cell;
 };

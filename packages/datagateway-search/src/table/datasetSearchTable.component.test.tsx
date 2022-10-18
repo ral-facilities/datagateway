@@ -41,7 +41,7 @@ import {
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
-} from 'datagateway-dataview/src/setupTests';
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
