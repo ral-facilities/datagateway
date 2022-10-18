@@ -14,9 +14,20 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import {
+  findAllRows,
+  findCellInRow,
+  findColumnHeaderByName,
+  findColumnIndexByName,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -57,12 +68,14 @@ describe('ISIS Instruments table component', () => {
         fullName: 'Test instrument 1',
         description: 'foo bar',
         url: 'test url',
+        type: 'type1',
       },
       {
         id: 2,
         name: 'Test 2',
         description: 'foo bar',
         url: 'test url',
+        type: 'type2',
       },
     ];
     history = createMemoryHistory();
@@ -88,6 +101,55 @@ describe('ISIS Instruments table component', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const rows = await findAllRows();
+    // should have 2 rows in the table
+    expect(rows).toHaveLength(2);
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('instruments.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('instruments.type')
+    ).toBeInTheDocument();
+
+    // check that every cell contains the correct value
+    const firstRow = rows[0];
+    expect(
+      within(
+        findCellInRow(firstRow, {
+          columnIndex: await findColumnIndexByName('instruments.name'),
+        })
+      ).getByText('Test instrument 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(firstRow, {
+          columnIndex: await findColumnIndexByName('instruments.type'),
+        })
+      ).getByText('type1')
+    ).toBeInTheDocument();
+
+    const secondRow = rows[1];
+    expect(
+      within(
+        findCellInRow(secondRow, {
+          columnIndex: await findColumnIndexByName('instruments.name'),
+        })
+      ).getByText('Test 2')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(secondRow, {
+          columnIndex: await findColumnIndexByName('instruments.type'),
+        })
+      ).getByText('type2')
+    ).toBeInTheDocument();
   });
 
   it('updates filter query params on text filter', async () => {
