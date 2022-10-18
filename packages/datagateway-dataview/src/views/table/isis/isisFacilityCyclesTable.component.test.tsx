@@ -17,8 +17,17 @@ import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findAllRows,
+  findCellInRow,
+  findColumnHeaderByName,
+  findColumnIndexByName,
 } from '../../../setupTests';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
@@ -88,6 +97,50 @@ describe('ISIS FacilityCycles table component', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const rows = await findAllRows();
+    // should have 1 row in the table
+    expect(rows).toHaveLength(1);
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('facilitycycles.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('facilitycycles.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('facilitycycles.end_date')
+    ).toBeInTheDocument();
+
+    const row = rows[0];
+
+    // check that every cell contains the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('facilitycycles.name'),
+        })
+      ).getByText('Test 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('facilitycycles.start_date'),
+        })
+      ).getByText('2019-07-03')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('facilitycycles.end_date'),
+        })
+      ).getByText('2019-07-04')
+    ).toBeInTheDocument();
   });
 
   it('sends filterTable action on text filter', async () => {
