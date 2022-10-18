@@ -294,6 +294,100 @@ describe('Investigation Search Table component', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders correctly for isis', async () => {
+    renderComponent('isis');
+
+    const rows = await findAllRows();
+    // should have 1 row in the table
+    expect(rows).toHaveLength(1);
+
+    const row = rows[0];
+
+    // check that column headers are shown correctly
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.size')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    // each cell in the row should contain the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.title'),
+        })
+      ).getByText('Test 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.visit_id'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.name'),
+        })
+      ).getByText('Test 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.doi'),
+        })
+      ).getByText('doi 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.instrument'),
+        })
+      ).getByText('LARMORLARMOR')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.start_date'),
+        })
+      ).getByText('2019-06-10')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.end_date'),
+        })
+      ).getByText('2019-06-11')
+    ).toBeInTheDocument();
+  });
+
   it('displays DOI and renders the expected Link ', async () => {
     renderComponent();
 
