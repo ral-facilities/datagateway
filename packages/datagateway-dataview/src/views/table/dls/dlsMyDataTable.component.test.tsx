@@ -24,6 +24,7 @@ import {
   cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
+  findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
 } from '../../../setupTests';
@@ -91,6 +92,7 @@ describe('DLS MyData table component', () => {
             instrument: {
               id: 3,
               name: 'LARMOR',
+              fullName: 'LARMORLARMOR',
             },
           },
         ],
@@ -106,7 +108,9 @@ describe('DLS MyData table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([{ data: 1 }]);
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([
+      { data: 1, isSuccess: true },
+    ]);
     (readSciGatewayToken as jest.Mock).mockReturnValue({
       username: 'testUser',
     });
@@ -115,6 +119,79 @@ describe('DLS MyData table component', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
+
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.dataset_count')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    const row = rows[0];
+
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.title'),
+        })
+      ).getByText('Test 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.visit_id'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName(
+            'investigations.dataset_count'
+          ),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.instrument'),
+        })
+      ).getByText('LARMORLARMOR')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.start_date'),
+        })
+      ).getByText('2019-06-10')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.end_date'),
+        })
+      ).getByText('2019-06-11')
+    ).toBeInTheDocument();
   });
 
   it('sorts by startDate desc and filters startDate to be before the current date on load', () => {
