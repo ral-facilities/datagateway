@@ -20,6 +20,7 @@ import {
   cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
+  findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
 } from '../../../setupTests';
@@ -106,11 +107,79 @@ describe('DLS Visits table component', () => {
       data: rowData,
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([1]);
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([
+      {
+        data: 1,
+        isSuccess: true,
+      },
+    ]);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
+
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.dataset_count')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    const row = rows[0];
+
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.visit_id'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName(
+            'investigations.dataset_count'
+          ),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.instrument'),
+        })
+      ).getByText('LARMOR')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.start_date'),
+        })
+      ).getByText('2019-06-10')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.end_date'),
+        })
+      ).getByText('2019-06-11')
+    ).toBeInTheDocument();
   });
 
   it('updates filter query params on text filter', async () => {
