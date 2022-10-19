@@ -79,9 +79,6 @@ export { default as InvestigationDetailsPanel } from './detailsPanels/investigat
 export { default as DatasetDetailsPanel } from './detailsPanels/datasetDetailsPanel.component';
 export { default as DatafileDetailsPanel } from './detailsPanels/datasetDetailsPanel.component';
 
-export { default as buildInvestigationUrl } from './urlBuilders/buildInvestigationUrl';
-export { default as buildDatasetUrl } from './urlBuilders/buildDatasetUrl';
-export { default as buildDatafileUrl } from './urlBuilders/buildDatafileUrl';
 export * from './urlBuilders';
 
 // ReactDOM.render(<App />, document.getElementById('root'));
