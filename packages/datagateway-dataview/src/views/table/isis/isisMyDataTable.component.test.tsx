@@ -29,7 +29,9 @@ import thunk from 'redux-thunk';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findAllRows,
   findCellInRow,
+  findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
 } from '../../../setupTests';
@@ -104,6 +106,7 @@ describe('ISIS MyData table component', () => {
             instrument: {
               id: 3,
               name: 'LARMOR',
+              fullName: 'LARMORLARMOR',
             },
           },
         ],
@@ -144,6 +147,7 @@ describe('ISIS MyData table component', () => {
     (useInvestigationSizes as jest.Mock).mockReturnValue([
       {
         data: 1,
+        isSuccess: true,
       },
     ]);
     (useIds as jest.Mock).mockReturnValue({
@@ -178,6 +182,98 @@ describe('ISIS MyData table component', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
+
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.size')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    const row = rows[0];
+
+    // check that every cell contains the correct values
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.title'),
+        })
+      ).getByText('Test 1 title')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.doi'),
+        })
+      ).getByText('study pid')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.visit_id'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.name'),
+        })
+      ).getByText('Test 1 name')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.instrument'),
+        })
+      ).getByText('LARMORLARMOR')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.start_date'),
+        })
+      ).getByText('2019-06-10')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.end_date'),
+        })
+      ).getByText('2019-06-11')
+    ).toBeInTheDocument();
   });
 
   it('sorts by startDate desc on load', () => {
