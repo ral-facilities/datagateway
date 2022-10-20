@@ -1,21 +1,14 @@
-import { ListItemText } from '@mui/material';
 import {
-  AdvancedFilter,
-  dGCommonInitialState,
-  useDatasetsPaginated,
-  useDatasetCount,
   Dataset,
-  useLuceneSearch,
+  dGCommonInitialState,
   useAllFacilityCycles,
-  useDatasetSizes,
+  useDatasetCount,
   useDatasetsDatafileCount,
-  CardView,
-  DLSDatasetDetailsPanel,
-  ISISDatasetDetailsPanel,
-  DatasetDetailsPanel,
+  useDatasetSizes,
+  useDatasetsPaginated,
+  useLuceneSearch,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -29,6 +22,15 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../setupTests';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -50,9 +52,10 @@ describe('Dataset - Card View', () => {
   let state: StateType;
   let cardData: Dataset[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (hierarchy?: string): ReactWrapper => {
-    return mount(
+  const renderComponent = (hierarchy?: string): RenderResult =>
+    render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -61,7 +64,6 @@ describe('Dataset - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
     cardData = [
@@ -118,6 +120,7 @@ describe('Dataset - Card View', () => {
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -173,157 +176,99 @@ describe('Dataset - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
-  });
-
-  it('calls the correct data fetching hooks on load', () => {
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [1],
-    });
-
-    createWrapper();
-
-    expect(useLuceneSearch).toHaveBeenCalledWith('Dataset', {
-      searchText: '',
-      startDate: null,
-      endDate: null,
-      maxCount: 300,
-    });
-
-    expect(useDatasetCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useDatasetsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigation: { investigationInstruments: 'instrument' },
-        }),
-      },
-    ]);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(cardData);
-    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').last().simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
-
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"name":{"value":"test","type":"include"}}'
-      )}`
-    );
-
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
-
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').first().simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    await user.type(
+      await screen.findByRole('textbox', {
+        name: 'datasets.modified_time filter to',
+      }),
+      '2019-08-06'
+    );
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(
+      await screen.findByRole('textbox', {
+        name: 'datasets.modified_time filter to',
+      })
+    );
 
     expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('datasets.name');
-    button.find('div').simulate('click');
+    screen.debug(undefined, 10000000);
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by DATASETS.NAME' })
+    );
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     (useDatasetCount as jest.Mock).mockReturnValue({});
     (useDatasetsPaginated as jest.Mock).mockReturnValue({});
 
-    expect(() => createWrapper()).not.toThrowError();
+    renderComponent();
+
+    expect(screen.queryAllByTestId('card')).toHaveLength(0);
   });
 
-  it('renders generic link & pending count correctly', () => {
+  it('renders generic link & pending count correctly', async () => {
     (useDatasetsDatafileCount as jest.Mock).mockImplementation(() => [
       {
         isFetching: true,
       },
     ]);
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
-      `/browse/investigation/2/dataset/1/datafile`
-    );
-    expect(wrapper.find(CardView).find('a').first().text()).toEqual(
-      'Dataset test name'
-    );
+    const card = (await screen.findAllByTestId('card'))[0];
+
     expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[data-testid="card-info-data-datasets.datafile_count"]')
-        .text()
-    ).toEqual('Calculating...');
+      within(card).getByRole('link', { name: 'Dataset test name' })
+    ).toHaveAttribute('href', '/browse/investigation/2/dataset/1/datafile');
+    expect(
+      within(card).getByTestId('card-info-data-datasets.datafile_count')
+    ).toHaveTextContent('Calculating...');
   });
 
-  it("renders DLS link correctly and doesn't allow for download", () => {
-    const wrapper = createWrapper('dls');
+  it("renders DLS link correctly and doesn't allow for download", async () => {
+    renderComponent('dls');
 
-    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    expect(
+      within(card).getByRole('link', { name: 'Dataset test name' })
+    ).toHaveAttribute(
+      'href',
       '/browse/proposal/Investigation test name/investigation/2/dataset/1/datafile'
     );
-    expect(wrapper.find(CardView).find('a').first().text()).toEqual(
-      'Dataset test name'
-    );
-    expect(wrapper.exists('#add-to-cart-btn-dataset-1')).toBe(true);
-    expect(wrapper.exists('#download-btn-dataset-1')).toBe(false);
+
+    expect(
+      screen.getByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'buttons.download' })
+    ).toBeNull();
   });
 
-  it('renders ISIS link & file sizes correctly', () => {
+  it('renders ISIS link & file sizes correctly', async () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
         {
@@ -335,27 +280,28 @@ describe('Dataset - Card View', () => {
       ],
     });
 
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
     expect(useDatasetSizes).toHaveBeenCalledWith(cardData);
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
 
-    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
-      `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`
-    );
-    expect(wrapper.find(CardView).find('a').first().text()).toEqual(
-      'Dataset test name'
-    );
+    const card = (await screen.findAllByTestId('card'))[0];
+
     expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[data-testid="card-info-data-datasets.size"]')
-        .text()
-    ).toEqual('1 B');
+      within(card).getByRole('link', {
+        name: 'Dataset test name',
+      })
+    ).toHaveAttribute(
+      'href',
+      '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1'
+    );
+
+    expect(
+      within(card).getByTestId('card-info-data-datasets.size')
+    ).toHaveTextContent('1 B');
   });
 
-  it('does not render ISIS link when instrumentId cannot be found', () => {
+  it('does not render ISIS link when instrumentId cannot be found', async () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
         {
@@ -372,34 +318,36 @@ describe('Dataset - Card View', () => {
       data: cardData,
       fetchNextPage: jest.fn(),
     });
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Dataset test name');
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    await waitFor(() => {
+      expect(
+        within(card).queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+    });
+    expect(within(card).getByLabelText('card-title')).toHaveTextContent(
+      'Dataset test name'
+    );
   });
 
-  it('does not render ISIS link when facilityCycleId cannot be found', () => {
-    const wrapper = createWrapper('isis');
+  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    renderComponent('isis');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Dataset test name');
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    await waitFor(() => {
+      expect(
+        within(card).queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+    });
+    expect(within(card).getByLabelText('card-title')).toHaveTextContent(
+      'Dataset test name'
+    );
   });
 
-  it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
+  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
         {
@@ -411,60 +359,63 @@ describe('Dataset - Card View', () => {
       ],
     });
 
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Dataset test name');
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    await waitFor(() => {
+      expect(
+        within(card).queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+    });
+    expect(within(card).getByLabelText('card-title')).toHaveTextContent(
+      'Dataset test name'
+    );
   });
 
-  it('displays only the dataset name when there is no generic investigation to link to', () => {
+  it('displays only the dataset name when there is no generic investigation to link to', async () => {
     delete cardData[0].investigation;
     (useDatasetsPaginated as jest.Mock).mockReturnValue({
       data: cardData,
       fetchNextPage: jest.fn(),
     });
 
-    const wrapper = createWrapper('data');
+    renderComponent('data');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Dataset test name');
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    await waitFor(() => {
+      expect(
+        within(card).queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+    });
+    expect(within(card).getByLabelText('card-title')).toHaveTextContent(
+      'Dataset test name'
+    );
   });
 
-  it('displays only the dataset name when there is no DLS investigation to link to', () => {
+  it('displays only the dataset name when there is no DLS investigation to link to', async () => {
     delete cardData[0].investigation;
     (useDatasetsPaginated as jest.Mock).mockReturnValue({
       data: cardData,
       fetchNextPage: jest.fn(),
     });
 
-    const wrapper = createWrapper('dls');
+    renderComponent('dls');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Dataset test name');
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    await waitFor(() => {
+      expect(
+        within(card).queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+    });
+    expect(within(card).getByLabelText('card-title')).toHaveTextContent(
+      'Dataset test name'
+    );
   });
 
-  it('displays only the dataset name when there is no ISIS investigation to link to', () => {
+  it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
         {
@@ -481,42 +432,37 @@ describe('Dataset - Card View', () => {
       fetchNextPage: jest.fn(),
     });
 
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Dataset test name');
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    await waitFor(() => {
+      expect(
+        within(card).queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+    });
+    expect(within(card).getByLabelText('card-title')).toHaveTextContent(
+      'Dataset test name'
+    );
   });
 
-  it('displays generic details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
-
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
+  it('displays generic details panel when expanded', async () => {
+    renderComponent();
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(await screen.findByTestId('dataset-details-panel')).toBeTruthy();
   });
 
-  it('displays correct details panel for ISIS when expanded', () => {
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
-
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+  it('displays correct details panel for ISIS when expanded', async () => {
+    renderComponent('isis');
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(await screen.findByTestId('dataset-details-panel')).toBeTruthy();
   });
 
-  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
+  it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [
         {
@@ -528,29 +474,26 @@ describe('Dataset - Card View', () => {
       ],
     });
 
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
+    renderComponent('isis');
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(await screen.findByTestId('dataset-details-panel')).toBeTruthy();
 
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
+    await user.click(
+      await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
+    );
 
-    wrapper.find('#dataset-datafiles-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
     );
   });
 
-  it('displays correct details panel for DLS when expanded', () => {
-    const wrapper = createWrapper('dls');
-    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
-
-    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
+  it('displays correct details panel for DLS when expanded', async () => {
+    renderComponent('dls');
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(await screen.findByTestId('dataset-details-panel')).toBeTruthy();
   });
 });
