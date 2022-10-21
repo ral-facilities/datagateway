@@ -38,7 +38,6 @@ describe('App', () => {
   });
 
   it('shows loading screen when configuring app', async () => {
-    // pretend app is configured successfully
     (configureApp as jest.MockedFn<typeof configureApp>).mockReturnValue(
       () =>
         new Promise((_) => {
