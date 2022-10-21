@@ -1,15 +1,13 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
-import { Link } from '@mui/material';
 import {
-  formatBytes,
   datasetLink,
-  investigationLink,
-  tableLink,
+  filterStudyInfoInvestigations,
+  formatBytes,
   formatCountOrSize,
   getStudyInfoInvestigation,
-  filterStudyInfoInvestigations,
+  investigationLink,
+  tableLink,
 } from './cellContentRenderers';
 import type {
   DateFilter,
@@ -17,6 +15,7 @@ import type {
   Study,
   TextFilter,
 } from '../../app.types';
+import { render, screen } from '@testing-library/react';
 
 describe('Cell content renderers', () => {
   describe('formatBytes', () => {
@@ -345,28 +344,37 @@ describe('Cell content renderers', () => {
 
   describe('datasetLink', () => {
     it('renders correctly', () => {
-      const wrapper = shallow(
+      render(
         <MemoryRouter>{datasetLink('1', 2, 'test', 'card')}</MemoryRouter>
       );
-      expect(wrapper.find(Link)).toMatchSnapshot();
+      expect(screen.getByRole('link', { name: 'test' })).toHaveAttribute(
+        'href',
+        '/browse/investigation/1/dataset/2/datafile?view=card'
+      );
     });
   });
 
   describe('investigationLink', () => {
     it('renders correctly', () => {
-      const wrapper = shallow(
+      render(
         <MemoryRouter>{investigationLink(1, 'test', 'card')}</MemoryRouter>
       );
-      expect(wrapper.find(Link)).toMatchSnapshot();
+      expect(screen.getByRole('link', { name: 'test' })).toHaveAttribute(
+        'href',
+        '/browse/investigation/1/dataset?view=card'
+      );
     });
   });
 
   describe('tableLink', () => {
     it('renders correctly', () => {
-      const wrapper = shallow(
+      render(
         <MemoryRouter>{tableLink('/test/url', 'test text')}</MemoryRouter>
       );
-      expect(wrapper.find(Link)).toMatchSnapshot();
+      expect(screen.getByRole('link', { name: 'test text' })).toHaveAttribute(
+        'href',
+        '/test/url'
+      );
     });
   });
 });
