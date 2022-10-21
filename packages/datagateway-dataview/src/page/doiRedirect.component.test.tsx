@@ -1,17 +1,15 @@
 import * as React from 'react';
-import { mount } from 'enzyme';
 import {
-  Investigation,
-  Instrument,
   FacilityCycle,
-  useInvestigation,
+  Instrument,
+  Investigation,
+  NotificationType,
   useFacilityCyclesByInvestigation,
   useInstrumentsPaginated,
-  NotificationType,
+  useInvestigation,
 } from 'datagateway-common';
 import { Router } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import DoiRedirect from './doiRedirect.component';
 import { createLocation, createMemoryHistory } from 'history';
 import * as log from 'loglevel';
@@ -50,16 +48,6 @@ describe('DOI Redirect page', () => {
   let mockInvestigationData: Investigation[] = [];
   let mockInstrumentData: Instrument[] = [];
   let mockFacilityCycleData: FacilityCycle[] = [];
-
-  const createWrapper = (): ReactWrapper => {
-    return mount(
-      <Router history={history}>
-        <QueryClientProvider client={new QueryClient()}>
-          <DoiRedirect />
-        </QueryClientProvider>
-      </Router>
-    );
-  };
 
   const renderComponent = (): RenderResult =>
     render(
@@ -220,7 +208,7 @@ describe('DOI Redirect page', () => {
       isLoading: false,
       isIdle: false,
     });
-    createWrapper();
+    renderComponent();
 
     expect(history.location.pathname).toBe('/datagateway');
     expect(log.error).toHaveBeenCalledWith('Invalid DOI redirect');
