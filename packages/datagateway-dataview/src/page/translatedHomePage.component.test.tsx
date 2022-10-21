@@ -1,9 +1,10 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import {
   TranslatedHomePage as HomePage,
   TranslatedHomePageStateProps,
 } from './translatedHomePage.component';
+import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('HomePage', () => {
   let props: TranslatedHomePageStateProps;
@@ -15,7 +16,11 @@ describe('HomePage', () => {
   });
 
   it('translated homepage renders correctly', () => {
-    const wrapper = shallow(<HomePage {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = render(
+      <MemoryRouter>
+        <HomePage {...props} />
+      </MemoryRouter>
+    );
+    expect(asFragment()).toMatchSnapshot();
   });
 });
