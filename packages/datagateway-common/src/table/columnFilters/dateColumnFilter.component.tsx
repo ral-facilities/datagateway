@@ -102,7 +102,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
             inputFormat="yyyy-MM-dd HH:mm:ss"
-            mask="____-__-__ __:__"
+            mask="____-__-__ __:__:__"
             value={startDate}
             maxDate={endDate || new Date('2100-01-01 00:00:00')}
             onChange={(date) => {
@@ -154,7 +154,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
           />
           <DateTimePicker
             inputFormat="yyyy-MM-dd HH:mm:ss"
-            mask="____-__-__ __:__"
+            mask="____-__-__ __:__:__"
             value={endDate}
             minDate={startDate || new Date('1984-01-01 00:00:00')}
             onChange={(date) => {
