@@ -47,13 +47,13 @@ export function updateFilter({
       onChange({
         [startDateOrEndDateChanged]:
           date && isValid(date)
-            ? format(date, filterByTime ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd')
+            ? format(date, filterByTime ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd')
             : undefined,
         [startDateOrEndDateChanged === 'startDate' ? 'endDate' : 'startDate']:
           otherDate && isValid(otherDate)
             ? format(
                 otherDate,
-                filterByTime ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd'
+                filterByTime ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
               )
             : undefined,
       });
