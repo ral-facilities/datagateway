@@ -103,6 +103,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
           <DateTimePicker
             inputFormat="yyyy-MM-dd HH:mm:ss"
             mask="____-__-__ __:__:__"
+            views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
             value={startDate}
             maxDate={endDate || new Date('2100-01-01 00:00:00')}
             onChange={(date) => {
@@ -155,6 +156,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
           <DateTimePicker
             inputFormat="yyyy-MM-dd HH:mm:ss"
             mask="____-__-__ __:__:__"
+            views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
             value={endDate}
             minDate={startDate || new Date('1984-01-01 00:00:00')}
             onChange={(date) => {
