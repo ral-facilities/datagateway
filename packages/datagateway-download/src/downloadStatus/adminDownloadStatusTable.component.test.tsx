@@ -325,7 +325,7 @@ describe('Admin Download Status Table', () => {
     const dateFromFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter from',
     });
-    await user.type(dateFromFilterInput, '2020-01-01 00:00');
+    await user.type(dateFromFilterInput, '2020-01-01 00:00:00');
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -339,7 +339,7 @@ describe('Admin Download Status Table', () => {
     const dateToFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter to',
     });
-    await user.type(dateToFilterInput, '2020-01-02 23:59');
+    await user.type(dateToFilterInput, '2020-01-02 23:59:00');
 
     // have to wrap the expect in a waitFor because for some reason
     // await user.type doesn't wait until the full thing is typed in before resolving
