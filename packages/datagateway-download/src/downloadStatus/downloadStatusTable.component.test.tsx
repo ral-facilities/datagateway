@@ -279,7 +279,7 @@ describe('Download Status Table', () => {
     });
 
     // Type into date from filter textbox
-    await user.type(dateFromFilterInput, '2020-01-01 00:00');
+    await user.type(dateFromFilterInput, '2020-01-01 00:00:00');
 
     // Should show all files
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
@@ -289,7 +289,7 @@ describe('Download Status Table', () => {
     expect(await screen.findByText('test-file-5')).toBeInTheDocument();
 
     // Type into date to filter textbox
-    await user.type(dateToFilterInput, '2020-01-02 23:59');
+    await user.type(dateToFilterInput, '2020-01-02 23:59:00');
 
     // Should show no files
     await waitFor(() => {
@@ -304,8 +304,8 @@ describe('Download Status Table', () => {
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
     // Type into both date filters
-    await user.type(dateFromFilterInput, '2020-02-26 00:00');
-    await user.type(dateToFilterInput, '2020-02-27 23:59');
+    await user.type(dateFromFilterInput, '2020-02-26 00:00:00');
+    await user.type(dateToFilterInput, '2020-02-27 23:59:00');
 
     // Should show only test-file-2 and test-file-3
     expect(await screen.findByText('test-file-2')).toBeInTheDocument();
@@ -318,7 +318,7 @@ describe('Download Status Table', () => {
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
     // Type into only date from filter
-    await user.type(dateFromFilterInput, '2020-02-27 00:00');
+    await user.type(dateFromFilterInput, '2020-02-27 00:00:00');
 
     // Should show test-file-3, test-file-4 and test-file-5
     expect(await screen.findByText('test-file-3')).toBeInTheDocument();
@@ -330,7 +330,7 @@ describe('Download Status Table', () => {
     // Clear date from filter textbox
     await user.clear(dateFromFilterInput);
     // Type into only date to filter
-    await user.type(dateToFilterInput, '2020-02-27 00:00');
+    await user.type(dateToFilterInput, '2020-02-27 00:00:00');
 
     // Should show only test-file-1 and test-file-2
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
