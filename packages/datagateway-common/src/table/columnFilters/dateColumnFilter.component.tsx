@@ -47,13 +47,13 @@ export function updateFilter({
       onChange({
         [startDateOrEndDateChanged]:
           date && isValid(date)
-            ? format(date, filterByTime ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd')
+            ? format(date, filterByTime ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd')
             : undefined,
         [startDateOrEndDateChanged === 'startDate' ? 'endDate' : 'startDate']:
           otherDate && isValid(otherDate)
             ? format(
                 otherDate,
-                filterByTime ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd'
+                filterByTime ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
               )
             : undefined,
       });
@@ -101,10 +101,11 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
       {props.filterByTime ? (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
-            inputFormat="yyyy-MM-dd HH:mm"
-            mask="____-__-__ __:__"
+            inputFormat="yyyy-MM-dd HH:mm:ss"
+            mask="____-__-__ __:__:__"
+            views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
             value={startDate}
-            maxDate={endDate || new Date('2100-01-01 00:00')}
+            maxDate={endDate || new Date('2100-01-01 00:00:00')}
             onChange={(date) => {
               setStartDate(date as Date);
               updateFilter({
@@ -133,7 +134,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
               const error =
                 // eslint-disable-next-line react/prop-types
                 (renderProps.error || invalidDateRange) ?? undefined;
-              let helperText = 'Date-time format: yyyy-MM-dd HH:mm.';
+              let helperText = 'Date-time format: yyyy-MM-dd HH:mm:ss.';
               if (invalidDateRange) helperText = 'Invalid date-time range';
 
               return (
@@ -153,10 +154,11 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             }}
           />
           <DateTimePicker
-            inputFormat="yyyy-MM-dd HH:mm"
-            mask="____-__-__ __:__"
+            inputFormat="yyyy-MM-dd HH:mm:ss"
+            mask="____-__-__ __:__:__"
+            views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
             value={endDate}
-            minDate={startDate || new Date('1984-01-01 00:00')}
+            minDate={startDate || new Date('1984-01-01 00:00:00')}
             onChange={(date) => {
               setEndDate(date as Date);
               updateFilter({
@@ -185,7 +187,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
               const error =
                 // eslint-disable-next-line react/prop-types
                 (renderProps.error || invalidDateRange) ?? undefined;
-              let helperText = 'Date-time format: yyyy-MM-dd HH:mm.';
+              let helperText = 'Date-time format: yyyy-MM-dd HH:mm:ss.';
               if (invalidDateRange) helperText = 'Invalid date-time range';
 
               return (
@@ -211,7 +213,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             inputFormat="yyyy-MM-dd"
             mask="____-__-__"
             value={startDate}
-            maxDate={endDate || new Date('2100-01-01 00:00')}
+            maxDate={endDate || new Date('2100-01-01 00:00:00')}
             onChange={(date) => {
               setStartDate(date as Date);
               updateFilter({
@@ -262,7 +264,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             inputFormat="yyyy-MM-dd"
             mask="____-__-__"
             value={endDate}
-            minDate={startDate || new Date('1984-01-01 00:00')}
+            minDate={startDate || new Date('1984-01-01 00:00:00')}
             onChange={(date) => {
               setEndDate(date as Date);
               updateFilter({
