@@ -6226,7 +6226,7 @@ __metadata:
     history: 4.10.1
     i18next: 21.10.0
     i18next-browser-languagedetector: 6.1.2
-    i18next-http-backend: 1.4.1
+    i18next-http-backend: 2.0.0
     jsrsasign: 10.5.25
     lint-staged: 13.0.3
     lodash.debounce: 4.0.8
@@ -6296,7 +6296,7 @@ __metadata:
     history: 4.10.1
     i18next: 21.10.0
     i18next-browser-languagedetector: 6.1.2
-    i18next-http-backend: 1.4.1
+    i18next-http-backend: 2.0.0
     jsrsasign: 10.5.25
     lint-staged: 13.0.3
     lodash.chunk: 4.2.0
@@ -6365,7 +6365,7 @@ __metadata:
     history: 4.10.1
     i18next: 21.10.0
     i18next-browser-languagedetector: 6.1.2
-    i18next-http-backend: 1.4.1
+    i18next-http-backend: 2.0.0
     jsrsasign: 10.5.25
     lint-staged: 13.0.3
     loglevel: 1.8.0
@@ -8853,12 +8853,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:1.4.1":
-  version: 1.4.1
-  resolution: "i18next-http-backend@npm:1.4.1"
+"i18next-http-backend@npm:2.0.0":
+  version: 2.0.0
+  resolution: "i18next-http-backend@npm:2.0.0"
   dependencies:
     cross-fetch: 3.1.5
-  checksum: 1ed4c68c458cc5e7c60af3b641223b9f1b49b6e7ded0fb908cf034ddf62de401db9bb8bb0f6be0634c53ceeee0fec7e03e7171b0dea2cbebca5bbcee6da46e2f
+  checksum: 2e2c8f427880540ce82a37367f095a9e4b2c816602443d1729a64062b6cedbaeb503a013e3fe5df0aa077ed0c252eb490d3c87245ef2945dbf2a11abad9872fe
   languageName: node
   linkType: hard
 
