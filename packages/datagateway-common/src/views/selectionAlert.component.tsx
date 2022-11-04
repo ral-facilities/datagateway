@@ -113,7 +113,7 @@ const SelectionAlert = React.memo(
       const difference = newNumSelecItems - numSelectedItems;
 
       if (difference > 0) {
-        setAlertText(t('selec_alert.added', { count: difference }));
+        setAlertText(t('selec_alert.added', { count: difference }) as string);
         //Show a session expirey warning message if anonymous, have added items to the cart when
         //it was previously empty, and as long as the message hasn't already been shown to prevent
         //it showing when navigating between plugins
@@ -125,7 +125,10 @@ const SelectionAlert = React.memo(
           broadcastWarning(t('selec_alert.warning_message_session_token'));
           storeHasSentExpireMessage(true);
         }
-      } else setAlertText(t('selec_alert.removed', { count: difference * -1 }));
+      } else
+        setAlertText(
+          t('selec_alert.removed', { count: difference * -1 }) as string
+        );
 
       setNumSelectedItems(newNumSelecItems);
       //Change has occurred so need to ensure displayed
