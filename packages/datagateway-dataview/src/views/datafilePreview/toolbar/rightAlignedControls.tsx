@@ -52,7 +52,7 @@ function RightAlignedControls(): JSX.Element {
       spacing={2}
       sx={{ paddingRight: 1 }} // additional padding to achieve symmetry (buttons on the left have extra padding)
     >
-      <Tooltip title={t('datafiles.preview.toolbar.scroll_to_zoom')}>
+      <Tooltip title={t('datafiles.preview.toolbar.scroll_to_zoom') as string}>
         <Chip
           ref={zoomLevelChipRef}
           label={`${zoomLevel}%`}
