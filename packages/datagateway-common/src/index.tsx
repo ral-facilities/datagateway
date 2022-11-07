@@ -33,6 +33,7 @@ export type {
   CardViewDetails,
   CVFilterInfo,
   CVSelectedFilter,
+  CVCustomFilters,
 } from './card/cardView.component';
 export { default as AdvancedFilter } from './card/advancedFilter.component';
 export { default as ParameterFilters } from './card/parameterFilters.component';
