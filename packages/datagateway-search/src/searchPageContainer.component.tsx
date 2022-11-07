@@ -573,8 +573,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 <SideSearchBoxPaper>
                   <SearchBoxContainerSide
                     searchText={searchText}
+                    restrict={shouldRestrictSearch}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
+                    onMyDataCheckboxChange={(restrict) =>
+                      setShouldRestrictSearch(restrict)
+                    }
                   />
                 </SideSearchBoxPaper>
               ) : (
