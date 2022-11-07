@@ -6,6 +6,7 @@ import {
 } from '@mui/icons-material';
 import {
   CardView,
+  type CVCustomFilters,
   parseSearchToQuery,
   usePushPage,
   usePushResults,
@@ -33,7 +34,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { styled, Paper, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
-import { CVCustomFilters } from 'datagateway-common/lib/card/cardView.component';
 
 interface DatasetCardViewProps {
   hierarchy: string;
@@ -311,8 +311,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     }
   }, [dlsLink, genericLink, hierarchy, isisLink]);
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
   const datasetCountQueries = useDatasetsDatafileCount(
     hierarchy !== 'isis' ? paginatedSource : undefined
   );
