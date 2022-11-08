@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
-
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
@@ -16,8 +14,6 @@ import { Router } from 'react-router-dom';
 import PageContainer, { paths } from './pageContainer.component';
 import { checkInstrumentId, checkInvestigationId } from './idCheckFunctions';
 import axios from 'axios';
-import { act } from 'react-dom/test-utils';
-import { flushPromises } from '../setupTests';
 import {
   QueryClient,
   QueryClientProvider,
@@ -64,31 +60,6 @@ describe('PageContainer - Tests', () => {
   let queryClient: QueryClient;
   let history: History;
   let user: UserEvent;
-
-  const createWrapper = (
-    h: History = history,
-    client: QueryClient = queryClient
-  ): ReactWrapper => {
-    const state: StateType = {
-      dgcommon: dGCommonInitialState,
-      dgdataview: dgDataViewInitialState,
-      router: {
-        action: 'POP',
-        location: createLocation('/'),
-      },
-    };
-    const mockStore = configureStore([thunk]);
-    const testStore = mockStore(state);
-    return mount(
-      <Provider store={testStore}>
-        <Router history={h}>
-          <QueryClientProvider client={client}>
-            <PageContainer />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
 
   const renderComponent = (
     h: History = history,
@@ -314,21 +285,16 @@ describe('PageContainer - Tests', () => {
     });
     history.replace(`${paths.studyHierarchy.landing.isisStudyLanding}`);
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('StyledRouting')).toBeFalsy();
+    expect(screen.queryByTestId('styled-routing')).toBeNull();
   });
 
   it('set view to card if cardview stored in localstorage', () => {
     localStorage.setItem('dataView', 'card');
     history.replace(paths.toggle.investigation);
 
-    createWrapper();
+    renderComponent();
 
     expect(history.location.search).toBe('?view=card');
   });
