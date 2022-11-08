@@ -12,6 +12,8 @@ import {
   ConfigureSearchableEntitiesType,
   ConfigureMaxNumResultsPayload,
   ConfigureMaxNumResultsType,
+  ConfigureMinNumResultsType,
+  ConfigureMinNumResultsPayload,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
@@ -104,6 +106,16 @@ export function handleConfigureMaxNumResults(
   };
 }
 
+export function handleConfigureMinNumResults(
+  state: DGSearchState,
+  payload: ConfigureMinNumResultsPayload
+): DGSearchState {
+  return {
+    ...state,
+    minNumResults: payload.minNumResults,
+  };
+}
+
 const DGSearchReducer = createReducer(initialState, {
   [SetDatasetTabType]: handleSetDatasetTab,
   [SetDatafileTabType]: handleSetDatafileTab,
@@ -112,6 +124,7 @@ const DGSearchReducer = createReducer(initialState, {
   [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
   [ConfigureSearchableEntitiesType]: handleConfigureSearchableEntities,
   [ConfigureMaxNumResultsType]: handleConfigureMaxNumResults,
+  [ConfigureMinNumResultsType]: handleConfigureMinNumResults,
 });
 
 export default DGSearchReducer;

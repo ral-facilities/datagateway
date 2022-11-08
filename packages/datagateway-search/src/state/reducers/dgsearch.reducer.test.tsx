@@ -7,6 +7,7 @@ import {
 } from '../actions/actions';
 import {
   loadMaxNumResults,
+  loadMinNumResults,
   loadSearchableEntitites,
   loadSelectAllSetting,
   settingsLoaded,
@@ -86,5 +87,13 @@ describe('dgsearch reducer', () => {
     const updatedState = DGSearchReducer(state, loadMaxNumResults(200));
 
     expect(updatedState.maxNumResults).toEqual(200);
+  });
+
+  it('should set minNumResults property when configuring action is sent', () => {
+    expect(state.minNumResults).toEqual(initialState.minNumResults);
+
+    const updatedState = DGSearchReducer(state, loadMinNumResults(20));
+
+    expect(updatedState.minNumResults).toEqual(20);
   });
 });
