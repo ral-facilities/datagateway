@@ -30,13 +30,6 @@ import DatasetCardView from './card/datasetSearchCardView.component';
 import DatasetSearchTable from './table/datasetSearchTable.component';
 import SearchTabLabel from './searchTabLabel.component';
 
-export interface SearchTableProps {
-  containerHeight: string;
-  hierarchy: string;
-  onTabChange: (currentTab: string) => void;
-  currentTab: string;
-}
-
 interface TabPanelProps {
   children?: React.ReactNode;
   index: string;
