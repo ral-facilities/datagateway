@@ -10,6 +10,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import SortSelectComponent from './search/sortSelect.component';
 import MyDataCheckBox from './search/myDataCheckBox.component';
 import { readSciGatewayToken } from 'datagateway-common';
+import { Location } from 'history';
 
 const ContainerBox = styled(Box)(({ theme }) => ({
   maxWidth: '1920px',
@@ -42,6 +43,17 @@ const SearchBoxContainer = (
 
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
+
+  function searchTextExampleLink(exampleSearchText: string) {
+    return (location: Location): Location => {
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set('searchText', exampleSearchText);
+      return {
+        ...location,
+        search: searchParams.toString(),
+      };
+    };
+  }
 
   return (
     <ContainerBox>
@@ -104,7 +116,7 @@ const SearchBoxContainer = (
             <Link
               component={RouterLink}
               sx={{ fontWeight: 'bold' }}
-              to={t('searchBox.examples_label_link1')}
+              to={searchTextExampleLink('"instrument calibration"')}
             >
               &quot;instrument calibration&quot;
             </Link>
@@ -112,7 +124,7 @@ const SearchBoxContainer = (
             <Link
               component={RouterLink}
               sx={{ fontWeight: 'bold' }}
-              to={t('searchBox.examples_label_link2')}
+              to={searchTextExampleLink('neutron AND scattering')}
             >
               neutron AND scattering
             </Link>
