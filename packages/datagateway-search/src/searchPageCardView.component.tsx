@@ -208,7 +208,6 @@ const SearchPageCardView = (
     searchResponses: InfiniteData<SearchResponse> | undefined,
     hasNextPage: boolean | undefined
   ): string => {
-    console.log('searchPageCardView countsearchresults', searchResponses);
     if (searchResponses) {
       let numResults = 0;
       searchResponses.pages.forEach((searchResponse) => {
