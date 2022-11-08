@@ -1,9 +1,8 @@
-import { mount } from 'enzyme';
-import React from 'react';
-import { Investigation } from '../app.types';
+import * as React from 'react';
+import type { Investigation } from '../app.types';
 import EntityCard from './entityCard.component';
 import { render, screen, waitFor } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('Card', () => {
@@ -101,7 +100,7 @@ describe('Card', () => {
     ).toBeInTheDocument();
   });
 
-  it('no card-description-link if clientHeight < defaultCollapsedHeight', () => {
+  it('no card-description-link if clientHeight < defaultCollapsedHeight', async () => {
     // Mock the value of clientHeight to be greater than defaultCollapsedHeight
     Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
       configurable: true,
@@ -113,19 +112,15 @@ describe('Card', () => {
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate semper commodo. Vivamus sed sapien a dolor aliquam commodo vulputate at est. Maecenas sed lobortis justo, congue lobortis urna. Quisque in pharetra justo. Maecenas nunc quam, rutrum non nisl sit amet, mattis condimentum massa. Donec ut commodo urna, vel rutrum sapien. Integer fermentum quam quis commodo lobortis. Duis cursus, turpis a feugiat malesuada, dui tellus condimentum lorem, sed sagittis magna quam in arcu. Integer ex velit, cursus ut sagittis sit amet, pulvinar nec dolor. Curabitur sagittis tincidunt arcu id vestibulum. Aliquam auctor, ante eget consectetur accumsan, massa odio ornare sapien, ut porttitor lorem nulla et urna. Nam sapien erat, rutrum pretium dolor vel, maximus mattis velit. In non ex lobortis, sollicitudin nulla eget, aliquam neque.';
     modifiedEntity.summary = descText;
 
-    const wrapper = mount(
+    render(
       <EntityCard
         entity={modifiedEntity}
         title={{ dataKey: 'title' }}
         description={{ dataKey: 'summary' }}
       />
     );
-    expect(
-      wrapper.find('[aria-label="card-description"]').first().text()
-    ).toEqual(descText);
-    expect(
-      wrapper.find('[aria-label="card-description-link"]').exists()
-    ).toBeFalsy();
+    expect(await screen.findByText(descText)).toBeInTheDocument();
+    expect(screen.queryByLabelText('card-description-link')).toBeNull();
   });
 
   it('render with information', async () => {
