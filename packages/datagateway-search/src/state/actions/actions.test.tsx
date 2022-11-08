@@ -1,12 +1,14 @@
 import {
   configureApp,
   loadMaxNumResults,
+  loadMinNumResults,
   loadSearchableEntitites,
   loadSelectAllSetting,
   settingsLoaded,
 } from '.';
 import {
   ConfigureMaxNumResultsType,
+  ConfigureMinNumResultsType,
   ConfigureSearchableEntitiesType,
   ConfigureSelectAllSettingType,
   SettingsLoadedType,
@@ -112,5 +114,15 @@ describe('Actions', () => {
     await asyncAction(dispatch, getState);
 
     expect(actions.length).toEqual(0);
+  });
+
+  describe('loadMinNumResults', () => {
+    it('returns an action with type ConfigureMinResultsType and a payload with the given min num results', () => {
+      const action = loadMinNumResults(20);
+      expect(action.type).toEqual(ConfigureMinNumResultsType);
+      expect(action.payload).toEqual({
+        minNumResults: 20,
+      });
+    });
   });
 });
