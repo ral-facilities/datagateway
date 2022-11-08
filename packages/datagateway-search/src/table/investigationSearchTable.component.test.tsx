@@ -83,8 +83,6 @@ jest.mock('datagateway-common', () => {
   return {
     __esModule: true,
     ...originalModule,
-    // fetchDownloadCart: jest.fn(),
-    // addOrRemoveFromCart: jest.fn(),
     handleICATError: jest.fn(),
   };
 });
@@ -270,7 +268,7 @@ describe('Investigation Search Table component', () => {
     // clicks on the row checkbox
     await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
 
-    // the checkbox should be checked
+    // the checkbox should not be checked
     expect(
       await screen.findByRole('checkbox', { name: 'select row 0' })
     ).not.toBeChecked();
