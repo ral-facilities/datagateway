@@ -9,7 +9,14 @@ import {
   tableLink,
   formatCountOrSize,
   getStudyInfoInvestigation,
+  filterStudyInfoInvestigations,
 } from './cellContentRenderers';
+import type {
+  DateFilter,
+  FiltersType,
+  Study,
+  TextFilter,
+} from '../../app.types';
 
 describe('Cell content renderers', () => {
   describe('formatBytes', () => {
@@ -125,6 +132,214 @@ describe('Cell content renderers', () => {
           ],
         })
       ).toBeUndefined();
+    });
+  });
+
+  describe('filterStudyInfoInvestigations', () => {
+    const study: Study = {
+      id: 1,
+      pid: '3Pd4AO',
+      name: 'lip',
+      modTime: '1977-01-01',
+      createTime: '1977-01-01',
+      studyInvestigations: [
+        {
+          id: 183,
+          investigation: {
+            id: 2,
+            title: 'react js',
+            name: 'rod of ages',
+            visitId: 'kxinp',
+            startDate: '2010-03-01',
+            endDate: '2021-01-09',
+          },
+        },
+        {
+          id: 248,
+          investigation: {
+            id: 3,
+            title: 'whenever maybe spill second',
+            name: 'divine sunderer',
+            visitId: 'B8YxAMU',
+            startDate: '2010-03-01',
+            endDate: '2025-01-09',
+          },
+        },
+        {
+          id: 374,
+          investigation: {
+            id: 3,
+            title: 'whenever maybe spill third',
+            name: 'boots of lucidity',
+            visitId: 'FNv0',
+            startDate: '2009-03-01',
+            endDate: '2021-12-23',
+          },
+        },
+      ],
+    };
+
+    it('should return a list of StudyInvestigations that only matches the given filters', () => {
+      const includeTitleFilter: TextFilter = {
+        type: 'include',
+        value: 'react',
+      };
+      const excludeTitleFilter: TextFilter = {
+        type: 'exclude',
+        value: 'react',
+      };
+      const startDateFilter: DateFilter = {
+        startDate: '2010-01-01',
+        endDate: '2011-01-01',
+      };
+      const endDateFilter: DateFilter = {
+        startDate: '2020-01-01',
+        endDate: '2022-01-01',
+      };
+      const filters: FiltersType = {
+        'studyInvestigations.investigation.title': includeTitleFilter,
+        'studyInvestigations.investigation.startDate': startDateFilter,
+        'studyInvestigations.investigation.endDate': endDateFilter,
+      };
+
+      expect(filterStudyInfoInvestigations(study, filters)).toEqual([
+        {
+          id: 183,
+          investigation: {
+            id: 2,
+            title: 'react js',
+            name: 'rod of ages',
+            visitId: 'kxinp',
+            startDate: '2010-03-01',
+            endDate: '2021-01-09',
+          },
+        },
+      ]);
+
+      // verify that the function works with exclude text filter
+      filters['studyInvestigations.investigation.title'] = excludeTitleFilter;
+      expect(filterStudyInfoInvestigations(study, filters)).toHaveLength(0);
+    });
+
+    it('should return a list of study investigations that match the given start date filter with no start date', () => {
+      const startDateFilter: DateFilter = {
+        endDate: '2009-04-01',
+      };
+      const filters: FiltersType = {
+        'studyInvestigations.investigation.startDate': startDateFilter,
+      };
+
+      expect(filterStudyInfoInvestigations(study, filters)).toEqual([
+        {
+          id: 374,
+          investigation: {
+            id: 3,
+            title: 'whenever maybe spill third',
+            name: 'boots of lucidity',
+            visitId: 'FNv0',
+            startDate: '2009-03-01',
+            endDate: '2021-12-23',
+          },
+        },
+      ]);
+    });
+
+    it('should return a list of study investigations that match the given start date filter with no end date', () => {
+      const startDateFilter: DateFilter = {
+        startDate: '2009-04-01',
+      };
+      const filters: FiltersType = {
+        'studyInvestigations.investigation.startDate': startDateFilter,
+      };
+
+      expect(filterStudyInfoInvestigations(study, filters)).toEqual([
+        {
+          id: 183,
+          investigation: {
+            id: 2,
+            title: 'react js',
+            name: 'rod of ages',
+            visitId: 'kxinp',
+            startDate: '2010-03-01',
+            endDate: '2021-01-09',
+          },
+        },
+        {
+          id: 248,
+          investigation: {
+            id: 3,
+            title: 'whenever maybe spill second',
+            name: 'divine sunderer',
+            visitId: 'B8YxAMU',
+            startDate: '2010-03-01',
+            endDate: '2025-01-09',
+          },
+        },
+      ]);
+    });
+
+    it('should return a list of study investigations that match the given end date filter with no start date', () => {
+      const endDateFilter: DateFilter = {
+        endDate: '2022-03-01',
+      };
+
+      const filters: FiltersType = {
+        'studyInvestigations.investigation.endDate': endDateFilter,
+      };
+
+      expect(filterStudyInfoInvestigations(study, filters)).toEqual([
+        {
+          id: 183,
+          investigation: {
+            id: 2,
+            title: 'react js',
+            name: 'rod of ages',
+            visitId: 'kxinp',
+            startDate: '2010-03-01',
+            endDate: '2021-01-09',
+          },
+        },
+        {
+          id: 374,
+          investigation: {
+            id: 3,
+            title: 'whenever maybe spill third',
+            name: 'boots of lucidity',
+            visitId: 'FNv0',
+            startDate: '2009-03-01',
+            endDate: '2021-12-23',
+          },
+        },
+      ]);
+    });
+
+    it('should return a list of study investigations that match the given end date filter with no end date', () => {
+      const endDateFilter: DateFilter = {
+        startDate: '2025-01-01',
+      };
+
+      const filters: FiltersType = {
+        'studyInvestigations.investigation.endDate': endDateFilter,
+      };
+
+      expect(filterStudyInfoInvestigations(study, filters)).toEqual([
+        {
+          id: 248,
+          investigation: {
+            id: 3,
+            title: 'whenever maybe spill second',
+            name: 'divine sunderer',
+            visitId: 'B8YxAMU',
+            startDate: '2010-03-01',
+            endDate: '2025-01-09',
+          },
+        },
+      ]);
+    });
+
+    it('should return undefined if the given study object does not have study investigations', () => {
+      const { studyInvestigations, ...rest } = study;
+      expect(filterStudyInfoInvestigations(rest, {})).toBeUndefined();
     });
   });
 

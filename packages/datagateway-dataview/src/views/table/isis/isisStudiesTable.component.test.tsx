@@ -78,6 +78,17 @@ describe('ISIS Studies table component', () => {
         name: 'Test 1',
         modTime: '2000-01-01',
         createTime: '2000-01-01',
+        studyInvestigations: [
+          {
+            id: 636,
+            investigation: {
+              id: 357,
+              title: 'all might urgent',
+              name: 'peculiar crowd',
+              visitId: 'Y2D8y7v',
+            },
+          },
+        ],
       },
     ];
     history = createMemoryHistory();

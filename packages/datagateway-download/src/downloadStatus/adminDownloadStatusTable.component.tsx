@@ -35,12 +35,15 @@ import BlackTooltip from '../tooltip.component';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
 import {
+  QueryKey,
   useAdminDownloadDeleted,
   useAdminDownloads,
   useAdminUpdateDownloadStatus,
 } from '../downloadApiHooks';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import useDownloadFormatter from './hooks/useDownloadFormatter';
+import DownloadProgressIndicator from './downloadProgressIndicator.component';
+import { useQueryClient } from 'react-query';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   flexGrow: 1,
@@ -62,9 +65,11 @@ const AdminDownloadStatusTable: React.FC = () => {
   }>({});
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
   const [t] = useTranslation();
+  const { formatDownload } = useDownloadFormatter();
   const { downloadStatusLabels: downloadStatuses } = useDownloadFormatter();
   const { mutate: adminDownloadDeleted } = useAdminDownloadDeleted();
   const { mutate: adminUpdateDownloadStatus } = useAdminUpdateDownloadStatus();
+  const queryClient = useQueryClient();
   // whether this is component's first render.
   const isFirstRender = useRef(true);
 
@@ -74,12 +79,11 @@ const AdminDownloadStatusTable: React.FC = () => {
       if (typeof filter === 'object') {
         if (!Array.isArray(filter)) {
           if ('startDate' in filter || 'endDate' in filter) {
-            // TODO: remove :00 when #1227 is fixed
             const startDate = filter.startDate
-              ? `${filter.startDate}:00`
+              ? `${filter.startDate}`
               : '0001-01-01 00:00:00';
             const endDate = filter.endDate
-              ? `${filter.endDate}:00`
+              ? `${filter.endDate}`
               : '9999-12-31 23:59:00';
 
             queryOffset += ` AND download.${column} BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
@@ -117,7 +121,7 @@ const AdminDownloadStatusTable: React.FC = () => {
     isFetched,
     isRefetching,
     fetchNextPage,
-    refetch,
+    refetch: refetchDownloads,
     dataUpdatedAt,
   } = useAdminDownloads({
     initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
@@ -134,9 +138,13 @@ const AdminDownloadStatusTable: React.FC = () => {
   );
 
   const refreshTable = useCallback(async () => {
-    await refetch();
+    await Promise.all([
+      // mark download progress queries as invalid so that react-query will refetch them as well.
+      queryClient.invalidateQueries(QueryKey.DOWNLOAD_PROGRESS),
+      refetchDownloads(),
+    ]);
     setRefreshDownloads(false);
-  }, [refetch]);
+  }, [queryClient, refetchDownloads]);
 
   React.useEffect(() => {
     if (refreshDownloads && isFetched) {
@@ -156,18 +164,18 @@ const AdminDownloadStatusTable: React.FC = () => {
     // so that subsequent calls of this effect due to sort and filters changes
     // will allow refetch.
     if (!isFirstRender.current) {
-      refetch({ cancelRefetch: true });
+      refetchDownloads({ cancelRefetch: true });
     } else {
       isFirstRender.current = false;
     }
-  }, [refetch, sort, filters]);
+  }, [refetchDownloads, sort, filters]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
       onChange={(value: { value?: string | number; type: string } | null) => {
         if (value) {
-          if (dataKey === 'status') {
+          if (dataKey === 'formattedStatus') {
             const downloadStatus = (
               Object.keys(downloadStatuses) as DownloadStatus[]
             ).find(
@@ -178,8 +186,11 @@ const AdminDownloadStatusTable: React.FC = () => {
             if (typeof downloadStatus !== 'undefined') {
               value.value = downloadStatus;
             }
+
+            setFilters({ ...filters, status: value });
+          } else {
+            setFilters({ ...filters, [dataKey]: value });
           }
-          setFilters({ ...filters, [dataKey]: value });
         } else {
           const { [dataKey]: value, ...restOfFilters } = filters;
           setFilters(restOfFilters);
@@ -206,8 +217,8 @@ const AdminDownloadStatusTable: React.FC = () => {
   );
 
   const tableItems = React.useMemo(
-    () => data?.pages.flatMap((page) => page) ?? [],
-    [data?.pages]
+    () => data?.pages.flatMap((page) => page.map(formatDownload)) ?? [],
+    [data?.pages, formatDownload]
   );
 
   return (
@@ -309,9 +320,25 @@ const AdminDownloadStatusTable: React.FC = () => {
                     },
                     {
                       label: t('downloadStatus.status'),
-                      dataKey: 'status',
+                      dataKey: 'formattedStatus',
                       filterComponent: textFilter,
                     },
+                    ...(settings.uiFeatures.downloadProgress
+                      ? [
+                          {
+                            label: t('downloadStatus.progress'),
+                            dataKey: 'progress',
+                            disableSort: true,
+                            cellContentRenderer: ({
+                              rowData,
+                            }: TableCellProps) => (
+                              <DownloadProgressIndicator
+                                download={rowData as FormattedDownload}
+                              />
+                            ),
+                          },
+                        ]
+                      : []),
                     {
                       label: t('downloadStatus.size'),
                       dataKey: 'size',
@@ -325,7 +352,9 @@ const AdminDownloadStatusTable: React.FC = () => {
                       dataKey: 'createdAt',
                       cellContentRenderer: (props: TableCellProps) => {
                         if (props.cellData) {
-                          const date = toDate(props.cellData);
+                          const date = toDate(
+                            props.cellData.replace(/\[.*]/, '')
+                          );
                           return format(date, 'yyyy-MM-dd HH:mm:ss');
                         }
                       },
@@ -333,7 +362,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                     },
                     {
                       label: t('downloadStatus.deleted'),
-                      dataKey: 'isDeleted',
+                      dataKey: 'formattedIsDeleted',
                     },
                   ]}
                   sort={sort}
@@ -357,7 +386,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                         downloadItem.isDeleted
                       );
 
-                      if (isDeleted === 'No') {
+                      if (!isDeleted) {
                         return null;
                       }
 
@@ -386,7 +415,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                         downloadItem.isDeleted
                       );
 
-                      if (isDeleted === 'Yes') {
+                      if (isDeleted) {
                         return null;
                       }
 
@@ -416,10 +445,10 @@ const AdminDownloadStatusTable: React.FC = () => {
                       );
 
                       if (
-                        isDeleted === 'Yes' ||
-                        downloadItem.status === t('downloadStatus.complete') ||
-                        downloadItem.status === t('downloadStatus.expired') ||
-                        downloadItem.status !== t('downloadStatus.paused')
+                        isDeleted ||
+                        downloadItem.status === 'COMPLETE' ||
+                        downloadItem.status === 'EXPIRED' ||
+                        downloadItem.status !== 'PAUSED'
                       ) {
                         return null;
                       }
@@ -450,10 +479,10 @@ const AdminDownloadStatusTable: React.FC = () => {
                       );
 
                       if (
-                        isDeleted === 'Yes' ||
-                        downloadItem.status === t('downloadStatus.complete') ||
-                        downloadItem.status === t('downloadStatus.expired') ||
-                        downloadItem.status === t('downloadStatus.paused')
+                        isDeleted ||
+                        downloadItem.status === 'COMPLETE' ||
+                        downloadItem.status === 'EXPIRED' ||
+                        downloadItem.status === 'PAUSED'
                       ) {
                         return null;
                       }

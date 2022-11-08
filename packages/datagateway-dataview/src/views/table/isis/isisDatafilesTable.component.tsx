@@ -27,6 +27,7 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';
+import PreviewDatafileButton from '../../datafilePreview/previewDatafileButton.component';
 
 interface ISISDatafilesTableProps {
   datasetId: string;
@@ -187,6 +188,7 @@ const ISISDatafilesTable = (
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
       detailsPanel={ISISDatafileDetailsPanel}
+      actionsWidth={96}
       actions={[
         ({ rowData }: TableActionProps) => (
           <DownloadButton
@@ -196,6 +198,9 @@ const ISISDatafilesTable = (
             variant="icon"
             entitySize={(rowData as Datafile).fileSize ?? -1}
           />
+        ),
+        ({ rowData }: TableActionProps) => (
+          <PreviewDatafileButton datafile={rowData as Datafile} />
         ),
       ]}
       columns={columns}

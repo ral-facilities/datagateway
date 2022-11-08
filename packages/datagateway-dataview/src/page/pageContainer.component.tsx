@@ -32,6 +32,7 @@ import {
   useLocation,
   useHistory,
   useRouteMatch,
+  matchPath,
 } from 'react-router-dom';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
@@ -141,6 +142,11 @@ export const paths = {
       isisDatasetLanding:
         '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId',
     },
+  },
+  // defines routes for datafile previews
+  preview: {
+    isisDatafilePreview:
+      '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId/datafile/:datafileId',
   },
 };
 
@@ -422,16 +428,24 @@ const ViewRouting = React.memo(
       loggedInAnonymously,
       linearProgressHeight,
     } = props;
-    const displayFilterMessage = loadedCount && totalDataCount === 0;
+    const displayFilterMessage =
+      loadedCount &&
+      totalDataCount === 0 &&
+      !matchPath(location.pathname, {
+        path: Object.values(paths.preview),
+        exact: true,
+      });
 
     return (
       <SwitchRouting>
         {/* For "landing" paths, don't use a containing Paper */}
         <Route
           exact
-          path={Object.values(paths.landing).concat(
-            Object.values(paths.studyHierarchy.landing)
-          )}
+          path={[
+            ...Object.values(paths.landing),
+            ...Object.values(paths.studyHierarchy.landing),
+            ...Object.values(paths.preview),
+          ]}
           render={() => (
             <PageRouting
               loggedInAnonymously={loggedInAnonymously}

@@ -147,56 +147,68 @@ exports[`DownloadTab should render correctly 1`] = `
                             </div>
                             <div>
                               <div
-                                aria-hidden="true"
-                                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
+                                class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
+                                id="downloadCart.name-filter"
                               >
-                                <input
-                                  aria-label="Filter by downloadCart.name"
-                                  class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                <label
+                                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
+                                  data-shrink="false"
                                   id="downloadCart.name-filter"
-                                  placeholder="Include"
-                                  type="text"
-                                  value=""
-                                />
-                                <div
-                                  class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                                 >
+                                  Include
+                                </label>
+                                <div
+                                  aria-hidden="true"
+                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
+                                >
+                                  <input
+                                    aria-invalid="false"
+                                    aria-label="Filter by downloadCart.name"
+                                    class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                    id="downloadCart.name-filter"
+                                    type="text"
+                                    value=""
+                                  />
                                   <div
-                                    class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                    class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
                                   >
                                     <div
-                                      aria-expanded="false"
-                                      aria-haspopup="listbox"
-                                      aria-label="include or exclude"
-                                      aria-labelledby="downloadCart.name-select-filter-type"
-                                      class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                                      id="downloadCart.name-select-filter-type"
-                                      role="button"
-                                      tabindex="0"
+                                      class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                     >
-                                      <span
-                                        class="notranslate"
+                                      <div
+                                        aria-expanded="false"
+                                        aria-haspopup="listbox"
+                                        aria-label="include or exclude"
+                                        aria-labelledby="downloadCart.name-select-filter-type"
+                                        class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                        id="downloadCart.name-select-filter-type"
+                                        role="button"
+                                        tabindex="0"
                                       >
-                                        ​
-                                      </span>
-                                    </div>
-                                    <input
-                                      aria-hidden="true"
-                                      class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
-                                      tabindex="-1"
-                                      value="include"
-                                    />
-                                    <svg
-                                      aria-hidden="true"
-                                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
-                                      data-testid="SettingsIcon"
-                                      focusable="false"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                                        <span
+                                          class="notranslate"
+                                        >
+                                          ​
+                                        </span>
+                                      </div>
+                                      <input
+                                        aria-hidden="true"
+                                        class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+                                        tabindex="-1"
+                                        value="include"
                                       />
-                                    </svg>
+                                      <svg
+                                        aria-hidden="true"
+                                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                                        data-testid="SettingsIcon"
+                                        focusable="false"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                                        />
+                                      </svg>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -258,56 +270,68 @@ exports[`DownloadTab should render correctly 1`] = `
                             </div>
                             <div>
                               <div
-                                aria-hidden="true"
-                                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-adornedEnd css-ngukfw-MuiInputBase-root-MuiInput-root"
+                                class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
+                                id="downloadCart.type-filter"
                               >
-                                <input
-                                  aria-label="Filter by downloadCart.type"
-                                  class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                <label
+                                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
+                                  data-shrink="false"
                                   id="downloadCart.type-filter"
-                                  placeholder="Include"
-                                  type="text"
-                                  value=""
-                                />
-                                <div
-                                  class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                                 >
+                                  Include
+                                </label>
+                                <div
+                                  aria-hidden="true"
+                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
+                                >
+                                  <input
+                                    aria-invalid="false"
+                                    aria-label="Filter by downloadCart.type"
+                                    class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+                                    id="downloadCart.type-filter"
+                                    type="text"
+                                    value=""
+                                  />
                                   <div
-                                    class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
+                                    class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
                                   >
                                     <div
-                                      aria-expanded="false"
-                                      aria-haspopup="listbox"
-                                      aria-label="include or exclude"
-                                      aria-labelledby="downloadCart.type-select-filter-type"
-                                      class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                                      id="downloadCart.type-select-filter-type"
-                                      role="button"
-                                      tabindex="0"
+                                      class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary  css-4u4t8f-MuiInputBase-root-MuiInput-root-MuiSelect-root"
                                     >
-                                      <span
-                                        class="notranslate"
+                                      <div
+                                        aria-expanded="false"
+                                        aria-haspopup="listbox"
+                                        aria-label="include or exclude"
+                                        aria-labelledby="downloadCart.type-select-filter-type"
+                                        class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                                        id="downloadCart.type-select-filter-type"
+                                        role="button"
+                                        tabindex="0"
                                       >
-                                        ​
-                                      </span>
-                                    </div>
-                                    <input
-                                      aria-hidden="true"
-                                      class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
-                                      tabindex="-1"
-                                      value="include"
-                                    />
-                                    <svg
-                                      aria-hidden="true"
-                                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
-                                      data-testid="SettingsIcon"
-                                      focusable="false"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                                        <span
+                                          class="notranslate"
+                                        >
+                                          ​
+                                        </span>
+                                      </div>
+                                      <input
+                                        aria-hidden="true"
+                                        class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+                                        tabindex="-1"
+                                        value="include"
                                       />
-                                    </svg>
+                                      <svg
+                                        aria-hidden="true"
+                                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                                        data-testid="SettingsIcon"
+                                        focusable="false"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                                        />
+                                      </svg>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -484,7 +508,7 @@ exports[`DownloadTab should render correctly 1`] = `
                     id="fileCountDisplay"
                     style="margin-left: 4px;"
                   >
-                    downloadCart.number_of_files: 0
+                    downloadCart.number_of_files: 0 / 5000
                   </span>
                 </div>
                 <div
@@ -502,7 +526,7 @@ exports[`DownloadTab should render correctly 1`] = `
                     id="totalSizeDisplay"
                     style="margin-left: 4px;"
                   >
-                    downloadCart.total_size: 0 B
+                    downloadCart.total_size: 0 B / 1 TB
                   </span>
                 </div>
                 <div

@@ -306,7 +306,7 @@ const PageBreadcrumbs: React.FC<PageBreadcrumbsProps> = (
 
             {/* // Return the base entity as a link. */}
             <Breadcrumb
-              displayName={t(`breadcrumbs.${currentPathnames[1]}`, {
+              displayName={t(`breadcrumbs.${currentPathnames[1]}` as const, {
                 count: 100,
               })}
               data-testid="Breadcrumb-base"
