@@ -93,7 +93,6 @@ describe('Dataset table component', () => {
    * Mock implementation of axios.get
    */
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
-    console.log('url', url);
     if (/.*\/user\/cart\/.*$/.test(url)) {
       // fetchDownloadCart
       return Promise.resolve({ data: { cartItems } });
@@ -233,7 +232,7 @@ describe('Dataset table component', () => {
     // clicks on the row checkbox
     await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
 
-    // the checkbox should be checked
+    // the checkbox should not be checked
     expect(
       await screen.findByRole('checkbox', { name: 'select row 0' })
     ).not.toBeChecked();
