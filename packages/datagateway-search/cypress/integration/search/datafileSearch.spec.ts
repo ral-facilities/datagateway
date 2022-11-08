@@ -13,11 +13,8 @@ describe('Datafile search tab', () => {
     cy.intercept('**/investigations/count?where=%7B%22id*').as(
       'investigationsCount'
     );
-    cy.intercept('**/investigations?*').as('investigations');
     cy.intercept('**/datasets/count?where=%7B%22id*').as('datasetsCount');
-    cy.intercept('**/datasets?*').as('datasets');
     cy.intercept('**/datafiles/count?where=%7B%22id*').as('datafilesCount');
-    cy.intercept('**/datafiles?*').as('datafiles');
     cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
     cy.intercept('**/search/documents*').as('searchDocuments');
   });
