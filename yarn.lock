@@ -6330,7 +6330,9 @@ __metadata:
     "@mui/icons-material": 5.10.3
     "@mui/material": 5.10.0
     "@mui/x-date-pickers": 5.0.0-beta.5
+    "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 12.1.3
+    "@testing-library/user-event": 14.4.1
     "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
     "@types/jest": 29.2.1
