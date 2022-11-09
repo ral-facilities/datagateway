@@ -1,12 +1,7 @@
 import {
   type Datafile,
+  type DownloadCartItem,
   dGCommonInitialState,
-  useAddToCart,
-  useCart,
-  useDatafileCount,
-  useDatafilesInfinite,
-  useIds,
-  useRemoveFromCart,
 } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
@@ -37,28 +32,16 @@ import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useDatafileCount: jest.fn(),
-    useDatafilesInfinite: jest.fn(),
-    useIds: jest.fn(),
-    useCart: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-  };
-});
+import axios, { type AxiosResponse } from 'axios';
 
 describe('Datafile table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Datafile[];
+  let cartItems: DownloadCartItem[];
   let history: History;
   let user: UserEvent;
+  let holder: HTMLElement;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -73,6 +56,7 @@ describe('Datafile table component', () => {
 
   beforeEach(() => {
     user = userEvent.setup();
+    cartItems = [];
     rowData = [
       {
         id: 1,
@@ -85,6 +69,10 @@ describe('Datafile table component', () => {
     ];
     history = createMemoryHistory();
 
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-dataview');
+    document.body.appendChild(holder);
+
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -92,41 +80,87 @@ describe('Datafile table component', () => {
       })
     );
 
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-    });
-    (useDatafileCount as jest.Mock).mockReturnValue({
-      data: 0,
-    });
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-    (useIds as jest.Mock).mockReturnValue({
-      data: [1],
-      isLoading: false,
-    });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/user\/cart\/$/.test(url)) {
+          // fetch download cart
+          return Promise.resolve({
+            data: { cartItems },
+          });
+        }
+
+        if (/\/datafiles\/count$/.test(url)) {
+          // fetch datafile count
+          return Promise.resolve({
+            data: rowData.length,
+          });
+        }
+
+        if (/\/datafiles$/.test(url)) {
+          // datafiles infinite
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
+
+    axios.post = jest
+      .fn()
+      .mockImplementation(
+        (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
+          if (/\/user\/cart\/\/cartItems$/.test(url)) {
+            const isRemove: boolean = JSON.parse(
+              (data as URLSearchParams).get('remove')
+            );
+
+            if (isRemove) {
+              cartItems = [];
+
+              return Promise.resolve({
+                data: {
+                  cardItems: [],
+                },
+              });
+            }
+
+            cartItems = [
+              ...cartItems,
+              {
+                id: 123,
+                entityId: 1,
+                entityType: 'datafile',
+                name: 'download cart item name',
+                parentEntities: [],
+              },
+            ];
+
+            return Promise.resolve({
+              data: { cartItems },
+            });
+          }
+
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      );
   });
 
   afterEach(() => {
+    document.body.removeChild(holder);
     jest.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     renderComponent();
 
-    const rows = await findAllRows();
-    // should have 1 row in the table
-    expect(rows).toHaveLength(1);
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      // should have 1 row in the table
+      expect(rows).toHaveLength(1);
+    });
 
     const row = rows[0];
 
@@ -233,72 +267,56 @@ describe('Datafile table component', () => {
     );
   });
 
-  it('calls addToCart mutate function on unchecked checkbox click', async () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: addToCart,
-      loading: false,
-    });
+  it('adds selected row to cart if unselected; removes it from cart otherwise', async () => {
     renderComponent();
 
+    // row should not be selected initially as the cart is empty
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).not.toBeChecked();
+
+    // select the row
     await user.click(
       await screen.findByRole('checkbox', { name: 'select row 0' })
     );
 
-    expect(addToCart).toHaveBeenCalledWith([1]);
-  });
-
-  it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'datafile',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
-
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: removeFromCart,
-      loading: false,
-    });
-
-    renderComponent();
-
-    await user.click(
+    // datafile should be added to the cart
+    expect(
       await screen.findByRole('checkbox', { name: 'select row 0' })
-    );
+    ).toBeChecked();
 
-    expect(removeFromCart).toHaveBeenCalledWith([1]);
+    // unselect the row
+    await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
+
+    // datafile should be removed from the cart
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).not.toBeChecked();
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-        {
-          entityId: 2,
-          entityType: 'datafile',
-          id: 2,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 2,
+        entityType: 'datafile',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
 
     renderComponent();
+    // wait for rows to show up
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
 
     const selectAllCheckbox = await screen.findByRole('checkbox', {
       name: 'select all rows',
@@ -308,17 +326,15 @@ describe('Datafile table component', () => {
     expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
+  it('no select all checkbox appears if selectAllSetting is false', async () => {
     state.dgdataview.selectAllSetting = false;
 
     renderComponent();
+    // wait for rows to show up
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
 
-    expect(useIds).toHaveBeenCalledWith('datafile', expect.anything(), false);
-    expect(useIds).not.toHaveBeenCalledWith(
-      'datafile',
-      expect.anything(),
-      true
-    );
     await waitFor(() => {
       expect(
         screen.queryByRole('checkbox', { name: 'select all rows' })
@@ -328,24 +344,39 @@ describe('Datafile table component', () => {
 
   it('renders actions correctly', async () => {
     renderComponent();
+
+    // wait for rows to show up
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
+    });
+
     expect(
-      await screen.findByRole('button', { name: 'buttons.download' })
+      within(rows[0]).getByRole('button', { name: 'buttons.download' })
     ).toBeInTheDocument();
   });
 
   it('displays details panel when expanded', async () => {
     renderComponent();
 
-    await waitFor(() => {
-      expect(screen.queryByTestId('datafile-details-panel')).toBeNull();
+    // wait for rows to show up
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
     });
 
+    expect(screen.queryByTestId('datafile-details-panel')).toBeNull();
+
     await user.click(
-      await screen.findByRole('button', { name: 'Show details' })
+      within(rows[0]).getByRole('button', { name: 'Show details' })
     );
 
+    screen.debug(undefined, 1000000);
+
     expect(
-      await screen.findByTestId('dataset-details-panel')
+      await screen.findByTestId('datafile-details-panel')
     ).toBeInTheDocument();
   });
 });
