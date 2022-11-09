@@ -314,11 +314,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-<<<<<<< HEAD
-          ref: v5.1.1
-=======
           ref: feature/use-yaml-config#372
->>>>>>> github action Pull from yaml branch. Use yq to update yaml
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -460,11 +456,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-<<<<<<< HEAD
-          ref: v5.1.1
-=======
           ref: feature/use-yaml-config#372
->>>>>>> github action Pull from yaml branch. Use yq to update yaml
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
