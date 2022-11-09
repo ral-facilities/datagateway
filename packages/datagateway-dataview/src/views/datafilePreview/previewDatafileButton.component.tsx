@@ -22,11 +22,13 @@ function PreviewDatafileButton({
 
   return (
     <Tooltip
-      title={t(
-        isSupported
-          ? 'datafiles.preview.preview_datafile'
-          : 'datafiles.preview.preview_unsupported'
-      )}
+      title={
+        t(
+          isSupported
+            ? 'datafiles.preview.preview_datafile'
+            : 'datafiles.preview.preview_unsupported'
+        ) as string
+      }
     >
       {/* Wrap the IconButton with a Box so that the tooltip can be triggered
           even when the button is disabled */}
