@@ -185,9 +185,6 @@ jobs:
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
       # E2E tests
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -213,6 +210,11 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
+
+      #Tmate session
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Run datagateway-dataview e2e tests
         run: yarn workspace datagateway-dataview run e2e
       - name: Upload Cypress screenshots
