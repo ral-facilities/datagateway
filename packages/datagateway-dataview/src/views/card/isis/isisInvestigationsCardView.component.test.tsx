@@ -1,10 +1,4 @@
-import {
-  dGCommonInitialState,
-  type Investigation,
-  useInvestigationSizes,
-  useISISInvestigationCount,
-  useISISInvestigationsPaginated,
-} from 'datagateway-common';
+import { dGCommonInitialState, type Investigation } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
@@ -18,22 +12,17 @@ import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  flushPromises,
 } from '../../../setupTests';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useISISInvestigationCount: jest.fn(),
-    useISISInvestigationsPaginated: jest.fn(),
-    useInvestigationSizes: jest.fn(),
-  };
-});
+import axios, { type AxiosResponse } from 'axios';
 
 describe('ISIS Investigations - Card View', () => {
   let mockStore;
@@ -47,7 +36,13 @@ describe('ISIS Investigations - Card View', () => {
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider
+            client={
+              new QueryClient({
+                defaultOptions: { queries: { retry: false } },
+              })
+            }
+          >
             <ISISInvestigationsCardView
               instrumentId="1"
               instrumentChildId="1"
@@ -62,9 +57,11 @@ describe('ISIS Investigations - Card View', () => {
     cardData = [
       {
         id: 1,
-        title: 'Test 1',
+        title: 'Test title 1',
         name: 'Test 1',
         visitId: '1',
+        startDate: '2022-01-01',
+        endDate: '2022-01-03',
         studyInvestigations: [
           { id: 1, study: { id: 1, pid: 'study pid' }, name: 'study 1' },
         ],
@@ -94,15 +91,46 @@ describe('ISIS Investigations - Card View', () => {
       })
     );
 
-    (useISISInvestigationCount as jest.Mock).mockReturnValue({
-      data: 1,
-      isLoading: false,
-    });
-    (useISISInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      isLoading: false,
-    });
-    (useInvestigationSizes as jest.Mock).mockReturnValue([{ data: 1 }]);
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (
+          /\/instruments\/1\/facilitycycles\/1\/investigations\/count$/.test(
+            url
+          )
+        ) {
+          // isis investigation count query
+          return Promise.resolve({
+            data: 1,
+          });
+        }
+
+        if (/\/investigations\/count$/.test(url)) {
+          // investigation count query
+          return Promise.resolve({
+            data: 1,
+          });
+        }
+
+        if (/\/investigations$/.test(url)) {
+          // investigations query
+          return Promise.resolve({
+            data: cardData,
+          });
+        }
+
+        if (/\/user\/getSize$/.test(url)) {
+          // investigation size query
+          return Promise.resolve({
+            data: 123,
+          });
+        }
+
+        return Promise.reject({
+          response: { status: 403 },
+          message: `Endpoint not mocked: ${url}`,
+        });
+      });
 
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -112,9 +140,94 @@ describe('ISIS Investigations - Card View', () => {
     jest.clearAllMocks();
   });
 
+  it('renders investigations as cards', async () => {
+    renderComponent();
+
+    const allCards = await screen.findAllByTestId('card');
+    expect(allCards).toHaveLength(1);
+
+    const firstCard = within(allCards[0]);
+    expect(
+      firstCard.getByRole('link', { name: 'Test title 1' })
+    ).toBeInTheDocument();
+    expect(firstCard.getByText('investigations.name:')).toBeInTheDocument();
+    expect(firstCard.getByText('Test 1')).toBeInTheDocument();
+    expect(firstCard.getByText('investigations.doi:')).toBeInTheDocument();
+    expect(firstCard.getByRole('link', { name: 'study pid' })).toHaveAttribute(
+      'href',
+      'https://doi.org/study pid'
+    );
+    expect(
+      firstCard.getByText('investigations.details.size:')
+    ).toBeInTheDocument();
+    expect(firstCard.getByText('123 B')).toBeInTheDocument();
+    expect(
+      firstCard.getByText('investigations.principal_investigators:')
+    ).toBeInTheDocument();
+    expect(firstCard.getByText('Test PI')).toBeInTheDocument();
+    expect(
+      firstCard.getByText('investigations.details.start_date:')
+    ).toBeInTheDocument();
+    expect(firstCard.getByText('2022-01-01')).toBeInTheDocument();
+    expect(
+      firstCard.getByText('investigations.details.end_date:')
+    ).toBeInTheDocument();
+    expect(firstCard.getByText('2022-01-03')).toBeInTheDocument();
+  });
+
+  it('renders no card if no investigation is returned', async () => {
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (
+          /\/instruments\/1\/facilitycycles\/1\/investigations\/count$/.test(
+            url
+          )
+        ) {
+          // isis investigation count query
+          return Promise.resolve({
+            data: 0,
+          });
+        }
+
+        if (/\/investigations\/count$/.test(url)) {
+          // investigation count query
+          return Promise.resolve({
+            data: 0,
+          });
+        }
+
+        if (/\/investigations$/.test(url)) {
+          // investigations query
+          return Promise.resolve({
+            data: [],
+          });
+        }
+
+        if (/\/user\/getSize$/.test(url)) {
+          // investigation size query
+          return Promise.resolve({
+            data: 123,
+          });
+        }
+
+        return Promise.reject({
+          response: { status: 403 },
+          message: `Endpoint not mocked: ${url}`,
+        });
+      });
+
+    renderComponent();
+    await flushPromises();
+
+    expect(screen.queryAllByTestId('card')).toHaveLength(0);
+  });
+
   it('correct link used when NOT in studyHierarchy', async () => {
     renderComponent();
-    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+    expect(
+      await screen.findByRole('link', { name: 'Test title 1' })
+    ).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle/1/investigation/1'
     );
@@ -122,7 +235,9 @@ describe('ISIS Investigations - Card View', () => {
 
   it('correct link used for studyHierarchy', async () => {
     renderComponent(true);
-    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+    expect(
+      await screen.findByRole('link', { name: 'Test title 1' })
+    ).toHaveAttribute(
       'href',
       '/browseStudyHierarchy/instrument/1/study/1/investigation/1'
     );
@@ -237,13 +352,5 @@ describe('ISIS Investigations - Card View', () => {
     expect(history.location.pathname).toBe(
       '/browse/instrument/1/facilityCycle/1/investigation/1/dataset'
     );
-  });
-
-  it('renders fine with incomplete data', () => {
-    (useISISInvestigationCount as jest.Mock).mockReturnValueOnce({});
-    (useISISInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationSizes as jest.Mock).mockReturnValueOnce([{ data: 0 }]);
-
-    expect(() => renderComponent()).not.toThrowError();
   });
 });
