@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import ISISInvestigationLanding from './isisInvestigationLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -13,7 +13,12 @@ import thunk from 'redux-thunk';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
@@ -53,12 +58,15 @@ describe('ISIS Investigation Landing page', () => {
   const initialData = [
     {
       id: 1,
-      title: 'Test 1',
+      title: 'Test title 1',
       name: 'Test 1',
       summary: 'foo bar',
-      visitId: '1',
+      visitId: 'visit id 1',
       doi: 'doi 1',
       size: 1,
+      facility: {
+        name: 'LILS',
+      },
       investigationInstruments: [
         {
           id: 1,
@@ -179,6 +187,7 @@ describe('ISIS Investigation Landing page', () => {
     });
     (useInvestigationSizes as jest.Mock).mockReturnValue([
       {
+        isSuccess: true,
         data: 1,
       },
     ]);
@@ -186,6 +195,209 @@ describe('ISIS Investigation Landing page', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders landing for investigation correctly', () => {
+    renderComponent();
+
+    // branding should be visible
+    expect(screen.getByRole('img', { name: 'STFC Logo' })).toBeInTheDocument();
+    expect(
+      screen.getByText('doi_constants.branding.title')
+    ).toBeInTheDocument();
+    expect(screen.getByText('doi_constants.branding.body')).toBeInTheDocument();
+
+    // investigation details should be visible
+    expect(screen.getByText('Test title 1')).toBeInTheDocument();
+    expect(screen.getByText('foo bar')).toBeInTheDocument();
+
+    // publisher section should be visible
+    expect(screen.getByText('studies.details.publisher')).toBeInTheDocument();
+    expect(
+      screen.getByText('doi_constants.publisher.name')
+    ).toBeInTheDocument();
+
+    // investigation samples should be hidden (initial data does not have samples)
+    expect(
+      screen.queryByText('investigations.details.samples.label')
+    ).toBeNull();
+    expect(
+      screen.queryByText('investigations.details.samples.no_samples')
+    ).toBeNull();
+    expect(
+      screen.queryAllByLabelText(/landing-investigation-sample-\d+$/)
+    ).toHaveLength(0);
+
+    // publication section should be hidden (initial data does not have publications)
+    expect(
+      screen.queryByText('investigations.details.publications.label')
+    ).toBeNull();
+    expect(
+      screen.queryByText('investigations.details.publications.no_publications')
+    ).toBeNull();
+    expect(
+      screen.queryAllByLabelText(/landing-investigation-reference-\d+$/)
+    ).toHaveLength(0);
+
+    screen.debug(undefined, 10000000);
+
+    // short format information should be visible
+    expect(screen.getByText('investigations.visit_id:')).toBeInTheDocument();
+    expect(screen.getByText('visit id 1')).toBeInTheDocument();
+    expect(screen.getByText('investigations.doi:')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
+    );
+    expect(screen.getByText('investigations.parent_doi:')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'study pid' })).toHaveAttribute(
+      'href',
+      'https://doi.org/study pid'
+    );
+    expect(screen.getByText('investigations.name:')).toBeInTheDocument();
+    expect(screen.getByText('Test 1')).toBeInTheDocument();
+    expect(screen.getByText('investigations.size:')).toBeInTheDocument();
+    expect(screen.getByText('1 B')).toBeInTheDocument();
+    expect(
+      screen.getByText('investigations.details.facility:')
+    ).toBeInTheDocument();
+    expect(screen.getByText('LILS')).toBeInTheDocument();
+    expect(screen.getByText('investigations.instrument:')).toBeInTheDocument();
+    expect(screen.getByText('LARMOR')).toBeInTheDocument();
+    expect(screen.getByText('studies.details.format:')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'doi_constants.distribution.format' })
+    ).toHaveAttribute(
+      'href',
+      'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx'
+    );
+    expect(screen.queryByText('investigations.release_date:')).toBeNull();
+    expect(screen.getByText('investigations.start_date:')).toBeInTheDocument();
+    expect(screen.getByText('2019-06-10')).toBeInTheDocument();
+    expect(screen.getByText('investigations.end_date:')).toBeInTheDocument();
+    expect(screen.getByText('2019-06-11')).toBeInTheDocument();
+
+    const actionButtonContainer = screen.getByTestId(
+      'investigation-landing-action-container'
+    );
+
+    // actions should be visible
+    expect(actionButtonContainer).toBeInTheDocument();
+    expect(
+      within(actionButtonContainer).getByRole('button', {
+        name: 'buttons.add_to_cart',
+      })
+    ).toBeInTheDocument();
+  });
+
+  describe('renders datasets for the investigation correctly', () => {
+    it('for facility cycle hierarchy and normal view', () => {
+      renderComponent();
+
+      expect(
+        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1'
+      );
+      expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'landing-study-doi-link' })
+      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+
+      // actions for datasets should be visible
+      const actionContainer = screen.getByTestId(
+        'investigation-landing-dataset-0-action-container'
+      );
+      expect(actionContainer).toBeInTheDocument();
+      expect(
+        within(actionContainer).getByRole('button', {
+          name: 'buttons.add_to_cart',
+        })
+      ).toBeInTheDocument();
+    });
+
+    it('for facility cycle hierarchy and card view', () => {
+      history.replace('/?view=card');
+
+      renderComponent();
+
+      expect(
+        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1?view=card'
+      );
+      expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'landing-study-doi-link' })
+      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+
+      // actions for datasets should be visible
+      const actionContainer = screen.getByTestId(
+        'investigation-landing-dataset-0-action-container'
+      );
+      expect(actionContainer).toBeInTheDocument();
+      expect(
+        within(actionContainer).getByRole('button', {
+          name: 'buttons.add_to_cart',
+        })
+      ).toBeInTheDocument();
+    });
+
+    it('for study hierarchy and normal view', () => {
+      renderComponent(true);
+
+      expect(
+        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/1'
+      );
+      expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'landing-study-doi-link' })
+      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+
+      // actions for datasets should be visible
+      const actionContainer = screen.getByTestId(
+        'investigation-landing-dataset-0-action-container'
+      );
+      expect(actionContainer).toBeInTheDocument();
+      expect(
+        within(actionContainer).getByRole('button', {
+          name: 'buttons.add_to_cart',
+        })
+      ).toBeInTheDocument();
+    });
+
+    it('for study hierarchy and card view', () => {
+      history.push('/?view=card');
+
+      renderComponent(true);
+
+      expect(
+        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/1?view=card'
+      );
+      expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'landing-study-doi-link' })
+      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+
+      // actions for datasets should be visible
+      const actionContainer = screen.getByTestId(
+        'investigation-landing-dataset-0-action-container'
+      );
+      expect(actionContainer).toBeInTheDocument();
+      expect(
+        within(actionContainer).getByRole('button', {
+          name: 'buttons.add_to_cart',
+        })
+      ).toBeInTheDocument();
+    });
   });
 
   describe('links to the correct url in the datafiles tab', () => {
@@ -320,7 +532,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       await screen.findByText(
-        '2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+        '2019: Test title 1, doi_constants.publisher.name, https://doi.org/doi 1'
       )
     ).toBeInTheDocument();
   });
@@ -333,7 +545,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       await screen.findByText(
-        'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+        'John Smith; 2019: Test title 1, doi_constants.publisher.name, https://doi.org/doi 1'
       )
     ).toBeInTheDocument();
   });
@@ -346,7 +558,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       await screen.findByText(
-        'John Smith et al; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+        'John Smith et al; 2019: Test title 1, doi_constants.publisher.name, https://doi.org/doi 1'
       )
     ).toBeInTheDocument();
   });

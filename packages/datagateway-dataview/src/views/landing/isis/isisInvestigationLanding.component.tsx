@@ -434,11 +434,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                         {field.content(data[0] as Investigation)}
                       </ShortInfoValue>
                     </ArrowTooltip>
+                    z
                   </ShortInfoRow>
                 )
             )}
             {/* Actions */}
-            <ActionButtonsContainer>
+            <ActionButtonsContainer data-testid="investigation-landing-action-container">
               <AddToCartButton
                 entityType="investigation"
                 allIds={[parseInt(investigationId)]}
@@ -480,7 +481,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       </ShortInfoRow>
                     )
                 )}
-                <ActionButtonsContainer>
+                <ActionButtonsContainer
+                  data-testid={`investigation-landing-dataset-${i}-action-container`}
+                >
                   <AddToCartButton
                     entityType="dataset"
                     allIds={[dataset.id]}

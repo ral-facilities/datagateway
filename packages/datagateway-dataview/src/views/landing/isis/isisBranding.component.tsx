@@ -42,7 +42,7 @@ const Branding = (props: { pluginHost: string }): React.ReactElement => {
           <img
             style={{ height: 'auto', maxHeight: 90, margin: 'auto' }}
             src={pluginHost + STFCLogoWhite}
-            alt=""
+            alt="STFC Logo"
           />
         </Grid>
         <Grid item sm={12} md sx={{ display: 'flex' }}>
