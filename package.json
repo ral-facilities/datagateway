@@ -15,9 +15,9 @@
     "test": "yarn test:unit && yarn test:e2e",
     "test:unit": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 --exclude datagateway run test",
     "test:e2e": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 run e2e",
-    "datagateway-dataview": "cd packages/datagateway-dataview && yarn start",
-    "datagateway-download": "cd packages/datagateway-download && yarn start",
-    "datagateway-search": "cd packages/datagateway-search && yarn start",
+    "datagateway-dataview": "yarn workspace datagateway-dataview start",
+    "datagateway-download": "yarn workspace datagateway-download start",
+    "datagateway-search": "yarn workspace datagateway-search start",
     "postinstall": "husky install"
   },
   "packageManager": "yarn@3.2.0"
