@@ -16,6 +16,7 @@ exports[`Data cell component renders correctly 1`] = `
     title="non nested property"
   >
     <ForwardRef(Typography)
+      component="span"
       noWrap={true}
       variant="body2"
     >
@@ -61,6 +62,7 @@ exports[`Data cell component renders nested cell data correctly 1`] = `
     title="nested property"
   >
     <ForwardRef(Typography)
+      component="span"
       noWrap={true}
       variant="body2"
     >
@@ -106,6 +108,7 @@ exports[`Data cell component renders provided cell data correctly 1`] = `
     title="provided test"
   >
     <ForwardRef(Typography)
+      component="span"
       noWrap={true}
       variant="body2"
     >
