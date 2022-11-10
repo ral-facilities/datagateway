@@ -336,7 +336,7 @@ describe('ISIS Studies table component', () => {
 
     const wrapper = createWrapper();
 
-    expect(wrapper.find('[aria-colindex=2]').find('p').first().text()).toBe(
+    expect(wrapper.find('[aria-colindex=2]').find('span').first().text()).toBe(
       'Test investigation'
     );
   });

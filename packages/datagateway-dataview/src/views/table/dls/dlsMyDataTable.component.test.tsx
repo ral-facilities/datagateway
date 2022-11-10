@@ -291,7 +291,7 @@ describe('DLS MyData table component', () => {
 
     wrapper = createWrapper();
 
-    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
+    expect(wrapper.find('[aria-colindex=5]').find('span').text()).toEqual('');
   });
 
   it('displays details panel when expanded', () => {
