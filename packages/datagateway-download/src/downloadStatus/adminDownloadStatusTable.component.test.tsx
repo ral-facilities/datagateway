@@ -414,6 +414,8 @@ describe('Admin Download Status Table', () => {
       })
     );
 
+    await flushPromises();
+
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.pause {filename:test-file-4}',
@@ -461,6 +463,8 @@ describe('Admin Download Status Table', () => {
       })
     );
 
+    await flushPromises();
+
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.resume {filename:test-file-3}',
@@ -507,6 +511,8 @@ describe('Admin Download Status Table', () => {
         name: 'downloadStatus.resume {filename:test-file-5}',
       })
     );
+
+    await flushPromises();
 
     expect(
       await screen.findByRole('button', {

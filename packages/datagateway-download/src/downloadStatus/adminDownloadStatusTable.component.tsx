@@ -79,7 +79,6 @@ const AdminDownloadStatusTable: React.FC = () => {
       if (typeof filter === 'object') {
         if (!Array.isArray(filter)) {
           if ('startDate' in filter || 'endDate' in filter) {
-            // TODO: remove :00 when #1227 is fixed
             const startDate = filter.startDate
               ? `${filter.startDate}`
               : '0001-01-01 00:00:00';
