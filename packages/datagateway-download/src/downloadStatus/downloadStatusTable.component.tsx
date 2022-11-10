@@ -160,7 +160,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             'endDate' in value
           ) {
             // Check that the given date is in the range specified by the filter.
-            const tableTimestamp = toDate(tableValue).getTime();
+            const tableTimestamp = toDate(
+              tableValue.replace(/\[.*]/, '')
+            ).getTime();
             const startTimestamp = value.startDate
               ? new Date(value.startDate).getTime() +
                 new Date(value.startDate).getTimezoneOffset() * 60000
