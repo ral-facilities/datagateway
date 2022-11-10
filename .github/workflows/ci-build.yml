@@ -188,6 +188,8 @@ jobs:
       # E2E tests
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          path: /home/runner/work/datagateway/datagateway/datagateway/
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -195,7 +197,7 @@ jobs:
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: cd /home/runner/work/datagateway/datagateway/datagateway/; echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
         uses: actions/cache@v3
         id: yarn-cache
@@ -207,6 +209,7 @@ jobs:
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
+          cd /home/runner/work/datagateway/datagateway/datagateway/
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
@@ -216,13 +219,13 @@ jobs:
         uses: mxschmitt/action-tmate@v3
 
       - name: Run datagateway-dataview e2e tests
-        run: yarn workspace datagateway-dataview run e2e
+        run: cd /home/runner/work/datagateway/datagateway/datagateway/; yarn workspace datagateway-dataview run e2e
       - name: Upload Cypress screenshots
         if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: DataView-Screenshots
-          path: packages/datagateway-dataview/cypress/screenshots
+          path: /home/runner/work/datagateway/datagateway/datagateway/packages/datagateway-dataview/cypress/screenshots
 
   download-e2e-tests:
     name: DataGateway Download End to End Tests
