@@ -84,7 +84,7 @@ const AdminDownloadStatusTable: React.FC = () => {
               : '0001-01-01 00:00:00';
             const endDate = filter.endDate
               ? `${filter.endDate}`
-              : '9999-12-31 23:59:00';
+              : '9999-12-31 23:59:59';
 
             queryOffset += ` AND download.${column} BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
           }
