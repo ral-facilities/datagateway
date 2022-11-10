@@ -456,7 +456,7 @@ jobs:
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
-           - name: Checkout datagateway-api
+      - name: Checkout datagateway-api
         uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
