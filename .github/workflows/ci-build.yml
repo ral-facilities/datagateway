@@ -158,19 +158,8 @@ jobs:
         run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
         run: touch /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log
-      #- name: Configure log file location
-      #  run: echo "`yq  \
-      #    '.log_location="/home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      #- name: Configure API backend
-      #  run: echo "`yq \
-      #    '.datagateway_api.backend="python_icat"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.logdatagateway-api/datagateway_api/config.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      #- name: Set debug mode to true
-      #  run: |
-      #    sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      #- name: Set log level to DEBUG
-      #  run: |
-      #    sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      - name: Create config.yanl
+
+      - name: Create config.yaml
         run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
@@ -322,19 +311,8 @@ jobs:
         run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
         run: touch /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log
-      #- name: Configure log file location
-      #  run: echo "`yq  \
-      #    '.log_location="/home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      #- name: Configure API backend
-      #  run: echo "`yq \
-      #    '.datagateway_api.backend="python_icat"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.logdatagateway-api/datagateway_api/config.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      #- name: Set debug mode to true
-      #  run: |
-      #    sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      #- name: Set log level to DEBUG
-      #  run: |
-      #    sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      - name: Create config.yanl
+
+      - name: Create config.yaml
         run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
@@ -385,7 +363,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Download-Screenshots
-          path: packages/datagateway-download/cypress/screenshots
+          path: /home/runner/work/datagateway/datagateway/datagateway/packages/datagateway-dataview/cypress/screenshots
 
   search-e2e-tests:
     name: DataGateway Search End to End Tests
@@ -468,19 +446,8 @@ jobs:
         run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
         run: touch /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log
-      #- name: Configure log file location
-      #  run: echo "`yq  \
-      #    '.log_location="/home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      #- name: Configure API backend
-      #  run: echo "`yq \
-      #    '.datagateway_api.backend="python_icat"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.logdatagateway-api/datagateway_api/config.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      #- name: Set debug mode to true
-      #  run: |
-      #    sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      #- name: Set log level to DEBUG
-      #  run: |
-      #    sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
-      - name: Create config.yanl
+
+      - name: Create config.yaml
         run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
@@ -549,4 +516,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Search-Screenshots
-          path: packages/datagateway-search/cypress/screenshots
+          path: /home/runner/work/datagateway/datagateway/datagateway/packages/datagateway-dataview/cypress/screenshots
