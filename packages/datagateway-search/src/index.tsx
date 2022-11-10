@@ -166,7 +166,7 @@ if (
           .then((response) => {
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
-              sessionID: response.data.sessionID,
+              sessionId: response.data.sessionID,
               username: 'dev',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(
