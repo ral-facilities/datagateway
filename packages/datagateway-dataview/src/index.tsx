@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import singleSpaReact from 'single-spa-react';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import {
   MicroFrontendId,
   MicroFrontendToken,

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { MicroFrontendId, RegisterRouteType } from 'datagateway-common';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import { fetchSettings } from './';
 
 jest.mock('loglevel');

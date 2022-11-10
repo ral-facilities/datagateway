@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import handleICATError from './handleICATError';
 import { AnyAction } from 'redux';
 import {

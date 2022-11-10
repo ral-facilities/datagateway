@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadPreparedCart,
@@ -23,6 +23,13 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     handleICATError: jest.fn(),
   };
+});
+
+// silence react-query errors
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
 });
 
 const createTestQueryClient = (): QueryClient =>

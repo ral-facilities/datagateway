@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import singleSpaReact from 'single-spa-react';
 import axios from 'axios';
 import jsrsasign from 'jsrsasign';
