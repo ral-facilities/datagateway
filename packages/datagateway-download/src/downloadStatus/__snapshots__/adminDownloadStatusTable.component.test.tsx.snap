@@ -43,14 +43,14 @@ exports[`Admin Download Status Table should render correctly 1`] = `
               />
             </button>
           </span>
-          <span
+          <p
             style="padding-left: 10px;"
           >
             <b>
               downloadTab.last_checked: 
             </b>
              Sat, 01 Feb 2020 00:00:00 GMT
-          </span>
+          </p>
         </h3>
       </div>
       <div
@@ -105,11 +105,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 role="button"
                                 tabindex="0"
                               >
-                                <span
+                                <p
                                   class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
                                 >
                                   downloadStatus.id
-                                </span>
+                                </p>
                                 <svg
                                   aria-hidden="true"
                                   class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
@@ -228,11 +228,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 role="button"
                                 tabindex="0"
                               >
-                                <span
+                                <p
                                   class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
                                 >
                                   downloadStatus.fullname
-                                </span>
+                                </p>
                                 <svg
                                   aria-hidden="true"
                                   class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
@@ -351,11 +351,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 role="button"
                                 tabindex="0"
                               >
-                                <span
+                                <p
                                   class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
                                 >
                                   downloadStatus.username
-                                </span>
+                                </p>
                                 <svg
                                   aria-hidden="true"
                                   class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
@@ -474,11 +474,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 role="button"
                                 tabindex="0"
                               >
-                                <span
+                                <p
                                   class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
                                 >
                                   downloadStatus.preparedId
-                                </span>
+                                </p>
                                 <svg
                                   aria-hidden="true"
                                   class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
@@ -597,11 +597,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 role="button"
                                 tabindex="0"
                               >
-                                <span
+                                <p
                                   class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
                                 >
                                   downloadStatus.transport
-                                </span>
+                                </p>
                                 <svg
                                   aria-hidden="true"
                                   class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
@@ -720,11 +720,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 role="button"
                                 tabindex="0"
                               >
-                                <span
+                                <p
                                   class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
                                 >
                                   downloadStatus.status
-                                </span>
+                                </p>
                                 <svg
                                   aria-hidden="true"
                                   class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
@@ -838,11 +838,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                             <div
                               class="MuiBox-root css-0"
                             >
-                              <span
+                              <p
                                 class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
                               >
                                 downloadStatus.size
-                              </span>
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -882,11 +882,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 role="button"
                                 tabindex="0"
                               >
-                                <span
+                                <p
                                   class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
                                 >
                                   downloadStatus.createdAt
-                                </span>
+                                </p>
                                 <svg
                                   aria-hidden="true"
                                   class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
@@ -1023,11 +1023,11 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 role="button"
                                 tabindex="0"
                               >
-                                <span
+                                <p
                                   class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-xw0cpc-MuiTypography-root"
                                 >
                                   downloadStatus.deleted
-                                </span>
+                                </p>
                                 <svg
                                   aria-hidden="true"
                                   class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"

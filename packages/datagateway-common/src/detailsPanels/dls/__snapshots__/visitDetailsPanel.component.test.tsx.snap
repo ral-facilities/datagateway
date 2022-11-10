@@ -24,11 +24,11 @@ exports[`Visit details panel component should check if multiple publications res
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
@@ -254,11 +254,11 @@ exports[`Visit details panel component should check if multiple samples result i
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
@@ -484,11 +484,11 @@ exports[`Visit details panel component should gracefully handles InvestigationUs
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
@@ -692,11 +692,11 @@ exports[`Visit details panel component should render correctly 1`] = `
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
@@ -870,11 +870,11 @@ exports[`Visit details panel component should render user, sample and publicatio
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
