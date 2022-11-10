@@ -150,35 +150,31 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
-          path: /home/runner/work/datagateway/datagateway/datagateway-api
+          path: datagateway-api
           ref: feature/use-yaml-config#372
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
-        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
-        run: touch /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log
+        run: touch datagateway-api/datagateway_api/logs.log
 
       - name: Create config.yaml
-        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd /home/runner/work/datagateway/datagateway/datagateway-api/; poetry install
+        run: cd datagateway-api/; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd /home/runner/work/datagateway/datagateway/datagateway-api/; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; poetry run python -m util.icat_db_generator
 
       - name: Start API
-        run: cd /home/runner/work/datagateway/datagateway/datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # E2E tests
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          path: /home/runner/work/datagateway/datagateway/datagateway/
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -186,7 +182,7 @@ jobs:
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: cd /home/runner/work/datagateway/datagateway/datagateway/; echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
         uses: actions/cache@v3
         id: yarn-cache
@@ -198,19 +194,18 @@ jobs:
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          cd /home/runner/work/datagateway/datagateway/datagateway/
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
 
       - name: Run datagateway-dataview e2e tests
-        run: cd /home/runner/work/datagateway/datagateway/datagateway/; yarn workspace datagateway-dataview run e2e
+        run: yarn workspace datagateway-dataview run e2e
       - name: Upload Cypress screenshots
         if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: DataView-Screenshots
-          path: /home/runner/work/datagateway/datagateway/datagateway/packages/datagateway-dataview/cypress/screenshots
+          path: packages/datagateway-dataview/cypress/screenshots
 
   download-e2e-tests:
     name: DataGateway Download End to End Tests
@@ -303,35 +298,31 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
-          path: /home/runner/work/datagateway/datagateway/datagateway-api
+          path: datagateway-api
           ref: feature/use-yaml-config#372
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
-        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
-        run: touch /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log
+        run: touch datagateway-api/datagateway_api/logs.log
 
       - name: Create config.yaml
-        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd /home/runner/work/datagateway/datagateway/datagateway-api/; poetry install
+        run: cd datagateway-api/; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd /home/runner/work/datagateway/datagateway/datagateway-api/; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; poetry run python -m util.icat_db_generator
 
       - name: Start API
-        run: cd /home/runner/work/datagateway/datagateway/datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # E2E tests
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          path: /home/runner/work/datagateway/datagateway/datagateway/
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -339,7 +330,7 @@ jobs:
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: cd /home/runner/work/datagateway/datagateway/datagateway/; echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
         uses: actions/cache@v3
         id: yarn-cache
@@ -351,19 +342,18 @@ jobs:
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          cd /home/runner/work/datagateway/datagateway/datagateway/
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
 
       - name: Run datagateway-download e2e tests
-        run: cd /home/runner/work/datagateway/datagateway/datagateway/; yarn workspace datagateway-download run e2e
+        run: yarn workspace datagateway-download run e2e
       - name: Upload Cypress screenshots
         if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: Download-Screenshots
-          path: /home/runner/work/datagateway/datagateway/datagateway/packages/datagateway-dataview/cypress/screenshots
+          path: packages/datagateway-dataview/cypress/screenshots
 
   search-e2e-tests:
     name: DataGateway Search End to End Tests
@@ -438,26 +428,26 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
-          path: /home/runner/work/datagateway/datagateway/datagateway-api
+          path: datagateway-api
           ref: feature/use-yaml-config#372
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
-        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
-        run: touch /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log
+        run: touch datagateway-api/datagateway_api/logs.log
 
       - name: Create config.yaml
-        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd /home/runner/work/datagateway/datagateway/datagateway-api/; poetry install
+        run: cd datagateway-api/; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd /home/runner/work/datagateway/datagateway/datagateway-api/; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; poetry run python -m util.icat_db_generator
 
       # Recreate Lucene indexes
       - name: Login to ICAT
@@ -478,13 +468,9 @@ jobs:
         run: rm -f login_output
 
       - name: Start API
-        run: cd /home/runner/work/datagateway/datagateway/datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # E2E tests
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          path: /home/runner/work/datagateway/datagateway/datagateway/
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -492,7 +478,7 @@ jobs:
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: cd /home/runner/work/datagateway/datagateway/datagateway/; echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
         uses: actions/cache@v3
         id: yarn-cache
@@ -504,16 +490,15 @@ jobs:
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          cd /home/runner/work/datagateway/datagateway/datagateway/
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
 
       - name: Run datagateway-search e2e tests
-        run: cd /home/runner/work/datagateway/datagateway/datagateway/; yarn workspace datagateway-search run e2e
+        run: yarn workspace datagateway-search run e2e
       - name: Upload Cypress screenshots
         if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: Search-Screenshots
-          path: /home/runner/work/datagateway/datagateway/datagateway/packages/datagateway-dataview/cypress/screenshots
+          path: packages/datagateway-dataview/cypress/screenshots
