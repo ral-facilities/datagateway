@@ -150,28 +150,28 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
-          path: /home/runner/work/datagateway/datagateway/datagateway-api/
+          path: /home/runner/work/datagateway/datagateway/datagateway-api
           ref: feature/use-yaml-config#372
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
-        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_apisearch_api_mapping.json.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_apisearch_api_mapping.json
+        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
         run: touch /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log
       - name: Configure log file location
         run: echo "`yq  \
-          '.log_location="/home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_apiconfig.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_apiconfig.yaml.example
+          '.log_location="/home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
       - name: Configure API backend
         run: echo "`yq \
-          '.datagateway_api.backend="python_icat"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.logdatagateway-api/datagateway_apiconfig.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_apiconfig.yaml.example
+          '.datagateway_api.backend="python_icat"' /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.logdatagateway-api/datagateway_api/config.yaml.example | envsubst`" > /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
       - name: Set debug mode to true
         run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_apiconfig.yaml.example
+          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
       - name: Set log level to DEBUG
         run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_apiconfig.yaml.example
+          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example
       - name: Create config.json
-        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_apiconfig.yaml.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_apiconfig.yaml
+        run: cp /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml.example /home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
