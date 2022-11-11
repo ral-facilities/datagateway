@@ -20,6 +20,8 @@ describe('Admin Download Status', () => {
 
     cy.seedDownloads().then(() => {
       cy.visit('/admin/download');
+
+      cy.wait('@fetchAdminDownloads');
     });
   });
 
@@ -31,24 +33,22 @@ describe('Admin Download Status', () => {
   it('should refresh the table when clicking the refresh downloads button', () => {
     cy.get('[aria-label="Refresh download status table"]').should('exist');
 
-    // Typical `.should('match'...)`  doesn't work for text, tries to match the element,
-    // hence a slightly different approach for doing regex on the actual text
-    cy.get('[aria-rowindex="1"] [aria-colindex="4"]')
-      .find('p')
-      .should(($preparedId) => {
-        expect($preparedId[0].textContent).match(
-          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
-        );
+    cy.get('[aria-label="Refresh Downloads"]')
+      .next()
+      .then(($refreshTimeElem) => {
+        cy.wrap($refreshTimeElem.text()).as('lastRefreshTime');
       });
+
+    // fake the clock to advance time forward by 5 mins
+    cy.clock(Date.now());
+    cy.tick(5 * 60 * 1000);
 
     cy.get('[aria-label="Refresh download status table"]').click();
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="4"]')
-      .find('p')
-      .should(($preparedId) => {
-        expect($preparedId[0].textContent).match(
-          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
-        );
+    cy.get('[aria-label="Refresh Downloads"]')
+      .next()
+      .then(($refreshTimeElem) => {
+        cy.get('@lastRefreshTime').should('not.equal', $refreshTimeElem.text());
       });
   });
 
@@ -131,13 +131,13 @@ describe('Admin Download Status', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]')
-        .find('p')
-        .should(($preparedId) => {
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
+        ($preparedId) => {
           expect($preparedId[0].textContent).match(
             /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
           );
-        });
+        }
+      );
     });
 
     it('multiple columns', () => {

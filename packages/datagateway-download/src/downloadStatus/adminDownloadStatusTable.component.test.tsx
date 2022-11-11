@@ -208,20 +208,12 @@ describe('Admin Download Status Table', () => {
       },
       `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50`
     );
-  }, 10000);
+  });
 
   describe('text filters', () => {
-    beforeEach(() => {
-      jest.useFakeTimers();
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
-    });
-
     it('should filter username properly', async () => {
-      jest.useFakeTimers();
       renderComponent();
+      await flushPromises();
 
       // Table is sorted by createdAt desc by default
       // To keep working test, we will remove all sorts on the table beforehand
@@ -233,7 +225,7 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.type(usernameFilterInput, 'test user');
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -244,7 +236,7 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.clear(usernameFilterInput);
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -253,13 +245,11 @@ describe('Admin Download Status Table', () => {
         },
         `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
       );
-
-      jest.useRealTimers();
-    }, 10000);
+    });
 
     it('should filter download availability properly', async () => {
-      jest.useFakeTimers();
       renderComponent();
+      await flushPromises();
 
       // Table is sorted by createdAt desc by default
       // To keep working test, we will remove all sorts on the table beforehand
@@ -271,7 +261,7 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.type(availabilityFilterInput, 'downloadStatus.complete');
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -288,7 +278,7 @@ describe('Admin Download Status Table', () => {
       await user.click(
         within(await screen.findByRole('listbox')).getByText('Exclude')
       );
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -299,7 +289,7 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.clear(availabilityFilterInput);
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -308,14 +298,13 @@ describe('Admin Download Status Table', () => {
         },
         `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
       );
-
-      jest.useRealTimers();
-    }, 10000);
+    });
   });
 
   it('sends filter request on date filter', async () => {
     applyDatePickerWorkaround();
     renderComponent();
+    await flushPromises();
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
@@ -326,6 +315,7 @@ describe('Admin Download Status Table', () => {
       name: 'downloadStatus.createdAt filter from',
     });
     await user.type(dateFromFilterInput, '2020-01-01 00:00:00');
+    await flushPromises();
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -340,6 +330,7 @@ describe('Admin Download Status Table', () => {
       name: 'downloadStatus.createdAt filter to',
     });
     await user.type(dateToFilterInput, '2020-01-02 23:59:00');
+    await flushPromises();
 
     // have to wrap the expect in a waitFor because for some reason
     // await user.type doesn't wait until the full thing is typed in before resolving
@@ -356,6 +347,7 @@ describe('Admin Download Status Table', () => {
 
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
+    await flushPromises();
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -366,7 +358,7 @@ describe('Admin Download Status Table', () => {
     );
 
     cleanupDatePickerWorkaround();
-  }, 10000);
+  });
 
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
@@ -421,7 +413,7 @@ describe('Admin Download Status Table', () => {
         name: 'downloadStatus.pause {filename:test-file-4}',
       })
     ).toBeInTheDocument();
-  }, 10000);
+  });
 
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
@@ -470,7 +462,7 @@ describe('Admin Download Status Table', () => {
         name: 'downloadStatus.resume {filename:test-file-3}',
       })
     ).toBeInTheDocument();
-  }, 10000);
+  });
 
   it('should send resume restore request when resume button is clicked', async () => {
     renderComponent();
@@ -519,7 +511,7 @@ describe('Admin Download Status Table', () => {
         name: 'downloadStatus.pause {filename:test-file-5}',
       })
     ).toBeInTheDocument();
-  }, 10000);
+  });
 
   it('should send delete item request when delete button is clicked', async () => {
     renderComponent();
@@ -567,7 +559,7 @@ describe('Admin Download Status Table', () => {
         name: 'downloadStatus.restore {filename:test-file-1}',
       })
     ).toBeInTheDocument();
-  }, 10000);
+  });
 
   it('should display progress ui if enabled', async () => {
     (
@@ -635,5 +627,5 @@ describe('Admin Download Status Table', () => {
         expect(progressText).toBeInTheDocument();
       }
     });
-  }, 10000);
+  });
 });

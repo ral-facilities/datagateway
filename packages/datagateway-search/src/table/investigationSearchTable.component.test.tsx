@@ -95,8 +95,8 @@ describe('Investigation Search Table component', () => {
     rowData = [
       {
         id: 1,
-        title: 'Test 1',
-        name: 'Test 1',
+        title: 'Test Title 1',
+        name: 'Test Name 1',
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
@@ -122,8 +122,8 @@ describe('Investigation Search Table component', () => {
             },
             investigation: {
               id: 1,
-              title: 'Test 1',
-              name: 'Test 1',
+              title: 'Test Title 1',
+              name: 'Test Name 1',
               visitId: '1',
             },
           },
@@ -490,13 +490,10 @@ describe('Investigation Search Table component', () => {
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 
-  it('renders title, visit ID, Name and DOI as links', () => {
+  it('renders title and DOI as links', () => {
     const wrapper = createRTLWrapper();
 
-    //Title and name
-    expect(wrapper.getAllByText('Test 1')).toMatchSnapshot();
-
-    expect(wrapper.getAllByText('1')).toMatchSnapshot();
+    expect(wrapper.getByText('Test Title 1')).toMatchSnapshot();
 
     expect(wrapper.getByText('doi 1')).toMatchSnapshot();
   });
@@ -534,7 +531,7 @@ describe('Investigation Search Table component', () => {
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       '/browse/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
     expect(wrapper.find('[aria-colindex=7]').text()).toEqual('Calculating...');
   });
 
@@ -542,9 +539,9 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper('dls');
 
     expect(wrapper.find('[aria-colindex=2]').find('a').prop('href')).toEqual(
-      '/browse/proposal/Test 1/investigation/1/dataset'
+      '/browse/proposal/Test Name 1/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=2]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=2]').text()).toEqual('Test Title 1');
     expect(wrapper.find('[aria-label="select row 0"]')).toHaveLength(0);
   });
 
@@ -568,7 +565,7 @@ describe('Investigation Search Table component', () => {
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       '/browse/instrument/3/facilityCycle/2/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
     expect(wrapper.find('[aria-colindex=7]').text()).toEqual('1 B');
   });
 
@@ -592,14 +589,14 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', () => {
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
   });
 
   it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
@@ -617,6 +614,6 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
   });
 });

@@ -265,7 +265,7 @@ describe('Download Status Table', () => {
     expect(screen.getByText('test-file-3')).toBeInTheDocument();
     expect(screen.getByText('test-file-4')).toBeInTheDocument();
     expect(screen.getByText('test-file-5')).toBeInTheDocument();
-  }, 10000);
+  });
 
   it('should filter data when date filter is altered', async () => {
     applyDatePickerWorkaround();
@@ -340,7 +340,7 @@ describe('Download Status Table', () => {
     expect(screen.queryByText('test-file-5')).toBeNull();
 
     cleanupDatePickerWorkaround();
-  }, 10000);
+  });
 
   it('should show download progress ui if enabled', async () => {
     (

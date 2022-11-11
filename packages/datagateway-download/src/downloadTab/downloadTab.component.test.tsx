@@ -124,5 +124,5 @@ describe('DownloadTab', () => {
         )
       ).not.toBeVisible();
     });
-  }, 10000);
+  });
 });

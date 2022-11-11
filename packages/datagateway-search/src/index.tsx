@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import singleSpaReact from 'single-spa-react';
 import axios from 'axios';
 import jsrsasign from 'jsrsasign';
@@ -166,7 +166,7 @@ if (
           .then((response) => {
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
-              sessionID: response.data.sessionID,
+              sessionId: response.data.sessionID,
               username: 'dev',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(

@@ -2,7 +2,7 @@ import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { DGThemeProvider } from 'datagateway-common';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore, Store } from 'redux';
 import { StateType } from '../../../state/app.types';
@@ -13,6 +13,13 @@ import {
 } from '../state/actions';
 import { mockDatafile, mockTxtFileContent } from '../testData';
 import TextPreview from './textPreview.component';
+
+// silence react-query errors
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
+});
 
 function renderComponent(store: Store): RenderResult {
   return render(

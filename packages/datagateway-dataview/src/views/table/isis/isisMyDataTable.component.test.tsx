@@ -534,11 +534,11 @@ describe('ISIS MyData table component', () => {
     });
     wrapper = createWrapper();
 
-    expect(wrapper.find('[aria-colindex=3]').find('p').text()).toEqual(
+    expect(wrapper.find('[aria-colindex=3]').find('span').text()).toEqual(
       'Test 1 title'
     );
 
-    expect(wrapper.find('[aria-colindex=6]').find('p').text()).toEqual(
+    expect(wrapper.find('[aria-colindex=6]').find('span').text()).toEqual(
       'Test 1 name'
     );
 
@@ -562,8 +562,8 @@ describe('ISIS MyData table component', () => {
     });
     wrapper = createWrapper();
 
-    expect(wrapper.find('[aria-colindex=4]').find('p').text()).toEqual('');
+    expect(wrapper.find('[aria-colindex=4]').find('span').text()).toEqual('');
 
-    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
+    expect(wrapper.find('[aria-colindex=7]').find('span').text()).toEqual('');
   });
 });

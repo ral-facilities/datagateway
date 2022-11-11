@@ -9,7 +9,7 @@ import {
 import React from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 import { paths } from './pageContainer.component';
-import * as log from 'loglevel';
+import log from 'loglevel';
 
 type DoiRedirectRouteParams = {
   facilityName: string;
