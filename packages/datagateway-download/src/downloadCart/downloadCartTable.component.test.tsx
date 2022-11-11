@@ -298,7 +298,7 @@ describe('Download cart table component', () => {
     expect(rows[1]).toHaveTextContent('INVESTIGATION 2');
     expect(rows[2]).toHaveTextContent('DATASET 1');
     expect(rows[3]).toHaveTextContent('DATAFILE 1');
-  }, 10000);
+  });
 
   it('should filter data when text fields are typed into', async () => {
     renderComponent();

@@ -563,7 +563,7 @@ describe('DatafilePreviewer', () => {
     ).toHaveStyle({
       'font-size': '14px',
     });
-  }, 10000);
+  });
 
   it('should have a zoom out button that decreases the size of the datafile preview when clicked', async () => {
     renderComponent();
