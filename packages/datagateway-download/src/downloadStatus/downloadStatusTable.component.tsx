@@ -164,12 +164,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               tableValue.replace(/\[.*]/, '')
             ).getTime();
             const startTimestamp = value.startDate
-              ? new Date(value.startDate).getTime() +
-                new Date(value.startDate).getTimezoneOffset() * 60000
+              ? new Date(value.startDate).getTime()
               : 0;
             const endTimestamp = value.endDate
-              ? new Date(value.endDate).getTime() +
-                new Date(value.endDate).getTimezoneOffset() * 60000
+              ? new Date(value.endDate).getTime()
               : Date.now();
 
             if (
