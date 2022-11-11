@@ -731,9 +731,10 @@ describe('Download Cart API react-query hooks test', () => {
 
       // then test fetching next page
 
-      await result.current.fetchNextPage({
+      result.current.fetchNextPage({
         pageParam: 'LIMIT 50, 100',
       });
+      await waitFor(() => result.current.isFetchingNextPage);
       await waitFor(
         () => !result.current.isFetchingNextPage && result.current.isSuccess
       );
