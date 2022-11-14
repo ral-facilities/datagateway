@@ -10,6 +10,8 @@ import { StateType } from './state/app.types';
 import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 
+jest.setTimeout(15000);
+
 // Unofficial React 17 Enzyme adapter
 Enzyme.configure({ adapter: new Adapter() });
 

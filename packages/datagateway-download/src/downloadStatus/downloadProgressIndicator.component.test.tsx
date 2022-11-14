@@ -4,10 +4,17 @@ import type { Download } from 'datagateway-common';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { getDownload, getPercentageComplete } from '../downloadApi';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { mockedSettings, mockDownloadItems } from '../testData';
 
 jest.mock('../downloadApi');
+
+// silence react-query errors
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
+});
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({

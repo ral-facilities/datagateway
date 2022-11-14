@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import singleSpaReact from 'single-spa-react';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import {
   MicroFrontendId,
   MicroFrontendToken,
@@ -184,7 +184,7 @@ if (
           .then((response) => {
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
-              sessionID: response.data.sessionID,
+              sessionId: response.data.sessionID,
               username: 'Thomas409',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(
