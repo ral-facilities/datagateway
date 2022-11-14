@@ -27,7 +27,7 @@
     "i18next": "22.0.3",
     "i18next-browser-languagedetector": "7.0.0",
     "i18next-http-backend": "2.0.0",
-    "jsrsasign": "10.5.25",
+    "jsrsasign": "10.6.0",
     "lodash.chunk": "4.2.0",
     "loglevel": "1.8.0",
     "p-limit": "3.1.0",
