@@ -24,12 +24,14 @@ import { TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Paper, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { StateType } from '../state/app.types';
 import {
   InvestigationDatasetCountCell,
   InvestigationSizeCell,
 } from './cellRenderers';
+import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
 
 interface InvestigationTableProps {
   hierarchy: string;
@@ -68,7 +70,7 @@ const InvestigationSearchTable = (
   // this is only used for pagination in the table
   // the initial data fetching is triggered by the search button
   // in searchPageContainer.
-  const { fetchNextPage, data, hasNextPage } = useLuceneSearchInfinite(
+  const { fetchNextPage, data, hasNextPage, refetch } = useLuceneSearchInfinite(
     'Investigation',
     {
       searchText,
@@ -377,34 +379,48 @@ const InvestigationSearchTable = (
   );
 
   return (
-    <div>
-      {aborted ? (
-        <Paper>
-          <Typography align="center" variant="h6" component="h6">
-            {t('loading.abort_message')}
-          </Typography>
-        </Paper>
-      ) : (
-        <Table
-          loading={addToCartLoading || removeFromCartLoading || cartLoading}
-          data={aggregatedSource}
-          loadMoreRows={loadMoreRows}
-          totalRowCount={aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0}
-          sort={{}}
-          onSort={handleSort}
-          detailsPanel={detailsPanel}
-          columns={columns}
-          {...(hierarchy !== 'dls' && {
-            selectedRows,
-            aggregatedIds,
-            onCheck: addToCart,
-            onUncheck: removeFromCart,
-            disableSelectAll: !selectAllSetting,
-          })}
-          shortHeader={true}
-        />
-      )}
-    </div>
+    <Grid container spacing={2}>
+      <Grid item xs={2}>
+        {data?.pages && (
+          <FacetPanel
+            facetClassification={facetClassificationFromSearchResponses(
+              data.pages
+            )}
+            onFilterApplied={refetch}
+          />
+        )}
+      </Grid>
+      <Grid item xs={10}>
+        <div>
+          {aborted ? (
+            <Typography align="center" variant="h6" component="h6">
+              {t('loading.abort_message')}
+            </Typography>
+          ) : (
+            <Table
+              loading={addToCartLoading || removeFromCartLoading || cartLoading}
+              data={aggregatedSource}
+              loadMoreRows={loadMoreRows}
+              totalRowCount={
+                aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+              }
+              sort={{}}
+              onSort={handleSort}
+              detailsPanel={detailsPanel}
+              columns={columns}
+              {...(hierarchy !== 'dls' && {
+                selectedRows,
+                aggregatedIds,
+                onCheck: addToCart,
+                onUncheck: removeFromCart,
+                disableSelectAll: !selectAllSetting,
+              })}
+              shortHeader={true}
+            />
+          )}
+        </div>
+      </Grid>
+    </Grid>
   );
 };
 

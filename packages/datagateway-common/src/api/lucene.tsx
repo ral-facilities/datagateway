@@ -224,10 +224,7 @@ export const useLuceneSearchInfinite = (
     const relevantFilters = {} as FiltersType;
     Object.entries(facetFilters).forEach((filter) => {
       if (filter[0].startsWith(datasearchType.toLocaleLowerCase())) {
-        const key = filter[0].replace(
-          datasearchType.toLocaleLowerCase() + '.',
-          ''
-        );
+        const key = filter[0];
         relevantFilters[key] = filter[1];
       }
     });
