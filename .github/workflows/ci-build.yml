@@ -353,7 +353,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Download-Screenshots
-          path: packages/datagateway-dataview/cypress/screenshots
+          path: packages/datagateway-download/cypress/screenshots
 
   search-e2e-tests:
     name: DataGateway Search End to End Tests
@@ -501,4 +501,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Search-Screenshots
-          path: packages/datagateway-dataview/cypress/screenshots
+          path: packages/datagateway-search/cypress/screenshots
