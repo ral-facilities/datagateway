@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Accordion as MuiAccordion,
   AccordionDetails,
@@ -74,7 +74,11 @@ function FacetPanel({
   const { filters } = queryParams;
 
   const [selectedFacetFilters, setSelectedFacetFilters] =
-    useState<FiltersType>(filters);
+    React.useState<FiltersType>({});
+
+  React.useEffect(() => {
+    setSelectedFacetFilters(filters);
+  }, [filters]);
 
   const addFacetFilter = (
     dimension: string,
