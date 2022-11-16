@@ -24,7 +24,7 @@ import { TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 import { StateType } from '../state/app.types';
 import {
   InvestigationDatasetCountCell,
@@ -379,7 +379,7 @@ const InvestigationSearchTable = (
   );
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={1} sx={{ height: '100%' }}>
       <Grid item xs={2}>
         {data?.pages && (
           <FacetPanel
@@ -391,34 +391,38 @@ const InvestigationSearchTable = (
         )}
       </Grid>
       <Grid item xs={10}>
-        <div>
-          {aborted ? (
-            <Typography align="center" variant="h6" component="h6">
-              {t('loading.abort_message')}
-            </Typography>
-          ) : (
-            <Table
-              loading={addToCartLoading || removeFromCartLoading || cartLoading}
-              data={aggregatedSource}
-              loadMoreRows={loadMoreRows}
-              totalRowCount={
-                aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
-              }
-              sort={{}}
-              onSort={handleSort}
-              detailsPanel={detailsPanel}
-              columns={columns}
-              {...(hierarchy !== 'dls' && {
-                selectedRows,
-                aggregatedIds,
-                onCheck: addToCart,
-                onUncheck: removeFromCart,
-                disableSelectAll: !selectAllSetting,
-              })}
-              shortHeader={true}
-            />
-          )}
-        </div>
+        <Paper variant="outlined" sx={{ height: '100%' }}>
+          <div style={{ height: '100%' }}>
+            {aborted ? (
+              <Typography align="center" variant="h6" component="h6">
+                {t('loading.abort_message')}
+              </Typography>
+            ) : (
+              <Table
+                loading={
+                  addToCartLoading || removeFromCartLoading || cartLoading
+                }
+                data={aggregatedSource}
+                loadMoreRows={loadMoreRows}
+                totalRowCount={
+                  aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                }
+                sort={{}}
+                onSort={handleSort}
+                detailsPanel={detailsPanel}
+                columns={columns}
+                {...(hierarchy !== 'dls' && {
+                  selectedRows,
+                  aggregatedIds,
+                  onCheck: addToCart,
+                  onUncheck: removeFromCart,
+                  disableSelectAll: !selectAllSetting,
+                })}
+                shortHeader={true}
+              />
+            )}
+          </div>
+        </Paper>
       </Grid>
     </Grid>
   );

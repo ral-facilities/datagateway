@@ -23,8 +23,10 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { StateType } from '../state/app.types';
-import { Paper, Typography } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 import { DatasetDatafileCountCell, DatasetSizeCell } from './cellRenderers';
+import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
 
 interface DatasetTableProps {
   hierarchy: string;
@@ -56,7 +58,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { fetchNextPage, data, hasNextPage } = useLuceneSearchInfinite(
+  const { fetchNextPage, data, hasNextPage, refetch } = useLuceneSearchInfinite(
     'Dataset',
     {
       searchText,
@@ -353,32 +355,52 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   );
 
   return (
-    <div>
-      {aborted ? (
-        <Paper>
-          <Typography align="center" variant="h6" component="h6">
-            {t('loading.abort_message')}
-          </Typography>
+    <Grid container spacing={1} sx={{ height: '100%' }}>
+      <Grid item xs={2}>
+        {data?.pages && (
+          <FacetPanel
+            facetClassification={facetClassificationFromSearchResponses(
+              data.pages
+            )}
+            onFilterApplied={refetch}
+          />
+        )}
+      </Grid>
+      <Grid item xs={10}>
+        <Paper variant="outlined" sx={{ height: '100%' }}>
+          <div>
+            {aborted ? (
+              <Paper>
+                <Typography align="center" variant="h6" component="h6">
+                  {t('loading.abort_message')}
+                </Typography>
+              </Paper>
+            ) : (
+              <Table
+                loading={
+                  addToCartLoading || removeFromCartLoading || cartLoading
+                }
+                data={aggregatedSource}
+                loadMoreRows={loadMoreRows}
+                totalRowCount={
+                  aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                }
+                sort={{}}
+                onSort={handleSort}
+                selectedRows={selectedRows}
+                disableSelectAll={!selectAllSetting}
+                allIds={aggregatedIds}
+                onCheck={addToCart}
+                onUncheck={removeFromCart}
+                detailsPanel={detailsPanel}
+                columns={columns}
+                shortHeader={true}
+              />
+            )}
+          </div>
         </Paper>
-      ) : (
-        <Table
-          loading={addToCartLoading || removeFromCartLoading || cartLoading}
-          data={aggregatedSource}
-          loadMoreRows={loadMoreRows}
-          totalRowCount={aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0}
-          sort={{}}
-          onSort={handleSort}
-          selectedRows={selectedRows}
-          disableSelectAll={!selectAllSetting}
-          allIds={aggregatedIds}
-          onCheck={addToCart}
-          onUncheck={removeFromCart}
-          detailsPanel={detailsPanel}
-          columns={columns}
-          shortHeader={true}
-        />
-      )}
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 

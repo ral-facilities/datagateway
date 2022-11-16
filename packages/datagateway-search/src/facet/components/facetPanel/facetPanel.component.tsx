@@ -159,7 +159,7 @@ function FacetPanel({
         <Button onClick={applyFacetFilter}>Apply</Button>
       </Box>
 
-      <div>
+      <Box width="100%">
         {Object.entries(facetClassification).map(
           ([dimension, classifications]) => (
             <Accordion key={dimension} disableGutters elevation={0}>
@@ -198,7 +198,7 @@ function FacetPanel({
             </Accordion>
           )
         )}
-      </div>
+      </Box>
     </PanelContainer>
   );
 }
