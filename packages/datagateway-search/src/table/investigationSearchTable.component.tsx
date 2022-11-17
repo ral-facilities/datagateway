@@ -404,7 +404,7 @@ const InvestigationSearchTable = (
 
   return (
     <Grid container spacing={1} sx={{ height: '100%' }}>
-      <Grid item xs={2}>
+      <Grid item xs={2} sx={{ height: '100%' }}>
         {data?.pages && (
           <FacetPanel
             facetClassification={facetClassificationFromSearchResponses(

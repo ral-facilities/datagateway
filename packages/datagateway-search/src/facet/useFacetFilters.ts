@@ -71,7 +71,6 @@ function useFacetFilters(): {
   };
 
   const applyFacetFilters = (): void => {
-    console.log('apply', selectedFacetFilters);
     const searchParams = new URLSearchParams(location.search);
     const filters = Object.entries(selectedFacetFilters).reduce<FiltersType>(
       (obj, [dimension, value]) => {

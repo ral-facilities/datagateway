@@ -20,6 +20,8 @@ const PanelContainer = styled('div')(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'start',
   padding: theme.spacing(2),
+  overflow: 'auto',
+  height: '100%',
 }));
 
 const Accordion = styled(MuiAccordion)(({ theme }) => ({
@@ -76,13 +78,12 @@ function FacetPanel({
         flexDirection="row"
         justifyContent="space-between"
         width="100%"
-        sx={{ paddingBottom: 1 }}
       >
         <Typography variant="h6">Filters</Typography>
         <Button onClick={onApplyFacetFilters}>Apply</Button>
       </Box>
 
-      <Box width="100%">
+      <Box width="100%" sx={{ marginTop: 1, marginBottom: 2 }}>
         {Object.entries(facetClassification).map(
           ([dimension, classifications]) => (
             <Accordion key={dimension} disableGutters elevation={0}>

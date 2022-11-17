@@ -1,52 +1,32 @@
 import React from 'react';
 import {
-  Table,
-  formatBytes,
-  tableLink,
-  FacilityCycle,
   ColumnType,
+  DatafileDetailsPanel,
+  DLSDatafileDetailsPanel,
+  FacilityCycle,
+  formatBytes,
+  ISISDatafileDetailsPanel,
   parseSearchToQuery,
+  SearchResponse,
+  SearchResultSource,
+  Table,
+  tableLink,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
-  useSort,
-  useRemoveFromCart,
-  DatafileDetailsPanel,
-  ISISDatafileDetailsPanel,
-  DLSDatafileDetailsPanel,
   useLuceneSearchInfinite,
-  SearchResponse,
-  SearchResultSource,
-  ArrowTooltip,
-  SearchFilter,
-  usePushDatafileFilter,
-  ParameterFilters,
-  FiltersType,
+  useRemoveFromCart,
+  useSort,
 } from 'datagateway-common';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Chip,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  Paper,
-  Typography,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {
-  CVCustomFilters,
-  CVFilterInfo,
-  CVSelectedFilter,
-} from 'datagateway-common/lib/card/cardView.component';
+import { Grid, Paper, Typography } from '@mui/material';
+import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
+import useFacetFilters from '../facet/useFacetFilters';
 
 interface DatafileSearchTableProps {
   hierarchy: string;
@@ -79,14 +59,7 @@ const DatafileSearchTable = (
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const [filterUpdate, setFilterUpdate] = React.useState(false);
-  const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
-  const [selectedChips, setSelectedChips] = React.useState<CVSelectedFilter[]>(
-    []
-  );
-  const pushFilter = usePushDatafileFilter();
-
-  const { fetchNextPage, data, hasNextPage } = useLuceneSearchInfinite(
+  const { fetchNextPage, data, hasNextPage, refetch } = useLuceneSearchInfinite(
     'Datafile',
     {
       searchText,
@@ -122,225 +95,30 @@ const DatafileSearchTable = (
     return response.results?.map((result) => result.id) ?? [];
   }
 
-  const mapFacets = React.useCallback(
-    (responses: SearchResponse[]): CVCustomFilters[] => {
-      // Aggregate pages
-      const filters: { [dimension: string]: { [label: string]: number } } = {};
-      responses.forEach((response) => {
-        if (response.dimensions !== undefined) {
-          Object.entries(response.dimensions).forEach((dimension) => {
-            const dimensionKey = dimension[0];
-            const dimensionValue = dimension[1];
-            if (!Object.keys(filters).includes(dimensionKey)) {
-              filters[dimensionKey] = {};
-            }
-            Object.entries(dimensionValue).forEach((labelValue) => {
-              const label = labelValue[0];
-              const count =
-                typeof labelValue[1] === 'number'
-                  ? labelValue[1]
-                  : labelValue[1].count;
-              if (Object.keys(filters[dimensionKey]).includes(label)) {
-                filters[dimensionKey][label] += count;
-              } else {
-                filters[dimensionKey][label] = count;
-              }
-            });
-          });
-        }
-      });
-      // Convert to custom filters
-      return Object.entries(filters).map((dimension) => {
-        const dimensionKey = dimension[0].toLocaleLowerCase();
-        const dimensionValue = dimension[1];
-        return {
-          label: t(dimensionKey),
-          dataKey: dimensionKey,
-          dataKeySearch: dimensionKey
-            .replace('investigation.', '')
-            .replace('investigationparameter.', 'investigationparameter ')
-            .replace('sample.', 'sample '),
-          filterItems: Object.entries(dimensionValue).map((labelValue) => ({
-            name: labelValue[0],
-            count: labelValue[1].toString(),
-          })),
-          prefixLabel: true,
-        };
-      });
-    },
-    [t]
-  );
-
-  const { aggregatedSource, aggregatedIds, customFilters, aborted } =
-    React.useMemo(() => {
-      if (data) {
-        return {
-          aggregatedSource: data.pages
-            .map((response) => mapSource(response))
-            .flat(),
-          aggregatedIds: data.pages.map((response) => mapIds(response)).flat(),
-          customFilters: mapFacets(data.pages),
-          aborted: data.pages[data.pages.length - 1].aborted,
-        };
-      } else {
-        return {
-          aggregatedSource: [],
-          aggregatedIds: [],
-          customFilters: [],
-          aborted: false,
-        };
-      }
-    }, [data, mapFacets]);
-
-  const parsedFilters = React.useMemo(() => {
-    const parsedFilters = {} as FiltersType;
-    Object.entries(filters).forEach((v) => {
-      parsedFilters[v[0].substring(9)] = v[1]; // 9 skips "datafile."
-    });
-    return parsedFilters;
-  }, [filters]);
-
-  // Set the filter information based on what was provided.
-  React.useEffect(() => {
-    const getSelectedFilter = (
-      filterKey: string,
-      filterValue: string
-    ): boolean => {
-      if (filterKey in parsedFilters) {
-        const v = parsedFilters[filterKey];
-        if (Array.isArray(v) && v.includes(filterValue)) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    // Get the updated info.
-    const info: CVFilterInfo = customFilters
-      ? Object.values(customFilters).reduce((o, filter) => {
-          const data: CVFilterInfo = {
-            ...o,
-            [filter.dataKey]: {
-              label: filter.label,
-              items: filter.filterItems.reduce(
-                (o, item) => ({
-                  ...o,
-                  [item.name]: {
-                    selected: getSelectedFilter(filter.dataKey, item.name),
-                    count: item.count,
-                  },
-                }),
-                {}
-              ),
-              hasSelectedItems: false,
-            },
-          };
-
-          // Update the selected count for each filter.
-          const selectedItems = Object.values(data[filter.dataKey].items).find(
-            (v) => v.selected === true
-          );
-          if (selectedItems) {
-            data[filter.dataKey].hasSelectedItems = true;
-          }
-          return data;
-        }, {})
-      : {};
-
-    setFiltersInfo(info);
-
-    const selectedChips: CVSelectedFilter[] = [];
-    Object.entries(parsedFilters).forEach(([key, filter]) => {
-      if (filter instanceof Array) {
-        filter.forEach((filterEntry) => {
-          if (typeof filterEntry === 'string') {
-            if (info[key]) {
-              selectedChips.push({
-                filterKey: key,
-                label: info[key].label,
-                items: Object.entries(info[key].items)
-                  .filter(([k, v]) => k === filterEntry && v.selected)
-                  .map(([i]) => i),
-              });
-            }
-          } else if ('filter' in filterEntry) {
-            selectedChips.push({
-              filterKey: key,
-              label: filterEntry.key.substring(
-                filterEntry.key.lastIndexOf('.') + 1
-              ),
-              items: [filterEntry.label],
-            });
-          }
-        });
-      }
-    });
-
-    setSelectedChips(selectedChips);
-  }, [customFilters, parsedFilters]);
-
-  const parameterNames = React.useMemo(() => {
-    const parameterNames: string[] = [];
-    Object.entries(filtersInfo).forEach(([filterKey, info]) => {
-      if (filterKey.includes('parameter')) {
-        Object.keys(info.items).forEach((label) => {
-          parameterNames.push(label);
-        });
-      }
-    });
-    return parameterNames;
-  }, [filtersInfo]);
-
-  const changeFilter = (
-    filterKey: string,
-    filterValue: SearchFilter,
-    remove?: boolean
-  ): void => {
-    const getNestedIndex = (updateItems: SearchFilter[]): number => {
-      let i = 0;
-      for (const updateItem of updateItems) {
-        if (
-          typeof updateItem !== 'string' &&
-          'label' in updateItem &&
-          updateItem.label === filterValue
-        ) {
-          return i;
-        }
-        i++;
-      }
-      return -1;
-    };
-
-    // Add or remove the filter value in the state.
-    let updateItems: SearchFilter[] = [];
-    if (filterKey in parsedFilters) {
-      const filterItems = parsedFilters[filterKey];
-      if (Array.isArray(filterItems)) {
-        updateItems = filterItems;
-      }
+  const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {
+    if (data) {
+      return {
+        aggregatedSource: data.pages
+          .map((response) => mapSource(response))
+          .flat(),
+        aggregatedIds: data.pages.map((response) => mapIds(response)).flat(),
+        aborted: data.pages[data.pages.length - 1].aborted,
+      };
     }
 
-    // Add or remove the filter value.
-    if (!remove && !updateItems.includes(filterValue)) {
-      // Add a filter item.
-      updateItems.push(filterValue);
-      pushFilter(filterKey, updateItems);
-    } else if (updateItems.length > 0) {
-      // Set to null if this is the last item in the array.
-      // Remove the item from the updated items array.
-      let i = updateItems.indexOf(filterValue);
-      i = i === -1 ? getNestedIndex(updateItems) : i;
-      if (i > -1) {
-        // Remove the filter value from the update items.
-        updateItems.splice(i, 1);
-        if (updateItems.length > 0) {
-          pushFilter(filterKey, updateItems);
-        } else {
-          pushFilter(filterKey, null);
-        }
-      }
-    }
-  };
+    return {
+      aggregatedSource: [],
+      aggregatedIds: [],
+      aborted: false,
+    };
+  }, [data]);
+
+  const {
+    selectedFacetFilters,
+    addFacetFilter,
+    removeFacetFilter,
+    applyFacetFilters,
+  } = useFacetFilters();
 
   const handleSort = useSort();
 
@@ -517,167 +295,57 @@ const DatafileSearchTable = (
   if (hierarchy === 'isis') detailsPanel = ISISDatafileDetailsPanel;
   else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
 
-  const shouldShowFilterPanel =
-    customFilters && (filterUpdate || aggregatedSource?.length > 0);
-
   return (
-    <div style={{ height: '100%' }}>
-      {aborted ? (
-        <Paper>
-          <Typography align="center" variant="h6" component="h6">
-            {t('loading.abort_message')}
-          </Typography>
-        </Paper>
-      ) : (
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          sx={{ height: '100%' }}
-        >
-          {/* Filtering options */}
-          {shouldShowFilterPanel && (
-            <Grid
-              item
-              xs={12}
-              md={3}
-              style={{ height: '100%', overflowY: 'auto' }}
-            >
+    <Grid container spacing={1} sx={{ height: '100%' }}>
+      <Grid item xs={2} sx={{ height: '100%' }}>
+        {data?.pages && (
+          <FacetPanel
+            facetClassification={facetClassificationFromSearchResponses(
+              data.pages
+            )}
+            selectedFacetFilters={selectedFacetFilters}
+            onAddFilter={addFacetFilter}
+            onRemoveFilter={removeFacetFilter}
+            onApplyFacetFilters={() => {
+              applyFacetFilters();
+              refetch();
+            }}
+          />
+        )}
+      </Grid>
+      <Grid item xs={10}>
+        <Paper variant="outlined" sx={{ height: '100%' }}>
+          <div>
+            {aborted ? (
               <Paper>
-                <Box p={2}>
-                  <Typography variant="h5">Filter By</Typography>
-                </Box>
-
-                {/* Show the specific options available to filter by */}
-                <Box>
-                  {filtersInfo &&
-                    Object.entries(filtersInfo).map(
-                      ([filterKey, filter], filterIndex) => {
-                        return (
-                          <Accordion
-                            key={filterIndex}
-                            defaultExpanded={filter.hasSelectedItems}
-                          >
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                              <Typography>{filter.label}</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              <div style={{ width: '100%' }}>
-                                <List
-                                  component="nav"
-                                  aria-label="filter-by-list"
-                                >
-                                  {Object.entries(filter.items).map(
-                                    ([name, data], valueIndex) => (
-                                      <ListItem
-                                        style={{ display: 'flex' }}
-                                        key={valueIndex}
-                                        button
-                                        disabled={data.selected}
-                                        onClick={() => {
-                                          changeFilter(filterKey, name);
-                                          setFilterUpdate(true);
-                                        }}
-                                        aria-label={`Filter by ${filter.label} ${name}`}
-                                      >
-                                        <div style={{ flex: 1 }}>
-                                          <Chip
-                                            label={
-                                              <ArrowTooltip title={name}>
-                                                <Typography>{name}</Typography>
-                                              </ArrowTooltip>
-                                            }
-                                          />
-                                        </div>
-                                        {data.count && (
-                                          <Divider
-                                            orientation="vertical"
-                                            flexItem
-                                          />
-                                        )}
-                                        {data.count && (
-                                          <Typography
-                                            style={{ paddingLeft: '5%' }}
-                                          >
-                                            {data.count}
-                                          </Typography>
-                                        )}
-                                      </ListItem>
-                                    )
-                                  )}
-                                </List>
-                              </div>
-                            </AccordionDetails>
-                          </Accordion>
-                        );
-                      }
-                    )}
-                </Box>
-                {aggregatedIds && (
-                  <Box p={2}>
-                    <ParameterFilters
-                      entityName="Datafile"
-                      parameterNames={parameterNames}
-                      allIds={aggregatedIds}
-                      changeFilter={changeFilter}
-                      setFilterUpdate={setFilterUpdate}
-                    />
-                  </Box>
-                )}
+                <Typography align="center" variant="h6" component="h6">
+                  {t('loading.abort_message')}
+                </Typography>
               </Paper>
-            </Grid>
-          )}
-          <Grid item xs={12} md={shouldShowFilterPanel ? 9 : 12}>
-            {selectedChips.length > 0 &&
-              (filterUpdate || aggregatedSource?.length > 0) && (
-                <ul
-                  style={{
-                    display: 'inline-flex',
-                    justifyContent: 'center',
-                    flexWrap: 'wrap',
-                    listStyle: 'none',
-                    margin: 8,
-                  }}
-                >
-                  {selectedChips.map((filter, filterIndex) => (
-                    <li key={filterIndex}>
-                      {filter.items.map((item, itemIndex) => (
-                        <Chip
-                          key={itemIndex}
-                          style={{ margin: 4 }}
-                          label={`${filter.label} - ${item}`}
-                          onDelete={() => {
-                            changeFilter(filter.filterKey, item, true);
-                            setFilterUpdate(true);
-                          }}
-                        />
-                      ))}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            <Table
-              loading={addToCartLoading || removeFromCartLoading}
-              data={aggregatedSource}
-              loadMoreRows={loadMoreRows}
-              totalRowCount={
-                aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
-              }
-              sort={{}}
-              onSort={handleSort}
-              selectedRows={selectedRows}
-              disableSelectAll={!selectAllSetting}
-              allIds={aggregatedIds}
-              onCheck={addToCart}
-              onUncheck={removeFromCart}
-              detailsPanel={detailsPanel}
-              columns={columns}
-              shortHeader={true}
-            />
-          </Grid>
-        </Grid>
-      )}
-    </div>
+            ) : (
+              <Table
+                loading={addToCartLoading || removeFromCartLoading}
+                data={aggregatedSource}
+                loadMoreRows={loadMoreRows}
+                totalRowCount={
+                  aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                }
+                sort={{}}
+                onSort={handleSort}
+                selectedRows={selectedRows}
+                disableSelectAll={!selectAllSetting}
+                allIds={aggregatedIds}
+                onCheck={addToCart}
+                onUncheck={removeFromCart}
+                detailsPanel={detailsPanel}
+                columns={columns}
+                shortHeader={true}
+              />
+            )}
+          </div>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 
