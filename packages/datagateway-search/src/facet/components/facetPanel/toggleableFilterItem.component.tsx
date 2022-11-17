@@ -20,7 +20,6 @@ function ToggleableFilterItem({
   selected,
   onSelect,
 }: ToggleableFilterItemProps): JSX.Element {
-  console.log({ selected, classificationLabel });
   return (
     <ListItemButton
       dense

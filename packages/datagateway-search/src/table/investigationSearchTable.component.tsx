@@ -32,6 +32,8 @@ import {
 } from './cellRenderers';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
+import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import useFacetFilters from '../facet/useFacetFilters';
 
 interface InvestigationTableProps {
   hierarchy: string;
@@ -100,6 +102,23 @@ const InvestigationSearchTable = (
   const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
     useRemoveFromCart('investigation');
 
+  const [isFilterChipRemoved, setIsFilterChipRemoved] = React.useState(false);
+
+  const {
+    selectedFacetFilters,
+    addFacetFilter,
+    removeFacetFilter,
+    applyFacetFilters,
+  } = useFacetFilters();
+
+  React.useEffect(() => {
+    if (isFilterChipRemoved) {
+      applyFacetFilters();
+      refetch();
+      setIsFilterChipRemoved(false);
+    }
+  }, [applyFacetFilters, isFilterChipRemoved, refetch]);
+
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];
   }
@@ -137,6 +156,11 @@ const InvestigationSearchTable = (
     (_) => fetchNextPage(),
     [fetchNextPage]
   );
+
+  const removeFilterChip = (dimension: string, filterValue: string): void => {
+    removeFacetFilter(dimension, filterValue);
+    setIsFilterChipRemoved(true);
+  };
 
   const dlsLinkURL = (investigationData: SearchResultSource): string =>
     `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`;
@@ -386,12 +410,22 @@ const InvestigationSearchTable = (
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}
-            onFilterApplied={refetch}
+            selectedFacetFilters={selectedFacetFilters}
+            onAddFilter={addFacetFilter}
+            onRemoveFilter={removeFacetFilter}
+            onApplyFacetFilters={() => {
+              applyFacetFilters();
+              refetch();
+            }}
           />
         )}
       </Grid>
       <Grid item xs={10}>
-        <Paper variant="outlined" sx={{ height: '100%' }}>
+        <SelectedFilterChips
+          filters={filters}
+          onRemoveFilter={removeFilterChip}
+        />
+        <Paper variant="outlined" sx={{ height: '100%', marginTop: 1 }}>
           <div style={{ height: '100%' }}>
             {aborted ? (
               <Typography align="center" variant="h6" component="h6">

@@ -27,6 +27,7 @@ import { Grid, Paper, Typography } from '@mui/material';
 import { DatasetDatafileCountCell, DatasetSizeCell } from './cellRenderers';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
+import useFacetFilters from '../facet/useFacetFilters';
 
 interface DatasetTableProps {
   hierarchy: string;
@@ -79,6 +80,13 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     useAddToCart('dataset');
   const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
     useRemoveFromCart('dataset');
+
+  const {
+    selectedFacetFilters,
+    addFacetFilter,
+    removeFacetFilter,
+    applyFacetFilters,
+  } = useFacetFilters();
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];
@@ -362,7 +370,13 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}
-            onFilterApplied={refetch}
+            selectedFacetFilters={selectedFacetFilters}
+            onAddFilter={addFacetFilter}
+            onRemoveFilter={removeFacetFilter}
+            onApplyFacetFilters={() => {
+              applyFacetFilters();
+              refetch();
+            }}
           />
         )}
       </Grid>
