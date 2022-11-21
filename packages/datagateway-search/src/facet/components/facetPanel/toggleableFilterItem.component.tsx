@@ -26,6 +26,10 @@ function ToggleableFilterItem({
       disableGutters
       sx={{ px: 1.5 }}
       selected={selected}
+      aria-label={`${
+        selected ? 'Remove' : 'Add'
+      } ${classificationLabel} filter`}
+      aria-selected={selected}
       onClick={() => onSelect(classificationLabel, !selected)}
     >
       <ListItemIcon sx={{ minWidth: 'auto' }}>
@@ -34,6 +38,11 @@ function ToggleableFilterItem({
           disableRipple
           sx={{ padding: 0, paddingRight: 1 }}
           checked={selected}
+          inputProps={{
+            'aria-label': `${
+              selected ? 'Remove' : 'Add'
+            } ${classificationLabel} filter`,
+          }}
           onChange={(event) =>
             onSelect(classificationLabel, event.target.checked)
           }
