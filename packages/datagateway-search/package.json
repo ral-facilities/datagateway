@@ -3,7 +3,7 @@
   "version": "1.1.1",
   "private": true,
   "dependencies": {
-    "@craco/craco": "6.4.3",
+    "@craco/craco": "7.0.0",
     "@date-io/date-fns": "2.16.0",
     "@emotion/react": "11.10.0",
     "@emotion/styled": "11.10.0",
