@@ -52,15 +52,43 @@ interface FacetPanelProps {
    * Facet classifications on the search result set.
    */
   facetClassification: FacetClassification;
+  /**
+   * The currently selected filters.
+   */
   selectedFacetFilters: FiltersType;
+  /**
+   * Called when a filter is added by the user. The dimension and the value of the filter is passed.
+   * For example, `dimension` can be "investigation.type.name" and `filterValue` can be `"experiment"`,
+   * which indicates that the user wishes to only see investigations with type `"experiment"`.
+   *
+   * @param dimension The dimension of the added filter. For example investigation.type.name (Investigation type)
+   * @param filterValue The value of the added filter.
+   */
   onAddFilter: (dimension: string, filterValue: string) => void;
+  /**
+   * Called when a filter is removed by the user.
+   *
+   * @param dimension The dimension of the removed filter. For example investigation.type.name (Investigation type)
+   * @param filterValue The value of the removed filter.
+   * @see FacetPanelProps.onAddFilter
+   */
   onRemoveFilter: (dimension: string, filterValue: string) => void;
+  /**
+   * Called when the selected filters are applied by the user. The search data should refresh
+   * to reflect the applied filters.
+   */
   onApplyFacetFilters: () => void;
 }
 
 /**
  * Allows users to narrow down the search result by applying filters
  * based on the facet classification of the search result set.
+ *
+ * For example, users can filter the search result by investigation type
+ * or datafile format (txt? log? nexus file?)
+ *
+ * When filters are added/removed via {@link FacetPanelProps.onAddFilter} or {@link FacetPanelProps.onRemoveFilter},
+ * the data should not be updated until the user *applies* them via {@link FacetPanelProps.onApplyFacetFilters}.
  */
 function FacetPanel({
   facetClassification,
@@ -84,6 +112,8 @@ function FacetPanel({
       </Box>
 
       <Box width="100%" sx={{ marginTop: 1, marginBottom: 2 }}>
+        {/* For each facet classification on the search data,
+            render a new Accordion that expands to show the available filter values on that facet (dimension). */}
         {Object.entries(facetClassification).map(
           ([dimension, classifications]) => (
             <Accordion key={dimension} disableGutters elevation={0}>
