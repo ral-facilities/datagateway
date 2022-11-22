@@ -19,7 +19,6 @@ function useFacetFilters(): {
     React.useState<FiltersType>({});
 
   React.useEffect(() => {
-    console.log('useEffect', filters);
     setSelectedFacetFilters(filters);
   }, [filters]);
 
