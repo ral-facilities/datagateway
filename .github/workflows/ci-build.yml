@@ -151,41 +151,30 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v1.0.1
+          ref: v6.0.0
 
       # DataGateway API file setup
+      - name: Create search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
-        run: touch logs.log
-      - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Configure API backend
-        run: echo "`jq -r --arg BACKEND "python_icat" \
-          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Set debug mode to true
-        run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
-      - name: Set log level to DEBUG
-        run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
-      - name: Create config.json
-        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+        run: touch datagateway-api/datagateway_api/logs.log
+
+      - name: Create config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install
+        run: cd datagateway-api/; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; poetry run python -m util.icat_db_generator
 
       - name: Start API
-        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # E2E tests
-      - name: Checkout repo
-        uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -208,6 +197,7 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
+
       - name: Run datagateway-dataview e2e tests
         run: yarn workspace datagateway-dataview run e2e
       - name: Upload Cypress screenshots
@@ -309,41 +299,30 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v1.0.1
+          ref: v6.0.0
 
       # DataGateway API file setup
+      - name: Create search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
-        run: touch logs.log
-      - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Configure API backend
-        run: echo "`jq -r --arg BACKEND "python_icat" \
-          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Set debug mode to true
-        run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
-      - name: Set log level to DEBUG
-        run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
-      - name: Create config.json
-        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+        run: touch datagateway-api/datagateway_api/logs.log
+
+      - name: Create config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install
+        run: cd datagateway-api/; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; poetry run python -m util.icat_db_generator
 
       - name: Start API
-        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # E2E tests
-      - name: Checkout repo
-        uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -366,6 +345,7 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
+
       - name: Run datagateway-download e2e tests
         run: yarn workspace datagateway-download run e2e
       - name: Upload Cypress screenshots
@@ -449,34 +429,25 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v1.0.1
+          ref: v6.0.0
 
       # DataGateway API file setup
+      - name: Create search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
-        run: touch logs.log
-      - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Configure API backend
-        run: echo "`jq -r --arg BACKEND "python_icat" \
-          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Set debug mode to true
-        run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
-      - name: Set log level to DEBUG
-        run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
-      - name: Create config.json
-        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+        run: touch datagateway-api/datagateway_api/logs.log
+
+      - name: Create config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install
+        run: cd datagateway-api/; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; poetry run python -m util.icat_db_generator
 
       # Recreate Lucene indexes
       - name: Login to ICAT
@@ -497,11 +468,9 @@ jobs:
         run: rm -f login_output
 
       - name: Start API
-        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # E2E tests
-      - name: Checkout repo
-        uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -524,6 +493,7 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
+
       - name: Run datagateway-search e2e tests
         run: yarn workspace datagateway-search run e2e
       - name: Upload Cypress screenshots
