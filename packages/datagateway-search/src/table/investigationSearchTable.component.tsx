@@ -34,15 +34,16 @@ import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
 import useFacetFilters from '../facet/useFacetFilters';
+import { SearchResultCountDispatch } from '../searchTabs.component';
 
 interface InvestigationTableProps {
   hierarchy: string;
 }
 
-const InvestigationSearchTable = (
-  props: InvestigationTableProps
-): React.ReactElement => {
-  const { hierarchy } = props;
+const InvestigationSearchTable = ({
+  hierarchy,
+}: InvestigationTableProps): React.ReactElement => {
+  const dispatchSearchResultCount = React.useContext(SearchResultCountDispatch);
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
@@ -72,30 +73,32 @@ const InvestigationSearchTable = (
   // this is only used for pagination in the table
   // the initial data fetching is triggered by the search button
   // in searchPageContainer.
-  const { fetchNextPage, data, hasNextPage, refetch } = useLuceneSearchInfinite(
-    'Investigation',
-    {
-      searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [
-        { target: 'Investigation' },
-        {
-          target: 'InvestigationParameter',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-        {
-          target: 'Sample',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-      ],
-    },
-    filters
-  );
+  const { fetchNextPage, data, hasNextPage, refetch, isFetching } =
+    useLuceneSearchInfinite(
+      'Investigation',
+      {
+        searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [
+          { target: 'Investigation' },
+          {
+            target: 'InvestigationParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+          {
+            target: 'Sample',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+        ],
+      },
+      filters,
+      { enabled: Boolean(searchText) }
+    );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
     useAddToCart('investigation');
@@ -118,6 +121,32 @@ const InvestigationSearchTable = (
       setIsFilterChipRemoved(false);
     }
   }, [applyFacetFilters, isFilterChipRemoved, refetch]);
+
+  React.useEffect(() => {
+    if (data) {
+      const searchResultCount = data.pages.reduce(
+        (count, page) => count + (page.results?.length ?? 0),
+        0
+      );
+      dispatchSearchResultCount({
+        type: 'UPDATE_SEARCH_RESULT_COUNT',
+        payload: {
+          type: 'Investigation',
+          count: searchResultCount,
+          hasMore: hasNextPage ?? false,
+        },
+      });
+    }
+  }, [data, dispatchSearchResultCount, hasNextPage]);
+
+  React.useEffect(() => {
+    if (isFetching) {
+      dispatchSearchResultCount({
+        type: 'RESET_SEARCH_RESULT_COUNT',
+        payload: 'Investigation',
+      });
+    }
+  }, [dispatchSearchResultCount, isFetching]);
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];

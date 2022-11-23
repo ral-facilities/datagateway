@@ -1,10 +1,11 @@
 import axios, { AxiosError } from 'axios';
 import { format, set } from 'date-fns';
 import {
-  useInfiniteQuery,
-  UseInfiniteQueryResult,
+  type UseInfiniteQueryResult,
+  type UseInfiniteQueryOptions,
+  type UseQueryResult,
   useQuery,
-  UseQueryResult,
+  useInfiniteQuery,
 } from 'react-query';
 import { useSelector } from 'react-redux';
 import { StateType } from '..';
@@ -147,6 +148,8 @@ export const fetchLuceneData = async (
     restrict: !!params.restrict,
   };
 
+  console.log('fetchlucenedata', settings.icatUrl);
+
   return axios
     .get(`${settings.icatUrl}/search/documents`, {
       params: queryParams,
@@ -215,20 +218,32 @@ export const useLuceneFacet = (
 export const useLuceneSearchInfinite = (
   datasearchType: DatasearchType,
   luceneParams: LuceneSearchParams,
-  facetFilters: FiltersType
+  facetFilters: FiltersType,
+  options?: UseInfiniteQueryOptions<
+    SearchResponse,
+    AxiosError,
+    SearchResponse,
+    SearchResponse,
+    [string, DatasearchType, LuceneSearchParams]
+  >
 ): UseInfiniteQueryResult<SearchResponse, AxiosError> => {
   const icatUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.icatUrl
   );
+
   if (facetFilters) {
-    const relevantFilters = {} as FiltersType;
-    Object.entries(facetFilters).forEach((filter) => {
-      if (filter[0].startsWith(datasearchType.toLocaleLowerCase())) {
-        const key = filter[0];
-        relevantFilters[key] = filter[1];
-      }
-    });
-    luceneParams.filters = relevantFilters;
+    // only applies filters if the filter key starts with the data type this is searching
+    // e.g. if there are dataset.type.name & investigation.type.name in filter keys,
+    // and we are searching investigation, only investigation.type.name will be added to the final filter object.
+    luceneParams.filters = Object.entries(facetFilters).reduce<FiltersType>(
+      (filters, [filterKey, filterValue]) => {
+        if (filterKey.startsWith(datasearchType.toLocaleLowerCase())) {
+          filters[filterKey] = filterValue;
+        }
+        return filters;
+      },
+      {}
+    );
   }
 
   return useInfiniteQuery<
@@ -244,10 +259,8 @@ export const useLuceneSearchInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
-      // we want to trigger search manually via refetch
-      // so disable the query to disable automatic fetching
-      enabled: false,
       getNextPageParam: (lastPage, _) => lastPage.search_after,
+      ...(options ?? {}),
     }
   );
 };

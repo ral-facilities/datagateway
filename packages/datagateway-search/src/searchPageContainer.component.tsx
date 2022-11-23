@@ -3,36 +3,34 @@ import ResizeObserver from 'resize-observer-polyfill';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import {
-  Switch,
+  Link,
   Route,
   RouteComponentProps,
-  Link,
+  Switch,
+  useHistory,
   useLocation,
 } from 'react-router-dom';
 
-import { Grid, Paper, LinearProgress, styled } from '@mui/material';
+import { Grid, Paper, styled } from '@mui/material';
 
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 import SearchTabs from './searchTabs.component';
-
-import { useHistory } from 'react-router-dom';
 import {
-  ViewsType,
-  parseSearchToQuery,
-  useUpdateView,
-  usePushSearchText,
-  useCart,
-  SelectionAlert,
-  readSciGatewayToken,
-  FiltersType,
-  SortType,
-  usePushCurrentTab,
-  useUpdateQueryParam,
-  ViewButton,
   ClearFiltersButton,
-  useLuceneSearchInfinite,
+  FiltersType,
+  parseSearchToQuery,
+  readSciGatewayToken,
+  SelectionAlert,
+  SortType,
+  useCart,
+  usePushCurrentTab,
   usePushSearchRestrict,
+  usePushSearchText,
+  useUpdateQueryParam,
+  useUpdateView,
+  ViewButton,
+  ViewsType,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -41,7 +39,6 @@ import {
   setDatasetTab,
   setInvestigationTab,
 } from './state/actions/actions';
-import { useIsFetching } from 'react-query';
 
 export const storeFilters = (
   filters: FiltersType,
@@ -214,8 +211,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     datafileTab,
     sideLayout,
     searchableEntities,
-    minNumResults,
-    maxNumResults,
   } = props;
 
   const location = useLocation();
@@ -223,7 +218,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { view, startDate, endDate, sort, filters, restrict } = queryParams;
+  const { view } = queryParams;
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
 
@@ -239,7 +234,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       : searchableEntities[0];
 
   //Do not allow these to be searched if they are not searchable (prevents URL
-  //forcing them to be searched)
+  //forcing them to be searched)]
   const investigation = searchableEntities.includes('investigation')
     ? queryParams.investigation
     : false;
@@ -264,11 +259,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, [checkedBoxes, currentTab, pushCurrentTab, queryParams.currentTab]);
 
   const [searchText, setSearchText] = React.useState(searchTextURL);
+  const [isSearchInitiated, setIsSearchInitiated] = React.useState(
+    Boolean(searchText)
+  );
   const [shouldRestrictSearch, setShouldRestrictSearch] = React.useState(
     parseSearchToQuery(location.search).restrict
   );
-
-  const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
 
   const handleSearchTextChange = (searchText: string): void => {
     setSearchText(searchText);
@@ -294,101 +290,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     }
   }, [location.pathname, view, replaceView]);
 
-  const {
-    refetch: searchInvestigations,
-    isIdle: investigationsIdle,
-    isFetching: investigationsFetching,
-    isFetched: investigationsFetched,
-  } = useLuceneSearchInfinite(
-    'Investigation',
-    {
-      searchText: searchTextURL,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [
-        { target: 'Investigation' },
-        {
-          target: 'InvestigationParameter',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-        {
-          target: 'Sample',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-      ],
-    },
-    filters
-  );
-  const {
-    refetch: searchDatasets,
-    isIdle: datasetsIdle,
-    isFetching: datasetsFetching,
-    isFetched: datasetsFetched,
-  } = useLuceneSearchInfinite(
-    'Dataset',
-    {
-      searchText: searchTextURL,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [{ target: 'Dataset' }],
-    },
-    filters
-  );
-  const {
-    refetch: searchDatafiles,
-    isIdle: datafilesIdle,
-    isFetching: datafilesFetching,
-    isFetched: datafilesFetched,
-  } = useLuceneSearchInfinite(
-    'Datafile',
-    {
-      searchText: searchTextURL,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [
-        { target: 'Datafile' },
-        {
-          target: 'DatafileParameter',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-      ],
-    },
-    filters
-  );
-
-  const isFetchingNum = useIsFetching({
-    predicate: (query) =>
-      !query.queryHash.includes('InvestigationCount') &&
-      !query.queryHash.includes('DatasetCount') &&
-      !query.queryHash.includes('DatafileCount'),
-  });
-
-  const requestReceived =
-    !investigationsIdle || !datasetsIdle || !datafilesIdle;
-
-  const loading =
-    investigationsFetching ||
-    datasetsFetching ||
-    datafilesFetching ||
-    isFetchingNum > 0;
-
   const initiateSearch = React.useCallback(() => {
     // TODO: should probably combine all search params into one object then push it to the URL.
     pushSearchText(searchText);
     pushSearchRestrict(shouldRestrictSearch);
-    setSearchOnNextRender(true);
 
     localStorage.removeItem('investigationFilters');
     localStorage.removeItem('datasetFilters');
@@ -397,9 +302,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     localStorage.removeItem('datasetPage');
     localStorage.removeItem('investigationResults');
     localStorage.removeItem('datasetResults');
+
     if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
     if (queryParams.page !== null) replacePage(null);
     if (queryParams.results !== null) replaceResults(null);
+
+    setIsSearchInitiated(true);
   }, [
     pushSearchText,
     searchText,
@@ -414,92 +322,25 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   ]);
 
   React.useEffect(() => {
-    if (searchOnNextRender) {
-      if (dataset) {
-        // Fetch lucene datasets
-        searchDatasets();
-      }
-
-      if (datafile) {
-        // Fetch lucene datafiles
-        searchDatafiles();
-      }
-      if (investigation) {
-        // Fetch lucene investigations
-        searchInvestigations();
-      }
-
-      if (dataset || datafile || investigation) {
-        // Set the appropriate tabs.
-        setDatafileTab(datafile);
-        setDatasetTab(dataset);
-        setInvestigationTab(investigation);
-      }
-
-      setSearchOnNextRender(false);
+    if (dataset || datafile || investigation) {
+      // Set the appropriate tabs.
+      setDatafileTab(datafile);
+      setDatasetTab(dataset);
+      setInvestigationTab(investigation);
     }
   }, [
-    searchOnNextRender,
     dataset,
     datafile,
     investigation,
-    searchDatasets,
-    searchDatafiles,
-    searchInvestigations,
     setDatafileTab,
     setDatasetTab,
     setInvestigationTab,
   ]);
 
   React.useEffect(() => {
-    //Start search automatically if URL has been supplied with parameters (other than just the checkbox states)
-    if (
-      queryParams.searchText !== null ||
-      queryParams.startDate ||
-      queryParams.endDate
-    )
-      setSearchOnNextRender(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  React.useEffect(() => {
-    if (searchTextURL !== searchText) {
-      //Ensure search text is assigned from the URL
-      setSearchText(searchTextURL);
-      setSearchOnNextRender(true);
-    }
-
-    //Want to search whenever the search text in the URL changes so that clicking a react-router link also initiates the search
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Sync search text in URL with local search text state
+    setSearchText(searchTextURL);
   }, [searchTextURL]);
-
-  React.useEffect(() => {
-    if (
-      currentTab === 'investigation' &&
-      investigationTab &&
-      !investigationsFetched
-    ) {
-      searchInvestigations();
-    }
-    if (currentTab === 'dataset' && datasetTab && !datasetsFetched) {
-      searchDatasets();
-    }
-    if (currentTab === 'datafile' && datafileTab && !datafilesFetched) {
-      searchDatafiles();
-    }
-  }, [
-    currentTab,
-    datafileTab,
-    datafilesFetched,
-    datasetTab,
-    datasetsFetched,
-    filters,
-    investigationTab,
-    investigationsFetched,
-    searchDatafiles,
-    searchDatasets,
-    searchInvestigations,
-  ]);
 
   const [searchBoxHeight, setSearchBoxHeight] = React.useState(0);
 
@@ -525,9 +366,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   // Table should take up page but leave room for: SG appbar, SG footer,
   // search box, search box padding, display as cards button, loading bar
-  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 49px${
-    loading ? ' - 4px' : ''
-  })`;
+  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 49px)`;
 
   const { data: cartItems } = useCart();
   const { push } = useHistory();
@@ -596,7 +435,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
               )}
             </Grid>
 
-            {requestReceived && (
+            {isSearchInitiated && (
               <div style={{ width: '100%' }}>
                 <Grid container justifyContent="center">
                   <Grid
@@ -629,12 +468,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   id="container-search-table"
                 >
                   <DataViewPaper view={view} containerHeight={containerHeight}>
-                    {/* Show loading progress if data is still being loaded */}
-                    {loading && (
-                      <Grid item xs={12}>
-                        <LinearProgress color="secondary" />
-                      </Grid>
-                    )}
                     <SearchTabs
                       view={view}
                       containerHeight={containerHeight}

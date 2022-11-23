@@ -28,12 +28,15 @@ import { DatasetDatafileCountCell, DatasetSizeCell } from './cellRenderers';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
+import { SearchResultCountDispatch } from '../searchTabs.component';
 
 interface DatasetTableProps {
   hierarchy: string;
 }
 
 const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
+  const dispatchSearchResultCount = React.useContext(SearchResultCountDispatch);
+
   const { hierarchy } = props;
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
@@ -59,20 +62,22 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { fetchNextPage, data, hasNextPage, refetch } = useLuceneSearchInfinite(
-    'Dataset',
-    {
-      searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [{ target: 'Dataset' }],
-    },
-    filters
-  );
+  const { fetchNextPage, data, hasNextPage, refetch, isFetching } =
+    useLuceneSearchInfinite(
+      'Dataset',
+      {
+        searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [{ target: 'Dataset' }],
+      },
+      filters,
+      { enabled: Boolean(searchText) }
+    );
   const [t] = useTranslation();
 
   const { data: cartItems, isLoading: cartLoading } = useCart();
@@ -87,6 +92,32 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     removeFacetFilter,
     applyFacetFilters,
   } = useFacetFilters();
+
+  React.useEffect(() => {
+    if (data) {
+      const searchResultCount = data.pages.reduce(
+        (count, page) => count + (page.results?.length ?? 0),
+        0
+      );
+      dispatchSearchResultCount({
+        type: 'UPDATE_SEARCH_RESULT_COUNT',
+        payload: {
+          type: 'Dataset',
+          count: searchResultCount,
+          hasMore: hasNextPage ?? false,
+        },
+      });
+    }
+  }, [data, dispatchSearchResultCount, hasNextPage]);
+
+  React.useEffect(() => {
+    if (isFetching) {
+      dispatchSearchResultCount({
+        type: 'RESET_SEARCH_RESULT_COUNT',
+        payload: 'Dataset',
+      });
+    }
+  }, [dispatchSearchResultCount, isFetching]);
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];

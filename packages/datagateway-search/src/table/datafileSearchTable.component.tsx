@@ -18,7 +18,7 @@ import {
   useRemoveFromCart,
   useSort,
 } from 'datagateway-common';
-import { IndexRange, TableCellProps } from 'react-virtualized';
+import type { TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -27,15 +27,16 @@ import { Grid, Paper, Typography } from '@mui/material';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
+import { SearchResultCountDispatch } from '../searchTabs.component';
 
 interface DatafileSearchTableProps {
   hierarchy: string;
 }
 
-const DatafileSearchTable = (
-  props: DatafileSearchTableProps
-): React.ReactElement => {
-  const { hierarchy } = props;
+const DatafileSearchTable = ({
+  hierarchy,
+}: DatafileSearchTableProps): React.ReactElement => {
+  const dispatchSearchResultCount = React.useContext(SearchResultCountDispatch);
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
@@ -59,26 +60,28 @@ const DatafileSearchTable = (
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { fetchNextPage, data, hasNextPage, refetch } = useLuceneSearchInfinite(
-    'Datafile',
-    {
-      searchText,
-      startDate,
-      endDate,
-      sort,
-      minCount: minNumResults,
-      maxCount: maxNumResults,
-      restrict,
-      facets: [
-        { target: 'Datafile' },
-        {
-          target: 'DatafileParameter',
-          dimensions: [{ dimension: 'type.name' }],
-        },
-      ],
-    },
-    filters
-  );
+  const { fetchNextPage, data, hasNextPage, refetch, isFetching } =
+    useLuceneSearchInfinite(
+      'Datafile',
+      {
+        searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [
+          { target: 'Datafile' },
+          {
+            target: 'DatafileParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+        ],
+      },
+      filters,
+      { enabled: Boolean(searchText) }
+    );
   const [t] = useTranslation();
 
   const { data: cartItems } = useCart();
@@ -86,6 +89,32 @@ const DatafileSearchTable = (
     useAddToCart('datafile');
   const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
     useRemoveFromCart('datafile');
+
+  React.useEffect(() => {
+    if (data) {
+      const searchResultCount = data.pages.reduce(
+        (count, page) => count + (page.results?.length ?? 0),
+        0
+      );
+      dispatchSearchResultCount({
+        type: 'UPDATE_SEARCH_RESULT_COUNT',
+        payload: {
+          type: 'Datafile',
+          count: searchResultCount,
+          hasMore: hasNextPage ?? false,
+        },
+      });
+    }
+  }, [data, dispatchSearchResultCount, hasNextPage]);
+
+  React.useEffect(() => {
+    if (isFetching) {
+      dispatchSearchResultCount({
+        type: 'RESET_SEARCH_RESULT_COUNT',
+        payload: 'Datafile',
+      });
+    }
+  }, [dispatchSearchResultCount, isFetching]);
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];
@@ -123,7 +152,7 @@ const DatafileSearchTable = (
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage(),
+    (_) => fetchNextPage(),
     [fetchNextPage]
   );
 
@@ -294,6 +323,8 @@ const DatafileSearchTable = (
   let detailsPanel = DatafileDetailsPanel;
   if (hierarchy === 'isis') detailsPanel = ISISDatafileDetailsPanel;
   else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
+
+  console.log('aggregatedSource', aggregatedSource);
 
   return (
     <Grid container spacing={1} sx={{ height: '100%' }}>

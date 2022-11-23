@@ -10,17 +10,14 @@ import {
 } from '@mui/material';
 import {
   CartProps,
-  parseSearchToQuery,
-  SearchResponse,
-  useLuceneSearchInfinite,
+  DatasearchType,
   useUpdateQueryParam,
   ViewCartButton,
   ViewsType,
 } from 'datagateway-common';
-import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { InfiniteData, useIsFetching } from 'react-query';
-import { connect } from 'react-redux';
+import { useIsFetching } from 'react-query';
+import { useSelector } from 'react-redux';
 import { getFilters, getSorts } from './searchPageContainer.component';
 import type { StateType } from './state/app.types';
 import InvestigationSearchTable from './table/investigationSearchTable.component';
@@ -49,7 +46,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
       border={0}
       {...other}
     >
-      {value === index && <Box pt={1}>{children}</Box>}
+      <Box pt={1}>{children}</Box>
     </Box>
   );
 }
@@ -82,14 +79,6 @@ const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme as any).colours?.tabsGrey,
 }));
 
-interface SearchTabsStoreProps {
-  minNumResults: number;
-  maxNumResults: number;
-  datasetTab: boolean;
-  datafileTab: boolean;
-  investigationTab: boolean;
-}
-
 export interface SearchTabsProps {
   view: ViewsType;
   containerHeight: string;
@@ -98,122 +87,113 @@ export interface SearchTabsProps {
   currentTab: string;
 }
 
-const SearchTabs = (
-  props: SearchTabsProps & SearchTabsStoreProps & CartProps
-): React.ReactElement => {
-  const {
-    minNumResults,
-    maxNumResults,
-    investigationTab,
-    datasetTab,
-    datafileTab,
-    view,
-    containerHeight,
-    hierarchy,
-    onTabChange,
-    currentTab,
-    cartItems,
-    navigateToDownload,
-  } = props;
+/**
+ * Stores number of search results for each entity type.
+ */
+type SearchResultCounts = {
+  [TType in DatasearchType]?: SearchResultCount;
+};
+
+export interface SearchResultCount {
+  type: DatasearchType;
+  count: number;
+  hasMore: boolean;
+}
+
+/**
+ * Dispatch this action to notify {@link SearchTabs} of the current count of
+ * the search results of the given {@link DatasearchType}.
+ */
+export interface UpdateSearchResultCountAction {
+  type: 'UPDATE_SEARCH_RESULT_COUNT';
+  payload: SearchResultCount;
+}
+
+/**
+ * Dispatch this action to notify {@link SearchTabs} to reset the search results
+ * of the given {@link DatasearchType}.
+ * {@link SearchTabs} will forget the current count and will display its count as unknown.
+ */
+export interface ResetSearchResultCountAction {
+  type: 'RESET_SEARCH_RESULT_COUNT';
+  payload: DatasearchType;
+}
+
+type SearchResultCountAction =
+  | UpdateSearchResultCountAction
+  | ResetSearchResultCountAction;
+
+/**
+ * Handles actions dispatched by search tables.
+ */
+function searchResultCountsReducer(
+  state: SearchResultCounts,
+  action: SearchResultCountAction
+): SearchResultCounts {
+  switch (action.type) {
+    case 'RESET_SEARCH_RESULT_COUNT':
+      // make a copy of the current state
+      // and remove the search result count of the given data search type.
+      const next: SearchResultCounts = { ...state };
+      delete next[action.payload];
+      return next;
+
+    case 'UPDATE_SEARCH_RESULT_COUNT':
+      return {
+        ...state,
+        [action.payload.type]: action.payload,
+      };
+
+    default:
+      return state;
+  }
+}
+
+/**
+ * Context for dispatching search result count after they are available.
+ * Default value is the identity function (I don't want to deal with null values).
+ */
+const SearchResultCountDispatch = React.createContext<
+  React.Dispatch<SearchResultCountAction>
+>((_) => _);
+
+const SearchTabs = ({
+  view,
+  containerHeight,
+  hierarchy,
+  onTabChange,
+  currentTab,
+  cartItems,
+  navigateToDownload,
+}: SearchTabsProps & CartProps): React.ReactElement => {
+  const isDatasetTabEnabled = useSelector(
+    (state: StateType) => state.dgsearch.tabs.datasetTab
+  );
+  const isDatafileTabEnabled = useSelector(
+    (state: StateType) => state.dgsearch.tabs.datafileTab
+  );
+  const isInvestigationTabEnabled = useSelector(
+    (state: StateType) => state.dgsearch.tabs.investigationTab
+  );
   const [t] = useTranslation();
 
-  const location = useLocation();
-  const queryParams = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
-  const { startDate, endDate, sort, filters, restrict } = queryParams;
-  const searchText = queryParams.searchText ? queryParams.searchText : '';
-
-  const { data: investigations, hasNextPage: investigationsHasNextPage } =
-    useLuceneSearchInfinite(
-      'Investigation',
-      {
-        searchText,
-        startDate,
-        endDate,
-        sort,
-        minCount: minNumResults,
-        maxCount: maxNumResults,
-        restrict,
-        facets: [
-          { target: 'Investigation' },
-          {
-            target: 'InvestigationParameter',
-            dimensions: [{ dimension: 'type.name' }],
-          },
-          {
-            target: 'Sample',
-            dimensions: [{ dimension: 'type.name' }],
-          },
-        ],
-      },
-      filters
-    );
-  const { data: datasets, hasNextPage: datasetsHasNextPage } =
-    useLuceneSearchInfinite(
-      'Dataset',
-      {
-        searchText: searchText,
-        startDate,
-        endDate,
-        sort,
-        minCount: minNumResults,
-        maxCount: maxNumResults,
-        restrict,
-        facets: [{ target: 'Dataset' }],
-      },
-      filters
-    );
-  const { data: datafiles, hasNextPage: datafilesHasNextPage } =
-    useLuceneSearchInfinite(
-      'Datafile',
-      {
-        searchText: searchText,
-        startDate,
-        endDate,
-        sort,
-        minCount: minNumResults,
-        maxCount: maxNumResults,
-        restrict: restrict,
-        facets: [
-          { target: 'Datafile' },
-          {
-            target: 'DatafileParameter',
-            dimensions: [{ dimension: 'type.name' }],
-          },
-        ],
-      },
-      filters
-    );
-
-  const countSearchResults = (
-    searchResponses: InfiniteData<SearchResponse> | undefined,
-    hasNextPage: boolean | undefined
-  ): string => {
-    if (searchResponses) {
-      let numResults = 0;
-      searchResponses.pages.forEach((searchResponse) => {
-        numResults += searchResponse.results?.length ?? 0;
-      });
-      return String(numResults) + (hasNextPage ? '+' : '');
-    }
-    return '?';
-  };
-
-  const investigationCount = React.useMemo(
-    () => countSearchResults(investigations, investigationsHasNextPage),
-    [investigations, investigationsHasNextPage]
-  );
-
-  const datasetCount = React.useMemo(
-    () => countSearchResults(datasets, datasetsHasNextPage),
-    [datasets, datasetsHasNextPage]
-  );
-
-  const datafileCount = React.useMemo(
-    () => countSearchResults(datafiles, datafilesHasNextPage),
-    [datafiles, datafilesHasNextPage]
+  // stores the search result counts of various data search type.
+  // since only the actual data views (e.g. search tables) are responsible for fetching the actual search result
+  // for its own data search type (e.g. investigation search table fetches investigation search results)
+  // only they know the number of search results returned.
+  //
+  // since this component is responsible for displaying the search result counts next
+  // to each tab, it needs to obtain the counts from the data views.
+  // this is done by passing down the dispatch function that data views can call
+  // to pass the correct search result count when it is available.
+  // data views can also reset the count through the dispatch function.
+  // doing so erases the current search result count, and it will be shown as unknown to the users.
+  // for example, they can reset the count when they are fetching fresh data.
+  //
+  // the dispatch function is available through SearchResultCountContext.
+  const [searchResultCounts, dispatch] = React.useReducer(
+    searchResultCountsReducer,
+    {}
   );
 
   const isFetchingNum = useIsFetching({
@@ -227,15 +207,34 @@ const SearchTabs = (
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
   const replaceSorts = useUpdateQueryParam('sort', 'replace');
 
-  const handleChange = (
+  function handleChange(
     event: React.ChangeEvent<unknown>,
     newValue: string
-  ): void => {
+  ): void {
     onTabChange(newValue);
 
     replaceFilters({});
     replaceSorts({});
-  };
+  }
+
+  /**
+   * Formats the given {@link SearchResultCount} as a user-facing label.
+   * If count is unknown, a question mark is shown.
+   * If count is concrete, the count is displayed literally.
+   * If there are more search results available,
+   * the count only counts the number of rows fetched,
+   * so a '+' is appended at the end of the count to indicate more rows are available.
+   *
+   * @param count The count to be formatted
+   */
+  function formatSearchResultCount(
+    count: SearchResultCount | undefined
+  ): string {
+    if (count) {
+      return `${count.count}${count.hasMore ? '+' : ''}`;
+    }
+    return '?';
+  }
 
   React.useEffect(() => {
     const filters = getFilters(currentTab);
@@ -247,7 +246,6 @@ const SearchTabs = (
   return (
     <div>
       {/* Show loading progress if data is still being loaded */}
-
       {loading && <LinearProgress color="secondary" />}
       <StyledBox
         display="flex"
@@ -264,13 +262,15 @@ const SearchTabs = (
           onChange={handleChange}
           aria-label={t('searchPageTable.tabs_arialabel')}
         >
-          {investigationTab ? (
+          {isInvestigationTabEnabled ? (
             <Tab
               label={
                 <SearchTabLabel
                   id="investigation-badge"
                   label={t('tabs.investigation')}
-                  count={investigationCount}
+                  count={formatSearchResultCount(
+                    searchResultCounts.Investigation
+                  )}
                 />
               }
               value="investigation"
@@ -279,13 +279,13 @@ const SearchTabs = (
           ) : (
             <Tab value="investigation" sx={{ display: 'none' }} />
           )}
-          {datasetTab ? (
+          {isDatasetTabEnabled ? (
             <Tab
               label={
                 <SearchTabLabel
                   id="dataset-badge"
                   label={t('tabs.dataset')}
-                  count={datasetCount}
+                  count={formatSearchResultCount(searchResultCounts.Dataset)}
                 />
               }
               value="dataset"
@@ -294,13 +294,13 @@ const SearchTabs = (
           ) : (
             <Tab value="dataset" sx={{ display: 'none' }} />
           )}
-          {datafileTab ? (
+          {isDatafileTabEnabled ? (
             <Tab
               label={
                 <SearchTabLabel
                   id="datafile-badge"
                   label={t('tabs.datafile')}
-                  count={datafileCount}
+                  count={formatSearchResultCount(searchResultCounts.Datafile)}
                 />
               }
               value="datafile"
@@ -317,11 +317,43 @@ const SearchTabs = (
           />
         </StyledBox>
       </StyledBox>
-      {currentTab === 'investigation' && (
-        <TabPanel value={currentTab} index={'investigation'}>
-          {view === 'card' ? (
-            <InvestigationCardView hierarchy={hierarchy} />
-          ) : (
+      <SearchResultCountDispatch.Provider value={dispatch}>
+        <Box>
+          <TabPanel value={currentTab} index="investigation">
+            {view === 'card' ? (
+              <InvestigationCardView hierarchy={hierarchy} />
+            ) : (
+              <Paper
+                sx={{
+                  height: `calc(${containerHeight} - 56px)`,
+                  minHeight: `calc(500px - 56px)`,
+                  overflowX: 'auto',
+                  overflowY: 'hidden',
+                }}
+                elevation={0}
+              >
+                <InvestigationSearchTable hierarchy={hierarchy} />
+              </Paper>
+            )}
+          </TabPanel>
+          <TabPanel value={currentTab} index="dataset">
+            {view === 'card' ? (
+              <DatasetCardView hierarchy={hierarchy} />
+            ) : (
+              <Paper
+                sx={{
+                  height: `calc(${containerHeight} - 56px)`,
+                  minHeight: `calc(500px - 56px)`,
+                  overflowX: 'auto',
+                  overflowY: 'hidden',
+                }}
+                elevation={0}
+              >
+                <DatasetSearchTable hierarchy={hierarchy} />
+              </Paper>
+            )}
+          </TabPanel>
+          <TabPanel value={currentTab} index="datafile">
             <Paper
               sx={{
                 height: `calc(${containerHeight} - 56px)`,
@@ -331,57 +363,14 @@ const SearchTabs = (
               }}
               elevation={0}
             >
-              <InvestigationSearchTable hierarchy={hierarchy} />
+              <DatafileSearchTable hierarchy={hierarchy} />
             </Paper>
-          )}
-        </TabPanel>
-      )}
-      {currentTab === 'dataset' && (
-        <TabPanel value={currentTab} index={'dataset'}>
-          {view === 'card' ? (
-            <DatasetCardView hierarchy={hierarchy} />
-          ) : (
-            <Paper
-              sx={{
-                height: `calc(${containerHeight} - 56px)`,
-                minHeight: `calc(500px - 56px)`,
-                overflowX: 'auto',
-                overflowY: 'hidden',
-              }}
-              elevation={0}
-            >
-              <DatasetSearchTable hierarchy={hierarchy} />
-            </Paper>
-          )}
-        </TabPanel>
-      )}
-      {currentTab === 'datafile' && (
-        <TabPanel value={currentTab} index={'datafile'}>
-          <Paper
-            sx={{
-              height: `calc(${containerHeight} - 56px)`,
-              minHeight: `calc(500px - 56px)`,
-              overflowX: 'auto',
-              overflowY: 'hidden',
-            }}
-            elevation={0}
-          >
-            <DatafileSearchTable hierarchy={hierarchy} />
-          </Paper>
-        </TabPanel>
-      )}
+          </TabPanel>
+        </Box>
+      </SearchResultCountDispatch.Provider>
     </div>
   );
 };
 
-const mapStateToProps = (state: StateType): SearchTabsStoreProps => {
-  return {
-    minNumResults: state.dgsearch.minNumResults,
-    maxNumResults: state.dgsearch.maxNumResults,
-    datasetTab: state.dgsearch.tabs.datasetTab,
-    datafileTab: state.dgsearch.tabs.datafileTab,
-    investigationTab: state.dgsearch.tabs.investigationTab,
-  };
-};
-
-export default connect(mapStateToProps)(SearchTabs);
+export default SearchTabs;
+export { SearchResultCountDispatch };
