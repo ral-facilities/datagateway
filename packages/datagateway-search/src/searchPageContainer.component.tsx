@@ -15,7 +15,7 @@ import { Grid, Paper, styled } from '@mui/material';
 
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
-import SearchTabs from './searchTabs.component';
+import SearchTabs from './searchTabs/searchTabs.component';
 import {
   ClearFiltersButton,
   FiltersType,

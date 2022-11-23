@@ -34,7 +34,7 @@ import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
 import useFacetFilters from '../facet/useFacetFilters';
-import { SearchResultCountDispatch } from '../searchTabs.component';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounts';
 
 interface InvestigationTableProps {
   hierarchy: string;
@@ -43,8 +43,6 @@ interface InvestigationTableProps {
 const InvestigationSearchTable = ({
   hierarchy,
 }: InvestigationTableProps): React.ReactElement => {
-  const dispatchSearchResultCount = React.useContext(SearchResultCountDispatch);
-
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
@@ -105,8 +103,6 @@ const InvestigationSearchTable = ({
   const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
     useRemoveFromCart('investigation');
 
-  const [isFilterChipRemoved, setIsFilterChipRemoved] = React.useState(false);
-
   const {
     selectedFacetFilters,
     addFacetFilter,
@@ -114,39 +110,12 @@ const InvestigationSearchTable = ({
     applyFacetFilters,
   } = useFacetFilters();
 
-  React.useEffect(() => {
-    if (isFilterChipRemoved) {
-      applyFacetFilters();
-      refetch();
-      setIsFilterChipRemoved(false);
-    }
-  }, [applyFacetFilters, isFilterChipRemoved, refetch]);
-
-  React.useEffect(() => {
-    if (data) {
-      const searchResultCount = data.pages.reduce(
-        (count, page) => count + (page.results?.length ?? 0),
-        0
-      );
-      dispatchSearchResultCount({
-        type: 'UPDATE_SEARCH_RESULT_COUNT',
-        payload: {
-          type: 'Investigation',
-          count: searchResultCount,
-          hasMore: hasNextPage ?? false,
-        },
-      });
-    }
-  }, [data, dispatchSearchResultCount, hasNextPage]);
-
-  React.useEffect(() => {
-    if (isFetching) {
-      dispatchSearchResultCount({
-        type: 'RESET_SEARCH_RESULT_COUNT',
-        payload: 'Investigation',
-      });
-    }
-  }, [dispatchSearchResultCount, isFetching]);
+  useSearchResultCounter({
+    isFetching,
+    dataSearchType: 'Investigation',
+    searchResponses: data?.pages,
+    hasMore: hasNextPage,
+  });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];
@@ -187,8 +156,7 @@ const InvestigationSearchTable = ({
   );
 
   const removeFilterChip = (dimension: string, filterValue: string): void => {
-    removeFacetFilter(dimension, filterValue);
-    setIsFilterChipRemoved(true);
+    removeFacetFilter({ dimension, filterValue, applyImmediately: true });
   };
 
   const dlsLinkURL = (investigationData: SearchResultSource): string =>
@@ -440,8 +408,20 @@ const InvestigationSearchTable = ({
               data.pages
             )}
             selectedFacetFilters={selectedFacetFilters}
-            onAddFilter={addFacetFilter}
-            onRemoveFilter={removeFacetFilter}
+            onAddFilter={(dimension, filterValue) =>
+              addFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onRemoveFilter={(dimension, filterValue) =>
+              removeFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
             onApplyFacetFilters={() => {
               applyFacetFilters();
               refetch();

@@ -34,10 +34,21 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Typography, Paper, Link as MuiLink, styled } from '@mui/material';
+import {
+  Typography,
+  Paper,
+  Link as MuiLink,
+  styled,
+  Grid,
+} from '@mui/material';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { CVCustomFilters } from 'datagateway-common/lib/card/cardView.component';
+import useFacetFilters from '../facet/useFacetFilters';
+import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
+import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounts';
 
 interface InvestigationCardProps {
   hierarchy: string;
@@ -170,7 +181,7 @@ const InvestigationCardView = (
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { data, isLoading, hasNextPage, fetchNextPage } =
+  const { data, isLoading, isFetching, hasNextPage, fetchNextPage, refetch } =
     useLuceneSearchInfinite(
       'Investigation',
       {
@@ -253,35 +264,48 @@ const InvestigationCardView = (
     [t]
   );
 
-  const { paginatedSource, aggregatedIds, customFilters, aborted } =
-    React.useMemo(() => {
-      if (data) {
-        const aggregatedIds = data.pages
-          .map((response) => mapIds(response))
-          .flat();
-        const minResult = (page ? page - 1 : 0) * (results ?? 10);
-        const maxResult = (page ?? 1) * (results ?? 10);
-        if (hasNextPage && aggregatedIds.length < maxResult) {
-          fetchNextPage();
-        }
-        const aggregatedSource = data.pages
-          .map((response) => mapSource(response))
-          .flat();
-        return {
-          paginatedSource: aggregatedSource.slice(minResult, maxResult),
-          aggregatedIds: aggregatedIds,
-          customFilters: mapFacets(data.pages),
-          aborted: data.pages[data.pages.length - 1].aborted,
-        };
-      } else {
-        return {
-          paginatedSource: [],
-          aggregatedIds: [],
-          customFilters: [],
-          aborted: false,
-        };
+  const {
+    selectedFacetFilters,
+    addFacetFilter,
+    removeFacetFilter,
+    applyFacetFilters,
+  } = useFacetFilters();
+
+  useSearchResultCounter({
+    isFetching,
+    dataSearchType: 'Investigation',
+    searchResponses: data?.pages,
+    hasMore: hasNextPage,
+  });
+
+  const { paginatedSource, aggregatedIds, aborted } = React.useMemo(() => {
+    if (data) {
+      const aggregatedIds = data.pages
+        .map((response) => mapIds(response))
+        .flat();
+      const minResult = (page ? page - 1 : 0) * (results ?? 10);
+      const maxResult = (page ?? 1) * (results ?? 10);
+      if (hasNextPage && aggregatedIds.length < maxResult) {
+        fetchNextPage();
       }
-    }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
+      const aggregatedSource = data.pages
+        .map((response) => mapSource(response))
+        .flat();
+      return {
+        paginatedSource: aggregatedSource.slice(minResult, maxResult),
+        aggregatedIds: aggregatedIds,
+        customFilters: mapFacets(data.pages),
+        aborted: data.pages[data.pages.length - 1].aborted,
+      };
+    } else {
+      return {
+        paginatedSource: [],
+        aggregatedIds: [],
+        customFilters: [],
+        aborted: false,
+      };
+    }
+  }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
 
   const parsedFilters = React.useMemo(() => {
     const parsedFilters = {} as FiltersType;
@@ -450,6 +474,10 @@ const InvestigationCardView = (
     [hierarchy, hierarchyLinkURL, push]
   );
 
+  const removeFilterChip = (dimension: string, filterValue: string): void => {
+    removeFacetFilter({ dimension, filterValue, applyImmediately: true });
+  };
+
   const buttons = React.useMemo(
     () =>
       hierarchy !== 'dls'
@@ -478,38 +506,77 @@ const InvestigationCardView = (
   );
 
   return (
-    <div>
-      {aborted ? (
-        <Paper>
-          <Typography align="center" variant="h6" component="h6">
-            {t('loading.abort_message')}
-          </Typography>
-        </Paper>
-      ) : (
-        <CardView
-          entityName="Investigation"
-          data={paginatedSource ?? []}
-          totalDataCount={aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0}
-          onPageChange={pushPage}
-          onFilter={pushFilter}
-          onSort={handleSort}
-          onResultsChange={pushResults}
-          loadedData={!isLoading}
-          loadedCount={!isLoading}
-          filters={parsedFilters}
-          sort={sort}
-          page={page}
-          results={results}
-          title={title}
-          description={description}
-          information={information}
-          moreInformation={moreInformation}
-          buttons={buttons}
-          customFilters={customFilters}
-          allIds={aggregatedIds}
+    <Grid container spacing={1} sx={{ height: '100%' }}>
+      <Grid item xs={2} sx={{ height: '100%' }}>
+        {data?.pages && (
+          <FacetPanel
+            facetClassification={facetClassificationFromSearchResponses(
+              data.pages
+            )}
+            selectedFacetFilters={selectedFacetFilters}
+            onAddFilter={(dimension, filterValue) =>
+              addFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onRemoveFilter={(dimension, filterValue) =>
+              removeFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onApplyFacetFilters={() => {
+              applyFacetFilters();
+              refetch();
+            }}
+          />
+        )}
+      </Grid>
+      <Grid item xs={10}>
+        <SelectedFilterChips
+          filters={filters}
+          onRemoveFilter={removeFilterChip}
         />
-      )}
-    </div>
+        <Paper variant="outlined" sx={{ height: '100%', marginTop: 1 }}>
+          <div>
+            {aborted ? (
+              <Paper>
+                <Typography align="center" variant="h6" component="h6">
+                  {t('loading.abort_message')}
+                </Typography>
+              </Paper>
+            ) : (
+              <CardView
+                entityName="Investigation"
+                data={paginatedSource ?? []}
+                totalDataCount={
+                  aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0
+                }
+                onPageChange={pushPage}
+                onFilter={pushFilter}
+                onSort={handleSort}
+                onResultsChange={pushResults}
+                loadedData={!isLoading}
+                loadedCount={!isLoading}
+                filters={parsedFilters}
+                sort={sort}
+                page={page}
+                results={results}
+                title={title}
+                description={description}
+                information={information}
+                moreInformation={moreInformation}
+                buttons={buttons}
+                allIds={aggregatedIds}
+              />
+            )}
+          </div>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 

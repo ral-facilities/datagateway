@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import {
   CartProps,
-  DatasearchType,
   useUpdateQueryParam,
   ViewCartButton,
   ViewsType,
@@ -18,14 +17,19 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useIsFetching } from 'react-query';
 import { useSelector } from 'react-redux';
-import { getFilters, getSorts } from './searchPageContainer.component';
-import type { StateType } from './state/app.types';
-import InvestigationSearchTable from './table/investigationSearchTable.component';
-import InvestigationCardView from './card/investigationSearchCardView.component';
-import DatafileSearchTable from './table/datafileSearchTable.component';
-import DatasetCardView from './card/datasetSearchCardView.component';
-import DatasetSearchTable from './table/datasetSearchTable.component';
+import { getFilters, getSorts } from '../searchPageContainer.component';
+import type { StateType } from '../state/app.types';
+import InvestigationSearchTable from '../table/investigationSearchTable.component';
+import InvestigationCardView from '../card/investigationSearchCardView.component';
+import DatafileSearchTable from '../table/datafileSearchTable.component';
+import DatasetCardView from '../card/datasetSearchCardView.component';
+import DatasetSearchTable from '../table/datasetSearchTable.component';
 import SearchTabLabel from './searchTabLabel.component';
+import {
+  SearchResultCount,
+  SearchResultCountDispatch,
+  useSearchResultCounts,
+} from './useSearchResultCounts';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -87,76 +91,6 @@ export interface SearchTabsProps {
   currentTab: string;
 }
 
-/**
- * Stores number of search results for each entity type.
- */
-type SearchResultCounts = {
-  [TType in DatasearchType]?: SearchResultCount;
-};
-
-export interface SearchResultCount {
-  type: DatasearchType;
-  count: number;
-  hasMore: boolean;
-}
-
-/**
- * Dispatch this action to notify {@link SearchTabs} of the current count of
- * the search results of the given {@link DatasearchType}.
- */
-export interface UpdateSearchResultCountAction {
-  type: 'UPDATE_SEARCH_RESULT_COUNT';
-  payload: SearchResultCount;
-}
-
-/**
- * Dispatch this action to notify {@link SearchTabs} to reset the search results
- * of the given {@link DatasearchType}.
- * {@link SearchTabs} will forget the current count and will display its count as unknown.
- */
-export interface ResetSearchResultCountAction {
-  type: 'RESET_SEARCH_RESULT_COUNT';
-  payload: DatasearchType;
-}
-
-type SearchResultCountAction =
-  | UpdateSearchResultCountAction
-  | ResetSearchResultCountAction;
-
-/**
- * Handles actions dispatched by search tables.
- */
-function searchResultCountsReducer(
-  state: SearchResultCounts,
-  action: SearchResultCountAction
-): SearchResultCounts {
-  switch (action.type) {
-    case 'RESET_SEARCH_RESULT_COUNT':
-      // make a copy of the current state
-      // and remove the search result count of the given data search type.
-      const next: SearchResultCounts = { ...state };
-      delete next[action.payload];
-      return next;
-
-    case 'UPDATE_SEARCH_RESULT_COUNT':
-      return {
-        ...state,
-        [action.payload.type]: action.payload,
-      };
-
-    default:
-      return state;
-  }
-}
-
-/**
- * Context for dispatching search result count after they are available.
- * Default value is the identity function (I don't want to deal with null values).
- */
-const SearchResultCountDispatch = React.createContext<
-  React.Dispatch<SearchResultCountAction>
->((_) => _);
-
 const SearchTabs = ({
   view,
   containerHeight,
@@ -177,24 +111,7 @@ const SearchTabs = ({
   );
   const [t] = useTranslation();
 
-  // stores the search result counts of various data search type.
-  // since only the actual data views (e.g. search tables) are responsible for fetching the actual search result
-  // for its own data search type (e.g. investigation search table fetches investigation search results)
-  // only they know the number of search results returned.
-  //
-  // since this component is responsible for displaying the search result counts next
-  // to each tab, it needs to obtain the counts from the data views.
-  // this is done by passing down the dispatch function that data views can call
-  // to pass the correct search result count when it is available.
-  // data views can also reset the count through the dispatch function.
-  // doing so erases the current search result count, and it will be shown as unknown to the users.
-  // for example, they can reset the count when they are fetching fresh data.
-  //
-  // the dispatch function is available through SearchResultCountContext.
-  const [searchResultCounts, dispatch] = React.useReducer(
-    searchResultCountsReducer,
-    {}
-  );
+  const [searchResultCounts, dispatch] = useSearchResultCounts();
 
   const isFetchingNum = useIsFetching({
     predicate: (query) =>
@@ -373,4 +290,3 @@ const SearchTabs = ({
 };
 
 export default SearchTabs;
-export { SearchResultCountDispatch };

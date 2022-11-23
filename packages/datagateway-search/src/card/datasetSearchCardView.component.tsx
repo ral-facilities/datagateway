@@ -1,39 +1,44 @@
 import React from 'react';
 import {
-  ConfirmationNumber,
   CalendarToday,
+  ConfirmationNumber,
   Fingerprint,
 } from '@mui/icons-material';
 import {
+  AddToCartButton,
   CardView,
   type CVCustomFilters,
+  DatasetDetailsPanel,
+  DLSDatasetDetailsPanel,
+  DownloadButton,
+  FacilityCycle,
+  FiltersType,
+  formatBytes,
+  formatCountOrSize,
+  ISISDatasetDetailsPanel,
   parseSearchToQuery,
+  SearchResponse,
+  SearchResultSource,
+  tableLink,
+  useAllFacilityCycles,
+  useDatasetsDatafileCount,
+  useDatasetSizes,
+  useLuceneSearchInfinite,
+  usePushDatasetFilter,
   usePushPage,
   usePushResults,
   useSort,
-  useAllFacilityCycles,
-  FacilityCycle,
-  tableLink,
-  useDatasetsDatafileCount,
-  useDatasetSizes,
-  formatCountOrSize,
-  AddToCartButton,
-  DownloadButton,
-  ISISDatasetDetailsPanel,
-  DLSDatasetDetailsPanel,
-  DatasetDetailsPanel,
-  useLuceneSearchInfinite,
-  SearchResponse,
-  SearchResultSource,
-  usePushDatasetFilter,
-  FiltersType,
-  formatBytes,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { styled, Paper, Typography } from '@mui/material';
+import { Grid, Paper, styled, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
+import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import useFacetFilters from '../facet/useFacetFilters';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounts';
 
 interface DatasetCardViewProps {
   hierarchy: string;
@@ -72,7 +77,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { data, isLoading, hasNextPage, fetchNextPage } =
+  const { data, isLoading, isFetching, hasNextPage, fetchNextPage, refetch } =
     useLuceneSearchInfinite(
       'Dataset',
       {
@@ -87,6 +92,20 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       },
       filters
     );
+
+  const {
+    selectedFacetFilters,
+    addFacetFilter,
+    removeFacetFilter,
+    applyFacetFilters,
+  } = useFacetFilters();
+
+  useSearchResultCounter({
+    isFetching,
+    dataSearchType: 'Dataset',
+    searchResponses: data?.pages,
+    hasMore: hasNextPage,
+  });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];
@@ -461,38 +480,82 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     [hierarchy, aggregatedIds, sizeQueries, paginatedSource]
   );
 
+  const removeFilterChip = (dimension: string, filterValue: string): void => {
+    removeFacetFilter({ dimension, filterValue, applyImmediately: true });
+  };
+
   return (
-    <div>
-      {aborted ? (
-        <Paper>
-          <Typography align="center" variant="h6" component="h6">
-            {t('loading.abort_message')}
-          </Typography>
-        </Paper>
-      ) : (
-        <CardView
-          entityName="Dataset"
-          data={paginatedSource ?? []}
-          totalDataCount={aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0}
-          onPageChange={pushPage}
-          onFilter={pushFilter}
-          onSort={handleSort}
-          onResultsChange={pushResults}
-          loadedData={!isLoading}
-          loadedCount={!isLoading}
-          filters={parsedFilters}
-          sort={{}}
-          page={page}
-          results={results}
-          title={title}
-          description={description}
-          information={information}
-          moreInformation={moreInformation}
-          buttons={buttons}
-          customFilters={customFilters}
+    <Grid container spacing={1} sx={{ height: '100%' }}>
+      <Grid item xs={2} sx={{ height: '100%' }}>
+        {data?.pages && (
+          <FacetPanel
+            facetClassification={facetClassificationFromSearchResponses(
+              data.pages
+            )}
+            selectedFacetFilters={selectedFacetFilters}
+            onAddFilter={(dimension, filterValue) =>
+              addFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onRemoveFilter={(dimension, filterValue) =>
+              removeFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onApplyFacetFilters={() => {
+              applyFacetFilters();
+              refetch();
+            }}
+          />
+        )}
+      </Grid>
+      <Grid item xs={10}>
+        <SelectedFilterChips
+          filters={filters}
+          onRemoveFilter={removeFilterChip}
         />
-      )}
-    </div>
+        <Paper variant="outlined" sx={{ height: '100%', marginTop: 1 }}>
+          <div>
+            {aborted ? (
+              <Paper>
+                <Typography align="center" variant="h6" component="h6">
+                  {t('loading.abort_message')}
+                </Typography>
+              </Paper>
+            ) : (
+              <CardView
+                entityName="Dataset"
+                data={paginatedSource ?? []}
+                totalDataCount={
+                  aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0
+                }
+                onPageChange={pushPage}
+                onFilter={pushFilter}
+                onSort={handleSort}
+                onResultsChange={pushResults}
+                loadedData={!isLoading}
+                loadedCount={!isLoading}
+                filters={parsedFilters}
+                sort={{}}
+                page={page}
+                results={results}
+                title={title}
+                description={description}
+                information={information}
+                moreInformation={moreInformation}
+                buttons={buttons}
+                customFilters={customFilters}
+              />
+            )}
+          </div>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 

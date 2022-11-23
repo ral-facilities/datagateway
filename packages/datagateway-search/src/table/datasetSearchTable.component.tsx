@@ -28,17 +28,16 @@ import { DatasetDatafileCountCell, DatasetSizeCell } from './cellRenderers';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
-import { SearchResultCountDispatch } from '../searchTabs.component';
+import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounts';
 
 interface DatasetTableProps {
   hierarchy: string;
 }
 
-const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
-  const dispatchSearchResultCount = React.useContext(SearchResultCountDispatch);
-
-  const { hierarchy } = props;
-
+const DatasetSearchTable = ({
+  hierarchy,
+}: DatasetTableProps): React.ReactElement => {
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
@@ -93,31 +92,12 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     applyFacetFilters,
   } = useFacetFilters();
 
-  React.useEffect(() => {
-    if (data) {
-      const searchResultCount = data.pages.reduce(
-        (count, page) => count + (page.results?.length ?? 0),
-        0
-      );
-      dispatchSearchResultCount({
-        type: 'UPDATE_SEARCH_RESULT_COUNT',
-        payload: {
-          type: 'Dataset',
-          count: searchResultCount,
-          hasMore: hasNextPage ?? false,
-        },
-      });
-    }
-  }, [data, dispatchSearchResultCount, hasNextPage]);
-
-  React.useEffect(() => {
-    if (isFetching) {
-      dispatchSearchResultCount({
-        type: 'RESET_SEARCH_RESULT_COUNT',
-        payload: 'Dataset',
-      });
-    }
-  }, [dispatchSearchResultCount, isFetching]);
+  useSearchResultCounter({
+    isFetching,
+    dataSearchType: 'Dataset',
+    searchResponses: data?.pages,
+    hasMore: hasNextPage,
+  });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
     return response.results?.map((result) => result.source) ?? [];
@@ -151,6 +131,10 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     (offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
+
+  const removeFilterChip = (dimension: string, filterValue: string): void => {
+    removeFacetFilter({ dimension, filterValue, applyImmediately: true });
+  };
 
   const dlsLinkURL = (
     datasetData: SearchResultSource,
@@ -402,8 +386,20 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
               data.pages
             )}
             selectedFacetFilters={selectedFacetFilters}
-            onAddFilter={addFacetFilter}
-            onRemoveFilter={removeFacetFilter}
+            onAddFilter={(dimension, filterValue) =>
+              addFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onRemoveFilter={(dimension, filterValue) =>
+              removeFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
             onApplyFacetFilters={() => {
               applyFacetFilters();
               refetch();
@@ -412,6 +408,10 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         )}
       </Grid>
       <Grid item xs={10}>
+        <SelectedFilterChips
+          filters={filters}
+          onRemoveFilter={removeFilterChip}
+        />
         <Paper variant="outlined" sx={{ height: '100%' }}>
           <div>
             {aborted ? (

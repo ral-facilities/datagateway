@@ -4,8 +4,16 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 function useFacetFilters(): {
   selectedFacetFilters: FiltersType;
-  addFacetFilter: (dimension: string, filterValue: string) => void;
-  removeFacetFilter: (dimension: string, filterValue: string) => void;
+  addFacetFilter: (options: {
+    dimension: string;
+    filterValue: string;
+    applyImmediately: boolean;
+  }) => void;
+  removeFacetFilter: (options: {
+    dimension: string;
+    filterValue: string;
+    applyImmediately: boolean;
+  }) => void;
   applyFacetFilters: () => void;
 } {
   const location = useLocation();
@@ -15,14 +23,20 @@ function useFacetFilters(): {
     [location.search]
   );
 
+  const [isImmediateUpdateRequired, setIsImmediateUpdateRequired] =
+    React.useState(false);
   const [selectedFacetFilters, setSelectedFacetFilters] =
     React.useState<FiltersType>({});
 
-  React.useEffect(() => {
-    setSelectedFacetFilters(filters);
-  }, [filters]);
-
-  const addFacetFilter = (dimension: string, filterValue: string): void => {
+  const addFacetFilter = ({
+    dimension,
+    filterValue,
+    applyImmediately,
+  }: {
+    dimension: string;
+    filterValue: string;
+    applyImmediately: boolean;
+  }): void => {
     const filterKey = dimension.toLocaleLowerCase();
 
     setSelectedFacetFilters((prevFilter) => {
@@ -41,9 +55,18 @@ function useFacetFilters(): {
       }
       return prevFilter;
     });
+    setIsImmediateUpdateRequired(applyImmediately);
   };
 
-  const removeFacetFilter = (dimension: string, filterValue: string): void => {
+  const removeFacetFilter = ({
+    dimension,
+    filterValue,
+    applyImmediately,
+  }: {
+    dimension: string;
+    filterValue: string;
+    applyImmediately: boolean;
+  }): void => {
     const filterKey = dimension.toLocaleLowerCase();
 
     setSelectedFacetFilters((prevFilter) => {
@@ -67,9 +90,10 @@ function useFacetFilters(): {
       const { [filterKey]: _, ...rest } = prevFilter;
       return rest;
     });
+    setIsImmediateUpdateRequired(applyImmediately);
   };
 
-  const applyFacetFilters = (): void => {
+  const applyFacetFilters = React.useCallback((): void => {
     const searchParams = new URLSearchParams(location.search);
     const filters = Object.entries(selectedFacetFilters).reduce<FiltersType>(
       (obj, [dimension, value]) => {
@@ -80,7 +104,18 @@ function useFacetFilters(): {
     );
     searchParams.set('filters', JSON.stringify(filters));
     push({ search: `?${searchParams.toString()}` });
-  };
+  }, [location.search, push, selectedFacetFilters]);
+
+  React.useEffect(() => {
+    setSelectedFacetFilters(filters);
+  }, [filters]);
+
+  React.useEffect(() => {
+    if (isImmediateUpdateRequired) {
+      applyFacetFilters();
+      setIsImmediateUpdateRequired(false);
+    }
+  }, [applyFacetFilters, isImmediateUpdateRequired]);
 
   return {
     selectedFacetFilters,
