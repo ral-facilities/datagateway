@@ -43,7 +43,11 @@ describe('useFacetFilters', () => {
       wrapper: Wrapper,
     });
 
-    result.current.addFacetFilter('investigation.type.name', 'experiment');
+    result.current.addFacetFilter({
+      dimension: 'investigation.type.name',
+      filterValue: 'experiment',
+      applyImmediately: false,
+    });
 
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual({
@@ -52,7 +56,11 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual('');
     });
 
-    result.current.addFacetFilter('investigation.type.name', 'calibration');
+    result.current.addFacetFilter({
+      dimension: 'investigation.type.name',
+      filterValue: 'calibration',
+      applyImmediately: false,
+    });
 
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual({
@@ -61,10 +69,11 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual('');
     });
 
-    result.current.addFacetFilter(
-      'investigationparameter.type.name',
-      'run_number_after'
-    );
+    result.current.addFacetFilter({
+      dimension: 'investigationparameter.type.name',
+      filterValue: 'run_number_after',
+      applyImmediately: false,
+    });
 
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual({
@@ -72,6 +81,49 @@ describe('useFacetFilters', () => {
         'investigationparameter.type.name': ['run_number_after'],
       });
       expect(history.location.search).toEqual('');
+    });
+  });
+
+  it('adds filters and apply the changes immediately when applyImmediately set to true', async () => {
+    const { result, waitFor } = renderHook(() => useFacetFilters(), {
+      wrapper: Wrapper,
+    });
+
+    result.current.addFacetFilter({
+      dimension: 'investigation.type.name',
+      filterValue: 'experiment',
+      applyImmediately: true,
+    });
+
+    await waitFor(() => {
+      const selectedFilters = {
+        'investigation.type.name': ['experiment'],
+      };
+
+      const searchParams = new URLSearchParams();
+      searchParams.append('filters', JSON.stringify(selectedFilters));
+
+      expect(result.current.selectedFacetFilters).toEqual(selectedFilters);
+      expect(history.location.search).toEqual(`?${searchParams.toString()}`);
+    });
+
+    result.current.addFacetFilter({
+      dimension: 'investigationparameter.type.name',
+      filterValue: 'bcat_inv_str',
+      applyImmediately: true,
+    });
+
+    await waitFor(() => {
+      const selectedFilters = {
+        'investigation.type.name': ['experiment'],
+        'investigationparameter.type.name': ['bcat_inv_str'],
+      };
+
+      const searchParams = new URLSearchParams();
+      searchParams.append('filters', JSON.stringify(selectedFilters));
+
+      expect(result.current.selectedFacetFilters).toEqual(selectedFilters);
+      expect(history.location.search).toEqual(`?${searchParams.toString()}`);
     });
   });
 
@@ -96,7 +148,11 @@ describe('useFacetFilters', () => {
     });
 
     // try to remove something not in the filter
-    result.current.removeFacetFilter('investigation.type.name', 'calibration');
+    result.current.removeFacetFilter({
+      dimension: 'investigation.type.name',
+      filterValue: 'calibration',
+      applyImmediately: false,
+    });
     // nothing should be changed
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual({
@@ -109,7 +165,11 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual(searchParamStr);
     });
 
-    result.current.removeFacetFilter('investigation.type.name', 'experiment');
+    result.current.removeFacetFilter({
+      dimension: 'investigation.type.name',
+      filterValue: 'experiment',
+      applyImmediately: false,
+    });
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual({
         'investigationparameter.type.name': [
@@ -120,15 +180,76 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual(searchParamStr);
     });
 
-    result.current.removeFacetFilter(
-      'investigationparameter.type.name',
-      'bcat_inv_str'
-    );
+    result.current.removeFacetFilter({
+      dimension: 'investigationparameter.type.name',
+      filterValue: 'bcat_inv_str',
+      applyImmediately: false,
+    });
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual({
         'investigationparameter.type.name': ['run_number_after'],
       });
       expect(history.location.search).toEqual(searchParamStr);
+    });
+  });
+
+  it('removes filters and apply the changes immediately when applyImmediately set to true', async () => {
+    const searchParams = new URLSearchParams();
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'investigation.type.name': ['experiment'],
+        'investigationparameter.type.name': [
+          'bcat_inv_str',
+          'run_number_after',
+        ],
+      })
+    );
+
+    const searchParamStr = `?${searchParams.toString()}`;
+    history.replace({ search: searchParamStr });
+
+    const { result, waitFor } = renderHook(() => useFacetFilters(), {
+      wrapper: Wrapper,
+    });
+
+    // try to remove something not in the filter
+    result.current.removeFacetFilter({
+      dimension: 'investigation.type.name',
+      filterValue: 'calibration',
+      applyImmediately: true,
+    });
+    // nothing should be changed
+    await waitFor(() => {
+      expect(result.current.selectedFacetFilters).toEqual({
+        'investigation.type.name': ['experiment'],
+        'investigationparameter.type.name': [
+          'bcat_inv_str',
+          'run_number_after',
+        ],
+      });
+      expect(history.location.search).toEqual(searchParamStr);
+    });
+
+    result.current.removeFacetFilter({
+      dimension: 'investigation.type.name',
+      filterValue: 'experiment',
+      applyImmediately: true,
+    });
+
+    await waitFor(() => {
+      const selectedFilters = {
+        'investigationparameter.type.name': [
+          'bcat_inv_str',
+          'run_number_after',
+        ],
+      };
+
+      const searchParams = new URLSearchParams();
+      searchParams.append('filters', JSON.stringify(selectedFilters));
+
+      expect(result.current.selectedFacetFilters).toEqual(selectedFilters);
+      expect(history.location.search).toEqual(`?${searchParams.toString()}`);
     });
   });
 
@@ -150,11 +271,16 @@ describe('useFacetFilters', () => {
       wrapper: Wrapper,
     });
 
-    result.current.addFacetFilter('investigation.type.name', 'calibration');
-    result.current.removeFacetFilter(
-      'investigationparameter.type.name',
-      'bcat_inv_str'
-    );
+    result.current.addFacetFilter({
+      dimension: 'investigation.type.name',
+      filterValue: 'calibration',
+      applyImmediately: false,
+    });
+    result.current.removeFacetFilter({
+      dimension: 'investigationparameter.type.name',
+      filterValue: 'bcat_inv_str',
+      applyImmediately: false,
+    });
     result.current.applyFacetFilters();
 
     const newSearchParams = new URLSearchParams();
