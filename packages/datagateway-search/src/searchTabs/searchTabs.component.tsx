@@ -29,7 +29,7 @@ import {
   SearchResultCount,
   SearchResultCountDispatch,
   useSearchResultCounts,
-} from './useSearchResultCounts';
+} from './useSearchResultCounter';
 
 interface TabPanelProps {
   children?: React.ReactNode;

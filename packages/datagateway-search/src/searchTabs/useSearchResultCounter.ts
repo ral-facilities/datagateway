@@ -112,6 +112,7 @@ function useSearchResultCounter({
   const dispatchSearchResultCount = React.useContext(SearchResultCountDispatch);
 
   React.useEffect(() => {
+    console.log('update count');
     if (searchResponses) {
       const searchResultCount = searchResponses.reduce(
         (count, page) => count + (page.results?.length ?? 0),
@@ -126,7 +127,15 @@ function useSearchResultCounter({
         },
       });
     }
-  }, [searchResponses, dispatchSearchResultCount, hasMore, dataSearchType]);
+  }, [
+    searchResponses,
+    dispatchSearchResultCount,
+    hasMore,
+    dataSearchType,
+    // count should be re-calculated whenever fetch status changes
+    // in case the same search responses are given after fetching
+    isFetching,
+  ]);
 
   React.useEffect(() => {
     if (isFetching) {
