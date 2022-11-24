@@ -112,7 +112,6 @@ function useSearchResultCounter({
   const dispatchSearchResultCount = React.useContext(SearchResultCountDispatch);
 
   React.useEffect(() => {
-    console.log('update count');
     if (searchResponses) {
       const searchResultCount = searchResponses.reduce(
         (count, page) => count + (page.results?.length ?? 0),
@@ -154,6 +153,7 @@ export {
 };
 export type {
   SearchResultCount,
+  SearchResultCountAction,
   UpdateSearchResultCountAction,
   ResetSearchResultCountAction,
 };
