@@ -24,7 +24,12 @@ function SelectedFilterChips({
   const [t] = useTranslation();
 
   return (
-    <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+    <Stack
+      aria-label={t('selectedFilters')}
+      direction="row"
+      spacing={1}
+      sx={{ flexWrap: 'wrap', gap: 1 }}
+    >
       {Object.entries(filters).flatMap(([filterKey, filterValue]) => {
         if (!Array.isArray(filterValue)) return [];
 

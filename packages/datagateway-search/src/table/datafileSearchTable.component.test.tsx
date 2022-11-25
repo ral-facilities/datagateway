@@ -6,6 +6,7 @@ import { StateType } from '../state/app.types';
 import {
   dGCommonInitialState,
   DownloadCartItem,
+  SearchResponse,
   SearchResult,
   SearchResultSource,
 } from 'datagateway-common';
@@ -30,7 +31,7 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 describe('Datafile search table component', () => {
   const mockStore = configureStore([thunk]);
@@ -54,7 +55,10 @@ describe('Datafile search table component', () => {
       </Provider>
     );
 
-  function mockAxiosGet(url: string): Promise<Partial<AxiosResponse>> {
+  function mockAxiosGet(
+    url: string,
+    config: AxiosRequestConfig
+  ): Promise<Partial<AxiosResponse>> {
     if (/\/user\/cart\/$/.test(url)) {
       // fetch download cart
       return Promise.resolve({
@@ -63,9 +67,30 @@ describe('Datafile search table component', () => {
     }
 
     if (/\/search\/documents$/.test(url)) {
+      if (config.params.query.filter) {
+        // filter is applied
+        return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>(
+          {
+            data: {
+              dimensions: {
+                'datafile.datafileformat.name': {
+                  txt: 1,
+                },
+              },
+              results: [],
+            },
+          }
+        );
+      }
+
       // query lucene data
-      return Promise.resolve({
+      return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>({
         data: {
+          dimensions: {
+            'datafile.datafileformat.name': {
+              txt: 1,
+            },
+          },
           results: [searchResult],
         },
       });
@@ -242,12 +267,29 @@ describe('Datafile search table component', () => {
       await findColumnHeaderByName('datafiles.modified_time')
     ).toBeInTheDocument();
 
-    let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      // should have 1 row in the table
-      expect(rows).toHaveLength(1);
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
+
+    // check that facet filter panel is present
+    expect(screen.getByText('Filters')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument();
+
+    const accordion = screen.getByRole('button', {
+      name: 'Toggle facetDimensionLabel.datafile.datafileformat.name filter panel',
     });
+
+    expect(accordion).toBeInTheDocument();
+
+    await user.click(accordion);
+
+    const filterPanel = await screen.findByLabelText(
+      'facetDimensionLabel.datafile.datafileformat.name filter panel'
+    );
+
+    expect(filterPanel).toBeInTheDocument();
+    expect(
+      within(filterPanel).getByRole('button', { name: 'Add txt filter' })
+    ).toBeInTheDocument();
 
     const row = rows[0];
 
@@ -287,6 +329,210 @@ describe('Datafile search table component', () => {
         })
       ).getByText('23/07/2019')
     ).toBeInTheDocument();
+  });
+
+  it('applies selected facet filters correctly', async () => {
+    renderComponent();
+
+    // check that no filter chip is visible initially
+    const selectedFilters = await screen.findByLabelText('selectedFilters');
+    expect(
+      within(selectedFilters).queryAllByText(/^facetDimensionLabel.*/)
+    ).toHaveLength(0);
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.datafile.datafileformat.name filter panel',
+      })
+    );
+    // select the filter
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Add txt filter',
+      })
+    );
+    // apply the filter
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
+
+    // when filter is applied, the fake axios get will return nothing
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.datafile.datafileformat.name filter panel',
+      })
+    );
+
+    const selectedFilterItem = await screen.findByRole('button', {
+      name: 'Remove txt filter',
+    });
+
+    expect(selectedFilterItem).toBeInTheDocument();
+    expect(within(selectedFilterItem).getByRole('checkbox')).toBeChecked();
+
+    // the selected filters should be displayed
+    expect(selectedFilters).toBeInTheDocument();
+    expect(
+      within(selectedFilters).getByText(
+        'facetDimensionLabel.datafile.datafileformat.name: txt'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('applies filters already present in the URL on first render', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'datafile.datafileformat.name': ['txt'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    screen.debug(undefined, 10000000);
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.datafile.datafileformat.name filter panel',
+      })
+    );
+
+    // filter should be selected
+    const filterItem = await screen.findByRole('button', {
+      name: 'Remove txt filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'true');
+    expect(within(filterItem).getByRole('checkbox')).toBeChecked();
+  });
+
+  it('allows filters to be removed through the facet filter panel', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'datafile.datafileformat.name': ['txt'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.datafile.datafileformat.name filter panel',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Remove txt filter',
+      })
+    );
+
+    // apply the changes
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    const selectedFilterChips = screen.getByLabelText('selectedFilters');
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.datafile.datafileformat.name: txt',
+      })
+    ).toBeNull();
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.datafile.datafileformat.name filter panel',
+      })
+    );
+
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add txt filter',
+    });
+
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
+  });
+
+  it('allows filters to be removed by removing filter chips', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'datafile.datafileformat.name': ['txt'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    const selectedFilterChips = screen.getByLabelText('selectedFilters');
+    const chip = within(selectedFilterChips).getByRole('button', {
+      name: 'facetDimensionLabel.datafile.datafileformat.name: txt',
+    });
+
+    await user.click(within(chip).getByTestId('CancelIcon'));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.datafile.datafileformat.name: txt',
+      })
+    ).toBeNull();
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.datafile.datafileformat.name filter panel',
+      })
+    );
+
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add txt filter',
+    });
+
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
   });
 
   it('adds/removes rows to/from download cart', async () => {
@@ -495,7 +741,7 @@ describe('Datafile search table component', () => {
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
     axios.get = jest
       .fn()
-      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+      .mockImplementation((url: string, _): Promise<Partial<AxiosResponse>> => {
         if (/\/facilitycycles/.test(url)) {
           return Promise.resolve({
             data: [
@@ -509,7 +755,7 @@ describe('Datafile search table component', () => {
           });
         }
 
-        return mockAxiosGet(url);
+        return mockAxiosGet(url, _);
       });
 
     renderComponent('isis');
@@ -537,7 +783,7 @@ describe('Datafile search table component', () => {
   it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
     axios.get = jest
       .fn()
-      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+      .mockImplementation((url: string, _): Promise<Partial<AxiosResponse>> => {
         if (/\/facilitycycles/.test(url)) {
           return Promise.resolve({
             data: [
@@ -551,7 +797,7 @@ describe('Datafile search table component', () => {
           });
         }
 
-        return mockAxiosGet(url);
+        return mockAxiosGet(url, _);
       });
 
     renderComponent('isis');

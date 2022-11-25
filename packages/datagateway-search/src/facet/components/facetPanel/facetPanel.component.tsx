@@ -129,8 +129,8 @@ function FacetPanel({
               <AccordionDetails
                 sx={{ padding: 0 }}
                 aria-label={`${t(
-                  `facetDimensionLabel.${dimension.toLocaleLowerCase()} filter panel`
-                )}`}
+                  `facetDimensionLabel.${dimension.toLocaleLowerCase()}`
+                )} filter panel`}
                 id={`${dimension}-filter-panel`}
               >
                 <List dense>
