@@ -162,8 +162,12 @@
     }
   },
   "facetDimensionLabel": {
-    "Investigation.type.name": "Type",
-    "InvestigationParameter.type.name": "Parameter name"
+    "investigation.type.name": "Type",
+    "investigationparameter.type.name": "Parameter name",
+    "sample.type.name": "Sample",
+    "dataset.type.name": "Type",
+    "datafile.datafileformat.name": "Format",
+    "datafileparameter.type.name": "Parameter name"
   },
   "datafileparameter": {
     "type": {

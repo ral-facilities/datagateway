@@ -28,7 +28,7 @@ import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
-import { useSearchResultCounter } from '../searchTabs/useSearchResultCounts';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
 
 interface DatafileSearchTableProps {
   hierarchy: string;
@@ -307,8 +307,6 @@ const DatafileSearchTable = ({
   let detailsPanel = DatafileDetailsPanel;
   if (hierarchy === 'isis') detailsPanel = ISISDatafileDetailsPanel;
   else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
-
-  console.log('aggregatedSource', aggregatedSource);
 
   return (
     <Grid container spacing={1} sx={{ height: '100%' }}>

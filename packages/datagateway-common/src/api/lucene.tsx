@@ -148,8 +148,6 @@ export const fetchLuceneData = async (
     restrict: !!params.restrict,
   };
 
-  console.log('fetchlucenedata', settings.icatUrl);
-
   return axios
     .get(`${settings.icatUrl}/search/documents`, {
       params: queryParams,

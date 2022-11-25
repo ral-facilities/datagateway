@@ -34,7 +34,7 @@ import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
 import useFacetFilters from '../facet/useFacetFilters';
-import { useSearchResultCounter } from '../searchTabs/useSearchResultCounts';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
 
 interface InvestigationTableProps {
   hierarchy: string;

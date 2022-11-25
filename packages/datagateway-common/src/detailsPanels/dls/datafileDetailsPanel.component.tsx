@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Grid, Divider, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useDatafileDetails } from '../../api/datafiles';
+import { useDatafileDetails } from '../../api';
 import { Datafile, Entity } from '../../app.types';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 
@@ -32,7 +32,11 @@ const DatafileDetailsPanel = (
   }, [detailsPanelResize]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="datafile-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <StyledGrid id="details-panel" container direction="column">
         <Grid item xs>
           <Typography variant="h6">

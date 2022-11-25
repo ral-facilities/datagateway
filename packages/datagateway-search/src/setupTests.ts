@@ -6,6 +6,7 @@ import { Action } from 'redux';
 import { StateType } from './state/app.types';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
+import { screen, waitFor, within } from '@testing-library/react';
 
 // Unofficial React 17 Enzyme adapter
 Enzyme.configure({ adapter: new Adapter() });
@@ -13,6 +14,22 @@ Enzyme.configure({ adapter: new Adapter() });
 function noOp(): void {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
 }
+
+// Mock Date.toLocaleDateString so that it always uses en-GB as locale
+// instead of using the system default, which can be different depending on the environment.
+// save a reference to the original implementation of Date.toLocaleDateString
+
+const toLocaleDateString = Date.prototype.toLocaleDateString;
+
+jest
+  .spyOn(Date.prototype, 'toLocaleDateString')
+  .mockImplementation(function (this: Date) {
+    // when toLocaleDateString is called with no argument
+    // pass in 'en-GB' as the locale
+    // so that Date.toLocaleDateString() is equivalent to
+    // Date.toLocaleDateString('en-GB')
+    return toLocaleDateString.call(this, 'en-GB');
+  });
 
 if (typeof window.URL.createObjectURL === 'undefined') {
   Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
@@ -74,4 +91,81 @@ export const applyDatePickerWorkaround = (): void => {
 
 export const cleanupDatePickerWorkaround = (): void => {
   delete window.matchMedia;
+};
+
+/**
+ * Finds the index of the column with the given name.
+ */
+export const findColumnIndexByName = async (
+  columnName: string
+): Promise<number> => {
+  const columnHeaders = await screen.findAllByRole('columnheader');
+  return columnHeaders.findIndex(
+    (header) => within(header).queryByText(columnName) !== null
+  );
+};
+
+/**
+ * Find the header row of the table currently rendered.
+ * This assumes that the first row is always the header row.
+ */
+export const findColumnHeaderByName = async (
+  name: string
+): Promise<HTMLElement> => {
+  const columnHeaders = await screen.findAllByRole('columnheader');
+  const header = columnHeaders.find(
+    (header) => within(header).queryByText(name) !== null
+  );
+  if (!header) {
+    throw new Error(`Cannot find column header by name: ${name}`);
+  }
+  return header;
+};
+
+/**
+ * Finds all table rows except the header row.
+ */
+export const findAllRows = async (): Promise<HTMLElement[]> => {
+  let rows: HTMLElement[] = [];
+  await waitFor(
+    async () => {
+      rows = (await screen.findAllByRole('row')).slice(1);
+      expect(rows.length).toBeGreaterThanOrEqual(1);
+    },
+    {
+      onTimeout: (_) =>
+        new Error('No rows found in table. Timeout in waitFor.'),
+    }
+  );
+  return rows;
+};
+
+export const queryAllRows = (): HTMLElement[] =>
+  screen.queryAllByRole('row').slice(1);
+
+/**
+ * Find the table row at the given index. This assumes the first table row is always the header row.
+ *
+ * @param index The index of the table row, igoring the header row. For example, if the table has 2 rows and the first row is the header row,
+ *              the actual row that contains the data is considered the first row, and has an index of 0.
+ */
+export const findRowAt = async (index: number): Promise<HTMLElement> => {
+  const rows = await findAllRows();
+  const row = rows[index];
+  if (!row) {
+    throw new Error(`Cannot find row at index ${index}`);
+  }
+  return row;
+};
+
+export const findCellInRow = (
+  row: HTMLElement,
+  { columnIndex }: { columnIndex: number }
+): HTMLElement => {
+  const cells = within(row).getAllByRole('gridcell');
+  const cell = cells[columnIndex];
+  if (!cell) {
+    throw new Error(`Cannot find cell in row.`);
+  }
+  return cell;
 };

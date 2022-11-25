@@ -29,7 +29,7 @@ import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
-import { useSearchResultCounter } from '../searchTabs/useSearchResultCounts';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
 
 interface DatasetTableProps {
   hierarchy: string;
