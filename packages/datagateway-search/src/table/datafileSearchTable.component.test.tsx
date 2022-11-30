@@ -216,7 +216,6 @@ describe('Datafile search table component', () => {
 
     const searchParams = new URLSearchParams();
     searchParams.append('searchText', 'test search');
-
     history.replace({
       search: `?${searchParams.toString()}`,
     });

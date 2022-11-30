@@ -1,117 +1,253 @@
 import * as React from 'react';
-import { StateType } from './state/app.types';
+import type { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { MemoryRouter, Router } from 'react-router-dom';
-import { dGCommonInitialState, CartProps } from 'datagateway-common';
-import axios from 'axios';
-import { Store } from 'redux';
-import { createMemoryHistory, History } from 'history';
-import { render } from '@testing-library/react';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { Router } from 'react-router-dom';
+import {
+  type DatasearchType,
+  dGCommonInitialState,
+  type SearchResponse,
+} from 'datagateway-common';
+import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import { createMemoryHistory, type History } from 'history';
+import { render, screen, within } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-import SearchPageTabs, { SearchTabsProps } from './searchTabs.component';
-import { initialState } from './state/reducers/dgsearch.reducer';
-import InvestigationSearchTable from './table/investigationSearchTable.component';
-import DatasetSearchTable from './table/datasetSearchTable.component';
-import DatafileSearchTable from './table/datafileSearchTable.component';
-import InvestigationCardView from './card/investigationSearchCardView.component';
-import DatasetCardView from './card/datasetSearchCardView.component';
-
-jest.mock('datagateway-common', () => ({
-  ...jest.requireActual('datagateway-common'),
-  __esModule: true,
-  // mock table to opt out of rendering them in these tests as there's no need
-  Table: jest.fn(() => 'MockedTable'),
-}));
+import SearchTabs from './searchTabs.component';
+import { initialState } from '../state/reducers/dgsearch.reducer';
+import { mockDataset, mockInvestigation } from '../testData';
+import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import userEvent from '@testing-library/user-event';
+import { queryAllRows } from '../setupTests';
 
 describe('SearchTabs', () => {
   let state: StateType;
   let history: History;
-  let props: SearchTabsProps & CartProps;
+  let user: UserEvent;
   const mockStore = configureStore([thunk]);
 
-  const onTabChange = jest.fn();
+  const mockAxiosGet = (
+    url: string,
+    config: AxiosRequestConfig
+  ): Promise<Partial<AxiosResponse>> => {
+    if (/\/search\/documents$/.test(url)) {
+      const searchType: DatasearchType = config.params.query.target;
+      console.log('type', searchType);
+      let searchResponse: SearchResponse;
+      switch (searchType) {
+        case 'Investigation':
+          searchResponse = {
+            dimensions: {
+              'Investigation.type.name': {
+                experiment: 10,
+              },
+            },
+            results: [
+              {
+                score: 1,
+                id: 1,
+                source: {
+                  id: 1,
+                  title: 'Test title 1',
+                  name: 'Test name 1',
+                  summary: 'foo bar',
+                  visitId: '1',
+                  doi: 'doi 1',
+                  investigationinstrument: [
+                    {
+                      'instrument.id': 3,
+                      'instrument.name': 'LARMOR',
+                    },
+                  ],
+                  startDate: 1560121200000,
+                  endDate: 1560207600000,
+                  'facility.name': 'facility name',
+                  'facility.id': 2,
+                },
+              },
+            ],
+          };
+          break;
 
-  const createWrapper = (): ReactWrapper => {
-    const store: Store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <SearchPageTabs {...props} />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
+        case 'Dataset':
+          searchResponse = {
+            results: [
+              {
+                score: 1,
+                id: 1,
+                source: {
+                  id: 1,
+                  name: 'Dataset test name',
+                  startDate: 1563922800000,
+                  endDate: 1564009200000,
+                  investigationinstrument: [
+                    {
+                      'instrument.id': 4,
+                      'instrument.name': 'LARMOR',
+                    },
+                  ],
+                  'investigation.id': 2,
+                  'investigation.title': 'Investigation test title',
+                  'investigation.name': 'Investigation test name',
+                  'investigation.startDate': 1560121200000,
+                },
+              },
+            ],
+          };
+          break;
+
+        case 'Datafile':
+          searchResponse = {
+            results: [
+              {
+                score: 1,
+                id: 1,
+                source: {
+                  id: 1,
+                  name: 'Datafile test name',
+                  location: '/datafiletest',
+                  fileSize: 1,
+                  date: 1563836400000,
+                  'dataset.id': 2,
+                  'dataset.name': 'Dataset test name',
+                  'investigation.id': 3,
+                  'investigation.title': 'Investigation test title',
+                  'investigation.name': 'Investigation test name',
+                  'investigation.startDate': 1560121200000,
+                  investigationinstrument: [
+                    {
+                      'instrument.id': 5,
+                      'instrument.name': 'LARMOR',
+                    },
+                  ],
+                },
+              },
+            ],
+          };
+          break;
+      }
+
+      return Promise.resolve({
+        data: searchResponse,
+      });
+    }
+
+    if (/.*\/facilitycycles$/.test(url)) {
+      // fetchAllFacilityCycles
+      return Promise.resolve({
+        data: [
+          {
+            id: 4,
+            name: 'facility cycle name',
+            startDate: '2000-06-10',
+            endDate: '2020-06-11',
+          },
+        ],
+      });
+    }
+
+    if (/.*\/datasets\/count$/.test(url)) {
+      // fetchDatasetCountQuery
+      return Promise.resolve({
+        data: 1,
+      });
+    }
+
+    if (/.*\/datafiles\/count$/.test(url)) {
+      // fetchDatafileCountQuery
+      return Promise.resolve({
+        data: 1,
+      });
+    }
+
+    if (/.*\/investigations$/.test(url)) {
+      return Promise.resolve({
+        data: [mockInvestigation],
+      });
+    }
+
+    if (/.*\/datasets$/.test(url)) {
+      return Promise.resolve({
+        data: [mockDataset],
+      });
+    }
+
+    if (/\/datafiles$/.test(url)) {
+      return Promise.resolve({
+        data: [
+          {
+            id: 1,
+            name: 'Datafile test name',
+            description: 'Test datafile description',
+            location: '/datafiletest',
+            fileSize: 1,
+          },
+        ],
+      });
+    }
+
+    if (/.*\/user\/getSize$/.test(url)) {
+      // fetchInvestigationSize
+      return Promise.resolve({
+        data: 1,
+      });
+    }
+
+    return Promise.reject(`Endpoint not mocked: ${url}`);
   };
+
+  const Wrapper = ({
+    children,
+  }: {
+    children: React.ReactNode;
+  }): JSX.Element => (
+    <Provider store={mockStore(state)}>
+      <Router history={history}>
+        <QueryClientProvider client={new QueryClient()}>
+          {children}
+        </QueryClientProvider>
+      </Router>
+    </Provider>
+  );
 
   beforeEach(() => {
     history = createMemoryHistory({
-      initialEntries: ['/search/data'],
+      initialEntries: [
+        {
+          pathname: '/search/data',
+          search: '?searchText=test',
+        },
+      ],
     });
+    user = userEvent.setup();
 
     state = JSON.parse(
       JSON.stringify({ dgsearch: initialState, dgcommon: dGCommonInitialState })
     );
 
-    props = {
-      view: 'table',
-      onTabChange: onTabChange,
-      currentTab: 'investigation',
-      cartItems: [],
-      navigateToDownload: jest.fn(),
-    };
+    axios.get = jest.fn().mockImplementation(mockAxiosGet);
 
-    (axios.get as jest.Mock).mockImplementation((url) => {
-      if (url.includes('count')) {
-        return Promise.resolve({ data: 0 });
-      } else {
-        return Promise.resolve({ data: [] });
-      }
+    const searchParams = new URLSearchParams();
+    searchParams.append('searchText', 'test search');
+    history.replace({
+      search: `?${searchParams.toString()}`,
     });
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
-  it('renders correctly when request received', async () => {
-    state.dgsearch = {
-      ...state.dgsearch,
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-      },
-    };
-    (axios.get as jest.Mock).mockImplementation((url) => {
-      if (url.includes('count')) {
-        return Promise.resolve({ data: 1 });
-      } else {
-        return Promise.resolve({ data: Array(1) });
-      }
-    });
-
-    const testStore = mockStore(state);
-    const { asFragment } = render(
-      <Provider store={testStore}>
-        <MemoryRouter
-          initialEntries={[{ key: 'testKey', pathname: '/search/data' }]}
-        >
-          <QueryClientProvider client={new QueryClient()}>
-            <SearchPageTabs {...props} />
-          </QueryClientProvider>
-        </MemoryRouter>
-      </Provider>
+  it('renders tabs and empty tables when loading search query', async () => {
+    axios.get = jest.fn().mockImplementation(
+      () =>
+        new Promise((_) => {
+          // never resolve the promise to pretend the search query is loading
+        })
     );
 
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('changes selected tab value on click of a new tab', () => {
     state.dgsearch = {
       ...state.dgsearch,
       tabs: {
@@ -121,73 +257,390 @@ describe('SearchTabs', () => {
       },
     };
 
-    const wrapper = createWrapper();
+    render(
+      <SearchTabs
+        view="table"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="investigation"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />,
+      { wrapper: Wrapper }
+    );
 
-    expect(wrapper.exists(InvestigationSearchTable)).toBeTruthy();
+    const investigationTab = await screen.findByRole('tab', {
+      name: 'tabs.investigation',
+    });
+    const datasetTab = screen.getByRole('tab', { name: 'tabs.dataset' });
+    const datafileTab = screen.getByRole('tab', { name: 'tabs.datafile' });
 
-    wrapper
-      .find('[aria-controls="simple-tabpanel-dataset"]')
-      .last()
-      .simulate('click');
+    expect(investigationTab).toBeInTheDocument();
+    expect(investigationTab).toHaveAttribute('aria-selected', 'true');
+    expect(within(investigationTab).getByText('?')).toBeInTheDocument();
 
-    expect(onTabChange).toHaveBeenNthCalledWith(1, 'dataset');
+    expect(datasetTab).toBeInTheDocument();
+    expect(datasetTab).toHaveAttribute('aria-selected', 'false');
+    expect(within(datasetTab).getByText('?')).toBeInTheDocument();
+
+    expect(datafileTab).toBeInTheDocument();
+    expect(datafileTab).toHaveAttribute('aria-selected', 'false');
+    expect(within(datafileTab).getByText('?')).toBeInTheDocument();
+
+    expect(screen.getByTestId('investigation-search-table')).toBeVisible();
+    expect(screen.getByTestId('dataset-search-table')).not.toBeVisible();
+    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+
+    expect(queryAllRows()).toHaveLength(0);
   });
 
-  describe('table view', () => {
-    it('has the investigation search table component when on the investigation tab', () => {
-      const wrapper = createWrapper();
-      expect(wrapper.exists(InvestigationSearchTable)).toBeTruthy();
+  it('renders search tables under their corresponding tabs', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+    };
+
+    const { rerender } = render(
+      <SearchTabs
+        view="table"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="investigation"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />,
+      { wrapper: Wrapper }
+    );
+
+    const investigationTab = await screen.findByRole('tab', {
+      name: 'tabs.investigation',
     });
+    const datasetTab = screen.getByRole('tab', { name: 'tabs.dataset' });
+    const datafileTab = screen.getByRole('tab', { name: 'tabs.datafile' });
 
-    it('has the dataset search table component when on the dataset tab', () => {
-      props.currentTab = 'dataset';
+    expect(investigationTab).toBeInTheDocument();
+    expect(investigationTab).toHaveAttribute('aria-selected', 'true');
+    expect(await within(investigationTab).findByText('1')).toBeInTheDocument();
 
-      // Mock to prevent error logging
-      jest.spyOn(console, 'error').mockImplementation();
-      const wrapper = createWrapper();
+    expect(datasetTab).toBeInTheDocument();
+    expect(datasetTab).toHaveAttribute('aria-selected', 'false');
+    expect(await within(datasetTab).findByText('1')).toBeInTheDocument();
 
-      expect(wrapper.exists(DatasetSearchTable)).toBeTruthy();
-    });
+    expect(datafileTab).toBeInTheDocument();
+    expect(datafileTab).toHaveAttribute('aria-selected', 'false');
+    expect(await within(datafileTab).findByText('1')).toBeInTheDocument();
 
-    it('has the datafile search table component when on the datafile tab', () => {
-      props.currentTab = 'datafile';
+    expect(screen.getByTestId('investigation-search-table')).toBeVisible();
+    expect(screen.getByTestId('dataset-search-table')).not.toBeVisible();
+    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
 
-      // Mock to prevent error logging
-      jest.spyOn(console, 'error').mockImplementation();
-      const wrapper = createWrapper();
+    rerender(
+      <SearchTabs
+        view="table"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="dataset"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />
+    );
+    history.replace({ search: '?searchText=test' });
 
-      expect(wrapper.exists(DatafileSearchTable)).toBeTruthy();
-    });
+    expect(screen.getByTestId('investigation-search-table')).not.toBeVisible();
+    expect(screen.getByTestId('dataset-search-table')).toBeVisible();
+    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+
+    rerender(
+      <SearchTabs
+        view="table"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="datafile"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />
+    );
+    history.replace({ search: '?searchText=test' });
+
+    expect(screen.getByTestId('investigation-search-table')).not.toBeVisible();
+    expect(screen.getByTestId('dataset-search-table')).not.toBeVisible();
+    expect(screen.getByTestId('datafile-search-table')).toBeVisible();
   });
 
-  describe('card view', () => {
-    beforeEach(() => {
-      props.view = 'card';
+  it('renders search card views under investigation & dataset tab but not datafile tab', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+    };
+
+    const { rerender } = render(
+      <SearchTabs
+        view="card"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="investigation"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />,
+      { wrapper: Wrapper }
+    );
+
+    const investigationTab = await screen.findByRole('tab', {
+      name: 'tabs.investigation',
+    });
+    const datasetTab = screen.getByRole('tab', { name: 'tabs.dataset' });
+    const datafileTab = screen.getByRole('tab', { name: 'tabs.datafile' });
+
+    expect(investigationTab).toBeInTheDocument();
+    expect(investigationTab).toHaveAttribute('aria-selected', 'true');
+    // check that search result count is displayed correctly
+    expect(await within(investigationTab).findByText('1')).toBeInTheDocument();
+
+    expect(datasetTab).toBeInTheDocument();
+    expect(datasetTab).toHaveAttribute('aria-selected', 'false');
+    // check that search result count is displayed correctly
+    expect(await within(datasetTab).findByText('1')).toBeInTheDocument();
+
+    expect(datafileTab).toBeInTheDocument();
+    expect(datafileTab).toHaveAttribute('aria-selected', 'false');
+    // check that search result count is displayed correctly
+    expect(await within(datafileTab).findByText('1')).toBeInTheDocument();
+
+    expect(screen.getByTestId('investigation-search-card-view')).toBeVisible();
+    expect(screen.getByTestId('dataset-search-card-view')).not.toBeVisible();
+    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+
+    rerender(
+      <SearchTabs
+        view="card"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="dataset"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />
+    );
+    history.replace({ search: '?searchText=test' });
+
+    expect(
+      screen.getByTestId('investigation-search-card-view')
+    ).not.toBeVisible();
+    expect(screen.getByTestId('dataset-search-card-view')).toBeVisible();
+    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+
+    rerender(
+      <SearchTabs
+        view="card"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="datafile"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />
+    );
+    history.replace({ search: '?searchText=test' });
+
+    expect(
+      screen.getByTestId('investigation-search-card-view')
+    ).not.toBeVisible();
+    expect(screen.getByTestId('dataset-search-card-view')).not.toBeVisible();
+    expect(screen.getByTestId('datafile-search-table')).toBeVisible();
+  });
+
+  it('changes selected tab value on click of a new tab', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+    };
+
+    const onTabChange = jest.fn();
+
+    const { rerender } = render(
+      <SearchTabs
+        view="table"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={onTabChange}
+        currentTab="investigation"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />,
+      { wrapper: Wrapper }
+    );
+
+    const investigationTab = await screen.findByRole('tab', {
+      name: 'tabs.investigation',
+    });
+    const datasetTab = screen.getByRole('tab', { name: 'tabs.dataset' });
+    const datafileTab = screen.getByRole('tab', { name: 'tabs.datafile' });
+
+    expect(investigationTab).toBeInTheDocument();
+    expect(investigationTab).toHaveAttribute('aria-selected', 'true');
+    expect(await within(investigationTab).findByText('1')).toBeInTheDocument();
+
+    expect(datasetTab).toBeInTheDocument();
+    expect(datasetTab).toHaveAttribute('aria-selected', 'false');
+    expect(await within(datasetTab).findByText('1')).toBeInTheDocument();
+
+    expect(datafileTab).toBeInTheDocument();
+    expect(datafileTab).toHaveAttribute('aria-selected', 'false');
+    expect(await within(datafileTab).findByText('1')).toBeInTheDocument();
+
+    await user.click(datasetTab);
+    expect(onTabChange).toHaveBeenCalledWith('dataset');
+
+    rerender(
+      <SearchTabs
+        view="table"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={onTabChange}
+        currentTab="dataset"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />
+    );
+    history.push({ search: '?searchText=test' });
+
+    expect(screen.getByTestId('investigation-search-table')).not.toBeVisible();
+    expect(screen.getByTestId('dataset-search-table')).toBeVisible();
+    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+  });
+
+  it('resets search result count when filters are applied', async () => {
+    let isFilterApplied = false;
+
+    axios.get = jest.fn().mockImplementation((url, config) => {
+      if (isFilterApplied) {
+        return new Promise((_) => {
+          // never resolve the promise to pretend it is loading
+        });
+      }
+      return mockAxiosGet(url, config);
     });
 
-    it('has the investigation search card view component when on the investigation tab', () => {
-      const wrapper = createWrapper();
-      expect(wrapper.exists(InvestigationCardView)).toBeTruthy();
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+    };
+
+    render(
+      <SearchTabs
+        view="card"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="investigation"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />,
+      { wrapper: Wrapper }
+    );
+
+    const investigationTab = await screen.findByRole('tab', {
+      name: 'tabs.investigation',
     });
+    const datasetTab = screen.getByRole('tab', { name: 'tabs.dataset' });
+    const datafileTab = screen.getByRole('tab', { name: 'tabs.datafile' });
 
-    it('has the dataset search card view component when on the dataset tab', () => {
-      props.currentTab = 'dataset';
+    // initial search count should be visible
+    expect(within(investigationTab).getByText('1')).toBeInTheDocument();
+    expect(within(datasetTab).getByText('1')).toBeInTheDocument();
+    expect(within(datafileTab).getByText('1')).toBeInTheDocument();
 
-      // Mock to prevent error logging
-      jest.spyOn(console, 'error').mockImplementation();
-      const wrapper = createWrapper();
+    // apply some filters
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+      })
+    );
+    await user.click(
+      screen.getByRole('button', { name: 'Add experiment filter' })
+    );
 
-      expect(wrapper.exists(DatasetCardView)).toBeTruthy();
-    });
+    isFilterApplied = true;
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
 
-    it('has the datafile search table component when on the datafile tab', () => {
-      props.currentTab = 'datafile';
+    expect(await within(investigationTab).findByText('?')).toBeInTheDocument();
+  });
 
-      // Mock to prevent error logging
-      jest.spyOn(console, 'error').mockImplementation();
-      const wrapper = createWrapper();
+  it('redirects to download cart page when view card button is clicked', async () => {
+    const navigateToDownload = jest.fn();
 
-      expect(wrapper.exists(DatafileSearchTable)).toBeTruthy();
-    });
+    render(
+      <SearchTabs
+        view="card"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="investigation"
+        cartItems={[]}
+        navigateToDownload={navigateToDownload}
+      />,
+      { wrapper: Wrapper }
+    );
+
+    expect(navigateToDownload).not.toBeCalled();
+
+    await user.click(
+      screen.getByRole('button', { name: 'app.cart_arialabel' })
+    );
+
+    expect(navigateToDownload).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not render disabled tabs', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: false,
+        datafileTab: true,
+        investigationTab: true,
+      },
+    };
+
+    render(
+      <SearchTabs
+        view="card"
+        containerHeight="100"
+        hierarchy="data"
+        onTabChange={jest.fn()}
+        currentTab="investigation"
+        cartItems={[]}
+        navigateToDownload={jest.fn()}
+      />,
+      { wrapper: Wrapper }
+    );
+
+    expect(
+      await screen.findByRole('tab', { name: 'tabs.investigation' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: 'tabs.dataset' })).toBeNull();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.datafile' })
+    ).toBeInTheDocument();
   });
 });

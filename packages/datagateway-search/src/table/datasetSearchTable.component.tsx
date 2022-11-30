@@ -38,6 +38,8 @@ interface DatasetTableProps {
 const DatasetSearchTable = ({
   hierarchy,
 }: DatasetTableProps): React.ReactElement => {
+  console.log('DatasetSearchTable');
+
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
@@ -124,6 +126,8 @@ const DatasetSearchTable = ({
       };
     }
   }, [data]);
+  console.log({ data, isFetching, searchText });
+  console.log('aggregatedSource', aggregatedSource);
 
   const handleSort = useSort();
 
@@ -378,7 +382,12 @@ const DatasetSearchTable = ({
   );
 
   return (
-    <Grid container spacing={1} sx={{ height: '100%' }}>
+    <Grid
+      data-testid="dataset-search-table"
+      container
+      spacing={1}
+      sx={{ height: '100%' }}
+    >
       <Grid item xs={2} sx={{ height: '100%' }}>
         {data?.pages && (
           <FacetPanel

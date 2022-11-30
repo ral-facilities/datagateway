@@ -5,7 +5,6 @@ import type { StateType } from '../state/app.types';
 import {
   dGCommonInitialState,
   type DownloadCartItem,
-  type LuceneSearchParams,
   type SearchResponse,
   type SearchResult,
 } from 'datagateway-common';
@@ -21,10 +20,18 @@ import {
   type RenderResult,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
-import axios, { type AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, type AxiosResponse } from 'axios';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import { mockInvestigation } from '../testData';
+import {
+  findAllRows,
+  findCellInRow,
+  findColumnHeaderByName,
+  findColumnIndexByName,
+  queryAllRows,
+} from '../setupTests';
 
 // ====================== FIXTURES ======================
 
@@ -52,28 +59,6 @@ const mockSearchResults: SearchResult[] = [
     },
   },
 ];
-
-const mockLuceneSearchParams: LuceneSearchParams = {
-  searchText: '',
-  startDate: null,
-  endDate: null,
-  sort: {},
-  filters: {},
-  minCount: 10,
-  maxCount: 100,
-  restrict: true,
-  facets: [
-    { target: 'Investigation' },
-    {
-      target: 'InvestigationParameter',
-      dimensions: [{ dimension: 'type.name' }],
-    },
-    {
-      target: 'Sample',
-      dimensions: [{ dimension: 'type.name' }],
-    },
-  ],
-};
 
 // ====================== END FIXTURE ======================
 
@@ -116,17 +101,39 @@ describe('Investigation Search Table component', () => {
   /**
    * Mock implementation of axios.get
    */
-  const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
+  const mockAxiosGet = (
+    url: string,
+    config: AxiosRequestConfig
+  ): Promise<Partial<AxiosResponse>> => {
     if (/.*\/user\/cart\/.*$/.test(url)) {
       // fetchDownloadCart
       return Promise.resolve({ data: { cartItems } });
     }
+
     if (/.*\/search\/documents$/.test(url)) {
       // fetchLuceneData
+
+      if (config.params.query.filter) {
+        // filter is applied
+        return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>(
+          {
+            data: {
+              dimensions: {
+                'Investigation.type.name': {
+                  experiment: 10,
+                  calibration: 20,
+                },
+              },
+              results: [],
+            },
+          }
+        );
+      }
       return Promise.resolve<Partial<AxiosResponse<SearchResponse>>>({
         data: searchResponse,
       });
     }
+
     if (/.*\/facilitycycles$/.test(url)) {
       // fetchAllFacilityCycles
       return Promise.resolve({
@@ -140,23 +147,27 @@ describe('Investigation Search Table component', () => {
         ],
       });
     }
+
     if (/.*\/datasets\/count$/.test(url)) {
       // fetchDatasetCountQuery
       return Promise.resolve({
         data: 1,
       });
     }
+
     if (/.*\/investigations$/.test(url)) {
       return Promise.resolve({
         data: [mockInvestigation],
       });
     }
+
     if (/.*\/user\/getSize$/.test(url)) {
       // fetchInvestigationSize
       return Promise.resolve({
         data: 1,
       });
     }
+
     return Promise.reject();
   };
 
@@ -179,15 +190,14 @@ describe('Investigation Search Table component', () => {
     );
     cartItems = [];
     searchResponse = {
+      dimensions: {
+        'Investigation.type.name': {
+          experiment: 10,
+          calibration: 20,
+        },
+      },
       results: [mockSearchResults[0]],
     };
-
-    // manually set the query data
-    // because the initial data fetch is not done in investigation search table
-    queryClient.setQueryData(
-      ['search', 'Investigation', mockLuceneSearchParams],
-      () => searchResponse
-    );
 
     axios.get = jest.fn().mockImplementation(mockAxiosGet);
 
@@ -197,23 +207,504 @@ describe('Investigation Search Table component', () => {
       }
       return Promise.reject();
     });
+
+    const searchParams = new URLSearchParams();
+    searchParams.append('searchText', 'test search');
+    history.replace({
+      search: `?${searchParams.toString()}`,
+    });
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const { asFragment } = renderComponent();
-    expect(asFragment()).toMatchSnapshot();
-  });
+  it('renders nothing if no search text is present', async () => {
+    history.replace({ search: '' });
 
-  it('displays DOI and renders the expected Link ', async () => {
     renderComponent();
 
-    const link = await screen.findByText('doi 1');
-    expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'https://doi.org/doi 1');
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.dataset_count')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(queryAllRows()).toHaveLength(0);
+  });
+
+  it('renders search results correctly', async () => {
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.dataset_count')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
+
+    // check that facet filter panel is present
+    expect(screen.getByText('Filters')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument();
+
+    const accordion = screen.getByRole('button', {
+      name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+    });
+
+    expect(accordion).toBeInTheDocument();
+
+    await user.click(accordion);
+
+    const filterPanel = await screen.getByLabelText(
+      'facetDimensionLabel.investigation.type.name filter panel'
+    );
+
+    expect(filterPanel).toBeInTheDocument();
+
+    const experimentFilter = within(filterPanel).getByRole('button', {
+      name: 'Add experiment filter',
+    });
+    const calibrationFilter = within(filterPanel).getByRole('button', {
+      name: 'Add calibration filter',
+    });
+
+    // check that filter items are present and that they show the correct value and count
+    expect(experimentFilter).toBeInTheDocument();
+    expect(calibrationFilter).toBeInTheDocument();
+    expect(
+      within(experimentFilter).getByText('experiment')
+    ).toBeInTheDocument();
+    expect(within(experimentFilter).getByText('10')).toBeInTheDocument();
+    expect(
+      within(calibrationFilter).getByText('calibration')
+    ).toBeInTheDocument();
+    expect(within(calibrationFilter).getByText('20')).toBeInTheDocument();
+
+    const row = rows[0];
+
+    // each cell in the row should contain the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.title'),
+        })
+      ).getByText('Test title 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.visit_id'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.name'),
+        })
+      ).getByText('Test name 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.doi'),
+        })
+      ).getByRole('link', { name: 'doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName(
+            'investigations.dataset_count'
+          ),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.instrument'),
+        })
+      ).getByText('LARMOR')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.start_date'),
+        })
+      ).getByText('10/06/2019')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.end_date'),
+        })
+      ).getByText('11/06/2019')
+    ).toBeInTheDocument();
+  });
+
+  it('displays investigation size for isis', async () => {
+    renderComponent('isis');
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.size')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
+
+    const row = rows[0];
+
+    // each cell in the row should contain the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.title'),
+        })
+      ).getByText('Test title 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.visit_id'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.name'),
+        })
+      ).getByText('Test name 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.doi'),
+        })
+      ).getByRole('link', { name: 'doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.instrument'),
+        })
+      ).getByText('LARMOR')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.start_date'),
+        })
+      ).getByText('10/06/2019')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.end_date'),
+        })
+      ).getByText('11/06/2019')
+    ).toBeInTheDocument();
+  });
+
+  it('applies selected filters correctly', async () => {
+    renderComponent();
+
+    // check that no filter chip is visible initially
+    const selectedFilters = await screen.findByLabelText('selectedFilters');
+    expect(
+      within(selectedFilters).queryAllByText(/^facetDimensionLabel.*/)
+    ).toHaveLength(0);
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+      })
+    );
+    // select the filter
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Add calibration filter',
+      })
+    );
+    // apply the filter
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
+
+    // when filter is applied, the fake axios get will return nothing
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+      })
+    );
+
+    const selectedFilterItem = await screen.findByRole('button', {
+      name: 'Remove calibration filter',
+    });
+
+    expect(selectedFilterItem).toBeInTheDocument();
+    expect(selectedFilterItem).toHaveAttribute('aria-selected', 'true');
+    expect(within(selectedFilterItem).getByRole('checkbox')).toBeChecked();
+
+    // the selected filters should be displayed
+    expect(selectedFilters).toBeInTheDocument();
+    expect(
+      within(selectedFilters).getByText(
+        'facetDimensionLabel.investigation.type.name: calibration'
+      )
+    ).toBeInTheDocument();
+
+    // the rest of the filters should also be displayed but they should not be selected
+    const experimentFilter = screen.getByRole('button', {
+      name: 'Add experiment filter',
+    });
+    expect(experimentFilter).toBeInTheDocument();
+    expect(experimentFilter).toHaveAttribute('aria-selected', 'false');
+    expect(within(experimentFilter).getByRole('checkbox')).not.toBeChecked();
+  });
+
+  it('applies filters already present in the URL on first render', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'investigation.type.name': ['experiment'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+      })
+    );
+
+    // filter should be selected
+    const filterItem = await screen.findByRole('button', {
+      name: 'Remove experiment filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'true');
+    expect(within(filterItem).getByRole('checkbox')).toBeChecked();
+
+    // the rest of the filters should also be displayed but they should not be selected
+    const calibrationFilter = screen.getByRole('button', {
+      name: 'Add calibration filter',
+    });
+    expect(calibrationFilter).toBeInTheDocument();
+    expect(calibrationFilter).toHaveAttribute('aria-selected', 'false');
+    expect(within(calibrationFilter).getByRole('checkbox')).not.toBeChecked();
+  });
+
+  it('allows filters to be removed through the facet filter panel', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'investigation.type.name': ['experiment'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    const selectedFilterChips = await screen.findByLabelText('selectedFilters');
+
+    expect(
+      within(selectedFilterChips).getByRole('button', {
+        name: 'facetDimensionLabel.investigation.type.name: experiment',
+      })
+    ).toBeInTheDocument();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Remove experiment filter',
+      })
+    );
+
+    // apply the changes
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.investigation.type.name: experiment',
+      })
+    ).toBeNull();
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+      })
+    );
+
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add experiment filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
+  });
+
+  it('allows filters to be removed by removing filter chips', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'investigation.type.name': ['calibration'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    const selectedFilterChips = screen.getByLabelText('selectedFilters');
+    const chip = within(selectedFilterChips).getByRole('button', {
+      name: 'facetDimensionLabel.investigation.type.name: calibration',
+    });
+
+    await user.click(within(chip).getByTestId('CancelIcon'));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.investigation.type.name: calibration',
+      })
+    ).toBeNull();
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+      })
+    );
+
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add calibration filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
   });
 
   it('should add the selected row to cart', async () => {
@@ -391,13 +882,13 @@ describe('Investigation Search Table component', () => {
   });
 
   it('renders generic link correctly & pending count correctly', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string) => {
+    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
       if (/.*\/datasets\/count$/.test(url)) {
         return new Promise((_) => {
           // never resolve the promise to pretend it is loading
         });
       }
-      return mockAxiosGet(url);
+      return mockAxiosGet(url, config);
     });
     renderComponent('data');
 
@@ -419,7 +910,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string) => {
+    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
       if (/.*\/facilitycycles$/.test(url)) {
         return Promise.resolve({
           data: [
@@ -432,7 +923,7 @@ describe('Investigation Search Table component', () => {
           ],
         });
       }
-      return mockAxiosGet(url);
+      return mockAxiosGet(url, config);
     });
 
     renderComponent('isis');
@@ -447,21 +938,24 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string) => {
-      if (/.*\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 4,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url);
-    });
+    searchResponse.results = [
+      {
+        score: 1,
+        id: 1,
+        source: {
+          id: 1,
+          title: 'Test title 1',
+          name: 'Test name 1',
+          summary: 'foo bar',
+          visitId: '1',
+          startDate: 1560121200000,
+          doi: 'doi 1',
+          endDate: 1560207600000,
+          'facility.name': 'facility name',
+          'facility.id': 2,
+        },
+      },
+    ];
 
     renderComponent('isis');
 
@@ -475,13 +969,13 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string) => {
+    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
       if (/.*\/facilitycycles$/.test(url)) {
         return Promise.resolve({
           data: [],
         });
       }
-      return mockAxiosGet(url);
+      return mockAxiosGet(url, config);
     });
 
     renderComponent('isis');
@@ -496,7 +990,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string) => {
+    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
       if (/.*\/facilitycycles$/.test(url)) {
         return Promise.resolve({
           data: [
@@ -509,7 +1003,7 @@ describe('Investigation Search Table component', () => {
           ],
         });
       }
-      return mockAxiosGet(url);
+      return mockAxiosGet(url, config);
     });
 
     renderComponent('isis');

@@ -181,6 +181,7 @@ const SearchTabs = ({
         >
           {isInvestigationTabEnabled ? (
             <Tab
+              aria-label={t('tabs.investigation')}
               label={
                 <SearchTabLabel
                   id="investigation-badge"
@@ -198,6 +199,7 @@ const SearchTabs = ({
           )}
           {isDatasetTabEnabled ? (
             <Tab
+              aria-label={t('tabs.dataset')}
               label={
                 <SearchTabLabel
                   id="dataset-badge"
@@ -213,6 +215,7 @@ const SearchTabs = ({
           )}
           {isDatafileTabEnabled ? (
             <Tab
+              aria-label={t('tabs.datafile')}
               label={
                 <SearchTabLabel
                   id="datafile-badge"

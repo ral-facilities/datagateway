@@ -309,7 +309,12 @@ const DatafileSearchTable = ({
   else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
 
   return (
-    <Grid container spacing={1} sx={{ height: '100%' }}>
+    <Grid
+      data-testid="datafile-search-table"
+      container
+      spacing={1}
+      sx={{ height: '100%' }}
+    >
       <Grid item xs={2} sx={{ height: '100%' }}>
         {data?.pages && (
           <FacetPanel
