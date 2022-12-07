@@ -113,7 +113,7 @@ const ISISDatasetsTable = (
     if (data) {
       if ('pages' in data) {
         return data.pages.flat();
-      } else if (data instanceof Array) {
+      } else if ((data as unknown) instanceof Array) {
         return data;
       }
     }
