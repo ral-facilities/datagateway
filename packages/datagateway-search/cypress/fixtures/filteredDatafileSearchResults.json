@@ -1,0 +1,27 @@
+{
+  "dimensions": {
+    "Datafile.datafileFormat.name": {
+      "isis neutron raw": 173
+    },
+    "DatafileParameter.type.name": {
+      "finish_date": 300,
+      "good_proton_charge": 300
+    }
+  },
+  "results": [
+    {
+      "id": 5364933,
+      "score": 13.135890960693359,
+      "source": {
+        "name": "EVS07934.RAW",
+        "description": "Carbon background",
+        "location": "\\\\isis\\inst$\\NDXEVS\\Instrument\\data\\cycle_99_5\\EVS07934.RAW",
+        "fileSize": 940032,
+        "fileCount": 1,
+        "date": 1054930480000,
+        "id": 5364933,
+        "dataset.id": "5359129"
+      }
+    }
+  ]
+}

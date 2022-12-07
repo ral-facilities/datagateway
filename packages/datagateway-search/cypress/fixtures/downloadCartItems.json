@@ -1,0 +1,25 @@
+{
+  "cartItems": [
+    {
+      "entityId": 24079283,
+      "entityType": "investigation",
+      "id": 970,
+      "name": "loyal hammer",
+      "parentEntities": []
+    },
+    {
+      "entityId": 24063138,
+      "entityType": "dataset",
+      "id": 229,
+      "name": "mechanic cattle",
+      "parentEntities": []
+    },
+    {
+      "entityId": 5364933,
+      "entityType": "datafile",
+      "id": 17,
+      "name": "usual business",
+      "parentEntities": []
+    }
+  ]
+}

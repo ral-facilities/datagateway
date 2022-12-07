@@ -1,0 +1,44 @@
+{
+  "dimensions": {
+    "Investigation.type.name": {
+      "experiment": 191
+    },
+    "InvestigationParameter.type.name": {
+      "bcat_inv_str": 241
+    }
+  },
+  "results": [
+    {
+      "id": 24079283,
+      "score": 13.91257381439209,
+      "source": {
+        "name": "1000002",
+        "visitId": "1 - SANDALS",
+        "title": "Structural studies of nanoporous carbons and a carbon molecular sieve",
+        "summary": "This project determines the nanoscale structure of carbide derived carbon, as well as a carbon molecular sieve, by hybrid reverse Monte Carlo simulation. Our simulation will fit the pair distribution function and the sp3/sp2 bonding ratio, while minimising energy, to determine the carbon nanostructure. The use of the hybridisation state represents a significant advance that will enable accurate representation of short-range ordering, and thereby of local constrictions that affect fluid accessibility. The knowledge of the nanoscale structure will allow optimisation of synthesis conditions for efficient application of the carbons in separation processes, gas storage, and as supercapacitors. For the carbon molecular sieve the atomistic structure is urgently needed to simulate quantum effects during transport of hydrogen isotopes in this material, data for which has recently been obtained.",
+        "doi": "10.5286/ISIS.E.24079283",
+        "startDate": 1277889603000,
+        "date": 1277889603000,
+        "fileSize": 0,
+        "fileCount": 0,
+        "id": "24079283",
+        "facility.id": "1",
+        "type.name": "experiment",
+        "type.id": "4",
+        "sample": [],
+        "investigationinstrument": [
+          {
+            "instrument.fullName": "SANDALS",
+            "instrument.name": "SLS"
+          }
+        ],
+        "investigationparameter": [
+          {
+            "stringValue": "44935-44985",
+            "type.name": "run_number_range"
+          }
+        ]
+      }
+    }
+  ]
+}

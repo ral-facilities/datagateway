@@ -1,0 +1,70 @@
+{
+  "dimensions": {
+    "Datafile.datafileFormat.name": {
+      "isis neutron raw": 173
+    },
+    "DatafileParameter.type.name": {
+      "finish_date": 300,
+      "good_frames": 300,
+      "good_proton_charge": 300
+    }
+  },
+  "results": [
+    {
+      "id": 5364933,
+      "score": 13.135890960693359,
+      "source": {
+        "name": "EVS07934.RAW",
+        "description": "Carbon background",
+        "location": "\\\\isis\\inst$\\NDXEVS\\Instrument\\data\\cycle_99_5\\EVS07934.RAW",
+        "fileSize": 940032,
+        "fileCount": 1,
+        "date": 1054930480000,
+        "id": 5364933,
+        "dataset.id": "5359129"
+      }
+    },
+    {
+      "id": 5364934,
+      "score": 13.135890960693359,
+      "source": {
+        "name": "EVS07935.RAW",
+        "description": "Carbon background",
+        "location": "\\\\isis\\inst$\\NDXEVS\\Instrument\\data\\cycle_99_5\\EVS07935.RAW",
+        "fileSize": 949760,
+        "fileCount": 1,
+        "date": 1054930505000,
+        "id": 5364934,
+        "dataset.id": "5359129"
+      }
+    },
+    {
+      "id": 5364935,
+      "score": 13.135890960693359,
+      "source": {
+        "name": "EVS07936.RAW",
+        "description": "Carbon background",
+        "location": "\\\\isis\\inst$\\NDXEVS\\Instrument\\data\\cycle_99_5\\EVS07936.RAW",
+        "fileSize": 949760,
+        "fileCount": 1,
+        "date": 1054930525000,
+        "id": 5364935,
+        "dataset.id": "5359129"
+      }
+    },
+    {
+      "id": 5364936,
+      "score": 13.135890960693359,
+      "source": {
+        "name": "EVS07937.RAW",
+        "description": "Carbon background",
+        "location": "\\\\isis\\inst$\\NDXEVS\\Instrument\\data\\cycle_99_5\\EVS07937.RAW",
+        "fileSize": 951296,
+        "fileCount": 1,
+        "date": 1054930546000,
+        "id": 5364936,
+        "dataset.id": "5359129"
+      }
+    }
+  ]
+}

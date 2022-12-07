@@ -46,6 +46,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
+      data-testid={`tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       border={0}
       {...other}

@@ -2,129 +2,411 @@ describe('Datafile search tab', () => {
   let facilityName: string;
 
   before(() => {
-    cy.readFile('server/e2e-settings.json').then((settings) => {
-      if (settings.facilityName) facilityName = settings.facilityName;
+    cy.request('/datagateway-search-settings.json').then((settings) => {
+      if (settings.body.facilityName) facilityName = settings.body.facilityName;
     });
   });
 
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
-    cy.intercept('**/investigations/count?where=%7B%22id*').as(
-      'investigationsCount'
-    );
-    cy.intercept('**/datasets/count?where=%7B%22id*').as('datasetsCount');
-    cy.intercept('**/datafiles/count?where=%7B%22id*').as('datafilesCount');
-    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
-    cy.intercept('**/search/documents*').as('searchDocuments');
-  });
-
-  it('should load correctly', () => {
-    cy.title().should('equal', 'DataGateway Search');
-
-    cy.get('#search-entities-menu').click();
-    cy.get('[aria-label="Investigation checkbox"]').click();
-    cy.get('[aria-label="Dataset checkbox"]').click();
-    //Close drop down menu
-    cy.get('body').type('{esc}');
-
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@searchDocuments', '@datafilesCount'], {
-        timeout: 10000,
-      });
-
-    cy.get('#container-search-filters').should('exist');
-
-    cy.get('#container-search-table').should('exist');
-  });
-
-  it('should be able to search by text', () => {
-    cy.clearDownloadCart();
-    cy.get('#filled-search').type('2106');
-
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@searchDocuments', '@investigationsCount'], {
-        timeout: 10000,
-      });
-
-    cy.get('[aria-label="Search table"]')
-      .contains('Datafile')
-      .contains('1')
-      .click()
-      .wait(['@searchDocuments', '@datafilesCount'], {
-        timeout: 10000,
-      });
-
-    cy.get('[aria-rowcount="1"]').should('exist');
-
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 2106');
-
-    // Check that "select all" and individual selection are equivalent
-    cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`)
-      .click()
-      .wait('@topcat', { timeout: 10000 });
-    cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
-      'be.checked'
-    );
-    cy.get('[aria-label="select all rows"]')
-      .should('have.attr', 'data-indeterminate')
-      .and('eq', 'false');
-  });
-
-  it('should be able to search by date range', () => {
-    cy.get('[aria-label="Start date input"]').type('2012-02-02');
-    cy.get('[aria-label="End date input"]').type('2012-02-03');
-
-    cy.get('[aria-label="Submit search"]').click().wait('@datafilesCount', {
-      timeout: 10000,
+    // cy.intercept(`**/topcat/user/cart*`, { statusCode: 200 });
+    cy.intercept('**/search/documents*', {
+      fixture: 'datafileSearchResults.json',
+    });
+    cy.intercept('**/datasets/count*', {
+      body: 1,
+    });
+    cy.intercept('**/datafiles/count*', {
+      body: 1,
+    });
+    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
+      statusCode: 200,
+    });
+    cy.intercept(`**/topcat/user/cart/${facilityName}*`, {
+      body: {
+        cartItems: [],
+      },
     });
 
-    cy.get('[aria-label="Search table"]')
-      .contains('Datafile')
-      .contains('9')
-      .click();
-
-    cy.get('[aria-rowcount="9"]').should('exist');
-
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1956');
-  });
-
-  it('should be hidden if datafile checkbox is unchecked', () => {
-    cy.get('#search-entities-menu').click();
-    cy.get('[aria-label="Datafile checkbox"]').click();
-    //Close drop down menu
+    // only the datafile tab is tested here, so we want to hide investigation & dataset tabs
+    // open search type dropdown menu
+    cy.findByRole('button', { name: 'Types (3)' }).click();
+    // uncheck investigation
+    cy.findByRole('listbox').within(() => {
+      cy.findByRole('checkbox', { name: 'Investigation checkbox' }).click();
+      cy.findByRole('checkbox', { name: 'Dataset checkbox' }).click();
+    });
+    // close the dropdown menu
     cy.get('body').type('{esc}');
-
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@searchDocuments', '@investigationsCount'], {
-        timeout: 10000,
-      });
-
-    cy.get('[aria-rowcount="50"]').should('exist');
-
-    cy.get('[aria-label="Search table"]')
-      .contains('Datafile')
-      .should('not.exist');
   });
 
-  it('should link to a parent dataset', () => {
-    cy.get('#filled-search').type('1956');
+  it('should perform search query and show search results correctly', () => {
+    // type in search query
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    // uncheck my data
+    cy.findByRole('checkbox', { name: 'My data' }).click();
+    // click on search button
+    cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@searchDocuments', '@investigationsCount'], {
-        timeout: 10000,
+    cy.findByRole('tab', { name: 'Datafile' }).within(() => {
+      cy.findByText('4').should('exist');
+    });
+
+    // 5 rows, 4 for search results, 1 for the header row
+    cy.findAllByRole('row').should('have.length', 5);
+
+    cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
+
+    cy.findAllByLabelText('Format filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', { name: 'Add isis neutron raw filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('173').should('exist');
+          });
       });
-    cy.get('[aria-label="Search table"]')
-      .contains('Datafile')
-      .contains('1')
-      .click()
-      .wait(['@searchDocuments', '@datafilesCount'], {
-        timeout: 10000,
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+
+    cy.findAllByLabelText('Parameter name filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', { name: 'Add finish_date filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('300').should('exist');
+          });
+
+        cy.findByRole('button', { name: 'Add good_frames filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('300').should('exist');
+          });
+
+        cy.findByRole('button', { name: 'Add good_proton_charge filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('300').should('exist');
+          });
       });
-    cy.get('[href="/browse/investigation/41/dataset/41/datafile"]');
+  });
+
+  it('should be able to add/remove to/from download cart', () => {
+    // type in search query
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    // uncheck my data
+    cy.findByRole('checkbox', { name: 'My data' }).click();
+    // click on search button
+    cy.findByRole('button', { name: 'Submit search' }).click();
+
+    // 5 rows, 4 for search results, 1 for the header row
+    cy.findAllByRole('row').should('have.length', 5);
+
+    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
+      fixture: 'downloadCartItems.json',
+    });
+
+    cy.findAllByRole('row')
+      .eq(1)
+      .within(() => {
+        cy.findByRole('checkbox').click().should('be.checked');
+      });
+
+    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
+      body: {
+        cartItems: [],
+      },
+    });
+
+    cy.findAllByRole('row')
+      .eq(1)
+      .within(() => {
+        cy.findByRole('checkbox').click().should('not.be.checked');
+      });
+  });
+
+  it('should be able to open the details panel of a specific row', () => {
+    // type in search query
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    // uncheck my data
+    cy.findByRole('checkbox', { name: 'My data' }).click();
+    // click on search button
+    cy.findByRole('button', { name: 'Submit search' }).click();
+
+    cy.findAllByRole('row').should('have.length', 5);
+
+    cy.findAllByRole('row')
+      .eq(1)
+      .within(() => {
+        cy.findByRole('button', { name: 'Show details' }).click();
+      });
+
+    cy.findByTestId('datafile-details-panel').within(() => {
+      cy.findByText('EVS07934.RAW').should('exist');
+      cy.findByText('940.03 KB').should('exist');
+      cy.findByText(
+        '\\\\isis\\inst$\\NDXEVS\\Instrument\\data\\cycle_99_5\\EVS07934.RAW'
+      ).should('exist');
+    });
+  });
+
+  it('should be able to filter search results by facets', () => {
+    // type in search query
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    // uncheck my data
+    cy.findByRole('checkbox', { name: 'My data' }).click();
+    // click on search button
+    cy.findByRole('button', { name: 'Submit search' }).click();
+
+    cy.findAllByRole('row').should('have.length', 5);
+
+    // open the filter panel, then select some filters
+    cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
+
+    // select the filter we want
+    cy.findAllByLabelText('Format filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Add isis neutron raw filter',
+        })
+          .click()
+          .within(() => {
+            cy.findByRole('checkbox').should('be.checked');
+          });
+      });
+
+    // intercept search request to return predefined filtered search result
+    cy.intercept('**/search/documents*', {
+      fixture: 'filteredDatafileSearchResults.json',
+    });
+
+    // apply the filter
+    cy.findAllByRole('button', { name: 'Apply' }).filter(':visible').click();
+
+    // the search result should be filtered
+    cy.findAllByRole('row').should('have.length', 2);
+
+    // check that filter chips are displayed
+    cy.findByTestId('tabpanel-datafile').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByText('Format: isis neutron raw').should('exist');
+        });
+    });
+
+    // open the filter panel to check that the filter is selected
+    cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
+    cy.findAllByLabelText('Format filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Remove isis neutron raw filter',
+        }).within(() => {
+          cy.findByRole('checkbox').should('be.checked');
+        });
+      });
+
+    // open the other filter panel to see the panel shows the updated list of filters
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findAllByLabelText('Parameter name filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Add finish_date filter',
+        }).within(() => {
+          cy.findByRole('checkbox').should('not.be.checked');
+        });
+
+        // the filtered search results don't include this facet
+        cy.findByRole('button', {
+          name: 'Add good_frames filter',
+        }).should('not.exist');
+
+        cy.findByRole('button', {
+          name: 'Add good_proton_charge filter',
+        }).within(() => {
+          cy.findByRole('checkbox').should('not.be.checked');
+        });
+      });
+
+    cy.findAllByLabelText('Format filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Remove isis neutron raw filter',
+        }).click();
+      });
+
+    cy.intercept('**/search/documents*', {
+      fixture: 'datafileSearchResults.json',
+    });
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    // 5 rows, 4 for search results, 1 for the header row
+    cy.findAllByRole('row').should('have.length', 5);
+
+    // filter chips should not exist anymore
+    cy.findByTestId('tabpanel-datafile').within(() => {
+      cy.findByLabelText('Selected filters')
+        .children()
+        .should('have.length', 0);
+    });
+
+    cy.findAllByLabelText('Format filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', { name: 'Add isis neutron raw filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('173').should('exist');
+          });
+      });
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+
+    cy.findAllByLabelText('Parameter name filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', { name: 'Add finish_date filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('300').should('exist');
+          });
+
+        cy.findByRole('button', { name: 'Add good_frames filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('300').should('exist');
+          });
+
+        cy.findByRole('button', { name: 'Add good_proton_charge filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('300').should('exist');
+          });
+      });
+  });
+
+  it('should allow filters to be removed by removing filter chips', () => {
+    // type in search query
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    // uncheck my data
+    cy.findByRole('checkbox', { name: 'My data' }).click();
+    // click on search button
+    cy.findByRole('button', { name: 'Submit search' }).click();
+
+    // 5 rows, 4 for search results, 1 for the header row
+    cy.findAllByRole('row').should('have.length', 5);
+
+    // open the filter panel, then select some filters
+    cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
+
+    // select the filter we want
+    cy.findAllByLabelText('Format filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Add isis neutron raw filter',
+        }).click();
+      });
+
+    // intercept search request to return predefined filtered search result
+    cy.intercept('**/search/documents*', {
+      fixture: 'filteredDatafileSearchResults.json',
+    });
+
+    // apply the filter
+    cy.findAllByRole('button', { name: 'Apply' }).filter(':visible').click();
+
+    // the search result should be filtered
+    cy.findAllByRole('row').should('have.length', 2);
+
+    cy.intercept('**/search/documents*', {
+      fixture: 'datafileSearchResults.json',
+    });
+
+    // check that filter chips are displayed
+    cy.findByTestId('tabpanel-datafile').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('button', { name: 'Format: isis neutron raw' })
+            .should('exist')
+            .within(() => {
+              // remove the filter chip
+              cy.findByTestId('CancelIcon').click();
+            });
+        });
+    });
+
+    // the search result should be filtered
+    cy.findAllByRole('row').should('have.length', 5);
+
+    // filter chips should not exist anymore
+    cy.findByTestId('tabpanel-datafile').within(() => {
+      cy.findByLabelText('Selected filters')
+        .children()
+        .should('have.length', 0);
+    });
+
+    // open the filter panel to check that the filter is not selected anymore
+    cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
+    cy.findAllByLabelText('Format filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Add isis neutron raw filter',
+        }).within(() => {
+          cy.findByRole('checkbox').should('not.be.checked');
+          cy.findByText('173').should('exist');
+        });
+      });
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findAllByLabelText('Parameter name filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', { name: 'Add finish_date filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('300').should('exist');
+          });
+
+        cy.findByRole('button', { name: 'Add good_frames filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('300').should('exist');
+          });
+
+        cy.findByRole('button', { name: 'Add good_proton_charge filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('300').should('exist');
+          });
+      });
   });
 });

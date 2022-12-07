@@ -1,0 +1,36 @@
+{
+  "dimensions": {
+    "Dataset.type.name": {
+      "experiment_raw": 100
+    }
+  },
+  "results": [
+    {
+      "id": 24063138,
+      "score": 11.063898086547852,
+      "source": {
+        "name": "raw",
+        "description": "LOQ54000 Team LOQ GLASSY CARBON 4-SEP-1997 10:03:33 20.3",
+        "startDate": 1232387651000,
+        "date": 1232387651000,
+        "endDate": 1470723238014,
+        "fileSize": 0,
+        "fileCount": 0,
+        "id": 24063138,
+        "investigation.id": "24063575",
+        "sample.name": "GLASSY CARBON",
+        "sample.id": "24063138",
+        "sample.investigation.id": "24063575",
+        "sample.type.name": "GLASSY CARBON",
+        "sample.type.id": "95513",
+        "type.name": "experiment_raw",
+        "type.id": "4",
+        "investigationinstrument": [
+          {
+            "instrument.id": "6"
+          }
+        ]
+      }
+    }
+  ]
+}
