@@ -8,6 +8,9 @@
   "dependencies": {
     "husky": "8.0.1"
   },
+  "resolutions": {
+    "@types/react": "17.0.39"
+  },
   "scripts": {
     "build": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 --exclude datagateway-common run build",
     "lint": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 run lint:js --max-warnings=0",
