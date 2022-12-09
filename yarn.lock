@@ -6527,7 +6527,7 @@ __metadata:
     redux-thunk: 2.4.1
     serve: 14.1.1
     single-spa-react: 4.6.1
-    start-server-and-test: 1.14.0
+    start-server-and-test: 1.15.0
     tslib: 2.4.0
     typescript: 4.9.3
     url-search-params-polyfill: 8.1.1
@@ -6591,7 +6591,7 @@ __metadata:
     react-virtualized: 9.22.3
     serve: 14.1.1
     single-spa-react: 4.6.1
-    start-server-and-test: 1.14.0
+    start-server-and-test: 1.15.0
     tslib: 2.4.0
     typescript: 4.9.3
   languageName: unknown
@@ -6665,7 +6665,7 @@ __metadata:
     resize-observer-polyfill: 1.5.1
     serve: 14.1.1
     single-spa-react: 4.6.1
-    start-server-and-test: 1.14.0
+    start-server-and-test: 1.15.0
     tslib: 2.4.0
     typescript: 4.9.3
     url-search-params-polyfill: 8.1.1
@@ -15002,10 +15002,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"start-server-and-test@npm:1.14.0":
-  version: 1.14.0
-  resolution: "start-server-and-test@npm:1.14.0"
+"start-server-and-test@npm:1.15.0":
+  version: 1.15.0
+  resolution: "start-server-and-test@npm:1.15.0"
   dependencies:
+    arg: ^5.0.2
     bluebird: 3.7.2
     check-more-types: 2.24.0
     debug: 4.3.2
@@ -15017,7 +15018,7 @@ __metadata:
     server-test: src/bin/start.js
     start-server-and-test: src/bin/start.js
     start-test: src/bin/start.js
-  checksum: 8437f5fc39bb47dd684b94023bab654703abc4890d08f005c3d86df620b2cdaac03f6e3bb21792a93209f1a70c8bb500d82fe4025a356da45fc060f2a80374e1
+  checksum: cb297a07e806f5e2d9c12ad9159bb2c9f4b428ccdeb2c526bb47f60d4cbed904a706cd39b03a73692b51580d5a162beee5656bcfa887ae8aac6d4b65edf48e66
   languageName: node
   linkType: hard
 
