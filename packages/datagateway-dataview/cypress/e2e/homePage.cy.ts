@@ -19,6 +19,11 @@ describe('DataGateway HomePage', () => {
 
     cy.get('[data-testid="facility-button"]').click();
     cy.url().should('equal', 'https://www.isis.stfc.ac.uk/Pages/About.aspx');
-    cy.go('back');
+    cy.origin('https://www.isis.stfc.ac.uk/Pages/About.aspx', () => {
+      cy.on('uncaught:exception', (e) => {
+        return false;
+      });
+      cy.go('back');
+    });
   });
 });
