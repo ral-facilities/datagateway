@@ -1,9 +1,5 @@
 import {
   Box,
-  Chip,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   FormControl,
   Grid,
   InputLabel,
@@ -11,39 +7,25 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Pagination,
   Paper,
+  Select,
   TableSortLabel,
   Typography,
-  Select,
-  Divider,
-  Pagination,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ArrowTooltip from '../arrowtooltip.component';
 import {
   Entity,
   Filter,
+  FiltersType,
   Order,
   SortType,
-  FiltersType,
   UpdateMethod,
-  SearchFilter,
 } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
 import EntityCard, { EntityImageDetails } from './entityCard.component';
-import ParameterFilters from './parameterFilters.component';
 import { DatasearchType } from '../api';
-
-const SelectedChips = styled('ul')(({ theme }) => ({
-  display: 'inline-flex',
-  justifyContent: 'center',
-  flexWrap: 'wrap',
-  listStyle: 'none',
-  padding: theme.spacing(1),
-}));
 
 export interface CardViewDetails {
   dataKey: string;
@@ -149,7 +131,7 @@ function CVPagination(
       count={numPages}
       page={page}
       onChange={(e, p) => {
-        // If we are not clicking on the same page.
+        // If we are not clicking on the same page. TT
         if (p !== page) {
           changePage(p);
         }
@@ -167,7 +149,6 @@ function CVPagination(
 const CardView = (props: CardViewProps): React.ReactElement => {
   // Props.
   const {
-    entityName,
     data,
     totalDataCount,
     customFilters,
@@ -176,10 +157,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     loadedData,
     loadedCount,
     onPageChange,
-    onFilter,
     onSort,
     onResultsChange,
-    allIds,
   } = props;
 
   // Get card information.
@@ -220,10 +199,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const hasInfoFilters = information
     ? information.some((i) => i.filterComponent)
     : false;
-  const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
-  const [selectedChips, setSelectedChips] = React.useState<CVSelectedFilter[]>(
-    []
-  );
   const [filterUpdate, setFilterUpdate] = React.useState(false);
 
   // Sort.
@@ -289,153 +264,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     setCardSort(sortList);
   }, [description, information, title.dataKey, title.disableSort, title.label]);
 
-  // Set the filter information based on what was provided.
-  React.useEffect(() => {
-    const getSelectedFilter = (
-      filterKey: string,
-      filterValue: string
-    ): boolean => {
-      if (filterKey in filters) {
-        const v = filters[filterKey];
-        if (Array.isArray(v) && v.includes(filterValue)) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    // Get the updated info.
-    const info: CVFilterInfo = customFilters
-      ? Object.values(customFilters).reduce((o, filter) => {
-          const data: CVFilterInfo = {
-            ...o,
-            [filter.dataKey]: {
-              label: filter.label,
-              items: filter.filterItems.reduce(
-                (o, item) => ({
-                  ...o,
-                  [item.name]: {
-                    selected: getSelectedFilter(filter.dataKey, item.name),
-                    count: item.count,
-                  },
-                }),
-                {}
-              ),
-              hasSelectedItems: false,
-            },
-          };
-
-          // Update the selected count for each filter.
-          const selectedItems = Object.values(data[filter.dataKey].items).find(
-            (v) => v.selected === true
-          );
-          if (selectedItems) {
-            data[filter.dataKey].hasSelectedItems = true;
-          }
-          return data;
-        }, {})
-      : {};
-
-    setFiltersInfo(info);
-
-    const selectedChips: CVSelectedFilter[] = [];
-    Object.entries(filters).forEach(([key, filter]) => {
-      if (filter instanceof Array) {
-        filter.forEach((filterEntry) => {
-          if (typeof filterEntry === 'string') {
-            if (info[key]) {
-              selectedChips.push({
-                filterKey: key,
-                label: info[key].label,
-                items: Object.entries(info[key].items)
-                  .filter(([, v]) => v.selected)
-                  .map(([i]) => i),
-              });
-            }
-          } else if ('filter' in filterEntry) {
-            selectedChips.push({
-              filterKey: key,
-              label: filterEntry.key.substring(
-                filterEntry.key.lastIndexOf('.') + 1
-              ),
-              items: [filterEntry.label],
-            });
-          }
-        });
-      }
-    });
-
-    setSelectedChips(selectedChips);
-  }, [customFilters, filters]);
-
-  const parameterNames = React.useMemo(() => {
-    const parameterNames: string[] = [];
-    Object.entries(filtersInfo).forEach(([filterKey, info]) => {
-      if (filterKey.includes('parameter')) {
-        Object.keys(info.items).forEach((label) => {
-          parameterNames.push(label);
-        });
-      }
-    });
-    return parameterNames;
-  }, [filtersInfo]);
-
   React.useEffect(() => {
     if (filterUpdate && loadedData) setFilterUpdate(false);
   }, [filterUpdate, totalDataCount, loadedData]);
-
-  const changeFilter = (
-    filterKey: string,
-    filterValue: SearchFilter,
-    remove?: boolean
-  ): void => {
-    const getNestedIndex = (updateItems: SearchFilter[]): number => {
-      let i = 0;
-      for (const updateItem of updateItems) {
-        if (
-          typeof updateItem !== 'string' &&
-          'label' in updateItem &&
-          updateItem.label === filterValue
-        ) {
-          return i;
-        }
-        i++;
-      }
-      return -1;
-    };
-
-    // Add or remove the filter value in the state.
-    let updateItems: SearchFilter[] = [];
-    if (filterKey in filters) {
-      const filterItems = filters[filterKey];
-      if (Array.isArray(filterItems)) {
-        updateItems = filterItems;
-      }
-    }
-
-    // Add or remove the filter value.
-    if (!remove && !updateItems.includes(filterValue)) {
-      // Add a filter item.
-      updateItems.push(filterValue);
-      onPageChange(1);
-      onFilter(filterKey, updateItems);
-    } else if (updateItems.length > 0) {
-      // Set to null if this is the last item in the array.
-      // Remove the item from the updated items array.
-      let i = updateItems.indexOf(filterValue);
-      i = i === -1 ? getNestedIndex(updateItems) : i;
-      if (i > -1) {
-        // Remove the filter value from the update items.
-        updateItems.splice(i, 1);
-        onPageChange(1);
-        if (updateItems.length > 0) {
-          onFilter(filterKey, updateItems);
-        } else {
-          onFilter(filterKey, null);
-        }
-      }
-    }
-  };
 
   const nextSortDirection = (dataKey: string): Order | null => {
     switch (sort[dataKey]) {
@@ -480,7 +311,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               (i === 0 && totalDataCount > n) ||
               (i > 0 && totalDataCount > resOptions[i - 1])
           )
-          .includes(props.results) === true
+          .includes(props.results)
       ) {
         onResultsChange(props.results);
       } else {
@@ -668,125 +499,12 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   </Paper>
                 </Grid>
               )}
-
-              {/* Filtering options */}
-              {customFilters && (filterUpdate || totalDataCount > 0) && (
-                <Grid item xs>
-                  <Paper>
-                    <Box p={2}>
-                      <Typography variant="h5">Filter By</Typography>
-                    </Box>
-
-                    {/* Show the specific options available to filter by */}
-                    <Box>
-                      {filtersInfo &&
-                        Object.entries(filtersInfo).map(
-                          ([filterKey, filter], filterIndex) => {
-                            return (
-                              <Accordion
-                                key={filterIndex}
-                                defaultExpanded={filter.hasSelectedItems}
-                              >
-                                <AccordionSummary
-                                  expandIcon={<ExpandMoreIcon />}
-                                >
-                                  <Typography>{filter.label}</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                  <div style={{ width: '100%' }}>
-                                    <List
-                                      component="nav"
-                                      aria-label="filter-by-list"
-                                    >
-                                      {Object.entries(filter.items).map(
-                                        ([name, data], valueIndex) => (
-                                          <ListItem
-                                            sx={{ display: 'flex' }}
-                                            key={valueIndex}
-                                            button
-                                            disabled={data.selected}
-                                            onClick={() => {
-                                              changeFilter(filterKey, name);
-                                              setFilterUpdate(true);
-                                            }}
-                                            aria-label={`Filter by ${filter.label} ${name}`}
-                                          >
-                                            <div style={{ flex: 1 }}>
-                                              <Chip
-                                                label={
-                                                  <ArrowTooltip title={name}>
-                                                    <Typography>
-                                                      {name}
-                                                    </Typography>
-                                                  </ArrowTooltip>
-                                                }
-                                              />
-                                            </div>
-                                            {data.count && (
-                                              <Divider
-                                                orientation="vertical"
-                                                flexItem
-                                              />
-                                            )}
-                                            {data.count && (
-                                              <Typography
-                                                sx={{ paddingLeft: '5%' }}
-                                              >
-                                                {data.count}
-                                              </Typography>
-                                            )}
-                                          </ListItem>
-                                        )
-                                      )}
-                                    </List>
-                                  </div>
-                                </AccordionDetails>
-                              </Accordion>
-                            );
-                          }
-                        )}
-                    </Box>
-                    {allIds && entityName && (
-                      <Box p={2}>
-                        <ParameterFilters
-                          entityName={entityName}
-                          parameterNames={parameterNames}
-                          allIds={allIds}
-                          changeFilter={changeFilter}
-                          setFilterUpdate={setFilterUpdate}
-                        />
-                      </Box>
-                    )}
-                  </Paper>
-                </Grid>
-              )}
             </Grid>
           </Grid>
         )}
 
         {/* Card data */}
         <Grid item xs={12} md={9}>
-          {/* Selected filters array */}
-          {selectedChips.length > 0 && (filterUpdate || totalDataCount > 0) && (
-            <SelectedChips>
-              {selectedChips.map((filter, filterIndex) => (
-                <li key={filterIndex}>
-                  {filter.items.map((item, itemIndex) => (
-                    <Chip
-                      key={itemIndex}
-                      sx={{ margin: 0.5 }}
-                      label={`${filter.label} - ${item}`}
-                      onDelete={() => {
-                        changeFilter(filter.filterKey, item, true);
-                        setFilterUpdate(true);
-                      }}
-                    />
-                  ))}
-                </li>
-              ))}
-            </SelectedChips>
-          )}
-
           {/* List of cards */}
           {hasFilteredResults ? (
             <List sx={{ padding: 0, margin: 0 }}>
