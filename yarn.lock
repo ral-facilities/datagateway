@@ -1456,6 +1456,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.14.6":
+  version: 7.20.6
+  resolution: "@babel/runtime@npm:7.20.6"
+  dependencies:
+    regenerator-runtime: ^0.13.11
+  checksum: 42a8504db21031b1859fbc0f52d698a3d2f5ada9519eb76c6f96a7e657d8d555732a18fe71ef428a67cc9fc81ca0d3562fb7afdc70549c5fec343190cbaa9b03
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.16.7, @babel/template@npm:^7.3.3":
   version: 7.16.7
   resolution: "@babel/template@npm:7.16.7"
@@ -2729,6 +2738,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/cypress@npm:^8.0.7":
+  version: 8.0.7
+  resolution: "@testing-library/cypress@npm:8.0.7"
+  dependencies:
+    "@babel/runtime": ^7.14.6
+    "@testing-library/dom": ^8.1.0
+  peerDependencies:
+    cypress: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
+  checksum: e005bc1a7ec808706c57e95ed312069fb5be39ea7362900dc2a32c09f124d478ade69ebcd7df88c076e3867ab328ae6e6ce13791bdf042621ff66b56552bf74b
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:^8.0.0":
   version: 8.11.3
   resolution: "@testing-library/dom@npm:8.11.3"
@@ -2742,6 +2763,22 @@ __metadata:
     lz-string: ^1.4.4
     pretty-format: ^27.0.2
   checksum: 2245d254b6058590e25de86fb7b3c75e4a31096901a191f80d3efb9fa7e1e273043416f370c8770feb9f3ccc73a1550a877a3b003b593f1728ae828fcb52cd62
+  languageName: node
+  linkType: hard
+
+"@testing-library/dom@npm:^8.1.0":
+  version: 8.19.0
+  resolution: "@testing-library/dom@npm:8.19.0"
+  dependencies:
+    "@babel/code-frame": ^7.10.4
+    "@babel/runtime": ^7.12.5
+    "@types/aria-query": ^4.2.0
+    aria-query: ^5.0.0
+    chalk: ^4.1.0
+    dom-accessibility-api: ^0.5.9
+    lz-string: ^1.4.4
+    pretty-format: ^27.0.2
+  checksum: 6bb93fef96703b6c47cf1b7cc8f71d402a9576084a94ba4e9926f51bd7bb1287fbb4f6942d82bd03fc6f3d998ae97e60f6aea4618f3a1ce6139597d2a4ecb7b9
   languageName: node
   linkType: hard
 
@@ -2779,7 +2816,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react-hooks@npm:8.0.1, @testing-library/react-hooks@npm:^8.0.1":
+"@testing-library/react-hooks@npm:8.0.1":
   version: 8.0.1
   resolution: "@testing-library/react-hooks@npm:8.0.1"
   dependencies:
@@ -6330,9 +6367,10 @@ __metadata:
     "@mui/icons-material": 5.10.3
     "@mui/material": 5.10.0
     "@mui/x-date-pickers": 5.0.0-beta.5
+    "@testing-library/cypress": ^8.0.7
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 12.1.3
-    "@testing-library/react-hooks": ^8.0.1
+    "@testing-library/react-hooks": 8.0.1
     "@testing-library/user-event": 14.4.1
     "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
@@ -13423,6 +13461,13 @@ __metadata:
   version: 0.13.10
   resolution: "regenerator-runtime@npm:0.13.10"
   checksum: 09893f5a9e82932642d9a999716b6c626dc53ef2a01307c952ebbf8e011802360163a37c304c18a6c358548be5a72b448e37209954a18696f21e438c81cbb4b9
+  languageName: node
+  linkType: hard
+
+"regenerator-runtime@npm:^0.13.11":
+  version: 0.13.11
+  resolution: "regenerator-runtime@npm:0.13.11"
+  checksum: 27481628d22a1c4e3ff551096a683b424242a216fee44685467307f14d58020af1e19660bf2e26064de946bad7eff28950eae9f8209d55723e2d9351e632bbb4
   languageName: node
   linkType: hard
 

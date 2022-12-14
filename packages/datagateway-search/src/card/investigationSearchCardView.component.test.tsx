@@ -1,43 +1,23 @@
 import * as React from 'react';
 import {
   dGCommonInitialState,
-  useAllFacilityCycles,
-  useLuceneSearchInfinite,
-  useInvestigationsDatasetCount,
-  useInvestigationSizes,
-  StateType,
-  CardView,
-  InvestigationDetailsPanel,
-  ISISInvestigationDetailsPanel,
-  DLSVisitDetailsPanel,
   SearchResponse,
   SearchResult,
   SearchResultSource,
+  StateType,
 } from 'datagateway-common';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import { mount, ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import type { RenderResult } from '@testing-library/react';
-import { render } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useAllFacilityCycles: jest.fn(),
-    useLuceneSearchInfinite: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
-    useInvestigationSizes: jest.fn(),
-  };
-});
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
 function renderComponent({
   initialState,
@@ -56,23 +36,52 @@ function renderComponent({
 }
 
 describe('Investigation - Card View', () => {
-  let mockStore;
   let state: StateType;
   let cardData: SearchResultSource;
   let searchResult: SearchResult;
   let searchResponse: SearchResponse;
   let history: History;
 
-  const createWrapper = (hierarchy?: string): ReactWrapper => {
-    return mount(
-      <Provider store={mockStore(state)}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <InvestigationSearchCardView hierarchy={hierarchy ?? ''} />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
+  const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
+    if (/\/search\/documents$/.test(url)) {
+      // lucene search query
+      return Promise.resolve({
+        data: searchResponse,
+      });
+    }
+    if (/\/facilitycycles$/.test(url)) {
+      return Promise.resolve({
+        data: [],
+      });
+    }
+    if (/\/datafiles\/count$/.test(url)) {
+      return Promise.resolve({
+        data: 1,
+      });
+    }
+    if (/\/datasets\/count$/.test(url)) {
+      return Promise.resolve({
+        data: 1,
+      });
+    }
+    if (/\/user\/getSize$/.test(url)) {
+      return Promise.resolve({
+        data: 1,
+      });
+    }
+    if (/\/datasets$/.test(url)) {
+      return Promise.resolve({
+        data: {
+          id: 1,
+          name: 'Dataset test name',
+          startDate: '1563922800000',
+          endDate: '1564009200000',
+        },
+      });
+    }
+    return Promise.reject({
+      message: `Endpoint not mocked ${url}`,
+    });
   };
 
   beforeEach(() => {
@@ -109,42 +118,7 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    (useLuceneSearchInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [searchResponse] },
-      fetchNextPage: jest.fn(),
-    });
-
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [],
-    });
-
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(
-      (investigations) =>
-        (investigations
-          ? 'pages' in investigations
-            ? investigations.pages.flat()
-            : investigations
-          : []
-        ).map(() => ({
-          data: 1,
-          isFetching: false,
-          isSuccess: true,
-        }))
-    );
-
-    (useInvestigationSizes as jest.Mock).mockImplementation((investigations) =>
-      (investigations
-        ? 'pages' in investigations
-          ? investigations.pages.flat()
-          : investigations
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
-
+    axios.get = jest.fn(mockAxiosGet);
     window.scrollTo = jest.fn();
   });
 
@@ -154,211 +128,239 @@ describe('Investigation - Card View', () => {
 
   //The below tests are modified from datasetSearchCardView
 
-  it('renders correctly', () => {
-    const { asFragment } = renderComponent({ initialState: state });
-    expect(asFragment()).toMatchSnapshot();
-  });
+  it('renders correctly', async () => {
+    renderComponent({ initialState: state });
 
-  it('calls the correct data fetching hooks on load', () => {
-    createWrapper();
+    const cards = await screen.findAllByTestId('card');
+    expect(cards).toHaveLength(1);
 
-    expect(useLuceneSearchInfinite).toHaveBeenCalledWith(
-      'Investigation',
-      {
-        searchText: '',
-        startDate: null,
-        endDate: null,
-        maxCount: 100,
-        minCount: 10,
-        restrict: true,
-        sort: {},
-        facets: [
-          {
-            target: 'Investigation',
-          },
-          {
-            dimensions: [{ dimension: 'type.name' }],
-            target: 'InvestigationParameter',
-          },
-          {
-            dimensions: [{ dimension: 'type.name' }],
-            target: 'Sample',
-          },
-        ],
-      },
-      {}
-    );
-
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith([cardData]);
-    expect(useInvestigationSizes).toHaveBeenCalledWith(undefined);
-  });
-
-  it('renders fine with incomplete data', () => {
-    expect(() => createWrapper()).not.toThrowError();
-  });
-
-  it('renders generic link & pending count correctly', () => {
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
-    const wrapper = createWrapper();
-
-    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
-      `/browse/investigation/1/dataset`
-    );
-    expect(wrapper.find(CardView).find('a').first().text()).toEqual('Test 1');
+    const card = cards[0];
+    screen.debug(card, 10000000);
+    expect(within(card).getByText('Test 1')).toBeInTheDocument();
     expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[data-testid="card-info-data-investigations.dataset_count"]')
-        .text()
-    ).toEqual('Calculating...');
+      within(card).getByText('entity_card.no_description')
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByRole('button', { name: 'card-more-info-expand' })
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByText('investigations.dataset_count:')
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByRole('button', { name: 'buttons.download' })
+    ).toBeInTheDocument();
   });
 
-  it("renders DLS link correctly and doesn't allow for cart selection or download", () => {
-    const wrapper = createWrapper('dls');
+  it('renders generic link & pending count correctly', async () => {
+    axios.get = jest.fn((url: string) => {
+      if (/\/datasets\/count$/.test(url)) {
+        return new Promise((_) => {
+          // never resolve the promise to pretend the query is loading
+        });
+      }
+      return mockAxiosGet(url);
+    });
 
-    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
+    renderComponent({
+      initialState: state,
+    });
+
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    expect(within(card).getByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
+      '/browse/investigation/1/dataset'
+    );
+    expect(within(card).getByText('Calculating...')).toBeInTheDocument();
+  });
+
+  it("renders DLS link correctly and doesn't allow for cart selection or download", async () => {
+    renderComponent({
+      initialState: state,
+      hierarchy: 'dls',
+    });
+
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    expect(within(card).getByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
       '/browse/proposal/Investigation test name/investigation/1/dataset'
     );
-    expect(wrapper.find(CardView).find('a').first().text()).toEqual('Test 1');
-    expect(wrapper.exists('#add-to-cart-btn-1')).toBe(false);
-    expect(wrapper.exists('#download-btn-1')).toBe(false);
+
+    expect(
+      within(card).queryByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeNull();
+    expect(
+      within(card).queryByRole('button', { name: 'buttons.download' })
+    ).toBeNull();
   });
 
-  it('renders ISIS link & file sizes correctly', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 6,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
+  it('renders ISIS link & file sizes correctly', async () => {
+    axios.get = jest.fn((url: string) => {
+      if (/\/facilitycycles$/.test(url)) {
+        return Promise.resolve({
+          data: [
+            {
+              id: 6,
+              name: 'facility cycle name',
+              startDate: '2000-06-10',
+              endDate: '2020-06-11',
+            },
+          ],
+        });
+      }
+      return mockAxiosGet(url);
     });
 
-    const wrapper = createWrapper('isis');
+    renderComponent({ initialState: state, hierarchy: 'isis' });
 
-    expect(useInvestigationSizes).toHaveBeenCalledWith([cardData]);
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(undefined);
+    const card = (await screen.findAllByTestId('card'))[0];
 
-    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
-      `/browse/instrument/4/facilityCycle/6/investigation/1/dataset`
+    expect(
+      within(card).getByRole('link', {
+        name: 'Test 1',
+      })
+    ).toHaveAttribute(
+      'href',
+      '/browse/instrument/4/facilityCycle/6/investigation/1/dataset'
     );
-    expect(wrapper.find(CardView).find('a').first().text()).toEqual('Test 1');
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[data-testid="card-info-data-investigations.size"]')
-        .text()
-    ).toEqual('1 B');
+
+    expect(within(card).getByText('1 B')).toBeInTheDocument();
   });
 
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper
-        .find('[data-testid="investigation-search-card-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('doi 1');
+  it('displays DOI and renders the expected Link ', async () => {
+    renderComponent({ initialState: state });
 
-    expect(
-      wrapper
-        .find('[data-testid="investigation-search-card-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    expect(within(card).getByRole('link', { name: 'doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
+    );
   });
 
-  it('does not render ISIS link when instrumentId cannot be found', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
+  it('does not render ISIS link when instrumentId cannot be found', async () => {
+    axios.get = jest.fn((url: string) => {
+      if (/\/facilitycycles$/.test(url)) {
+        return Promise.resolve({
+          data: [
+            {
+              id: 4,
+              name: 'facility cycle name',
+              startDate: '2000-06-10',
+              endDate: '2020-06-11',
+            },
+          ],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     delete cardData.investigationinstrument;
 
-    const wrapper = createWrapper('isis');
+    renderComponent({ initialState: state, hierarchy: 'isis' });
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    expect(within(card).queryByRole('link', { name: 'Test 1' })).toBeNull();
+    expect(within(card).getByText('Test 1')).toBeInTheDocument();
+  });
+
+  it('displays generic details panel when expanded', async () => {
+    const user = userEvent.setup();
+
+    renderComponent({ initialState: state });
+
+    expect(screen.queryByTestId('investigation-details-panel')).toBeNull();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
+
     expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Test 1');
+      await screen.findByTestId('investigation-details-panel')
+    ).toBeInTheDocument();
   });
 
-  it('displays generic details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
+  it('displays correct details panel for ISIS when expanded', async () => {
+    const user = userEvent.setup();
 
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
+    renderComponent({ initialState: state, hierarchy: 'isis' });
+
+    expect(screen.queryByTestId('isis-investigation-details-panel')).toBeNull();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
+
+    expect(
+      await screen.findByTestId('isis-investigation-details-panel')
+    ).toBeInTheDocument();
   });
 
-  it('displays correct details panel for ISIS when expanded', () => {
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
+  it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
+    const user = userEvent.setup();
 
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
+    axios.get = jest.fn((url: string) => {
+      if (/\/facilitycycles$/.test(url)) {
+        return Promise.resolve({
+          data: [
+            {
+              id: 4,
+              name: 'facility cycle name',
+              startDate: '2000-06-10',
+              endDate: '2020-06-11',
+            },
+          ],
+        });
+      }
+      return mockAxiosGet(url);
     });
 
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
+    renderComponent({
+      initialState: state,
+      hierarchy: 'isis',
+    });
 
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
+    expect(screen.queryByTestId('isis-investigation-details-panel')).toBeNull();
 
-    wrapper.find('#investigation-datasets-tab').last().simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
+
+    const panel = await screen.findByTestId('isis-investigation-details-panel');
+    expect(panel).toBeInTheDocument();
+
+    await user.click(
+      within(panel).getByRole('tab', {
+        name: 'investigations.details.datasets',
+      })
+    );
+
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/4/investigation/1/dataset'
     );
   });
 
-  it('displays correct details panel for DLS when expanded', () => {
-    const wrapper = createWrapper('dls');
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
+  it('displays correct details panel for DLS when expanded', async () => {
+    const user = userEvent.setup();
 
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
+    renderComponent({
+      initialState: state,
+      hierarchy: 'dls',
+    });
+
+    expect(screen.queryByTestId('dls-visit-details-panel')).toBeNull();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
+
+    expect(
+      await screen.findByTestId('dls-visit-details-panel')
+    ).toBeInTheDocument();
   });
 });
