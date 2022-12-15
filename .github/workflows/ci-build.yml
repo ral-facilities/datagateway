@@ -151,7 +151,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v6.0.0
+          ref: feature/icat-backend-generator#369
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -299,7 +299,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v6.0.0
+          ref: feature/icat-backend-generator#369
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -429,7 +429,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v6.0.0
+          ref: feature/icat-backend-generator#369
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
