@@ -1,9 +1,0 @@
-{
-    "baseUrl": "http://127.0.0.1:3000",
-    "chomeWebSecurity": false,
-    "video": false,
-    "retries": {
-      "runMode": 3,
-      "openMode": 1
-    }
-}
