@@ -30,7 +30,7 @@
     "history": "4.10.1",
     "i18next": "22.0.3",
     "i18next-browser-languagedetector": "7.0.0",
-    "i18next-http-backend": "2.0.0",
+    "i18next-http-backend": "2.1.0",
     "jsrsasign": "10.6.0",
     "loglevel": "1.8.0",
     "prettier": "2.8.0",
