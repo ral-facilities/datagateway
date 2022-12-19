@@ -463,7 +463,7 @@ describe('ISIS Investigations table component', () => {
 
   it('displays the correct user as the PI ', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual(
+    expect(wrapper.find('[aria-colindex=7]').find('span').text()).toEqual(
       'Test PI'
     );
   });
@@ -508,8 +508,8 @@ describe('ISIS Investigations table component', () => {
     });
 
     wrapper = createWrapper();
-    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
-    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
+    expect(wrapper.find('[aria-colindex=5]').find('span').text()).toEqual('');
+    expect(wrapper.find('[aria-colindex=7]').find('span').text()).toEqual('');
   });
 
   it('renders actions correctly', () => {

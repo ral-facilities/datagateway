@@ -15,6 +15,8 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { createMemoryHistory, History } from 'history';
 
+jest.setTimeout(15000);
+
 // Unofficial React 17 Enzyme adapter
 Enzyme.configure({ adapter: new Adapter() });
 

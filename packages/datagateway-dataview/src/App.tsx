@@ -14,7 +14,7 @@ import {
   Location,
   Action,
 } from 'history';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import React from 'react';
 import { Translation } from 'react-i18next';
 import { batch, connect, Provider } from 'react-redux';

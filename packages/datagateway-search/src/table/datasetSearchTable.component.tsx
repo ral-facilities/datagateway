@@ -126,8 +126,6 @@ const DatasetSearchTable = ({
       };
     }
   }, [data]);
-  console.log({ data, isFetching, searchText });
-  console.log('aggregatedSource', aggregatedSource);
 
   const handleSort = useSort();
 

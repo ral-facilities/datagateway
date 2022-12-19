@@ -130,7 +130,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               id="downloadStatus.id-filter"
                             >
                               <label
-                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
+                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
                                 id="downloadStatus.id-filter"
                               >
@@ -253,7 +253,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               id="downloadStatus.fullname-filter"
                             >
                               <label
-                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
+                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
                                 id="downloadStatus.fullname-filter"
                               >
@@ -376,7 +376,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               id="downloadStatus.username-filter"
                             >
                               <label
-                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
+                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
                                 id="downloadStatus.username-filter"
                               >
@@ -499,7 +499,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               id="downloadStatus.preparedId-filter"
                             >
                               <label
-                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
+                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
                                 id="downloadStatus.preparedId-filter"
                               >
@@ -622,7 +622,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               id="downloadStatus.transport-filter"
                             >
                               <label
-                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
+                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
                                 id="downloadStatus.transport-filter"
                               >
@@ -745,7 +745,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               id="downloadStatus.status-filter"
                             >
                               <label
-                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
+                                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
                                 id="downloadStatus.status-filter"
                               >
@@ -1092,13 +1092,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="1"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               1
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1117,13 +1117,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="Person 1"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               Person 1
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1142,13 +1142,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test user"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test user
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1167,13 +1167,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test-prepared-id"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test-prepared-id
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1192,13 +1192,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="https"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               https
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1217,13 +1217,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="downloadStatus.complete"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               downloadStatus.complete
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1242,13 +1242,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="1 KB"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               1 KB
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1267,13 +1267,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="2020-02-25 15:05:29"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               2020-02-25 15:05:29
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1292,13 +1292,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="No"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               No
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1356,13 +1356,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="2"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               2
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1381,13 +1381,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="Person 2"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               Person 2
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1406,13 +1406,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test user"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test user
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1431,13 +1431,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test-prepared-id"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test-prepared-id
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1456,13 +1456,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="globus"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               globus
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1481,13 +1481,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="downloadStatus.preparing"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               downloadStatus.preparing
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1506,13 +1506,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="2 KB"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               2 KB
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1531,13 +1531,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="2020-02-26 15:05:35"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               2020-02-26 15:05:35
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1556,13 +1556,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="No"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               No
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1641,13 +1641,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="3"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               3
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1666,13 +1666,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="Person 3"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               Person 3
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1691,13 +1691,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test user"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test user
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1716,13 +1716,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test-prepared-id"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test-prepared-id
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1741,13 +1741,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="https"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               https
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1766,13 +1766,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="downloadStatus.restoring"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               downloadStatus.restoring
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1791,13 +1791,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="3 KB"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               3 KB
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1816,13 +1816,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="2020-02-27 15:57:20"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               2020-02-27 15:57:20
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1841,13 +1841,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="No"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               No
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1926,13 +1926,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="4"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               4
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1951,13 +1951,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="Person 4"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               Person 4
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -1976,13 +1976,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test user"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test user
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2001,13 +2001,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test-prepared-id"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test-prepared-id
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2026,13 +2026,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="globus"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               globus
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2051,13 +2051,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="downloadStatus.expired"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               downloadStatus.expired
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2076,13 +2076,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="4 KB"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               4 KB
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2101,13 +2101,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="2020-02-28 15:57:28"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               2020-02-28 15:57:28
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2126,13 +2126,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="Yes"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               Yes
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2190,13 +2190,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="5"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               5
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2215,13 +2215,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="Person 5"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               Person 5
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2240,13 +2240,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test user"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test user
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2265,13 +2265,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="test-prepared-id"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               test-prepared-id
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2290,13 +2290,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="globus"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               globus
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2315,13 +2315,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="downloadStatus.paused"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               downloadStatus.paused
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2340,13 +2340,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="5 KB"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               5 KB
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2365,13 +2365,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="2020-03-01 15:57:28"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               2020-03-01 15:57:28
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >
@@ -2390,13 +2390,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div
                             class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-188rx6i-MuiTableCell-root"
                           >
-                            <p
+                            <span
                               aria-label="No"
                               class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
                               data-mui-internal-clone-element="true"
                             >
                               No
-                            </p>
+                            </span>
                             <div
                               style="margin-left: 18px; padding-left: 4px; padding-right: 4px; height: 100%;"
                             >

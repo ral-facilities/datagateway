@@ -96,7 +96,7 @@ describe('Table component', () => {
         .find('[role="row"]')
         .find('[role="gridcell"]')
         .first()
-        .find('p')
+        .find('span')
         .text()
     ).toEqual('test1');
 
@@ -105,7 +105,7 @@ describe('Table component', () => {
         .find('[role="row"]')
         .find('[role="gridcell"]')
         .last()
-        .find('p')
+        .find('span')
         .text()
     ).toEqual('2 B');
   });

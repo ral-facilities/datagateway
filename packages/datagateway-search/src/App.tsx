@@ -14,7 +14,7 @@ import {
   Action,
   // eslint-disable-next-line import/no-extraneous-dependencies
 } from 'history';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import React from 'react';
 import { batch, connect, Provider } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';

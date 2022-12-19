@@ -45,6 +45,10 @@ describe('Download Status', () => {
         cy.wrap($refreshTimeElem.text()).as('lastRefreshTime');
       });
 
+    // fake the clock to advance time forward by 5 mins
+    cy.clock(Date.now());
+    cy.tick(5 * 60 * 1000);
+
     cy.get('[aria-label="Refresh download status table"]').should('exist');
     cy.get('[aria-label="Refresh download status table"]').click();
 
@@ -150,7 +154,9 @@ describe('Download Status', () => {
     });
 
     it('date between', () => {
-      cy.get('input[id="Requested Date filter from"]').type('2020-01-31 00:00:00');
+      cy.get('input[id="Requested Date filter from"]').type(
+        '2020-01-31 00:00:00'
+      );
 
       const date = new Date();
       date.setDate(1);
