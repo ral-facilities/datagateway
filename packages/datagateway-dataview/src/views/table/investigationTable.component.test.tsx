@@ -352,11 +352,11 @@ describe('Investigation table component', () => {
   it('renders date objects as just the date', () => {
     const wrapper = createWrapper();
 
-    expect(wrapper.find('[aria-colindex=9]').find('p').text()).toEqual(
+    expect(wrapper.find('[aria-colindex=9]').find('span').text()).toEqual(
       '2019-07-23'
     );
 
-    expect(wrapper.find('[aria-colindex=10]').find('p').text()).toEqual(
+    expect(wrapper.find('[aria-colindex=10]').find('span').text()).toEqual(
       '2019-07-24'
     );
   });

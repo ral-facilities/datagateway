@@ -23,9 +23,19 @@ export interface DownloadSettings {
   routes: PluginRoute[];
   helpSteps: { target: string; content: string }[];
   pluginHost?: string;
+
+  /**
+   * A map of UI flags that can toggle certain UI features..
+   */
+  uiFeatures: {
+    /**
+     * Enables download progress to be displayed in download status tables when set to true.
+     */
+    downloadProgress: boolean;
+  };
 }
 
-const initialConfiguration = {
+const initialConfiguration: DownloadSettings = {
   facilityName: '',
   apiUrl: '',
   downloadApiUrl: '',
@@ -35,6 +45,9 @@ const initialConfiguration = {
   accessMethods: {},
   routes: [],
   helpSteps: [],
+  uiFeatures: {
+    downloadProgress: false,
+  },
 };
 
 export const DownloadSettingsContext =

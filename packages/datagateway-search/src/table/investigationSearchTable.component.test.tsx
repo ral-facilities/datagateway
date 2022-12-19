@@ -100,8 +100,8 @@ describe('Investigation Search Table component', () => {
     rowData = [
       {
         id: 1,
-        title: 'Test title 1',
-        name: 'Test 1',
+        title: 'Test Title 1',
+        name: 'Test Name 1',
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
@@ -127,8 +127,8 @@ describe('Investigation Search Table component', () => {
             },
             investigation: {
               id: 1,
-              title: 'Test 1',
-              name: 'Test 1',
+              title: 'Test Title 1',
+              name: 'Test Name 1',
               visitId: '1',
             },
           },
@@ -500,8 +500,7 @@ describe('Investigation Search Table component', () => {
   it('renders title, visit ID, Name and DOI as links', () => {
     const wrapper = renderComponent();
 
-    //Title and name
-    expect(wrapper.getAllByText('Test title 1')).toMatchSnapshot();
+    expect(wrapper.getByText('Test Title 1')).toMatchSnapshot();
 
     expect(wrapper.getAllByText('1')).toMatchSnapshot();
 

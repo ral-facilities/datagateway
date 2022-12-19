@@ -49,7 +49,11 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
         );
       } else {
         if (valid) {
-          return <Component {...(componentProps as T)} />;
+          return (
+            <Component
+              {...(componentProps as T & { children?: React.ReactNode })}
+            />
+          );
         } else {
           return (
             <Grid

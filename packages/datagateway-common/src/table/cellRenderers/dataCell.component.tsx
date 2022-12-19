@@ -26,7 +26,7 @@ const DataCell = React.memo((props: CellRendererProps): React.ReactElement => {
         enterDelay={500}
         sx={{ flex: 1 }}
       >
-        <Typography variant="body2" noWrap>
+        <Typography variant="body2" noWrap component="span">
           {cellContent}
         </Typography>
       </ArrowTooltip>

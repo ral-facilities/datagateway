@@ -83,7 +83,7 @@ Object {
           },
         },
       ],
-      "name": "Test 1",
+      "name": "Test Name 1",
       "size": 1,
       "startDate": "2019-06-10",
       "studyInvestigations": Array [
@@ -91,8 +91,8 @@ Object {
           "id": 6,
           "investigation": Object {
             "id": 1,
-            "name": "Test 1",
-            "title": "Test 1",
+            "name": "Test Name 1",
+            "title": "Test Title 1",
             "visitId": "1",
           },
           "study": Object {
@@ -105,7 +105,7 @@ Object {
         },
       ],
       "summary": "foo bar",
-      "title": "Test title 1",
+      "title": "Test Title 1",
       "visitId": "1",
     },
   ],
@@ -122,37 +122,16 @@ Object {
 }
 `;
 
-exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 1`] = `
-Array [
-  <a
-    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
-    href="/browse/investigation/1/dataset"
-  >
-    Test title 1
-  </a>,
-]
+exports[`Investigation Search Table component renders title and DOI as links 1`] = `
+<a
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+  href="/browse/investigation/1/dataset"
+>
+  Test Title 1
+</a>
 `;
 
-exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 2`] = `
-Array [
-  <p
-    aria-label="1"
-    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
-    data-mui-internal-clone-element="true"
-  >
-    1
-  </p>,
-  <p
-    aria-label="1"
-    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
-    data-mui-internal-clone-element="true"
-  >
-    1
-  </p>,
-]
-`;
-
-exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 3`] = `
+exports[`Investigation Search Table component renders title and DOI as links 2`] = `
 <a
   class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
   data-testid="investigation-search-table-doi-link"

@@ -14,10 +14,10 @@ import { ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import DoiRedirect from './doiRedirect.component';
 import { createLocation, createMemoryHistory } from 'history';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import { AnyAction } from 'redux';
 
-jest.mock('loglevel');
+// jest.mock('loglevel');
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');

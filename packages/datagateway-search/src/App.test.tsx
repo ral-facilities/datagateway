@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { mount } from 'enzyme';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import { Provider } from 'react-redux';
 
 jest.mock('loglevel');

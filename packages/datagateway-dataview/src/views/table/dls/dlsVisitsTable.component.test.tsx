@@ -290,6 +290,6 @@ describe('DLS Visits table component', () => {
 
     const wrapper = createWrapper();
 
-    expect(wrapper.find('[aria-colindex=4]').find('p').text()).toEqual('');
+    expect(wrapper.find('[aria-colindex=4]').find('span').text()).toEqual('');
   });
 });

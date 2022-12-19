@@ -5,6 +5,7 @@ import {
   saveApiUrlMiddleware,
   checkInstrumentId,
   checkStudyId,
+  checkDatafileId,
 } from './idCheckFunctions';
 import axios from 'axios';
 import { handleICATError, ConfigureURLsType } from 'datagateway-common';
@@ -322,6 +323,65 @@ describe('ID check functions', () => {
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
+    });
+  });
+});
+
+describe('checkDatafileId', () => {
+  it('should return true when the given investigation + dataset + datafile id matches', async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: [
+        {
+          id: 123,
+          dataset: {
+            id: 234,
+            investigation: {
+              id: 456,
+            },
+          },
+        },
+      ],
+    });
+
+    expect(await checkDatafileId(456, 234, 123)).toBe(true);
+  });
+
+  it('should return false when the given investigation + dataset + datafile id does not match', async () => {
+    // datafile id and dataset id matches but not investigation
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: [
+        {
+          id: 123,
+          dataset: {
+            id: 234,
+            investigation: {
+              id: 456,
+            },
+          },
+        },
+      ],
+    });
+
+    // dataset & datafile matches but not investigation
+    expect(await checkDatafileId(100, 234, 123)).toBe(false);
+    // investigation & datafile matches but not dataset
+    expect(await checkDatafileId(456, 199, 123)).toBe(false);
+    // only datafile matches
+    expect(await checkDatafileId(199, 200, 123)).toBe(false);
+    // no match at all
+    expect(await checkDatafileId(1, 2, 0)).toBe(false);
+  });
+
+  it('should return false when an http error is encountered', async () => {
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    expect(await checkDatafileId(456, 234, 123)).toBe(false);
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
     });
   });
 });

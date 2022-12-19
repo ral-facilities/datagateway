@@ -10,6 +10,7 @@ import {
   getDataUrl,
   getDownload,
   getDownloadTypeStatus,
+  getPercentageComplete,
   submitCart,
 } from './downloadApi';
 import { mockedSettings } from './testData';
@@ -411,6 +412,38 @@ describe('Admin Download Status API functions test', () => {
         disabled: false,
         message: '',
       });
+    });
+  });
+
+  describe('getPercentageComplete', () => {
+    it('should return the percentage of a download restore from 0 to 100', async () => {
+      axios.get = jest.fn().mockResolvedValue({
+        data: '2',
+      });
+
+      const response = await getPercentageComplete({
+        preparedId: '1',
+        settings: {
+          idsUrl: mockedSettings.idsUrl,
+        },
+      });
+
+      expect(response).toEqual(2);
+    });
+
+    it('should return the status of a download restore', async () => {
+      axios.get = jest.fn().mockResolvedValue({
+        data: 'INVALID',
+      });
+
+      const response = await getPercentageComplete({
+        preparedId: '1',
+        settings: {
+          idsUrl: mockedSettings.idsUrl,
+        },
+      });
+
+      expect(response).toEqual('INVALID');
     });
   });
 });

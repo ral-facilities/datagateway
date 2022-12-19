@@ -78,6 +78,17 @@ describe('ISIS Studies table component', () => {
         name: 'Test 1',
         modTime: '2000-01-01',
         createTime: '2000-01-01',
+        studyInvestigations: [
+          {
+            id: 636,
+            investigation: {
+              id: 357,
+              title: 'all might urgent',
+              name: 'peculiar crowd',
+              visitId: 'Y2D8y7v',
+            },
+          },
+        ],
       },
     ];
     history = createMemoryHistory();
@@ -325,7 +336,7 @@ describe('ISIS Studies table component', () => {
 
     const wrapper = createWrapper();
 
-    expect(wrapper.find('[aria-colindex=2]').find('p').first().text()).toBe(
+    expect(wrapper.find('[aria-colindex=2]').find('span').first().text()).toBe(
       'Test investigation'
     );
   });
