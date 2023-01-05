@@ -4,7 +4,7 @@ describe('ISIS - Datasets Cards', () => {
     cy.intercept('**/datasets?order*').as('getDatasetsOrder');
     cy.login();
     cy.visit(
-      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset'
     ).wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {
       timeout: 10000,
     });
@@ -27,11 +27,11 @@ describe('ISIS - Datasets Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('DATASET 97')
+      .contains('DATASET 139')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/97'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/139'
     );
   });
 
@@ -48,16 +48,16 @@ describe('ISIS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASET 97');
+      .contains('DATASET 139');
     cy.get('#dataset-type-tab').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASETTYPE 1');
+      .contains('DATASETTYPE 2');
     cy.get('#dataset-datafiles-tab').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/97/datafile'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/139/datafile'
     );
   });
 
@@ -75,19 +75,19 @@ describe('ISIS - Datasets Cards', () => {
       });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('DATASET 337');
+      cy.get('[data-testid="card"]').first().contains('DATASET 139');
 
       cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
         timeout: 10000,
       });
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('DATASET 97');
+      cy.get('[data-testid="card"]').first().contains('DATASET 19');
 
       cy.contains('[role="button"]', 'Name').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('DATASET 97');
+      cy.get('[data-testid="card"]').first().contains('DATASET 19');
     });
 
     it('multiple fields', () => {
@@ -98,14 +98,14 @@ describe('ISIS - Datasets Cards', () => {
         });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('DATASET 337');
+      cy.get('[data-testid="card"]').first().contains('DATASET 19');
 
       cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
         timeout: 10000,
       });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('DATASET 337');
+      cy.get('[data-testid="card"]').first().contains('DATASET 19');
     });
   });
 
@@ -121,11 +121,11 @@ describe('ISIS - Datasets Cards', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('[aria-label="Filter by Name"]')
         .first()
-        .type('337')
+        .type('19')
         .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
-      cy.get('[data-testid="card"]').first().contains('DATASET 337');
+      cy.get('[data-testid="card"]').first().contains('DATASET 19');
       // check that size is correct after filtering
-      cy.get('[data-testid="card"]').first().contains('5.53 GB');
+      cy.get('[data-testid="card"]').first().contains('1.22 GB');
 
       cy.get('input[id="Create Time filter from"]')
         .type('2019-01-01')

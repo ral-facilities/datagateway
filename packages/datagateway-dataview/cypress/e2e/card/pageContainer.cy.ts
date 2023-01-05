@@ -35,7 +35,7 @@ describe('PageContainer Component', () => {
     // Check that the entity count has displayed correctly.
     cy.get('[aria-label="view-count"]')
       .should('be.visible')
-      .contains('Results: 239');
+      .contains('Results: 119');
   });
 
   it('should be able to click clear filters button to clear filters', () => {
@@ -55,7 +55,7 @@ describe('PageContainer Component', () => {
       cy.get('[data-testid="card"]')
         .first()
         .contains(
-          'Security down response daughter line. Maybe course head per. South heart authority.'
+          'Painting PM read until language particularly. Gas them analysis college pay south bring.'
         );
 
       cy.get('[data-testid="clear-filters-button"]').click();
@@ -159,35 +159,31 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
     cy.get('[data-testid="card"]')
       .first()
-      .contains('Guy maintain us process official people suffer.');
+      .contains('Quite world game over million.');
 
     cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('[data-testid="card"]')
-      .first()
-      .contains('Yourself smile either I pass significant.');
+    cy.get('[data-testid="card"]').first().contains('Across prepare why go.');
 
     cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
       .first()
       .click();
     cy.get('[data-testid="card"]')
       .first()
-      .contains('Window former upon writer help step account.');
+      .contains('Always wait sister between conference subject piece.');
 
     cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('[data-testid="card"]')
-      .first()
-      .contains('Someone statement Republican plan watch.');
+    cy.get('[data-testid="card"]').first().contains('Democrat cell treatment.');
 
     cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
       .first()
       .click();
     cy.get('[data-testid="card"]')
       .first()
-      .contains('Including spend increase ability music skill former.');
+      .contains('Analysis reflect work or hour color maybe.');
   });
 
   it('should load the homepage if navigating to home', () => {

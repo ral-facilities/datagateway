@@ -3,7 +3,7 @@ describe('ISIS - Investigations Cards', () => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/16/investigation').wait(
+    cy.visit('/browse/instrument/1/facilityCycle/19/investigation').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
@@ -22,11 +22,11 @@ describe('ISIS - Investigations Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('Again bad simply low summer.')
+      .contains('Fine strong education fill maintain.')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/97'
+      '/browse/instrument/1/facilityCycle/19/investigation/19'
     );
   });
 
@@ -79,7 +79,7 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('INVESTIGATION 97');
+      .contains('INVESTIGATION 19');
 
     // Study PID
 
@@ -122,26 +122,26 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('Noah Jones');
+      .contains('Ashley Brown');
     cy.get('#investigation-samples-tab').click({ force: true });
 
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('SAMPLE 97');
+      .contains('SAMPLE 19');
 
     cy.get('#investigation-publications-tab').click({ force: true });
 
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('Safe tough case newspaper.');
+      .contains('Value impact paper apply likely. ');
 
     cy.get('#investigation-datasets-tab').click({ force: true });
 
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset'
     );
   });
 
@@ -161,7 +161,7 @@ describe('ISIS - Investigations Cards', () => {
       cy.contains('[role="button"]', 'desc').should('not.exist');
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Again bad simply low summer.');
+        .contains('Fine strong education fill maintain.');
 
       cy.contains('[role="button"]', 'Title')
         .click()
@@ -170,7 +170,7 @@ describe('ISIS - Investigations Cards', () => {
       cy.contains('[role="button"]', 'desc').should('exist');
       cy.get('[data-testid="card"]')
         .first()
-        .contains('He represent address cut environmental special size.');
+        .contains('Fine strong education fill maintain.');
 
       cy.contains('[role="button"]', 'Title')
         .click()
@@ -179,7 +179,7 @@ describe('ISIS - Investigations Cards', () => {
       cy.contains('[role="button"]', 'desc').should('not.exist');
       cy.get('[data-testid="card"]')
         .first()
-        .contains('He represent address cut environmental special size.');
+        .contains('Fine strong education fill maintain.');
     });
 
     it('multiple fields', () => {
@@ -190,7 +190,7 @@ describe('ISIS - Investigations Cards', () => {
       cy.contains('[role="button"]', 'desc').should('not.exist');
       cy.get('[data-testid="card"]')
         .first()
-        .contains('He represent address cut environmental special size.');
+        .contains('Fine strong education fill maintain.');
 
       cy.contains('[role="button"]', 'Title')
         .click()
@@ -199,7 +199,7 @@ describe('ISIS - Investigations Cards', () => {
       cy.contains('[role="button"]', 'desc').should('not.exist');
       cy.get('[data-testid="card"]')
         .first()
-        .contains('He represent address cut environmental special size.');
+        .contains('Fine strong education fill maintain.');
     });
   });
 
@@ -215,14 +215,14 @@ describe('ISIS - Investigations Cards', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('[aria-label="Filter by Title"]')
         .first()
-        .type('again')
+        .type('education')
         .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
           timeout: 10000,
         });
 
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Again bad simply low summer.');
+        .contains('Fine strong education fill maintain.');
       // check that size is correct after filtering
       cy.get('[data-testid="card"]').first().contains('11.74 GB');
 
@@ -233,7 +233,7 @@ describe('ISIS - Investigations Cards', () => {
         .first()
         .contains('Again bad simply low summer.');
       cy.get('input[id="Start Date filter to"]')
-        .type('2004-01-02')
+        .type('2004-09-02')
         .wait(['@getInvestigationsCount'], { timeout: 10000 });
       cy.get('[data-testid="card"]').should('not.exist');
     });

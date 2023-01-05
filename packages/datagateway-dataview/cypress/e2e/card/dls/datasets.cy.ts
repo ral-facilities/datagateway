@@ -28,11 +28,11 @@ describe('DLS - Datasets Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('DATASET 241')
+      .contains('DATASET 121')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/241/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/121/datafile'
     );
   });
 
@@ -44,7 +44,7 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASET 241');
+      .contains('DATASET 121');
     cy.get('#calculate-size-btn').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
@@ -79,7 +79,7 @@ describe('DLS - Datasets Cards', () => {
       });
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('DATASET 241');
+      cy.get('[data-testid="card"]').first().contains('DATASET 121');
 
       cy.contains('[role="button"]', 'Name').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
@@ -118,9 +118,9 @@ describe('DLS - Datasets Cards', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('[aria-label="Filter by Name"]')
         .first()
-        .type('241')
+        .type('121')
         .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
-      cy.get('[data-testid="card"]').first().contains('DATASET 241');
+      cy.get('[data-testid="card"]').first().contains('DATASET 121');
 
       cy.get('input[id="Create Time filter from"]')
         .type('2019-01-01')
@@ -159,7 +159,7 @@ describe('DLS - Datasets Cards', () => {
 
     cy.get('[aria-label="Filter by Name"]')
       .first()
-      .type('DATASET 242')
+      .type('DATASET 122')
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
 
     cy.get('[data-testid="card"]').first().contains('55');
