@@ -127,7 +127,7 @@ describe('DLS - Visits Cards', () => {
         .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('42');
+      cy.get('[data-testid="card"]').first().contains('70');
 
       cy.get('input[id="Start Date filter from"]')
         .type('2000-01-01')

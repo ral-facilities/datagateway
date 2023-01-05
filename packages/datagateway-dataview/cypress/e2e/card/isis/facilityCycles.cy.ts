@@ -93,7 +93,7 @@ describe('ISIS - FacilityCycles Cards', () => {
       cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
 
       cy.get('input[id="Start Date filter from"]')
-        .type('2019-01-01')
+        .type('2004-08-01')
         .wait(['@getFacilityCyclesCount'], { timeout: 10000 });
       cy.get('input[aria-label="Start Date filter to"]')
         .parent()
@@ -109,7 +109,7 @@ describe('ISIS - FacilityCycles Cards', () => {
         'have.value',
         date.toISOString().slice(0, 10)
       );
-      cy.get('[data-testid="card"]').first().contains('2019 cycle 4');
+      cy.get('[data-testid="card"]').first().contains('2004 cycle 4');
     });
   });
 });

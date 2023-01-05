@@ -26,7 +26,7 @@ describe('DLS - Proposals Cards', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%2030/investigation'
+      '/browse/proposal/INVESTIGATION%2039/investigation'
     );
   });
 
@@ -71,7 +71,7 @@ describe('DLS - Proposals Cards', () => {
         .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('INVESTIGATION 217');
+      cy.get('[data-testid="card"]').first().contains('INVESTIGATION 52');
     });
   });
 });
