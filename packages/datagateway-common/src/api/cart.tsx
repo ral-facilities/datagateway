@@ -96,6 +96,7 @@ export const useAddToCart = (
       }),
     {
       onSuccess: (data) => {
+        //Check if parent entity is there can be done here, then checkbox disable logic to be added.
         queryClient.setQueryData('cart', data);
       },
       retry: (failureCount, error) => {
