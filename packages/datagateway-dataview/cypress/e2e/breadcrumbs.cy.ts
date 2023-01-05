@@ -34,7 +34,7 @@ describe('Breadcrumbs Component', () => {
     // Get the investigation name.
     cy.get('[data-testid="Breadcrumb-hierarchy-1"]').should(
       'have.text',
-      'Analysis reflect work or hour color maybe. Much\n team discussion message weight.'
+      'Analysis reflect work or hour color maybe.\nMuch team discussion message weight.'
     );
 
     // Ensure current page is datasets.
@@ -56,7 +56,7 @@ describe('Breadcrumbs Component', () => {
     cy.get('[data-testid="Breadcrumb-hierarchy-1"]')
       .should(
         'have.text',
-        'Analysis reflect work or hour color maybe. Much\n team discussion message weight.'
+        'Analysis reflect work or hour color maybe.\nMuch team discussion message weight.'
       )
       .should('have.attr', 'href', '/browse/investigation/1/dataset');
 
@@ -93,7 +93,7 @@ describe('Breadcrumbs Component', () => {
     cy.get('[data-testid="Breadcrumb-hierarchy-1"]')
       .should(
         'have.text',
-        'Analysis reflect work or hour color maybe. Much\n team discussion message weight.'
+        'Analysis reflect work or hour color maybe.\nMuch team discussion message weight.'
       )
       .should('have.attr', 'href', '/browse/investigation/1/dataset');
 
@@ -111,7 +111,7 @@ describe('Breadcrumbs Component', () => {
 
     cy.get('[data-testid="Breadcrumb-hierarchy-1"]').should(
       'have.text',
-      'Analysis reflect work or hour color maybe. Much\n team discussion message weight.'
+      'Analysis reflect work or hour color maybe.\nMuch team discussion message weight.'
     );
 
     cy.get('[data-testid="Breadcrumb-last"]').contains('Datasets');

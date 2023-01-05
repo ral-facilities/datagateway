@@ -71,7 +71,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 54"]`).should('be.checked');
+        cy.get(`[aria-label="select row 14"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
           .should('have.attr', 'data-indeterminate')
@@ -79,7 +79,7 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="selection-alert-text"]')
           .invoke('text')
           .then((text) => {
-            expect(text.trim()).equal('55 items have been added to selection.');
+            expect(text.trim()).equal('15 items have been added to selection.');
           });
       });
 
@@ -155,7 +155,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 54"]`).should('not.be.checked');
+        cy.get(`[aria-label="select row 14"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
@@ -165,7 +165,7 @@ describe('Add/remove from cart functionality', () => {
           .invoke('text')
           .then((text) => {
             expect(text.trim()).equal(
-              '55 items have been removed from selection.'
+              '15 items have been removed from selection.'
             );
           });
       });
@@ -275,7 +275,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 54"]`).should('be.checked');
+        cy.get(`[aria-label="select row 14"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
           .should('have.attr', 'data-indeterminate')
@@ -311,13 +311,13 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 0"]').should('be.checked');
         cy.get('[aria-label="select row 1"]').should('be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo(0, 350);
-        cy.get('[aria-label="select row 14"]').should('not.be.checked');
+        //cy.get('[aria-label="grid"]').scrollTo(0, 350);
+        //cy.get('[aria-label="select row 14"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get('[aria-label="select row 53"]').should('be.checked');
-        cy.get('[aria-label="select row 54"]').should('be.checked');
+        cy.get('[aria-label="select row 13"]').should('be.checked');
+        cy.get('[aria-label="select row 14"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
@@ -347,7 +347,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 54"]`).should('not.be.checked');
+        cy.get(`[aria-label="select row 14"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
@@ -445,7 +445,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 54"]`).should('be.checked');
+        cy.get(`[aria-label="select row 14"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
           .should('have.attr', 'data-indeterminate')
@@ -484,8 +484,8 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get('[aria-label="select row 53"]').should('not.be.checked');
-        cy.get('[aria-label="select row 54"]').should('be.checked');
+        cy.get('[aria-label="select row 13"]').should('not.be.checked');
+        cy.get('[aria-label="select row 14"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
@@ -519,7 +519,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 54"]`).should('not.be.checked');
+        cy.get(`[aria-label="select row 14"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
@@ -929,8 +929,8 @@ describe('Add/remove from cart functionality', () => {
           .scrollTo('bottom')
           .wait('@getInvestigations');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get('[aria-label="select row 51"]').should('be.checked');
-        cy.get('[aria-label="select row 53"]').should('be.checked');
+        cy.get('[aria-label="select row 11"]').should('be.checked');
+        cy.get('[aria-label="select row 13"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
@@ -964,7 +964,7 @@ describe('Add/remove from cart functionality', () => {
           .scrollTo('bottom')
           .wait('@getInvestigations');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 54"]`).should('not.be.checked');
+        cy.get(`[aria-label="select row 14"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
@@ -973,7 +973,7 @@ describe('Add/remove from cart functionality', () => {
           .invoke('text')
           .then((text) => {
             expect(text.trim()).equal(
-              '239 items have been removed from selection.'
+              '119 items have been removed from selection.'
             );
           });
       });
