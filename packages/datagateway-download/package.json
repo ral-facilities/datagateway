@@ -20,7 +20,7 @@
     "datagateway-common": "^1.1.1",
     "date-fns": "2.29.1",
     "date-fns-tz": "1.3.5",
-    "eslint-config-prettier": "8.5.0",
+    "eslint-config-prettier": "8.6.0",
     "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-prettier": "4.2.1",
     "history": "4.10.1",
