@@ -285,7 +285,7 @@ describe('Add/remove from cart functionality', () => {
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .first()
-          .type('e')
+          .type('s')
           .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
 
         cy.get('[aria-label="select all rows"]').check();

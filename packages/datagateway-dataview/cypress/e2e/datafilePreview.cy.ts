@@ -12,13 +12,13 @@ describe('Datafile preview', () => {
       fixture: 'datafile.txt',
     });
     // intercept request to investigation and return a mock investigation object
-    cy.intercept('GET', '**/instruments/1/facilitycycles/16/investigations/*', {
+    cy.intercept('GET', '**/instruments/1/facilitycycles/19/investigations/*', {
       statusCode: 200,
       fixture: 'investigation.json',
     });
     cy.login();
     cy.visit(
-      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile/6084',
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/139/datafile/3484',
       {
         onBeforeLoad(win: Cypress.AUTWindow) {
           cy.spy(win.navigator.clipboard, 'writeText').as('copy');
@@ -29,7 +29,7 @@ describe('Datafile preview', () => {
 
   it('should show test file content and details', () => {
     // should be able to see the content of the text file
-    cy.get('[aria-label="Text content of Datafile 6084.txt"').should('exist');
+    cy.get('[aria-label="Text content of Datafile 3484.txt"').should('exist');
     cy.contains('First line').should('exist');
     cy.contains('Second line').should('exist');
     cy.contains('Third line').should('exist');
@@ -52,7 +52,7 @@ describe('Datafile preview', () => {
       .should('be.checked');
 
     // should be able to see details of the datafile
-    cy.contains('Datafile 6084.txt').should('exist');
+    cy.contains('Datafile 3484.txt').should('exist');
     cy.contains(
       'Effort plan social history carry this summer stuff. Fear source yard small. ' +
         'Together discover new account parent. Learn wall industry red suffer. Black concern building behavior able long.'
@@ -84,7 +84,7 @@ describe('Datafile preview', () => {
     cy.contains('Copy link').click();
     cy.get('@copy').should(
       'be.calledOnceWithExactly',
-      'http://127.0.0.1:3000/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile/6084'
+      'http://127.0.0.1:3000/browse/instrument/1/facilityCycle/19/investigation/19/dataset/139/datafile/3484'
     );
     // should show a successful after copy is successful
     cy.contains('Link copied to clipboard').should('exist');
@@ -97,14 +97,14 @@ describe('Datafile preview', () => {
     cy.contains('Reset zoom').should('not.exist');
 
     cy.contains('Zoom in').click();
-    cy.get('[aria-label="Text content of Datafile 6084.txt"').should(
+    cy.get('[aria-label="Text content of Datafile 3484.txt"').should(
       'have.css',
       'font-size',
       '13px'
     );
     cy.contains('110%').should('exist');
     cy.contains('Zoom in').click();
-    cy.get('[aria-label="Text content of Datafile 6084.txt"').should(
+    cy.get('[aria-label="Text content of Datafile 3484.txt"').should(
       'have.css',
       'font-size',
       '14px'
@@ -112,7 +112,7 @@ describe('Datafile preview', () => {
     cy.contains('120%').should('exist');
 
     cy.contains('Reset zoom').click();
-    cy.get('[aria-label="Text content of Datafile 6084.txt"').should(
+    cy.get('[aria-label="Text content of Datafile 3484.txt"').should(
       'have.css',
       'font-size',
       '12px'
@@ -122,14 +122,14 @@ describe('Datafile preview', () => {
     cy.contains('Reset zoom').should('not.exist');
 
     cy.contains('Zoom out').click();
-    cy.get('[aria-label="Text content of Datafile 6084.txt"').should(
+    cy.get('[aria-label="Text content of Datafile 3484.txt"').should(
       'have.css',
       'font-size',
       '11px'
     );
     cy.contains('90%').should('exist');
     cy.contains('Zoom out').click();
-    cy.get('[aria-label="Text content of Datafile 6084.txt"').should(
+    cy.get('[aria-label="Text content of Datafile 3484.txt"').should(
       'have.css',
       'font-size',
       '10px'
@@ -137,7 +137,7 @@ describe('Datafile preview', () => {
     cy.contains('80%').should('exist');
 
     cy.contains('Reset zoom').click();
-    cy.get('[aria-label="Text content of Datafile 6084.txt"').should(
+    cy.get('[aria-label="Text content of Datafile 3484.txt"').should(
       'have.css',
       'font-size',
       '12px'
@@ -150,7 +150,7 @@ describe('Datafile preview', () => {
   it('should have a details pane toggle that toggles details pane', () => {
     cy.get('label').contains('Show details').click();
 
-    cy.contains('Datafile 6084.txt').should('not.exist');
+    cy.contains('Datafile 3484.txt').should('not.exist');
     cy.contains(
       'Effort plan social history carry this summer stuff. Fear source yard small. ' +
         'Together discover new account parent. Learn wall industry red suffer. Black concern building behavior able long.'

@@ -127,7 +127,7 @@ describe('Investigations Cards', () => {
     cy.get('[data-testid="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
       .first()
-      .type('about')
+      .type('able')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
