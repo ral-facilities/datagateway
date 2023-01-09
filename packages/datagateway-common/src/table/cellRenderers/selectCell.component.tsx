@@ -47,10 +47,12 @@ const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
     >
       <StyledTooltip
         title={
-          !loading && typeof selectedRows === 'undefined'
+          !loading && !parentSelected && typeof selectedRows === 'undefined'
             ? t<string, string>('buttons.cart_loading_failed_tooltip')
             : loading
             ? t<string, string>('buttons.cart_loading_tooltip')
+            : parentSelected
+            ? t<string, string>('buttons.parent_selected_tooltip')
             : ''
         }
         placement="right"
