@@ -321,7 +321,7 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('and unselect all items', () => {
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom'); //.wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
 
         cy.get('[aria-label="select all rows"]').check();

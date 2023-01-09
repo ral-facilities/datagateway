@@ -27,11 +27,11 @@ describe('ISIS - Datasets Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('DATASET 19')
+      .contains('DATASET 139')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/19'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/139'
     );
   });
 

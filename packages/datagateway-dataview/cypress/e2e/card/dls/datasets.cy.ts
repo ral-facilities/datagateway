@@ -49,7 +49,7 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('512.95 MB', { timeout: 10000 });
+      .contains('1.44 GB', { timeout: 10000 });
 
     cy.get('#dataset-type-tab').click({ force: true });
     cy.get('[data-testid="card"]')
