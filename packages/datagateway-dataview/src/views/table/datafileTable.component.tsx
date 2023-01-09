@@ -161,6 +161,12 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
     [cartItems, selectAllSetting, allIds]
   );
 
+  const isParentSelected = React.useMemo(() => {
+    if (data) {
+      return true;
+    }
+  }, [data]);
+
   return (
     <Table
       loading={
@@ -169,6 +175,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
         cartLoading ||
         allIdsLoading
       }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
