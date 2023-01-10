@@ -47,7 +47,7 @@ describe('DLS - Visits Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('3.24 GB', { timeout: 10000 });
+      .contains('3.12 GB', { timeout: 10000 });
     cy.get('#visit-users-tab').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
@@ -62,7 +62,7 @@ describe('DLS - Visits Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('Only quality one call product hit.');
+      .contains('Simple notice since view check over through there.');
   });
 
   describe('should be able to sort by', () => {

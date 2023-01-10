@@ -100,14 +100,18 @@ describe('Investigations Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').first().contains('Who his official.');
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Analysis reflect work or hour color maybe.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').first().contains('Who his official.');
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Analysis reflect work or hour color maybe.');
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -158,8 +162,6 @@ describe('Investigations Cards', () => {
       'have.value',
       date.toISOString().slice(0, 10)
     );
-    cy.get('[data-testid="card"]')
-      .first()
-      .contains('Majority about dog idea bag summer.');
+    cy.get('[data-testid="card"]').first().contains('Put modern else answer.');
   });
 });

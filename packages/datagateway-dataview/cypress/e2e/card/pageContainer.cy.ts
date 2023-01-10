@@ -35,7 +35,7 @@ describe('PageContainer Component', () => {
     // Check that the entity count has displayed correctly.
     cy.get('[aria-label="view-count"]')
       .should('be.visible')
-      .contains('Results: 119');
+      .contains('Results: 59');
   });
 
   it('should be able to click clear filters button to clear filters', () => {
@@ -54,9 +54,7 @@ describe('PageContainer Component', () => {
 
       cy.get('[data-testid="card"]')
         .first()
-        .contains(
-          'Painting PM read until language particularly. Gas them analysis college pay south bring.'
-        );
+        .contains('Painting PM read until language particularly.');
 
       cy.get('[data-testid="clear-filters-button"]').click();
       cy.url().should('eq', url);
@@ -169,14 +167,14 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('[data-testid="card"]')
-      .first()
-      .contains('Always wait sister between conference subject piece.');
+    cy.get('[data-testid="card"]').first().contains('Father effort me.');
 
     cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('[data-testid="card"]').first().contains('Democrat cell treatment.');
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Already medical seek take military rise.');
 
     cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
       .first()

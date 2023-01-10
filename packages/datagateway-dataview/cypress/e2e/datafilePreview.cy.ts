@@ -64,7 +64,7 @@ describe('Datafile preview', () => {
 
     // should be at 100% zoom
     cy.contains('100%').should('exist');
-    cy.get('[aria-label="Text content of Datafile 6084.txt"').should(
+    cy.get('[aria-label="Text content of Datafile 3484.txt"').should(
       'have.css',
       'font-size',
       '12px'
@@ -169,7 +169,7 @@ describe('Datafile preview', () => {
 
     cy.get('label').contains('Show details').click();
 
-    cy.contains('Datafile 6084.txt').should('exist');
+    cy.contains('Datafile 3484.txt').should('exist');
     cy.contains(
       'Effort plan social history carry this summer stuff. Fear source yard small. ' +
         'Together discover new account parent. Learn wall industry red suffer. Black concern building behavior able long.'

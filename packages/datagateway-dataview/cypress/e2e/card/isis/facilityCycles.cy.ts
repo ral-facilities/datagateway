@@ -22,11 +22,11 @@ describe('ISIS - FacilityCycles Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('2009 cycle 3')
+      .contains('2004 cycle 4')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/38/investigation'
+      '/browse/instrument/1/facilityCycle/19/investigation'
     );
   });
 
@@ -44,17 +44,17 @@ describe('ISIS - FacilityCycles Cards', () => {
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2003 cycle 1');
+      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
 
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('2009 cycle 3');
+      cy.get('[data-testid="card"]').first().contains('2004 cycle 4');
 
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2003 cycle 1');
+      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
     });
 
     it('multiple fields', () => {
@@ -63,14 +63,14 @@ describe('ISIS - FacilityCycles Cards', () => {
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2003 cycle 1');
+      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
 
       cy.contains('[role="button"]', 'End Date')
         .click()
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2003 cycle 1');
+      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
     });
   });
 

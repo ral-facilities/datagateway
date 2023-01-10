@@ -22,11 +22,11 @@ describe('ISIS - Studies Cards', () => {
   it('should be able to click a study to see its landing page', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('STUDY 177')
+      .contains('STUDY 196')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/177'
+      '/browseStudyHierarchy/instrument/1/study/196'
     );
   });
 
@@ -95,7 +95,7 @@ describe('ISIS - Studies Cards', () => {
         });
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('STUDY 177');
+      cy.get('[data-testid="card"]').first().contains('STUDY 196');
 
       cy.contains('[role="button"]', 'Start Date')
         .click()
@@ -149,11 +149,11 @@ describe('ISIS - Studies Cards', () => {
 
       cy.get('[aria-label="Filter by Title"]')
         .first()
-        .type('government')
+        .type('senior')
         .wait(['@getStudiesCount', '@getStudiesOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('STUDY 177');
+      cy.get('[data-testid="card"]').first().contains('STUDY 163');
     });
   });
 });

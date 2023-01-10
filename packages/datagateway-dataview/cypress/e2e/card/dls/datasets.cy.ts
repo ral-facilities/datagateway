@@ -28,11 +28,11 @@ describe('DLS - Datasets Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('DATASET 121')
+      .contains('DATASET 61')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/121/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/61/datafile'
     );
   });
 
@@ -44,18 +44,18 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASET 121');
+      .contains('DATASET 61');
     cy.get('#calculate-size-btn').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('1.55 GB', { timeout: 10000 });
+      .contains('1.73 GB', { timeout: 10000 });
 
     cy.get('#dataset-type-tab').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASETTYPE 1');
+      .contains('DATASETTYPE 2');
   });
 
   describe('should be able to sort by', () => {
@@ -79,7 +79,7 @@ describe('DLS - Datasets Cards', () => {
       });
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('DATASET 121');
+      cy.get('[data-testid="card"]').first().contains('DATASET 61');
 
       cy.contains('[role="button"]', 'Name').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
@@ -116,9 +116,9 @@ describe('DLS - Datasets Cards', () => {
 
     it('multiple fields', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
-      cy.get('[aria-label="Filter by Name"]').first().type('121');
+      cy.get('[aria-label="Filter by Name"]').first().type('61');
       //.wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
-      cy.get('[data-testid="card"]').first().contains('DATASET 121');
+      cy.get('[data-testid="card"]').first().contains('DATASET 61');
 
       cy.get('input[id="Create Time filter from"]')
         .type('2019-01-01')
@@ -157,9 +157,9 @@ describe('DLS - Datasets Cards', () => {
 
     cy.get('[aria-label="Filter by Name"]')
       .first()
-      .type('DATASET 122')
+      .type('DATASET 62')
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
 
-    cy.get('[data-testid="card"]').first().contains('122');
+    cy.get('[data-testid="card"]').first().contains('62');
   });
 });

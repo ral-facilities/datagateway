@@ -43,7 +43,7 @@ describe('Datasets Cards', () => {
     });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('[data-testid="card"]').first().contains('DATASET 121');
+    cy.get('[data-testid="card"]').first().contains('DATASET 61');
 
     cy.contains('[role="button"]', 'Name').click();
     cy.contains('[role="button"]', 'asc').should('not.exist');
@@ -73,9 +73,9 @@ describe('Datasets Cards', () => {
     cy.get('[data-testid="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
       .first()
-      .type('121')
+      .type('61')
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
-    cy.get('[data-testid="card"]').first().contains('DATASET 121');
+    cy.get('[data-testid="card"]').first().contains('DATASET 61');
 
     cy.get('input[id="Create Time filter from"]')
       .type('2019-01-01')

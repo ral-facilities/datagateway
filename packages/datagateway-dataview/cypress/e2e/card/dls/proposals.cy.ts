@@ -63,7 +63,7 @@ describe('DLS - Proposals Cards', () => {
         });
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Action here attention itself possible budget.');
+        .contains('Majority about dog idea bag summer.');
 
       cy.get('[aria-label="Filter by Name"]')
         .first()
