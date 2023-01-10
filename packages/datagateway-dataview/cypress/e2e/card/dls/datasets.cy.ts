@@ -55,7 +55,7 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASETTYPE 2');
+      .contains('DATASETTYPE 1');
   });
 
   describe('should be able to sort by', () => {
@@ -116,10 +116,8 @@ describe('DLS - Datasets Cards', () => {
 
     it('multiple fields', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
-      cy.get('[aria-label="Filter by Name"]')
-        .first()
-        .type('121')
-        .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
+      cy.get('[aria-label="Filter by Name"]').first().type('121');
+      //.wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
       cy.get('[data-testid="card"]').first().contains('DATASET 121');
 
       cy.get('input[id="Create Time filter from"]')

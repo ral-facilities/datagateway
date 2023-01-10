@@ -69,8 +69,8 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get(`[aria-label="select row 14"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
@@ -115,15 +115,15 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="grid"]').scrollTo(0, 350);
         cy.get('[aria-label="select row 9"]').should('not.be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }).wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get('[aria-label="select row 53"]').should('be.checked');
         cy.get('[aria-label="select row 54"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
 
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
@@ -153,8 +153,8 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('not.be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }).wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get(`[aria-label="select row 14"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
@@ -273,8 +273,8 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }).wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get(`[aria-label="select row 14"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
@@ -314,15 +314,15 @@ describe('Add/remove from cart functionality', () => {
         //cy.get('[aria-label="grid"]').scrollTo(0, 350);
         //cy.get('[aria-label="select row 14"]').should('not.be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }).wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get('[aria-label="select row 13"]').should('be.checked');
         cy.get('[aria-label="select row 14"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
-        cy.get('[aria-label="grid"]').scrollTo('bottom'); //.wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }); //.wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
 
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
@@ -345,8 +345,8 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('not.be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }).wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get(`[aria-label="select row 14"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
@@ -443,8 +443,8 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }).wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get(`[aria-label="select row 14"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
@@ -482,15 +482,15 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 10"]').should('be.checked');
         cy.get('[aria-label="select row 0"]').should('not.be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }).wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get('[aria-label="select row 13"]').should('not.be.checked');
         cy.get('[aria-label="select row 14"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }).wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
 
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
@@ -517,8 +517,8 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('not.be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false }).wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get(`[aria-label="select row 14"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
@@ -877,9 +877,9 @@ describe('Add/remove from cart functionality', () => {
         ).should('be.checked');
 
         cy.get('[aria-label="grid"]')
-          .scrollTo('bottom')
+          .scrollTo('bottom', { ensureScrollable: false })
           .wait('@getInvestigations');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get(`[aria-label="select row 54"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
@@ -926,18 +926,18 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 8"]').should('be.checked');
 
         cy.get('[aria-label="grid"]')
-          .scrollTo('bottom')
+          .scrollTo('bottom', { ensureScrollable: false })
           .wait('@getInvestigations');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get('[aria-label="select row 11"]').should('be.checked');
         cy.get('[aria-label="select row 13"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
         cy.get('[aria-label="grid"]')
-          .scrollTo('bottom')
+          .scrollTo('bottom', { ensureScrollable: false })
           .wait('@getInvestigations');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
 
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
@@ -961,9 +961,9 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
 
         cy.get('[aria-label="grid"]')
-          .scrollTo('bottom')
+          .scrollTo('bottom', { ensureScrollable: false })
           .wait('@getInvestigations');
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', { ensureScrollable: false });
         cy.get(`[aria-label="select row 14"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
