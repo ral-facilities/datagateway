@@ -48,7 +48,7 @@ describe('ISIS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASET 79');
+      .contains('DATASET 19');
     cy.get('#dataset-type-tab').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
@@ -57,7 +57,7 @@ describe('ISIS - Datasets Cards', () => {
     cy.get('#dataset-datafiles-tab').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79/datafile'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/19/datafile'
     );
   });
 
@@ -128,6 +128,7 @@ describe('ISIS - Datasets Cards', () => {
       cy.get('[data-testid="card"]').first().contains('1.47 GB');
 
       cy.get('input[id="Create Time filter from"]')
+        .click()
         .type('2019-01-01')
         .wait(['@getDatasetsCount'], { timeout: 10000 });
       cy.get('input[aria-label="Create Time filter to"]')

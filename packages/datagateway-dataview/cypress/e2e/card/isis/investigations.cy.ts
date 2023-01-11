@@ -227,6 +227,7 @@ describe('ISIS - Investigations Cards', () => {
       cy.get('[data-testid="card"]').first().contains('2.82 GB');
 
       cy.get('input[id="Start Date filter from"]')
+        .click()
         .type('2004-01-01')
         .wait(['@getInvestigationsCount'], { timeout: 10000 });
       cy.get('[data-testid="card"]')

@@ -93,6 +93,7 @@ describe('ISIS - FacilityCycles Cards', () => {
       cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
 
       cy.get('input[id="Start Date filter from"]')
+        .click()
         .type('2004-08-01')
         .wait(['@getFacilityCyclesCount'], { timeout: 10000 });
       cy.get('input[aria-label="Start Date filter to"]')

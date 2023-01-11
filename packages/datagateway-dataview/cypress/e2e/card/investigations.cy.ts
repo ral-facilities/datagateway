@@ -142,6 +142,7 @@ describe('Investigations Cards', () => {
       );
 
     cy.get('input[id="Start Date filter from"]')
+      .click()
       .type('2013-01-01')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
