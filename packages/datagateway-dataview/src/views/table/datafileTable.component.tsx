@@ -164,10 +164,14 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const isParentSelected = React.useMemo(() => {
     return (
       cartItems?.some(
-        (cartItem) => cartItem.entityId.toString() === datasetId
+        (cartItem) =>
+          cartItem.entityType === 'dataset' &&
+          cartItem.entityId.toString() === datasetId
       ) ||
       cartItems?.some(
-        (cartItem) => cartItem.entityId.toString() === investigationId
+        (cartItem) =>
+          cartItem.entityType === 'investigation' &&
+          cartItem.entityId.toString() === investigationId
       )
     );
   }, [cartItems, datasetId, investigationId]);

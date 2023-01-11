@@ -166,7 +166,9 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
 
   const isParentSelected = React.useMemo(() => {
     return cartItems?.some(
-      (cartItem) => cartItem.entityId.toString() === investigationId
+      (cartItem) =>
+        cartItem.entityType === 'investigation' &&
+        cartItem.entityId.toString() === investigationId
     );
   }, [cartItems, investigationId]);
 
