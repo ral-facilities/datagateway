@@ -226,8 +226,8 @@ describe('Datafile search table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders nothing if no search text is present', async () => {
-    history.replace({ search: '' });
+  it('renders nothing if datafile search is disabled', async () => {
+    history.replace({ search: 'datafile=false' });
 
     renderComponent();
 

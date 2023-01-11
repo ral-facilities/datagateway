@@ -219,8 +219,8 @@ describe('Investigation Search Table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders nothing if no search text is present', async () => {
-    history.replace({ search: '' });
+  it('renders nothing if investigation search is disabled', async () => {
+    history.replace({ search: 'investigation=false' });
 
     renderComponent();
 

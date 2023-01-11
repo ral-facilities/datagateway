@@ -38,8 +38,6 @@ interface DatasetTableProps {
 const DatasetSearchTable = ({
   hierarchy,
 }: DatasetTableProps): React.ReactElement => {
-  console.log('DatasetSearchTable');
-
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
@@ -48,8 +46,8 @@ const DatasetSearchTable = ({
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { startDate, endDate, sort, filters, restrict } = queryParams;
-  const searchText = queryParams.searchText ? queryParams.searchText : '';
+  const { startDate, endDate, sort, filters, restrict, searchText, dataset } =
+    queryParams;
 
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgsearch.selectAllSetting
@@ -63,11 +61,13 @@ const DatasetSearchTable = ({
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
+  console.log('dataset enabled', dataset);
+
   const { fetchNextPage, data, hasNextPage, refetch, isFetching } =
     useLuceneSearchInfinite(
       'Dataset',
       {
-        searchText,
+        searchText: searchText ?? '',
         startDate,
         endDate,
         sort,
@@ -77,8 +77,9 @@ const DatasetSearchTable = ({
         facets: [{ target: 'Dataset' }],
       },
       filters,
-      { enabled: Boolean(searchText) }
+      { enabled: dataset }
     );
+
   const [t] = useTranslation();
 
   const { data: cartItems, isLoading: cartLoading } = useCart();
@@ -378,6 +379,8 @@ const DatasetSearchTable = ({
     },
     [hierarchy, hierarchyLinkURL, push]
   );
+
+  console.log('isFetching', isFetching);
 
   return (
     <Grid

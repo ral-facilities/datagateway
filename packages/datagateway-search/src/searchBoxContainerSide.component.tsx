@@ -44,6 +44,7 @@ const SearchBoxContainerSide = (
       justifyContent="flex-start"
       alignItems="stretch"
       id="container-searchbox"
+      data-testid="search-box-container-side"
     >
       <Grid item>
         <Box px={2}>

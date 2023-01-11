@@ -207,8 +207,8 @@ describe('Dataset table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders nothing if no search text is present', async () => {
-    history.replace({ search: '' });
+  it('renders nothing if dataset search is disabled', async () => {
+    history.replace({ search: 'dataset=false' });
 
     renderComponent();
 

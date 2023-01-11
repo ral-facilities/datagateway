@@ -13,8 +13,8 @@ import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import type { RenderResult } from '@testing-library/react';
-import { render, screen, within } from '@testing-library/react';
-import { createMemoryHistory, History } from 'history';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import { createMemoryHistory, MemoryHistory } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
@@ -40,9 +40,14 @@ describe('Investigation - Card View', () => {
   let cardData: SearchResultSource;
   let searchResult: SearchResult;
   let searchResponse: SearchResponse;
-  let history: History;
+  let history: MemoryHistory;
 
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
+    if (/\/investigations$/.test(url)) {
+      return Promise.resolve({
+        data: [],
+      });
+    }
     if (/\/search\/documents$/.test(url)) {
       // lucene search query
       return Promise.resolve({
@@ -110,7 +115,6 @@ describe('Investigation - Card View', () => {
     };
     history = createMemoryHistory();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -321,6 +325,7 @@ describe('Investigation - Card View', () => {
     });
 
     renderComponent({
+      history,
       initialState: state,
       hierarchy: 'isis',
     });
@@ -340,9 +345,11 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/4/investigation/1/dataset'
-    );
+    await waitFor(() => {
+      expect(history.location.pathname).toBe(
+        '/browse/instrument/4/facilityCycle/4/investigation/1/dataset'
+      );
+    });
   });
 
   it('displays correct details panel for DLS when expanded', async () => {

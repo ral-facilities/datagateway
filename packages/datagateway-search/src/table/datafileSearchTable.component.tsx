@@ -44,7 +44,7 @@ const DatafileSearchTable = ({
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { startDate, endDate, sort, filters, restrict } = queryParams;
+  const { startDate, endDate, sort, filters, restrict, datafile } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const selectAllSetting = useSelector(
@@ -79,7 +79,7 @@ const DatafileSearchTable = ({
         ],
       },
       filters,
-      { enabled: Boolean(searchText) }
+      { enabled: datafile }
     );
   const [t] = useTranslation();
 

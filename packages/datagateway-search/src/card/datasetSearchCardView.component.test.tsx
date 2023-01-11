@@ -12,17 +12,21 @@ import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import DatasetSearchCardView from './datasetSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, MemoryHistory } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-function renderComponent({ initialState, hierarchy = '' }): RenderResult {
+function renderComponent({
+  initialState,
+  history = createMemoryHistory(),
+  hierarchy = '',
+}): RenderResult {
   return render(
     <Provider store={configureStore([thunk])(initialState)}>
-      <Router history={createMemoryHistory()}>
+      <Router history={history}>
         <QueryClientProvider client={new QueryClient()}>
           <DatasetSearchCardView hierarchy={hierarchy} />
         </QueryClientProvider>
@@ -36,7 +40,7 @@ describe('Dataset - Card View', () => {
   let cardData: SearchResultSource;
   let searchResult: SearchResult;
   let searchResponse: SearchResponse;
-  let history: History;
+  let history: MemoryHistory;
 
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
     if (/\/search\/documents$/.test(url)) {
@@ -107,7 +111,6 @@ describe('Dataset - Card View', () => {
     };
     history = createMemoryHistory();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -437,6 +440,7 @@ describe('Dataset - Card View', () => {
     });
 
     renderComponent({
+      history,
       initialState: state,
       hierarchy: 'isis',
     });

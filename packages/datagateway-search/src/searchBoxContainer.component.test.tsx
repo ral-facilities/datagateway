@@ -60,7 +60,7 @@ describe('SearchBoxContainer - Tests', () => {
   });
 
   it('renders searchBoxContainer correctly', async () => {
-    renderComponent({ initialState: state });
+    renderComponent();
 
     // search text box should be visible
     expect(
@@ -99,12 +99,12 @@ describe('SearchBoxContainer - Tests', () => {
     // link to example instrument calibration should be visible
     expect(
       screen.getByRole('link', { name: '"instrument calibration"' })
-    ).toHaveAttribute('href', '/searchBox.examples_label_link1');
+    ).toHaveAttribute('href', '/?searchText=%22instrument+calibration%22');
 
     // link to example neutron and scattering should be visible
     expect(
       screen.getByRole('link', { name: 'neutron AND scattering' })
-    ).toHaveAttribute('href', '/searchBox.examples_label_link2');
+    ).toHaveAttribute('href', '/?searchText=neutron+AND+scattering');
   });
 
   it('shows my data checkbox if user is logged in', () => {

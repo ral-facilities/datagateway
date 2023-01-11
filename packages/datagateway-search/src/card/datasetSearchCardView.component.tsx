@@ -178,9 +178,11 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
         if (hasNextPage && aggregatedIds.length < maxResult) {
           fetchNextPage();
         }
+        console.log('pages', data?.pages);
         const aggregatedSource = data.pages
           .map((response) => mapSource(response))
           .flat();
+        console.log('aggregated source', aggregatedSource);
         return {
           paginatedSource: aggregatedSource.slice(minResult, maxResult),
           aggregatedIds: aggregatedIds,
@@ -300,6 +302,8 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       linkType = 'dataset'
     ): React.ReactElement | string => {
       const linkURL = genericLinkURL(datasetData, linkType);
+      console.log('link url', linkURL);
+      console.log('dataset data', datasetData);
       if (datasetData['investigation.title'] && linkURL) {
         return linkType === 'investigation'
           ? tableLink(linkURL, datasetData['investigation.title'])
@@ -423,6 +427,8 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
 
   const moreInformation = React.useCallback(
     (dataset: SearchResultSource) => {
+      console.log('moreinformation');
+
       const datasetsURL = hierarchyLinkURL(dataset);
 
       if (hierarchy === 'isis') {
