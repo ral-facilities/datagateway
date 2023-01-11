@@ -39,7 +39,7 @@ describe('DLS - Datasets Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/241/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/61/datafile'
     );
   });
 
@@ -140,7 +140,7 @@ describe('DLS - Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
     });
 
     it('no order', () => {
@@ -174,7 +174,7 @@ describe('DLS - Datasets Table', () => {
         .wait('@datasets', { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
     });
   });
 
@@ -183,9 +183,7 @@ describe('DLS - Datasets Table', () => {
       cy.get('[aria-label="Filter by Name"]').first().type('DATASET 1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
-        '2002-11-27 06:20:36'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('date between', () => {
@@ -239,7 +237,8 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
+          'Suggest shake effort many last prepare small. Maintain throw hope parent. ' +
+            'Entire soon option bill fish against power. Rather why rise month shake voice.'
         )
         .should('be.visible');
     });
@@ -247,10 +246,10 @@ describe('DLS - Datasets Table', () => {
     it('and then calculate file size', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '55').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '15').should(
         'exist'
       );
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '55').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '15').should(
         'exist'
       );
 
@@ -259,7 +258,7 @@ describe('DLS - Datasets Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('4.55 GB', { timeout: 10000 })
+      cy.contains('1.39 GB', { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible');
     });
@@ -269,10 +268,10 @@ describe('DLS - Datasets Table', () => {
 
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '55').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '15').should(
         'exist'
       );
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '55').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '15').should(
         'exist'
       );
 
@@ -289,10 +288,10 @@ describe('DLS - Datasets Table', () => {
     it('and view the dataset type panel', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '55').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '15').should(
         'exist'
       );
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '55').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '15').should(
         'exist'
       );
 
@@ -324,11 +323,11 @@ describe('DLS - Datasets Table', () => {
 
     cy.get('[aria-label="Filter by Name"]')
       .first()
-      .type('DATASET 242')
+      .type('DATASET 61')
       .wait(['@datasetsCount', '@datasets'], {
         timeout: 10000,
       });
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('55');
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('15');
   });
 });

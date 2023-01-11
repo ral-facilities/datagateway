@@ -27,7 +27,7 @@ describe('ISIS - Study Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/4/investigation/16'
+      '/browseStudyHierarchy/instrument/1/study/14/investigation/41'
     );
   });
 
@@ -83,7 +83,7 @@ describe('ISIS - Study Landing', () => {
         ],
       },
     ]);
-    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.visit('/browseStudyHierarchy/instrument/1/study/14');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
   });
@@ -139,7 +139,7 @@ describe('ISIS - Study Landing', () => {
       '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
     ]);
 
-    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.visit('/browseStudyHierarchy/instrument/1/study/14');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
     cy.get('[data-testid="citation-formatter-citation"]').contains(
@@ -175,7 +175,7 @@ describe('ISIS - Study Landing', () => {
     cy.intercept('**/text/x-bibliography/invaliddoi?*', {
       statusCode: 503,
     });
-    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.visit('/browseStudyHierarchy/instrument/1/study/14');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('invaliddoi').should('be.visible');
 

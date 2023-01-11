@@ -7,7 +7,7 @@ describe('ISIS - Investigation Landing', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
-    cy.contains('Again bad simply low summer').should('be.visible');
+    cy.contains('Fine strong education fill maintain.').should('be.visible');
   });
 
   it('should be able to click an investigation to see its datasets', () => {
@@ -55,7 +55,7 @@ describe('ISIS - Investigation Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/19'
     );
   });
 
@@ -173,7 +173,7 @@ describe('ISIS - Investigation Landing', () => {
     cy.intercept('**/text/x-bibliography/invaliddoi?*', {
       statusCode: 503,
     });
-    cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');
+    cy.visit('/browse/instrument/1/facilityCycle/19/investigation/19');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('invaliddoi').should('be.visible');
 
