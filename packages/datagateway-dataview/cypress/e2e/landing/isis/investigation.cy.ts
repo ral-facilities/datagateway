@@ -1,7 +1,7 @@
 describe('ISIS - Investigation Landing', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');
+    cy.visit('/browse/instrument/1/facilityCycle/19/investigation/19');
   });
 
   it('should load correctly', () => {
@@ -14,7 +14,7 @@ describe('ISIS - Investigation Landing', () => {
     cy.get('#investigation-datasets-tab').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset'
     );
   });
 
@@ -55,7 +55,7 @@ describe('ISIS - Investigation Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79'
     );
   });
 
@@ -138,7 +138,7 @@ describe('ISIS - Investigation Landing', () => {
       '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
     ]);
 
-    cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');
+    cy.visit('/browse/instrument/1/facilityCycle/19/investigation/79');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
     cy.get('[data-testid="citation-formatter-citation"]').contains(

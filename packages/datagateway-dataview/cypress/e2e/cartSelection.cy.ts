@@ -165,9 +165,9 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('not.be.checked');
 
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -289,9 +289,9 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -334,9 +334,9 @@ describe('Add/remove from cart functionality', () => {
         //cy.get('[aria-label="grid"]').scrollTo(0, 350);
         //cy.get('[aria-label="select row 14"]').should('not.be.checked');
 
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -373,9 +373,9 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('not.be.checked');
 
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -475,9 +475,9 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -529,9 +529,9 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('and unselect all items', () => {
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -561,9 +561,9 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('not.be.checked');
 
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -924,9 +924,9 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getInvestigations');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -973,9 +973,9 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 7"]').should('not.be.checked');
         cy.get('[aria-label="select row 8"]').should('be.checked');
 
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getInvestigations');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -984,9 +984,9 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('and unselect all items', () => {
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getInvestigations');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -1012,9 +1012,9 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
 
-        cy.get('[aria-label="grid"]')
-          .scrollTo('bottom', { ensureScrollable: false })
-          .wait('@getInvestigations');
+        cy.get('[aria-label="grid"]').scrollTo('bottom', {
+          ensureScrollable: false,
+        });
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
@@ -1099,7 +1099,7 @@ describe('Add/remove from cart functionality', () => {
 
     describe('in ISIS browse table', () => {
       beforeEach(() => {
-        cy.visit('/browse/instrument/1/facilityCycle/16/investigation').wait([
+        cy.visit('/browse/instrument/1/facilityCycle/19/investigation').wait([
           '@getInvestigations',
           '@getInvestigations',
           '@getInvestigationCount',

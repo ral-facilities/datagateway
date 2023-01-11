@@ -1,13 +1,13 @@
 describe('ISIS - Study Landing', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.visit('/browseStudyHierarchy/instrument/1/study/14');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
-    cy.contains('He represent address cut environmental special size').should(
+    cy.contains('Already medical seek take military rise.').should(
       'be.visible'
     );
   });
@@ -16,7 +16,7 @@ describe('ISIS - Study Landing', () => {
     cy.get('#study-investigations-tab').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/4/investigation'
+      '/browseStudyHierarchy/instrument/1/study/14/investigation'
     );
   });
 
