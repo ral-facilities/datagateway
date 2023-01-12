@@ -16,7 +16,7 @@ describe('DLS - Proposals Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%2030/investigation'
+      '/browse/proposal/INVESTIGATION%2039/investigation'
     );
   });
 
@@ -26,7 +26,7 @@ describe('DLS - Proposals Table', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(3000);
     cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="75"]').should('exist');
+    cy.get('[aria-rowcount="59"]').should('exist');
   });
 
   it('should disable the hover tool tip by pressing escape', () => {
@@ -116,9 +116,9 @@ describe('DLS - Proposals Table', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by Title"]').first().type('dog');
 
-      cy.get('[aria-rowcount="7"]').should('exist');
+      cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'INVESTIGATION 6'
+        'INVESTIGATION 52'
       );
     });
 

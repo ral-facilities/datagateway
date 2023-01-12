@@ -17,7 +17,7 @@ describe('Investigations Table', () => {
   it('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="75"]').should('exist');
+    cy.get('[aria-rowcount="59"]').should('exist');
   });
 
   it('should disable the hover tool tip by pressing escape', () => {
@@ -121,7 +121,8 @@ describe('Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'About quickly both stop. Population buy on poor. Avoid teacher summer positive feel sing.'
+        'A air avoid beautiful. Nature article your issue. Customer rather ' +
+          'citizen bag boy late. Maybe big act produce challenge short.'
       );
     });
 
@@ -136,7 +137,9 @@ describe('Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Yourself smile either I pass significant. Avoid sound suddenly development line get executive ahead.'
+        'Why news west bar sing tax. Drive up more near member article. Only ' +
+          'remember free thousand interest. Ability ok upon condition ' +
+          'ability. Hand statement despite probably song.'
       );
     });
 
@@ -154,7 +157,7 @@ describe('Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+        'Analysis reflect work or hour color maybe. Much team discussion message weight.'
       );
     });
 
@@ -163,20 +166,20 @@ describe('Investigations Table', () => {
       cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Discussion risk amount hour exist. Off fund usually large else go. Check reflect officer wind main.'
+        'Analysis reflect work or hour color maybe. Much team discussion message weight.'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('dog');
+      cy.get('[aria-label="Filter by Title"]').first().type('wide');
 
-      cy.get('[aria-rowcount="7"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('85');
 
       // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('11.32 GB');
+      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('3.34 GB');
     });
 
     it('date between', () => {
@@ -204,11 +207,11 @@ describe('Investigations Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('dog');
+      cy.get('[aria-label="Filter by Title"]').first().type('wide');
 
-      cy.get('[aria-label="Filter by Visit ID"]').first().type('9');
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('7');
 
-      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowcount="3"]').should('exist');
     });
   });
 
@@ -227,12 +230,12 @@ describe('Investigations Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Show fly image herself yard challenge by. Past site her number. Not weight half far move. Leader everyone skin still.'
+          'Analysis reflect work or hour color maybe. Much team discussion message weight.'
         )
         .should('be.visible');
       cy.get('#details-panel')
         .contains(
-          'Dog want single resource major. Necessary bit always available term small stock game.'
+          'Prove begin boy those always dream write inside. Cold drop season bill treat her wife. Nearly represent fire debate fish. Skin understand risk.'
         )
         .should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);

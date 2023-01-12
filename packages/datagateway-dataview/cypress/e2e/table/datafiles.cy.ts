@@ -80,7 +80,8 @@ describe('Datafiles Table', () => {
     });
   });
 
-  it('should be able to scroll down and load more rows', () => {
+  // Unable to test lazy loading as there are only 15 datafiles in
+  it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
     cy.get('[aria-rowcount="55"]').should('exist');
@@ -110,7 +111,7 @@ describe('Datafiles Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/anyone/structure/my.jpg'
+        '/able/leg/policy.gif'
       );
     });
 
@@ -129,7 +130,7 @@ describe('Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/you/want/special.jpeg'
+        '/writer/family/pull.bmp'
       );
     });
 
@@ -151,7 +152,7 @@ describe('Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/authority/thousand/treatment.tiff'
+        '/five/with/question.bmp'
       );
     });
 
@@ -167,7 +168,7 @@ describe('Datafiles Table', () => {
         .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 13412'
+        'Datafile 119'
       );
     });
   });
@@ -189,11 +190,11 @@ describe('Datafiles Table', () => {
     });
 
     it('text', () => {
-      cy.get('[aria-label="Filter by Location"]').first().type('treatment');
+      cy.get('[aria-label="Filter by Location"]').first().type('candidate');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 479'
+        'Datafile 1071'
       );
     });
 
@@ -231,12 +232,12 @@ describe('Datafiles Table', () => {
         .wait('@datafilesCount', { timeout: 10000 });
       cy.get('[aria-label="Filter by Location"]')
         .first()
-        .type('.jpeg')
+        .type('.gif')
         .wait('@datafilesCount', { timeout: 10000 });
 
-      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 14370'
+        'Datafile 476'
       );
     });
   });
@@ -254,8 +255,8 @@ describe('Datafiles Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').contains('Datafile 479').should('be.visible');
-      cy.get('#details-panel').contains('Datafile 3377').should('not.exist');
+      cy.get('#details-panel').contains('Datafile 119').should('be.visible');
+      cy.get('#details-panel').contains('Datafile 238').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 

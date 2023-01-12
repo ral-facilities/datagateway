@@ -160,7 +160,7 @@ describe('DLS - Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/now/lose/long.gif'
+        '/time/run/drug.jpeg'
       );
     });
 
