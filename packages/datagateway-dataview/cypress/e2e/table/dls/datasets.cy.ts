@@ -328,6 +328,6 @@ describe('DLS - Datasets Table', () => {
         timeout: 10000,
       });
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('15');
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
   });
 });

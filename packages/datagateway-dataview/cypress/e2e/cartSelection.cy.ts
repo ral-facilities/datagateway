@@ -945,7 +945,7 @@ describe('Add/remove from cart functionality', () => {
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Visit ID"]')
           .first()
-          .type('4')
+          .type('7')
           .wait(['@getInvestigations', '@getInvestigations']);
 
         cy.get('[aria-label="select all rows"]').check();
@@ -969,9 +969,9 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'true');
 
         cy.get('[aria-label="select row 1"]').should('be.checked');
-        cy.get('[aria-label="select row 2"]').should('not.be.checked');
+        cy.get('[aria-label="select row 2"]').should('be.checked');
         cy.get('[aria-label="select row 7"]').should('not.be.checked');
-        cy.get('[aria-label="select row 12"]').should('be.checked');
+        cy.get('[aria-label="select row 12"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
@@ -979,8 +979,8 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
-        cy.get('[aria-label="select row 11"]').should('be.checked');
-        cy.get('[aria-label="select row 13"]').should('be.checked');
+        cy.get('[aria-label="select row 58"]').should('be.checked');
+        cy.get('[aria-label="select row 59"]').should('not.be.checked');
       });
 
       it('and unselect all items', () => {

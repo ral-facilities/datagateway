@@ -1,7 +1,7 @@
 describe('DLS - Datafiles Table', () => {
   beforeEach(() => {
     cy.intercept('**/datafiles/count?*').as('datafilesCount');
-    cy.intercept('**/datasets/241').as('datasets');
+    cy.intercept('**/datasets/61').as('datasets');
     cy.intercept('**/datafiles?order=*').as('datafilesOrder');
     cy.login();
     cy.visit(
@@ -188,7 +188,7 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('text', () => {
-      cy.get('[aria-label="Filter by Location"]').first().type('rise');
+      cy.get('[aria-label="Filter by Location"]').first().type('unit');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
