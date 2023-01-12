@@ -968,10 +968,10 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'true');
 
+        cy.get('[aria-label="select row 0"]').should('be.checked');
         cy.get('[aria-label="select row 1"]').should('be.checked');
-        cy.get('[aria-label="select row 2"]').should('be.checked');
-        cy.get('[aria-label="select row 7"]').should('not.be.checked');
-        cy.get('[aria-label="select row 12"]').should('not.be.checked');
+        cy.get('[aria-label="select row 6"]').should('not.be.checked');
+        cy.get('[aria-label="select row 11"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,

@@ -164,17 +164,18 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .first()
-        .type('1')
-        .wait('@datasets', { timeout: 10000 });
-
-      cy.get('input[id="Create Time filter from"]')
-        .type('2006-11-21')
-        .wait('@datasets', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait('@datafilesOrder', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait('@datafilesOrder', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
   });
 
@@ -323,7 +324,7 @@ describe('DLS - Datasets Table', () => {
 
     cy.get('[aria-label="Filter by Name"]')
       .first()
-      .type('DATASET 61')
+      .type('DATASET 62')
       .wait(['@datasetsCount', '@datasets'], {
         timeout: 10000,
       });

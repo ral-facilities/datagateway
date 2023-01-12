@@ -138,7 +138,7 @@ describe('ISIS - Investigation Landing', () => {
       '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
     ]);
 
-    cy.visit('/browse/instrument/1/facilityCycle/19/investigation/79');
+    cy.visit('/browse/instrument/1/facilityCycle/19/investigation/19');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
     cy.get('[data-testid="citation-formatter-citation"]').contains(
