@@ -3,6 +3,7 @@
 exports[`Datafile details panel component should render correctly 1`] = `
 <DocumentFragment>
   <div
+    data-testid="datafile-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -107,6 +108,7 @@ exports[`Datafile details panel component should render correctly 1`] = `
 exports[`Datafile details panel component should render parameters tab when present in the data 1`] = `
 <DocumentFragment>
   <div
+    data-testid="datafile-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -242,6 +244,7 @@ exports[`Datafile details panel component should render parameters tab when pres
             <b>
               String test
             </b>
+             foo/s
           </p>
         </div>
         <div
@@ -258,6 +261,7 @@ exports[`Datafile details panel component should render parameters tab when pres
             <b>
               1337
             </b>
+             bar/s
           </p>
         </div>
         <div

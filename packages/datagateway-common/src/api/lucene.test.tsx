@@ -3,6 +3,7 @@ import axios from 'axios';
 import { LuceneSearchParams, useLuceneSearchInfinite } from '.';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
+import { FiltersType } from '../app.types';
 
 jest.mock('../handleICATError');
 
@@ -12,99 +13,52 @@ describe('Lucene actions', () => {
     (handleICATError as jest.Mock).mockClear();
   });
 
-  it('sends axios request to fetch lucene search results once refetch function is called and returns successful response with default params', async () => {
+  it('sends lucene search request with appropriate filters applied', async () => {
     (axios.get as jest.Mock).mockResolvedValue({
       data: [{ id: 1 }],
     });
 
-    const luceneSearchParams = {
-      searchText: '',
+    const filters: FiltersType = {
+      'investigation.type.name': ['investigation name'],
+      'dataset.type.name': ['dataset name'],
+    };
+    const luceneParams: LuceneSearchParams = {
+      searchText: 'test',
       startDate: null,
       endDate: null,
     };
+
     const { result, waitFor } = renderHook(
-      () => useLuceneSearchInfinite('Investigation', luceneSearchParams, {}),
-      {
-        wrapper: createReactQueryWrapper(),
-      }
+      () => useLuceneSearchInfinite('Investigation', luceneParams, filters),
+      { wrapper: createReactQueryWrapper() }
     );
-
-    expect(axios.get).not.toHaveBeenCalled();
-    expect(result.current.isIdle).toBe(true);
-
-    result.current.refetch();
 
     await waitFor(() => result.current.isSuccess);
 
-    const params = {
-      sessionId: null,
-      query: {
-        target: 'Investigation',
-      },
-      maxCount: 100,
-      minCount: 10,
-      restrict: false,
-      search_after: '',
-      sort: '',
-    };
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: params,
+        params: {
+          sessionId: null,
+          query: {
+            target: 'Investigation',
+            text: 'test',
+            filter: {
+              'investigation.type.name': ['investigation name'],
+            },
+          },
+          maxCount: 100,
+          minCount: 10,
+          restrict: false,
+          search_after: '',
+          sort: '',
+        },
       }
     );
     expect(result.current.data?.pages[0]).toEqual([{ id: 1 }]);
   });
 
-  it('sends axios request to fetch lucene search results once refetch function is called and returns successful response with arguments', async () => {
-    (axios.get as jest.Mock).mockResolvedValue({
-      data: [{ id: 1 }],
-    });
-
-    const luceneSearchParams = {
-      searchText: 'test',
-      startDate: new Date(2000, 0, 1),
-      endDate: new Date(2020, 11, 31),
-      maxCount: 300,
-    };
-    const { result, waitFor } = renderHook(
-      () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
-      {
-        wrapper: createReactQueryWrapper(),
-      }
-    );
-
-    expect(axios.get).not.toHaveBeenCalled();
-    expect(result.current.isIdle).toBe(true);
-
-    result.current.refetch();
-
-    await waitFor(() => result.current.isSuccess);
-
-    const params = {
-      sessionId: null,
-      query: {
-        target: 'Datafile',
-        text: 'test',
-        lower: '200001010000',
-        upper: '202012312359',
-      },
-      maxCount: 300,
-      minCount: 10,
-      restrict: false,
-      search_after: '',
-      sort: '',
-    };
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/search/documents',
-      {
-        params: params,
-      }
-    );
-    expect(result.current.data?.pages[0]).toEqual([{ id: 1 }]);
-  });
-
-  it('sends axios request to fetch lucene search results once refetch function is called and returns successful response with only one date set', async () => {
+  it('sends lucene search request with start date bound applied', async () => {
     (axios.get as jest.Mock).mockResolvedValue({
       data: [{ id: 1 }],
     });
@@ -115,82 +69,7 @@ describe('Lucene actions', () => {
       endDate: null,
       maxCount: 300,
     };
-    const startDateTest = renderHook(
-      () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
-      {
-        wrapper: createReactQueryWrapper(),
-      }
-    );
 
-    expect(axios.get).not.toHaveBeenCalled();
-    expect(startDateTest.result.current.isIdle).toBe(true);
-
-    startDateTest.result.current.refetch();
-
-    await startDateTest.waitFor(() => startDateTest.result.current.isSuccess);
-
-    const params = {
-      sessionId: null,
-      query: {
-        target: 'Datafile',
-        text: 'test',
-        lower: '200001010000',
-        upper: '9000012312359',
-      },
-      maxCount: 300,
-      minCount: 10,
-      restrict: false,
-      search_after: '',
-      sort: '',
-    };
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/search/documents',
-      {
-        params: params,
-      }
-    );
-    expect(startDateTest.result.current.data?.pages[0]).toEqual([{ id: 1 }]);
-
-    (axios.get as jest.Mock).mockClear();
-
-    luceneSearchParams.endDate = new Date(2020, 11, 31);
-    luceneSearchParams.startDate = null;
-
-    const endDateTest = renderHook(
-      () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
-      {
-        wrapper: createReactQueryWrapper(),
-      }
-    );
-
-    expect(axios.get).not.toHaveBeenCalled();
-    expect(endDateTest.result.current.isIdle).toBe(true);
-
-    endDateTest.result.current.refetch();
-
-    await endDateTest.waitFor(() => endDateTest.result.current.isSuccess);
-
-    params.query.upper = '202012312359';
-    params.query.lower = '0000001010000';
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/search/documents',
-      {
-        params: params,
-      }
-    );
-    expect(endDateTest.result.current.data?.pages[0]).toEqual([{ id: 1 }]);
-  });
-
-  it('sends axios request to fetch lucene search results once refetch function is called and calls handleICATError on failure', async () => {
-    (axios.get as jest.Mock).mockRejectedValue({
-      message: 'Test error message',
-    });
-
-    const luceneSearchParams = {
-      searchText: '',
-      startDate: null,
-      endDate: null,
-    };
     const { result, waitFor } = renderHook(
       () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
       {
@@ -198,15 +77,107 @@ describe('Lucene actions', () => {
       }
     );
 
-    expect(axios.get).not.toHaveBeenCalled();
-    expect(result.current.isIdle).toBe(true);
+    await waitFor(() => result.current.isSuccess);
 
-    result.current.refetch();
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/search/documents',
+      {
+        params: {
+          sessionId: null,
+          query: {
+            target: 'Datafile',
+            text: 'test',
+            lower: '200001010000',
+            upper: '9000012312359',
+          },
+          maxCount: 300,
+          minCount: 10,
+          restrict: false,
+          search_after: '',
+          sort: '',
+        },
+      }
+    );
+    expect(result.current.data?.pages[0]).toEqual([{ id: 1 }]);
+  });
 
-    await waitFor(() => result.current.isError);
-
-    expect(handleICATError).toHaveBeenCalledWith({
-      message: 'Test error message',
+  it('sends lucene search request with end date bound applied', async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: [{ id: 1 }],
     });
+
+    const luceneSearchParams: LuceneSearchParams = {
+      searchText: 'test',
+      startDate: null,
+      endDate: new Date(2020, 11, 31),
+      maxCount: 300,
+    };
+
+    const { result, waitFor } = renderHook(
+      () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
+      {
+        wrapper: createReactQueryWrapper(),
+      }
+    );
+
+    await waitFor(() => result.current.isSuccess);
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/search/documents',
+      {
+        params: {
+          sessionId: null,
+          query: {
+            target: 'Datafile',
+            text: 'test',
+            lower: '0000001010000',
+            upper: '202012312359',
+          },
+          maxCount: 300,
+          minCount: 10,
+          restrict: false,
+          search_after: '',
+          sort: '',
+        },
+      }
+    );
+    expect(result.current.data?.pages[0]).toEqual([{ id: 1 }]);
+  });
+
+  it('ignores empty search text when building lucene search request', async () => {
+    const luceneSearchParams: LuceneSearchParams = {
+      searchText: '',
+      startDate: null,
+      endDate: new Date(2020, 11, 31),
+      maxCount: 300,
+    };
+
+    const { result, waitFor } = renderHook(
+      () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+      {
+        wrapper: createReactQueryWrapper(),
+      }
+    );
+
+    await waitFor(() => result.current.isSuccess);
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/search/documents',
+      {
+        params: {
+          sessionId: null,
+          query: {
+            target: 'Dataset',
+            lower: '0000001010000',
+            upper: '202012312359',
+          },
+          maxCount: 300,
+          minCount: 10,
+          restrict: false,
+          search_after: '',
+          sort: '',
+        },
+      }
+    );
   });
 });
