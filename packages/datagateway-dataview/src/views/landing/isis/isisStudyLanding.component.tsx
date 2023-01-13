@@ -27,6 +27,9 @@ import {
   AddToCartButton,
   ArrowTooltip,
   getTooltipText,
+  DownloadButton,
+  useInvestigationSizes,
+  useInvestigationsPaginated,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -92,6 +95,19 @@ const LinkedInvestigation = (
 
   const investigation = props.investigation;
 
+  const { data } = useInvestigationsPaginated([
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('type'),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify('facility'),
+    },
+  ]);
+
+  const sizeQueries = useInvestigationSizes(data);
+
   const shortInvestigationInfo = [
     {
       content: function doiFormat(entity: Investigation) {
@@ -152,6 +168,14 @@ const LinkedInvestigation = (
           entityType="investigation"
           allIds={[investigation.id]}
           entityId={investigation.id}
+        />
+        <DownloadButton
+          entityType="investigation"
+          entityId={investigation.id}
+          entityName={investigation.name}
+          entitySize={
+            data ? sizeQueries[data.indexOf(investigation)]?.data ?? -1 : -1
+          }
         />
       </ActionButtonsContainer>
     </div>
