@@ -147,6 +147,7 @@ const LinkedInvestigation = (
         </ShortInfoRow>
       ))}
       <ActionButtonsContainer>
+        {/*here*/}
         <AddToCartButton
           entityType="investigation"
           allIds={[investigation.id]}
