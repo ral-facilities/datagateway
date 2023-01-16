@@ -28,8 +28,6 @@ import {
   ArrowTooltip,
   getTooltipText,
   DownloadButton,
-  useInvestigationSizes,
-  useInvestigationsPaginated,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -86,6 +84,7 @@ interface LinkedInvestigationProps {
   investigation: Investigation;
   urlPrefix: string;
   view: ViewsType;
+  //data: object;
 }
 
 const LinkedInvestigation = (
@@ -95,18 +94,7 @@ const LinkedInvestigation = (
 
   const investigation = props.investigation;
 
-  const { data } = useInvestigationsPaginated([
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('type'),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify('facility'),
-    },
-  ]);
-
-  const sizeQueries = useInvestigationSizes(data);
+  //const sizeQueries = useInvestigationSizes(props.data);
 
   const shortInvestigationInfo = [
     {
@@ -169,13 +157,12 @@ const LinkedInvestigation = (
           allIds={[investigation.id]}
           entityId={investigation.id}
         />
+        {/*data ? sizeQueries[data.indexOf(investigation)]?.data ?? -1 : -1*/}
         <DownloadButton
           entityType="investigation"
           entityId={investigation.id}
           entityName={investigation.name}
-          entitySize={
-            data ? sizeQueries[data.indexOf(investigation)]?.data ?? -1 : -1
-          }
+          entitySize={1}
         />
       </ActionButtonsContainer>
     </div>
@@ -470,6 +457,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     investigation={study.studyInvestigations[0].investigation}
                     urlPrefix={urlPrefix}
                     view={view}
+                    // data={data}
                   />
                 )}
               </Box>
