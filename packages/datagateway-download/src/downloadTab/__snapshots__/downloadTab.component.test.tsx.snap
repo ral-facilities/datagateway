@@ -107,7 +107,7 @@ exports[`DownloadTab should render correctly 1`] = `
                         style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 256px; min-width: 84px;"
                       >
                         <div
-                          class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-auuqp9-MuiTableCell-root"
+                          class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                         >
                           <div
                             style="overflow: hidden; flex: 1;"
@@ -230,7 +230,7 @@ exports[`DownloadTab should render correctly 1`] = `
                         style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 256px; min-width: 84px;"
                       >
                         <div
-                          class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-auuqp9-MuiTableCell-root"
+                          class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                         >
                           <div
                             style="overflow: hidden; flex: 1;"
@@ -353,7 +353,7 @@ exports[`DownloadTab should render correctly 1`] = `
                         style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 256px; min-width: 84px;"
                       >
                         <div
-                          class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-auuqp9-MuiTableCell-root"
+                          class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                         >
                           <div
                             style="overflow: hidden; flex: 1;"
@@ -408,7 +408,7 @@ exports[`DownloadTab should render correctly 1`] = `
                         style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 256px; min-width: 84px;"
                       >
                         <div
-                          class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-auuqp9-MuiTableCell-root"
+                          class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                         >
                           <div
                             style="overflow: hidden; flex: 1;"
