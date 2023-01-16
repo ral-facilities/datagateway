@@ -155,7 +155,7 @@ describe('ISIS - Datafiles Table', () => {
 
         cy.get('[aria-rowcount="3"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Datafile 435'
+          'Datafile 1625'
         );
       });
     });
@@ -180,8 +180,8 @@ describe('ISIS - Datafiles Table', () => {
 
         cy.get('[aria-label="Show details"]').first().click();
 
-        cy.get('#details-panel').contains('Datafile 197').should('be.visible');
-        cy.get('#details-panel').contains('Datafile 78').should('not.exist');
+        cy.get('#details-panel').contains('Datafile 78').should('be.visible');
+        cy.get('#details-panel').contains('Datafile 197').should('not.exist');
         cy.get('[aria-label="Hide details"]').should('have.length', 1);
       });
 
@@ -218,7 +218,7 @@ describe('ISIS - Datafiles Table', () => {
   describe('Do not wait for initial requests', () => {
     beforeEach(() => {
       cy.visit(
-        '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile'
+        '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79/datafile'
       );
     });
 

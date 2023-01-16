@@ -176,7 +176,7 @@ describe('ISIS - Studies Table', () => {
 
       cy.get('[aria-rowcount="3"]').should('exist');
       cy.get('[aria-rowindex="3"] [aria-colindex="2"]').contains(
-        'Help music rate image common worry reason.'
+        'Rather outside source away.'
       );
     });
 

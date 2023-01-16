@@ -186,9 +186,7 @@ describe('ISIS - Datasets Table', () => {
       cy.get('[aria-label="Filter by Name"]').first().type('DATASET 79');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
-        '2001-09-30 04:00:59'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 79');
       // check that size is correct after filtering
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1.36 GB');
     });

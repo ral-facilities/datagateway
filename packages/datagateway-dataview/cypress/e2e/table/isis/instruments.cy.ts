@@ -163,7 +163,7 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
+          'Stop prove field onto think suffer measure. Table lose season identify professor happen third simply. Beat professional blue clear style have. Analysis reflect work or hour color maybe.'
         )
         .should('be.visible');
 
@@ -171,7 +171,7 @@ describe('ISIS - Instruments Table', () => {
       cy.get('[aria-controls="instrument-users-panel"]').click({
         scrollBehavior: 'center',
       });
-      cy.get('#details-panel').contains('Marcus Dixon').should('be.visible');
+      cy.get('#details-panel').contains('Kathryn Fox').should('be.visible');
     });
 
     it('and then not view details anymore', () => {
