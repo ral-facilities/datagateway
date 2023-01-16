@@ -53,19 +53,19 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Search table"]')
       .contains('Dataset')
-      .contains('10')
+      .contains('4')
       .click()
       .wait(['@datasets', '@datasets', '@datasetsCount'], {
         timeout: 15000,
       });
 
-    cy.get('[aria-rowcount="10"]').should('exist');
+    cy.get('[aria-rowcount="4"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 7');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 8');
 
     // Check that "select all" and individual selection are equivalent
     let i = 1;
-    while (i < 11) {
+    while (i < 5) {
       cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`)
         .click()
         .wait('@topcat', { timeout: 10000 });

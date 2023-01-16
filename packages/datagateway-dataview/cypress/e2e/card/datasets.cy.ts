@@ -69,8 +69,7 @@ describe('Datasets Cards', () => {
     cy.get('[data-testid="card"]').first().contains('DATASET 1');
   });
 
-  it.skip('should be able to filter by multiple fields', () => {
-    // Skipping for now as cypress doesn't want to type into date fields
+  it('should be able to filter by multiple fields', () => {
     cy.get('[data-testid="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
       .first()

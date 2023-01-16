@@ -11,6 +11,24 @@ export default defineConfig({
       on('task', {
         failed: require('cypress-failed-log/src/failed')(),
       });
+      on('before:browser:launch', (browser, launchOptions) => {
+        // `args` is an array of all the arguments that will
+        // be passed to browsers when it launches
+        console.log(launchOptions.args); // print all current args
+
+        if (browser.family === 'chromium' && browser.name !== 'electron') {
+          // Set pointer type to fine so that date inputs work properly
+          launchOptions.args.push('--blink-settings=primaryPointerType=4');
+        }
+
+        if (browser.family === 'firefox') {
+          // Set pointer type to fine so that date inputs work properly
+          launchOptions.preferences['ui.primaryPointerCapabilities'] = 4;
+        }
+
+        // whatever you return here becomes the launchOptions
+        return launchOptions;
+      });
     },
     baseUrl: 'http://127.0.0.1:3000',
   },
