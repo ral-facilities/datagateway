@@ -210,7 +210,7 @@ describe('DLS - Visits Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('11.01 GB', { timeout: 10000 })
+      cy.contains('3.12 GB', { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible');
     });
@@ -250,7 +250,7 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('Andrea Clayton').should('be.visible');
+      cy.get('#details-panel').contains('Colleen Heath').should('be.visible');
 
       cy.get('[aria-controls="visit-samples-panel"]').click();
       cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
@@ -259,7 +259,7 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-controls="visit-publications-panel"]').click();
       cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
       cy.get('#details-panel').contains(
-        'Eat interest seem black easy various. Choose outside develop deep another mouth. Project business base.'
+        'Simple notice since view check over through there. Hotel provide available a air avoid beautiful technology.'
       );
     });
 

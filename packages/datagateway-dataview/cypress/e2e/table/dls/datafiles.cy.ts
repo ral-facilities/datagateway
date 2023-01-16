@@ -175,7 +175,7 @@ describe('DLS - Datafiles Table', () => {
         .click()
         .wait('@datafilesOrder', { timeout: 10000 });
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 60');
+      cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains('Datafile 60');
     });
   });
 

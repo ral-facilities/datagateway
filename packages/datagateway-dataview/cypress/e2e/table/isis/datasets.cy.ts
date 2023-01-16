@@ -4,13 +4,13 @@ describe('ISIS - Datasets Table', () => {
     cy.intercept('**/datasets?order=*').as('datasetsOrder');
     cy.login();
     cy.visit(
-      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset'
     ).wait(['@datasetsCount', '@datasetsOrder'], {
       timeout: 10000,
     });
     // Check that we have received the size from the API as this will produce
     // a re-render which can prevent some interactions.
-    cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '6.21 GB').should(
+    cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '1.36 GB').should(
       'exist'
     );
   });
@@ -36,7 +36,7 @@ describe('ISIS - Datasets Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/97'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79'
     );
   });
 
@@ -123,7 +123,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 337');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
     });
 
     it('descending order', () => {
@@ -140,7 +140,7 @@ describe('ISIS - Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 79');
     });
 
     it('no order', () => {
@@ -160,7 +160,7 @@ describe('ISIS - Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
     });
 
     it('multiple columns', () => {
@@ -177,20 +177,20 @@ describe('ISIS - Datasets Table', () => {
         .click()
         .wait('@datasetsOrder', { timeout: 10000 });
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 79');
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('DATASET 337');
+      cy.get('[aria-label="Filter by Name"]').first().type('DATASET 79');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
         '2001-09-30 04:00:59'
       );
       // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('5.53 GB');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1.36 GB');
     });
 
     it('date between', () => {
@@ -212,13 +212,13 @@ describe('ISIS - Datasets Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 79');
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
         .first()
-        .type('337')
+        .type('19')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('input[id="Create Time filter to"]')
@@ -226,7 +226,7 @@ describe('ISIS - Datasets Table', () => {
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 337');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
     });
   });
 
@@ -243,8 +243,8 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').contains('DATASET 97').should('be.visible');
-      cy.get('#details-panel').contains('DATASET 337').should('not.exist');
+      cy.get('#details-panel').contains('DATASET 79').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 19').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -255,7 +255,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Professor issue much especially seem together skin. Data or bill American figure condition call.'
+          'Official wife war together miss. Box usually discover first born. Very character policy enter adult. Maybe arm city alone end air.'
         )
         .should('be.visible');
 
@@ -264,7 +264,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
+          'Stop prove field onto think suffer measure. Table lose season identify professor happen third simply.'
         )
         .should('be.visible');
     });
@@ -275,7 +275,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/97/datafile'
+        '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79/datafile'
       );
     });
 

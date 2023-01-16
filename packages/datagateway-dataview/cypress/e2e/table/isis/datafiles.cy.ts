@@ -1,8 +1,8 @@
 describe('ISIS - Datafiles Table', () => {
   beforeEach(() => {
     cy.intercept('**/instruments/**').as('instruments');
-    cy.intercept('**/facilitycycles/16').as('facilityCycles');
-    cy.intercept('**/datasets/337').as('datasets');
+    cy.intercept('**/facilitycycles/19').as('facilityCycles');
+    cy.intercept('**/datasets/79').as('datasets');
     cy.intercept('**/datafiles/count?*').as('datafilesCount');
     cy.intercept('**/datafiles?order=*').as('datafilesOrder');
     cy.login();
@@ -11,7 +11,7 @@ describe('ISIS - Datafiles Table', () => {
   describe('Wait for initial requests', () => {
     beforeEach(() => {
       cy.visit(
-        '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile'
+        '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79/datafile'
       ).wait(
         [
           '@instruments',
@@ -45,7 +45,8 @@ describe('ISIS - Datafiles Table', () => {
       cy.get('[role="grid"]').should('not.exist');
     });
 
-    it('should be able to scroll down and load more rows', () => {
+    // Unable to test lazy loading as there are only 15 files per dataset
+    it.skip('should be able to scroll down and load more rows', () => {
       cy.get('[aria-rowcount="50"]').should('exist');
       cy.get('[aria-label="grid"]').scrollTo('bottom');
       cy.get('[aria-rowcount="55"]').should('exist');
@@ -67,7 +68,7 @@ describe('ISIS - Datafiles Table', () => {
         cy.get('[aria-sort="ascending"]').should('exist');
         cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
         cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-          '/according/wrong/only.tiff'
+          '/add/go/interview.png'
         );
       });
 
@@ -86,7 +87,7 @@ describe('ISIS - Datafiles Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-          '/yes/beyond/property.jpeg'
+          '/writer/me/expert.gif'
         );
       });
 
@@ -102,18 +103,18 @@ describe('ISIS - Datafiles Table', () => {
           .wait('@datafilesOrder', { timeout: 10000 });
 
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Datafile 25244'
+          'Datafile 78'
         );
       });
     });
 
     describe('should be able to filter by', () => {
       it('text', () => {
-        cy.get('[aria-label="Filter by Location"]').first().type('star');
+        cy.get('[aria-label="Filter by Location"]').first().type('action');
 
         cy.get('[aria-rowcount="1"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Datafile 336'
+          'Datafile 1268'
         );
       });
 
@@ -135,9 +136,9 @@ describe('ISIS - Datafiles Table', () => {
           date.toISOString().slice(0, 10)
         );
 
-        cy.get('[aria-rowcount="2"]').should('exist');
+        cy.get('[aria-rowcount="15"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Datafile 6084'
+          'Datafile 78'
         );
       });
 
@@ -154,7 +155,7 @@ describe('ISIS - Datafiles Table', () => {
 
         cy.get('[aria-rowcount="3"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Datafile 6563'
+          'Datafile 435'
         );
       });
     });
@@ -179,8 +180,8 @@ describe('ISIS - Datafiles Table', () => {
 
         cy.get('[aria-label="Show details"]').first().click();
 
-        cy.get('#details-panel').contains('Datafile 336').should('be.visible');
-        cy.get('#details-panel').contains('Datafile 3470').should('not.exist');
+        cy.get('#details-panel').contains('Datafile 197').should('be.visible');
+        cy.get('#details-panel').contains('Datafile 78').should('not.exist');
         cy.get('[aria-label="Hide details"]').should('have.length', 1);
       });
 
@@ -191,7 +192,7 @@ describe('ISIS - Datafiles Table', () => {
 
         cy.get('#details-panel')
           .contains(
-            'Near stand agreement music character require same. Can news some government. Ahead information tree station. Painting see attack space.'
+            'Skill certain create left. Get onto back do door room mission. Business story growth economic.'
           )
           .should('be.visible');
 

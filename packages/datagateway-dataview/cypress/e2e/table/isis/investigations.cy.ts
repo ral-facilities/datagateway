@@ -3,7 +3,7 @@ describe('ISIS - Investigations Table', () => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/16/investigation').wait(
+    cy.visit('/browse/instrument/1/facilityCycle/19/investigation').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
@@ -27,7 +27,7 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/97'
+      '/browse/instrument/1/facilityCycle/19/investigation/19'
     );
   });
 
@@ -148,7 +148,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Again bad simply low summer. Left hand around position wonder sometimes. Body always prove husband. So understand edge outside prevent.'
+        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
       );
     });
 
@@ -163,7 +163,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
+        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
       );
     });
 
@@ -181,7 +181,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
+        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management..'
       );
     });
 
@@ -190,7 +190,7 @@ describe('ISIS - Investigations Table', () => {
       cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
+        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
       );
     });
   });
@@ -201,10 +201,10 @@ describe('ISIS - Investigations Table', () => {
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        'INVESTIGATION 97'
+        'INVESTIGATION 19'
       );
       // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('11.74 GB');
+      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('2.82 GB');
     });
 
     it('date between', () => {
@@ -227,12 +227,12 @@ describe('ISIS - Investigations Table', () => {
 
       cy.get('[aria-rowcount="1"]').should('not.exist');
       cy.contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
       ).should('not.exist');
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('again');
+      cy.get('[aria-label="Filter by Title"]').first().type('fill');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });
@@ -293,7 +293,7 @@ describe('ISIS - Investigations Table', () => {
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.get('#details-panel')
         .contains(
-          'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
+          'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
         )
         .should('be.visible')
         .wait(200);
@@ -307,7 +307,7 @@ describe('ISIS - Investigations Table', () => {
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.get('#details-panel')
-        .contains('Corey Cook')
+        .contains('Ashley Brown')
         .should('be.visible')
         .wait(200);
 
@@ -316,7 +316,7 @@ describe('ISIS - Investigations Table', () => {
       );
       cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-      cy.get('#details-panel').contains('SAMPLE 16').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 19').should('be.visible');
 
       cy.get('[aria-controls="investigation-publications-panel"]').should(
         'be.visible'
@@ -325,7 +325,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Fish page on factor nature everybody action. Sell police boy determine paper. Join six approach others method. Factor answer this design. Institution respond again area.'
+          'Value impact paper apply likely. Position recently speech. Onto most shake necessary. Soon standard early space dream none. The bring American region institution road. Price yet sign argue itself.'
         )
         .should('be.visible');
     });
@@ -336,7 +336,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/1/facilityCycle/16/investigation/16/dataset'
+        '/browse/instrument/1/facilityCycle/19/investigation/19/dataset'
       );
     });
 
