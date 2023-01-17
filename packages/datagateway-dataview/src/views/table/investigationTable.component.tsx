@@ -149,9 +149,8 @@ const InvestigationTable = (): React.ReactElement => {
         icon: Save,
         label: t('investigations.size'),
         dataKey: 'size',
-        cellContentRenderer: (cellProps: TableCellProps) => {
-          return formatBytes(cellProps.rowData.fileSize);
-        },
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
