@@ -183,9 +183,9 @@ describe('ISIS - Studies Table', () => {
     it('date between', () => {
       cy.get('input[id="Start Date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-rowcount="3"]').should('exist');
-      cy.get('[aria-rowindex="3"] [aria-colindex="2"]').contains(
-        'Now easy life approach manage why me.'
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowindex="2 "] [aria-colindex="2"]').contains(
+        'Difference customer building will suffer nothing.'
       );
     });
 

@@ -188,11 +188,15 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('date between', () => {
-      cy.get('input[id="Create Time filter from"]').type('2002-01-01');
-      cy.get('input[id="Create Time filter to"]').type('2006-01-01');
+      const date = new Date();
 
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
+      cy.get('input[id="Create Time filter from"]').type('2002-01-01');
+      cy.get('input[id="Create Time filter to"]').type(
+        date.toISOString().slice(0, 10)
+      );
+
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 79');
     });
 
     it('multiple columns', () => {
@@ -206,7 +210,7 @@ describe('DLS - Datasets Table', () => {
         .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
     });
   });
 

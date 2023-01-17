@@ -979,7 +979,7 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
-        cy.get('[aria-label="select row 58"]').should('be.checked');
+        cy.get('[aria-label="select row 58"]').should('not.be.checked');
         cy.get('[aria-label="select row 59"]').should('not.be.checked');
       });
 

@@ -230,8 +230,7 @@ describe('Investigations Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Strategy with piece reason late model air. Sound process international scene call deep answer. Teach financial vote season.
-          '
+          'Strategy with piece reason late model air. Sound process international scene call deep answer. Teach financial vote season.'
         )
         .should('be.visible');
       cy.get('#details-panel')

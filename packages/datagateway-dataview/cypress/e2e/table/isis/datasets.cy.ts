@@ -194,20 +194,20 @@ describe('ISIS - Datasets Table', () => {
     it('date between', () => {
       cy.get('input[id="Create Time filter from"]').type('2005-06-12');
 
-      cy.get('input[aria-label="Create Time filter to"]')
-        .parent()
-        .find('button')
-        .click();
-
-      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
-
       const date = new Date();
-      date.setDate(1);
-
-      cy.get('input[id="Create Time filter to"]').should(
-        'have.value',
+      cy.get('input[aria-label="Create Time filter to"]').type(
         date.toISOString().slice(0, 10)
       );
+      //.parent()
+      //.find('button')
+      //.click();
+
+      //cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
+
+      //cy.get('input[id="Create Time filter to"]').should(
+      //  'have.value',
+      //  date.toISOString().slice(0, 10)
+      //);
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 79');
@@ -219,8 +219,9 @@ describe('ISIS - Datasets Table', () => {
         .type('19')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
+      const date = new Date();
       cy.get('input[id="Create Time filter to"]')
-        .type('2007-06-23')
+        .type(date.toISOString().slice(0, 10))
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');

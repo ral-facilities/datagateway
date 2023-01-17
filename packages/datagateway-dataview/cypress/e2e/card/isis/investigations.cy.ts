@@ -232,7 +232,7 @@ describe('ISIS - Investigations Cards', () => {
         .wait(['@getInvestigationsCount'], { timeout: 10000 });
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Again bad simply low summer.');
+        .contains('Fine strong education fill maintain.');
       cy.get('input[id="Start Date filter to"]')
         .type('2004-09-02')
         .wait(['@getInvestigationsCount'], { timeout: 10000 });

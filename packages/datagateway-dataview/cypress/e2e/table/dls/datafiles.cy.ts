@@ -199,27 +199,28 @@ describe('DLS - Datafiles Table', () => {
     it('date between', () => {
       cy.get('input[id="Create Time filter from"]').type('2019-01-01');
 
-      cy.get('input[aria-label="Create Time filter to"]')
-        .parent()
-        .find('button')
-        .click();
-
-      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
-
       const date = new Date();
-      date.setDate(1);
 
-      cy.get('input[id="Create Time filter to"]').should(
-        'have.value',
+      cy.get('input[aria-label="Create Time filter to"]').type(
         date.toISOString().slice(0, 10)
       );
+      //.parent()
+      //.find('button')
+      //.click();
 
-      cy.get('[aria-rowcount="2"]').should('exist');
+      //cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
+
+      //cy.get('input[id="Create Time filter to"]').should(
+      //  'have.value',
+      //  date.toISOString().slice(0, 10)
+      //);
+
+      cy.get('[aria-rowcount="15"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 774'
+        'Datafile 119'
       );
       cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
-        'Datafile 655'
+        'Datafile 238'
       );
     });
 

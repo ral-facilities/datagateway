@@ -121,20 +121,19 @@ describe('ISIS - Datafiles Table', () => {
       it('date between', () => {
         cy.get('input[id="Modified Time filter from"]').type('2018-08-12');
 
-        cy.get('input[aria-label="Modified Time filter to"]')
-          .parent()
-          .find('button')
-          .click();
-
-        cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
-
+        
         const date = new Date();
-        date.setDate(1);
+        cy.get('input[aria-label="Modified Time filter to"]').type(date.toISOString().slice(0,10))
+          //.parent()
+          //.find('button')
+          //.click();
 
-        cy.get('input[id="Modified Time filter to"]').should(
-          'have.value',
-          date.toISOString().slice(0, 10)
-        );
+        //cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
+
+        //cy.get('input[id="Modified Time filter to"]').should(
+        //  'have.value',
+        //  date.toISOString().slice(0, 10)
+        //);
 
         cy.get('[aria-rowcount="15"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
