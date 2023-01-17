@@ -5,7 +5,6 @@ import {
   externalSiteLink,
   Investigation,
   ColumnType,
-  formatCountOrSize,
   useInvestigationsInfinite,
   useInvestigationCount,
   useIds,
@@ -16,8 +15,8 @@ import {
   useSort,
   useTextFilter,
   useDateFilter,
-  useInvestigationSizes,
   InvestigationDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { useSelector } from 'react-redux';
@@ -101,8 +100,6 @@ const InvestigationTable = (): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const sizeQueries = useInvestigationSizes(data);
-
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
@@ -152,8 +149,9 @@ const InvestigationTable = (): React.ReactElement => {
         icon: Save,
         label: t('investigations.size'),
         dataKey: 'size',
-        cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          return formatBytes(cellProps.rowData.fileSize);
+        },
         disableSort: true,
       },
       {
@@ -195,7 +193,7 @@ const InvestigationTable = (): React.ReactElement => {
         },
       },
     ],
-    [t, textFilter, dateFilter, view, sizeQueries]
+    [t, textFilter, dateFilter, view]
   );
 
   return (
