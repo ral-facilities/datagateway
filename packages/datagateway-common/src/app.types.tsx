@@ -9,6 +9,8 @@ export interface Investigation {
   title: string;
   name: string;
   visitId: string;
+  fileSize: number;
+  fileCount: number;
   doi?: string;
   startDate?: string;
   endDate?: string;
