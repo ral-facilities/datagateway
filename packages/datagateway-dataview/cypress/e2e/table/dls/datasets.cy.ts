@@ -196,7 +196,7 @@ describe('DLS - Datasets Table', () => {
       );
 
       cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 79');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
     });
 
     it('multiple columns', () => {
@@ -209,8 +209,8 @@ describe('DLS - Datasets Table', () => {
         .type('2006-11-21')
         .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
 
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
     });
   });
 

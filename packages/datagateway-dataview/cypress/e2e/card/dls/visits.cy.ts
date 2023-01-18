@@ -131,7 +131,7 @@ describe('DLS - Visits Cards', () => {
 
       cy.get('input[id="Start Date filter from"]')
         .click()
-        .type('2000-01-01')
+        .type('2000-05-01')
         .wait(['@getInvestigationsCount'], { timeout: 10000 });
       cy.get('input[aria-label="Start Date filter to"]')
         .parent()

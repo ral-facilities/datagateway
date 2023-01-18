@@ -173,12 +173,14 @@ describe('Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('1');
-
-      cy.get('input[id="Create Time filter to"]').type('2003-01-01');
+      cy.get('[aria-label="Filter by Name"]').first().type('6');
+      const date = new Date();
+      cy.get('input[id="Create Time filter to"]').type(
+        date.toISOString().slice(0, 10)
+      );
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
     });
   });
 

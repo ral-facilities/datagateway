@@ -216,11 +216,9 @@ describe('DLS - Datafiles Table', () => {
       //);
 
       cy.get('[aria-rowcount="15"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 119'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 60');
       cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
-        'Datafile 238'
+        'Datafile 179'
       );
     });
 

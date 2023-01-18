@@ -175,7 +175,7 @@ describe('Investigations Table', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by Title"]').first().type('wide');
 
-      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="4"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('85');
 
       // check that size is correct after filtering
@@ -183,7 +183,7 @@ describe('Investigations Table', () => {
     });
 
     it('date between', () => {
-      cy.get('input[id="Start Date filter from"]').type('2019-01-01');
+      cy.get('input[id="Start Date filter from"]').type('2012-01-01');
 
       cy.get('input[aria-label="Start Date filter to"]')
         .parent()
@@ -202,7 +202,7 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-rowcount="12"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Old ok order wall bank. Floor science physical ask activity alone. Language sort test bill to century.'
+        'Why news west bar sing tax. Drive up more near member article.'
       );
     });
 

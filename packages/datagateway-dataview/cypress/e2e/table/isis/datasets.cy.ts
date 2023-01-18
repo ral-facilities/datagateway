@@ -209,7 +209,7 @@ describe('ISIS - Datasets Table', () => {
       //  date.toISOString().slice(0, 10)
       //);
 
-      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 79');
     });
 
