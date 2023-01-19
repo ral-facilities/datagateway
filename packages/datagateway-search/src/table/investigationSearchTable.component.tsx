@@ -1,31 +1,31 @@
 import React from 'react';
 import {
-  Table,
-  Investigation,
-  tableLink,
+  ColumnType,
+  DLSVisitDetailsPanel,
   externalSiteLink,
   FacilityCycle,
-  ColumnType,
+  formatBytes,
+  formatCountOrSize,
+  Investigation,
+  InvestigationDetailsPanel,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  Table,
+  tableLink,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
   useDateFilter,
   useIds,
   useInvestigationCount,
-  useInvestigationsInfinite,
-  useSort,
-  useRemoveFromCart,
-  useTextFilter,
   useInvestigationsDatasetCount,
-  useInvestigationSizes,
-  formatCountOrSize,
+  useInvestigationsInfinite,
   useLuceneSearch,
-  InvestigationDetailsPanel,
-  ISISInvestigationDetailsPanel,
-  DLSVisitDetailsPanel,
+  useRemoveFromCart,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { StateType } from '../state/app.types';
@@ -230,9 +230,6 @@ const InvestigationSearchTable = (
   const datasetCountQueries = useInvestigationsDatasetCount(
     hierarchy !== 'isis' ? data : undefined
   );
-  const sizeQueries = useInvestigationSizes(
-    hierarchy === 'isis' ? data : undefined
-  );
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -275,11 +272,14 @@ const InvestigationSearchTable = (
             : t('investigations.dataset_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datasetCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const query =
-            hierarchy === 'isis'
-              ? sizeQueries[cellProps.rowIndex]
-              : datasetCountQueries[cellProps.rowIndex];
-          return formatCountOrSize(query, hierarchy === 'isis');
+          return hierarchy === 'isis'
+            ? formatBytes(cellProps.rowData.fileSize)
+            : formatCountOrSize(
+                //fileCount property returns Datafile count not Dataset count so
+                //datasetCountQueries is still required here
+                datasetCountQueries[cellProps.rowIndex],
+                hierarchy === 'isis'
+              );
         },
         disableSort: true,
       },
@@ -318,15 +318,7 @@ const InvestigationSearchTable = (
         },
       },
     ],
-    [
-      t,
-      textFilter,
-      hierarchy,
-      dateFilter,
-      hierarchyLink,
-      sizeQueries,
-      datasetCountQueries,
-    ]
+    [t, textFilter, hierarchy, dateFilter, hierarchyLink, datasetCountQueries]
   );
 
   const detailsPanel = React.useCallback(

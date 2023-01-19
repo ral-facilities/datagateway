@@ -32,6 +32,8 @@ export function formatBytes(bytes: number | undefined): string {
  * @param formatAsBytes Whether to format the data as bytes, default is false
  * @returns a string with either Calculating, Unknown or the formatted data
  */
+//TODO: Since filesize is now given as an entity property, this function can be
+//refactored to only format count
 export function formatCountOrSize(
   query: UseQueryResult<number, Error>,
   formatAsBytes = false
