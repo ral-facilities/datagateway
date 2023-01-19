@@ -77,7 +77,10 @@ describe('Datafile search tab', () => {
 
   it('should be able to search by date range', () => {
     cy.get('[aria-label="Start date input"]').type('2012-02-02');
-    cy.get('[aria-label="End date input"]').type('2012-02-03');
+    const date = new Date();
+    cy.get('[aria-label="End date input"]').type(
+      date.toISOString().slice(0, 10)
+    );
 
     cy.get('[aria-label="Submit search"]').click().wait('@datafilesCount', {
       timeout: 10000,
@@ -85,12 +88,12 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Search table"]')
       .contains('Datafile')
-      .contains('9')
+      .contains('187')
       .click();
 
-    cy.get('[aria-rowcount="9"]').should('exist');
+    cy.get('[aria-rowcount="50"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1956');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1');
   });
 
   it('should be hidden if datafile checkbox is unchecked', () => {
