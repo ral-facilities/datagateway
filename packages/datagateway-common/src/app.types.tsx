@@ -9,8 +9,8 @@ export interface Investigation {
   title: string;
   name: string;
   visitId: string;
-  fileSize: number;
-  fileCount: number;
+  fileSize?: number;
+  fileCount?: number;
   doi?: string;
   startDate?: string;
   endDate?: string;
@@ -33,6 +33,8 @@ export interface Dataset {
   name: string;
   modTime: string;
   createTime: string;
+  fileSize?: number;
+  fileCount?: number;
   description?: string;
   startDate?: string;
   endDate?: string;
@@ -51,6 +53,7 @@ export interface Datafile {
   modTime: string;
   createTime: string;
   fileSize?: number;
+  fileCount?: number;
   location?: string;
   description?: string;
   parameters?: DatafileParameter[];

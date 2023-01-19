@@ -192,7 +192,7 @@ const ISISInvestigationsCardView = (
             entityType="investigation"
             entityId={investigation.id}
             entityName={investigation.name}
-            entitySize={investigation.fileSize}
+            entitySize={investigation.fileSize ?? -1}
           />
         </ActionButtonsContainer>
       ),

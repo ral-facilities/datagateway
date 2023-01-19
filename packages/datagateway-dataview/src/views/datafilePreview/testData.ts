@@ -7,6 +7,7 @@ const mockDatafile: Datafile = {
   dataset: undefined,
   description: 'test description',
   fileSize: 100,
+  fileCount: 1,
   id: 123,
   location: 'test location',
   modTime: '2020-01-02',
