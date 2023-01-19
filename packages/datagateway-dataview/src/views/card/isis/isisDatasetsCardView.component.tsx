@@ -4,8 +4,7 @@ import {
   CardViewDetails,
   Dataset,
   tableLink,
-  formatCountOrSize,
-  useDatasetSizes,
+  formatBytes,
   parseSearchToQuery,
   useDateFilter,
   useDatasetCount,
@@ -78,7 +77,6 @@ const ISISDatasetsCardView = (
       }),
     },
   ]);
-  const sizeQueries = useDatasetSizes(data);
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
@@ -115,7 +113,7 @@ const ISISDatasetsCardView = (
         content: (dataset: Dataset): string => {
           const index = data?.findIndex((item) => item.id === dataset.id);
           if (typeof index === 'undefined') return 'Unknown';
-          return formatCountOrSize(sizeQueries[index], true);
+          return formatBytes(dataset.fileSize);
         },
         disableSort: true,
       },
@@ -133,7 +131,7 @@ const ISISDatasetsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [data, dateFilter, sizeQueries, t]
+    [data, dateFilter, t]
   );
 
   const buttons = React.useMemo(
@@ -149,14 +147,12 @@ const ISISDatasetsCardView = (
             entityType="dataset"
             entityId={dataset.id}
             entityName={dataset.name}
-            entitySize={
-              data ? sizeQueries[data.indexOf(dataset)]?.data ?? -1 : -1
-            }
+            entitySize={dataset.fileSize ?? -1}
           />
         </ActionButtonsContainer>
       ),
     ],
-    [data, sizeQueries]
+    [data]
   );
 
   const moreInformation = React.useCallback(
