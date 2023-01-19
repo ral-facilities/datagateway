@@ -22,7 +22,6 @@ import {
   useAllFacilityCycles,
   tableLink,
   FacilityCycle,
-  useInvestigationSizes,
   useLuceneSearch,
   nestedValue,
   ArrowTooltip,
@@ -31,6 +30,7 @@ import {
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
   DLSVisitDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -193,9 +193,6 @@ const InvestigationCardView = (
   const datasetCountQueries = useInvestigationsDatasetCount(
     hierarchy !== 'isis' ? data : undefined
   );
-  const sizeQueries = useInvestigationSizes(
-    hierarchy === 'isis' ? data : undefined
-  );
 
   const title = React.useMemo(
     () => ({
@@ -264,11 +261,14 @@ const InvestigationCardView = (
         content: (investigation: Investigation): string => {
           const index = data?.findIndex((item) => item.id === investigation.id);
           if (typeof index === 'undefined') return 'Unknown';
-          const query =
-            hierarchy === 'isis'
-              ? sizeQueries[index]
-              : datasetCountQueries[index];
-          return formatCountOrSize(query, hierarchy === 'isis');
+          return hierarchy === 'isis'
+            ? formatBytes(investigation.fileSize)
+            : formatCountOrSize(
+                //fileCount property returns Datafile count not Dataset count so
+                //datasetCountQueries is still required here
+                datasetCountQueries[index],
+                hierarchy === 'isis'
+              );
         },
         disableSort: true,
       },
@@ -303,15 +303,7 @@ const InvestigationCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [
-      data,
-      datasetCountQueries,
-      dateFilter,
-      hierarchy,
-      sizeQueries,
-      t,
-      textFilter,
-    ]
+    [data, datasetCountQueries, dateFilter, hierarchy, t, textFilter]
   );
 
   const moreInformation = React.useCallback(
@@ -352,17 +344,13 @@ const InvestigationCardView = (
                   entityType="investigation"
                   entityId={investigation.id}
                   entityName={investigation.name}
-                  entitySize={
-                    data
-                      ? sizeQueries[data.indexOf(investigation)]?.data ?? -1
-                      : -1
-                  }
+                  entitySize={investigation.fileSize ?? -1}
                 />
               </ActionButtonDiv>
             ),
           ]
         : [],
-    [data, hierarchy, sizeQueries]
+    [data, hierarchy]
   );
 
   return (
