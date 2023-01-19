@@ -20,7 +20,6 @@ import {
 } from '@mui/icons-material';
 import {
   Dataset,
-  formatCountOrSize,
   Investigation,
   InvestigationUser,
   parseSearchToQuery,
@@ -28,11 +27,11 @@ import {
   Sample,
   tableLink,
   useInvestigation,
-  useInvestigationSizes,
   AddToCartButton,
   DownloadButton,
   ArrowTooltip,
   getTooltipText,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -122,7 +121,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       ]),
     },
   ]);
-  const sizeQueries = useInvestigationSizes(data);
 
   const title = React.useMemo(() => data?.[0]?.title, [data]);
   const doi = React.useMemo(() => data?.[0]?.doi, [data]);
@@ -220,7 +218,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
     {
       content: (entity: Investigation) => {
-        return formatCountOrSize(sizeQueries[0], true);
+        return formatBytes(entity.fileSize);
       },
       label: t('investigations.size'),
       icon: <Save sx={shortInfoIconStyle} />,
@@ -490,7 +488,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     entityType="dataset"
                     entityId={dataset.id}
                     entityName={dataset.name}
-                    entitySize={sizeQueries[0]?.data ?? -1}
+                    entitySize={dataset.fileSize ?? -1}
                   />
                 </ActionButtonsContainer>
               </Box>
