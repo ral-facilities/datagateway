@@ -1,6 +1,6 @@
 import {
   ColumnType,
-  formatCountOrSize,
+  formatBytes,
   Investigation,
   parseSearchToQuery,
   readSciGatewayToken,
@@ -14,7 +14,6 @@ import {
   useIds,
   useInvestigationCount,
   useInvestigationsInfinite,
-  useInvestigationSizes,
   useSort,
   useRemoveFromCart,
   useTextFilter,
@@ -129,8 +128,6 @@ const ISISMyDataTable = (): React.ReactElement => {
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
     [fetchNextPage]
   );
-
-  const sizeQueries = useInvestigationSizes(data);
 
   const urlPrefix = React.useCallback(
     (investigationData: Investigation): string => {
@@ -256,7 +253,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
@@ -273,7 +270,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+    [t, textFilter, dateFilter, urlPrefix, view]
   );
 
   return (
