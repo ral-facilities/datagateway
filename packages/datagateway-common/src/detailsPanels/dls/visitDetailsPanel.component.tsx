@@ -47,6 +47,7 @@ const VisitDetailsPanel = (
   const { rowData, detailsPanelResize } = props;
   const [t] = useTranslation();
   const { data } = useInvestigationDetails(rowData.id);
+  //TODO: Migrate to using entity size prop once dls has migrated to ICAT v5
   const { data: size, refetch: fetchSize } = useInvestigationSize(rowData.id);
   const investigationData: Investigation = {
     ...data,
