@@ -69,7 +69,7 @@ Cypress.Commands.add('login', (credentials) => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,
-        username: body.mechanism === 'anon' ? 'anon/anon' : 'Thomas409',
+        username: body.mechanism === 'anon' ? 'anon/anon' : 'Clifford1',
       };
       const jwt = jsrsasign.KJUR.jws.JWS.sign(
         'HS256',

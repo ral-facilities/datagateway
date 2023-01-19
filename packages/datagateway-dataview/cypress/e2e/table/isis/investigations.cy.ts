@@ -181,7 +181,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management..'
+        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
       );
     });
 
