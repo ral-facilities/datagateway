@@ -1,5 +1,5 @@
 import {
-  formatCountOrSize,
+  formatBytes,
   Investigation,
   Table,
   tableLink,
@@ -12,7 +12,6 @@ import {
   useAddToCart,
   useCart,
   useDateFilter,
-  useInvestigationSizes,
   usePrincipalExperimenterFilter,
   useSort,
   useRemoveFromCart,
@@ -118,8 +117,6 @@ const ISISInvestigationsTable = (
     [fetchNextPage]
   );
 
-  const sizeQueries = useInvestigationSizes(data);
-
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
@@ -181,7 +178,7 @@ const ISISInvestigationsTable = (
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
@@ -218,15 +215,7 @@ const ISISInvestigationsTable = (
         filterComponent: dateFilter,
       },
     ],
-    [
-      t,
-      textFilter,
-      principalExperimenterFilter,
-      dateFilter,
-      urlPrefix,
-      view,
-      sizeQueries,
-    ]
+    [t, textFilter, principalExperimenterFilter, dateFilter, urlPrefix, view]
   );
 
   return (
@@ -255,10 +244,7 @@ const ISISInvestigationsTable = (
             entityId={rowData.id}
             entityName={rowData.name}
             variant="icon"
-            entitySize={
-              sizeQueries[aggregatedData.indexOf(rowData as Investigation)]
-                ?.data ?? -1
-            }
+            entitySize={rowData.fileSize ?? -1}
           />
         ),
       ]}
