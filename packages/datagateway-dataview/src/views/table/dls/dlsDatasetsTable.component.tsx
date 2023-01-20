@@ -8,7 +8,6 @@ import {
   Table,
   tableLink,
   Dataset,
-  formatCountOrSize,
   useDatasetCount,
   useDatasetsInfinite,
   parseSearchToQuery,
@@ -20,7 +19,6 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  useDatasetsDatafileCount,
   DLSDatasetDetailsPanel,
 } from 'datagateway-common';
 import { IndexRange, TableCellProps } from 'react-virtualized';
@@ -95,8 +93,6 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const datafileCountQueries = useDatasetsDatafileCount(data);
-
   /* istanbul ignore next */
   const aggregatedData: Dataset[] = React.useMemo(() => {
     if (data) {
@@ -130,7 +126,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         label: t('datasets.datafile_count'),
         dataKey: 'datafileCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(datafileCountQueries[cellProps.rowIndex]),
+          cellProps.rowData.fileCount,
         disableSort: true,
       },
       {
@@ -148,15 +144,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [
-      t,
-      textFilter,
-      dateFilter,
-      proposalName,
-      investigationId,
-      view,
-      datafileCountQueries,
-    ]
+    [t, textFilter, dateFilter, proposalName, investigationId, view]
   );
 
   const selectedRows = React.useMemo(
