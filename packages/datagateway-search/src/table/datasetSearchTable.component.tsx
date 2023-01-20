@@ -5,15 +5,12 @@ import {
   tableLink,
   FacilityCycle,
   ColumnType,
-  formatCountOrSize,
   parseSearchToQuery,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
   useDatasetCount,
-  useDatasetsDatafileCount,
   useDatasetsInfinite,
-  useDatasetSizes,
   useDateFilter,
   useIds,
   useLuceneSearch,
@@ -23,6 +20,7 @@ import {
   DatasetDetailsPanel,
   ISISDatasetDetailsPanel,
   DLSDatasetDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -270,13 +268,6 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     [cartItems, selectAllSetting, allIds]
   );
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
-  const datasetCountQueries = useDatasetsDatafileCount(
-    hierarchy !== 'isis' ? data : undefined
-  );
-  const sizeQueries = useDatasetSizes(hierarchy === 'isis' ? data : undefined);
-
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
@@ -295,11 +286,9 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
             : t('datasets.datafile_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const query =
-            hierarchy === 'isis'
-              ? sizeQueries[cellProps.rowIndex]
-              : datasetCountQueries[cellProps.rowIndex];
-          return formatCountOrSize(query, hierarchy === 'isis');
+          return hierarchy === 'isis'
+            ? formatBytes(cellProps.rowData.fileSize)
+            : cellProps.rowData.fileCount?.toString() ?? 'Unknown';
         },
         disableSort: true,
       },
@@ -323,15 +312,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [
-      t,
-      textFilter,
-      hierarchy,
-      dateFilter,
-      hierarchyLink,
-      sizeQueries,
-      datasetCountQueries,
-    ]
+    [t, textFilter, hierarchy, dateFilter, hierarchyLink]
   );
 
   const detailsPanel = React.useCallback(
