@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDatasetDetails, useDatasetSize } from '../../api';
+import { useDatasetDetails } from '../../api';
 import { Dataset, Entity } from '../../app.types';
 import {
   DlsDatasetDetailsPanelChangeTabPayload,
@@ -43,7 +43,7 @@ const DatasetDetailsPanel = (
   const { rowData, detailsPanelResize } = props;
   const [t] = useTranslation();
   const { data } = useDatasetDetails(rowData.id);
-  const { data: size, refetch: fetchSize } = useDatasetSize(rowData.id);
+  const { data: size, refetch: fetchSize } = rowData.fileSize;
   const datasetData: Dataset = {
     ...data,
     ...(rowData as Dataset),

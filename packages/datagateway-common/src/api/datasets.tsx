@@ -172,59 +172,6 @@ export const useDatasetsInfinite = (
   );
 };
 
-const fetchDatasetSize = (
-  config: {
-    facilityName: string;
-    downloadApiUrl: string;
-  },
-  datasetId: number
-): Promise<number> => {
-  // Make use of the facility name and download API url for the request.
-  const { facilityName, downloadApiUrl } = config;
-  return axios
-    .get(`${downloadApiUrl}/user/getSize`, {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-        facilityName: facilityName,
-        entityType: 'dataset',
-        entityId: datasetId,
-      },
-    })
-    .then((response) => {
-      return response.data;
-    });
-};
-
-/**
- * For use with DLS button fetch size functionality
- * via using the refetch function returned by useQuery
- * Hence why the query is disabled by default
- */
-export const useDatasetSize = (
-  datasetId: number
-): UseQueryResult<number, AxiosError> => {
-  const downloadApiUrl = useSelector(
-    (state: StateType) => state.dgcommon.urls.downloadApiUrl
-  );
-  const facilityName = useSelector(
-    (state: StateType) => state.dgcommon.facilityName
-  );
-
-  return useQuery<number, AxiosError, number, [string, number]>(
-    ['datasetSize', datasetId],
-    (params) =>
-      fetchDatasetSize({ facilityName, downloadApiUrl }, params.queryKey[1]),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-
-      enabled: false,
-    }
-  );
-};
-
 export const useDatasetsDatafileCount = (
   data: Dataset[] | InfiniteData<Dataset[]> | Dataset | undefined
 ): UseQueryResult<number, AxiosError>[] => {
