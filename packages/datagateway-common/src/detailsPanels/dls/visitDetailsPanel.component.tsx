@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useInvestigationDetails, useInvestigationSize } from '../../api';
+import { useInvestigationDetails } from '../../api';
 import { Entity, Investigation } from '../../app.types';
 import {
   DlsVisitDetailsPanelChangeTabPayload,
@@ -47,8 +47,7 @@ const VisitDetailsPanel = (
   const { rowData, detailsPanelResize } = props;
   const [t] = useTranslation();
   const { data } = useInvestigationDetails(rowData.id);
-  //TODO: Migrate to using entity size prop once dls has migrated to ICAT v5
-  const { data: size, refetch: fetchSize } = useInvestigationSize(rowData.id);
+  const { data: size, refetch: fetchSize } = rowData.fileSize;
   const investigationData: Investigation = {
     ...data,
     ...(rowData as Investigation),
