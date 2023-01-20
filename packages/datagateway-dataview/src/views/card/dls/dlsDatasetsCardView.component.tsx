@@ -3,7 +3,6 @@ import {
   CardView,
   CardViewDetails,
   Dataset,
-  formatCountOrSize,
   tableLink,
   parseSearchToQuery,
   useDateFilter,
@@ -14,7 +13,6 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  useDatasetsDatafileCount,
   AddToCartButton,
   DLSDatasetDetailsPanel,
 } from 'datagateway-common';
@@ -63,8 +61,6 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     },
   ]);
 
-  const datafileCountQueries = useDatasetsDatafileCount(data);
-
   const title: CardViewDetails = React.useMemo(
     () => ({
       // Provide label for filter component.
@@ -100,7 +96,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         content: (dataset: Dataset): string => {
           const index = data?.findIndex((item) => item.id === dataset.id);
           if (typeof index === 'undefined') return 'Unknown';
-          return formatCountOrSize(datafileCountQueries[index]);
+          return dataset.fileCount?.toString() ?? 'Unknown';
         },
         disableSort: true,
       },
@@ -130,7 +126,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [data, datafileCountQueries, dateFilter, t]
+    [data, dateFilter, t]
   );
 
   const buttons = React.useMemo(
