@@ -189,61 +189,6 @@ export const useInvestigationsInfinite = (
   );
 };
 
-const fetchInvestigationSize = (
-  config: {
-    facilityName: string;
-    downloadApiUrl: string;
-  },
-  investigationId: number
-): Promise<number> => {
-  // Make use of the facility name and download API url for the request.
-  const { facilityName, downloadApiUrl } = config;
-  return axios
-    .get(`${downloadApiUrl}/user/getSize`, {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-        facilityName: facilityName,
-        entityType: 'investigation',
-        entityId: investigationId,
-      },
-    })
-    .then((response) => {
-      return response.data;
-    });
-};
-
-/**
- * For use with DLS button fetch size functionality
- * via using the refetch function returned by useQuery
- * Hence why the query is disabled by default
- */
-export const useInvestigationSize = (
-  investigationId: number
-): UseQueryResult<number, AxiosError> => {
-  const downloadApiUrl = useSelector(
-    (state: StateType) => state.dgcommon.urls.downloadApiUrl
-  );
-  const facilityName = useSelector(
-    (state: StateType) => state.dgcommon.facilityName
-  );
-
-  return useQuery<number, AxiosError, number, [string, number]>(
-    ['investigationSize', investigationId],
-    (params) =>
-      fetchInvestigationSize(
-        { facilityName, downloadApiUrl },
-        params.queryKey[1]
-      ),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: false,
-    }
-  );
-};
-
 export const useInvestigationsDatasetCount = (
   data:
     | Investigation[]
