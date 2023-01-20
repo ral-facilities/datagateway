@@ -20,14 +20,12 @@ import {
   useLuceneSearch,
   FacilityCycle,
   tableLink,
-  useDatasetsDatafileCount,
-  useDatasetSizes,
-  formatCountOrSize,
   AddToCartButton,
   DownloadButton,
   ISISDatasetDetailsPanel,
   DLSDatasetDetailsPanel,
   DatasetDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -235,13 +233,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     }
   }, [dlsLink, genericLink, hierarchy, isisLink]);
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
-  const datasetCountQueries = useDatasetsDatafileCount(
-    hierarchy !== 'isis' ? data : undefined
-  );
-  const sizeQueries = useDatasetSizes(hierarchy === 'isis' ? data : undefined);
-
   const title = React.useMemo(
     () => ({
       // Provide label for filter component.
@@ -277,11 +268,9 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
         content: (dataset: Dataset): string => {
           const index = data?.findIndex((item) => item.id === dataset.id);
           if (typeof index === 'undefined') return 'Unknown';
-          const query =
-            hierarchy === 'isis'
-              ? sizeQueries[index]
-              : datasetCountQueries[index];
-          return formatCountOrSize(query, hierarchy === 'isis');
+          return hierarchy === 'isis'
+            ? formatBytes(dataset.fileSize)
+            : dataset.fileCount?.toString() ?? 'Unknown';
         },
         disableSort: true,
       },
@@ -308,16 +297,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [
-      data,
-      datasetCountQueries,
-      dateFilter,
-      hierarchy,
-      hierarchyLink,
-      sizeQueries,
-      t,
-      textFilter,
-    ]
+    [data, dateFilter, hierarchy, hierarchyLink, t, textFilter]
   );
 
   const moreInformation = React.useCallback(
@@ -359,9 +339,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
                   entityType="dataset"
                   entityId={dataset.id}
                   entityName={dataset.name}
-                  entitySize={
-                    data ? sizeQueries[data.indexOf(dataset)]?.data ?? -1 : -1
-                  }
+                  entitySize={dataset.fileSize ?? -1}
                 />
               </ActionButtonDiv>
             ),
@@ -376,7 +354,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
             ),
           ],
 
-    [data, hierarchy, sizeQueries]
+    [data, hierarchy]
   );
 
   return (
