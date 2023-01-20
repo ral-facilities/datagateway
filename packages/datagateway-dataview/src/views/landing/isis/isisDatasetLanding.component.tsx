@@ -11,10 +11,9 @@ import {
 import { CalendarToday, CheckCircle, Public, Save } from '@mui/icons-material';
 import {
   Dataset,
-  formatCountOrSize,
+  formatBytes,
   parseSearchToQuery,
   useDatasetDetails,
-  useDatasetSizes,
   AddToCartButton,
   DownloadButton,
   ArrowTooltip,
@@ -90,7 +89,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
 
   const { data } = useDatasetDetails(parseInt(datasetId));
-  const sizeQueries = useDatasetSizes(data);
 
   const shortInfo = [
     {
@@ -111,7 +109,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
     {
       content: (entity: Dataset) => {
-        return formatCountOrSize(sizeQueries[0], true);
+        return formatBytes(entity.fileSize);
       },
       label: t('datasets.size'),
       icon: <Save sx={shortInfoIconStyle} />,
@@ -224,7 +222,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 entityType="dataset"
                 entityId={parseInt(datasetId)}
                 entityName={data?.name ?? ''}
-                entitySize={sizeQueries[0]?.data ?? -1}
+                entitySize={data?.fileSize ?? -1}
               />
             </ActionButtonsContainer>
           </Grid>
