@@ -163,6 +163,10 @@ describe('Investigations Cards', () => {
       'have.value',
       date.toISOString().slice(0, 10)
     );
-    cy.get('[data-testid="card"]').first().contains('Put modern else answer.');
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains(
+        'Ground able strategy pay clearly performance wall understand.'
+      );
   });
 });

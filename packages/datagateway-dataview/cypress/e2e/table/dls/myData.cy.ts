@@ -48,7 +48,7 @@ describe('DLS - MyData Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/proposal/INVESTIGATION%20131/investigation/131/dataset'
+        '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
       );
     });
 
