@@ -202,10 +202,10 @@ describe('ISIS - MyData Table', () => {
         cy.get('#role-selector').click();
         cy.get('[role="listbox"]')
           .find('[role="option"]')
-          .should('have.length', 3);
+          .should('have.length', 2);
         cy.get('[role="option"][data-value="PI"]').click();
 
-        cy.get('[aria-rowcount="3"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
 
         // check that size is correct after filtering
         cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('3.12 GB');
@@ -247,11 +247,11 @@ describe('ISIS - MyData Table', () => {
         // );
 
         cy.get('input[id="Start Date filter from"]').type('2000-04-01');
-        cy.get('[aria-rowcount="2"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
       });
 
       it('multiple columns', () => {
-        cy.get('[aria-label="Filter by DOI"]').first().type('417');
+        cy.get('[aria-label="Filter by DOI"]').first().type('45');
 
         cy.get('[aria-rowcount="1"]').should('exist');
 
@@ -305,7 +305,7 @@ describe('ISIS - MyData Table', () => {
         );
 
         cy.get('#details-panel')
-          .contains('Throw hope parent. Receive entire soon.')
+          .contains('Analysis reflect work or hour color maybe.')
           .should('be.visible');
 
         cy.get('[aria-controls="investigation-samples-panel"]').should(

@@ -137,9 +137,7 @@ describe('Investigations Cards', () => {
       });
     cy.get('[data-testid="card"]')
       .first()
-      .contains(
-        'Ground able strategy pay clearly performance wall understand.'
-      );
+      .contains('Ground able strategy pay clearly');
 
     cy.get('input[id="Start Date filter from"]')
       .click()

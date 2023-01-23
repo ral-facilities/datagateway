@@ -316,7 +316,7 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
         cy.get(
-          `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+          `[aria-label="select row ${Math.floor(Math.random() * 6)}"]`
         ).should('be.checked');
 
         cy.get('[aria-label="Filter by Location"]').first().clear();

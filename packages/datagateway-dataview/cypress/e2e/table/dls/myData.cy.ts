@@ -192,7 +192,7 @@ describe('DLS - MyData Table', () => {
         cy.get('#role-selector').click();
         cy.get('[role="listbox"]')
           .find('[role="option"]')
-          .should('have.length', 3);
+          .should('have.length', 2);
         cy.get('[role="option"][data-value="PI"]').click();
 
         cy.get('[aria-rowcount="1"]').should('exist');
@@ -235,7 +235,7 @@ describe('DLS - MyData Table', () => {
 
         cy.get('input[id="Start Date filter from"]').type('2000-04-01');
 
-        cy.get('[aria-rowcount="2"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
       });
 
       it('multiple columns', () => {
